@@ -44,23 +44,23 @@ char* TCommunications_Handler::WaitingOnInfo(unsigned int PlayerNo) {
     unsigned int player = PlayerNo;
 
     if (IsPlayerComputer(player)) {
-        rge_base_game->get_string(IDS_STATUS_COMPUTER, g_status_buffer, 32);
+        rge_base_game->get_string(STRING_ID_STATUS_COMPUTER, g_status_buffer, 32);
         return g_status_buffer;
     }
     if (!IsPlayerHuman(player)) {
-        rge_base_game->get_string(IDS_STATUS_EMPTY, g_status_buffer, 32);
+        rge_base_game->get_string(STRING_ID_STATUS_EMPTY, g_status_buffer, 32);
         return g_status_buffer;
     }
     if (LastTurnAck[player] < 4) {
-        rge_base_game->get_string(IDS_STATUS_LOADING, g_status_buffer, 32);
+        rge_base_game->get_string(STRING_ID_STATUS_LOADING, g_status_buffer, 32);
         return g_status_buffer;
     }
     if (LastTurnAck[player] < current_turn) {
-        rge_base_game->get_string(IDS_STATUS_WAITING, g_status_buffer, 32);
+        rge_base_game->get_string(STRING_ID_STATUS_WAITING, g_status_buffer, 32);
         return g_status_buffer;
     }
 
-    rge_base_game->get_string(IDS_STATUS_READY, g_status_buffer, 32);
+    rge_base_game->get_string(STRING_ID_STATUS_READY, g_status_buffer, 32);
     return g_status_buffer;
 }
 
@@ -115,8 +115,7 @@ update:
         }
 skip:
         ++i;
-    } while (static_cast<int>(i) <=
-             static_cast<int>(static_cast<unsigned short>(this->MaxGamePlayers)));
+    } while (static_cast<int>(i) <= static_cast<int>(static_cast<unsigned short>(this->MaxGamePlayers)));
 
 done:
     return 1;
@@ -562,7 +561,7 @@ int TCommunications_Handler::DoCycle(ulong WorldTime) {
                         if (this->MeHost != 0) {
                             L->Log("Player %d Turn#%d  timeout = %d ", i, this->current_turn, elapsed);
                             RGE_Base_Game* base_game = rge_base_game;
-                            base_game->get_string(IDS_STATUS_PLAYER_NOT_RESPONDING, msg_str, 100);
+                            base_game->get_string(STRING_ID_STATUS_PLAYER_NOT_RESPONDING, msg_str, 100);
                             sprintf(this->TBuff, msg_str, this->GetPlayerName(i), i);
                             if (this->current_turn > 6) {
                                 this->SendChatMsgAll(this->TBuff);
@@ -580,8 +579,7 @@ int TCommunications_Handler::DoCycle(ulong WorldTime) {
         }
 
         ++selfTimedOutCount;
-        if ((selfTimedOutCount == 3 && LastAnyPlayerMessage >= 2) ||
-            (selfTimedOutCount != 3 &&
+        if ((selfTimedOutCount == 3 && LastAnyPlayerMessage >= 2) || (selfTimedOutCount != 3 &&
              LastAnyPlayerMessage >= selfTimedOutCount / 2)) {
 
             L->Log("I Dropped myself.");
@@ -982,8 +980,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
     L->Log("PREPRO-Byte0='%c' from=%d(%d)  ser#%d  timeGetTime=%d",
            static_cast<int>(*CommBuff), log_player, dcoFromID, *serial, debug_timeGetTime(com_hand_source_path, 1357));
 
-    if (*CommBuff == 'K' &&
-        this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
+    if (*CommBuff == 'K' && this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
         L->Log("KILL Message recieved from %d to kill dcoID #%d ", dcoFromID,
                *reinterpret_cast<unsigned long*>(CommBuff + 16));
         if (*serial == this->PlayerHighSerialNumber[player] + 1)
@@ -1006,8 +1003,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
         else
             chat_msg = reinterpret_cast<MSGFORMAT_CHAT*>(CommBuff + 8);
 
-        if (chat_msg->Pregame != 0 &&
-            this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW) {
+        if (chat_msg->Pregame != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW) {
             L->Log("DISCARD: ChtPregame=%d PgmState=%d  Msg=%s", chat_msg->Pregame, this->PlayerOptions.ProgramState,
                    chat_msg->ChatMsg);
             return 0;
@@ -1081,8 +1077,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
             this->PlayerOptions.CommandTurnIncrement;
         unsigned int done_turn = turn_increment + turn;
 
-        if (multiplayer != 0 &&
-            this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
+        if (multiplayer != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
             this->LastTurnAck[this->Me] != turn) {
             this->LastTurnAck[this->Me] = turn;
             MSGFORMAT_ALL_DONE done;
@@ -1141,8 +1136,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
                             break;
                         }
                         ++i;
-                    } while (static_cast<int>(i) <=
-                             static_cast<int>(high));
+                    } while (static_cast<int>(i) <= static_cast<int>(high));
                 }
             }
 
@@ -1171,8 +1165,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
         unsigned long turn = this->current_turn;
         unsigned int done_turn = turn_increment + turn;
 
-        if (this->Multiplayer != 0 &&
-            this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
+        if (this->Multiplayer != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
             this->LastTurnAck[this->Me] != turn) {
             this->LastTurnAck[this->Me] = turn;
             MSGFORMAT_ALL_DONE done;
@@ -1222,10 +1215,9 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
         comm_receive_message = CommBuff + 8;
         comm_receive_base = dwSize - 8;
     } else {
-        if (this->IntentionallyDropPackets != 0 && this->current_turn > 6 &&
-            ++comm_drop_count > 8) {
+        if (this->IntentionallyDropPackets != 0 && this->current_turn > 6 && ++comm_drop_count > 8) {
             char msg_str[100];
-            rge_base_game->get_string(IDS_STATUS_INTENTIONAL_DROP, msg_str, 100);
+            rge_base_game->get_string(STRING_ID_STATUS_INTENTIONAL_DROP, msg_str, 100);
             sprintf(this->TBuff, msg_str, *serial, static_cast<int>(*CommBuff), static_cast<int>(*CommBuff));
             L->Log(this->TBuff);
             comm_drop_count = 0;
@@ -1310,8 +1302,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long len,
         MSGFORMAT_ALL_DONE* done =
             reinterpret_cast<MSGFORMAT_ALL_DONE*>(Content);
         this->Speed->SetPlayerTurnSpeed(fromPlayer, done->FrameRateMsec, done->HighLatencyCenti);
-        if ((this->PlayerOptions.ProgramState < COMM_STATE_RUNNING) ||
-            (this->current_turn < 6)) {
+        if ((this->PlayerOptions.ProgramState < COMM_STATE_RUNNING) || (this->current_turn < 6)) {
             if (done->ExecuteOnTurn < this->current_turn) {
                 L->Log("+++REGRESSION WARNING, Current=%d  ExecuteOnTurn=%d", this->current_turn, done->ExecuteOnTurn);
                 return 0;
@@ -1353,8 +1344,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long len,
         MSGFORMAT_CHAT* chat = reinterpret_cast<MSGFORMAT_CHAT*>(Content);
         L->Log("CHAT-RX from P#%d(%d) RXID=%d Chat content='%s' TextSize=%d TotalSize=%d Pregame=%d",
                fromPlayer, dcoFromID, dcoReceiveID, chat->ChatMsg, chat->TextSize, ContentSize, chat->Pregame);
-        if ((chat->DestPlayers[this->Me] == 'Y') ||
-            (this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW)) {
+        if ((chat->DestPlayers[this->Me] == 'Y') || (this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW)) {
             this->Chat->AddChatMsg(this->FriendlyName[chat->FromGamerID].Text, chat->ChatMsg, 0);
             return 1;
         }
@@ -1620,7 +1610,7 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int PlayerNo, unsigned lon
     }
     if (static_cast<int>(this->PlayerOptions.ProgramState) >= 5 && this->current_turn >= 6) {
         L->Log("Player quit the game.");
-        rge_base_game->get_string(IDS_STATUS_PLAYER_DROPPED, msg_str, 50);
+        rge_base_game->get_string(STRING_ID_STATUS_PLAYER_DROPPED, msg_str, 50);
         sprintf(this->TBuff, msg_str, PlayerNo, this->FriendlyName[PlayerNo].Text);
         L->Log(this->TBuff);
         this->InitPlayerInformation(PlayerNo, 0, "Dropped", " ");
@@ -1818,8 +1808,7 @@ found_create_player:
         L->Log("Group options rcvd from host.");
         if (set_player_data->dwDataSize >= sizeof(this->PlayerOptions)) {
             memcpy(&this->PlayerOptions, set_player_data->lpData, sizeof(this->PlayerOptions));
-            if (set_player_data->dwDataSize >= this->PlayerOptions.DataSizeToFollow
-                    + sizeof(this->PlayerOptions)) {
+            if (set_player_data->dwDataSize >= this->PlayerOptions.DataSizeToFollow + sizeof(this->PlayerOptions)) {
                 this->SetMyGameOptions(static_cast<char*>(set_player_data->lpData) + sizeof(this->PlayerOptions),
                                        this->PlayerOptions.DataSizeToFollow);
             }
@@ -2105,8 +2094,7 @@ uint TCommunications_Handler::ExecuteIncoming() {
                     if (this->IsPlayerHuman(i) && i != this->Me) {
                         uint humanSerial = this->PlayerHighSerialNumber[i] + 1;
                         uint serial = this->OnHold[pno].Serial;
-                        if (serial < humanSerial &&
-                            this->OnHold[pno].dcoFromID == this->PlayerOptions.dcoID[i]) {
+                        if (serial < humanSerial && this->OnHold[pno].dcoFromID == this->PlayerOptions.dcoID[i]) {
                             L->Log(s_clear_past, pno, serial, this->OnHold[pno].Length, this->OnHold[pno].dcoFromID,
                                    this->OnHold[pno].dcoReceiveID, humanSerial);
                             HOLDER* clear_entry = &this->OnHold[pno];
@@ -2250,8 +2238,7 @@ int TCommunications_Handler::StoreIncoming(uint SerialNumber,
     uint slot;
     for (slot = 0; slot <= 501; slot++) {
         HOLDER* entry = &this->OnHold[slot];
-        if (entry->Serial == SerialNumber &&
-            entry->dcoFromID == dcoFromID) {
+        if (entry->Serial == SerialNumber && entry->dcoFromID == dcoFromID) {
             L->Log("Future Ser#%d previously stored (Slot#%d)", SerialNumber, slot);
             return 1;
         }
@@ -2327,8 +2314,7 @@ int TCommunications_Handler::StoreForResend(unsigned int SerialNumber,
         L->Log("Stored %db for resend (Slot= %d ) SERIAL=%d  (MaxPlayers=%d)", Length, i, SerialNumber,
                static_cast<unsigned int>(this->MaxGamePlayers));
 
-        for (unsigned int player = 1; player <= this->MaxGamePlayers;
-             player++) {
+        for (unsigned int player = 1; player <= this->MaxGamePlayers; player++) {
             if (resend->DestMap[player] != 0) {
                 L->Log("      to -> P#%d  retries=%d", player, ResendDestMap[player]);
             }
@@ -2391,8 +2377,7 @@ int TCommunications_Handler::RXAcknowledgeStoredMessage(unsigned int serialno, u
     this->WaitingForAck = 0;
 
     for (unsigned int slot = 0; slot <= 501; ++slot) {
-        if (this->Resend[slot].Serial == serialno &&
-            this->Resend[slot].Serial != 0) {
+        if (this->Resend[slot].Serial == serialno && this->Resend[slot].Serial != 0) {
             this->Resend[slot].DestMap[fromPlayer] = 0;
         }
     }
@@ -2408,8 +2393,7 @@ int TCommunications_Handler::PurgeAcknowledgedStoredMessages() {
             unsigned int player = 1;
             if (player <= this->MaxGamePlayers) {
                 do {
-                    if (this->IsPlayerHuman(player) &&
-                        this->Resend[i].DestMap[player] > 0) {
+                    if (this->IsPlayerHuman(player) && this->Resend[i].DestMap[player] > 0) {
                         NonAckCount++;
                     }
                     player++;
@@ -2443,9 +2427,7 @@ int TCommunications_Handler::SendStoredMessages() {
         debug_timeGetTime(com_hand_source_path, 3584);
 
     unsigned long Now = debug_timeGetTime(com_hand_source_path, 3586);
-    if (static_cast<float>(lastResendBytes) /
-            static_cast<float>(static_cast<long>(Now - lastResendTime)) >
-        2.0f) {
+    if (static_cast<float>(lastResendBytes) / static_cast<float>(static_cast<long>(Now - lastResendTime)) > 2.0f) {
         return 0;
     }
 
@@ -2470,9 +2452,7 @@ int TCommunications_Handler::SendStoredMessages() {
                 OldestMessageSlot = slot;
             }
 
-            for (unsigned int player = 1;
-                 player <= static_cast<unsigned int>(this->MaxGamePlayers);
-                 player++) {
+            for (unsigned int player = 1; player <= static_cast<unsigned int>(this->MaxGamePlayers); player++) {
                 unsigned int retries = 240 - resend->DestMap[player];
                 if (retries > mostRetries) {
                     mostRetries = retries;
@@ -2508,13 +2488,9 @@ int TCommunications_Handler::SendStoredMessages() {
     this->Resend[OldestMessageSlot].TimeSent =
         debug_timeGetTime(com_hand_source_path, 3669);
 
-    for (unsigned int player = 1;
-         player <= static_cast<unsigned int>(this->MaxGamePlayers);
-         player++) {
-        if (this->Resend[OldestMessageSlot].DestMap[player] > 0 &&
-            this->IsPlayerHuman(player) &&
-            this->PlayerOptions.dcoID[player] != 0 &&
-            player != this->Me) {
+    for (unsigned int player = 1; player <= static_cast<unsigned int>(this->MaxGamePlayers); player++) {
+        if (this->Resend[OldestMessageSlot].DestMap[player] > 0 && this->IsPlayerHuman(player) &&
+            this->PlayerOptions.dcoID[player] != 0 && player != this->Me) {
             if (this->Resend[OldestMessageSlot].DestMap[player] != 0) {
                 this->Resend[OldestMessageSlot].DestMap[player]--;
             }
@@ -2553,10 +2529,8 @@ int TCommunications_Handler::SendStoredMessages() {
                 this->Err->ShowReturn(hr, "RESEND Transmit");
             }
 
-            if (this->Resend[OldestMessageSlot].DestMap[player] == 0 &&
-                this->IsPlayerHuman(player) &&
-                this->PlayerOptions.dcoID[player] != 0 &&
-                player != this->Me) {
+            if (this->Resend[OldestMessageSlot].DestMap[player] == 0 && this->IsPlayerHuman(player) &&
+                this->PlayerOptions.dcoID[player] != 0 && player != this->Me) {
                 sprintf(this->TBuff, "Max resends to Player #%d '%s' ", player, this->GetPlayerName(player));
                 L->Log(this->TBuff);
 
@@ -2827,8 +2801,7 @@ long TCommunications_Handler::CommOut(ulong To, uchar MsgType, void* Msg,
         L->Log("ASSERT - BAD MSG TYPE");
     } else {
         txMsg->Sequence = this->GetNextSequence(SyncTurn);
-        if (this->PlayerOptions.ProgramState != 5 &&
-            txMsg->Sequence == 0) {
+        if (this->PlayerOptions.ProgramState != 5 && txMsg->Sequence == 0) {
             delete txMsg;
             return static_cast<long>(0x8877010E);
         }
@@ -2880,8 +2853,7 @@ long TCommunications_Handler::CommOut(ulong To, uchar MsgType, void* Msg,
                 if (this->MaxGamePlayers >= 1) {
                     i = 1;
                     do {
-                        if (this->IsPlayerHuman(i) != 0 &&
-                            i != this->Me) {
+                        if (this->IsPlayerHuman(i) != 0 && i != this->Me) {
                             ++recipient_count;
                         }
                         ++i;
@@ -2923,8 +2895,7 @@ long TCommunications_Handler::CommOut(ulong To, uchar MsgType, void* Msg,
             if (this->MaxGamePlayers >= 1) {
                 i = 1;
                 do {
-                    if (this->IsPlayerHuman(i) != 0 &&
-                        i != this->Me) {
+                    if (this->IsPlayerHuman(i) != 0 && i != this->Me) {
                         ++recipient_count;
                     }
                     ++i;
@@ -3969,8 +3940,7 @@ void TCommunications_Handler::PackPlayersDown() {
         } else {
             int src = i;
             while (src <= static_cast<int>(this->MaxGamePlayers)) {
-                if (this->IsPlayerHuman(src) ||
-                    this->IsPlayerComputer(src)) {
+                if (this->IsPlayerHuman(src) || this->IsPlayerComputer(src)) {
                     strcpy(this->FriendlyName[i].Text, this->FriendlyName[src].Text);
                     strcpy(this->FormalName[i].Text, this->FormalName[src].Text);
 
@@ -4290,9 +4260,7 @@ void TCommunications_Handler::UpdatePlayer(unsigned int PlayerNo, int Notify) {
         strcpy(this->FriendlyName[PlayerNo].Text, name->lpszShortNameA);
         strcpy(this->FormalName[PlayerNo].Text, name->lpszLongNameA);
         this->PlayerOptions.Humanity[PlayerNo] = ME_HUMAN;
-    } else if (result == DPERR_BUFFERTOOSMALL ||
-               result == DPERR_INVALIDPARAM ||
-               result == DPERR_INVALIDOBJECT) {
+    } else if (result == DPERR_BUFFERTOOSMALL || result == DPERR_INVALIDPARAM || result == DPERR_INVALIDOBJECT) {
         L->Log("Fatal error player info %ld", result);
         strcpy(this->FriendlyName[PlayerNo].Text, "Error!");
         this->PlayerOptions.Humanity[PlayerNo] = ME_ABSENT;

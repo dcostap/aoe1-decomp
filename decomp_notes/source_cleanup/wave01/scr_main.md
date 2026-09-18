@@ -73,7 +73,7 @@ source order changed.
 
 ## Constants and resources
 
-The source now reuses the existing `IDS_BUTTON_OK` macro for numeric ID
+The source now reuses the existing `STRING_ID_BUTTON_OK` macro for numeric ID
 `0x0FA1`. The macro is already defined in `include/resource_ids.h` with the
 same value and effective type. The approved shared header commit adds the
 fifteen other macros listed below. All fifteen proved uses now use those
@@ -101,21 +101,21 @@ All mappings use these lookup facts:
 
 | ID | Applied macro | Purpose evidence | Base text | Expansion text | Pinned XPack text |
 | --- | --- | --- | --- | --- | --- |
-| `0x23F2` | `IDS_MENU_SINGLE_PLAYER` | Main-menu button `button[0]` starts single-player flow. | `Single Player` | Missing; falls back to base. | Missing. |
-| `0x23F3` | `IDS_MENU_MULTIPLAYER` | Main-menu button `button[1]` starts multiplayer flow. | `Multiplayer` | Missing; falls back to base. | Missing. |
-| `0x23F5` | `IDS_MENU_HELP` | Main-menu button `button[2]` opens the help prompt. | `Help` | Missing; falls back to base. | Missing. |
-| `0x23F6` | `IDS_MENU_SCENARIO_BUILDER` | Main-menu button `button[3]` starts the scenario builder. | `Scenario Builder` | Missing; falls back to base. | Missing. |
-| `0x23F7` | `IDS_MENU_EXIT` | Main-menu button `button[4]` closes the game. | `Exit` | Missing; falls back to base. | Missing. |
-| `0x2419` | `IDS_PRODUCT_TITLE` | Main-menu title text uses this product-title resource. | `Microsoft© Age of Empires™` | `Microsoft® Age of Empires® Expansion:` | `Microsoft© Age of Empires, the Rise of Rome™` |
-| `0x241B` | `IDS_COPYRIGHT_PREFIX` | The source uses this text as the first copyright segment. | `© & ` | Empty; falls back to base. | Empty. |
-| `0x241C` | `IDS_COPYRIGHT_SUFFIX` | The source uses this text as the final copyright segment. | `1997 Microsoft Corporation. All rights reserved.` | `1997-1998 Microsoft Corporation. All rights reserved.` | `1998 Microsoft Corporation. All rights reserved.` |
-| `0x2424` | `IDS_COPYRIGHT_SEPARATOR` | The source checks this resource before choosing split or combined copyright text. | Empty. | Empty. | Missing. |
-| `0x2425` | `IDS_COPYRIGHT_WARNING` | The source creates the copyright-law warning panel with this ID. | `This program is protected by U.S. and international copyright laws as described in Menu/About.` | Empty. | Missing. |
-| `0x03EA` | `IDS_BUTTON_CLOSE` | The error screen creates its close button with this caption ID. | `X` | Missing; falls back to base. | Missing. |
-| `0x07D7` | `IDS_ERROR_LOAD_GAME_DATA` | Developer-mode database reload reports this error. | `Could not load game data.` | Empty; falls back to base. | Missing. |
-| `0x07D8` | `IDS_ERROR_INSERT_CD_SINGLE_PLAYER` | The single-player path reports a missing game CD. | `You must insert a game CD to play a single player game, and then restart Age of Empires` | Empty; falls back to base. | Missing. |
-| `0x07DA` | `IDS_ERROR_INSERT_CD_SCENARIO_BUILDER` | The scenario-builder path reports a missing game CD. | `You must insert a game CD to use the scenario builder.` | Empty; falls back to base. | Missing. |
-| `0x1D4F7` | `IDS_HELP_NOTICE` | The Help button loads this ID into the `Confirm Dialog` message before `WinHelpA`. | Missing. | Missing. | Missing. |
+| `0x23F2` | `STRING_ID_MENU_SINGLE_PLAYER` | Main-menu button `button[0]` starts single-player flow. | `Single Player` | Missing; falls back to base. | Missing. |
+| `0x23F3` | `STRING_ID_MENU_MULTIPLAYER` | Main-menu button `button[1]` starts multiplayer flow. | `Multiplayer` | Missing; falls back to base. | Missing. |
+| `0x23F5` | `STRING_ID_MENU_HELP` | Main-menu button `button[2]` opens the help prompt. | `Help` | Missing; falls back to base. | Missing. |
+| `0x23F6` | `STRING_ID_MENU_SCENARIO_BUILDER` | Main-menu button `button[3]` starts the scenario builder. | `Scenario Builder` | Missing; falls back to base. | Missing. |
+| `0x23F7` | `STRING_ID_MENU_EXIT` | Main-menu button `button[4]` closes the game. | `Exit` | Missing; falls back to base. | Missing. |
+| `0x2419` | `STRING_ID_PRODUCT_TITLE` | Main-menu title text uses this product-title resource. | `Microsoft© Age of Empires™` | `Microsoft® Age of Empires® Expansion:` | `Microsoft© Age of Empires, the Rise of Rome™` |
+| `0x241B` | `STRING_ID_COPYRIGHT_PREFIX` | The source uses this text as the first copyright segment. | `© & ` | Empty; falls back to base. | Empty. |
+| `0x241C` | `STRING_ID_COPYRIGHT_SUFFIX` | The source uses this text as the final copyright segment. | `1997 Microsoft Corporation. All rights reserved.` | `1997-1998 Microsoft Corporation. All rights reserved.` | `1998 Microsoft Corporation. All rights reserved.` |
+| `0x2424` | `STRING_ID_COPYRIGHT_SEPARATOR` | The source checks this resource before choosing split or combined copyright text. | Empty. | Empty. | Missing. |
+| `0x2425` | `STRING_ID_COPYRIGHT_WARNING` | The source creates the copyright-law warning panel with this ID. | `This program is protected by U.S. and international copyright laws as described in Menu/About.` | Empty. | Missing. |
+| `0x03EA` | `STRING_ID_BUTTON_CLOSE` | The error screen creates its close button with this caption ID. | `X` | Missing; falls back to base. | Missing. |
+| `0x07D7` | `STRING_ID_ERROR_LOAD_GAME_DATA` | Developer-mode database reload reports this error. | `Could not load game data.` | Empty; falls back to base. | Missing. |
+| `0x07D8` | `STRING_ID_ERROR_INSERT_CD_SINGLE_PLAYER` | The single-player path reports a missing game CD. | `You must insert a game CD to play a single player game, and then restart Age of Empires` | Empty; falls back to base. | Missing. |
+| `0x07DA` | `STRING_ID_ERROR_INSERT_CD_SCENARIO_BUILDER` | The scenario-builder path reports a missing game CD. | `You must insert a game CD to use the scenario builder.` | Empty; falls back to base. | Missing. |
+| `0x1D4F7` | `STRING_ID_HELP_NOTICE` | The Help button loads this ID into the `Confirm Dialog` message before `WinHelpA`. | Missing. | Missing. | Missing. |
 
 The checked DLLs contain no text for `0x1D4F7`. The main-menu action passes the
 ID to `TEasy_Panel::popupOKDialog(long, char*, int, int)`. That overload loads

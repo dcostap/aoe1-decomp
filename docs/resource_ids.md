@@ -1,6 +1,6 @@
 # Resource strings and ID names
 
-Approved convention for the [source-cleanup pilot and wave](source_cleanup.md).
+Current convention for the [source-cleanup pilot and wave](source_cleanup.md).
 
 ## Read the actual resource file
 
@@ -45,6 +45,18 @@ The corresponding uses in `src/scr_game.cpp` provide the purpose; the single cha
 
 ## Naming convention
 
+Use `STRING_ID_` for IDs passed to `LoadStringA` or the game's string lookup.
+The prefix states that the value is a string-table ID.
+It does not state which language DLL supplies the text.
+`TRIBE_Game::get_string` checks the expansion table before the base table.
+
+Use `BINARY_RESOURCE_ID_` for non-string resources loaded by `RESFILE`.
+These IDs select binary layout data in `Interfac.drs`.
+Do not place them in the string-ID namespace.
+
+Use `TRIBE_SCREEN_WIDTH_*` and `TRIBE_SCREEN_HEIGHT_*` for display dimensions.
+Do not use a string ID for a numeric display mode.
+
 ### Known purpose does not require known text
 
 Name an ID when the executable's lookup path and call sites establish its resource type and purpose.
@@ -55,7 +67,7 @@ Do not invent the text, its absence's cause, or an original macro name.
 For example, `0x7531` and `0x7532` identify OK-button and Cancel-button help text.
 The original executable stores them as help-string IDs and passes them to the string lookup.
 Repeated call sites establish the button roles, although the checked DLLs lack both entries.
-Use descriptive names `IDS_HELP_OK` and `IDS_HELP_CANCEL`; do not leave them numeric solely because text is missing.
+Use descriptive names `STRING_ID_HELP_OK` and `STRING_ID_HELP_CANCEL`; do not leave them numeric solely because text is missing.
 See [the load-screen evidence](../decomp_notes/source_cleanup/scr_load_help_ids.md).
 
 If the resource type or purpose remains uncertain after tracing the uses, keep the literal and report that specific uncertainty.
@@ -64,27 +76,25 @@ Numerical equality or a nearby button alone does not establish the role; inspect
 ### Names and ownership
 
 Preserve verified original symbols first.
-Otherwise use uppercase `IDS_` names that describe purpose, not just text or numeric value.
+Otherwise use uppercase `STRING_ID_` names that describe purpose, not just text or numeric value.
 These are new cleanup names unless original evidence establishes otherwise.
 
 Recommended forms:
 
-- `IDS_HOTKEY_VIEW_TOWN_CENTER`
-- `IDS_HOTKEY_MOVE`
-- `IDS_ERROR_<CONDITION>`
-- `IDS_MENU_<ACTION>`
-- `IDS_HELP_<SUBJECT>`
-- `IDS_<SUBJECT>_NAME`
-- `IDS_<SUBJECT>_FORMAT` for a verified formatted message
+- `STRING_ID_HOTKEY_VIEW_TOWN_CENTER`
+- `STRING_ID_HOTKEY_MOVE`
+- `STRING_ID_ERROR_<CONDITION>`
+- `STRING_ID_MENU_<ACTION>`
+- `STRING_ID_HELP_<SUBJECT>`
+- `STRING_ID_<SUBJECT>_NAME`
+- `STRING_ID_<SUBJECT>_FORMAT` for a verified formatted message
 
 These patterns do not imply that the original macro names are known.
-Do not name a hotkey resource `IDS_H` merely because its English payload is `H`.
+Do not name a hotkey resource `STRING_ID_H` merely because its English payload is `H`.
 Do not expand data-driven resource fields into thousands of speculative constants.
 
-Use `IDS_` for the established base-language namespace.
-Use a stable domain qualifier for a distinct resource namespace, such as `IDS_LANGX_` or `IDS_GAME_`.
-Confirm the module and domain before selecting the qualifier.
-An expansion override and its base fallback can represent one logical resource namespace.
+Use one `STRING_ID_` namespace for the expansion table and its base fallback.
+They represent one logical language namespace at the call site.
 Do not create separate names merely because both files contain that logical ID.
 Do not merge IDs solely because their numbers or English strings match.
 Different roles can require different names even when their text is equal.
@@ -101,14 +111,14 @@ Do not let workers create competing headers or duplicate definitions.
 Prefer conventional resource macros that retain the original literal spelling and type:
 
 ```cpp
-#define IDS_HOTKEY_VIEW_TOWN_CENTER 0x103F
-#define IDS_HOTKEY_MOVE             0x104A
+#define STRING_ID_HOTKEY_VIEW_TOWN_CENTER 0x103F
+#define STRING_ID_HOTKEY_MOVE             0x104A
 ```
 
 Then replace only the opaque ID expression:
 
 ```cpp
-this->view_town_center_hotkey = *this->get_string(IDS_HOTKEY_VIEW_TOWN_CENTER);
+this->view_town_center_hotkey = *this->get_string(STRING_ID_HOTKEY_VIEW_TOWN_CENTER);
 ```
 
 This is a proposed cleanup naming example, not a recovered original header.

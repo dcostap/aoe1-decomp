@@ -383,8 +383,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 float cap = other->getSpeed();
                 RGE_Moving_Object* movingOther = (RGE_Moving_Object*)other;
                 float avoidanceDistance = movingOther->collisionAvoidanceDistance;
-                if (canShare != 0 || cap != DAT_00570e5c ||
-                    avoidanceDistance > DAT_00570e5c) {
+                if (canShare != 0 || cap != DAT_00570e5c || avoidanceDistance > DAT_00570e5c) {
                     other->removeFromObstructionMap(this->aiPS);
                 }
             }
@@ -694,12 +693,9 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                                 // The original loads cost even for a terrain exception.
                                 float terrainValue = terrainTable[terrain];
                                 if (terrain != this->currentTerrainException1 &&
-                                    terrain != this->currentTerrainException2 &&
-                                    terrainValue <= DAT_00570e80) {
+                                    terrain != this->currentTerrainException2 && terrainValue <= DAT_00570e80) {
                                     tmp = tile->border_type & 0x0f;
-                                    if (tmp == 0 ||
-                                        terrainTable[
-                                            map->border_types[tmp].underlay_terrain] <= DAT_00570e80) {
+                                    if (tmp == 0 || terrainTable[map->border_types[tmp].underlay_terrain] <= DAT_00570e80) {
                                         terrainStatus = 0xfe;
                                         break;
                                     }
@@ -1006,8 +1002,7 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
         unsigned char maxTileX = (unsigned char)(maxX >> 2);
         unsigned char maxTileY = (unsigned char)(maxY >> 2);
 
-        if ((int)maxTileX >= this->mapValue->map_width ||
-            (int)maxTileY >= this->mapValue->map_height) {
+        if ((int)maxTileX >= this->mapValue->map_width || (int)maxTileY >= this->mapValue->map_height) {
             return 0;
         }
 
@@ -1018,12 +1013,10 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
                 RGE_Tile* tile = this->mapValue->map_row_offset[tileY] + tileX;
                 if (tileX <= maxTileX) {
                     do {
-                        if (this->initialTile.x != tileX ||
-                            this->initialTile.y != tileY) {
+                        if (this->initialTile.x != tileX || this->initialTile.y != tileY) {
                             int terrain = tile->terrain_type & 0x1f;
                             float terrainPassability = this->currentTerrainTable[terrain];
-                            if (terrain != this->currentTerrainException1 &&
-                                terrain != this->currentTerrainException2 &&
+                            if (terrain != this->currentTerrainException1 && terrain != this->currentTerrainException2 &&
                                 !(terrainPassability > DAT_00570e80)) {
                                 int border = tile->border_type & 0x0f;
                                 if (border == 0) {
@@ -1031,8 +1024,7 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
                                 }
                                 int underlay =
                                     this->mapValue->border_types[border].underlay_terrain;
-                                if (!(this->currentTerrainTable[underlay] >
-                                      DAT_00570e80)) {
+                                if (!(this->currentTerrainTable[underlay] > DAT_00570e80)) {
                                     return 0;
                                 }
                             }
@@ -1051,8 +1043,7 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
     int height = maxY - minY - 1;
 
     if (height >= 0) {
-        if (height < 0x18 &&
-            (minX > this->maxTarget.x || minY > this->maxTarget.y ||
+        if (height < 0x18 && (minX > this->maxTarget.x || minY > this->maxTarget.y ||
              maxX < this->minTarget.x || maxY < this->minTarget.y)) {
             int maskIndex = (minY & 3) + height * 4;
             unsigned long maskA = ObstructionMasks[maskIndex * 2];
@@ -1087,14 +1078,10 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
                     int row = minY;
                     if (row < maxY) {
                         do {
-                            if (((this->obstructionValue[column][row >> 2] >>
-                                  (ObstructionValueShift[row & 3] & 0x1f)) &
+                            if (((this->obstructionValue[column][row >> 2] >> (ObstructionValueShift[row & 3] & 0x1f)) &
                                  3) != 0) {
-                                if (this->currentTargetID == -1 ||
-                                    column < this->minTarget.x ||
-                                    this->maxTarget.x < column ||
-                                    row < this->minTarget.y ||
-                                    this->maxTarget.y < row) {
+                                if (this->currentTargetID == -1 || column < this->minTarget.x ||
+                                    this->maxTarget.x < column || row < this->minTarget.y || this->maxTarget.y < row) {
                                     goto obstruction_found;
                                 }
                                 foundTargetObstruction = 1;

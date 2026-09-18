@@ -35,7 +35,7 @@ I also reviewed the combined source and header diff.
 - Review accepted the systematic PDB parameter and local recovery.
 - Correction 1 applied complete 1TBS `else` placement, joined short signatures, and added the owner-header request.
 - The first managed run failed during startup. The same worker completed the task in its second run.
-- Root resource request: `0x232A` as proposed `IDS_SELECT_OBJECT_TITLE`.
+- Root resource request: `0x232A` as proposed `STRING_ID_SELECT_OBJECT_TITLE`.
 
 ### `src/rpnl_tim.cpp`
 
@@ -54,7 +54,7 @@ I also reviewed the combined source and header diff.
 - Review accepted PDB names and the pinned `OPAQUE` and `TRANSPARENT` macros.
 - Correction 1 reverted names without PDB support, joined the constructor signature, added the header request, and recorded absolute DLL paths.
 - The PDB calls `player_num` a `long`, but the current declaration is `int`. The source keeps its current type.
-- Root resource request: `0x2C24` as proposed `IDS_COUNTDOWN_TIMER_FORMAT`.
+- Root resource request: `0x2C24` as proposed `STRING_ID_COUNTDOWN_TIMER_FORMAT`.
 
 ### `src/spnl_obj.cpp`
 
@@ -141,7 +141,7 @@ I also reviewed the combined source and header diff.
 - Review accepted PDB names and the pinned `TRANSPARENT`, `DT_CENTER`, and `DT_SINGLELINE` macros.
 - Correction 1 added the header request and corrected the logical resource namespace.
 - Correction 2 reverted local names that lacked PDB support.
-- Root resource request: `0x2B2A` as proposed `IDS_POPULATION_PREFIX`.
+- Root resource request: `0x2B2A` as proposed `STRING_ID_POPULATION_PREFIX`.
 
 ### `src/tpnl_tim.cpp`
 
@@ -184,16 +184,16 @@ Commit `7323990a644362c1f77c23367b1406be97e264a9` imports only
 
 The affected workers applied these reviewed names:
 
-- `0x232A`: `IDS_SELECT_OBJECT_TITLE`
-- `0x1D4ED`: `IDS_HELP_INVENTORY_FOOD_FORMAT`
-- `0x1D4EE`: `IDS_HELP_INVENTORY_WOOD_FORMAT`
-- `0x1D4EF`: `IDS_HELP_INVENTORY_GOLD_FORMAT`
-- `0x1D4F0`: `IDS_HELP_INVENTORY_STONE_FORMAT`
-- `0x2B2A`: `IDS_POPULATION_PREFIX`
-- `0x2C24`: `IDS_COUNTDOWN_YEARS_FORMAT`
-- `0x2C25`: `IDS_WONDER_YEARS_FORMAT`
-- `0x2C26`: `IDS_ARTIFACTS_YEARS_FORMAT`
-- `0x2C27`: `IDS_RUINS_YEARS_FORMAT`
+- `0x232A`: `STRING_ID_SELECT_OBJECT_TITLE`
+- `0x1D4ED`: `STRING_ID_HELP_INVENTORY_FOOD_FORMAT`
+- `0x1D4EE`: `STRING_ID_HELP_INVENTORY_WOOD_FORMAT`
+- `0x1D4EF`: `STRING_ID_HELP_INVENTORY_GOLD_FORMAT`
+- `0x1D4F0`: `STRING_ID_HELP_INVENTORY_STONE_FORMAT`
+- `0x2B2A`: `STRING_ID_POPULATION_PREFIX`
+- `0x2C24`: `STRING_ID_COUNTDOWN_YEARS_FORMAT`
+- `0x2C25`: `STRING_ID_WONDER_YEARS_FORMAT`
+- `0x2C26`: `STRING_ID_ARTIFACTS_YEARS_FORMAT`
+- `0x2C27`: `STRING_ID_RUINS_YEARS_FORMAT`
 
 The worker reports distinguish the root approval from each worker header import.
 They retain per-DLL hashes, language, payload status, and lookup paths.

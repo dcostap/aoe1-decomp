@@ -95,8 +95,7 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
                 RGE_Player* reference_player =
                     this->player->world->players[target_player];
                 entry->target_player = reference_player;
-                if (reference_player != 0 && entry->target_obj == 0 &&
-                    target_obj >= 0) {
+                if (reference_player != 0 && entry->target_obj == 0 && target_obj >= 0) {
                     entry->target_obj =
                         reference_player->objects->find_by_id(target_obj);
                 }
@@ -428,9 +427,7 @@ void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* node) {
             if (node->state == 0) {
                 RGE_Player* owner = obj->owner;
                 RGE_Player* self = this->player;
-                if (owner == self ||
-                    (node->ally_flag && self->allied_victory &&
-                     self->relations[owner->id] == 0 &&
+                if (owner == self || (node->ally_flag && self->allied_victory && self->relations[owner->id] == 0 &&
                      owner->relations[self->id] == 0 && owner->allied_victory)) {
                     node->state = 2;
                     return;
@@ -454,8 +451,7 @@ void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* node) {
     RGE_Object_Node* object_node = self->objects->list;
 
     while (object_node != 0) {
-        if (object_node->node->master_obj->copy_id == node->obj_type &&
-            object_node->node->object_state == 2) {
+        if (object_node->node->master_obj->copy_id == node->obj_type && object_node->node->object_state == 2) {
             count++;
         }
         object_node = object_node->next;
@@ -469,9 +465,7 @@ void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* node) {
 
         if (i < num) {
             do {
-                if (self->relations[i] == 0 &&
-                    players[i]->relations[self->id] == 0 &&
-                    i != self->id &&
+                if (self->relations[i] == 0 && players[i]->relations[self->id] == 0 && i != self->id &&
                     players[i]->allied_victory != 0) {
                     RGE_Object_Node* object_node = players[i]->objects->list;
                     while (object_node != 0) {
@@ -503,12 +497,8 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* node) {
     RGE_Object_Node* object_node = player->objects->list;
     while (object_node != 0) {
         RGE_Static_Object* obj = object_node->node;
-        if (obj->master_obj->copy_id == node->obj_type &&
-            obj->object_state == 2 &&
-            obj->world_x >= node->x0 &&
-            obj->world_x <= node->x1 &&
-            obj->world_y >= node->y0 &&
-            obj->world_y <= node->y1) {
+        if (obj->master_obj->copy_id == node->obj_type && obj->object_state == 2 && obj->world_x >= node->x0 &&
+            obj->world_x <= node->x1 && obj->world_y >= node->y0 && obj->world_y <= node->y1) {
             count++;
         }
         object_node = object_node->next;
@@ -524,17 +514,12 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* node) {
             do {
                 if (player->relations[i] == 0) {
                     RGE_Player* p = *current;
-                    if (p->relations[player->id] == 0 &&
-                        i != player->id &&
-                        p->allied_victory != 0) {
+                    if (p->relations[player->id] == 0 && i != player->id && p->allied_victory != 0) {
                         object_node = p->objects->list;
                         while (object_node != 0) {
                             RGE_Static_Object* obj = object_node->node;
-                            if (obj->master_obj->copy_id == node->obj_type &&
-                                obj->object_state == 2 &&
-                                obj->world_x >= node->x0 &&
-                                obj->world_x <= node->x1 &&
-                                obj->world_y >= node->y0 &&
+                            if (obj->master_obj->copy_id == node->obj_type && obj->object_state == 2 &&
+                                obj->world_x >= node->x0 && obj->world_x <= node->x1 && obj->world_y >= node->y0 &&
                                 obj->world_y <= node->y1) {
                                 count++;
                             }
@@ -666,8 +651,7 @@ void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* node) {
             return;
         }
 
-        if (obj->world_x < node->x0 || obj->world_x > node->x1 ||
-            obj->world_y < node->y0 || obj->world_y > node->y1) {
+        if (obj->world_x < node->x0 || obj->world_x > node->x1 || obj->world_y < node->y0 || obj->world_y > node->y1) {
             node->state = 0;
         } else {
             node->state = 2;
@@ -767,8 +751,7 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* node) {
             if (i < 0) return;
             RGE_Player** pp = players + i;
             while (i >= 0) {
-                if ((this->player->relations[i] == 0 &&
-                     (*pp)->relations[this->player->id] == 0 &&
+                if ((this->player->relations[i] == 0 && (*pp)->relations[this->player->id] == 0 &&
                      (*pp)->allied_victory != 0) || i == this->player->id) {
                     float explored = (*pp)->visible->percentExplored();
                     if (explored * 100.0f >= (float)node->count) {

@@ -123,14 +123,12 @@ void RGE_Action_Move_To::set_state(unsigned char new_state) {
 }
 
 unsigned char RGE_Action_Move_To::update() {
-    if (this->targetID != -1 &&
-        this->obj->owner->world->object(this->targetID) == 0) {
+    if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
         goto target_lost;
     }
 
-    if (this->target2ID != -1 &&
-        this->obj->owner->world->object(this->target2ID) == 0) {
+    if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
     }
 
@@ -141,8 +139,7 @@ unsigned char RGE_Action_Move_To::update() {
 
     switch (this->state) {
     case 3:
-        if (this->target_obj != 0 &&
-            this->obj->inRange(this->target_obj, this->range) != 0) {
+        if (this->target_obj != 0 && this->obj->inRange(this->target_obj, this->range) != 0) {
             this->set_state(1);
             if (this->subActionValue == 0) {
                 this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x262, 0, 0);
@@ -188,8 +185,7 @@ unsigned char RGE_Action_Move_To::update() {
         if (this->target_obj != 0) {
             float x_diff = this->target_x - this->target_obj->world_x;
             float yDiff = this->target_y - this->target_obj->world_y;
-            if (x_diff < -1.0 || x_diff > 1.0 || yDiff < -1.0 ||
-                yDiff > 1.0) {
+            if (x_diff < -1.0 || x_diff > 1.0 || yDiff < -1.0 || yDiff > 1.0) {
                 goto reached_target;
             }
         }
@@ -203,8 +199,7 @@ unsigned char RGE_Action_Move_To::update() {
             if (this->target_obj != 0) {
                 float x_diff = this->target_x - this->target_obj->world_x;
                 float yDiff = this->target_y - this->target_obj->world_y;
-                if (x_diff < -1.0 || x_diff > 1.0 || yDiff < -1.0 ||
-                    yDiff > 1.0) {
+                if (x_diff < -1.0 || x_diff > 1.0 || yDiff < -1.0 || yDiff > 1.0) {
                     goto reached_target;
                 }
             }
@@ -258,8 +253,7 @@ unsigned char RGE_Action_Move_To::is_in_range() {
             return 1;
         }
     } else {
-        if (this->target_obj != 0 &&
-            this->obj->inRange(this->target_obj, 0.25f) != 0) {
+        if (this->target_obj != 0 && this->obj->inRange(this->target_obj, 0.25f) != 0) {
             return 1;
         }
     }

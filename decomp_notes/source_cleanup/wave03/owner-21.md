@@ -60,9 +60,9 @@ the staged runtime-base hashes and precise missing, empty, fallback, and
 expansion-override results. Each report separates worker evidence from root
 name approval.
 
-- `0x242E` uses existing `IDS_SCENARIO_MENU_CREATE_SCENARIO`.
-- `0x0BF3` uses existing `IDS_GAME_SPEED_CHANGED`.
-- The building hotkey keeps `i + IDS_HOTKEY_SELECT_BUILDING_BASE`.
+- `0x242E` uses existing `STRING_ID_SCENARIO_MENU_CREATE_SCENARIO`.
+- `0x0BF3` uses existing `STRING_ID_GAME_SPEED_CHANGED`.
+- The building hotkey keeps `i + STRING_ID_HOTKEY_SELECT_BUILDING_BASE`.
 - No macro exists or is requested for empty slot `0x103C`.
 - `0x1023L` stays numeric because its `L` suffix preserves the token type.
 - `0x0FA9` stays numeric because its role remains unresolved.

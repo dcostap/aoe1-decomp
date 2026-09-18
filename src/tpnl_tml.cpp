@@ -501,13 +501,11 @@ int Time_Line_Panel::calculate_icon_location(
     }
 
     if (result != 0) {
-        if (this->special_events_pic_hgt >
-            event_ptr->intermediate_y_line_segment) {
+        if (this->special_events_pic_hgt > event_ptr->intermediate_y_line_segment) {
             result = 0;
         }
         long half_width = this->special_events_pic_wid / 2;
-        if (event_ptr->X_line_pos + half_width >
-            this->X_start_line_pos + this->X_line_max_width) {
+        if (event_ptr->X_line_pos + half_width > this->X_start_line_pos + this->X_line_max_width) {
             result = 0;
         }
         long icon_start_x = event_ptr->X_line_pos - half_width;
@@ -527,8 +525,7 @@ int Time_Line_Panel::calculate_icon_location(
     case 0: {
         event_ptr->text_length1 = strlen(event_ptr->text1);
         long text_width = this->body_font_wid * event_ptr->text_length1;
-        if (event_ptr->X_line_pos + text_width + 2 <
-            this->X_start_line_pos + this->X_line_max_width) {
+        if (event_ptr->X_line_pos + text_width + 2 < this->X_start_line_pos + this->X_line_max_width) {
             start_text_x = event_ptr->X_line_pos + 2;
         } else {
             start_text_x = this->X_start_line_pos
@@ -540,8 +537,7 @@ int Time_Line_Panel::calculate_icon_location(
             - this->body_font_hgt - 2;
         if (start_text_y <= this->Y_start_line_pos) {
             start_text_y = this->Y_start_line_pos + 2;
-        } else if (start_text_y >=
-                   this->Y_start_line_pos + this->Y_line_max_length) {
+        } else if (start_text_y >= this->Y_start_line_pos + this->Y_line_max_length) {
             start_text_y = this->Y_start_line_pos
                 + this->Y_line_max_length - this->body_font_hgt - 3;
         }
@@ -551,16 +547,14 @@ int Time_Line_Panel::calculate_icon_location(
     case 1: {
         event_ptr->text_length1 = strlen(event_ptr->text1);
         long text_width = this->body_font_wid * event_ptr->text_length1;
-        if (event_ptr->X_line_pos + text_width + 2 <
-            this->X_start_line_pos + this->X_line_max_width) {
+        if (event_ptr->X_line_pos + text_width + 2 < this->X_start_line_pos + this->X_line_max_width) {
             start_text_x = event_ptr->X_line_pos + 2;
         } else {
             start_text_x = this->X_start_line_pos
                 + this->X_line_max_width - text_width - 8;
         }
 
-        if (event_ptr->Y_line_pos + this->body_font_hgt + 2 <
-            this->Y_start_line_pos + this->Y_line_max_length) {
+        if (event_ptr->Y_line_pos + this->body_font_hgt + 2 < this->Y_start_line_pos + this->Y_line_max_length) {
             start_text_y = this->Y_start_line_pos + 2;
         } else {
             start_text_y = this->Y_start_line_pos
@@ -572,8 +566,7 @@ int Time_Line_Panel::calculate_icon_location(
     case 2: {
         event_ptr->text_length1 = strlen(event_ptr->text1);
         long text_width = this->body_font_wid * event_ptr->text_length1;
-        if (event_ptr->X_line_pos + text_width + 2 <
-            this->X_start_line_pos + this->X_line_max_width) {
+        if (event_ptr->X_line_pos + text_width + 2 < this->X_start_line_pos + this->X_line_max_width) {
             start_text_x = event_ptr->X_line_pos + 2;
         } else {
             start_text_x = this->X_start_line_pos
@@ -585,8 +578,7 @@ int Time_Line_Panel::calculate_icon_location(
             - this->body_font_hgt - 2;
         if (start_text_y <= this->Y_start_line_pos) {
             start_text_y = this->Y_start_line_pos + 2;
-        } else if (start_text_y >=
-                   this->Y_start_line_pos + this->Y_line_max_length) {
+        } else if (start_text_y >= this->Y_start_line_pos + this->Y_line_max_length) {
             start_text_y = this->Y_start_line_pos
                 + this->Y_line_max_length - this->body_font_hgt - 3;
         }
@@ -606,8 +598,7 @@ int Time_Line_Panel::calculate_icon_location(
             event_ptr->text_length1 = 2;
         }
 
-        if (start_y + this->body_font_hgt
-                + this->special_events_pic_hgt + 1 >
+        if (start_y + this->body_font_hgt + this->special_events_pic_hgt + 1 >
             this->Y_start_line_pos + this->Y_line_max_length) {
             start_y = this->Y_start_line_pos + this->Y_line_max_length
                 - this->body_font_hgt - this->special_events_pic_hgt - 1;
@@ -630,8 +621,7 @@ int Time_Line_Panel::calculate_icon_location(
             event_ptr->text_length1 = 5;
         }
 
-        if (start_y + this->body_font_hgt
-                + this->special_events_pic_hgt + 1 >
+        if (start_y + this->body_font_hgt + this->special_events_pic_hgt + 1 >
             this->Y_start_line_pos + this->Y_line_max_length) {
             start_y = this->Y_start_line_pos + this->Y_line_max_length
                 - this->body_font_hgt - this->special_events_pic_hgt - 1;
@@ -697,14 +687,14 @@ void Time_Line_Panel::draw_axis() {
         SetBkMode(this->render_area->DrawDc, TRANSPARENT);
         old_font = SelectObject(this->render_area->DrawDc, this->axis_font);
 
-        if (this->get_string(IDS_WORLD_POPULATION, temp_str, 100) != 0) {
+        if (this->get_string(STRING_ID_WORLD_POPULATION, temp_str, 100) != 0) {
             int x = this->xPosition() + 8;
             int y = this->yPosition() + 5;
             SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
             TextOutA(this->render_area->DrawDc, x, y, temp_str, strlen(temp_str));
         }
 
-        if (this->get_string(IDS_TIME_HOUR_MINUTE, temp_str, 100) != 0) {
+        if (this->get_string(STRING_ID_TIME_HOUR_MINUTE, temp_str, 100) != 0) {
             int x = this->X_start_line_pos;
             x -= (strlen(temp_str) * this->axis_font_wid) / 2;
             x += this->X_axis_length / 2;
@@ -729,8 +719,7 @@ void Time_Line_Panel::draw_special_events() {
         GetNearestPaletteIndex(this->render_area->DrawSystem->Pal, 0);
 
         if (this->render_area->Lock("tpnl_tml::draw_special_events", 1) != 0) {
-            for (event = this->time_slice_events;
-                 event != 0; event = event->next) {
+            for (event = this->time_slice_events; event != 0; event = event->next) {
                 switch (event->event) {
                 case 0:
                     this->draw_icon(event, -1, 0);
@@ -768,8 +757,7 @@ void Time_Line_Panel::draw_special_events() {
             SetBkMode(this->render_area->DrawDc, TRANSPARENT);
             old_font = SelectObject(this->render_area->DrawDc, this->body_font);
 
-            for (event = this->time_slice_events;
-                 event != 0; event = event->next) {
+            for (event = this->time_slice_events; event != 0; event = event->next) {
                 switch (event->event) {
                 case 0:
                     SetTextColor(this->render_area->DrawDc, 0);
@@ -836,16 +824,14 @@ void Time_Line_Panel::draw_background() {
             pic_rows = 1;
         } else {
             pic_rows = this->pnl_wid / this->background_pic_wid;
-            if (static_cast<short>(pic_rows) * this->background_pic_wid <
-                this->pnl_wid) {
+            if (static_cast<short>(pic_rows) * this->background_pic_wid < this->pnl_wid) {
                 pic_rows++;
             }
         }
 
         if (this->background_pic_hgt >= this->pnl_hgt) {
             tile_rows = this->pnl_hgt / this->background_pic_hgt;
-            if (static_cast<short>(tile_rows) * this->background_pic_hgt <
-                this->pnl_hgt) {
+            if (static_cast<short>(tile_rows) * this->background_pic_hgt < this->pnl_hgt) {
                 tile_rows++;
             }
         }
@@ -937,8 +923,7 @@ void Time_Line_Panel::draw_civilization_names() {
                                  temp_str, strlen(temp_str));
                         Y_line_pos += seg;
                         y_line_segment_length++;
-                    } while (y_line_segment_length <
-                             rge_base_game->world->player_num - 1);
+                    } while (y_line_segment_length < rge_base_game->world->player_num - 1);
                 }
                 SelectObject(this->render_area->DrawDc, old_font);
                 this->render_area->ReleaseDc("tpnl_tml::draw_civilization_names");
@@ -987,8 +972,7 @@ void Time_Line_Panel::draw_timeline() {
                         pop_total += population;
                         player_index++;
                         world = rge_base_game->world;
-                    } while (player_index <
-                             static_cast<int>(world->player_num) - 1);
+                    } while (player_index < static_cast<int>(world->player_num) - 1);
                 }
 
                 if (pop_total == 0.0f) {
@@ -1001,9 +985,7 @@ void Time_Line_Panel::draw_timeline() {
                 drop_limit += (1 - dropped_slice_counter) * base_drop_rate;
                 drop_limit -= time_slice_counter;
 
-                if (this->drop_flag != 0 &&
-                    special_event == 0 &&
-                    pop_sample_counter >= drop_limit &&
+                if (this->drop_flag != 0 && special_event == 0 && pop_sample_counter >= drop_limit &&
                     dropped_slice_counter - 1 < this->total_slices_to_drop) {
                     dropped_slice_counter++;
                     pop_sample_counter = 0;
@@ -1028,16 +1010,14 @@ void Time_Line_Panel::draw_timeline() {
                                 next_pop_total += static_cast<float>(player->history->get_history_entry(0, time_slice + 1));
                                 player_index++;
                                 world = rge_base_game->world;
-                            } while (player_index <
-                                     static_cast<int>(world->player_num) - 1);
+                            } while (player_index < static_cast<int>(world->player_num) - 1);
                         }
                         if (next_pop_total == 0.0f) {
                             return;
                         }
                     }
 
-                    if (pop_label_counter == this->pop_reading_rate - 1 ||
-                        time_slice == 0) {
+                    if (pop_label_counter == this->pop_reading_rate - 1 || time_slice == 0) {
                         this->add_pop_total_special_event(time_slice, static_cast<long>(pop_total), this->X_line_pos, 1);
                         pop_label_counter = 0;
                     } else {
@@ -1051,8 +1031,7 @@ void Time_Line_Panel::draw_timeline() {
                         static_cast<long>(this->bar_thickness);
                     long regular_position = base_thickness * next_time_slice;
 
-                    if (regular_position <
-                        time_slice_thickness - time_slice_thickness_error) {
+                    if (regular_position < time_slice_thickness - time_slice_thickness_error) {
                         time_slice_thickness =
                             time_slice_thickness -
                             time_slice_thickness_error - regular_position +
@@ -1102,15 +1081,13 @@ void Time_Line_Panel::draw_timeline() {
                                     long segment = static_cast<long>(player_population / pop_total * static_cast<float>(
                                             this->Y_line_max_length));
 
-                                    if (player_population >= 1.0f &&
-                                        segment < 1) {
+                                    if (player_population >= 1.0f && segment < 1) {
                                         segment = 1;
                                     }
 
                                     if (this->bar_thickness != 1.0f) {
                                         float next_population;
-                                        if (time_slice ==
-                                            this->num_entries_page - 1) {
+                                        if (time_slice == this->num_entries_page - 1) {
                                             next_population =
                                                 player_population;
                                         } else {
@@ -1133,8 +1110,7 @@ void Time_Line_Panel::draw_timeline() {
                                                  this->bar_thickness);
                                         segment = static_cast<long>(interpolated_segment);
 
-                                        if (player_population >= 1.0f &&
-                                            segment < 1) {
+                                        if (player_population >= 1.0f && segment < 1) {
                                             segment = 1;
                                         }
 
@@ -1148,16 +1124,12 @@ void Time_Line_Panel::draw_timeline() {
                                         }
                                     }
 
-                                    if (player_index ==
-                                        static_cast<int>(rge_base_game->world->player_num) -
-                                            2) {
-                                        if (segment + y_line_total >
-                                            this->Y_line_max_length) {
+                                    if (player_index == static_cast<int>(rge_base_game->world->player_num) - 2) {
+                                        if (segment + y_line_total > this->Y_line_max_length) {
                                             segment = this->Y_line_max_length -
                                                       y_line_total;
                                         }
-                                        if (segment + y_line_total <
-                                            this->Y_line_max_length) {
+                                        if (segment + y_line_total < this->Y_line_max_length) {
                                             segment = this->Y_line_max_length -
                                                       y_line_total;
                                         }
@@ -1178,16 +1150,13 @@ void Time_Line_Panel::draw_timeline() {
                                     y_line_total += segment;
                                     player_index++;
                                     world = rge_base_game->world;
-                                } while (player_index <
-                                         static_cast<int>(world->player_num) -
-                                             1);
+                                } while (player_index < static_cast<int>(world->player_num) - 1);
                             }
 
                             intermediate_x_pos++;
                             interpolation_counter++;
                             this->X_line_pos++;
-                        } while (intermediate_x_pos <
-                                 time_slice_thickness);
+                        } while (intermediate_x_pos < time_slice_thickness);
                     }
                 }
 
@@ -1211,13 +1180,13 @@ void Time_Line_Panel::draw_icon(Special_Events* event_ptr, short icon_number, uc
 
     switch (event_ptr->event) {
     case 0:
-        if (this->get_string(IDS_HELP_AGE_TOOL, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(STRING_ID_HELP_AGE_TOOL, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 1:
-        if (this->get_string(IDS_HELP_AGE_BRONZE, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(STRING_ID_HELP_AGE_BRONZE, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 2:
-        if (this->get_string(IDS_HELP_AGE_IRON, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(STRING_ID_HELP_AGE_IRON, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 8:
         sprintf(temp_str + 4, "%ld/%1d", event_ptr->integer_value_1, event_ptr->integer_value_2);

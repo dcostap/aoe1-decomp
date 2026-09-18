@@ -401,8 +401,7 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(
         return 0;
     }
 
-    if (NewTurnMsec < CurrentTurnMsec && Difference > 100 &&
-        this->CurrentBufferFrames > 4) {
+    if (NewTurnMsec < CurrentTurnMsec && Difference > 100 && this->CurrentBufferFrames > 4) {
         BufferFrames = this->CurrentBufferFrames - 1;
     }
 

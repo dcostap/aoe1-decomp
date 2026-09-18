@@ -584,15 +584,13 @@ unsigned char RGE_Map::postclean_elevation(long x1, long y1, long x2, long y2,
                 if (y1 > 0) {
                     if (index1 > 0 && (tile + offset_northwest)->height > new_height)
                         bad = true;
-                    if (index1 < this->map_width - 1 &&
-                        (tile + offset_northeast)->height > new_height)
+                    if (index1 < this->map_width - 1 && (tile + offset_northeast)->height > new_height)
                         bad = true;
                 }
                 if (y1 < this->map_height - 1) {
                     if (index1 > 0 && (tile + offset_southwest)->height > new_height)
                         bad = true;
-                    if (index1 < this->map_width - 1 &&
-                        (tile + offset_southeast)->height > new_height)
+                    if (index1 < this->map_width - 1 && (tile + offset_southeast)->height > new_height)
                         bad = true;
                 }
             } else if (elevation_height < current_height) {
@@ -609,15 +607,13 @@ unsigned char RGE_Map::postclean_elevation(long x1, long y1, long x2, long y2,
                 if (y1 > 0) {
                     if (index1 > 0 && (tile + offset_northwest)->height < new_height)
                         bad = true;
-                    if (index1 < this->map_width - 1 &&
-                        (tile + offset_northeast)->height < new_height)
+                    if (index1 < this->map_width - 1 && (tile + offset_northeast)->height < new_height)
                         bad = true;
                 }
                 if (y1 < this->map_height - 1) {
                     if (index1 > 0 && (tile + offset_southwest)->height < new_height)
                         bad = true;
-                    if (index1 < this->map_width - 1 &&
-                        (tile + offset_southeast)->height < new_height)
+                    if (index1 < this->map_width - 1 && (tile + offset_southeast)->height < new_height)
                         bad = true;
                 }
             }
@@ -681,15 +677,13 @@ void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
                 if (index2 > 0) {
                     if (index1 > 0 && (tile + offset_northwest)->height > elevation)
                         northwest = 1;
-                    if (index1 < this->map_width - 1 &&
-                        (tile + offset_northeast)->height > elevation)
+                    if (index1 < this->map_width - 1 && (tile + offset_northeast)->height > elevation)
                         northeast = 1;
                 }
                 if (index2 < this->map_height - 1) {
                     if (index1 > 0 && (tile + offset_southwest)->height > elevation)
                         southwest = 1;
-                    if (index1 < this->map_width - 1 &&
-                        (tile + offset_southeast)->height > elevation)
+                    if (index1 < this->map_width - 1 && (tile + offset_southeast)->height > elevation)
                         southeast = 1;
                 }
 
@@ -907,27 +901,23 @@ void RGE_Map::clean_terrain(long x1, long y1, long x2, long y2, unsigned char re
 
                         if (row > 0 && (tile[offset_n].terrain_type & 0x1f) == replacement_terrain)
                             north = 1;
-                        if (row < this->map_height - 1 &&
-                            (tile[map_width].terrain_type & 0x1f) == replacement_terrain)
+                        if (row < this->map_height - 1 && (tile[map_width].terrain_type & 0x1f) == replacement_terrain)
                             south = 1;
                         if (col > 0 && (tile[-1].terrain_type & 0x1f) == replacement_terrain)
                             west = 1;
-                        if (col < this->map_width - 1 &&
-                            (tile[1].terrain_type & 0x1f) == replacement_terrain)
+                        if (col < this->map_width - 1 && (tile[1].terrain_type & 0x1f) == replacement_terrain)
                             east = 1;
 
                         if (pass_index == 1) {
                             if (row > 0) {
-                                if (col > 0 &&
-                                    (tile[offset_nw].terrain_type & 0x1f) == replacement_terrain)
+                                if (col > 0 && (tile[offset_nw].terrain_type & 0x1f) == replacement_terrain)
                                     north_west = 1;
                                 if (col < this->map_width - 1 &&
                                     (tile[offset_ne].terrain_type & 0x1f) == replacement_terrain)
                                     north_east = 1;
                             }
                             if (row < this->map_height - 1) {
-                                if (col > 0 &&
-                                    (tile[offset_sw].terrain_type & 0x1f) == replacement_terrain)
+                                if (col > 0 && (tile[offset_sw].terrain_type & 0x1f) == replacement_terrain)
                                     south_west = 1;
                                 if (col < this->map_width - 1 &&
                                     (tile[offset_se].terrain_type & 0x1f) == replacement_terrain)
@@ -942,26 +932,22 @@ void RGE_Map::clean_terrain(long x1, long y1, long x2, long y2, unsigned char re
                         } else {
                             if (north_west) {
                                 if ((north_east && !north) || (east && !north_east) ||
-                                    (south_west && !west) || (south && !south_west) ||
-                                    ((south_east && !south) && !east))
+                                    (south_west && !west) || (south && !south_west) || ((south_east && !south) && !east))
                                     fix = 1;
                             }
                             if (north_east && !fix) {
                                 if ((north_west && !north) || (west && !north_west) ||
-                                    (south_east && !east) || (south && !south_east) ||
-                                    (south_west && !west && !south))
+                                    (south_east && !east) || (south && !south_east) || (south_west && !west && !south))
                                     fix = 1;
                             }
                             if (south_east && !fix) {
                                 if ((north_east && !east) || (north && !north_east) ||
-                                    (south_west && !south) || (west && !south_west) ||
-                                    (north_west && !west && !north))
+                                    (south_west && !south) || (west && !south_west) || (north_west && !west && !north))
                                     fix = 1;
                             }
                             if (south_west && !fix) {
                                 if ((north_west && !west) || (north && !north_west) ||
-                                    (south_east && !south) || (east && !south_east) ||
-                                    (north_east && !east && !north))
+                                    (south_east && !south) || (east && !south_east) || (north_east && !east && !north))
                                     fix = 1;
                             }
                         }
@@ -1686,8 +1672,7 @@ void RGE_Map::create_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworl
             RGE_Object_Node* next_list = list->next;
             short object_type = object->master_obj->id;
 
-            if (object->owner == obj_owner &&
-                (object_type < no_delete_start || object_type > no_delete_end)) {
+            if (object->owner == obj_owner && (object_type < no_delete_start || object_type > no_delete_end)) {
                 if (old_terrain < 0) {
                     if (delete_obj != 0) {
                         if (object != 0)
@@ -1697,8 +1682,7 @@ void RGE_Map::create_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworl
                     }
                 } else {
                     short index;
-                    for (index = this->terrain_types[old_terrain].num_obj_type; index >= 0;
-                         --index) {
+                    for (index = this->terrain_types[old_terrain].num_obj_type; index >= 0; --index) {
                         if (this->terrain_types[old_terrain].obj_types[index] == object_type)
                             break;
                     }
@@ -2027,8 +2011,7 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* offset_x,
 }
 
 unsigned char RGE_Map::check_map_coords(short mapcol, short maprow) {
-    if ((mapcol >= 0) && ((int)mapcol < this->map_width) && (maprow >= 0) &&
-        ((int)maprow < this->map_height))
+    if ((mapcol >= 0) && ((int)mapcol < this->map_width) && (maprow >= 0) && ((int)maprow < this->map_height))
         return 1;
     return 0;
 }
@@ -2515,17 +2498,13 @@ void RGE_Map::get_border_type(short map_col, short map_row) {
         return;
     }
 
-    if (border_table[(unsigned char)ter_lft] == border &&
-        border_table[(unsigned char)ter_rgt] == border)
+    if (border_table[(unsigned char)ter_lft] == border && border_table[(unsigned char)ter_rgt] == border)
         edge = 1;
-    else if (border_table[(unsigned char)ter_lft] == border &&
-             border_table[(unsigned char)ter_top_rgt] == border)
+    else if (border_table[(unsigned char)ter_lft] == border && border_table[(unsigned char)ter_top_rgt] == border)
         edge = 2;
-    else if (border_table[(unsigned char)ter_bot] == border &&
-             border_table[(unsigned char)ter_rgt] == border)
+    else if (border_table[(unsigned char)ter_bot] == border && border_table[(unsigned char)ter_rgt] == border)
         edge = 3;
-    else if (border_table[(unsigned char)ter_bot] == border &&
-             border_table[(unsigned char)ter_top_rgt] == border)
+    else if (border_table[(unsigned char)ter_bot] == border && border_table[(unsigned char)ter_top_rgt] == border)
         edge = 4;
     else if (border_table[(unsigned char)ter_lft] == border)
         edge = 9;

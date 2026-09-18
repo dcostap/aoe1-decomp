@@ -349,10 +349,8 @@ void TListPanel::draw() {
         void* old_font = SelectObject(dc, this->font);
         SetBkMode(dc, TRANSPARENT);
 
-        for (short line = this->top_line, line_index = 0;
-             line <= this->bot_line; ++line, ++line_index) {
-            if (this->drawHighlightBar != 0 &&
-                (this->have_focus != 0 || this->mouse_captured != 0) &&
+        for (short line = this->top_line, line_index = 0; line <= this->bot_line; ++line, ++line_index) {
+            if (this->drawHighlightBar != 0 && (this->have_focus != 0 || this->mouse_captured != 0) &&
                 line_index + this->top_line == this->cur_line) {
                 this->draw_line(dc, line_index, line, this->highlightTextColor1, this->highlightTextColor2);
             } else {
@@ -431,8 +429,7 @@ void TListPanel::setDrawHighlightBar(int v) {
 
 void TListPanel::set_focus(int have_focus_in) {
     TPanel::set_focus(have_focus_in);
-    if (this->have_focus != 0 && this->parent_panel != 0 &&
-        this->cur_line > -1 && this->cur_line < this->num_lines) {
+    if (this->have_focus != 0 && this->parent_panel != 0 && this->cur_line > -1 && this->cur_line < this->num_lines) {
         this->parent_panel->action(this, 1, this->cur_line, 0);
     }
 }

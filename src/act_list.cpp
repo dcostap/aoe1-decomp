@@ -289,12 +289,10 @@ void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
     node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
     node->action = action;
 
-    if (this->list != 0 &&
-        this->list->action->type() == action->type()) {
+    if (this->list != 0 && this->list->action->type() == action->type()) {
         current = this->list;
         while (current != 0) {
-            if (current->next == 0 ||
-                current->next->action->type() != action->type()) {
+            if (current->next == 0 || current->next->action->type() != action->type()) {
                 node->next = current->next;
                 current->next = node;
                 break;

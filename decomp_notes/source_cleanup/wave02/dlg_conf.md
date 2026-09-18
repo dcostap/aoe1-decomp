@@ -96,11 +96,11 @@ inferred names because its scoped PDB record has no local entries.
 ## Constants and resource evidence
 
 The source now includes `include/resource_ids.h` and uses the existing reviewed
-macros `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` for numeric IDs `0x0FA1` and
+macros `STRING_ID_BUTTON_OK` and `STRING_ID_BUTTON_CANCEL` for numeric IDs `0x0FA1` and
 `0x0FA2`. The macros expand to the same integer literals. Their runtime text
 is `OK` and `Cancel`.
 
-The source keeps `IDS_PATH_FINDING_OPTION_BASE + i` for the contiguous path
+The source keeps `STRING_ID_PATH_FINDING_OPTION_BASE + i` for the contiguous path
 finding range. It does not use separate names for the `Medium` or `High`
 entries. The following table records the numeric ID, exact text, file hash,
 language, lookup path, purpose, and approved cleanup name or expression. The
@@ -146,36 +146,36 @@ language `0x0409` / `1033`.
 
 | ID | Exact text in `runtime/language.dll` | File SHA256 and language | Lookup path | Purpose | Approved cleanup name or expression |
 | --- | --- | --- | --- | --- | --- |
-| `0x24D7` | `Game Settings` | as above | `create_text` -> `TRIBE_Game::get_string` | Configuration dialog title | `IDS_GAME_SETTINGS_TITLE` |
-| `0x24D8` | `Normal` | as above | `create_text` -> `TRIBE_Game::get_string` | Normal game-speed option | `IDS_GAME_SPEED_NORMAL` |
-| `0x24D9` | `Fast` | as above | `create_text` -> `TRIBE_Game::get_string` | Fast game-speed option | `IDS_GAME_SPEED_FAST` |
-| `0x24DA` | `Very Fast` | as above | `create_text` -> `TRIBE_Game::get_string` | Very-fast game-speed option | `IDS_GAME_SPEED_VERY_FAST` |
-| `0x24DB` | `Music\\nVolume` | as above | `create_text` -> `TRIBE_Game::get_string` | Music volume group title | `IDS_MUSIC_VOLUME_TITLE` |
-| `0x24DC` | `High` | as above | `create_text` -> `TRIBE_Game::get_string` | High setting for music and sound controls | `IDS_AUDIO_VOLUME_HIGH` |
-| `0x24DD` | `Off` | as above | `create_text` -> `TRIBE_Game::get_string` | Off setting for music and sound controls | `IDS_AUDIO_VOLUME_OFF` |
-| `0x24DE` | `Sound\\nVolume` | as above | `create_text` -> `TRIBE_Game::get_string` | Sound volume group title | `IDS_SOUND_VOLUME_TITLE` |
-| `0x24DF` | `Speed` | as above | `create_text` -> `TRIBE_Game::get_string` | Game-speed group title | `IDS_GAME_SPEED_TITLE` |
-| `0x24E0` | `Screen Size` | as above | `create_text` -> `TRIBE_Game::get_string` | Screen-size group title | `IDS_SCREEN_SIZE_TITLE` |
-| `0x24E7` | `640 x 480` | as above | `create_text` -> `TRIBE_Game::get_string` | 640-by-480 screen-size option | `IDS_SCREEN_SIZE_640X480` |
-| `0x24E8` | `800 x 600` | as above | `create_text` -> `TRIBE_Game::get_string` | 800-by-600 screen-size option | `IDS_SCREEN_SIZE_800X600` |
-| `0x24E9` | `1024 x 768` | as above | `create_text` -> `TRIBE_Game::get_string` | 1024-by-768 screen-size option | `IDS_SCREEN_SIZE_1024X768` |
-| `0x24EA` | `Mouse Interface` | as above | `create_text` -> `TRIBE_Game::get_string` | Mouse-interface group title | `IDS_MOUSE_INTERFACE_TITLE` |
-| `0x24EB` | `Two Buttons` | as above | `create_text` -> `TRIBE_Game::get_string` | Two-button mouse option | `IDS_MOUSE_INTERFACE_TWO_BUTTONS` |
-| `0x24EC` | `One Button` | as above | `create_text` -> `TRIBE_Game::get_string` | One-button mouse option | `IDS_MOUSE_INTERFACE_ONE_BUTTON` |
-| `0x24ED` | `Roll-over Help` | as above | `create_text` -> `TRIBE_Game::get_string` | Rollover-help group title | `IDS_ROLLOVER_HELP_TITLE` |
-| `0x24EE` | `On` | as above | `create_text` -> `TRIBE_Game::get_string` | Rollover-help enabled option | `IDS_ROLLOVER_HELP_ON` |
-| `0x24EF` | `Off` | as above | `create_text` -> `TRIBE_Game::get_string` | Rollover-help disabled option | `IDS_ROLLOVER_HELP_OFF` |
-| `0x24F0` | `Scroll\\nSpeed` | as above | `create_text` -> `TRIBE_Game::get_string` | Scroll-speed group title | `IDS_SCROLL_SPEED_TITLE` |
-| `0x24F1` | `Fast` | as above | `create_text` -> `TRIBE_Game::get_string` | Fast scroll-speed option | `IDS_SCROLL_SPEED_FAST` |
-| `0x24F2` | `Slow` | as above | `create_text` -> `TRIBE_Game::get_string` | Slow scroll-speed option | `IDS_SCROLL_SPEED_SLOW` |
-| `0x260D` | `Path Finding` | as above | `create_text` -> `TRIBE_Game::get_string` | Path-finding group title | `IDS_PATH_FINDING_TITLE` |
-| `0x260E` | `Default` | as above | `create_text` -> `TRIBE_Game::get_string` | First entry in the contiguous path-finding range | `IDS_PATH_FINDING_OPTION_BASE` |
-| `0x260F` | `Medium` | as above | `create_text` -> `TRIBE_Game::get_string` | Second entry in the contiguous path-finding range | `IDS_PATH_FINDING_OPTION_BASE + 1` |
-| `0x2610` | `High` | as above | `create_text` -> `TRIBE_Game::get_string` | Third entry in the contiguous path-finding range | `IDS_PATH_FINDING_OPTION_BASE + 2` |
-| `0x0BF3` | `Game speed changed.` | as above | `get_string` -> `TRIBE_Game::get_string` | Multiplayer game-speed notification text | `IDS_GAME_SPEED_CHANGED` |
+| `0x24D7` | `Game Settings` | as above | `create_text` -> `TRIBE_Game::get_string` | Configuration dialog title | `STRING_ID_GAME_SETTINGS_TITLE` |
+| `0x24D8` | `Normal` | as above | `create_text` -> `TRIBE_Game::get_string` | Normal game-speed option | `STRING_ID_GAME_SPEED_NORMAL` |
+| `0x24D9` | `Fast` | as above | `create_text` -> `TRIBE_Game::get_string` | Fast game-speed option | `STRING_ID_GAME_SPEED_FAST` |
+| `0x24DA` | `Very Fast` | as above | `create_text` -> `TRIBE_Game::get_string` | Very-fast game-speed option | `STRING_ID_GAME_SPEED_VERY_FAST` |
+| `0x24DB` | `Music\\nVolume` | as above | `create_text` -> `TRIBE_Game::get_string` | Music volume group title | `STRING_ID_MUSIC_VOLUME_TITLE` |
+| `0x24DC` | `High` | as above | `create_text` -> `TRIBE_Game::get_string` | High setting for music and sound controls | `STRING_ID_AUDIO_VOLUME_HIGH` |
+| `0x24DD` | `Off` | as above | `create_text` -> `TRIBE_Game::get_string` | Off setting for music and sound controls | `STRING_ID_AUDIO_VOLUME_OFF` |
+| `0x24DE` | `Sound\\nVolume` | as above | `create_text` -> `TRIBE_Game::get_string` | Sound volume group title | `STRING_ID_SOUND_VOLUME_TITLE` |
+| `0x24DF` | `Speed` | as above | `create_text` -> `TRIBE_Game::get_string` | Game-speed group title | `STRING_ID_GAME_SPEED_TITLE` |
+| `0x24E0` | `Screen Size` | as above | `create_text` -> `TRIBE_Game::get_string` | Screen-size group title | `STRING_ID_SCREEN_SIZE_TITLE` |
+| `0x24E7` | `640 x 480` | as above | `create_text` -> `TRIBE_Game::get_string` | 640-by-480 screen-size option | `STRING_ID_SCREEN_SIZE_640X480` |
+| `0x24E8` | `800 x 600` | as above | `create_text` -> `TRIBE_Game::get_string` | 800-by-600 screen-size option | `STRING_ID_SCREEN_SIZE_800X600` |
+| `0x24E9` | `1024 x 768` | as above | `create_text` -> `TRIBE_Game::get_string` | 1024-by-768 screen-size option | `STRING_ID_SCREEN_SIZE_1024X768` |
+| `0x24EA` | `Mouse Interface` | as above | `create_text` -> `TRIBE_Game::get_string` | Mouse-interface group title | `STRING_ID_MOUSE_INTERFACE_TITLE` |
+| `0x24EB` | `Two Buttons` | as above | `create_text` -> `TRIBE_Game::get_string` | Two-button mouse option | `STRING_ID_MOUSE_INTERFACE_TWO_BUTTONS` |
+| `0x24EC` | `One Button` | as above | `create_text` -> `TRIBE_Game::get_string` | One-button mouse option | `STRING_ID_MOUSE_INTERFACE_ONE_BUTTON` |
+| `0x24ED` | `Roll-over Help` | as above | `create_text` -> `TRIBE_Game::get_string` | Rollover-help group title | `STRING_ID_ROLLOVER_HELP_TITLE` |
+| `0x24EE` | `On` | as above | `create_text` -> `TRIBE_Game::get_string` | Rollover-help enabled option | `STRING_ID_ROLLOVER_HELP_ON` |
+| `0x24EF` | `Off` | as above | `create_text` -> `TRIBE_Game::get_string` | Rollover-help disabled option | `STRING_ID_ROLLOVER_HELP_OFF` |
+| `0x24F0` | `Scroll\\nSpeed` | as above | `create_text` -> `TRIBE_Game::get_string` | Scroll-speed group title | `STRING_ID_SCROLL_SPEED_TITLE` |
+| `0x24F1` | `Fast` | as above | `create_text` -> `TRIBE_Game::get_string` | Fast scroll-speed option | `STRING_ID_SCROLL_SPEED_FAST` |
+| `0x24F2` | `Slow` | as above | `create_text` -> `TRIBE_Game::get_string` | Slow scroll-speed option | `STRING_ID_SCROLL_SPEED_SLOW` |
+| `0x260D` | `Path Finding` | as above | `create_text` -> `TRIBE_Game::get_string` | Path-finding group title | `STRING_ID_PATH_FINDING_TITLE` |
+| `0x260E` | `Default` | as above | `create_text` -> `TRIBE_Game::get_string` | First entry in the contiguous path-finding range | `STRING_ID_PATH_FINDING_OPTION_BASE` |
+| `0x260F` | `Medium` | as above | `create_text` -> `TRIBE_Game::get_string` | Second entry in the contiguous path-finding range | `STRING_ID_PATH_FINDING_OPTION_BASE + 1` |
+| `0x2610` | `High` | as above | `create_text` -> `TRIBE_Game::get_string` | Third entry in the contiguous path-finding range | `STRING_ID_PATH_FINDING_OPTION_BASE + 2` |
+| `0x0BF3` | `Game speed changed.` | as above | `get_string` -> `TRIBE_Game::get_string` | Multiplayer game-speed notification text | `STRING_ID_GAME_SPEED_CHANGED` |
 
 The source preserves the contiguous expression
-`IDS_PATH_FINDING_OPTION_BASE + i`. The approved base name records the range
+`STRING_ID_PATH_FINDING_OPTION_BASE + i`. The approved base name records the range
 owner. Separate `Medium` and `High` macros are omitted. They are not used or
 requested. The expression must not expand into a switch or table.
 
@@ -205,7 +205,7 @@ Recovered original spellings from the PDB are:
 - `this`
 
 The source already used `string_id`, `new_speed`, and `msg`. The other recovered
-names replace readable or generated substitutes. The approved `IDS_*` names
+names replace readable or generated substitutes. The approved `STRING_ID_*` names
 come from the root resource approval commit
 `8c56055b7feee1526f296bd306036a4c34f38041`. They are cleanup names, not
 recovered original macro names. The worker-local import commit records
@@ -242,7 +242,7 @@ The approved definitions are present in `include/resource_ids.h` from root
 approval commit `8c56055b7feee1526f296bd306036a4c34f38041`. The worker-local
 import commit `3caba12fa62d4d07a0626fcb9f77e3425b9181ff` records local
 provenance only. The source uses all approved `dlg_conf` macros. The existing
-`IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` definitions cover `0x0FA1` and
+`STRING_ID_BUTTON_OK` and `STRING_ID_BUTTON_CANCEL` definitions cover `0x0FA1` and
 `0x0FA2`. No separate `Medium` or `High` path finding macro is requested.
 
 No other shared request is open. No header was edited in this commit sequence.

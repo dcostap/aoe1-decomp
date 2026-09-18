@@ -180,7 +180,7 @@ When the original macro name is unavailable, a descriptive name can improve read
 Mark it as a new cleanup name; do not claim that it came from the original developers.
 PDB records generally do not recover preprocessor macro names.
 
-A name such as `IDS_VIEW_TOWN_CENTER_HOTKEY` is a possible cleanup convention, not an established original symbol.
+A name such as `STRING_ID_VIEW_TOWN_CENTER_HOTKEY` is a possible cleanup convention, not an established original symbol.
 The value and resource meaning still need verification before use.
 Do not blindly use string contents as identifier names.
 

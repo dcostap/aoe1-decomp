@@ -247,8 +247,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short in_id, RGE_Sound** sounds) {
                     }
 
                     sound_slot = (short)sound_count;
-                    if (index1 >= 0 && index1 < this->facet_num &&
-                        sound_slot < 3) {
+                    if (index1 >= 0 && index1 < this->facet_num && sound_slot < 3) {
                         this->sound_list[index1].sound[sound_slot] =
                             sounds[last_facet];
                         this->sound_list[index1].frame[sound_slot] =
@@ -376,8 +375,7 @@ void RGE_Sprite::play_sound(short frame1, short frame2, short facet) {
     }
 
     if (frame1 != frame2) {
-        if (this->main_sound != 0 &&
-            (frame1 == 0 || (frame2 < frame1 && frame2 != 0))) {
+        if (this->main_sound != 0 && (frame1 == 0 || (frame2 < frame1 && frame2 != 0))) {
             this->main_sound->play(1);
         }
 
@@ -417,9 +415,7 @@ unsigned char RGE_Sprite::get_facetindex(long facet, long frame, long& facetinde
         return (unsigned char)facet;
     }
 
-    if (this->mirror_flag != 0 &&
-        (facet > (long)(unsigned int)this->mirror_flag ||
-         facet < ((int)this->facet_num >> 2))) {
+    if (this->mirror_flag != 0 && (facet > (long)(unsigned int)this->mirror_flag || facet < ((int)this->facet_num >> 2))) {
         int i = (int)this->facet_num >> 1;
         if (facet > i) {
             i = i - facet;
@@ -618,8 +614,7 @@ unsigned char RGE_Sprite::normal_draw(long facet, long frame, long x, long y,
             index = 0;
             do {
                 RGE_Sprite* sprite = this->draw_list[index].sprite;
-                if ((sprite->draw_level == 0x14) &&
-                    ((this->draw_list[index].facet < 0) ||
+                if ((sprite->draw_level == 0x14) && ((this->draw_list[index].facet < 0) ||
                      (this->draw_list[index].facet == local_facet))) {
                     sprite->do_draw((sprite->facet_num * local_facet) / (int)this->facet_num, frame,
                                     (long)this->draw_list[index].offset_x + x, (long)this->draw_list[index].offset_y + y,
@@ -654,9 +649,7 @@ unsigned char RGE_Sprite::shadow_draw(long facet, long frame, long x, long y,
         if (0 < this->draw_list_num) {
             do {
                 sprite = this->draw_list[facet].sprite;
-                if ((sprite->draw_level != flag) &&
-                    (sprite->draw_level < 0x14) &&
-                    ((this->draw_list[facet].facet < 0) ||
+                if ((sprite->draw_level != flag) && (sprite->draw_level < 0x14) && ((this->draw_list[facet].facet < 0) ||
                      (this->draw_list[facet].facet == local_facet))) {
                     sprite->do_draw((sprite->facet_num * local_facet) / (int)this->facet_num, frame,
                                     (long)this->draw_list[facet].offset_x + x, (long)this->draw_list[facet].offset_y + y,
@@ -713,8 +706,7 @@ int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y
         }
     }
 
-    if (((this->box_x1 == 0) && (this->box_x2 == 0)) ||
-        ((this->box_y1 == 0) && (this->box_y2 == 0))) {
+    if (((this->box_x1 == 0) && (this->box_x2 == 0)) || ((this->box_y1 == 0) && (this->box_y2 == 0))) {
         min_x = 0;
         min_y = 0;
         max_x = 0;
@@ -732,8 +724,7 @@ int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y
             }
         }
 
-        if (((min_x == 0) && (max_x == 0)) ||
-            ((min_y == 0) && (max_y == 0))) {
+        if (((min_x == 0) && (max_x == 0)) || ((min_y == 0) && (max_y == 0))) {
             return 0;
         }
     } else {
@@ -809,10 +800,8 @@ unsigned char RGE_Sprite::get_lowest_draw_level(void) {
 }
 
 unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long frame) {
-    if (((this->box_x1 != 0) || (this->box_x2 != 0)) &&
-        ((this->box_y1 != 0) || (this->box_y2 != 0))) {
-        if ((x >= this->box_x1) && (x <= this->box_x2) &&
-            (y >= this->box_y1) && (y <= this->box_y2)) {
+    if (((this->box_x1 != 0) || (this->box_x2 != 0)) && ((this->box_y1 != 0) || (this->box_y2 != 0))) {
+        if ((x >= this->box_x1) && (x <= this->box_x2) && (y >= this->box_y1) && (y <= this->box_y2)) {
             return 1;
         }
     }

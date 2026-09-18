@@ -158,9 +158,9 @@ All three records use language `0x0409`:
 
 | ID | Text | Cleanup name | Call-site purpose |
 | --- | --- | --- | --- |
-| `0x106A` | `Tool Age` | `IDS_HELP_AGE_TOOL` | Age-event label in `draw_icon` case `0`. |
-| `0x106B` | `Bronze Age` | `IDS_HELP_AGE_BRONZE` | Age-event label in `draw_icon` case `1`. |
-| `0x106C` | `Iron Age` | `IDS_HELP_AGE_IRON` | Age-event label in `draw_icon` case `2`. |
+| `0x106A` | `Tool Age` | `STRING_ID_HELP_AGE_TOOL` | Age-event label in `draw_icon` case `0`. |
+| `0x106B` | `Bronze Age` | `STRING_ID_HELP_AGE_BRONZE` | Age-event label in `draw_icon` case `1`. |
+| `0x106C` | `Iron Age` | `STRING_ID_HELP_AGE_IRON` | Age-event label in `draw_icon` case `2`. |
 
 Root approved the existing names for these exact three IDs in
 `include/resource_ids.h` at commit
@@ -199,9 +199,9 @@ It covers the following base-language `RT_STRING` lookups:
 - DLL: `language.dll`, SHA-256
   `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
 - Language: `0x0409`.
-- `0x106A`: present and nonempty, `Tool Age`; existing name `IDS_HELP_AGE_TOOL`.
-- `0x106B`: present and nonempty, `Bronze Age`; existing name `IDS_HELP_AGE_BRONZE`.
-- `0x106C`: present and nonempty, `Iron Age`; existing name `IDS_HELP_AGE_IRON`.
+- `0x106A`: present and nonempty, `Tool Age`; existing name `STRING_ID_HELP_AGE_TOOL`.
+- `0x106B`: present and nonempty, `Bronze Age`; existing name `STRING_ID_HELP_AGE_BRONZE`.
+- `0x106C`: present and nonempty, `Iron Age`; existing name `STRING_ID_HELP_AGE_IRON`.
 - `languagex.dll`: MISSING for all three IDs, not empty slots.
 
 The source adds no new resource name. This worker did not edit the shared

@@ -272,8 +272,7 @@ void TRIBE_Panel_Object::draw() {
     int final_value2;
     unsigned char level = this->game_obj->master_obj->unit_level;
 
-    if (level == 3 || level == 9 || level == 4 || level == 5 ||
-        level == 6 || level == 7) {
+    if (level == 3 || level == 9 || level == 4 || level == 5 || level == 6 || level == 7) {
         if (level == 3 || level == 4) {
             this->game_obj->get_weapon(cur_val, orig_val);
             this->draw_item(0, 7, ValueTypeBonus, orig_val, cur_val);
@@ -281,9 +280,7 @@ void TRIBE_Panel_Object::draw() {
         }
 
         this->game_obj->get_armor(cur_val, orig_val);
-        if (cur_val > 0 ||
-            this->game_obj->master_obj->unit_level == 4 ||
-            this->game_obj->master_obj->unit_level == 6) {
+        if (cur_val > 0 || this->game_obj->master_obj->unit_level == 4 || this->game_obj->master_obj->unit_level == 6) {
             this->draw_item(row, 8, ValueTypeBonus, orig_val, cur_val);
             ++row;
         }
@@ -294,8 +291,7 @@ void TRIBE_Panel_Object::draw() {
             ++row;
         }
 
-        if (this->game_obj->master_obj->unit_level == 4 ||
-            this->game_obj->master_obj->unit_level == 6) {
+        if (this->game_obj->master_obj->unit_level == 4 || this->game_obj->master_obj->unit_level == 6) {
             this->game_obj->get_weapon_range(cur_fval, orig_fval);
             if (cur_fval > DAT_00576dac) {
                 this->draw_item(row, 6, ValueTypeBonus, (int)orig_fval, (int)cur_fval);
@@ -321,8 +317,7 @@ void TRIBE_Panel_Object::draw() {
         }
 
         if (level == 9) {
-            if (this->game_obj->attribute_type_held == 0x11 ||
-                this->game_obj->attribute_type_held == 0)
+            if (this->game_obj->attribute_type_held == 0x11 || this->game_obj->attribute_type_held == 0)
                 cur_val = (short)(int)(this->game_obj->attribute_amount_held - DAT_00576D84);
             else
                 cur_val = 0;
@@ -433,14 +428,12 @@ void TRIBE_Panel_Object::draw() {
         if (this->game_obj->master_obj->master_type == 'P') {
             bldg_obj->work_status(work_type, work_target, progress, work_name, 100);
 
-            if (work_type != 0x67 && work_type != 0x66 &&
-                bldg_obj->production_queue_status(work_target, temp) != 0) {
+            if (work_type != 0x67 && work_type != 0x66 && bldg_obj->production_queue_status(work_target, temp) != 0) {
                 work_type = 0x66;
                 progress = temp;
             }
 
-            if (this->game_obj->object_state != 0 &&
-                (this->game_obj->owner != this->player ||
+            if (this->game_obj->object_state != 0 && (this->game_obj->owner != this->player ||
                  (work_type != 0x67 && work_type != 0x66))) {
                 bldg_obj->get_weapon(cur_val, orig_val);
                 if (cur_val > 0) {
@@ -485,15 +478,13 @@ void TRIBE_Panel_Object::draw() {
             }
         }
 
-        if (this->game_obj->object_state != 0 &&
-            this->game_obj->object_state == 2) {
+        if (this->game_obj->object_state != 0 && this->game_obj->object_state == 2) {
             int show_resource = 0;
             if (this->game_obj->owner == this->player) {
                 if (work_type != 0x67 && work_type != 0x66) {
                     if (this->game_obj->master_obj->id == 0x2d) {
                         show_resource = 1;
-                    } else if (this->game_obj->master_obj->id != 0x32 &&
-                               this->game_obj->attribute_type_held != -1 &&
+                    } else if (this->game_obj->master_obj->id != 0x32 && this->game_obj->attribute_type_held != -1 &&
                                (int)this->game_obj->attribute_amount_held > 0) {
                         show_resource = 1;
                     }
@@ -540,8 +531,7 @@ void TRIBE_Panel_Object::draw() {
         }
 
 resource_done:
-        if (this->game_obj->master_obj->id == 0x2d &&
-            this->game_obj->owner != this->player) {
+        if (this->game_obj->master_obj->id == 0x2d && this->game_obj->owner != this->player) {
             RGE_Static_Object* nearby =
                 rge_base_game->get_player()->objects->find_by_master_id(0x2d, this->game_obj->world_x,
                                                                         this->game_obj->world_y, 1, 2, this->game_obj);
@@ -609,8 +599,7 @@ void TRIBE_Panel_Object::draw_score() {
         i = 1;
         do {
             int player_id = rge_base_game->playerID(i);
-            if (player_id != 0 &&
-                player_id < rge_base_game->world->player_num) {
+            if (player_id != 0 && player_id < rge_base_game->world->player_num) {
                 temp_player = rge_base_game->world->players[player_id];
 
                 COLORREF color;
@@ -706,10 +695,8 @@ long TRIBE_Panel_Object::handle_idle() {
     if (this->mode == 2) {
         for (int i = 1; i < 9; ++i) {
             int player_id = rge_base_game->playerID(i);
-            if (player_id != 0 &&
-                this->save_score[player_id] !=
-                    rge_base_game->world->players[player_id]
-                        ->victory_conditions->get_victory_points()) {
+            if (player_id != 0 && this->save_score[player_id] != rge_base_game->world->players[player_id]
+                ->victory_conditions->get_victory_points()) {
                 if (this->need_redraw == 0)
                     this->set_redraw(TPanel::RedrawNormal);
                 this->save_object_info();
@@ -719,9 +706,7 @@ long TRIBE_Panel_Object::handle_idle() {
         return 0;
     }
 
-    if ((this->player == 0 && this->game_obj != 0) ||
-        (this->player != 0 &&
-         this->player->selected_obj != this->game_obj)) {
+    if ((this->player == 0 && this->game_obj != 0) || (this->player != 0 && this->player->selected_obj != this->game_obj)) {
         if (this->player != 0)
             this->set_object(this->player->selected_obj);
         else
@@ -751,27 +736,19 @@ long TRIBE_Panel_Object::handle_idle() {
                 short object_count = objects->number_of_objects;
                 if (object_count != this->save_number_of_objects) {
                     changed = 1;
-                    if (object_count == 0 ||
-                        this->save_number_of_objects == 0) {
+                    if (object_count == 0 || this->save_number_of_objects == 0) {
                         do_buttons = 1;
                     }
-                } else if (object->attribute_type_held !=
-                               this->save_attr_type) {
+                } else if (object->attribute_type_held != this->save_attr_type) {
                     changed = 1;
-                } else if (object->attribute_amount_held !=
-                               this->save_attr_amount ||
-                           object->hp != this->save_hp ||
-                           objects->list != this->save_list ||
-                           master->los != this->save_los ||
-                           master->id == 0x2D) {
+                } else if (object->attribute_amount_held != this->save_attr_amount || object->hp != this->save_hp ||
+                           objects->list != this->save_list || master->los != this->save_los || master->id == 0x2D) {
                     changed = 1;
                 }
             }
         }
 
-        if (changed == 0 &&
-            object->master_obj->master_type >= 0x46 &&
-            object->master_obj->master_type != 0x5A) {
+        if (changed == 0 && object->master_obj->master_type >= 0x46 && object->master_obj->master_type != 0x5A) {
             short cur_val;
             short orig_val;
             float cur_fval;
@@ -798,8 +775,7 @@ long TRIBE_Panel_Object::handle_idle() {
                                 changed = 1;
                             } else {
                                 this->game_obj->get_speed_of_attack(cur_fval, orig_fval);
-                                if (cur_fval !=
-                                    this->save_speed_of_attack) {
+                                if (cur_fval != this->save_speed_of_attack) {
                                     changed = 1;
                                 }
                             }
@@ -841,36 +817,28 @@ long TRIBE_Panel_Object::handle_idle() {
                         progress = temp;
                     }
 
-                    if (work_type != this->save_work_type ||
-                        work_target != this->save_work_target ||
-                        progress != this->save_progress ||
-                        strcmp(name, this->save_name) != 0) {
+                    if (work_type != this->save_work_type || work_target != this->save_work_target ||
+                        progress != this->save_progress || strcmp(name, this->save_name) != 0) {
                         changed = 1;
-                        if (work_type != this->save_work_type ||
-                            work_target != this->save_work_target ||
+                        if (work_type != this->save_work_type || work_target != this->save_work_target ||
                             strcmp(name, this->save_name) != 0) {
                             do_buttons = 1;
                         }
                     }
                 }
 
-                if ((changed == 0 || do_buttons == 0) &&
-                    this->game_obj->master_obj->id == 0x46) {
-                    if ((int)this->player->attributes[11] !=
-                            this->save_pop ||
-                        (int)this->player->attributes[4] !=
-                            this->save_max_pop) {
+                if ((changed == 0 || do_buttons == 0) && this->game_obj->master_obj->id == 0x46) {
+                    if ((int)this->player->attributes[11] != this->save_pop || (int)this->player->attributes[4] !=
+                        this->save_max_pop) {
                         changed = 1;
                     }
                 }
 
-                if ((changed == 0 || do_buttons == 0) &&
-                    this->game_obj->owner == this->player &&
+                if ((changed == 0 || do_buttons == 0) && this->game_obj->owner == this->player &&
                     this->game_obj->master_obj->id == 0x32) {
                     RGE_Action* action = bldg_obj->actions->get_action();
-                    if (action != 0 &&
-                        (int)(action->timer + this->game_obj->attribute_amount_held -
-                              DAT_00576D84) != this->save_farm_amt) {
+                    if (action != 0 && (int)(action->timer + this->game_obj->attribute_amount_held -
+                                             DAT_00576D84) != this->save_farm_amt) {
                         changed = 1;
                     }
                 }
@@ -894,8 +862,7 @@ void TRIBE_Panel_Object::save_object_info() {
         int i = 1;
         do {
             int player_id = rge_base_game->playerID(i);
-            if (player_id != 0 &&
-                player_id < rge_base_game->world->player_num) {
+            if (player_id != 0 && player_id < rge_base_game->world->player_num) {
                 this->save_score[player_id] =
                     rge_base_game->world->players[player_id]
                         ->victory_conditions->get_victory_points();
@@ -924,8 +891,7 @@ void TRIBE_Panel_Object::save_object_info() {
     this->save_los = object->master_obj->los;
     this->save_owner = object->owner;
 
-    if (object->master_obj->master_type >= 0x46 &&
-        object->master_obj->master_type != 0x5A) {
+    if (object->master_obj->master_type >= 0x46 && object->master_obj->master_type != 0x5A) {
         this->save_have_action = object->have_action();
         this->game_obj->get_armor(this->save_armor, orig_val);
         this->game_obj->get_armor(this->save_pierce_armor, orig_val);
@@ -942,8 +908,7 @@ void TRIBE_Panel_Object::save_object_info() {
         this->save_build_pts = (float)construction_progress;
         building->work_status(this->save_work_type, this->save_work_target, this->save_progress, this->save_name, 100);
 
-        if (this->save_work_type != 0x67 &&
-            this->save_work_type != 0x66 &&
+        if (this->save_work_type != 0x67 && this->save_work_type != 0x66 &&
             building->production_queue_status(this->save_work_target, temp) != 0) {
             this->save_work_type = 0x66;
             this->save_progress = temp;
@@ -953,8 +918,7 @@ void TRIBE_Panel_Object::save_object_info() {
         this->save_pop = (int)player->attributes[11];
         this->save_max_pop = (int)player->attributes[4];
 
-        if (this->game_obj->owner == player &&
-            this->game_obj->master_obj->id == 0x32) {
+        if (this->game_obj->owner == player && this->game_obj->master_obj->id == 0x32) {
             RGE_Action* action = building->actions->get_action();
             if (action != 0) {
                 float action_amount = action->timer;

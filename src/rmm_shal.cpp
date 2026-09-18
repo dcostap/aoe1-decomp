@@ -98,8 +98,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
 
     x = tx1;
     y = ty;
-    if (x < 0 || x >= this->map_width ||
-        y < 0 || y >= this->map_height) {
+    if (x < 0 || x >= this->map_width || y < 0 || y >= this->map_height) {
         return;
     }
 
@@ -142,8 +141,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
             break;
         }
 
-        if (x < 0 || x >= this->map_width ||
-            y < 0 || y >= this->map_height) {
+        if (x < 0 || x >= this->map_width || y < 0 || y >= this->map_height) {
             done = 1;
         }
 
@@ -188,10 +186,8 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
 
             for (long fill_y = min_y; fill_y <= max_y; ++fill_y) {
                 for (long fill_x = min_x; fill_x <= max_x; ++fill_x) {
-                    if ((this->map_row_offset[fill_y][fill_x].terrain_type &
-                         0x1f) == 1 ||
-                        (this->map_row_offset[fill_y][fill_x].terrain_type &
-                         0x1f) == 0x16) {
+                    if ((this->map_row_offset[fill_y][fill_x].terrain_type & 0x1f) == 1 ||
+                        (this->map_row_offset[fill_y][fill_x].terrain_type & 0x1f) == 0x16) {
                         this->push_stack(stack, fill_x, fill_y, 0.0f, 0.0f);
                     }
                 }

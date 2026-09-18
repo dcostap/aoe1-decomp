@@ -71,7 +71,7 @@ without a useful sparse comment.
 
 ## Resource and constant evidence
 
-The action method uses `IDS_ACHIEVEMENTS_TITLE` at `src/scr_end.cpp:117`. The
+The action method uses `STRING_ID_ACHIEVEMENTS_TITLE` at `src/scr_end.cpp:117`. The
 approved macro expands to `0x269E`. The call passes the result to
 `TribeAchievementsScreen` as its title. A second call in `src/dlg_menu.cpp:177`
 uses the same ID when opening the same screen. These call sites establish the
@@ -80,7 +80,7 @@ purpose as the Achievements screen title.
 The approved shared declaration is:
 
 ```c
-#define IDS_ACHIEVEMENTS_TITLE 0x269E
+#define STRING_ID_ACHIEVEMENTS_TITLE 0x269E
 ```
 
 This is a new descriptive cleanup name, not a recovered original macro name.
@@ -115,7 +115,7 @@ missing ID, not an empty slot.
 
 Shared-file provenance and request:
 
-- Root approved `IDS_ACHIEVEMENTS_TITLE` with value `0x269E` in
+- Root approved `STRING_ID_ACHIEVEMENTS_TITLE` with value `0x269E` in
   `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Integration imported
   `include/resource_ids.h` at
   `bdb8bc1afb50e9e28b76d09fe731855eafa66460` (`bdb8bc1af`). The source substitution is in

@@ -39,8 +39,8 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     this->set_ideal_size(640, 480);
 
     TTextPanel** title_ptr = &this->title;
-    if (!this->create_text(this, title_ptr, (this->modeValue != SaveGame) + IDS_SAVE_GAME_TITLE_BASE,
-                           20, 20, 600, 30, 1, 1, 0, 0)) {
+    if (!this->create_text(this, title_ptr, (this->modeValue != SaveGame) + STRING_ID_SAVE_GAME_TITLE_BASE,
+                           20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0)) {
         return;
     }
 
@@ -52,31 +52,31 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     }
 
     if (!this->create_edit(this, &this->input, file_name, static_cast<short>(width), TEditPanel::FormatFileNoExt,
-                           20, 70, 600, 23, 11, 1, 1)) {
+                           20, 70, 600, 23, RGE_FONT_STANDARD, 1, 1)) {
         return;
     }
-    this->input->set_help_info(IDS_HELP_SAVED_GAME_NAME, -1);
+    this->input->set_help_info(STRING_ID_HELP_SAVED_GAME_NAME, -1);
 
-    if (!this->create_list(this, &this->list, 20, 110, 600, 300, 11)) {
+    if (!this->create_list(this, &this->list, 20, 110, 600, 300, RGE_FONT_STANDARD)) {
         return;
     }
     if (!this->create_auto_scrollbar(&this->scrollbar, this->list, 20)) {
         return;
     }
-    this->scrollbar->set_help_info(IDS_HELP_SELECT_SAVED_GAME, -1);
+    this->scrollbar->set_help_info(STRING_ID_HELP_SELECT_SAVED_GAME, -1);
 
-    if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 30, 440, 180, 30, 0, 0, 0)) {
+    if (!this->create_button(this, &this->okButton, STRING_ID_BUTTON_OK, 0, 30, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
         return;
     }
-    if (!this->create_button(this, &this->deleteButton, IDS_BUTTON_DELETE, 0, 230, 440, 180, 30, 0, 0, 0)) {
+    if (!this->create_button(this, &this->deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
         return;
     }
-    if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 430, 440, 180, 30, 0, 0, 0)) {
+    if (!this->create_button(this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
         return;
     }
 
-    this->okButton->set_help_info(IDS_HELP_OK, -1);
-    this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
+    this->okButton->set_help_info(STRING_ID_HELP_OK, -1);
+    this->cancelButton->set_help_info(STRING_ID_HELP_CANCEL, -1);
     TButtonPanel* cancel_local = this->cancelButton;
     int zero = 0;
     cancel_local->hotkey = 0x1B;
@@ -164,8 +164,7 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
     Mode mode;
 
     if (fromPanel != 0) {
-        if (fromPanel->panelName() != 0 &&
-            strcmp(fromPanel->panelName(), "Cancel Dialog") == 0) {
+        if (fromPanel->panelName() != 0 && strcmp(fromPanel->panelName(), "Cancel Dialog") == 0) {
             panel_system.destroyPanel("Cancel Dialog");
             if (actionIn == 0) {
                 if (this->modeValue == SaveGame) {
@@ -199,9 +198,8 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
             return 1;
         }
 
-        if (fromPanel == this->deleteButton && actionIn == 1 &&
-            this->list->currentLine()[0] != 0) {
-            this->get_string(IDS_CONFIRM_DELETE_FILE, tempFileName, 256);
+        if (fromPanel == this->deleteButton && actionIn == 1 && this->list->currentLine()[0] != 0) {
+            this->get_string(STRING_ID_CONFIRM_DELETE_FILE, tempFileName, 256);
             sprintf(text, tempFileName, this->list->currentLine());
             this->popupYesNoDialog(text, "Cancel Dialog", TEASY_POPUP_WIDTH, 100);
         }
@@ -213,15 +211,14 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
             }
         }
 
-        if ((fromPanel == this->okButton && actionIn == 1) ||
-            (fromPanel == this->input && actionIn == 0) ||
+        if ((fromPanel == this->okButton && actionIn == 1) || (fromPanel == this->input && actionIn == 0) ||
             (fromPanel == this->list && actionIn == 3)) {
             this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
             if (strlen(this->fileNameNoExt) == 0) {
                 if (this->modeValue == SaveGame) {
-                    this->popupOKDialog(IDS_ERROR_SAVE_GAME_NAME_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
+                    this->popupOKDialog(STRING_ID_ERROR_SAVE_GAME_NAME_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
                 } else {
-                    this->popupOKDialog(IDS_ERROR_SAVE_SCENARIO_NAME_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
+                    this->popupOKDialog(STRING_ID_ERROR_SAVE_SCENARIO_NAME_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
                 }
                 return 1;
             }
@@ -259,15 +256,13 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
 
             if (exist_flag == 0) {
                 if (this->modeValue == SaveGame) {
-                    if (static_cast<TRIBE_Game*>(rge_base_game)->
-                            save_game(this->fileName) == 0) {
-                        this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_GAME, 0, TEASY_POPUP_WIDTH, 100);
+                    if (static_cast<TRIBE_Game*>(rge_base_game)->save_game(this->fileName) == 0) {
+                        this->popupOKDialog(STRING_ID_ERROR_CANNOT_SAVE_GAME, 0, TEASY_POPUP_WIDTH, 100);
                         return 1;
                     }
                 } else if (this->modeValue == SaveScenario) {
-                    if (static_cast<TRIBE_Game*>(rge_base_game)->
-                            save_scenario(this->fileName) == 0) {
-                        this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
+                    if (static_cast<TRIBE_Game*>(rge_base_game)->save_scenario(this->fileName) == 0) {
+                        this->popupOKDialog(STRING_ID_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
                         return 1;
                     }
                 } else if (this->modeValue == SaveScenarioEdit) {
@@ -276,14 +271,12 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 return 1;
             }
 
-            this->popupYesNoDialog(IDS_CONFIRM_OVERWRITE_FILE, 0, TEASY_POPUP_WIDTH, 100);
+            this->popupYesNoDialog(STRING_ID_CONFIRM_OVERWRITE_FILE, 0, TEASY_POPUP_WIDTH, 100);
             return 1;
         }
 
-        if ((fromPanel == this->cancelButton && actionIn == 1) ||
-            (fromPanel == this->input && actionIn == 1)) {
-            if (rge_base_game->singlePlayerGame() == 1 &&
-                rge_base_game->save_paused == 0) {
+        if ((fromPanel == this->cancelButton && actionIn == 1) || (fromPanel == this->input && actionIn == 1)) {
+            if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
                 rge_base_game->set_paused(0, 0);
             }
             if (this->modeValue == SaveScenarioEdit) {
@@ -295,15 +288,13 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
             return 1;
         }
 
-        if (fromPanel->panelName() != 0 &&
-            strcmp(fromPanel->panelName(), "OKDialog") == 0) {
+        if (fromPanel->panelName() != 0 && strcmp(fromPanel->panelName(), "OKDialog") == 0) {
             panel_system.destroyPanel("OKDialog");
             this->set_curr_child(this->input);
             return 1;
         }
 
-        if (fromPanel->panelName() != 0 &&
-            strcmp(fromPanel->panelName(), "YesNoDialog") == 0) {
+        if (fromPanel->panelName() != 0 && strcmp(fromPanel->panelName(), "YesNoDialog") == 0) {
             if (actionIn != 0) {
                 panel_system.destroyPanel("YesNoDialog");
                 this->set_curr_child(this->input);
@@ -315,17 +306,15 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
                 sprintf(tempFileName, "%s%s.gam", rge_base_game->prog_info->save_dir, this->fileNameNoExt);
                 _unlink(tempFileName);
-                if (static_cast<TRIBE_Game*>(rge_base_game)->
-                        save_game(this->fileName) == 0) {
-                    this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_GAME, 0, TEASY_POPUP_WIDTH, 100);
+                if (static_cast<TRIBE_Game*>(rge_base_game)->save_game(this->fileName) == 0) {
+                    this->popupOKDialog(STRING_ID_ERROR_CANNOT_SAVE_GAME, 0, TEASY_POPUP_WIDTH, 100);
                 }
             } else if (this->modeValue == SaveScenario) {
                 this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
                 sprintf(tempFileName, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
                 _unlink(tempFileName);
-                if (static_cast<TRIBE_Game*>(rge_base_game)->
-                        save_scenario(this->fileName) == 0) {
-                    this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
+                if (static_cast<TRIBE_Game*>(rge_base_game)->save_scenario(this->fileName) == 0) {
+                    this->popupOKDialog(STRING_ID_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
                 }
             } else if (this->modeValue == SaveScenarioEdit) {
                 this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
@@ -341,11 +330,11 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
 }
 
 void TribeSaveGameScreen::save_for_scenario_editor() {
-    static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(IDS_STATUS_SAVING_SCENARIO, 0, -1);
+    static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(STRING_ID_STATUS_SAVING_SCENARIO, 0, -1);
 
     rge_base_game->world->scenario->Set_scenario_name(this->fileName);
     if (!rge_base_game->world->save_scenario(this->fileName)) {
-        this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
         return;
     }
 

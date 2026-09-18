@@ -278,15 +278,13 @@ void RGE_Action_Attack::set_state(unsigned char new_state) {
 unsigned char RGE_Action_Attack::update() {
     this->timer += this->obj->owner->world->world_time_delta_seconds;
 
-    if (this->targetID != -1 &&
-        this->obj->owner->world->object(this->targetID) == 0) {
+    if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
         this->set_state(2);
         return 5;
     }
 
-    if (this->target2ID != -1 &&
-        this->obj->owner->world->object(this->target2ID) == 0) {
+    if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
     }
 
@@ -296,8 +294,7 @@ unsigned char RGE_Action_Attack::update() {
         return 5;
     }
 
-    if (this->target_obj != 0 && this->obj->owner->id != 0 &&
-        this->obj->owner->isAlly(this->target_obj->owner->id)) {
+    if (this->target_obj != 0 && this->obj->owner->id != 0 && this->obj->owner->isAlly(this->target_obj->owner->id)) {
         this->set_state(1);
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
@@ -384,8 +381,7 @@ unsigned char RGE_Action_Attack::update() {
             }
 
             if (this->need_to_attack == 0) {
-                if (this->obj->sprite_list->looped(this->obj->sprite) != 1 &&
-                    (this->obj->sprite->flags & 1) != 0) {
+                if (this->obj->sprite_list->looped(this->obj->sprite) != 1 && (this->obj->sprite->flags & 1) != 0) {
                     return 0;
                 }
 
@@ -477,8 +473,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
         goto too_far;
     }
 
-    if (this->target_obj->owner->id > 0 &&
-        this->target_obj->master_obj->object_group != 3 &&
+    if (this->target_obj->owner->id > 0 && this->target_obj->master_obj->object_group != 3 &&
         this->target_obj->master_obj->object_group != 0x1B) {
         unsigned char visible = this->obj->owner->visible->get_visible((int)this->target_obj->world_x,
                                                                        (int)this->target_obj->world_y);
@@ -492,8 +487,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
         }
     }
 
-    if (this->target_obj->world_x == this->target_x &&
-        this->target_obj->world_y == this->target_y &&
+    if (this->target_obj->world_x == this->target_x && this->target_obj->world_y == this->target_y &&
         this->target_obj->world_z == this->target_z) {
         goto ready;
     }
@@ -502,8 +496,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
     y_change = this->target_obj->world_y - this->target_y;
     z_change = this->target_obj->world_z - this->target_z;
 
-    if (x_change <= 0.5f && x_change >= -0.5f &&
-        y_change <= 0.5f && y_change >= -0.5f &&
+    if (x_change <= 0.5f && x_change >= -0.5f && y_change <= 0.5f && y_change >= -0.5f &&
         z_change <= 0.5f && z_change >= -0.5f) {
         goto ready;
     }
@@ -547,9 +540,7 @@ too_far:
     if (this->subActionValue == 0) {
         this->obj->notify(this->obj->id, this->obj->id, 0x1FD, 0, 0, 0);
     }
-    if (this->obj->maximumSpeed() == 0.0 ||
-        (this->obj->unitAI() != 0 &&
-         this->obj->unitAI()->currentOrder() == 0x2D5)) {
+    if (this->obj->maximumSpeed() == 0.0 || (this->obj->unitAI() != 0 && this->obj->unitAI()->currentOrder() == 0x2D5)) {
         this->set_state(0x0D);
     } else {
         this->set_state(4);
@@ -574,39 +565,30 @@ void RGE_Action_Attack::do_attack() {
 
 void RGE_Action_Attack::copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task) {
     if (this->move_sprite != 0) {
-        if ((task != 0) && (new_task != 0) &&
-            (this->move_sprite == task->move_sprite)) {
+        if ((task != 0) && (new_task != 0) && (this->move_sprite == task->move_sprite)) {
             this->move_sprite = new_task->move_sprite;
-        } else if (this->move_sprite ==
-                   static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)
-                       ->move_sprite) {
+        } else if (this->move_sprite == static_cast<RGE_Master_Action_Object*>(this->obj->master_obj) ->move_sprite) {
             this->move_sprite = source->move_sprite;
         }
     }
 
     if (this->fight_sprite != 0) {
-        if ((task != 0) && (new_task != 0) &&
-            (this->fight_sprite == task->work_sprite)) {
+        if ((task != 0) && (new_task != 0) && (this->fight_sprite == task->work_sprite)) {
             this->fight_sprite = new_task->work_sprite;
-        } else if ((task != 0) && (new_task != 0) &&
-                   (this->fight_sprite == task->work_sprite2)) {
+        } else if ((task != 0) && (new_task != 0) && (this->fight_sprite == task->work_sprite2)) {
             this->fight_sprite = new_task->work_sprite2;
-        } else if (this->fight_sprite ==
-                   static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                       ->fight_sprite) {
+        } else if (this->fight_sprite == static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->fight_sprite) {
             this->fight_sprite =
                 static_cast<RGE_Master_Combat_Object*>(source)->fight_sprite;
         }
     }
 
     if (this->wait_sprite != 0) {
-        if ((task != 0) && (new_task != 0) &&
-            (this->wait_sprite == task->work_sprite)) {
+        if ((task != 0) && (new_task != 0) && (this->wait_sprite == task->work_sprite)) {
             this->wait_sprite = new_task->work_sprite;
             return;
         }
-        if ((task != 0) && (new_task != 0) &&
-            (this->wait_sprite == task->work_sprite2)) {
+        if ((task != 0) && (new_task != 0) && (this->wait_sprite == task->work_sprite2)) {
             this->wait_sprite = new_task->work_sprite2;
             return;
         }

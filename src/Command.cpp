@@ -153,8 +153,7 @@ void RGE_Command::do_command_order(RGE_Command_Order* order) {
             } while (i != 0);
         }
 
-        if (maxX - minX <= DAT_0056f4d8 &&
-            maxY - minY <= DAT_0056f4d8) {
+        if (maxX - minX <= DAT_0056f4d8 && maxY - minY <= DAT_0056f4d8) {
             totalX /= (float)unit_num;
             totalY /= (float)unit_num;
 
@@ -202,8 +201,7 @@ void RGE_Command::do_command_order(RGE_Command_Order* order) {
                             }
                         }
 
-                        if (target != 0 &&
-                            (target->master_obj->radius_x > DAT_0056f4e0 ||
+                        if (target != 0 && (target->master_obj->radius_x > DAT_0056f4e0 ||
                              target->master_obj->radius_y > DAT_0056f4e0)) {
                             object->do_command(target, adjustedXLocation, adjustedYLocation, 0.0f);
                         } else {
@@ -341,8 +339,7 @@ void RGE_Command::do_command_move(RGE_Command_Order* order) {
                 ++unit;
             } while (--i);
         }
-        if (maxX - minX > DAT_0056f4d8 ||
-            maxY - minY > DAT_0056f4d8)
+        if (maxX - minX > DAT_0056f4d8 || maxY - minY > DAT_0056f4d8)
             goto simple;
 
         totalX /= (float)unit_num;
@@ -387,8 +384,7 @@ void RGE_Command::do_command_move(RGE_Command_Order* order) {
                             adjustedYLocation = height - DAT_0056f4e8;
                     }
 
-                    if (target != 0 &&
-                        (target->master_obj->radius_x > DAT_0056f4e0 ||
+                    if (target != 0 && (target->master_obj->radius_x > DAT_0056f4e0 ||
                          target->master_obj->radius_y > DAT_0056f4e0))
                         object->move_to(target, adjustedXLocation, adjustedYLocation, 0);
                     else
@@ -398,8 +394,7 @@ void RGE_Command::do_command_move(RGE_Command_Order* order) {
                     if (ai) {
                         object->unitAI()->setCurrentOrder(0x2c6);
                         object->unitAI()->setCurrentAction(0x262);
-                        if (target != 0 &&
-                            (target->master_obj->radius_x > DAT_0056f4e0 ||
+                        if (target != 0 && (target->master_obj->radius_x > DAT_0056f4e0 ||
                              target->master_obj->radius_y > DAT_0056f4e0))
                             object->unitAI()->setCurrentTarget(target->id, target->master_obj->object_group,
                                                                adjustedXLocation, adjustedYLocation, 0.0f);
@@ -437,8 +432,7 @@ simple:
                 if (ai) {
                     object->unitAI()->setCurrentOrder(0x2c6);
                     object->unitAI()->setCurrentAction(0x262);
-                    if (target != 0 &&
-                        (target->master_obj->radius_x > DAT_0056f4e0 ||
+                    if (target != 0 && (target->master_obj->radius_x > DAT_0056f4e0 ||
                          target->master_obj->radius_y > DAT_0056f4e0))
                         object->unitAI()->setCurrentTarget(target->id, target->master_obj->object_group,
                                                            order->location_x, order->location_y, 0.0f);

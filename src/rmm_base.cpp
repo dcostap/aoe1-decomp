@@ -81,12 +81,10 @@ uchar RGE_Random_Map_Module::generate() {
 
     while (current != 0) {
         RGE_Random_Map_Module_List* next = current->next;
-        if (sorted != 0 &&
-            current->module->get_schedule() >= sorted->module->get_schedule()) {
+        if (sorted != 0 && current->module->get_schedule() >= sorted->module->get_schedule()) {
             RGE_Random_Map_Module_List* search = sorted;
             while (search != 0) {
-                if (search->next == 0 ||
-                    current->module->get_schedule() < search->next->module->get_schedule()) {
+                if (search->next == 0 || current->module->get_schedule() < search->next->module->get_schedule()) {
                     current->next = search->next;
                     search->next = current;
                     break;

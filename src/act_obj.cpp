@@ -163,18 +163,14 @@ void RGE_Action_Object::work2(RGE_Static_Object* obj, float x, float y, float z,
     if (obj != this) {
         task = static_cast<RGE_Master_Action_Object*>(this->master_obj)
                    ->tasks->get_target_task(this, obj, x, y, z);
-        if (task == 0 &&
-            static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                ->task_by_group != 0) {
+        if (task == 0 && static_cast<RGE_Master_Action_Object*>(this->master_obj) ->task_by_group != 0) {
             i = 0;
             for (; i < this->owner->master_object_num; i++) {
                 other = this->owner->master_objects[i];
-                if (other != 0 &&
-                    other->object_group == this->master_obj->object_group &&
+                if (other != 0 && other->object_group == this->master_obj->object_group &&
                     other->master_type == this->master_obj->master_type &&
                     static_cast<RGE_Master_Action_Object*>(other)->task_by_group ==
-                        static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                            ->task_by_group) {
+                    static_cast<RGE_Master_Action_Object*>(this->master_obj) ->task_by_group) {
                     task = static_cast<RGE_Master_Action_Object*>(other)
                                ->tasks->get_target_task(this, obj, x, y, z);
                     if (task != 0) {
@@ -188,15 +184,13 @@ void RGE_Action_Object::work2(RGE_Static_Object* obj, float x, float y, float z,
         current_task = this->actions->get_task();
         skip = 0;
         actionType = -1;
-        if (current_task != 0 && task == current_task &&
-            this->actions->action_work(obj, x, y, z) != 0) {
+        if (current_task != 0 && task == current_task && this->actions->action_work(obj, x, y, z) != 0) {
             actionType = this->actions->get_action()->type();
             skip = 1;
         }
 
         if (this->actions->have_action() == 1) {
-            if (this->actions->get_action()->get_target_obj() == obj &&
-                this->actions->get_action()->type() == 9) {
+            if (this->actions->get_action()->get_target_obj() == obj && this->actions->get_action()->type() == 9) {
                 if (this->actions->get_action()->work(obj, x, y, z) != 0) {
                     actionType = this->actions->get_action()->type();
                     skip = 1;
@@ -303,24 +297,20 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
     RGE_Task* task;
 
     if (obj != this) {
-        if (static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                    ->task_by_group != 0) {
+        if (static_cast<RGE_Master_Action_Object*>(this->master_obj) ->task_by_group != 0) {
             task = static_cast<RGE_Master_Action_Object*>(this->master_obj)
                        ->tasks->get_target_task(this, obj, x, y, z);
             if (task != 0) {
                 return this->master_obj;
             }
 
-            if (static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                        ->task_by_group != 0) {
+            if (static_cast<RGE_Master_Action_Object*>(this->master_obj) ->task_by_group != 0) {
                 for (i = 0; i < this->owner->master_object_num; i++) {
                     master_obj = this->owner->master_objects[i];
-                    if (master_obj != 0 &&
-                        master_obj->object_group == this->master_obj->object_group &&
+                    if (master_obj != 0 && master_obj->object_group == this->master_obj->object_group &&
                         master_obj->master_type == this->master_obj->master_type &&
-                        static_cast<RGE_Master_Action_Object*>(master_obj)
-                                ->task_by_group ==
-                            static_cast<RGE_Master_Action_Object*>(this->master_obj)->task_by_group) {
+                        static_cast<RGE_Master_Action_Object*>(master_obj) ->task_by_group ==
+                        static_cast<RGE_Master_Action_Object*>(this->master_obj)->task_by_group) {
                         task = static_cast<RGE_Master_Action_Object*>(master_obj)
                                    ->tasks->get_target_task(this, obj, x, y, z);
                         if (task != 0) {
@@ -403,8 +393,7 @@ unsigned char RGE_Action_Object::update() {
             action_state_value = -1;
         }
 
-        if (this->lastActionValue != action_value ||
-            this->lastActionStateValue != action_state_value) {
+        if (this->lastActionValue != action_value || this->lastActionStateValue != action_state_value) {
             fprintf(actionFile, "t%d, %d,%d,%d,%d,%d\\n", this->owner->world->world_time, this->id, this->lastActionValue,
                     this->lastActionStateValue, action_value, action_state_value);
             this->lastActionValue = action_value;
@@ -422,9 +411,7 @@ unsigned char RGE_Action_Object::update() {
         }
     } else {
         if (this->actions->list == 0) {
-            if (state == 2 &&
-                static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                        ->default_task != -1) {
+            if (state == 2 && static_cast<RGE_Master_Action_Object*>(this->master_obj) ->default_task != -1) {
                 this->set_task(static_cast<RGE_Master_Action_Object*>(this->master_obj)->default_task);
                 return result;
             }
@@ -477,19 +464,16 @@ RGE_Static_Object* RGE_Action_Object::get_target_obj(void) {
 RGE_Task* RGE_Action_Object::getTask(RGE_Static_Object* target, float targetX, float targetY, float targetZ) {
     RGE_Task* task = static_cast<RGE_Master_Action_Object*>(this->master_obj)
                            ->tasks->get_target_task(this, target, targetX, targetY, targetZ);
-    if (task == 0 &&
-        static_cast<RGE_Master_Action_Object*>(this->master_obj)->task_by_group != 0) {
+    if (task == 0 && static_cast<RGE_Master_Action_Object*>(this->master_obj)->task_by_group != 0) {
         int i = 0;
         if (this->owner->master_object_num > 0) {
             RGE_Master_Static_Object* obj;
             while (1) {
                 obj = this->owner->master_objects[i];
-                if (obj != 0 &&
-                    obj->object_group == this->master_obj->object_group &&
+                if (obj != 0 && obj->object_group == this->master_obj->object_group &&
                     obj->master_type == this->master_obj->master_type &&
                     static_cast<RGE_Master_Action_Object*>(obj)->task_by_group ==
-                        static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                            ->task_by_group) {
+                    static_cast<RGE_Master_Action_Object*>(this->master_obj) ->task_by_group) {
                     task = static_cast<RGE_Master_Action_Object*>(obj)
                                ->tasks->get_target_task(this, target, targetX, targetY, targetZ);
                     if (task != 0) {

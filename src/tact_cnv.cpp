@@ -103,8 +103,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             this->set_state(0x0d);
             return;
         }
-        if (object_group == 0x12 &&
-            object->owner->attributes[0x1b] <= 0.0f) {
+        if (object_group == 0x12 && object->owner->attributes[0x1b] <= 0.0f) {
             if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
@@ -226,8 +225,7 @@ uchar TRIBE_Action_Convert::update() {
         return 0;
     }
 
-    if (this->target_obj != 0 &&
-        this->obj->owner->isAlly(this->target_obj->owner->id) == 1) {
+    if (this->target_obj != 0 && this->obj->owner->isAlly(this->target_obj->owner->id) == 1) {
         if (this->state == 7 || this->state == 6 || this->state == 4) {
             this->obj->set_attribute(0x22, 0);
         }
@@ -306,8 +304,7 @@ uchar TRIBE_Action_Convert::update() {
                 chance = chance * DAT_00575000;
             } else {
                 short type = this->target_obj->master_obj->object_group;
-                if (type == 0x15 || type == 2 || type == 0x14 ||
-                    type == 0x16 || type == 0x12) {
+                if (type == 0x15 || type == 2 || type == 0x14 || type == 0x16 || type == 0x12) {
                     chance = chance + chance;
                 } else if (type == 0x23 || type == 0x17) {
                     chance = chance * DAT_00575004;
@@ -315,7 +312,7 @@ uchar TRIBE_Action_Convert::update() {
             }
             // Direct field ownership preserves the original x87 order.
             if (chance <= this->task->work_val1 *
-                           static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate) {
+                static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate) {
                 rge_base_game->notification(0x7b, this->obj->owner->id, this->target_obj->owner->id, 0, 0);
                 this->target_obj->change_ownership(this->obj->owner);
                 this->obj->owner->add_attribute_num(0x29, 1.0f, 0);

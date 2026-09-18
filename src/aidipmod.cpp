@@ -240,8 +240,7 @@ int DiplomacyAIModule::mostHated(int tributeOn, int tributePlayer, int attackWin
     int highest = -1;
     int highestValue = -1;
     for (int player_index = 1; player_index < this->md->player->world->player_num; ++player_index) {
-        if (player_index != this->md->player->id
-            && this->md->player->world->players[player_index]->game_status != 2
+        if (player_index != this->md->player->id && this->md->player->world->players[player_index]->game_status != 2
             && (tributeOn <= 0 || tributePlayer != player_index || !isAlly(player_index))) {
             int victory_points = this->md->player->world->players[player_index]->victory_conditions->get_victory_points();
             int stance_value = this->dislikeTable[player_index];
@@ -318,8 +317,7 @@ int DiplomacyAIModule::isAlly(int playerID) const {
         return 1;
     }
 
-    if (playerID > 0 && playerID <= this->md->player->world->player_num
-        && this->md->player->relations[playerID] == 0) {
+    if (playerID > 0 && playerID <= this->md->player->world->player_num && this->md->player->relations[playerID] == 0) {
         return 1;
     }
 

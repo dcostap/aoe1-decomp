@@ -175,8 +175,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigne
             RGE_Tile* tile = this->map->map_row_offset[y] + x - 1;
             unsigned char* cell = this->zone_map_rows[y] + x - 1;
             if (*cell == 0xff) {
-                if (((this->terrain_passability_rules[tile->terrain_type] >
-                      DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x - 1, y);
                 }
@@ -185,8 +184,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigne
         if (y > 0) {
             RGE_Tile* tile = this->map->map_row_offset[y - 1] + x;
             if (this->zone_map_rows[y - 1][x] == 0xff) {
-                if (((this->terrain_passability_rules[tile->terrain_type] >
-                      DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
                     this->zone_map_rows[y - 1][x] = zone;
                     zone_push(&zone_end, &zone_queue, x, y - 1);
                 }
@@ -196,8 +194,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigne
             RGE_Tile* tile = this->map->map_row_offset[y] + x + 1;
             unsigned char* cell = this->zone_map_rows[y] + x + 1;
             if (*cell == 0xff) {
-                if (((this->terrain_passability_rules[tile->terrain_type] >
-                      DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x + 1, y);
                 }
@@ -206,8 +203,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigne
         if (y < max_y) {
             RGE_Tile* tile = this->map->map_row_offset[y + 1] + x;
             if (this->zone_map_rows[y + 1][x] == 0xff) {
-                if (((this->terrain_passability_rules[tile->terrain_type] >
-                      DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
                     this->zone_map_rows[y + 1][x] = zone;
                     zone_push(&zone_end, &zone_queue, x, y + 1);
                 }
@@ -270,8 +266,7 @@ int RGE_Zone_Map::withinRange(uchar startZone, XYPoint goal, float range) {
             int x_squared = x_distance * x_distance;
             int y_distance = goal.y - min_y;
             do {
-                if (sqrtf((float)(x_squared + y_distance * y_distance)) <= range &&
-                    this->zone_map_rows[y][x] == startZone)
+                if (sqrtf((float)(x_squared + y_distance * y_distance)) <= range && this->zone_map_rows[y][x] == startZone)
                     return 1;
                 ++y;
                 --y_distance;

@@ -12,8 +12,7 @@ TRIBE_Diamond_Map_View::~TRIBE_Diamond_Map_View() {
 
 void TRIBE_Diamond_Map_View::set_redraw(TPanel::RedrawMode redraw_mode) {
     RGE_Diamond_Map::set_redraw(redraw_mode);
-    if (redraw_mode != TPanel::RedrawNone && this->visible != 0 &&
-        this->active != 0) {
+    if (redraw_mode != TPanel::RedrawNone && this->visible != 0 && this->active != 0) {
         static_cast<TRIBE_Screen_Game*>(this->parent_panel)
             ->set_map_buttons_redraw(redraw_mode);
     }

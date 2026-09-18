@@ -18,8 +18,7 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, char* messa
     current_panel = (TEasy_Panel*)panel_system.currentPanel();
 
     if (info_file_in == 0 && info_id_in == -1) {
-        if (current_panel != 0 &&
-            current_panel != (TEasy_Panel*)panel_system.panel("Achievements Screen")) {
+        if (current_panel != 0 && current_panel != (TEasy_Panel*)panel_system.panel("Achievements Screen")) {
             strcpy(info_file, current_panel->get_info_file());
             info_id = current_panel->get_info_id();
         } else {
@@ -45,7 +44,7 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, char* messa
         error_code = 1;
     } else {
         set_ideal_size(640, 480);
-        create_text(this, &message, message_in, 40, 40, 560, 400, 4, 1, 1, 1);
+        create_text(this, &message, message_in, 40, 40, 560, 400, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 1);
     }
 }
 
@@ -59,8 +58,7 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, long messag
     current_panel = (TEasy_Panel*)panel_system.currentPanel();
 
     if (info_file_in == 0 && info_id_in == -1) {
-        if (current_panel != 0 &&
-            current_panel != (TEasy_Panel*)panel_system.panel("Achievements Screen")) {
+        if (current_panel != 0 && current_panel != (TEasy_Panel*)panel_system.panel("Achievements Screen")) {
             strcpy(info_file, current_panel->get_info_file());
             info_id = current_panel->get_info_id();
         } else {
@@ -86,7 +84,7 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, long messag
         error_code = 1;
     } else {
         set_ideal_size(640, 480);
-        create_text(this, &message, message_in, 40, 40, 560, 400, 4, 1, 1, 1);
+        create_text(this, &message, message_in, 40, 40, 560, 400, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 1);
     }
 }
 

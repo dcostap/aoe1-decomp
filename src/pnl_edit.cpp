@@ -233,12 +233,10 @@ void TEditPanel::set_focus(int have_focus_in) {
         this->update_text();
         this->set_redraw(TPanel::RedrawNormal);
     }
-    if (this->edit_wnd != 0 && this->have_focus != 0 && old_focus == 0 &&
-        this->auto_sel != 0) {
+    if (this->edit_wnd != 0 && this->have_focus != 0 && old_focus == 0 && this->auto_sel != 0) {
         SendMessageA(this->edit_wnd, EM_SETSEL, 0, -1);
     }
-    if (DAT_0086b240 == 0 && this->edit_wnd != 0 &&
-        this->have_focus == 0 && this->hidden == 0) {
+    if (DAT_0086b240 == 0 && this->edit_wnd != 0 && this->have_focus == 0 && this->hidden == 0) {
         ShowWindow(this->edit_wnd, SW_HIDE);
         this->hidden = 1;
     }
@@ -282,8 +280,7 @@ void TEditPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
 // pnl_edit.cpp lines 427-431.
 void TEditPanel::set_redraw(TPanel::RedrawMode redraw_mode) {
     TPanel::set_redraw(TPanel::RedrawNormal);
-    if (this->active != 0 && redraw_mode != 0 && this->edit_wnd != 0 &&
-        this->hidden == 0) {
+    if (this->active != 0 && redraw_mode != 0 && this->edit_wnd != 0 && this->hidden == 0) {
         InvalidateRect(this->edit_wnd, 0, 1);
     }
 }
@@ -374,8 +371,7 @@ long TEditPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, lon
 
 // pnl_edit.cpp lines 604-753.
 long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
-    if (this->edit_wnd != 0 && this->active != 0 && this->visible != 0 &&
-        this->hidden == 0) {
+    if (this->edit_wnd != 0 && this->active != 0 && this->visible != 0 && this->hidden == 0) {
         switch (msg) {
         case 0x0f:
             InvalidateRect((HWND)hwnd, 0, 1);
@@ -475,8 +471,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
         this->update_text();
     }
 
-    if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
-        msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP) {
+    if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP) {
         unsigned long x = this->pnl_x + ((unsigned long)lParam & 0xffff);
         unsigned long y = this->pnl_y + ((unsigned long)lParam >> 16);
         long position = (long)(((y & 0xffff) << 16) | (x & 0xffff));
@@ -503,8 +498,7 @@ int TEditPanel::verify_char(int key) {
         }
     }
     if (this->sel_len == 0) {
-        if (this->text_len >= this->fixed_len - 2 &&
-            IsDBCSLeadByte(key) != 0) {
+        if (this->text_len >= this->fixed_len - 2 && IsDBCSLeadByte(key) != 0) {
             DAT_0086b244 = 1;
             MessageBeep((UINT)-1);
             return 0;
@@ -535,8 +529,7 @@ int TEditPanel::verify_char(int key) {
     case 4:
     case 5:
         this->update_text();
-        if (key == '.' && this->format == 4 &&
-            _mbschr((const unsigned char*)this->text, '.') == 0) {
+        if (key == '.' && this->format == 4 && _mbschr((const unsigned char*)this->text, '.') == 0) {
             goto valid;
         }
         if (key == '.') goto invalid;
@@ -554,8 +547,7 @@ int TEditPanel::verify_char(int key) {
     MessageBeep((UINT)-1);
     return 0;
 valid_chars:
-    if (key != '/' && key != '"' && key != '*' && key != '?' &&
-        key != '>' && key != '<' && key != '|') goto valid;
+    if (key != '/' && key != '"' && key != '*' && key != '?' && key != '>' && key != '<' && key != '|') goto valid;
     goto invalid;
 invalid:
     MessageBeep((UINT)-1);

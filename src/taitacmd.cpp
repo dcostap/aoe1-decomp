@@ -724,8 +724,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* t,
             }
             object = md->object(*unit);
             if (object == 0 || object->unitAI() == 0 ||
-                commanderObj->lookupZone((int)object->world_x, (int)object->world_y) !=
-                    commanderZone) {
+                commanderObj->lookupZone((int)object->world_x, (int)object->world_y) != commanderZone) {
                 removeUnitByIndex(i, md);
                 continue;
             }
@@ -1020,8 +1019,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* t,
                     }
 
                     t->logGroupDebug(idValue, s_log_15, *unit, targetValue);
-                    if (*unit == commanderValue ||
-                        t->importantGroupLeader(commanderValue) == 0 ||
+                    if (*unit == commanderValue || t->importantGroupLeader(commanderValue) == 0 ||
                         t->strategicNumber(121) == 0) {
                         t->logGroupDebug(idValue, s_log_16);
                         if (taskID == 21) {
@@ -1994,8 +1992,7 @@ int TribeTacticalAIModule::update(int timeLimit) {
     this->unitsTaskedThisUpdate.zeroNumber();
     this->md->informationAI.farmsTaskedThisUpdate.numberValue = 0;
 
-    if ((unsigned int)this->md->player->world->world_time / 1000U >=
-        (unsigned int)this->sn[0x68]) {
+    if ((unsigned int)this->md->player->world->world_time / 1000U >= (unsigned int)this->sn[0x68]) {
         this->enableAttack(2);
     }
 
@@ -2018,21 +2015,18 @@ diplomacy: {
         do {
             if (player != this->md->player->id) {
                 if (player == mostHatedPlayer) {
-                    if (this->md->diplomacyAI.isEnemy(player) == 0 &&
-                        this->md->diplomacyAI.isChangeable(player) != 0 &&
+                    if (this->md->diplomacyAI.isEnemy(player) == 0 && this->md->diplomacyAI.isChangeable(player) != 0 &&
                         this->md->diplomacyAI.stance(player, 0) > 0x4A) {
                         this->md->diplomacyAI.setRelation(player, 3);
                     }
                 } else if (player == mostLikedPlayer) {
-                    if (this->md->diplomacyAI.isAlly(player) == 0 &&
-                        this->md->diplomacyAI.isChangeable(player) != 0 &&
+                    if (this->md->diplomacyAI.isAlly(player) == 0 && this->md->diplomacyAI.isChangeable(player) != 0 &&
                         this->md->diplomacyAI.stance(player, 2) > 0x4A) {
                         this->md->diplomacyAI.setRelation(player, 0);
                     }
                 } else {
                     int stance = this->md->diplomacyAI.stance(player, 2);
-                    if (stance > this->sn[0x1D] &&
-                        this->md->diplomacyAI.isChangeable(player) != 0) {
+                    if (stance > this->sn[0x1D] && this->md->diplomacyAI.isChangeable(player) != 0) {
                         if (this->md->diplomacyAI.isAlly(player) == 0) {
                             this->md->diplomacyAI.setRelation(player, 0);
                         }
@@ -2283,15 +2277,12 @@ int TribeTacticalAIModule::doSomething() {
                 break;
 
             case 6:
-                if (this->boats.numberValue > 0 ||
-                    this->soldiers.numberValue > 0)
+                if (this->boats.numberValue > 0 || this->soldiers.numberValue > 0)
                     this->fillSoldierGroups();
                 break;
 
             case 7:
-                if (this->boats.numberValue > 0 ||
-                    this->soldiers.numberValue > 0 ||
-                    this->artifacts.numberValue > 0) {
+                if (this->boats.numberValue > 0 || this->soldiers.numberValue > 0 || this->artifacts.numberValue > 0) {
                     this->taskIdleSoldiers(startTime, availableTime);
                     if (this->nextIdleSoldierGroupToTaskValue != -1)
                         incUpdateArea = 0;
@@ -2299,9 +2290,7 @@ int TribeTacticalAIModule::doSomething() {
                 break;
 
             case 8:
-                if (this->boats.numberValue > 0 ||
-                    this->soldiers.numberValue > 0 ||
-                    this->artifacts.numberValue > 0) {
+                if (this->boats.numberValue > 0 || this->soldiers.numberValue > 0 || this->artifacts.numberValue > 0) {
                     this->taskActiveSoldiers(startTime, availableTime);
                     if (this->nextActiveSoldierGroupToTaskValue != -1)
                         incUpdateArea = 0;
@@ -2325,8 +2314,7 @@ int TribeTacticalAIModule::doSomething() {
 
             case 11:
                 this->numberBuildUpdatesSkipped++;
-                if (this->md->buildAI.buildListLength() > 0 &&
-                    this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
+                if (this->md->buildAI.buildListLength() > 0 && this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
                     BuildItem* item = this->md->buildAI.nextBuildableItem(1);
                     if (item != 0)
                         this->taskResearch(item);
@@ -2334,10 +2322,8 @@ int TribeTacticalAIModule::doSomething() {
                 break;
 
             case 12:
-                if (this->md->player->attributes[11] <
-                        this->md->player->attributes[32] &&
-                    this->md->buildAI.buildListLength() > 0 &&
-                    this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
+                if (this->md->player->attributes[11] < this->md->player->attributes[32] &&
+                    this->md->buildAI.buildListLength() > 0 && this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
                     BuildItem* item = this->md->buildAI.nextBuildableItem(2);
                     if (item != 0)
                         this->taskTrain(item);
@@ -2345,8 +2331,7 @@ int TribeTacticalAIModule::doSomething() {
                 break;
 
             case 13:
-                if (this->md->buildAI.buildListLength() > 0 &&
-                    this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
+                if (this->md->buildAI.buildListLength() > 0 && this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
                     BuildItem* item = this->md->buildAI.nextBuildableItem(3);
                     if (item != 0) {
                         char tempName[256];
@@ -2360,10 +2345,8 @@ int TribeTacticalAIModule::doSomething() {
                 break;
 
             case 14:
-                if (this->initialExplorationSatisfied() != 0 &&
-                    (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
-                     this->wonderInProgressValue != 0 ||
-                     this->wonderBuiltValue != 0)) {
+                if (this->initialExplorationSatisfied() != 0 && (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
+                     this->wonderInProgressValue != 0 || this->wonderBuiltValue != 0)) {
                     RGE_Static_Object* object = this->md->object(-1, -1, -1, -1, -1, -1, -1, -1, 0, -1);
                     if (object != 0) {
                         RGE_Static_Object* builder = this->md->object(-1, -1, -1, 0x25a, -1, (int)object->id,
@@ -2373,8 +2356,7 @@ int TribeTacticalAIModule::doSomething() {
                             position.x = (int)object->world_x;
                             position.y = (int)object->world_y;
                             int civilian = this->civilian(position, 1, 0x2be, 0x2ce, 0x2bc, 0);
-                            if (civilian != -1 &&
-                                this->taskBuilder(civilian, object) == 1) {
+                            if (civilian != -1 && this->taskBuilder(civilian, object) == 1) {
                                 this->lastBuildTime =
                                     this->md->player->world->world_time;
                             }
@@ -2384,10 +2366,8 @@ int TribeTacticalAIModule::doSomething() {
                 break;
 
             case 15:
-                if (this->initialExplorationSatisfied() != 0 &&
-                    (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
-                     this->wonderInProgressValue != 0 ||
-                     this->wonderBuiltValue != 0)) {
+                if (this->initialExplorationSatisfied() != 0 && (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
+                     this->wonderInProgressValue != 0 || this->wonderBuiltValue != 0)) {
                     int type = this->wonderBuiltValue == 1 ? 0x114 : -1;
                     RGE_Static_Object* object = this->md->mostDamaged(3, type);
                     if (object != 0 && object->object_state == 2 &&
@@ -2403,10 +2383,8 @@ int TribeTacticalAIModule::doSomething() {
                 break;
 
             case 16:
-                if (this->initialExplorationSatisfied() != 0 &&
-                    (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
-                     this->wonderInProgressValue != 0 ||
-                     this->wonderBuiltValue != 0)) {
+                if (this->initialExplorationSatisfied() != 0 && (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
+                     this->wonderInProgressValue != 0 || this->wonderBuiltValue != 0)) {
                     RGE_Static_Object* object =
                         this->md->mostDamaged(0x1b, -1);
                     if (object != 0 && object->object_state == 2 &&
@@ -2422,14 +2400,11 @@ int TribeTacticalAIModule::doSomething() {
                 break;
 
             case 17:
-                if (this->initialExplorationSatisfied() != 0 &&
-                    (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
-                     (this->wonderInProgressValue == 0 &&
-                      this->wonderBuiltValue != 0)) &&
+                if (this->initialExplorationSatisfied() != 0 && (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
+                     (this->wonderInProgressValue == 0 && this->wonderBuiltValue != 0)) &&
                     this->wonderInProgressValue == 0) {
                     BuildItem* item = this->md->buildAI.nextBuildableItem(0);
-                    if (item != 0 &&
-                        this->taskBuilder(-1, item, 0, startTime) == 1) {
+                    if (item != 0 && this->taskBuilder(-1, item, 0, startTime) == 1) {
                         this->lastBuildTime =
                             this->md->player->world->world_time;
                     }
@@ -2457,10 +2432,8 @@ int TribeTacticalAIModule::doSomething() {
                 {
                     int i;
                     for (i = 0; i < 4; i++) {
-                        if (this->resourceDifferenceValue[i] > 0 &&
-                            this->md->resourceAI.resource(i) +
-                                    this->resourceDifferenceValue[i] <
-                                0) {
+                        if (this->resourceDifferenceValue[i] > 0 && this->md->resourceAI.resource(i) +
+                            this->resourceDifferenceValue[i] < 0) {
                             this->updateNeededResources();
                             break;
                         }
@@ -2482,9 +2455,7 @@ int TribeTacticalAIModule::doSomething() {
 
             case 21: {
                 this->evaluateBuildListInsertions();
-                if ((int)(this->md->player->world->world_time - this->lastBuildTime) /
-                        60000 >
-                    5) {
+                if ((int)(this->md->player->world->world_time - this->lastBuildTime) / 60000 > 5) {
                     this->md->buildAI.unskipBuildList(this->builtFirstStoragePit, this->builtFirstGranary);
                     this->lastBuildTime =
                         this->md->player->world->world_time;
@@ -2613,15 +2584,11 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* bo) {
         if (number <= list->maximumSizeValue - 1)
             goto add_to_list;
     } else {
-        if (objectGroup != 0 && objectGroup != 0x18 &&
-            objectGroup != 6 && objectGroup != 0x19 &&
-            objectGroup != 0x1A && objectGroup != 0x0C &&
-            objectGroup != 0x23 && objectGroup != 0x17 &&
-            objectGroup != 0x24 && objectGroup != 0x1C &&
-            objectGroup != 0x12 && objectGroup != 0x0D &&
+        if (objectGroup != 0 && objectGroup != 0x18 && objectGroup != 6 && objectGroup != 0x19 &&
+            objectGroup != 0x1A && objectGroup != 0x0C && objectGroup != 0x23 && objectGroup != 0x17 &&
+            objectGroup != 0x24 && objectGroup != 0x1C && objectGroup != 0x12 && objectGroup != 0x0D &&
             objectGroup != 0x27) {
-            if (objectGroup != 2 && objectGroup != 0x14 &&
-                objectGroup != 0x16 && objectGroup != 0x15) {
+            if (objectGroup != 2 && objectGroup != 0x14 && objectGroup != 0x16 && objectGroup != 0x15) {
                 if (objectToAdd->master_obj->id != 0x9F)
                     return;
                 if (this->md->player->world->difficultyLevel() >= 4)
@@ -2757,8 +2724,7 @@ void TribeTacticalAIModule::removeObject(int id) {
                             this->warBoats.value[removeIndex] =
                                 this->warBoats.value[removeIndex + 1];
                             removeIndex++;
-                        } while (removeIndex <
-                                 this->warBoats.maximumSizeValue - 1);
+                        } while (removeIndex < this->warBoats.maximumSizeValue - 1);
                     }
                     this->warBoats.numberValue--;
                     if (this->warBoats.numberValue < 0)
@@ -2795,21 +2761,18 @@ void TribeTacticalAIModule::evaluateCivilianDistribution() {
             this->civilianExplorers.desiredNumberValue = (int)ceil(
                 (double)((float)this->sn[0] * this->civilians.numberValue * 0.01f));
             soldierExplorers = this->numberSoldierExplorers();
-            if (this->civilianExplorers.desiredNumberValue + soldierExplorers >
-                this->sn[0x12]) {
+            if (this->civilianExplorers.desiredNumberValue + soldierExplorers > this->sn[0x12]) {
                 this->civilianExplorers.desiredNumberValue =
                     this->sn[0x12] - soldierExplorers;
             }
-            if (this->sn[3] != -1 &&
-                this->civilianExplorers.desiredNumberValue > this->sn[3]) {
+            if (this->sn[3] != -1 && this->civilianExplorers.desiredNumberValue > this->sn[3]) {
                 this->civilianExplorers.desiredNumberValue = this->sn[3];
             }
         } else {
             this->civilianExplorers.desiredNumberValue = 0;
         }
 
-        if (percentExplored >= this->sn[0x20] &&
-            enemyObjects > this->sn[0x91]) {
+        if (percentExplored >= this->sn[0x20] && enemyObjects > this->sn[0x91]) {
             if (this->civilianExplorers.desiredNumberValue > this->sn[0x23]) {
                 this->civilianExplorers.desiredNumberValue = this->sn[0x23];
             }
@@ -2827,8 +2790,7 @@ void TribeTacticalAIModule::evaluateCivilianDistribution() {
         this->desiredNumberGatherersValue =
             this->civilians.numberValue -
             this->civilianExplorers.desiredNumberValue;
-        if (this->sn[5] != -1 &&
-            this->desiredNumberGatherersValue > this->sn[5]) {
+        if (this->sn[5] != -1 && this->desiredNumberGatherersValue > this->sn[5]) {
             this->desiredNumberGatherersValue = this->sn[5];
         }
     } else if (this->civilians.numberValue == 1) {
@@ -2841,8 +2803,7 @@ void TribeTacticalAIModule::evaluateCivilianDistribution() {
         }
         this->civilianExplorers.desiredNumberValue =
             this->civilians.numberValue - this->desiredNumberGatherersValue;
-        if (this->sn[3] != -1 &&
-            this->civilianExplorers.desiredNumberValue > this->sn[3]) {
+        if (this->sn[3] != -1 && this->civilianExplorers.desiredNumberValue > this->sn[3]) {
             this->civilianExplorers.desiredNumberValue = this->sn[3];
         }
     }
@@ -2866,8 +2827,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime,
 
     taskedCount = 0;
     if (this->nextCivilianToTaskValue == -1) {
-        while (this->civilianExplorers.numberValue <
-               this->civilianExplorers.desiredNumberValue) {
+        while (this->civilianExplorers.numberValue < this->civilianExplorers.desiredNumberValue) {
             townCenter = this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, -1, -1);
             if (townCenter != 0) {
                 tcPosition.x = (int)townCenter->world_x;
@@ -2877,17 +2837,14 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime,
                 newExplorer = this->idleCivilian(-1);
             }
 
-            if (newExplorer == -1 &&
-                this->desiredNumberGatherersValue <
-                    this->numberGatherersValue) {
+            if (newExplorer == -1 && this->desiredNumberGatherersValue < this->numberGatherersValue) {
                 for (j = 3; j >= 0 && newExplorer == -1; j--) {
                     RGE_Static_Object* resource = this->md->object(-1, -1, -1, 0x261, 0x25d, -1, -1,
                                                                    this->neededResourceValue[j], -1, 0);
                     if (resource == 0) {
                         resource = this->md->object(-1, -1, -1, 0x265, 0x25d, -1, -1, this->neededResourceValue[j], -1, 0);
                     }
-                    if (resource != 0 &&
-                        resource->attribute_amount_held == 0.0f &&
+                    if (resource != 0 && resource->attribute_amount_held == 0.0f &&
                         this->civilianExplorers.contains(resource->id) == 0) {
                         newExplorer = resource->id;
                         this->removeGatherer(newExplorer);
@@ -2895,14 +2852,12 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime,
                 }
             }
 
-            if (newExplorer == -1 ||
-                this->civilianExplorers.add(newExplorer) == 0) {
+            if (newExplorer == -1 || this->civilianExplorers.add(newExplorer) == 0) {
                 break;
             }
         }
 
-        while (this->civilianExplorers.numberValue >
-               this->civilianExplorers.desiredNumberValue) {
+        while (this->civilianExplorers.numberValue > this->civilianExplorers.desiredNumberValue) {
             if (this->civilianExplorers.numberValue < 1)
                 break;
             newExplorer = this->civilianExplorers[0];
@@ -2910,8 +2865,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime,
             this->stopUnit(newExplorer, 100);
         }
 
-        while (this->numberGatherersValue <
-               this->desiredNumberGatherersValue) {
+        while (this->numberGatherersValue < this->desiredNumberGatherersValue) {
             townCenter = this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, -1, -1);
             if (townCenter != 0) {
                 tcPosition.x = (int)townCenter->world_x;
@@ -2933,8 +2887,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime,
     }
 
     j = 0;
-    while (j < this->civilians.numberValue &&
-           this->nextCivilianToTaskValue != this->civilians[j]) {
+    while (j < this->civilians.numberValue && this->nextCivilianToTaskValue != this->civilians[j]) {
         j++;
     }
 
@@ -2947,8 +2900,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime,
         taskedCount++;
         if (this->civilianExplorers.contains(this->civilians[j])) {
             this->highLevelTaskExplorer(this->civilians[j], 1);
-        } else if (this->highLevelTaskGatherer(this->civilians[j], startTime) ==
-                   0) {
+        } else if (this->highLevelTaskGatherer(this->civilians[j], startTime) == 0) {
             this->addGatherer(this->civilians[j]);
             j++;
             continue;
@@ -2979,8 +2931,7 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
     TacticalAIGroup* group = this->groups.next;
 
     if (this->nextIdleSoldierGroupToTaskValue != -1) {
-        while ((group != &this->groups && group != 0) &&
-               (group->id() != this->nextIdleSoldierGroupToTaskValue)) {
+        while ((group != &this->groups && group != 0) && (group->id() != this->nextIdleSoldierGroupToTaskValue)) {
             group = group->next;
         }
         if (group->id() != this->nextIdleSoldierGroupToTaskValue) {
@@ -2999,8 +2950,7 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
             return;
         }
 
-        if (group->type() == 0x6B || group->type() == 0x6C ||
-            group->type() == 0x6A ||
+        if (group->type() == 0x6B || group->type() == 0x6C || group->type() == 0x6A ||
             (group->action() != 0 && group->action() != 1)) {
             group = group->next;
             continue;
@@ -3044,23 +2994,20 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
 
             if (group->type() == 0x64 || group->type() == 0x67) {
                 if (this->md->strategyAI.currentVictoryCondition() == 0) {
-                    if (this->itemToCapture() == -1 &&
-                        group->type() == 0x64) {
+                    if (this->itemToCapture() == -1 && group->type() == 0x64) {
                         readyToTask = 0;
                     } else {
                         group->setSubType(0);
                     }
                 }
                 if (this->md->strategyAI.currentVictoryCondition() == 4) {
-                    if (this->itemToBringToArea() == -1 &&
-                        group->type() == 0x64) {
+                    if (this->itemToBringToArea() == -1 && group->type() == 0x64) {
                         readyToTask = 0;
                     } else {
                         group->setSubType(4);
                     }
                 }
-            } else if ((group->type() == 0x65 || group->type() == 0x68) &&
-                       this->numberItemsToDefend() == 0) {
+            } else if ((group->type() == 0x65 || group->type() == 0x68) && this->numberItemsToDefend() == 0) {
                 readyToTask = 0;
             }
         }
@@ -3074,8 +3021,7 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
             if (group->type() == 0x66 || group->type() == 0x69) {
                 group->setAction(8);
             } else if (group->type() == 0x64 || group->type() == 0x67) {
-                if (this->numberItemsToAttack() == 0 &&
-                    group->type() == 0x67) {
+                if (this->numberItemsToAttack() == 0 && group->type() == 0x67) {
                     group->setType(0x69);
                     group->setAction(8);
                 } else {
@@ -3093,8 +3039,7 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
     next_group:
         group = group->next;
         this->nextIdleSoldierGroupToTaskValue = group->id();
-        if (debug_timeGetTime(s_file, 3753) - startTime >=
-            availableTime) {
+        if (debug_timeGetTime(s_file, 3753) - startTime >= availableTime) {
             return;
         }
     }
@@ -3133,8 +3078,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
             }
 
             t = cur->type();
-            if (t == 0x6b || cur->type() == 0x6c || cur->type() == 0x6a ||
-                cur->action() == 0 || cur->action() == 1) {
+            if (t == 0x6b || cur->type() == 0x6c || cur->type() == 0x6a || cur->action() == 0 || cur->action() == 1) {
                 cur = cur->next;
                 continue;
             }
@@ -3407,8 +3351,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                 cur->setGatherLocation(directGatherX, directGatherY, directGatherZ);
                 cur->setInUse(1);
             inactive_post_setup:
-                if (this->md->strategyAI.currentVictoryCondition() == 0x0b &&
-                    (cur->type() == 100 || cur->type() == 0x67) &&
+                if (this->md->strategyAI.currentVictoryCondition() == 0x0b && (cur->type() == 100 || cur->type() == 0x67) &&
                     this->sn[0x67] == 1 && mem != 0 && commanderObj != 0) {
                     XYZPoint targetTile;
                     Path* avoidancePath;
@@ -3805,8 +3748,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                     action7_timeout: {
                         unsigned long idle;
                         idle = cur->consecutiveIdleUnitCount();
-                        if ((this->md->player->world->world_time - idle) / 1000 >
-                            ((unsigned int)this->sn[0x58] << 2)) {
+                        if ((this->md->player->world->world_time - idle) / 1000 > ((unsigned int)this->sn[0x58] << 2)) {
                             cur->setAction(7);
                             cur->task(this, this->md, 7, 0, 1);
                             goto clear_attack_state;
@@ -3909,8 +3851,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                     if (this->sn[0x31] == 0) {
                                         cur->setGatherLocation(replacementCommander->world_x, replacementCommander->world_y,
                                                                replacementCommander->world_z);
-                                    } else if (this->sn[0x31] == 3 &&
-                                               targetType != 0x7e && targetType != 0x59) {
+                                    } else if (this->sn[0x31] == 3 && targetType != 0x7e && targetType != 0x59) {
                                         if (this->sn[0x87] == 1) {
                                             int cx;
                                             int cy;
@@ -3931,8 +3872,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                             } else if (cur->subType() != -1) {
                                 unsigned long idle;
                                 if (cur->subType() != 0 && cur->subType() == 4 &&
-                                    targetObj2->owner->id == this->md->player->id &&
-                                    this->md->isMoveable(targetObj2->id)) {
+                                    targetObj2->owner->id == this->md->player->id && this->md->isMoveable(targetObj2->id)) {
                                     Waypoint p1;
                                     Waypoint p2;
                                     cur->addUnit(targetObj2->id, this->md);
@@ -3948,8 +3888,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                                            (p1.z + p2.z) * 0.5f);
                                 }
                                 idle = cur->consecutiveIdleUnitCount();
-                                if ((this->md->player->world->world_time - idle) / 1000 >
-                                    (unsigned int)this->sn[0x4c]) {
+                                if ((this->md->player->world->world_time - idle) / 1000 > (unsigned int)this->sn[0x4c]) {
                                     cur->setInUse(0);
                                     cur->setAction(1);
                                     cur->setTarget(-1);
@@ -4071,8 +4010,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                 action3: {
                     unsigned long idle;
                     idle = cur->consecutiveIdleUnitCount();
-                    if ((this->md->player->world->world_time - idle) / 1000 >
-                        (unsigned int)this->sn[0x4c]) {
+                    if ((this->md->player->world->world_time - idle) / 1000 > (unsigned int)this->sn[0x4c]) {
                         cur->setInUse(0);
                         cur->setAction(1);
                         cur->setTarget(-1);
@@ -4224,10 +4162,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
     XYPoint gatherPoint;
     int i;
 
-    if ((this->md->player->world->world_time -
-         this->lastUngroupedSoldierTaskTime) /
-            1000 <
-        60)
+    if ((this->md->player->world->world_time - this->lastUngroupedSoldierTaskTime) / 1000 < 60)
         return;
 
     this->lastUngroupedSoldierTaskTime =
@@ -4273,10 +4208,8 @@ void TribeTacticalAIModule::taskBoats() {
             if (group == 0)
                 break;
 
-            if (group->type() != 100 && group->type() != 0x65 &&
-                group->type() != 0x66 && group->type() != 0x67 &&
-                group->type() != 0x68 && group->type() != 0x69 &&
-                (group->action() == 0 || group->action() == 1)) {
+            if (group->type() != 100 && group->type() != 0x65 && group->type() != 0x66 && group->type() != 0x67 &&
+                group->type() != 0x68 && group->type() != 0x69 && (group->action() == 0 || group->action() == 1)) {
                 int numberUnits;
                 int desiredNumberUnits;
 
@@ -4284,8 +4217,7 @@ void TribeTacticalAIModule::taskBoats() {
                 ready = 1;
                 numberUnits = group->numberUnits();
                 desiredNumberUnits = group->desiredNumberUnits();
-                if (numberUnits < desiredNumberUnits ||
-                    ((gathered == 0 && group->numberUnits() > 1) ||
+                if (numberUnits < desiredNumberUnits || ((gathered == 0 && group->numberUnits() > 1) ||
                      group->allUnitsIdle(this->md, 1) == 0)) {
                     ready = 0;
                 }
@@ -4312,10 +4244,8 @@ void TribeTacticalAIModule::taskBoats() {
             if (group == 0)
                 return;
 
-            if (group->type() == 100 || group->type() == 0x65 ||
-                group->type() == 0x66 || group->type() == 0x67 ||
-                group->type() == 0x68 || group->type() == 0x69 ||
-                group->action() == 0 || group->action() == 1)
+            if (group->type() == 100 || group->type() == 0x65 || group->type() == 0x66 || group->type() == 0x67 ||
+                group->type() == 0x68 || group->type() == 0x69 || group->action() == 0 || group->action() == 1)
                 goto next_group;
 
             if (group->inUse() == 0) {
@@ -4438,8 +4368,7 @@ void TribeTacticalAIModule::taskBoats() {
                 int hasWork;
 
                 hasWork = 0;
-                if (group->type() == 0x6c &&
-                    this->md->informationAI.objectToTradeWith(group->commander()) != 0) {
+                if (group->type() == 0x6c && this->md->informationAI.objectToTradeWith(group->commander()) != 0) {
                     hasWork = 1;
                 }
 
@@ -4461,10 +4390,8 @@ void TribeTacticalAIModule::taskBoats() {
 
                         commanderObject =
                             this->md->object(group->commander());
-                        if (commanderObject != 0 &&
-                            commanderObject->unitAI() != 0 &&
-                            commanderObject->unitAI()->currentOrder() !=
-                                0x2c1) {
+                        if (commanderObject != 0 && commanderObject->unitAI() != 0 &&
+                            commanderObject->unitAI()->currentOrder() != 0x2c1) {
                             group->setAction(8);
                             group->task(this, this->md, group->action(), 1, 0);
                             group->setInUse(1);
@@ -4507,8 +4434,7 @@ void TribeTacticalAIModule::taskBoats() {
 
                 RGE_Static_Object* commanderObject =
                     this->md->object(group->commander());
-                if (commanderObject != 0 &&
-                    commanderObject->unitAI() != 0 &&
+                if (commanderObject != 0 && commanderObject->unitAI() != 0 &&
                     commanderObject->unitAI()->currentAction() == -1) {
                     group->setInUse(0);
                     group->setAction(1);
@@ -4536,8 +4462,7 @@ void TribeTacticalAIModule::taskBoats() {
 
                 RGE_Static_Object* commanderObject =
                     this->md->object(group->commander());
-                if (commanderObject != 0 &&
-                    commanderObject->unitAI() != 0) {
+                if (commanderObject != 0 && commanderObject->unitAI() != 0) {
                     if (commanderObject->unitAI()->currentAction() == -1) {
                         group->setInUse(0);
                         group->setAction(1);
@@ -4556,8 +4481,7 @@ void TribeTacticalAIModule::taskBoats() {
                             actionObject->actions->get_action();
                         ObjectMemory* tradeObject =
                             this->md->informationAI.objectToTradeWith(action->target2ID);
-                        if (tradeObject != 0 &&
-                            tradeObject->id != group->target()) {
+                        if (tradeObject != 0 && tradeObject->id != group->target()) {
                             XYZPoint point;
                             float pathDistance;
 
@@ -4601,8 +4525,7 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
                     if (unitsTasked->contains((*civilians)[i]))
                         goto next_civilian;
 
-                    if (object->getSpeed() == 0.0 &&
-                        object->attribute_amount_held > 0.0f &&
+                    if (object->getSpeed() == 0.0 && object->attribute_amount_held > 0.0f &&
                         object->waitingToMove() == 0 && object->actionState() <= 2) {
                         RGE_Static_Object* dropsite =
                             this->md->informationAI.findClosestReturnDropsite(object);
@@ -4620,8 +4543,7 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
                             int target = object->unitAI()->currentTarget();
                             RGE_Static_Object* targetObject =
                                 this->md->object(target);
-                            if (targetObject == 0 ||
-                                targetObject->object_state > 2) {
+                            if (targetObject == 0 || targetObject->object_state > 2) {
                                 this->stopUnit((*civilians)[i], 100);
                             }
                         }
@@ -4694,13 +4616,11 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
             } else {
                 int commander = group->commander();
                 RGE_Static_Object* object = this->md->object(commander);
-                if (object != 0 && object->actionState() == 2 &&
-                    assistGroup->action() == 0x10) {
+                if (object != 0 && object->actionState() == 2 && assistGroup->action() == 0x10) {
                     int assistCommander = assistGroup->commander();
                     RGE_Static_Object* assistObject =
                         this->md->object(assistCommander);
-                    if (assistObject != 0 &&
-                        assistObject->objects->number_of_objects > 0) {
+                    if (assistObject != 0 && assistObject->objects->number_of_objects > 0) {
                         assistGroup->setAction(0xF);
                     }
                 }
@@ -4715,18 +4635,15 @@ void TribeTacticalAIModule::evaluateBuildListInsertions() {
     int one = 1;
 
     if (this->sn[0xCD] == one) {
-        if (this->md->buildAI.haveBuildList() != 0 &&
-            this->builtFirstStoragePit == 0 &&
+        if (this->md->buildAI.haveBuildList() != 0 && this->builtFirstStoragePit == 0 &&
             this->md->informationAI.numberFoundForestTilesValue >= this->sn[0xA9]) {
             this->md->buildAI.insert(0x67, one, 0);
             this->builtFirstStoragePit = one;
         }
 
         if (this->sn[0xCD] == one) {
-            if (this->md->buildAI.haveBuildList() != 0 &&
-                this->builtFirstGranary == 0) {
-                if (this->builtFirstStoragePit != one &&
-                    this->md->resourceAI.resource(one) < 250) {
+            if (this->md->buildAI.haveBuildList() != 0 && this->builtFirstGranary == 0) {
+                if (this->builtFirstStoragePit != one && this->md->resourceAI.resource(one) < 250) {
                     goto check_granary;
                 }
 
@@ -4745,9 +4662,7 @@ check_granary:
 
 after_granary:
     int insertID = this->sn[0xAF];
-    if (insertID != -1 &&
-        this->sn[0xB0] <=
-            this->md->player->world->world_time / 60000) {
+    if (insertID != -1 && this->sn[0xB0] <= this->md->player->world->world_time / 60000) {
         this->md->buildAI.insert(insertID, one, 0);
         this->sn[0xAF] = -1;
     }
@@ -4839,8 +4754,7 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
     RGE_Static_Object* callerObject =
         this->md->aiPlayer->world->object(callerID);
 
-    if (mType != 0x72 && mType != 0x74 &&
-        callerObject == 0)
+    if (mType != 0x72 && mType != 0x74 && callerObject == 0)
         return;
 
     ulong entryTime = debug_timeGetTime(s_file, 6404);
@@ -4861,11 +4775,9 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
 
         int tasked = 0;
         int index = 0;
-        while (index < this->workingArea.numberValue &&
-               tasked < numberToTask) {
+        while (index < this->workingArea.numberValue && tasked < numberToTask) {
             RGE_Static_Object* object = this->md->aiPlayer->world->object(this->workingArea[index]);
-            if (object != 0 && object->unitAI() != 0 &&
-                object->canPath(memory->id, 2.0f, 0, 1, -1, -1) != 0 &&
+            if (object != 0 && object->unitAI() != 0 && object->canPath(memory->id, 2.0f, 0, 1, -1, -1) != 0 &&
                 this->taskDefender(this->workingArea[index], memory->id, 2.0f, 100) == 1) {
                 this->removeFromGroup(this->workingArea[index]);
                 tasked++;
@@ -4889,20 +4801,16 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
         return;
 
     if (attacker->owner->id == 0) {
-        if ((this->zoomingToNextAge == 0 ||
-             (attacker->master_obj->id != 0x7e &&
-              attacker->master_obj->id != 0x59)) &&
+        if ((this->zoomingToNextAge == 0 || (attacker->master_obj->id != 0x7e && attacker->master_obj->id != 0x59)) &&
             this->dealWithGAIAAttacker(attacker, target) == 1)
             return;
     }
 
     if (attacker->owner->id != 0) {
         int adjustAttack = 1;
-        if (this->civilians.contains(callerID) != 0 &&
-            this->civilianExplorers.contains(callerID) == 0) {
+        if (this->civilians.contains(callerID) != 0 && this->civilianExplorers.contains(callerID) == 0) {
             adjustAttack = 1;
-        } else if (target->unitAI() == 0 ||
-                   target->unitAI()->currentOrder() == 0x2c1) {
+        } else if (target->unitAI() == 0 || target->unitAI()->currentOrder() == 0x2c1) {
             adjustAttack = 0;
         }
 
@@ -4922,8 +4830,7 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
 
     if (attacker->owner->computerPlayer() == 0) {
         if (this->md->player->isAlly((int)attacker->owner->id) == 1 &&
-            this->hitsByPlayer[attacker->owner->id] >= this->sn[0xdd] &&
-            this->sn[0xd7] == 1) {
+            this->hitsByPlayer[attacker->owner->id] >= this->sn[0xdd] && this->sn[0xd7] == 1) {
             this->md->diplomacyAI.setChangeable((int)attacker->owner->id, 1);
             this->md->diplomacyAI.setStance((int)attacker->owner->id, 0, 100);
             this->md->diplomacyAI.setRelation((int)attacker->owner->id, 3);
@@ -4940,9 +4847,7 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
         this->md->diplomacyAI.setChangeable((int)attacker->owner->id, 0);
     }
 
-    if (this->sn[0x7c] > 0 &&
-        this->sn[0x80] == (int)attacker->owner->id &&
-        this->sn[0x85] == 1)
+    if (this->sn[0x7c] > 0 && this->sn[0x80] == (int)attacker->owner->id && this->sn[0x85] == 1)
         this->md->revokeTributeAlliance();
 
     this->md->informationAI.storeAttackMemory(0, (uchar)target->world_x, (uchar)target->world_y,
@@ -4952,8 +4857,7 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
         (this->md->player->world->world_time -
          this->lastAttackResponseTime) /
         1000;
-    if (this->lastAttackResponseTime != 0 &&
-        elapsed < this->attackLimiterTime(0x30))
+    if (this->lastAttackResponseTime != 0 && elapsed < this->attackLimiterTime(0x30))
         return;
 
     XYPoint attackPoint;
@@ -5009,9 +4913,7 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
 
         ulong seconds = this->md->player->world->world_time / 1000;
 
-        if (numberToRespond == 0 &&
-            this->md->informationAI.isBoat(attacker) == 0 &&
-            this->sn[0xe1] == 1 &&
+        if (numberToRespond == 0 && this->md->informationAI.isBoat(attacker) == 0 && this->sn[0xe1] == 1 &&
             seconds < this->sn[0x68]) {
             int i;
             for (i = 0; i < this->civilians.numberValue; i++) {
@@ -5038,10 +4940,8 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
 
     int responded = 0;
     int index = 0;
-    while (index < this->workingArea.numberValue &&
-           responded < numberToRespond) {
-        if (index > 1 &&
-            debug_timeGetTime(s_file, 6740) - entryTime > 10)
+    while (index < this->workingArea.numberValue && responded < numberToRespond) {
+        if (index > 1 && debug_timeGetTime(s_file, 6740) - entryTime > 10)
             return;
 
         RGE_Static_Object* object = this->md->aiPlayer->world->object(this->workingArea[index]);
@@ -5055,9 +4955,7 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
 
                     RGE_Static_Object* currentTarget =
                         this->md->player->world->object(object->unitAI()->currentTarget());
-                    if (currentTarget != 0 &&
-                        (int)currentTarget->owner->id ==
-                            this->playersToAttack[0])
+                    if (currentTarget != 0 && (int)currentTarget->owner->id == this->playersToAttack[0])
                         goto next_object;
                 }
             }
@@ -5082,8 +4980,7 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
             } else {
                 float distance = callerObject->distance_to_object(object);
                 int priority = this->calculatePriority(distance);
-                if (distance < (float)this->sn[0x14] &&
-                    object->unitAI()->currentOrderPriority() < priority &&
+                if (distance < (float)this->sn[0x14] && object->unitAI()->currentOrderPriority() < priority &&
                     priority > 0) {
                     XYZPoint point;
                     point.x = (int)attacker->world_x;
@@ -5136,23 +5033,19 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int priority, int flag, in
 
     for (i = 0; i < this->soldiers.number(); i++) {
         object = this->md->aiPlayer->world->object(this->soldiers[i]);
-        if (object != 0 && object->unitAI() != 0 &&
-            this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0) {
+        if (object != 0 && object->unitAI() != 0 && this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0) {
             if (flag < 0) {
-                if (object->unitAI()->currentAction() == -1 ||
-                    object->unitAI()->currentOrderPriority() < priority) {
+                if (object->unitAI()->currentAction() == -1 || object->unitAI()->currentOrderPriority() < priority) {
                     this->workingArea.add(this->soldiers[i]);
                     count++;
                 }
             } else if (flag > 0) {
-                if (object->unitAI()->currentAction() != -1 &&
-                    object->unitAI()->currentOrderPriority() > priority) {
+                if (object->unitAI()->currentAction() != -1 && object->unitAI()->currentOrderPriority() > priority) {
                     this->workingArea.add(this->soldiers[i]);
                     count++;
                 }
             } else {
-                if (object->unitAI()->currentAction() != -1 &&
-                    object->unitAI()->currentOrderPriority() == priority) {
+                if (object->unitAI()->currentAction() != -1 && object->unitAI()->currentOrderPriority() == priority) {
                     this->workingArea.add(this->soldiers[i]);
                     count++;
                 }
@@ -5171,23 +5064,19 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int flag) {
 
     for (i = 0; i < this->warBoats.number(); i++) {
         object = this->md->aiPlayer->world->object(this->warBoats[i]);
-        if (object != 0 && object->unitAI() != 0 &&
-            this->unitsTaskedThisUpdate.contains(this->warBoats[i]) == 0) {
+        if (object != 0 && object->unitAI() != 0 && this->unitsTaskedThisUpdate.contains(this->warBoats[i]) == 0) {
             if (flag < 0) {
-                if (object->unitAI()->currentAction() == -1 ||
-                    object->unitAI()->currentOrderPriority() < priority) {
+                if (object->unitAI()->currentAction() == -1 || object->unitAI()->currentOrderPriority() < priority) {
                     this->workingArea.add(this->warBoats[i]);
                     count++;
                 }
             } else if (flag > 0) {
-                if (object->unitAI()->currentAction() != -1 &&
-                    object->unitAI()->currentOrderPriority() > priority) {
+                if (object->unitAI()->currentAction() != -1 && object->unitAI()->currentOrderPriority() > priority) {
                     this->workingArea.add(this->warBoats[i]);
                     count++;
                 }
             } else {
-                if (object->unitAI()->currentAction() != -1 &&
-                    object->unitAI()->currentOrderPriority() == priority) {
+                if (object->unitAI()->currentAction() != -1 && object->unitAI()->currentOrderPriority() == priority) {
                     this->workingArea.add(this->warBoats[i]);
                     count++;
                 }
@@ -5197,25 +5086,20 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int flag) {
 
     for (i = 0; i < this->soldiers.number(); i++) {
         object = this->md->aiPlayer->world->object(this->soldiers[i]);
-        if (object != 0 && object->unitAI() != 0 &&
-            this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0 &&
-            (object->master_obj->object_group == 0x12 ||
-             object->master_obj->object_group == 0x0D)) {
+        if (object != 0 && object->unitAI() != 0 && this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0 &&
+            (object->master_obj->object_group == 0x12 || object->master_obj->object_group == 0x0D)) {
             if (flag < 0) {
-                if (object->unitAI()->currentAction() == -1 ||
-                    object->unitAI()->currentOrderPriority() < priority) {
+                if (object->unitAI()->currentAction() == -1 || object->unitAI()->currentOrderPriority() < priority) {
                     this->workingArea.add(this->soldiers[i]);
                     count++;
                 }
             } else if (flag > 0) {
-                if (object->unitAI()->currentAction() != -1 &&
-                    object->unitAI()->currentOrderPriority() > priority) {
+                if (object->unitAI()->currentAction() != -1 && object->unitAI()->currentOrderPriority() > priority) {
                     this->workingArea.add(this->soldiers[i]);
                     count++;
                 }
             } else {
-                if (object->unitAI()->currentAction() != -1 &&
-                    object->unitAI()->currentOrderPriority() == priority) {
+                if (object->unitAI()->currentAction() != -1 && object->unitAI()->currentOrderPriority() == priority) {
                     this->workingArea.add(this->soldiers[i]);
                     count++;
                 }
@@ -5254,8 +5138,7 @@ int TribeTacticalAIModule::idleCivilian(int checkGroup) {
                 if (this->isGatherer((*civilians)[i]) == 0) {
                     if (this->civilianExplorers.contains((*civilians)[i]) != 0)
                         goto first_next;
-                    if (firstObject->unitAI()->currentAction() == -1 &&
-                        firstObject->unitAI()->currentOrder() == -1)
+                    if (firstObject->unitAI()->currentAction() == -1 && firstObject->unitAI()->currentOrder() == -1)
                         return firstObject->id;
                 }
             }
@@ -5287,8 +5170,7 @@ int TribeTacticalAIModule::idleCivilian(int checkGroup) {
                 if (this->civilianExplorers.contains((*civilians)[i]) != 0)
                     goto second_next;
             }
-            if (secondObject->unitAI()->currentAction() == -1 &&
-                secondObject->unitAI()->currentOrder() == -1)
+            if (secondObject->unitAI()->currentAction() == -1 && secondObject->unitAI()->currentOrder() == -1)
                 return secondObject->id;
         }
     second_next:
@@ -5318,8 +5200,7 @@ int TribeTacticalAIModule::idleCivilian(int checkGroup, XYPoint& point, int clos
                 if (this->isGatherer((*civilians)[i]) == 0) {
                     if (this->civilianExplorers.contains((*civilians)[i]) != 0)
                         goto first_next;
-                    if (firstObject->unitAI()->currentAction() == -1 &&
-                        firstObject->unitAI()->currentOrder() == -1)
+                    if (firstObject->unitAI()->currentAction() == -1 && firstObject->unitAI()->currentOrder() == -1)
                         return firstObject->id;
                 }
             }
@@ -5348,8 +5229,7 @@ int TribeTacticalAIModule::idleCivilian(int checkGroup, XYPoint& point, int clos
                     if (this->civilianExplorers.contains((*civilians)[i]) != 0)
                         goto second_next;
                 }
-                if (secondObject->unitAI()->currentAction() == -1 &&
-                    secondObject->unitAI()->currentOrder() == -1) {
+                if (secondObject->unitAI()->currentAction() == -1 && secondObject->unitAI()->currentOrder() == -1) {
                     float distance = secondObject->distance_to_position(
                         (float)point.x, (float)point.y, secondObject->world_z);
                     if (bestUnitID == -1) {
@@ -5386,8 +5266,7 @@ int TribeTacticalAIModule::civilian(XYPoint& point, int closestToPoint, int a1, 
             obj = this->md->player->world->object(this->civilians[i]);
             if (obj != 0 && obj->unitAI() != 0) {
                 if (useFarmers != 0 || obj->master_obj->id != 0x103) {
-                    if (obj->unitAI()->currentOrder() != a1 &&
-                        obj->unitAI()->currentOrder() != a2 &&
+                    if (obj->unitAI()->currentOrder() != a1 && obj->unitAI()->currentOrder() != a2 &&
                         obj->unitAI()->currentOrder() != a3) {
                         float dist = obj->distance_to_position((float)point.x, (float)point.y, obj->world_z);
                         if (bestUnitID == -1) {
@@ -5417,8 +5296,7 @@ int TribeTacticalAIModule::unit(int action, int target, int targetType) {
         if (object == 0 && object->unitAI() == 0) {
             if (action == -1 || object->unitAI()->currentAction() == action) {
                 if (target == -1 || object->unitAI()->currentTarget() == target) {
-                    if (targetType == -1 ||
-                        object->unitAI()->currentTargetType() == targetType) {
+                    if (targetType == -1 || object->unitAI()->currentTargetType() == targetType) {
                         return this->civilians[i];
                     }
                 }
@@ -5431,8 +5309,7 @@ int TribeTacticalAIModule::unit(int action, int target, int targetType) {
         if (object == 0 && object->unitAI() == 0) {
             if (action == -1 || object->unitAI()->currentAction() == action) {
                 if (target == -1 || object->unitAI()->currentTarget() == target) {
-                    if (targetType == -1 ||
-                        object->unitAI()->currentTargetType() == targetType) {
+                    if (targetType == -1 || object->unitAI()->currentTargetType() == targetType) {
                         return this->soldiers[i];
                     }
                 }
@@ -5445,8 +5322,7 @@ int TribeTacticalAIModule::unit(int action, int target, int targetType) {
         if (object == 0 && object->unitAI() == 0) {
             if (action == -1 || object->unitAI()->currentAction() == action) {
                 if (target == -1 || object->unitAI()->currentTarget() == target) {
-                    if (targetType == -1 ||
-                        object->unitAI()->currentTargetType() == targetType) {
+                    if (targetType == -1 || object->unitAI()->currentTargetType() == targetType) {
                         return this->boats[i];
                     }
                 }
@@ -5582,8 +5458,7 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                 this->gatherers[local_4].target =
                     object->unitAI()->currentTarget();
 
-                if (gSTT == 0x261 && object->master_obj->id == 0x103 &&
-                    gAction != 0) {
+                if (gSTT == 0x261 && object->master_obj->id == 0x103 && gAction != 0) {
                     int taskedCount =
                         this->unitsTaskedThisUpdate.numberValue;
                     int objectID = object->id;
@@ -5593,8 +5468,7 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                         do {
                             if (this->unitsTaskedThisUpdate.maximumSizeValue <= j)
                                 break;
-                            if (this->unitsTaskedThisUpdate.value[j] ==
-                                objectID) {
+                            if (this->unitsTaskedThisUpdate.value[j] == objectID) {
                                 found = 1;
                                 break;
                             }
@@ -5616,8 +5490,7 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                             do {
                                 if (this->unitsTaskedThisUpdate.maximumSizeValue <= j)
                                     break;
-                                if (this->unitsTaskedThisUpdate.value[j] ==
-                                    this->gatherers[local_4].id) {
+                                if (this->unitsTaskedThisUpdate.value[j] == this->gatherers[local_4].id) {
                                     this->actualGathererDistribution[gAction]++;
                                     break;
                                 }
@@ -5639,15 +5512,12 @@ void TribeTacticalAIModule::updateGathererDistribution() {
 
     if (this->inAge(1) != 0) {
         if (this->sn[0xB5] == 1) {
-            if (this->md->buildAI.readyToResearch(2, 1) != 0 &&
-                this->md->informationAI.closestDropsiteValue[0] != -1 &&
-                (this->md->resourceAI.resource(1) > 0x78 ||
-                 this->builtFirstGranary == 1)) {
+            if (this->md->buildAI.readyToResearch(2, 1) != 0 && this->md->informationAI.closestDropsiteValue[0] != -1 &&
+                (this->md->resourceAI.resource(1) > 0x78 || this->builtFirstGranary == 1)) {
                 this->desiredGathererDistribution[0] =
                     this->desiredNumberGatherersValue;
                 for (i = 0; i < this->numberGatherersValue; ++i) {
-                    if (this->gatherers[i].data1 != 0 &&
-                        this->gatherers[i].data1 != -1)
+                    if (this->gatherers[i].data1 != 0 && this->gatherers[i].data1 != -1)
                         this->gatherers[i].data2 = 5;
                 }
                 this->zoomingToNextAge = 1;
@@ -5664,15 +5534,12 @@ void TribeTacticalAIModule::updateGathererDistribution() {
         }
     } else if (this->inAge(2) != 0) {
         if (this->sn[0xB6] == 1) {
-            if (this->md->buildAI.readyToResearch(3, 1) != 0 &&
-                (this->md->resourceAI.resource(1) > 0xF0 ||
-                 (this->md->resourceAI.resource(1) > 0x78 &&
-                  this->md->informationAI.closestDropsiteValue[0] < 0x14))) {
+            if (this->md->buildAI.readyToResearch(3, 1) != 0 && (this->md->resourceAI.resource(1) > 0xF0 ||
+                 (this->md->resourceAI.resource(1) > 0x78 && this->md->informationAI.closestDropsiteValue[0] < 0x14))) {
                 this->desiredGathererDistribution[0] =
                     this->desiredNumberGatherersValue;
                 for (i = 0; i < this->numberGatherersValue; ++i) {
-                    if (this->gatherers[i].data1 != 0 &&
-                        this->gatherers[i].data1 != -1)
+                    if (this->gatherers[i].data1 != 0 && this->gatherers[i].data1 != -1)
                         this->gatherers[i].data2 = 5;
                 }
                 this->zoomingToNextAge = 1;
@@ -5701,9 +5568,7 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                 this->desiredGathererDistribution[0] = half;
                 this->desiredGathererDistribution[3] = half;
                 for (i = 0; i < this->numberGatherersValue; ++i) {
-                    if (this->gatherers[i].data1 != 0 &&
-                        this->gatherers[i].data1 != 3 &&
-                        this->gatherers[i].data1 != -1)
+                    if (this->gatherers[i].data1 != 0 && this->gatherers[i].data1 != 3 && this->gatherers[i].data1 != -1)
                         this->gatherers[i].data2 = 5;
                 }
                 this->zoomingToNextAge = 1;
@@ -5864,8 +5729,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int unitID, unsigned long start
     int triedTasking[4] = {0, 0, 0, 0};
     int gathererIndex = 0;
 
-    while (gathererIndex < this->numberGatherersValue &&
-           this->gatherers[gathererIndex].id != unitID) {
+    while (gathererIndex < this->numberGatherersValue && this->gatherers[gathererIndex].id != unitID) {
         gathererIndex++;
     }
     if (gathererIndex >= this->numberGatherersValue) {
@@ -5887,8 +5751,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int unitID, unsigned long start
     if (gathererObject->unitAI()->currentAction() == 0x258) {
         return 1;
     }
-    if (gathererObject->unitAI()->currentAction() == 0x25A ||
-        gathererObject->unitAI()->currentAction() == 0x26A) {
+    if (gathererObject->unitAI()->currentAction() == 0x25A || gathererObject->unitAI()->currentAction() == 0x26A) {
         return 1;
     }
     if (gathererObject->attribute_amount_held > 0.0f) {
@@ -5903,8 +5766,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int unitID, unsigned long start
         }
     }
 
-    if (gathererObject->unitAI()->currentOrder() == 0x2C6 &&
-        gathererObject->unitAI()->currentOrderPriority() == 100) {
+    if (gathererObject->unitAI()->currentOrder() == 0x2C6 && gathererObject->unitAI()->currentOrderPriority() == 100) {
         return 1;
     }
     if (gathererObject->unitAI()->currentOrder() == 0x2BE) {
@@ -5928,13 +5790,11 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int unitID, unsigned long start
     int taskResult = 0;
     int resource;
     for (resource = 0; resource < 4; resource++) {
-        if (triedTasking[resource] != 1 &&
-            this->actualGathererDistribution[resource] <
-                this->desiredGathererDistribution[resource]) {
+        if (triedTasking[resource] != 1 && this->actualGathererDistribution[resource] <
+            this->desiredGathererDistribution[resource]) {
             if (gatherer->data1 == resource) {
                 int action = gathererObject->unitAI()->currentAction();
-                if (action == 0x265 ||
-                    gathererObject->unitAI()->currentAction() == 0x261) {
+                if (action == 0x265 || gathererObject->unitAI()->currentAction() == 0x261) {
                     return 1;
                 }
             }
@@ -5947,8 +5807,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int unitID, unsigned long start
         }
     }
 
-    if ((this->inAge(1) != 0 && this->sn[0xB5] == 1) ||
-        (this->inAge(2) != 0 && this->sn[0xB6] == 1 &&
+    if ((this->inAge(1) != 0 && this->sn[0xB5] == 1) || (this->inAge(2) != 0 && this->sn[0xB6] == 1 &&
          triedTasking[0] == 0)) {
         triedTasking[0] = 1;
         taskResult = this->taskGatherer(gatherer->id, 0, 1, startTime, 0);
@@ -6283,39 +6142,31 @@ int TribeTacticalAIModule::taskGatherer(int id, int resourceType,
                     int available = this->numberAvailableGranaries(granaryCount, unbuiltGranaries);
                     if (unbuiltGranaries == 0 && available > 0) {
                         int maximumDistance = this->sn[0xA3];
-                        if ((int)unit->distance_to_object(resource) >
-                                maximumDistance &&
-                            this->md->informationAI.closestDropsiteValue[0] !=
-                                -1 &&
-                            this->md->informationAI
-                                    .acceptablePotentialDropsiteArea((int)resource->world_x, (int)resource->world_y) == 1) {
+                        if ((int)unit->distance_to_object(resource) > maximumDistance &&
+                            this->md->informationAI.closestDropsiteValue[0] != -1 && this->md->informationAI
+                            .acceptablePotentialDropsiteArea((int)resource->world_x, (int)resource->world_y) == 1) {
                             this->md->buildAI.insert(0x44, 1, -1);
                         }
                     }
-                } else if (resource->master_obj->object_group != 0x1F &&
-                           resource->master_obj->object_group != 5 &&
+                } else if (resource->master_obj->object_group != 0x1F && resource->master_obj->object_group != 5 &&
                            resource->master_obj->object_group != 0x21) {
                     int storagePitCount = 0;
                     int unbuiltStoragePits = 0;
                     int available = this->numberAvailableStoragePits(storagePitCount, unbuiltStoragePits, 0);
-                    if (unbuiltStoragePits == 0 && available > 0 &&
-                        ((int)unit->distance_to_object(resource) > 15 ||
+                    if (unbuiltStoragePits == 0 && available > 0 && ((int)unit->distance_to_object(resource) > 15 ||
                          storagePitCount == 0)) {
                         this->md->buildAI.insert(0x67, 1, -1);
                     }
                 }
             }
-        } else if (this->builtFirstStoragePit == 1 &&
-                   this->builtFirstGranary == 1) {
+        } else if (this->builtFirstStoragePit == 1 && this->builtFirstGranary == 1) {
             int storagePitCount = 0;
             int unbuiltStoragePits = 0;
             int available = this->numberAvailableStoragePits(storagePitCount, unbuiltStoragePits, resourceType);
             if (unbuiltStoragePits == 0 && available > 0) {
                 int maximumDistance =
                     this->sn[resource->attribute_type_held + 0xA3];
-                if ((int)unit->distance_to_object(resource) >
-                        maximumDistance ||
-                    storagePitCount == 0) {
+                if ((int)unit->distance_to_object(resource) > maximumDistance || storagePitCount == 0) {
                     this->md->buildAI.insert(0x67, 1, -1);
                 }
             }
@@ -7316,9 +7167,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
 
     TacticalAIGroup* group = this->groups.next;
     while (group != &this->groups && group != 0) {
-        if ((group->type() == 100 || group->type() == 101 ||
-             group->type() == 102) &&
-            group->commander() == -1) {
+        if ((group->type() == 100 || group->type() == 101 || group->type() == 102) && group->commander() == -1) {
             int ungrouped = this->numberUngroupedSoldiers();
             if (group->numberUnits() > 0) {
                 int commander = this->selectBestCommander(group);
@@ -7371,8 +7220,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                 do {
                                     RGE_Static_Object* object =
                                         this->md->object(this->workingArea[i]);
-                                    if (object != 0 &&
-                                        groupZone == object->currentZone()) {
+                                    if (object != 0 && groupZone == object->currentZone()) {
                                         bestGroup->addUnit(this->workingArea[i], this->md);
                                     }
                                     ++i;
@@ -7390,23 +7238,18 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                         do {
                                             RGE_Static_Object* object =
                                                 this->md->object(this->workingArea[i]);
-                                            if (object != 0 &&
-                                                groupZone ==
-                                                    object->currentZone()) {
+                                            if (object != 0 && groupZone == object->currentZone()) {
                                                 float distance =
                                                     object->distance_to_position(bestGroup->gatherLocation().x,
                                                                                  bestGroup->gatherLocation().y, bestGroup->gatherLocation().z);
-                                                if (bestDistance ==
-                                                        DAT_00575758 ||
-                                                    distance < bestDistance) {
+                                                if (bestDistance == DAT_00575758 || distance < bestDistance) {
                                                     bestUnitID =
                                                         this->workingArea[i];
                                                     bestDistance = distance;
                                                 }
                                             }
                                             ++i;
-                                        } while (i <
-                                                 this->workingArea.numberValue);
+                                        } while (i < this->workingArea.numberValue);
                                     }
                                     if (bestUnitID == -1)
                                         break;
@@ -7432,15 +7275,12 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                     do {
                                         RGE_Static_Object* object =
                                             this->md->object(this->workingArea[i]);
-                                        if (object != 0 &&
-                                            groupZone ==
-                                                object->currentZone()) {
+                                        if (object != 0 && groupZone == object->currentZone()) {
                                             this->removeFromGroup(this->workingArea[i]);
                                             bestGroup->addUnit(this->workingArea[i], this->md);
                                         }
                                         ++i;
-                                    } while (i <
-                                             this->workingArea.numberValue);
+                                    } while (i < this->workingArea.numberValue);
                                 }
                             } else {
                                 desired = bestGroup->desiredNumberUnits();
@@ -7454,16 +7294,11 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                             do {
                                                 RGE_Static_Object* object =
                                                     this->md->object(this->workingArea[i]);
-                                                if (object != 0 &&
-                                                    groupZone ==
-                                                        object->currentZone()) {
+                                                if (object != 0 && groupZone == object->currentZone()) {
                                                     float distance =
                                                         object->distance_to_position(bestGroup->gatherLocation().x,
                                                                                      bestGroup->gatherLocation().y, bestGroup->gatherLocation().z);
-                                                    if (bestDistance ==
-                                                            DAT_00575758 ||
-                                                        distance <
-                                                            bestDistance) {
+                                                    if (bestDistance == DAT_00575758 || distance < bestDistance) {
                                                         bestUnitID =
                                                             this->workingArea[i];
                                                         bestDistance = distance;
@@ -7507,22 +7342,17 @@ void TribeTacticalAIModule::fillSoldierGroups() {
             group = this->groups.next;
 
             while (group != &this->groups && group != 0) {
-                if ((group->type() == 100 || group->type() == 101 ||
-                     group->type() == 102) &&
-                    group->inUse() != 1) {
+                if ((group->type() == 100 || group->type() == 101 || group->type() == 102) && group->inUse() != 1) {
                     RGE_Static_Object* groupCommander =
                         this->md->object(group->commander());
-                    if (groupCommander != 0 &&
-                        groupCommander->currentZone() == unitZone) {
+                    if (groupCommander != 0 && groupCommander->currentZone() == unitZone) {
                         int desired = group->desiredNumberUnits();
                         int number = group->numberUnits();
-                        if (number < desired &&
-                            (group->action() == 1 || group->action() == 0)) {
+                        if (number < desired && (group->action() == 1 || group->action() == 0)) {
                             desired = group->desiredNumberUnits();
                             number = group->numberUnits();
                             int difference = desired - number;
-                            if (bestGroup == 0 ||
-                                difference > bestDifference) {
+                            if (bestGroup == 0 || difference > bestDifference) {
                                 bestGroup = group;
                                 bestDifference = difference;
                             }
@@ -7536,25 +7366,18 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                 group = this->groups.next;
                 bestDifference = 0;
                 while (group != &this->groups && group != 0) {
-                    if ((group->type() == 100 || group->type() == 101 ||
-                         group->type() == 102) &&
-                        group->inUse() != 1 &&
-                        (group->action() == 1 || group->action() == 0) &&
-                        (group->type() != 100 ||
-                         group->numberUnits() < this->sn[0x1a]) &&
-                        (group->type() != 101 ||
-                         group->numberUnits() < this->sn[0x1c]) &&
-                        (group->type() != 102 ||
+                    if ((group->type() == 100 || group->type() == 101 || group->type() == 102) && group->inUse() != 1 &&
+                        (group->action() == 1 || group->action() == 0) && (group->type() != 100 ||
+                         group->numberUnits() < this->sn[0x1a]) && (group->type() != 101 ||
+                         group->numberUnits() < this->sn[0x1c]) && (group->type() != 102 ||
                          group->numberUnits() < this->sn[0x2c])) {
                         RGE_Static_Object* groupCommander =
                             this->md->object(group->commander());
-                        if (groupCommander != 0 &&
-                            groupCommander->currentZone() == unitZone) {
+                        if (groupCommander != 0 && groupCommander->currentZone() == unitZone) {
                             int desired = group->desiredNumberUnits();
                             int number = group->numberUnits();
                             int difference = number - desired;
-                            if (bestGroup == 0 ||
-                                difference < bestDifference) {
+                            if (bestGroup == 0 || difference < bestDifference) {
                                 bestGroup = group;
                                 bestDifference = difference;
                             }
@@ -7602,8 +7425,7 @@ int TribeTacticalAIModule::numberExtraGroupedSoldiers() {
         if (group == 0)
             return result;
 
-        if ((group->type() == 100 || group->type() == 101 ||
-             group->type() == 102) &&
+        if ((group->type() == 100 || group->type() == 101 || group->type() == 102) &&
             (group->action() == 1 || group->action() == 0)) {
             int desiredUnits = group->desiredNumberUnits();
             int numberUnits = group->numberUnits();
@@ -7734,9 +7556,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
 
     group = this->groups.next;
     while (group != &this->groups && group != 0) {
-        if ((group->type() == 0x67 || group->type() == 0x68 ||
-             group->type() == 0x69) &&
-            group->numberUnits() == 0) {
+        if ((group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69) && group->numberUnits() == 0) {
             appendUniqueGroupID(groupsToRemove, group->id());
         }
         group = group->next;
@@ -7971,9 +7791,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
 
     TacticalAIGroup* group = this->groups.next;
     while (group != &this->groups && group != 0) {
-        if ((group->type() == 0x67 || group->type() == 0x68 ||
-             group->type() == 0x69) &&
-            group->commander() == -1) {
+        if ((group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69) && group->commander() == -1) {
             int ungrouped = this->numberUngroupedWarBoats();
             if (group->numberUnits() > 0) {
                 int commander = this->selectBestCommander(group);
@@ -8033,8 +7851,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                                 float distance =
                                                     object->distance_to_position(bestGroup->gatherLocation().x,
                                                                                  bestGroup->gatherLocation().y, bestGroup->gatherLocation().z);
-                                                if (bestDistance == DAT_00575758 ||
-                                                    distance < bestDistance) {
+                                                if (bestDistance == DAT_00575758 || distance < bestDistance) {
                                                     bestUnitID = this->workingArea[i];
                                                     bestDistance = distance;
                                                 }
@@ -8075,8 +7892,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                                     float distance =
                                                         object->distance_to_position(bestGroup->gatherLocation().x,
                                                                                      bestGroup->gatherLocation().y, bestGroup->gatherLocation().z);
-                                                    if (bestDistance == DAT_00575758 ||
-                                                        distance < bestDistance) {
+                                                    if (bestDistance == DAT_00575758 || distance < bestDistance) {
                                                         bestUnitID = this->workingArea[i];
                                                         bestDistance = distance;
                                                     }
@@ -8123,13 +7939,11 @@ void TribeTacticalAIModule::fillBoatGroups() {
         bestGroup = 0;
         group = this->groups.next;
         while (group != &this->groups && group != 0) {
-            if (group->type() == 0x67 || group->type() == 0x68 ||
-                group->type() == 0x69 || group->type() == 0x6a ||
+            if (group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69 || group->type() == 0x6a ||
                 group->type() == 0x6b || group->type() == 0x6c) {
                 int number = group->numberUnits();
                 int desired = group->desiredNumberUnits();
-                if (number < desired &&
-                    (group->action() == 1 || group->action() == 0)) {
+                if (number < desired && (group->action() == 1 || group->action() == 0)) {
                     number = group->numberUnits();
                     desired = group->desiredNumberUnits();
                     int difference = desired - number;
@@ -8146,15 +7960,10 @@ void TribeTacticalAIModule::fillBoatGroups() {
             group = this->groups.next;
             bestDifference = 0;
             while (group != &this->groups && group != 0) {
-                if ((group->type() == 0x67 || group->type() == 0x68 ||
-                     group->type() == 0x69 || group->type() == 0x6a ||
-                     group->type() == 0x6b || group->type() == 0x6c) &&
-                    (group->action() == 1 || group->action() == 0) &&
-                    (group->type() != 0x67 ||
-                     group->numberUnits() < this->sn[0x3c]) &&
-                    (group->type() != 0x68 ||
-                     group->numberUnits() < this->sn[0x45]) &&
-                    (group->type() != 0x69 ||
+                if ((group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69 || group->type() == 0x6a ||
+                     group->type() == 0x6b || group->type() == 0x6c) && (group->action() == 1 || group->action() == 0) &&
+                    (group->type() != 0x67 || group->numberUnits() < this->sn[0x3c]) && (group->type() != 0x68 ||
+                     group->numberUnits() < this->sn[0x45]) && (group->type() != 0x69 ||
                      group->numberUnits() < this->sn[0x3f])) {
                     int number = group->numberUnits();
                     int desired = group->desiredNumberUnits();
@@ -8208,10 +8017,8 @@ int TribeTacticalAIModule::numberExtraGroupedWarBoats() {
         if (group == 0)
             return result;
 
-        if ((group->type() == 103 || group->type() == 104 ||
-             group->type() == 105 || group->type() == 106 ||
-             group->type() == 107 || group->type() == 108) &&
-            (group->action() == 1 || group->action() == 0)) {
+        if ((group->type() == 103 || group->type() == 104 || group->type() == 105 || group->type() == 106 ||
+             group->type() == 107 || group->type() == 108) && (group->action() == 1 || group->action() == 0)) {
             numberUnitsValue = group->numberUnits();
             if (numberUnitsValue > group->desiredNumberUnits()) {
                 rNum = group->numberUnits();
@@ -8301,8 +8108,7 @@ void TribeTacticalAIModule::displayBoatGroups() {
         if (group == 0)
             return;
 
-        if (group->type() == 0x67 || group->type() == 0x68 ||
-            group->type() == 0x69 || group->type() == 0x6B ||
+        if (group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69 || group->type() == 0x6B ||
             group->type() == 0x6C || group->type() == 0x6A) {
             if (group->type() == 0x67)
                 this->logCommonHistory("  Group ID#%d:  Attack Group (Type=%d).", group->id(), group->type());
@@ -8479,8 +8285,7 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
             if (group == 0)
                 return best;
 
-            if ((type == -1 || group->type() == type) &&
-                (action == -1 || group->action() == action)) {
+            if ((type == -1 || group->type() == type) && (action == -1 || group->action() == action)) {
                 if (type == 0x6A) {
                     int valid = 1;
                     TacticalAIGroup* assist = this->groups.next;
@@ -8514,8 +8319,7 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
                         (point.x - (int)group->gatherLocation().x);
                 int groupDistance = (int)sqrt((double)distanceSquared);
 
-                if ((groupDistance < distance && bestDistance == -1) ||
-                    (distance == -1 || groupDistance < bestDistance)) {
+                if ((groupDistance < distance && bestDistance == -1) || (distance == -1 || groupDistance < bestDistance)) {
                     best = group;
                     bestDistance = groupDistance;
                 }
@@ -8549,8 +8353,7 @@ TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(
 
             if (type == -1 || group->type() == type) {
                 int desired = group->desiredNumberUnits();
-                if (desired <= group->numberUnits() &&
-                    group->isGathered(this, this->md) != 0 &&
+                if (desired <= group->numberUnits() && group->isGathered(this, this->md) != 0 &&
                     group->allUnitsIdle(this->md, 1) != 0) {
                     int distanceSquared =
                         (point.y - (int)group->gatherLocation().y) *
@@ -8559,8 +8362,7 @@ TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(
                             (point.x - (int)group->gatherLocation().x);
                     int groupDistance = (int)sqrt((double)distanceSquared);
 
-                    if ((groupDistance < distance && bestDistance == -1) ||
-                        groupDistance < bestDistance) {
+                    if ((groupDistance < distance && bestDistance == -1) || groupDistance < bestDistance) {
                         bestGroup = group;
                         bestDistance = groupDistance;
                     }
@@ -9039,8 +8841,7 @@ int TribeTacticalAIModule::dealWithGAIAAttacker(
     vPosition.x = (int)victim->world_x;
     vPosition.y = (int)victim->world_y;
     unitID = this->civilian(vPosition, 1, 700, 0x2C9, 0x2C9, 1);
-    while (unitID != -1 && count < this->sn[0x64] &&
-           (unitObject = this->md->object(unitID)) != 0) {
+    while (unitID != -1 && count < this->sn[0x64] && (unitObject = this->md->object(unitID)) != 0) {
         point.x = (int)attacker->world_x;
         point.y = (int)attacker->world_y;
         point.z = (int)attacker->world_z;
@@ -9371,8 +9172,7 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                 break;
             if (this->md->buildAI.allBuilt(0, 0) == 0)
                 break;
-            if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(0x32, 0) >=
-                this->sn[0xDC])
+            if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(0x32, 0) >= this->sn[0xDC])
                 break;
             this->md->buildAI.insert(0x32, number, position);
         }
@@ -9387,9 +9187,7 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
             int unbuilt = 0;
             int granaries = 0;
             int available = this->numberAvailableGranaries(unbuilt, granaries);
-            if (granaries <= 0 && available > 0 &&
-                this->sn[0xA3] <
-                    this->md->informationAI.closestDropsiteValue[0]) {
+            if (granaries <= 0 && available > 0 && this->sn[0xA3] < this->md->informationAI.closestDropsiteValue[0]) {
                 this->md->buildAI.insert(0x44, number, position);
             }
         }
@@ -9409,8 +9207,7 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                 break;
             if (this->md->buildAI.allBuilt(0, 0) == 0)
                 break;
-            if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(0x4F, 0) >=
-                this->sn[0xDE])
+            if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(0x4F, 0) >= this->sn[0xDE])
                 break;
             this->md->buildAI.insert(0x4F, number, position);
         }
@@ -9447,10 +9244,8 @@ int TribeTacticalAIModule::numberFarmers() {
     if (this->civilians.numberValue > 0) {
         do {
             RGE_Static_Object* obj = this->md->object(this->civilians[i]);
-            if ((obj != 0) && (obj->unitAI() != 0) &&
-                (obj->master_obj->id == 0x103)) {
-                if (obj->unitAI()->currentAction() == 0x261 ||
-                    obj->unitAI()->currentAction() == 0x262) {
+            if ((obj != 0) && (obj->unitAI() != 0) && (obj->master_obj->id == 0x103)) {
+                if (obj->unitAI()->currentAction() == 0x261 || obj->unitAI()->currentAction() == 0x262) {
                     rVal = rVal + 1;
                 }
             }
@@ -9481,8 +9276,7 @@ void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup* group, Path* pat
 
     int i = 1;
     while (i < path->numberOfWaypoints() - 1) {
-        if ((tooFew || accumDist >= divisionLength) &&
-            (tooFew != 1 || accumDist >= 5.0f)) {
+        if ((tooFew || accumDist >= divisionLength) && (tooFew != 1 || accumDist >= 5.0f)) {
             group->addAttackWaypoint(path->currentWaypoint()->x, path->currentWaypoint()->y);
         }
 
@@ -9520,8 +9314,7 @@ void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID) 
 
         switch (insertedUnit) {
         case 0:
-            if (this->md->resourceAI.resource(2) >= 150 &&
-                this->civilians.numberValue > 2) {
+            if (this->md->resourceAI.resource(2) >= 150 && this->civilians.numberValue > 2) {
                 this->md->buildAI.insert(0x4F, 1, 0);
                 unitsToInsert -= 2;
             }
@@ -9747,15 +9540,12 @@ void TribeTacticalAIModule::checkForCoopTributeGift() {
             if (world->player_num > 1) {
                 do {
                     RGE_Player* other = world->players[j];
-                    if (other->id != this->md->player->id &&
-                        other->computerPlayer() != 0 &&
-                        this->md->player->isAlly(j) != 0 &&
-                        other->isAlly(this->md->player->id) != 0) {
+                    if (other->id != this->md->player->id && other->computerPlayer() != 0 &&
+                        this->md->player->isAlly(j) != 0 && other->isAlly(this->md->player->id) != 0) {
                         float* attribute = other->attributes + i;
                         int minimumValue =
                             other->strategicNumber(i + 0xbe);
-                        if (*attribute < (float)minimumValue &&
-                            (bestCP == -1 || *attribute < tributeAmount)) {
+                        if (*attribute < (float)minimumValue && (bestCP == -1 || *attribute < tributeAmount)) {
                             bestCP = other->id;
                             tributeAmount = *attribute;
                         }
@@ -9783,24 +9573,20 @@ void TribeTacticalAIModule::checkForCoopTributeGift() {
 //   branch-local taskResearch calls, as shown by the distinct call sites and
 
 void TribeTacticalAIModule::checkForASAPAgeResearch() {
-    if (this->inAge(1) != 0 && this->sn[0xB5] == 1 &&
-        this->md->buildAI.readyToResearch(2, 1) != 0 &&
+    if (this->inAge(1) != 0 && this->sn[0xB5] == 1 && this->md->buildAI.readyToResearch(2, 1) != 0 &&
         this->md->resourceAI.resource(0) >= 500) {
         BuildItem* item = this->md->buildAI.buildItem(0x65, 1, 4);
         if (item != 0)
             this->taskResearch(item);
-    } else if (this->inAge(2) != 0 && this->sn[0xB6] == 1 &&
-               this->md->buildAI.readyToResearch(3, 1) != 0 &&
+    } else if (this->inAge(2) != 0 && this->sn[0xB6] == 1 && this->md->buildAI.readyToResearch(3, 1) != 0 &&
                this->md->resourceAI.resource(0) >= 800) {
         BuildItem* item = this->md->buildAI.buildItem(0x66, 1, 4);
         if (item != 0)
             this->taskResearch(item);
     }
 
-    if (this->inAge(3) != 0 && this->sn[0xB7] == 1 &&
-        this->md->buildAI.readyToResearch(4, 1) != 0 &&
-        this->md->resourceAI.resource(0) >= 900 &&
-        this->md->resourceAI.resource(3) >= 700) {
+    if (this->inAge(3) != 0 && this->sn[0xB7] == 1 && this->md->buildAI.readyToResearch(4, 1) != 0 &&
+        this->md->resourceAI.resource(0) >= 900 && this->md->resourceAI.resource(3) >= 700) {
         BuildItem* item = this->md->buildAI.buildItem(0x67, 1, 4);
         if (item != 0)
             this->taskResearch(item);
@@ -9851,12 +9637,9 @@ void TribeTacticalAIModule::checkForCoopAttack(int playerToAttack, int x, int y)
         return;
     do {
         RGE_Player* other = world->players[idx];
-        if (other->id != this->md->player->id &&
-            other->computerPlayer() != 0 &&
-            this->md->player->isAlly(idx) != 0 &&
+        if (other->id != this->md->player->id && other->computerPlayer() != 0 && this->md->player->isAlly(idx) != 0 &&
             other->isAlly(this->md->player->id) != 0) {
-            if ((this->md->player->id < other->id &&
-                 other->id != world->controllingComputerPlayer) ||
+            if ((this->md->player->id < other->id && other->id != world->controllingComputerPlayer) ||
                 this->md->player->id == world->controllingComputerPlayer) {
                 other->sendAICommand(this->md->player->id, 2, playerToAttack, x, y);
             }
@@ -9946,11 +9729,9 @@ void TribeTacticalAIModule::taskElephantGatherers(
                     }
 
                     object = this->md->object(gatherer->id);
-                    if (object != 0 && object->unitAI() != 0 &&
-                        gatherer->data1 == 0) {
+                    if (object != 0 && object->unitAI() != 0 && gatherer->data1 == 0) {
                         float distance = object->distance_to_object(targetObject);
-                        if (bestDistance == DAT_00575758 ||
-                            bestDistance > distance) {
+                        if (bestDistance == DAT_00575758 || bestDistance > distance) {
                             bestValueID = gatherer->id;
                             bestDistance = distance;
                         }
@@ -9975,14 +9756,11 @@ void TribeTacticalAIModule::taskElephantGatherers(
                     goto afterAdd;
             }
 
-            if (alreadyTasked.numberValue >
-                alreadyTasked.maximumSizeValue - 1) {
+            if (alreadyTasked.numberValue > alreadyTasked.maximumSizeValue - 1) {
                 int newSize = alreadyTasked.numberValue + 1;
                 int* newValue = new int[newSize];
                 if (newValue != 0) {
-                    for (int k = 0;
-                         k < alreadyTasked.maximumSizeValue && k < newSize;
-                         k++) {
+                    for (int k = 0; k < alreadyTasked.maximumSizeValue && k < newSize; k++) {
                         newValue[k] = alreadyTasked.value[k];
                     }
                     operator delete(alreadyTasked.value);
@@ -10013,13 +9791,10 @@ void TribeTacticalAIModule::checkTradeBoats() {
                 this->md->object(this->tradeBoats[i]);
             if (object != 0) {
                 short attribute = object->attribute_type_held;
-                if (this->md->resourceAI.resource((int)attribute) <
-                    this->sn[0xD8]) {
+                if (this->md->resourceAI.resource((int)attribute) < this->sn[0xD8]) {
                     int resource = 2;
                     for (; resource >= 0; --resource) {
-                        if (resource != attribute &&
-                            this->md->resourceAI.resource(resource) >=
-                                this->sn[0xD8]) {
+                        if (resource != attribute && this->md->resourceAI.resource(resource) >= this->sn[0xD8]) {
                             goto trade_attribute;
                         }
                     }
@@ -10074,9 +9849,7 @@ void TribeTacticalAIModule::checkStaleAttackGroups() {
                 if (missing > 0) {
                     if (missing > 5)
                         missing = 5;
-                    if ((int)(this->md->player->world->world_time - group->lastAddedUnitTimeValue) /
-                            60000 >=
-                        missing) {
+                    if ((int)(this->md->player->world->world_time - group->lastAddedUnitTimeValue) / 60000 >= missing) {
                         group->setDesiredNumberUnits(group->numberUnits());
                     }
                 }
@@ -10095,10 +9868,8 @@ int TribeTacticalAIModule::numberWaterExplorers() {
     group = this->groups.next;
     sentinel = &this->groups;
     while (group != sentinel && group != 0) {
-        if ((group->type() == 0x67 || group->type() == 0x68 ||
-             group->type() == 0x69 || group->type() == 0x6a ||
-             group->type() == 0x6b || group->type() == 0x6c) &&
-            group->action() == 8) {
+        if ((group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69 || group->type() == 0x6a ||
+             group->type() == 0x6b || group->type() == 0x6c) && group->action() == 8) {
             count = count + 1;
         }
         group = group->next;
@@ -10146,10 +9917,7 @@ void TribeTacticalAIModule::saveTheTown(int idToKill) {
         count = 0;
         if (this->soldiers.numberValue > 0) {
             while (count < this->soldiers.numberValue && entryCount < 6) {
-                if (count > 1 &&
-                    debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 13383) -
-                            entryTime >
-                        10)
+                if (count > 1 && debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 13383) - entryTime > 10)
                     return;
 
                 RGE_Static_Object* object = this->md->aiPlayer->world->object(this->soldiers[count]);
@@ -10157,23 +9925,19 @@ void TribeTacticalAIModule::saveTheTown(int idToKill) {
                     if (object->unitAI()->currentAction() == 600) {
                         if (object->unitAI()->currentTarget() == -1)
                             goto trySoldier;
-                        if (object->unitAI()->currentTarget() ==
-                            targetObject->id)
+                        if (object->unitAI()->currentTarget() == targetObject->id)
                             goto countEntry;
 
                         RGE_Static_Object* currentTarget =
                             this->md->player->world->object(object->unitAI()->currentTarget());
-                        if (currentTarget != 0 &&
-                            currentTarget->owner->id ==
-                                this->playersToAttack[0])
+                        if (currentTarget != 0 && currentTarget->owner->id == this->playersToAttack[0])
                             goto countSoldier;
                     } else {
                         goto trySoldier;
                     }
 
                 trySoldier: {
-                    if (object->distance_to_object(targetObject) <
-                        25.0f) {
+                    if (object->distance_to_object(targetObject) < 25.0f) {
                         point.x = (int)targetObject->world_x;
                         point.y = (int)targetObject->world_y;
                         point.z = (int)targetObject->world_z;

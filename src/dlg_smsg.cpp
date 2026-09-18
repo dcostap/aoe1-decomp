@@ -53,7 +53,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
                    parentPanel->get_popup_info_file(), parentPanel->get_popup_info_id(), 1))
             return;
 
-        if (!create_text(this, &title, IDS_SEND_MESSAGE_TITLE, 5, 10, this->pnl_wid - 40, 30, 1, 1, 1, 0))
+        if (!create_text(this, &title, STRING_ID_SEND_MESSAGE_TITLE, 5, 10, this->pnl_wid - 40, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 1, 0))
             return;
 
         humanity = 1;
@@ -99,7 +99,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
                     if (h == 2 || comm->GetPlayerHumanity(humanity) == 4) {
                         if (!create_check_box(this, &checkButton[row], 10, y, 30, 30, 0, 0))
                             return;
-                        checkButton[row]->set_help_info(IDS_HELP_CHAT_PLAYER, -1);
+                        checkButton[row]->set_help_info(STRING_ID_HELP_CHAT_PLAYER, -1);
                         if (chat->inChatGroup(humanity) != 0)
                             checkButton[row]->set_state(1);
                         else
@@ -113,37 +113,37 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
             ++humanity;
         } while (humanity < 9);
 
-        if (!create_text(this, &chatTitle, IDS_SEND_MESSAGE_CHAT, 10, 315, 120, 30, 4, 1, 1, 0))
+        if (!create_text(this, &chatTitle, STRING_ID_SEND_MESSAGE_CHAT, 10, 315, 120, 30, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 0))
             return;
         if (!create_edit(this, &chatInput, "", 65, TEditPanel::FormatText, 130, 315, 380, 23, RGE_FONT_STANDARD, 1, 0))
             return;
-        chatInput->set_help_info(IDS_HELP_CHAT_INPUT, -1);
+        chatInput->set_help_info(STRING_ID_HELP_CHAT_INPUT, -1);
 
         if (!create_radio_button(this, &radioButton[0], 45, 350, 30, 30, 0, 0)) return;
         if (!create_radio_button(this, &radioButton[1], 275, 350, 30, 30, 0, 0)) return;
         if (!create_radio_button(this, &radioButton[2], 45, 385, 30, 30, 0, 0)) return;
         if (!create_radio_button(this, &radioButton[3], 275, 385, 30, 30, 0, 0)) return;
 
-        if (!create_text(this, &radioTitle[0], IDS_SEND_MESSAGE_ALLIES, 75, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
+        if (!create_text(this, &radioTitle[0], STRING_ID_SEND_MESSAGE_ALLIES, 75, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
         radioTitle[0]->set_help_info(-1, -1);
-        if (!create_text(this, &radioTitle[1], IDS_SEND_MESSAGE_ENEMIES, 305, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
+        if (!create_text(this, &radioTitle[1], STRING_ID_SEND_MESSAGE_ENEMIES, 305, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
         radioTitle[1]->set_help_info(-1, -1);
-        if (!create_text(this, &radioTitle[2], IDS_SEND_MESSAGE_EVERYONE, 75, 385, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
+        if (!create_text(this, &radioTitle[2], STRING_ID_SEND_MESSAGE_EVERYONE, 75, 385, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
         radioTitle[2]->set_help_info(-1, -1);
-        if (!create_text(this, &radioTitle[3], IDS_SEND_MESSAGE_SELECT_PLAYER, 305, 385, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
+        if (!create_text(this, &radioTitle[3], STRING_ID_SEND_MESSAGE_SELECT_PLAYER, 305, 385, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
         radioTitle[3]->set_help_info(-1, -1);
 
         for (i = 0; i < 4; ++i)
             radioButton[i]->set_radio_info(radioButton, 4);
         radioButton[3]->set_state(1);
-        radioButton[0]->set_help_info(IDS_HELP_CHAT_ALLIES, -1);
-        radioButton[1]->set_help_info(IDS_HELP_CHAT_ENEMIES, -1);
-        radioButton[2]->set_help_info(IDS_HELP_CHAT_ALL_PLAYERS, -1);
-        radioButton[3]->set_help_info(IDS_HELP_CHAT_RECIPIENTS, -1);
+        radioButton[0]->set_help_info(STRING_ID_HELP_CHAT_ALLIES, -1);
+        radioButton[1]->set_help_info(STRING_ID_HELP_CHAT_ENEMIES, -1);
+        radioButton[2]->set_help_info(STRING_ID_HELP_CHAT_ALL_PLAYERS, -1);
+        radioButton[3]->set_help_info(STRING_ID_HELP_CHAT_RECIPIENTS, -1);
 
-        if (!create_button(this, &okButton, IDS_BUTTON_RETURN_TO_GAME, 0, 100, 425, 300, 30, 0, 0, 0))
+        if (!create_button(this, &okButton, STRING_ID_BUTTON_RETURN_TO_GAME, 0, 100, 425, 300, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
             return;
-        okButton->set_help_info(IDS_HELP_OK, -1);
+        okButton->set_help_info(STRING_ID_HELP_OK, -1);
         okButton->hotkey = VK_ESCAPE;
         okButton->hotkey_shift = 0;
         set_curr_child(chatInput);
@@ -354,10 +354,10 @@ TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parentPan
 
     int title_id;
     if (this->modeValue == AsChat)
-        title_id = IDS_SEND_MESSAGE_CHAT;
+        title_id = STRING_ID_SEND_MESSAGE_CHAT;
     else
-        title_id = IDS_QUICK_MESSAGE_COMMENT;
-    if (!this->create_text(this, &this->chatTitle, title_id, 5, 5, 120, 25, 4, 1, 1, 0)) {
+        title_id = STRING_ID_QUICK_MESSAGE_COMMENT;
+    if (!this->create_text(this, &this->chatTitle, title_id, 5, 5, 120, 25, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 0)) {
         return;
     }
 

@@ -72,8 +72,7 @@ void RGE_Action_Gather::first_in_stack(unsigned char first_time) {
                     (RGE_Master_Action_Object*)this->obj->master_obj;
                 short id = target_master->id;
 
-                if ((id == object_master->drop_site ||
-                     id == object_master->backup_drop_site) &&
+                if ((id == object_master->drop_site || id == object_master->backup_drop_site) &&
                     this->obj->attribute_amount_held > DAT_0056e278) {
                     this->set_target_obj2(target);
                     this->set_target_obj(0);
@@ -204,8 +203,7 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
             return;
         }
 
-        if (this->target_obj != 0 &&
-            this->target_obj->attribute_amount_held <= DAT_0056e278 &&
+        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= DAT_0056e278 &&
             this->obj->keepGatheringWhenObjectIsOut((short)this->target_obj->master_obj->id) == 0) {
             this->set_target_obj(0);
         }
@@ -225,12 +223,10 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
 }
 
 unsigned char RGE_Action_Gather::update() {
-    if (this->targetID != -1 &&
-        this->obj->owner->world->object(this->targetID) == 0) {
+    if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
     }
-    if (this->target2ID != -1 &&
-        this->obj->owner->world->object(this->target2ID) == 0) {
+    if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
     }
 
@@ -241,9 +237,7 @@ unsigned char RGE_Action_Gather::update() {
         this->set_target_obj2(0);
     }
 
-    if (this->target_obj != 0 &&
-        this->target_obj->owner->id != 0 &&
-        this->target_obj->owner->id != this->obj->owner->id) {
+    if (this->target_obj != 0 && this->target_obj->owner->id != 0 && this->target_obj->owner->id != this->obj->owner->id) {
         this->set_state(1);
         this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x261, 0, 0);
         return 4;
@@ -377,8 +371,7 @@ unsigned char RGE_Action_Gather::update() {
         this->target_obj->set_attribute_amount(-give_amount, 1, 1);
         this->obj->set_attribute_amount(adjusted_amount, 1, 0);
 
-        if (this->obj->attribute_amount_held < max_hold &&
-            (this->target_obj->attribute_amount_held > DAT_0056e278 ||
+        if (this->obj->attribute_amount_held < max_hold && (this->target_obj->attribute_amount_held > DAT_0056e278 ||
              this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) != 0)) {
             return 0;
         }
@@ -409,8 +402,7 @@ unsigned char RGE_Action_Gather::update() {
                     this->set_state(8);
                     return 0;
                 }
-                if (this->obj->distance_to_object(this->target_obj2) >
-                    DAT_0056e290) {
+                if (this->obj->distance_to_object(this->target_obj2) > DAT_0056e290) {
                     this->timer = -3.0f;
                     this->obj->stop_moving();
                     return 0;
@@ -486,9 +478,7 @@ RGE_Sprite* RGE_Action_Gather::get_move_sprite() {
 RGE_Sprite* RGE_Action_Gather::get_wait_sprite() {
     RGE_Task* task = this->task;
     short value = task->attribute_type;
-    if (value != (short)0xFFFF &&
-        value == this->obj->attribute_type_held &&
-        (int)this->obj->attribute_amount_held > 0 &&
+    if (value != (short)0xFFFF && value == this->obj->attribute_type_held && (int)this->obj->attribute_amount_held > 0 &&
         task->carry_sprite != 0) {
         return task->carry_sprite;
     }
@@ -506,8 +496,7 @@ int RGE_Action_Gather::move_to(RGE_Static_Object* obj_in, float x, float y, floa
             short id = obj_in->master_obj->id;
             RGE_Master_Action_Object* object_master =
                 (RGE_Master_Action_Object*)this->obj->master_obj;
-            if (id == object_master->drop_site ||
-                id == object_master->backup_drop_site) {
+            if (id == object_master->drop_site || id == object_master->backup_drop_site) {
                 if (this->obj->attribute_amount_held > 0.0f) {
                     if (obj_in == this->target_obj2 && this->state == 8) {
                         return 1;
@@ -534,8 +523,7 @@ int RGE_Action_Gather::move_to(RGE_Static_Object* obj_in, float x, float y, floa
 
 int RGE_Action_Gather::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
-        if (obj_in == this->target_obj &&
-            (this->state == 4 || this->state == 6 || this->state == 7)) {
+        if (obj_in == this->target_obj && (this->state == 4 || this->state == 6 || this->state == 7)) {
             return 1;
         }
 
@@ -543,8 +531,7 @@ int RGE_Action_Gather::work(RGE_Static_Object* obj_in, float x, float y, float z
             short id = obj_in->master_obj->id;
             RGE_Master_Action_Object* object_master =
                 (RGE_Master_Action_Object*)this->obj->master_obj;
-            if ((id == object_master->drop_site ||
-                 id == object_master->backup_drop_site) &&
+            if ((id == object_master->drop_site || id == object_master->backup_drop_site) &&
                 this->obj->attribute_amount_held > 0.0f) {
                 this->timer = 0.0f;
                 this->set_target_obj(0);

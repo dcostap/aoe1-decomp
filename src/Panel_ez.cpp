@@ -122,8 +122,7 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
     }
 
     info_data = 0;
-    if (shape_file_first != 0 && this->info_file_name != 0 &&
-        *this->info_file_name != 0) {
+    if (shape_file_first != 0 && this->info_file_name != 0 && *this->info_file_name != 0) {
         if (strchr(this->info_file_name, '.') == 0) {
             sprintf(info_file_name2, "%s.sin", this->info_file_name);
         } else {
@@ -167,8 +166,7 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
                &s2r, &s2g, &s2b) != -1) {
         this->set_use_bevels(1);
 
-        if (this->render_area->Width < 800 ||
-            stricmp(background_pic_file_name_b1, "none") == 0) {
+        if (this->render_area->Width < 800 || stricmp(background_pic_file_name_b1, "none") == 0) {
             this->set_background(background_pic_file_name_a1, back_pic_id_a1);
             this->set_background2(background_pic_file_name_a2, back_pic_id_a2);
         } else if (this->render_area->Width < 1024) {
@@ -293,8 +291,7 @@ void TEasy_Panel::prepare_for_close() {
 
 void TEasy_Panel::setup_shadow_area(int force_redraw) {
     TDrawArea* area = this->shadow_area;
-    if ((area == 0 || force_redraw != 0) &&
-        this->background_pic != 0 && this->shadow_color_table != 0) {
+    if ((area == 0 || force_redraw != 0) && this->background_pic != 0 && this->shadow_color_table != 0) {
         unsigned long old_flags = this->render_area->DrawSystem->Flags;
 
         if (area == 0) {
@@ -798,7 +795,7 @@ int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
             if (font_num >= 0) {
                 font = rge_base_game->get_font(font_num);
             } else {
-                font = rge_base_game->get_font(10);
+                font = rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
             }
             (*button)->set_text_info(text1, font->font, font->font_wid, font->font_hgt, -1, -1);
             if (text2 != 0) {
@@ -854,7 +851,7 @@ int TEasy_Panel::create_check_box(TPanel* parent, TButtonPanel** button,
                 (*button)->set_picture(0, this->button_pics, 0);
                 (*button)->set_picture(1, this->button_pics, 2);
             } else {
-                RGE_Font* font = rge_base_game->get_font(0);
+                RGE_Font* font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_12_BOLD);
                 (*button)->set_text_info(s_space, font->font, font->font_wid, font->font_hgt, -1, -1);
                 (*button)->set_text(1, s_X);
                 (*button)->setDrawType(TButtonPanel::DrawText);
@@ -908,7 +905,7 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** button,
             } else {
                 RGE_Font* font;
                 (*button)->setDrawType(TButtonPanel::DrawText);
-                font = rge_base_game->get_font(0);
+                font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_12_BOLD);
                 (*button)->set_text_info(s_space, font->font, font->font_wid, font->font_hgt, -1, -1);
                 (*button)->set_text(1, s_X);
             }
@@ -952,7 +949,7 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
         if (font_num >= 0) {
             font = rge_base_game->get_font(font_num);
         } else {
-            font = rge_base_game->get_font(10);
+            font = rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
         }
         if ((*text_panel)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, font->font, font->font_wid,
                                  font->font_hgt, 0, 0, 0, 0, 0, 0, (char*)0) != 0) {
@@ -992,7 +989,7 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
         if (font_num >= 0) {
             font = rge_base_game->get_font(font_num);
         } else {
-            font = rge_base_game->get_font(10);
+            font = rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
         }
         if ((*text_panel)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, font->font, font->font_wid,
                                  font->font_hgt, 0, 0, 0, 0, 0, 0, (char*)0) != 0) {
@@ -1031,7 +1028,7 @@ int TEasy_Panel::create_input(TPanel* parent, TInputPanel** input_panel,
         if (font_num >= 0) {
             font = rge_base_game->get_font(font_num);
         } else {
-            font = rge_base_game->get_font(10);
+            font = rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
         }
         if ((*input_panel)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h,
                                   font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xff, 0xff, max_len, 0, value,
@@ -1065,7 +1062,7 @@ int TEasy_Panel::create_edit(TPanel* parent, TEditPanel** edit_panel,
         if (font_num >= 0) {
             font = rge_base_game->get_font(font_num);
         } else {
-            font = rge_base_game->get_font(10);
+            font = rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
         }
 
         int multiline = (format_type != 7) ? 1 : 0;
@@ -1104,7 +1101,7 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** drop_panel,
     if (font_num >= 0)
         rge_base_game->get_font(font_num);
     else
-        rge_base_game->get_font(10);
+        rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
     char** list = (char**)calloc(1,4);
     if (list == 0) { this->error_code = 1; return 0; }
     list[0] = (char*)calloc(20,1);
@@ -1159,7 +1156,7 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** list_panel,
     if (font_num >= 0) {
         rge_base_game->get_font(font_num);
     } else {
-        rge_base_game->get_font(10);
+        rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
     }
 
     list_items = (char**)calloc(1, sizeof(char*));

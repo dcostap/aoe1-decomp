@@ -56,8 +56,8 @@ Root approved these two direct substitutions in
 
 | Proposed name | ID or range | Evidence and use |
 |---|---:|---|
-| `IDS_FILE_NONE` | `0x2775` | Loads the exact payload ` <None> ` into the unused `noneString` buffer. |
-| `IDS_AI_FILE_RANDOM` | `0x277B` | Loads `Random` into `randomString` and compares it with build-list, city-plan, and ruleset inputs. |
+| `STRING_ID_FILE_NONE` | `0x2775` | Loads the exact payload ` <None> ` into the unused `noneString` buffer. |
+| `STRING_ID_AI_FILE_RANDOM` | `0x277B` | Loads `Random` into `randomString` and compares it with build-list, city-plan, and ruleset inputs. |
 
 The source uses these approved names at `src/tplayer.cpp:1612-1613`.
 The unused `noneString` load remains in place.
@@ -65,13 +65,13 @@ The unused `noneString` load remains in place.
 The imported root header provenance is:
 
 - `c7e587ce0993e28d5d6620e5b358dbb8286cfe88` added the AI file names.
-- `bf943f3339643ee5beca7dd74e98b4cb729e48d3` corrected `0x2775` to `IDS_FILE_NONE`.
+- `bf943f3339643ee5beca7dd74e98b4cb729e48d3` corrected `0x2775` to `STRING_ID_FILE_NONE`.
 - The resulting root header blob is `3670c49563f971137b89644d4a0069796cf3d2af`.
 
 The root-owned `include/resource_ids.h` was not changed in this worker tree.
 The source now includes that owner-managed header and does not define its macros.
 
-The prior `IDS_CIVILIZATION_NAME_BASE` and `IDS_BUILD_LIST_NAME_BASE` requests are withdrawn.
+The prior `STRING_ID_CIVILIZATION_NAME_BASE` and `STRING_ID_BUILD_LIST_NAME_BASE` requests are withdrawn.
 The `0x27F6` arithmetic and `0x26930` arithmetic remain numeric due to the proved limitations.
 The civilization arithmetic does not provide one complete expansion mapping, and the
 checked files do not prove the missing build-list payloads under an unchecked `STRING=` override.
@@ -213,7 +213,7 @@ temporary. The source keeps existing types, scopes, and declarations for those c
   is overwritten with the AI-present flag before `rge_write`.
   All file operations use `save_file`, including `playerAI->save(save_file)`.
 - Follow-up resource correction: parent `e35426b10aa87044da20b21f20c7e76395526fdc`.
-  It uses `IDS_FILE_NONE` and `IDS_AI_FILE_RANDOM` at the two direct call sites.
+  It uses `STRING_ID_FILE_NONE` and `STRING_ID_AI_FILE_RANDOM` at the two direct call sites.
   It leaves the `0x27F6` and `0x26930` arithmetic numeric.
 - Constructor binding repair: parent `ae634017a848d8b8af7ffdc892da0311e1971f0c`.
   It restores `gworld->tech` from the pre-cleanup constructor binding.

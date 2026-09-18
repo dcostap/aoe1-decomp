@@ -130,54 +130,54 @@ This worker did not define or edit any header macro.
 
 | ID | Base payload | Call-site purpose | Approved shared macro |
 | --- | --- | --- | --- |
-| `0x03EA` | `X` | Close-button glyph in `create_button` | Existing `IDS_BUTTON_CLOSE` |
-| `0x0C1D` | `Are you sure you want to quit this game?` | Close prompt in `wnd_proc` | `IDS_CONFIRM_QUIT_GAME` |
-| `0x0FA3` | `Yes` | Yes marker in per-player result fields | `IDS_BUTTON_YES` |
-| `0x269C` | `Close` | Close and back-to-summary buttons | `IDS_ACHIEVEMENTS_CLOSE` |
-| `0x269E` | `Achievements` | Screen title | `IDS_ACHIEVEMENTS_TITLE` |
-| `0x269F` | `Restart` | Restart button | `IDS_ACHIEVEMENTS_RESTART` |
-| `0x26AC` | `Military` | Military heading and summary | `IDS_ACHIEVEMENTS_MILITARY` |
-| `0x26AD` | `Economy` | Economy heading and summary | `IDS_ACHIEVEMENTS_ECONOMY` |
-| `0x26AE` | `Religion` | Religion heading and summary | `IDS_ACHIEVEMENTS_RELIGION` |
-| `0x26AF` | `Technology` | Technology heading and summary | `IDS_ACHIEVEMENTS_TECHNOLOGY` |
-| `0x26B1` | `Total Score` | Summary-mode total score | `IDS_ACHIEVEMENTS_TOTAL_SCORE_SUMMARY` |
-| `0x26B2` | `Aftermath` | Aftermath button and summary | `IDS_ACHIEVEMENTS_AFTERMATH` |
-| `0x26B5` | `Total Score` | Category-mode total score | `IDS_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY` |
-| `0x26B6` | `Kills` | Military statistic | `IDS_ACHIEVEMENTS_KILLS` |
-| `0x26B7` | `Razings` | Military statistic | `IDS_ACHIEVEMENTS_RAZINGS` |
-| `0x26B8` | `Kills - Losses` | Military statistic | `IDS_ACHIEVEMENTS_KILLS_LOSSES` |
-| `0x26B9` | `Losses` | Military statistic | `IDS_ACHIEVEMENTS_LOSSES` |
-| `0x26BA` | `Largest Army` | Military statistic | `IDS_ACHIEVEMENTS_LARGEST_ARMY` |
-| `0x26BE` | `Gold Collected` | Economy statistic | `IDS_ACHIEVEMENTS_GOLD_COLLECTED` |
-| `0x26BF` | `Villager High` | Economy statistic | `IDS_ACHIEVEMENTS_VILLAGER_HIGH` |
-| `0x26C0` | `Villager Bonus` | Economy statistic | `IDS_ACHIEVEMENTS_VILLAGER_BONUS` |
-| `0x26C1` | `Exploration` | Economy statistic | `IDS_ACHIEVEMENTS_EXPLORATION` |
-| `0x26C2` | `Most Explored` | Economy statistic | `IDS_ACHIEVEMENTS_MOST_EXPLORED` |
-| `0x26C3` | `Tribute Given` | Economy statistic | `IDS_ACHIEVEMENTS_TRIBUTE_GIVEN` |
-| `0x26C6` | `Conversions` | Religion statistic | `IDS_ACHIEVEMENTS_CONVERSIONS` |
-| `0x26C7` | `Most Conversions` | Religion statistic | `IDS_ACHIEVEMENTS_MOST_CONVERSIONS` |
-| `0x26C8` | `Ruins` | Religion statistic | `IDS_ACHIEVEMENTS_RUINS` |
-| `0x26C9` | `Artifacts` | Religion statistic | `IDS_ACHIEVEMENTS_ARTIFACTS` |
-| `0x26CA` | `Temples` | Religion statistic | `IDS_ACHIEVEMENTS_TEMPLES` |
-| `0x26CE` | `Technologies` | Technology statistic | `IDS_ACHIEVEMENTS_TECHNOLOGIES` |
-| `0x26CF` | `Bronze Age First` | Technology statistic | `IDS_ACHIEVEMENTS_BRONZE_AGE_FIRST` |
-| `0x26D0` | `Iron Age First` | Technology statistic | `IDS_ACHIEVEMENTS_IRON_AGE_FIRST` |
-| `0x26D1` | `Most Technologies` | Technology statistic | `IDS_ACHIEVEMENTS_MOST_TECHNOLOGIES` |
-| `0x26D6` | `Survival` | Summary statistic | `IDS_ACHIEVEMENTS_SURVIVAL` |
-| `0x26D7` | `Wonder` | Summary statistic | `IDS_ACHIEVEMENTS_WONDER` |
-| `0x26D8` | `Timeline` | Timeline button and summary | `IDS_ACHIEVEMENTS_TIMELINE` |
-| `0x26D9` | `Summary` | Summary heading | `IDS_ACHIEVEMENTS_SUMMARY` |
-| `0x26DA` | `Back` | Back button | `IDS_ACHIEVEMENTS_BACK` |
-| `0x26DB` | `Click a column for more details.` | Instruction text | `IDS_ACHIEVEMENTS_COLUMN_INSTRUCTION` |
-| `0x26DC` | `All Artifacts/Ruins.` | Religion statistic | `IDS_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS` |
+| `0x03EA` | `X` | Close-button glyph in `create_button` | Existing `STRING_ID_BUTTON_CLOSE` |
+| `0x0C1D` | `Are you sure you want to quit this game?` | Close prompt in `wnd_proc` | `STRING_ID_CONFIRM_QUIT_GAME` |
+| `0x0FA3` | `Yes` | Yes marker in per-player result fields | `STRING_ID_BUTTON_YES` |
+| `0x269C` | `Close` | Close and back-to-summary buttons | `STRING_ID_ACHIEVEMENTS_CLOSE` |
+| `0x269E` | `Achievements` | Screen title | `STRING_ID_ACHIEVEMENTS_TITLE` |
+| `0x269F` | `Restart` | Restart button | `STRING_ID_ACHIEVEMENTS_RESTART` |
+| `0x26AC` | `Military` | Military heading and summary | `STRING_ID_ACHIEVEMENTS_MILITARY` |
+| `0x26AD` | `Economy` | Economy heading and summary | `STRING_ID_ACHIEVEMENTS_ECONOMY` |
+| `0x26AE` | `Religion` | Religion heading and summary | `STRING_ID_ACHIEVEMENTS_RELIGION` |
+| `0x26AF` | `Technology` | Technology heading and summary | `STRING_ID_ACHIEVEMENTS_TECHNOLOGY` |
+| `0x26B1` | `Total Score` | Summary-mode total score | `STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_SUMMARY` |
+| `0x26B2` | `Aftermath` | Aftermath button and summary | `STRING_ID_ACHIEVEMENTS_AFTERMATH` |
+| `0x26B5` | `Total Score` | Category-mode total score | `STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY` |
+| `0x26B6` | `Kills` | Military statistic | `STRING_ID_ACHIEVEMENTS_KILLS` |
+| `0x26B7` | `Razings` | Military statistic | `STRING_ID_ACHIEVEMENTS_RAZINGS` |
+| `0x26B8` | `Kills - Losses` | Military statistic | `STRING_ID_ACHIEVEMENTS_KILLS_LOSSES` |
+| `0x26B9` | `Losses` | Military statistic | `STRING_ID_ACHIEVEMENTS_LOSSES` |
+| `0x26BA` | `Largest Army` | Military statistic | `STRING_ID_ACHIEVEMENTS_LARGEST_ARMY` |
+| `0x26BE` | `Gold Collected` | Economy statistic | `STRING_ID_ACHIEVEMENTS_GOLD_COLLECTED` |
+| `0x26BF` | `Villager High` | Economy statistic | `STRING_ID_ACHIEVEMENTS_VILLAGER_HIGH` |
+| `0x26C0` | `Villager Bonus` | Economy statistic | `STRING_ID_ACHIEVEMENTS_VILLAGER_BONUS` |
+| `0x26C1` | `Exploration` | Economy statistic | `STRING_ID_ACHIEVEMENTS_EXPLORATION` |
+| `0x26C2` | `Most Explored` | Economy statistic | `STRING_ID_ACHIEVEMENTS_MOST_EXPLORED` |
+| `0x26C3` | `Tribute Given` | Economy statistic | `STRING_ID_ACHIEVEMENTS_TRIBUTE_GIVEN` |
+| `0x26C6` | `Conversions` | Religion statistic | `STRING_ID_ACHIEVEMENTS_CONVERSIONS` |
+| `0x26C7` | `Most Conversions` | Religion statistic | `STRING_ID_ACHIEVEMENTS_MOST_CONVERSIONS` |
+| `0x26C8` | `Ruins` | Religion statistic | `STRING_ID_ACHIEVEMENTS_RUINS` |
+| `0x26C9` | `Artifacts` | Religion statistic | `STRING_ID_ACHIEVEMENTS_ARTIFACTS` |
+| `0x26CA` | `Temples` | Religion statistic | `STRING_ID_ACHIEVEMENTS_TEMPLES` |
+| `0x26CE` | `Technologies` | Technology statistic | `STRING_ID_ACHIEVEMENTS_TECHNOLOGIES` |
+| `0x26CF` | `Bronze Age First` | Technology statistic | `STRING_ID_ACHIEVEMENTS_BRONZE_AGE_FIRST` |
+| `0x26D0` | `Iron Age First` | Technology statistic | `STRING_ID_ACHIEVEMENTS_IRON_AGE_FIRST` |
+| `0x26D1` | `Most Technologies` | Technology statistic | `STRING_ID_ACHIEVEMENTS_MOST_TECHNOLOGIES` |
+| `0x26D6` | `Survival` | Summary statistic | `STRING_ID_ACHIEVEMENTS_SURVIVAL` |
+| `0x26D7` | `Wonder` | Summary statistic | `STRING_ID_ACHIEVEMENTS_WONDER` |
+| `0x26D8` | `Timeline` | Timeline button and summary | `STRING_ID_ACHIEVEMENTS_TIMELINE` |
+| `0x26D9` | `Summary` | Summary heading | `STRING_ID_ACHIEVEMENTS_SUMMARY` |
+| `0x26DA` | `Back` | Back button | `STRING_ID_ACHIEVEMENTS_BACK` |
+| `0x26DB` | `Click a column for more details.` | Instruction text | `STRING_ID_ACHIEVEMENTS_COLUMN_INSTRUCTION` |
+| `0x26DC` | `All Artifacts/Ruins.` | Religion statistic | `STRING_ID_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS` |
 
 The payload list proves text and call-site roles.
 It does not prove original developer macro names.
 Every name in this table is a cleanup name.
-`IDS_BUTTON_CLOSE` was already present as a reviewed cleanup name.
+`STRING_ID_BUTTON_CLOSE` was already present as a reviewed cleanup name.
 The other names were approved and defined by the root owner.
 
-The source uses approved `IDS_BUTTON_CLOSE` for `0x03EA`.
+The source uses approved `STRING_ID_BUTTON_CLOSE` for `0x03EA`.
 The macro expands to `0x03EA`.
 Its name is a reviewed cleanup name, not a recovered original macro name.
 
@@ -185,9 +185,9 @@ The source also passes these IDs to `TScreenPanel::setup`:
 
 | ID | Evidence | Approved shared macro |
 | --- | --- | --- |
-| `0xC389` | `scr7` layout when `game_status == 1` | `RESID_ACHIEVEMENTS_END_WIN_LAYOUT` |
-| `0xC38A` | `scr8` layout when `game_status != 1` | `RESID_ACHIEVEMENTS_END_OTHER_LAYOUT` |
-| `0xC38D` | `scr10` layout when `end_flag == 0` | `RESID_ACHIEVEMENTS_IN_GAME_LAYOUT` |
+| `0xC389` | `scr7` layout when `game_status == 1` | `BINARY_RESOURCE_ID_ACHIEVEMENTS_END_WIN_LAYOUT` |
+| `0xC38A` | `scr8` layout when `game_status != 1` | `BINARY_RESOURCE_ID_ACHIEVEMENTS_END_OTHER_LAYOUT` |
+| `0xC38D` | `scr10` layout when `end_flag == 0` | `BINARY_RESOURCE_ID_ACHIEVEMENTS_IN_GAME_LAYOUT` |
 
 `TEasy_Panel::setup` passes these IDs to `RESFILE_load(0x62696E61, ...)`.
 The source keeps the values, arguments, binary type, and load order unchanged.
@@ -241,15 +241,15 @@ No layout, lifetime, buffer size, or declaration scope was changed to resolve it
    The prior request is resolved by root approval and definitions in
    `027da42cb19a66cd9d07a7c357ab223034f26cdd`.
    Integration imported the header in `bdb8bc1af`.
-   Do not add a second name for the existing `IDS_BUTTON_CLOSE` mapping.
+   Do not add a second name for the existing `STRING_ID_BUTTON_CLOSE` mapping.
    The two `Total Score` IDs have distinct call-site roles and need distinct names.
 
 3. **Binary `RESFILE` IDs.**
    Resolved by root approval and source use of
-   `RESID_ACHIEVEMENTS_END_WIN_LAYOUT`,
-   `RESID_ACHIEVEMENTS_END_OTHER_LAYOUT`, and
-   `RESID_ACHIEVEMENTS_IN_GAME_LAYOUT`.
-   Keep these names separate from the base-language `IDS_*` group.
+   `BINARY_RESOURCE_ID_ACHIEVEMENTS_END_WIN_LAYOUT`,
+   `BINARY_RESOURCE_ID_ACHIEVEMENTS_END_OTHER_LAYOUT`, and
+   `BINARY_RESOURCE_ID_ACHIEVEMENTS_IN_GAME_LAYOUT`.
+   Keep these names separate from the base-language `STRING_ID_*` group.
    The binary type remains `0x62696E61`.
 
 ## Correction history
@@ -266,8 +266,8 @@ No layout, lifetime, buffer size, or declaration scope was changed to resolve it
   No header was edited in this correction.
 - Owner review confirmed that `include/scr_ach.h` already has all recovered
   parameter names. No further header edit is required.
-- Owner review resolved the binary `RESID_*` request.
-  Root-approved names are used and remain separate from `IDS_*`.
+- Owner review resolved the binary `BINARY_RESOURCE_ID_*` request.
+  Root-approved names are used and remain separate from `STRING_ID_*`.
 - Root reviewer evidence comes from
   `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`.
   It confirms runtime-base string and `Interfac.drs` provenance.

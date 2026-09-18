@@ -45,11 +45,11 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
         // The shipped executable truncates the copied name by four bytes.
         adjusted_name[strlen(scenario_name) - 4] = 0;
     } else {
-        strcpy(adjusted_name, get_string(IDS_MISSION_TITLE_INSTRUCTIONS));
+        strcpy(adjusted_name, get_string(STRING_ID_MISSION_TITLE_INSTRUCTIONS));
     }
 
-    create_text(this, &this->title, adjusted_name, 10, 15, 620, 20, 4, 1, 1, 0);
-    create_text(this, &this->list, text_in, 15, 70, 300, 340, 11, 0, 0, 1);
+    create_text(this, &this->title, adjusted_name, 10, 15, 620, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 0);
+    create_text(this, &this->list, text_in, 15, 70, 300, 340, RGE_FONT_STANDARD, 0, 0, 1);
     create_auto_scrollbar(&this->scroll_bar, this->list, 20);
 
     if (this->use_bevels) {
@@ -57,11 +57,11 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
                                    this->bevel_color5, this->bevel_color6);
     }
 
-    create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 200, 440, 240, 30, 0, 0, 0);
-    create_button(this, &this->text_buttons[0], IDS_MISSION_HISTORY, 0, 325, 316, 180, 30, 0, -1, 0);
+    create_button(this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 200, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+    create_button(this, &this->text_buttons[0], STRING_ID_MISSION_HISTORY, 0, 325, 316, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0);
     TButtonPanel** text_button_1 = &this->text_buttons[1];
-    create_button(this, text_button_1, IDS_MISSION_INSTRUCTIONS, 0, 325, 348, 180, 30, 0, -1, 0);
-    create_button(this, &this->text_buttons[2], IDS_MISSION_HINTS, 0, 325, 380, 180, 30, 0, -1, 0);
+    create_button(this, text_button_1, STRING_ID_MISSION_INSTRUCTIONS, 0, 325, 348, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0);
+    create_button(this, &this->text_buttons[2], STRING_ID_MISSION_HINTS, 0, 325, 380, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0);
 
     for (int i = 0; i < 3; i++) {
         this->text_buttons[i]->set_radio_info(this->text_buttons, 3);
@@ -201,8 +201,7 @@ long TRIBE_Mission_Screen::action(TPanel* fromPanel, long actionIn, unsigned lon
         if (fromPanel == this->ok_button) {
             if (this->game_flag != 0) {
                 panel_system.setCurrentPanel("Game Screen", 0);
-                if (rge_base_game->singlePlayerGame() == 1 &&
-                    rge_base_game->save_paused == 0) {
+                if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
                 }
             } else {
@@ -222,8 +221,7 @@ long TRIBE_Mission_Screen::key_down_action(long key, short count, int alt_key, i
         return 0;
     }
 
-    if (this->game_flag == 0 && rge_base_game->prog_info->use_sound != 0 &&
-        rge_base_game->sound_system != 0) {
+    if (this->game_flag == 0 && rge_base_game->prog_info->use_sound != 0 && rge_base_game->sound_system != 0) {
         rge_base_game->sound_system->stream_file("voice.wav", 0, 0);
     }
     return 1;

@@ -227,8 +227,7 @@ void __cdecl TransDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRec
                             long x = dxSkip;
                             do {
                                 uchar b = srcLine[SrcXTbl[x]];
-                                if ((unsigned int)b !=
-                                    (unsigned int)TransColor)
+                                if ((unsigned int)b != (unsigned int)TransColor)
                                     dstLine[x] = b;
                                 ++x;
                             } while (x < last);
@@ -297,8 +296,7 @@ int __cdecl ClipDibBlt(BITMAPINFO256* DestInfo, RECT* ClipRect,
     ex--;
     ey--;
 
-    if (DestX <= ex && DestY <= ey &&
-        DestWid + DestX - 1 >= left &&
+    if (DestX <= ex && DestY <= ey && DestWid + DestX - 1 >= left &&
         DestHgt + DestY - 1 >= top && DestWid >= 1 && DestHgt >= 1) {
         LONG x_scale = (SrcWid << 8) / DestWid;
         LONG y_scale = (SrcHgt << 8) / DestHgt;
@@ -653,8 +651,7 @@ palette_entries_done:
         if (ResourceId) {
             hpal = CreatePalette((const tagLOGPALETTE*)lp);
             if (MakeIdentity) {
-                if (rge_base_game->draw_system->DrawType == 1 ||
-                    rge_base_game->draw_system->ScreenMode == 1)
+                if (rge_base_game->draw_system->DrawType == 1 || rge_base_game->draw_system->ScreenMode == 1)
                     CreateIdentityPalette(hpal);
             }
         }
@@ -1361,8 +1358,7 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* pdib, void* hpal,
             ZeroRed += Increment;
             ZeroGreen += Increment;
             ZeroBlue += Increment;
-            if (ZeroRed > 255 || ZeroGreen > 255 || ZeroBlue > 255 ||
-                ZeroRed < 0 || ZeroGreen < 0 || ZeroBlue < 0) {
+            if (ZeroRed > 255 || ZeroGreen > 255 || ZeroBlue > 255 || ZeroRed < 0 || ZeroGreen < 0 || ZeroBlue < 0) {
                 if (HitEnd)
                     break;
                 Increment = -1;
@@ -1484,8 +1480,7 @@ void __cdecl CreateIdentityPalette(void* hpal) {
         palette_locals.new_pal[i].peFlags = 1;
     }
 
-    if ((system_palette_failed != 0 || source_palette_failed != 0) &&
-        *(int*)System_color_Table >= 0) {
+    if ((system_palette_failed != 0 || source_palette_failed != 0) && *(int*)System_color_Table >= 0) {
         int index = *(int*)System_color_Table;
         unsigned char* colors = &System_color_Table[0].green;
         do {

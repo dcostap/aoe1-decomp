@@ -48,8 +48,8 @@ on the reviewed game source and call path.
 The final source-format correction joined only these two calls onto one line:
 
 ```cpp
-this->popupOKDialog(IDS_ERROR_CAMPAIGN_NAME_REQUIRED, 0, 0x1C2, 100);
-this->popupOKDialog(IDS_ERROR_CAMPAIGN_REQUIRES_SCENARIO, 0, 0x1C2, 100);
+this->popupOKDialog(STRING_ID_ERROR_CAMPAIGN_NAME_REQUIRED, 0, 0x1C2, 100);
+this->popupOKDialog(STRING_ID_ERROR_CAMPAIGN_REQUIRES_SCENARIO, 0, 0x1C2, 100);
 ```
 
 No other source text changed in this correction. The source correction commit
@@ -221,8 +221,8 @@ symbol was renamed.
 
 ## Resource IDs
 
-The source now uses the existing cleanup macros `IDS_BUTTON_OK` and
-`IDS_BUTTON_CANCEL` for numeric IDs `0x0FA1` and `0x0FA2`. These macros are
+The source now uses the existing cleanup macros `STRING_ID_BUTTON_OK` and
+`STRING_ID_BUTTON_CANCEL` for numeric IDs `0x0FA1` and `0x0FA2`. These macros are
 already defined in the root-owned `include/resource_ids.h`. They are new
 cleanup names, not recovered original macro names.
 
@@ -266,19 +266,19 @@ Resource provenance for every request:
 
 | Numeric ID | Call-site purpose | Exact base text | Applied cleanup macro |
 | --- | --- | --- | --- |
-| `0x2BC1` | Campaign editor screen title | `Campaign Editor` | `IDS_CAMPAIGN_EDITOR_TITLE` |
-| `0x2BC2` | Campaign filename label | `Campaign Filename ` | `IDS_CAMPAIGN_FILENAME_LABEL` |
-| `0x2BC4` | Save button caption | `Save` | `IDS_BUTTON_SAVE` |
-| `0x2BC5` | Add-scenario button caption | `Add` | `IDS_BUTTON_ADD` |
-| `0x2BC6` | Remove-scenario button caption | `Remove` | `IDS_BUTTON_REMOVE` |
-| `0x2BC7` | Available-scenarios label | `Scenarios` | `IDS_SCENARIOS_TITLE` |
-| `0x2BC8` | Campaign-scenarios label | `Campaign Scenarios` | `IDS_CAMPAIGN_SCENARIOS_TITLE` |
-| `0x2BC9` | Save-changes confirmation format | `Do you want to save your changes to campaign\n %s` | `IDS_CONFIRM_SAVE_CAMPAIGN` |
-| `0x2BCA` | Default filename edit text | `default campaign` | `IDS_DEFAULT_CAMPAIGN_NAME` |
-| `0x2BCB` | Empty-campaign error | `At least one scenario is required in a campaign.` | `IDS_ERROR_CAMPAIGN_REQUIRES_SCENARIO` |
-| `0x2BCC` | Empty-name error | `Cannot save. You must enter a campaign name.` | `IDS_ERROR_CAMPAIGN_NAME_REQUIRED` |
-| `0x2BD5` | Move-scenario-up button caption | `Up` | `IDS_BUTTON_MOVE_SCENARIO_UP` |
-| `0x2BD6` | Move-scenario-down button caption | `Down` | `IDS_BUTTON_MOVE_SCENARIO_DOWN` |
+| `0x2BC1` | Campaign editor screen title | `Campaign Editor` | `STRING_ID_CAMPAIGN_EDITOR_TITLE` |
+| `0x2BC2` | Campaign filename label | `Campaign Filename ` | `STRING_ID_CAMPAIGN_FILENAME_LABEL` |
+| `0x2BC4` | Save button caption | `Save` | `STRING_ID_BUTTON_SAVE` |
+| `0x2BC5` | Add-scenario button caption | `Add` | `STRING_ID_BUTTON_ADD` |
+| `0x2BC6` | Remove-scenario button caption | `Remove` | `STRING_ID_BUTTON_REMOVE` |
+| `0x2BC7` | Available-scenarios label | `Scenarios` | `STRING_ID_SCENARIOS_TITLE` |
+| `0x2BC8` | Campaign-scenarios label | `Campaign Scenarios` | `STRING_ID_CAMPAIGN_SCENARIOS_TITLE` |
+| `0x2BC9` | Save-changes confirmation format | `Do you want to save your changes to campaign\n %s` | `STRING_ID_CONFIRM_SAVE_CAMPAIGN` |
+| `0x2BCA` | Default filename edit text | `default campaign` | `STRING_ID_DEFAULT_CAMPAIGN_NAME` |
+| `0x2BCB` | Empty-campaign error | `At least one scenario is required in a campaign.` | `STRING_ID_ERROR_CAMPAIGN_REQUIRES_SCENARIO` |
+| `0x2BCC` | Empty-name error | `Cannot save. You must enter a campaign name.` | `STRING_ID_ERROR_CAMPAIGN_NAME_REQUIRED` |
+| `0x2BD5` | Move-scenario-up button caption | `Up` | `STRING_ID_BUTTON_MOVE_SCENARIO_UP` |
+| `0x2BD6` | Move-scenario-down button caption | `Down` | `STRING_ID_BUTTON_MOVE_SCENARIO_DOWN` |
 
 The exact text came from local PE extraction with
 `tools/inspect_pe_strings.py`. The source uses the IDs as title, button,

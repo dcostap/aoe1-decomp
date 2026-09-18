@@ -365,8 +365,7 @@ void* TPanelSystem::get_palette(char* file_name, long res_id) {
 
     for (i = 0; i < 10; i++) {
         if (this->palette[i] != 0) {
-            if ((res_id != -1 && this->palette_id[i] == res_id) ||
-                strcmp(this->palette_file[i], file_name2) == 0) {
+            if ((res_id != -1 && this->palette_id[i] == res_id) || strcmp(this->palette_file[i], file_name2) == 0) {
                 this->palette_use_count[i]++;
                 return this->palette[i];
             }
@@ -869,30 +868,18 @@ void TPanel::set_any_overlapping_redraw(TPanel* redraw_panel, TPanel::RedrawMode
         if (panel != redraw_panel) {
             tagRECT panel_rect = panel->clip_rect;
 
-            if (((((panel_rect.left < this_rect.left) ||
-                   (panel_rect.left > this_rect.right)) &&
-                  ((panel_rect.right < this_rect.left) ||
-                   (panel_rect.right > this_rect.right))) &&
-                 ((panel_rect.left >= this_rect.left) ||
-                  (panel_rect.right <= this_rect.right))) ||
-                (((panel_rect.top < this_rect.top) ||
-                  (panel_rect.top > this_rect.bottom)) &&
-                 (((panel_rect.bottom < this_rect.top) ||
-                   (panel_rect.bottom > this_rect.bottom)) &&
-                  ((panel_rect.top >= this_rect.top) ||
-                   (panel_rect.bottom <= this_rect.bottom))))) {
-                if (((((this_rect.left >= panel_rect.left) &&
-                       (this_rect.left <= panel_rect.right)) ||
-                      ((this_rect.right >= panel_rect.left) &&
-                       (this_rect.right <= panel_rect.right))) ||
-                     ((this_rect.left < panel_rect.left) &&
-                      (this_rect.right > panel_rect.right))) &&
-                    (((this_rect.top >= panel_rect.top) &&
-                      (this_rect.top <= panel_rect.bottom)) ||
-                     ((this_rect.bottom >= panel_rect.top) &&
-                      (this_rect.bottom <= panel_rect.bottom)) ||
-                     ((this_rect.top < panel_rect.top) &&
-                      (this_rect.bottom > panel_rect.bottom)))) {
+            if (((((panel_rect.left < this_rect.left) || (panel_rect.left > this_rect.right)) &&
+                  ((panel_rect.right < this_rect.left) || (panel_rect.right > this_rect.right))) &&
+                 ((panel_rect.left >= this_rect.left) || (panel_rect.right <= this_rect.right))) ||
+                (((panel_rect.top < this_rect.top) || (panel_rect.top > this_rect.bottom)) &&
+                 (((panel_rect.bottom < this_rect.top) || (panel_rect.bottom > this_rect.bottom)) &&
+                  ((panel_rect.top >= this_rect.top) || (panel_rect.bottom <= this_rect.bottom))))) {
+                if (((((this_rect.left >= panel_rect.left) && (this_rect.left <= panel_rect.right)) ||
+                      ((this_rect.right >= panel_rect.left) && (this_rect.right <= panel_rect.right))) ||
+                     ((this_rect.left < panel_rect.left) && (this_rect.right > panel_rect.right))) &&
+                    (((this_rect.top >= panel_rect.top) && (this_rect.top <= panel_rect.bottom)) ||
+                     ((this_rect.bottom >= panel_rect.top) && (this_rect.bottom <= panel_rect.bottom)) ||
+                     ((this_rect.top < panel_rect.top) && (this_rect.bottom > panel_rect.bottom)))) {
                     panel->set_redraw(redraw_mode);
                 }
             } else {
@@ -1186,8 +1173,7 @@ long TPanel::handle_size(long win_wid, long win_hgt) {
             right = left + this->min_wid - 1;
         } else {
             if (this->max_wid != 0 && calc_wid > this->max_wid) {
-                if (this->position_mode == PositionLeft ||
-                    this->position_mode == PositionLeftTop ||
+                if (this->position_mode == PositionLeft || this->position_mode == PositionLeftTop ||
                     this->position_mode == PositionLeftBottom) {
                     right = left + this->max_wid - 1;
                 } else {
@@ -1200,8 +1186,7 @@ long TPanel::handle_size(long win_wid, long win_hgt) {
             bottom = top + this->min_hgt - 1;
         } else {
             if (this->max_hgt != 0 && calc_hgt > this->max_hgt) {
-                if (this->position_mode == PositionTop ||
-                    this->position_mode == PositionLeftTop ||
+                if (this->position_mode == PositionTop || this->position_mode == PositionLeftTop ||
                     this->position_mode == PositionRightTop) {
                     bottom = top + this->max_hgt - 1;
                 } else {
@@ -1268,9 +1253,7 @@ long TPanel::handle_paint() {
     }
 
     if (this->need_redraw != 0) {
-        for (PanelNode* node = this->first_child_node;
-             node != 0;
-             node = node->next_node) {
+        for (PanelNode* node = this->first_child_node; node != 0; node = node->next_node) {
             node->panel->set_redraw(static_cast<TPanel::RedrawMode>(this->need_redraw));
         }
 
@@ -1282,9 +1265,7 @@ long TPanel::handle_paint() {
         this->just_drawn = 1;
     }
 
-    for (PanelNode* node = this->first_child_node;
-         node != 0;
-         node = node->next_node) {
+    for (PanelNode* node = this->first_child_node; node != 0; node = node->next_node) {
         node->panel->handle_paint();
     }
 
@@ -1434,8 +1415,7 @@ long TPanel::handle_mouse_move(long x, long y, int ctrl_key, int shift_key) {
                 abs(y - this->mouse_down_y) <= this->mouse_move_tolerance)
                 return 1;
         } else {
-            if (abs(x - this->mouse_down_x) <= 10 &&
-                abs(y - this->mouse_down_y) <= 10)
+            if (abs(x - this->mouse_down_x) <= 10 && abs(y - this->mouse_down_y) <= 10)
                 return 1;
         }
     }
@@ -1698,9 +1678,7 @@ void TPanel::set_child_z_order(TPanel* child_panel, unsigned char z_order_type, 
     case 0: {
         PanelNode* start = this->first_child_node;
         int found = 0;
-        for (PanelNode* scan = start;
-             scan != 0;
-             scan = scan->next_node) {
+        for (PanelNode* scan = start; scan != 0; scan = scan->next_node) {
             if (scan->panel->z_order == (int)z_order_in) {
                 found = 1;
                 break;

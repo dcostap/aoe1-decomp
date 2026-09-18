@@ -125,9 +125,7 @@ void RGE_Sound::update(unsigned long curr_time) {
         int i = 0;
         if (this->sound_num > 0) {
             do {
-                if ((this->sounds[i].loaded == 1) &&
-                    (this->cache_time <
-                     curr_time - this->sounds[i].time)) {
+                if ((this->sounds[i].loaded == 1) && (this->cache_time < curr_time - this->sounds[i].time)) {
                     this->sounds[i].digital_sound->unload();
                     this->sounds[i].loaded = 2;
                 }
@@ -221,8 +219,7 @@ void RGE_Sound::stop() {
 
     if (this->sound_num > 0) {
         for (i = 0; i < this->sound_num; i++) {
-            if ((this->sounds[i].digital_sound != 0) &&
-                (this->sounds[i].digital_sound->is_playing() != 0)) {
+            if ((this->sounds[i].digital_sound != 0) && (this->sounds[i].digital_sound->is_playing() != 0)) {
                 this->sounds[i].digital_sound->stop();
             }
         }

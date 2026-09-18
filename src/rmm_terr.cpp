@@ -70,29 +70,23 @@ void RGE_RMM_Terrain_Generator::check_borders() {
                     uchar t = this->map_row_offset[y][x].terrain_type;
                     if (!this->water(t)) {
                         uchar border = 0;
-                        if (y > 0 &&
-                            this->water(this->map_row_offset[y - 1][x].terrain_type)) {
+                        if (y > 0 && this->water(this->map_row_offset[y - 1][x].terrain_type)) {
                             border = 1;
-                        } else if (y < max_y &&
-                                   this->water(this->map_row_offset[y + 1][x].terrain_type)) {
+                        } else if (y < max_y && this->water(this->map_row_offset[y + 1][x].terrain_type)) {
                             border = 1;
                         }
 
                         if (x > 0) {
-                            if (this->water(this->map_row_offset[y][x - 1].terrain_type) ||
-                                (y > 0 &&
-                                 this->water(this->map_row_offset[y - 1][x - 1].terrain_type)) ||
-                                (y < max_y &&
+                            if (this->water(this->map_row_offset[y][x - 1].terrain_type) || (y > 0 &&
+                                 this->water(this->map_row_offset[y - 1][x - 1].terrain_type)) || (y < max_y &&
                                  this->water(this->map_row_offset[y + 1][x - 1].terrain_type))) {
                                 border = 1;
                             }
                         }
 
                         if (x < max_x) {
-                            if (this->water(this->map_row_offset[y][x + 1].terrain_type) ||
-                                (y > 0 &&
-                                 this->water(this->map_row_offset[y - 1][x + 1].terrain_type)) ||
-                                (y < max_y &&
+                            if (this->water(this->map_row_offset[y][x + 1].terrain_type) || (y > 0 &&
+                                 this->water(this->map_row_offset[y - 1][x + 1].terrain_type)) || (y < max_y &&
                                  this->water(this->map_row_offset[y + 1][x + 1].terrain_type))) {
                                 border = 1;
                             }
@@ -140,8 +134,7 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
                     RGE_Tile* tile = row;
                     do {
                         if (((tile->terrain_type & 0x1f) != base_terrain) &&
-                            ((tile->terrain_type & 0x1f) != i_base_terrain) &&
-                            ((tile->terrain_type & 0x1f) != target)) {
+                            ((tile->terrain_type & 0x1f) != i_base_terrain) && ((tile->terrain_type & 0x1f) != target)) {
                             return 0;
                         }
                         ++xx;
@@ -398,12 +391,10 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                     break;
                 }
 
-                if ((this->map_row_offset[x][y].terrain_type & 0x1f) ==
-                        info_line.base_terrain_type &&
+                if ((this->map_row_offset[x][y].terrain_type & 0x1f) == info_line.base_terrain_type &&
                     this->check_terrain((uchar)info_line.terrain_type, y, x,
                                         info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
-                    (info_line.avoid_hot_spots == 0 ||
-                     this->search_map_rows[x][y] == 0)) {
+                    (info_line.avoid_hot_spots == 0 || this->search_map_rows[x][y] == 0)) {
                     this->remove_area_from_lists(y, x, base_area);
 
                     this->map_row_offset[x][y].terrain_type =
@@ -431,8 +422,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                         fair_i = 0;
                         if (this->info.hot_spot_num > 0) {
                             do {
-                                if (terrain_fairness_zones[fair_i] == zone &&
-                                    terrain_fairness_zones_visited[fair_i] == 0) {
+                                if (terrain_fairness_zones[fair_i] == zone && terrain_fairness_zones_visited[fair_i] == 0) {
                                     terrain_fairness_zones_visited[fair_i] = 1;
                                     ++terrain_fairness_zones_visited_count;
                                 }
@@ -444,16 +434,14 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
             }
         }
 
-        if (info_line.avoid_hot_spots == 2 &&
-            terrain_fairness_zones_visited_count < this->info.hot_spot_num) {
+        if (info_line.avoid_hot_spots == 2 && terrain_fairness_zones_visited_count < this->info.hot_spot_num) {
             stack_ptr = &stack[clump_size];
             while (terrain_fairness_zones_visited_count < this->info.hot_spot_num) {
                 if (this->pop_stack(loc_stack, y, x, cost) == 0) {
                     break;
                 }
 
-                if ((this->map_row_offset[x][y].terrain_type & 0x1f) ==
-                        info_line.base_terrain_type &&
+                if ((this->map_row_offset[x][y].terrain_type & 0x1f) == info_line.base_terrain_type &&
                     this->check_terrain((uchar)info_line.terrain_type, y, x,
                                         info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
                     this->search_map_rows[x][y] < 0x1e) {
@@ -461,8 +449,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                     fair_i = 0;
                     if (this->info.hot_spot_num > 0) {
                         do {
-                            if (terrain_fairness_zones[fair_i] == zone &&
-                                terrain_fairness_zones_visited[fair_i] == 0) {
+                            if (terrain_fairness_zones[fair_i] == zone && terrain_fairness_zones_visited[fair_i] == 0) {
                                 break;
                             }
                             ++fair_i;
@@ -507,19 +494,15 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
             stack_ptr = stack;
             base_area = clump_size;
             do {
-                if (in_zone < info_line.terrain_size &&
-                    this->pop_stack(*stack_ptr, y, x, cost) != 0) {
+                if (in_zone < info_line.terrain_size && this->pop_stack(*stack_ptr, y, x, cost) != 0) {
                     done = 0;
 
-                    if (info_line.avoid_hot_spots == 0 ||
-                        this->search_map_rows[x][y] <=
-                            (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 454) * 100) /
-                                0x7fff) {
+                    if (info_line.avoid_hot_spots == 0 || this->search_map_rows[x][y] <=
+                        (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 454) * 100) / 0x7fff) {
                         RGE_Tile* tile = &this->map_row_offset[x][y];
                         long ok = this->check_terrain((uchar)info_line.terrain_type, y, x, info_line.spacing,
                                                       (uchar)info_line.base_terrain_type);
-                        if ((tile->terrain_type & 0x1f) ==
-                                info_line.base_terrain_type && ok > 0) {
+                        if ((tile->terrain_type & 0x1f) == info_line.base_terrain_type && ok > 0) {
                             score = this->fig_chance(ok, y, x, info_line.clumpiness_factor);
                             if (info_line.avoid_hot_spots != 0) {
                                 index1 = this->search_map_rows[x][y];
@@ -528,30 +511,22 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
 
                             tile->terrain_type = (uchar)info_line.terrain_type;
 
-                            if (y > 0 &&
-                                (tile[-1].terrain_type & 0x1f) ==
-                                    info_line.base_terrain_type) {
+                            if (y > 0 && (tile[-1].terrain_type & 0x1f) == info_line.base_terrain_type) {
                                 index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 469) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, y - 1, x, 0.0f, (float)index1 + score);
                             }
-                            if (y < max_y &&
-                                (tile[1].terrain_type & 0x1f) ==
-                                    info_line.base_terrain_type) {
+                            if (y < max_y && (tile[1].terrain_type & 0x1f) == info_line.base_terrain_type) {
                                 index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 471) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, y + 1, x, 0.0f, (float)index1 + score);
                             }
-                            if (x > 0 &&
-                                (tile[-this->map_width].terrain_type & 0x1f) ==
-                                    info_line.base_terrain_type) {
+                            if (x > 0 && (tile[-this->map_width].terrain_type & 0x1f) == info_line.base_terrain_type) {
                                 index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 473) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, y, x - 1, 0.0f, (float)index1 + score);
                             }
-                            if (x < max_x &&
-                                (tile[this->map_width].terrain_type & 0x1f) ==
-                                    info_line.base_terrain_type) {
+                            if (x < max_x && (tile[this->map_width].terrain_type & 0x1f) == info_line.base_terrain_type) {
                                 index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 475) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, y, x + 1, 0.0f, (float)index1 + score);
@@ -572,18 +547,10 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
         do {
             while (this->pop_stack(*stack_ptr, y, x, cost) != 0) {
                 RGE_Tile* tile = &this->map_row_offset[x][y];
-                if ((y > 0 &&
-                    (tile[-1].terrain_type & 0x1f) ==
-                        (uchar)info_line.terrain_type &&
-                    y < max_y &&
-                    (tile[1].terrain_type & 0x1f) ==
-                        (uchar)info_line.terrain_type) ||
-                    (x > 0 &&
-                    (tile[-this->map_width].terrain_type & 0x1f) ==
-                        (uchar)info_line.terrain_type &&
-                    x > max_x &&
-                    (tile[this->map_width].terrain_type & 0x1f) ==
-                        (uchar)info_line.terrain_type)) {
+                if ((y > 0 && (tile[-1].terrain_type & 0x1f) == (uchar)info_line.terrain_type && y < max_y &&
+                    (tile[1].terrain_type & 0x1f) == (uchar)info_line.terrain_type) || (x > 0 &&
+                    (tile[-this->map_width].terrain_type & 0x1f) == (uchar)info_line.terrain_type && x > max_x &&
+                    (tile[this->map_width].terrain_type & 0x1f) == (uchar)info_line.terrain_type)) {
                     tile->terrain_type = (uchar)info_line.terrain_type;
                 }
             }

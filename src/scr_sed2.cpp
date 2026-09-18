@@ -201,8 +201,7 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which) {
         static_cast<T_Scenario*>(this->world->scenario)->Set_victory_all_flag(0);
     }
 
-    if (!this->victory_cond_on[0]->get_state() &&
-        this->victory_cond_type[4]->get_state()) {
+    if (!this->victory_cond_on[0]->get_state() && this->victory_cond_type[4]->get_state()) {
         static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(0);
     } else {
         static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(1);
@@ -624,14 +623,14 @@ void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int act
         this->victory_object_list->set_active(activate);
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_OBJECT_AMOUNT, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_OBJECT_AMOUNT, -1);
         this->bottom_panel->set_curr_child(this->victory_amount_input);
         break;
     case 4:
         this->victory_object_list->set_active(activate);
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_OBJECT_AMOUNT_2, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_OBJECT_AMOUNT_2, -1);
         this->bottom_panel->set_curr_child(this->victory_amount_input);
         this->victory_button_set_destination->set_active(activate);
         this->victory_button_go_to_dest->set_active(activate);
@@ -641,7 +640,7 @@ void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int act
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
         this->victory_which_enemy_text->set_active(activate);
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_OBJECT_AMOUNT_3, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_OBJECT_AMOUNT_3, -1);
         this->victory_enemy_player_list->set_active(activate);
         ptr[0] = this->victory_enemy_player_list;
         ptr[1] = this->victory_amount_input;
@@ -669,37 +668,37 @@ void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int act
         this->victory_ages_list->set_active(activate);
         break;
     case 10:
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_GOLD_AMOUNT, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_GOLD_AMOUNT, -1);
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
         this->bottom_panel->set_curr_child(this->victory_amount_input);
         break;
     case 11:
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_FOOD_AMOUNT, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_FOOD_AMOUNT, -1);
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
         this->bottom_panel->set_curr_child(this->victory_amount_input);
         break;
     case 12:
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_WOOD_AMOUNT, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_WOOD_AMOUNT, -1);
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
         this->bottom_panel->set_curr_child(this->victory_amount_input);
         break;
     case 13:
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_STONE_AMOUNT, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_STONE_AMOUNT, -1);
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
         this->bottom_panel->set_curr_child(this->victory_amount_input);
         break;
     case 14:
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_POPULATION_AMOUNT, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_POPULATION_AMOUNT, -1);
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
         this->bottom_panel->set_curr_child(this->victory_amount_input);
         break;
     case 16:
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_EXPLORATION_AMOUNT_INPUT, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_EXPLORATION_AMOUNT_INPUT, -1);
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
         this->bottom_panel->set_curr_child(this->victory_amount_input);
@@ -707,7 +706,7 @@ void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int act
     case 17:
         this->victory_amount_text->set_active(activate);
         this->victory_amount_input->set_active(activate);
-        this->victory_amount_input->set_help_info(IDS_HELP_EDITOR_AMOUNT, -1);
+        this->victory_amount_input->set_help_info(STRING_ID_HELP_EDITOR_AMOUNT, -1);
         this->bottom_panel->set_curr_child(this->victory_amount_input);
         this->victory_attribute_list->set_active(activate);
         break;
@@ -903,25 +902,25 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
 
     group = this->scenario_mode_button;
     cur = group;
-    if (!(this->create_button(this, cur, IDS_EDITOR_MAP, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_MAP_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_MAP, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_MAP_MODE, -1);
     cur = this->scenario_mode_button + 1;
-    if (!(this->create_button(this, cur, IDS_EDITOR_TERRAIN, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_TERRAIN_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_TERRAIN, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_TERRAIN_MODE, -1);
     cur = this->scenario_mode_button + 2;
-    if (!(this->create_button(this, cur, IDS_EDITOR_PLAYERS, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_PLAYERS_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_PLAYERS, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_PLAYERS_MODE, -1);
     cur = this->scenario_mode_button + 3;
-    if (!(this->create_button(this, cur, IDS_EDITOR_UNITS, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_OBJECTS_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_UNITS, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_OBJECTS_MODE, -1);
     cur = this->scenario_mode_button + 4;
-    if (!(this->create_button(this, cur, IDS_EDITOR_DIPLOMACY, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_DIPLOMACY_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_DIPLOMACY, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_DIPLOMACY_MODE, -1);
     cur = this->scenario_mode_button + 5;
-    if (!(this->create_button(this, cur, IDS_EDITOR_INDIVIDUAL_VICTORY, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_VICTORY_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_INDIVIDUAL_VICTORY, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_MODE, -1);
     cur = this->scenario_mode_button + 6;
-    if (!(this->create_button(this, cur, IDS_EDITOR_GLOBAL_VICTORY, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_VICTORY_REQUIREMENTS_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_GLOBAL_VICTORY, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_REQUIREMENTS_MODE, -1);
     cur = this->scenario_mode_button + 7;
-    if (!(this->create_button(this, cur, IDS_EDITOR_OPTIONS, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_TECHNOLOGY_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_OPTIONS, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_TECHNOLOGY_MODE, -1);
     cur = this->scenario_mode_button + 8;
-    if (!(this->create_button(this, cur, IDS_EDITOR_MESSAGES, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_STORY_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_MESSAGES, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_STORY_MODE, -1);
     cur = this->scenario_mode_button + 9;
-    if (!(this->create_button(this, cur, IDS_EDITOR_CINEMATICS, 1))) goto fail; (*cur)->set_help_info(IDS_HELP_EDITOR_CINEMATICS_MODE, -1);
+    if (!(this->create_button(this, cur, STRING_ID_EDITOR_CINEMATICS, 1))) goto fail; (*cur)->set_help_info(STRING_ID_HELP_EDITOR_CINEMATICS_MODE, -1);
 
     cur = group;
     count = 10;
@@ -932,73 +931,73 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
         --count;
     } while (count != 0);
 
-    if (!(this->create_button(this, &this->menu_button, IDS_EDITOR_MENU, 0))) goto fail;
-    (this->menu_button)->set_help_info(IDS_HELP_EDITOR_MENU, -1);
+    if (!(this->create_button(this, &this->menu_button, STRING_ID_EDITOR_MENU, 0))) goto fail;
+    (this->menu_button)->set_help_info(STRING_ID_HELP_EDITOR_MENU, -1);
     this->menu_button->set_active(1);
-    if (!(this->create_button(this, &this->help_button, IDS_BUTTON_HELP, 0))) goto fail;
+    if (!(this->create_button(this, &this->help_button, STRING_ID_BUTTON_HELP, 0))) goto fail;
     this->help_button->set_active(1);
 
-    if (!(this->create_text(this->bottom_panel, &this->map_type_label, IDS_EDITOR_MAP_LABEL))) goto fail;
-    if (!(this->create_radio_button(this->bottom_panel, &this->map_type_button[0]))) goto fail; (this->map_type_button[0])->set_help_info(IDS_HELP_EDITOR_DEFAULT_TERRAIN, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->map_type_button[1]))) goto fail; (this->map_type_button[1])->set_help_info(IDS_HELP_EDITOR_RANDOM_TERRAIN, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->map_type_button[2]))) goto fail; (this->map_type_button[2])->set_help_info(IDS_HELP_EDITOR_SEEDED_TERRAIN, -1);
-    if (!(this->create_text(this->bottom_panel, &this->map_type_text[0], IDS_EDITOR_BLANK_MAP))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->map_type_text[1], IDS_EDITOR_RANDOM_MAP))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->map_type_text[2], IDS_EDITOR_SEED_MAP))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->default_terrain_label, IDS_EDITOR_DEFAULT_TERRAIN))) goto fail;
-    if (!(this->create_drop_down(this->bottom_panel, &this->default_terrain_drop))) goto fail; (this->default_terrain_drop)->set_help_info(IDS_HELP_EDITOR_DEFAULT_TERRAIN_SELECT, -1);
-    if (!(this->TEasy_Panel::create_text(this->main_view, &this->map_generating_text, IDS_EDITOR_GENERATING_MAP, 0, 0,
-                                         (int)(this)->width(), (int)(this)->height() - 200, 1, 1, 1, 0))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->map_type_label, STRING_ID_EDITOR_MAP_LABEL))) goto fail;
+    if (!(this->create_radio_button(this->bottom_panel, &this->map_type_button[0]))) goto fail; (this->map_type_button[0])->set_help_info(STRING_ID_HELP_EDITOR_DEFAULT_TERRAIN, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->map_type_button[1]))) goto fail; (this->map_type_button[1])->set_help_info(STRING_ID_HELP_EDITOR_RANDOM_TERRAIN, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->map_type_button[2]))) goto fail; (this->map_type_button[2])->set_help_info(STRING_ID_HELP_EDITOR_SEEDED_TERRAIN, -1);
+    if (!(this->create_text(this->bottom_panel, &this->map_type_text[0], STRING_ID_EDITOR_BLANK_MAP))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->map_type_text[1], STRING_ID_EDITOR_RANDOM_MAP))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->map_type_text[2], STRING_ID_EDITOR_SEED_MAP))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->default_terrain_label, STRING_ID_EDITOR_DEFAULT_TERRAIN))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->default_terrain_drop))) goto fail; (this->default_terrain_drop)->set_help_info(STRING_ID_HELP_EDITOR_DEFAULT_TERRAIN_SELECT, -1);
+    if (!(this->TEasy_Panel::create_text(this->main_view, &this->map_generating_text, STRING_ID_EDITOR_GENERATING_MAP, 0, 0,
+                                         (int)(this)->width(), (int)(this)->height() - 200, RGE_FONT_COPPERPLATE_21_BOLD, 1, 1, 0))) goto fail;
     this->map_generating_text->set_active(0);
 
-    if (!(this->create_text(this->bottom_panel, &this->map_size_label, IDS_MAP_SIZE_LABEL))) goto fail;
-    if (!(this->create_drop_down(this->bottom_panel, &this->map_size_drop))) goto fail; (this->map_size_drop)->set_help_info(IDS_HELP_EDITOR_MAP_SIZE, -1);
-    if (!(this->create_text(this->bottom_panel, &this->map_style_label, IDS_EDITOR_MAP_TYPE_LABEL))) goto fail;
-    if (!(this->create_drop_down(this->bottom_panel, &this->map_style_drop))) goto fail; (this->map_style_drop)->set_help_info(IDS_HELP_EDITOR_MAP_TYPE, -1);
-    if (!(this->create_text(this->bottom_panel, &this->random_seed_label, IDS_EDITOR_SEED_LABEL))) goto fail;
-    if (!(this->create_edit(this->bottom_panel, &this->random_seed_input, s_0, 5, FormatUnsignedInt, 0, 0))) goto fail; (this->random_seed_input)->set_help_info(IDS_HELP_EDITOR_RANDOM_SEED, -1);
-    if (!(this->create_text(this->bottom_panel, &this->random_seed_used_label, IDS_EDITOR_SEED_TEXT))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->map_size_label, STRING_ID_MAP_SIZE_LABEL))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->map_size_drop))) goto fail; (this->map_size_drop)->set_help_info(STRING_ID_HELP_EDITOR_MAP_SIZE, -1);
+    if (!(this->create_text(this->bottom_panel, &this->map_style_label, STRING_ID_EDITOR_MAP_TYPE_LABEL))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->map_style_drop))) goto fail; (this->map_style_drop)->set_help_info(STRING_ID_HELP_EDITOR_MAP_TYPE, -1);
+    if (!(this->create_text(this->bottom_panel, &this->random_seed_label, STRING_ID_EDITOR_SEED_LABEL))) goto fail;
+    if (!(this->create_edit(this->bottom_panel, &this->random_seed_input, s_0, 5, FormatUnsignedInt, 0, 0))) goto fail; (this->random_seed_input)->set_help_info(STRING_ID_HELP_EDITOR_RANDOM_SEED, -1);
+    if (!(this->create_text(this->bottom_panel, &this->random_seed_used_label, STRING_ID_EDITOR_SEED_TEXT))) goto fail;
     if (!(this->create_text(this->bottom_panel, &this->random_seed_used_text, s_0))) goto fail;
-    if (!(this->create_button(this->bottom_panel, &this->generate_map_button, IDS_EDITOR_GENERATE_MAP, 0))) goto fail; (this->generate_map_button)->set_help_info(IDS_HELP_EDITOR_GENERATE_MAP, -1);
+    if (!(this->create_button(this->bottom_panel, &this->generate_map_button, STRING_ID_EDITOR_GENERATE_MAP, 0))) goto fail; (this->generate_map_button)->set_help_info(STRING_ID_HELP_EDITOR_GENERATE_MAP, -1);
     for (i = 0; i < 3; ++i) this->map_type_button[i]->set_radio_info(this->map_type_button, 3);
 
-    if (!(this->create_text(this->bottom_panel, &this->brush_size_label, IDS_EDITOR_BRUSH_SIZE))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->paint_terrain_label, IDS_EDITOR_TERRAIN_LABEL))) goto fail;
-    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[0]))) goto fail; (this->brush_size_button[0])->set_help_info(IDS_HELP_EDITOR_BRUSH_SIZE_1, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[1]))) goto fail; (this->brush_size_button[1])->set_help_info(IDS_HELP_EDITOR_BRUSH_SIZE_2, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[2]))) goto fail; (this->brush_size_button[2])->set_help_info(IDS_HELP_EDITOR_BRUSH_SIZE_3, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[3]))) goto fail; (this->brush_size_button[3])->set_help_info(IDS_HELP_EDITOR_BRUSH_SIZE_4, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[4]))) goto fail; (this->brush_size_button[4])->set_help_info(IDS_HELP_EDITOR_BRUSH_SIZE_5, -1);
-    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[0], IDS_EDITOR_BRUSH_TINY))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[1], IDS_EDITOR_BRUSH_SMALL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[2], IDS_EDITOR_BRUSH_MEDIUM))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[3], IDS_EDITOR_BRUSH_LARGE))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[4], IDS_EDITOR_BRUSH_HUGE))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->paint_type_label, IDS_EDITOR_BRUSH_TYPE))) goto fail;
-    if (!(this->create_radio_button(this->bottom_panel, &this->paint_type_button[0]))) goto fail; (this->paint_type_button[0])->set_help_info(IDS_HELP_EDITOR_PAINT_TERRAIN, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->paint_type_button[1]))) goto fail; (this->paint_type_button[1])->set_help_info(IDS_HELP_EDITOR_PAINT_ELEVATION, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->paint_type_button[2]))) goto fail; (this->paint_type_button[2])->set_help_info(IDS_HELP_EDITOR_PAINT_CLIFFS, -1);
-    if (!(this->create_text(this->bottom_panel, &this->paint_type_button_label[0], IDS_EDITOR_MAP))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->paint_type_button_label[1], IDS_TERRAIN_ELEVATION_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->paint_type_button_label[2], IDS_EDITOR_CLIFFS))) goto fail;
-    if (!(this->create_list(this->bottom_panel, &this->paint_terrain_list, &this->paint_terrain_scrollbar))) goto fail; (this->paint_terrain_list)->set_help_info(IDS_HELP_EDITOR_TERRAIN_LIST, -1);
-    if (!(this->create_list(this->bottom_panel, &this->paint_elevation_list, &this->paint_elevation_scrollbar))) goto fail; (this->paint_elevation_list)->set_help_info(IDS_HELP_EDITOR_ELEVATION_LIST, -1);
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_label, STRING_ID_EDITOR_BRUSH_SIZE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->paint_terrain_label, STRING_ID_EDITOR_TERRAIN_LABEL))) goto fail;
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[0]))) goto fail; (this->brush_size_button[0])->set_help_info(STRING_ID_HELP_EDITOR_BRUSH_SIZE_1, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[1]))) goto fail; (this->brush_size_button[1])->set_help_info(STRING_ID_HELP_EDITOR_BRUSH_SIZE_2, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[2]))) goto fail; (this->brush_size_button[2])->set_help_info(STRING_ID_HELP_EDITOR_BRUSH_SIZE_3, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[3]))) goto fail; (this->brush_size_button[3])->set_help_info(STRING_ID_HELP_EDITOR_BRUSH_SIZE_4, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->brush_size_button[4]))) goto fail; (this->brush_size_button[4])->set_help_info(STRING_ID_HELP_EDITOR_BRUSH_SIZE_5, -1);
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[0], STRING_ID_EDITOR_BRUSH_TINY))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[1], STRING_ID_EDITOR_BRUSH_SMALL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[2], STRING_ID_EDITOR_BRUSH_MEDIUM))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[3], STRING_ID_EDITOR_BRUSH_LARGE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->brush_size_button_label[4], STRING_ID_EDITOR_BRUSH_HUGE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->paint_type_label, STRING_ID_EDITOR_BRUSH_TYPE))) goto fail;
+    if (!(this->create_radio_button(this->bottom_panel, &this->paint_type_button[0]))) goto fail; (this->paint_type_button[0])->set_help_info(STRING_ID_HELP_EDITOR_PAINT_TERRAIN, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->paint_type_button[1]))) goto fail; (this->paint_type_button[1])->set_help_info(STRING_ID_HELP_EDITOR_PAINT_ELEVATION, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->paint_type_button[2]))) goto fail; (this->paint_type_button[2])->set_help_info(STRING_ID_HELP_EDITOR_PAINT_CLIFFS, -1);
+    if (!(this->create_text(this->bottom_panel, &this->paint_type_button_label[0], STRING_ID_EDITOR_MAP))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->paint_type_button_label[1], STRING_ID_TERRAIN_ELEVATION_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->paint_type_button_label[2], STRING_ID_EDITOR_CLIFFS))) goto fail;
+    if (!(this->create_list(this->bottom_panel, &this->paint_terrain_list, &this->paint_terrain_scrollbar))) goto fail; (this->paint_terrain_list)->set_help_info(STRING_ID_HELP_EDITOR_TERRAIN_LIST, -1);
+    if (!(this->create_list(this->bottom_panel, &this->paint_elevation_list, &this->paint_elevation_scrollbar))) goto fail; (this->paint_elevation_list)->set_help_info(STRING_ID_HELP_EDITOR_ELEVATION_LIST, -1);
     for (i = 0; i < 5; ++i) this->brush_size_button[i]->set_radio_info(this->brush_size_button, 5);
     for (i = 0; i < 3; ++i) this->paint_type_button[i]->set_radio_info(this->paint_type_button, 3);
 
-    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[0]))) goto fail; (this->unit_mode_select[0])->set_help_info(IDS_HELP_EDITOR_UNIT_PLACE, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[1]))) goto fail; (this->unit_mode_select[1])->set_help_info(IDS_HELP_EDITOR_UNIT_DELETE, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[2]))) goto fail; (this->unit_mode_select[2])->set_help_info(IDS_HELP_EDITOR_UNIT_MOVE, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[3]))) goto fail; (this->unit_mode_select[3])->set_help_info(IDS_HELP_EDITOR_UNIT_ROTATE, -1);
-    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[0], IDS_EDITOR_PLACE))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[1], IDS_EDITOR_DELETE))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[2], IDS_EDITOR_MOVE))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[3], IDS_EDITOR_ROTATE))) goto fail;
+    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[0]))) goto fail; (this->unit_mode_select[0])->set_help_info(STRING_ID_HELP_EDITOR_UNIT_PLACE, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[1]))) goto fail; (this->unit_mode_select[1])->set_help_info(STRING_ID_HELP_EDITOR_UNIT_DELETE, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[2]))) goto fail; (this->unit_mode_select[2])->set_help_info(STRING_ID_HELP_EDITOR_UNIT_MOVE, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->unit_mode_select[3]))) goto fail; (this->unit_mode_select[3])->set_help_info(STRING_ID_HELP_EDITOR_UNIT_ROTATE, -1);
+    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[0], STRING_ID_EDITOR_PLACE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[1], STRING_ID_EDITOR_DELETE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[2], STRING_ID_EDITOR_MOVE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->unit_mode_select_label[3], STRING_ID_EDITOR_ROTATE))) goto fail;
     for (i = 0; i < 4; ++i) this->unit_mode_select[i]->set_radio_info(this->unit_mode_select, 4);
     this->unit_mode_select[0]->set_radio_button();
 
     if (!(this->create_list(this, &this->unit_list, &this->unit_scrollbar))) goto fail;
-    (this->unit_list)->set_help_info(IDS_HELP_EDITOR_UNIT_LIST, -1);
+    (this->unit_list)->set_help_info(STRING_ID_HELP_EDITOR_UNIT_LIST, -1);
     this->unit_list->set_z_order(2, 0);
 
     this->button_unit_pics = new TShape(s_btnunit_shp, 0xC62A);
@@ -1014,9 +1013,9 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
         if (!this->button_bldg_pics[idx]->is_loaded()) goto bad;
     }
 
-    if (!(this->create_drop_down(this->bottom_panel, &this->unit_player_list))) goto fail; (this->unit_player_list)->set_help_info(IDS_HELP_EDITOR_UNIT_PLAYER, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->unit_player_list))) goto fail; (this->unit_player_list)->set_help_info(STRING_ID_HELP_EDITOR_UNIT_PLAYER, -1);
     {
-        RGE_Font* f = rge_base_game->get_font(10);
+        RGE_Font* f = rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
         this->object_panel = new TRIBE_Scenario_Editor_Panel_Object(this->render_area, this, f->font, f->font_wid, f->font_hgt,
                                                                     this->button_unit_pics, this->button_bldg_pics, 0);
         if (!this->object_panel || this->object_panel->error_code != 0) goto bad;
@@ -1024,89 +1023,89 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
         this->unit_player_list->set_z_order(1, 0);
     }
 
-    if (!(this->create_text(this->bottom_panel, &this->player_label, IDS_EDITOR_NUMBER_OF_PLAYERS))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->player_starting_age_label, IDS_STARTING_AGE_LABEL_EDITOR))) goto fail;
-    if (!(this->create_drop_down(this->bottom_panel, &this->player_advance_civilization_drop))) goto fail; (this->player_advance_civilization_drop)->set_help_info(IDS_HELP_EDITOR_STARTING_AGE, -1);
+    if (!(this->create_text(this->bottom_panel, &this->player_label, STRING_ID_EDITOR_NUMBER_OF_PLAYERS))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_starting_age_label, STRING_ID_STARTING_AGE_LABEL_EDITOR))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->player_advance_civilization_drop))) goto fail; (this->player_advance_civilization_drop)->set_help_info(STRING_ID_HELP_EDITOR_STARTING_AGE, -1);
     this->Set_player_advance_civilization_text(0);
-    if (!(this->create_drop_down(this->bottom_panel, &this->player_list))) goto fail; (this->player_list)->set_help_info(IDS_HELP_EDITOR_PLAYER_LIST, -1);
-    if (!(this->create_drop_down(this->bottom_panel, &this->player_number_list))) goto fail; (this->player_number_list)->set_help_info(IDS_HELP_EDITOR_PLAYER_COUNT, -1);
-    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[0], IDS_RESOURCE_FOOD_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[1], IDS_RESOURCE_WOOD_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[2], IDS_RESOURCE_STONE_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[3], IDS_RESOURCE_GOLD_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[4], IDS_TRIBE_NAME_LABEL))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->player_list))) goto fail; (this->player_list)->set_help_info(STRING_ID_HELP_EDITOR_PLAYER_LIST, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->player_number_list))) goto fail; (this->player_number_list)->set_help_info(STRING_ID_HELP_EDITOR_PLAYER_COUNT, -1);
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[0], STRING_ID_RESOURCE_FOOD_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[1], STRING_ID_RESOURCE_WOOD_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[2], STRING_ID_RESOURCE_STONE_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[3], STRING_ID_RESOURCE_GOLD_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_inven_label[4], STRING_ID_TRIBE_NAME_LABEL))) goto fail;
     for (i = 0; i < 4; ++i) if (!(this->create_edit(this->bottom_panel, &this->player_inven_input[i], s_0, 5, FormatUnsignedInt, 0, 0))) goto fail;
-    (this->player_inven_input[0])->set_help_info(IDS_HELP_EDITOR_PLAYER_FOOD, 1);
-    (this->player_inven_input[1])->set_help_info(IDS_HELP_EDITOR_PLAYER_WOOD, 1);
-    (this->player_inven_input[2])->set_help_info(IDS_HELP_EDITOR_PLAYER_STONE, 1);
-    (this->player_inven_input[3])->set_help_info(IDS_HELP_EDITOR_PLAYER_GOLD, 1);
-    if (!(this->create_edit(this->bottom_panel, &this->player_inven_input[4], s_592A40, 28, FormatText, 1, 1))) goto fail; (this->player_inven_input[4])->set_help_info(IDS_HELP_EDITOR_TRIBE_NAME, 1);
-    if (!(this->create_text(this->bottom_panel, &this->player_setting_label[0], IDS_PLAYER_TYPE_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->player_setting_label[1], IDS_CIVILIZATION_LABEL))) goto fail;
+    (this->player_inven_input[0])->set_help_info(STRING_ID_HELP_EDITOR_PLAYER_FOOD, 1);
+    (this->player_inven_input[1])->set_help_info(STRING_ID_HELP_EDITOR_PLAYER_WOOD, 1);
+    (this->player_inven_input[2])->set_help_info(STRING_ID_HELP_EDITOR_PLAYER_STONE, 1);
+    (this->player_inven_input[3])->set_help_info(STRING_ID_HELP_EDITOR_PLAYER_GOLD, 1);
+    if (!(this->create_edit(this->bottom_panel, &this->player_inven_input[4], s_592A40, 28, FormatText, 1, 1))) goto fail; (this->player_inven_input[4])->set_help_info(STRING_ID_HELP_EDITOR_TRIBE_NAME, 1);
+    if (!(this->create_text(this->bottom_panel, &this->player_setting_label[0], STRING_ID_PLAYER_TYPE_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_setting_label[1], STRING_ID_CIVILIZATION_LABEL))) goto fail;
     for (i = 0; i < 2; ++i) if (!(this->create_drop_down(this->bottom_panel, &this->player_setting_drop[i]))) goto fail;
-    (this->player_setting_drop[0])->set_help_info(IDS_HELP_EDITOR_PLAYER_TYPE, -1);
-    (this->player_setting_drop[1])->set_help_info(IDS_HELP_EDITOR_PLAYER_CIVILIZATION, -1);
-    if (!(this->create_drop_down(this->bottom_panel, &this->BuildList))) goto fail; (this->BuildList)->set_help_info(IDS_HELP_EDITOR_BUILD_LIST, -1);
-    if (!(this->create_drop_down(this->bottom_panel, &this->CityLayout))) goto fail; (this->CityLayout)->set_help_info(IDS_HELP_EDITOR_CITY_LAYOUT, -1);
-    if (!(this->create_drop_down(this->bottom_panel, &this->AiRules))) goto fail; (this->AiRules)->set_help_info(IDS_HELP_EDITOR_AI_RULES, -1);
-    if (!(this->create_text(this->bottom_panel, &this->player_build_text, IDS_STRATEGY_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->player_city_text, IDS_CITY_PLAN_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->AiRules_text, IDS_PERSONALITY_LABEL))) goto fail;
+    (this->player_setting_drop[0])->set_help_info(STRING_ID_HELP_EDITOR_PLAYER_TYPE, -1);
+    (this->player_setting_drop[1])->set_help_info(STRING_ID_HELP_EDITOR_PLAYER_CIVILIZATION, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->BuildList))) goto fail; (this->BuildList)->set_help_info(STRING_ID_HELP_EDITOR_BUILD_LIST, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->CityLayout))) goto fail; (this->CityLayout)->set_help_info(STRING_ID_HELP_EDITOR_CITY_LAYOUT, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->AiRules))) goto fail; (this->AiRules)->set_help_info(STRING_ID_HELP_EDITOR_AI_RULES, -1);
+    if (!(this->create_text(this->bottom_panel, &this->player_build_text, STRING_ID_STRATEGY_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->player_city_text, STRING_ID_CITY_PLAN_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->AiRules_text, STRING_ID_PERSONALITY_LABEL))) goto fail;
     this->set_tab_order((TPanel**)this->player_inven_input, 5);
 
-    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[0]))) goto fail; (this->victory_cond_on[0])->set_help_info(IDS_HELP_EDITOR_VICTORY_CONQUEST, -1);
-    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[1]))) goto fail; (this->victory_cond_on[1])->set_help_info(IDS_HELP_EDITOR_VICTORY_EXPLORATION_AMOUNT, -1);
-    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[2]))) goto fail; (this->victory_cond_on[2])->set_help_info(IDS_HELP_EDITOR_VICTORY_RUINS, -1);
-    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[3]))) goto fail; (this->victory_cond_on[3])->set_help_info(IDS_HELP_EDITOR_VICTORY_ARTIFACTS, -1);
-    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[4]))) goto fail; (this->victory_cond_on[4])->set_help_info(IDS_HELP_EDITOR_VICTORY_DISCOVERIES, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[0]))) goto fail; (this->victory_cond_on[0])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_CONQUEST, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[1]))) goto fail; (this->victory_cond_on[1])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_EXPLORATION_AMOUNT, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[2]))) goto fail; (this->victory_cond_on[2])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_RUINS, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[3]))) goto fail; (this->victory_cond_on[3])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_ARTIFACTS, -1);
+    if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[4]))) goto fail; (this->victory_cond_on[4])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_DISCOVERIES, -1);
     if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[5]))) goto fail;
     // This editor help slot is empty in the checked DLL.
-    (this->victory_cond_on[5])->set_help_info(IDS_HELP_EDITOR_VICTORY_GOLD, -1);
+    (this->victory_cond_on[5])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_GOLD, -1);
 
-    if (!(this->create_radio_button(this->bottom_panel, &this->victory_and_or[0]))) goto fail; (this->victory_and_or[0])->set_help_info(IDS_HELP_EDITOR_VICTORY_ANY, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->victory_and_or[1]))) goto fail; (this->victory_and_or[1])->set_help_info(IDS_HELP_EDITOR_VICTORY_ALL, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_and_or[0]))) goto fail; (this->victory_and_or[0])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_ANY, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_and_or[1]))) goto fail; (this->victory_and_or[1])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_ALL, -1);
     for (i = 0; i < 2; ++i) this->victory_and_or[i]->set_radio_info(this->victory_and_or, 2);
     this->victory_and_or[0]->set_radio_button();
-    if (!(this->create_text(this->bottom_panel, &this->victory_text_and_or[0], IDS_EDITOR_ANY_ONE))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_text_and_or[1], IDS_EDITOR_ALL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_amount_label, IDS_EDITOR_QUANTITY_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_long_label, IDS_EDITOR_WHICH_CONDITIONS))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_condition_label, IDS_EDITOR_VICTORY_CONDITION_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_label_conquest, IDS_VICTORY_CONQUEST))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_label_explore, IDS_EDITOR_EXPLORATION))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_label_explore_percent, IDS_OPTION_DEFAULT))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_label_ruins, IDS_EDITOR_RUINS))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_label_artifacts, IDS_EDITOR_ARTIFACTS))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_label_discoveries, IDS_EDITOR_DISCOVERIES))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_label_gold, IDS_EDITOR_GOLD))) goto fail;
-    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_explore, s_space, 3, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_explore)->set_help_info(IDS_HELP_EDITOR_EXPLORATION_AMOUNT, -1);
-    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_ruins, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_ruins)->set_help_info(IDS_HELP_EDITOR_RUINS_AMOUNT, -1);
-    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_artifacts, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_artifacts)->set_help_info(IDS_HELP_EDITOR_ARTIFACTS_AMOUNT, -1);
-    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_discoveries, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_discoveries)->set_help_info(IDS_HELP_EDITOR_DISCOVERIES_AMOUNT, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_text_and_or[0], STRING_ID_EDITOR_ANY_ONE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_text_and_or[1], STRING_ID_EDITOR_ALL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_amount_label, STRING_ID_EDITOR_QUANTITY_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_long_label, STRING_ID_EDITOR_WHICH_CONDITIONS))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_condition_label, STRING_ID_EDITOR_VICTORY_CONDITION_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_conquest, STRING_ID_VICTORY_CONQUEST))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_explore, STRING_ID_EDITOR_EXPLORATION))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_explore_percent, STRING_ID_OPTION_DEFAULT))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_ruins, STRING_ID_EDITOR_RUINS))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_artifacts, STRING_ID_EDITOR_ARTIFACTS))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_discoveries, STRING_ID_EDITOR_DISCOVERIES))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_label_gold, STRING_ID_EDITOR_GOLD))) goto fail;
+    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_explore, s_space, 3, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_explore)->set_help_info(STRING_ID_HELP_EDITOR_EXPLORATION_AMOUNT, -1);
+    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_ruins, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_ruins)->set_help_info(STRING_ID_HELP_EDITOR_RUINS_AMOUNT, -1);
+    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_artifacts, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_artifacts)->set_help_info(STRING_ID_HELP_EDITOR_ARTIFACTS_AMOUNT, -1);
+    if (!(this->create_edit(this->bottom_panel, &this->victory_condition_discoveries, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_discoveries)->set_help_info(STRING_ID_HELP_EDITOR_DISCOVERIES_AMOUNT, -1);
     if (!(this->create_edit(this->bottom_panel, &this->victory_condition_gold, s_space, 5, FormatUnsignedInt, 0, 0))) goto fail;
     // This editor help slot is empty in the checked DLL.
-    (this->victory_condition_gold)->set_help_info(IDS_HELP_EDITOR_VICTORY_GOLD_AMOUNT, -1);
+    (this->victory_condition_gold)->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_GOLD_AMOUNT, -1);
     ptr[0] = this->victory_condition_explore;
     ptr[1] = this->victory_condition_ruins;
     ptr[2] = this->victory_condition_artifacts;
     ptr[3] = this->victory_condition_discoveries;
     this->set_tab_order(ptr, 4);
 
-    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[0], IDS_VICTORY_STANDARD))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[1], IDS_VICTORY_CONQUEST))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[2], IDS_VICTORY_SCORE))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[3], IDS_VICTORY_TIME_LIMIT))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[4], IDS_EDITOR_CUSTOM_VICTORY))) goto fail;
-    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[0]))) goto fail; (this->victory_cond_type[0])->set_help_info(IDS_HELP_EDITOR_STANDARD_VICTORY, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[1]))) goto fail; (this->victory_cond_type[1])->set_help_info(IDS_HELP_EDITOR_CONQUEST, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[2]))) goto fail; (this->victory_cond_type[2])->set_help_info(IDS_HELP_EDITOR_SCORE, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[3]))) goto fail; (this->victory_cond_type[3])->set_help_info(IDS_HELP_EDITOR_TIME_LIMIT, -1);
-    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[4]))) goto fail; (this->victory_cond_type[4])->set_help_info(IDS_HELP_EDITOR_CUSTOM_VICTORY, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[0], STRING_ID_VICTORY_STANDARD))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[1], STRING_ID_VICTORY_CONQUEST))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[2], STRING_ID_VICTORY_SCORE))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[3], STRING_ID_VICTORY_TIME_LIMIT))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_cond_type_label[4], STRING_ID_EDITOR_CUSTOM_VICTORY))) goto fail;
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[0]))) goto fail; (this->victory_cond_type[0])->set_help_info(STRING_ID_HELP_EDITOR_STANDARD_VICTORY, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[1]))) goto fail; (this->victory_cond_type[1])->set_help_info(STRING_ID_HELP_EDITOR_CONQUEST, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[2]))) goto fail; (this->victory_cond_type[2])->set_help_info(STRING_ID_HELP_EDITOR_SCORE, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[3]))) goto fail; (this->victory_cond_type[3])->set_help_info(STRING_ID_HELP_EDITOR_TIME_LIMIT, -1);
+    if (!(this->create_radio_button(this->bottom_panel, &this->victory_cond_type[4]))) goto fail; (this->victory_cond_type[4])->set_help_info(STRING_ID_HELP_EDITOR_CUSTOM_VICTORY, -1);
     for (i = 0; i < 5; ++i) this->victory_cond_type[i]->set_radio_info(this->victory_cond_type, 5);
     this->victory_cond_type[1]->set_radio_button();
 
-    if (!(this->create_text(this->bottom_panel, &this->victory_score_label, IDS_VICTORY_SCORE))) goto fail;
-    if (!(this->create_drop_down(this->bottom_panel, &this->victory_score))) goto fail; (this->victory_score)->set_help_info(IDS_HELP_EDITOR_SCORE_INPUT, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_score_label, STRING_ID_VICTORY_SCORE))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_score))) goto fail; (this->victory_score)->set_help_info(STRING_ID_HELP_EDITOR_SCORE_INPUT, -1);
     this->victory_score->empty_list();
     this->victory_score->append_line(s_3000, 3000);
     this->victory_score->append_line(s_2700, 2700);
@@ -1123,16 +1122,16 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
     this->victory_score->append_line(s_400, 400);
     this->victory_score->append_line(s_300, 300);
 
-    if (!(this->create_text(this->bottom_panel, &this->victory_time_label, IDS_VICTORY_TIME_LIMIT))) goto fail;
-    if (!(this->create_drop_down(this->bottom_panel, &this->victory_time))) goto fail; (this->victory_time)->set_help_info(IDS_HELP_EDITOR_TIME_LIMIT_INPUT, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_time_label, STRING_ID_VICTORY_TIME_LIMIT))) goto fail;
+    if (!(this->create_drop_down(this->bottom_panel, &this->victory_time))) goto fail; (this->victory_time)->set_help_info(STRING_ID_HELP_EDITOR_TIME_LIMIT_INPUT, -1);
     this->victory_time->empty_list();
-    this->victory_time->append_line(IDS_TIME_LIMIT_BASE, 15000);
-    this->victory_time->append_line(IDS_TIME_LIMIT_13000, 13000);
-    this->victory_time->append_line(IDS_TIME_LIMIT_11000, 11000);
-    this->victory_time->append_line(IDS_TIME_LIMIT_9000, 9000);
-    this->victory_time->append_line(IDS_TIME_LIMIT_7000, 7000);
-    this->victory_time->append_line(IDS_TIME_LIMIT_5000, 5000);
-    this->victory_time->append_line(IDS_TIME_LIMIT_3000, 3000);
+    this->victory_time->append_line(STRING_ID_TIME_LIMIT_BASE, 15000);
+    this->victory_time->append_line(STRING_ID_TIME_LIMIT_13000, 13000);
+    this->victory_time->append_line(STRING_ID_TIME_LIMIT_11000, 11000);
+    this->victory_time->append_line(STRING_ID_TIME_LIMIT_9000, 9000);
+    this->victory_time->append_line(STRING_ID_TIME_LIMIT_7000, 7000);
+    this->victory_time->append_line(STRING_ID_TIME_LIMIT_5000, 5000);
+    this->victory_time->append_line(STRING_ID_TIME_LIMIT_3000, 3000);
 
     i = 1;
     pp = this->victory_button;
@@ -1142,7 +1141,7 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
         sprintf(str3, s_percent_d_star, i);
         sprintf(str4, s_angle_d_star, i);
         if (!(this->create_button(this->bottom_panel, pp, str1, str2, str3, str4))) goto fail;
-        (*pp)->set_help_info(IDS_HELP_EDITOR_VICTORY_CONDITION_ROW, -1);
+        (*pp)->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_CONDITION_ROW, -1);
         ++pp;
         ++i;
     }
@@ -1154,90 +1153,90 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
     if (!(this->create_drop_down(this->bottom_panel, &this->victory_attribute_list))) goto fail;
     if (!(this->create_drop_down(this->bottom_panel, &this->victory_ages_list))) goto fail;
     if (!(this->create_drop_down(this->bottom_panel, &this->victory_tech_list))) goto fail;
-    (this->victory_drop_down)->set_help_info(IDS_HELP_EDITOR_VICTORY_TYPE, -1);
-    (this->victory_object_list)->set_help_info(IDS_HELP_EDITOR_VICTORY_OBJECT, -1);
-    (this->victory_player_list)->set_help_info(IDS_HELP_EDITOR_VICTORY_PLAYER, -1);
-    (this->victory_ages_list)->set_help_info(IDS_HELP_EDITOR_VICTORY_AGE, -1);
-    (this->victory_enemy_player_list)->set_help_info(IDS_HELP_EDITOR_ENEMY_PLAYER, -1);
-    (this->victory_attribute_list)->set_help_info(IDS_HELP_EDITOR_ATTRIBUTE, -1);
-    (this->victory_tech_list)->set_help_info(IDS_HELP_EDITOR_TECHNOLOGY, -1);
+    (this->victory_drop_down)->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_TYPE, -1);
+    (this->victory_object_list)->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_OBJECT, -1);
+    (this->victory_player_list)->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_PLAYER, -1);
+    (this->victory_ages_list)->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_AGE, -1);
+    (this->victory_enemy_player_list)->set_help_info(STRING_ID_HELP_EDITOR_ENEMY_PLAYER, -1);
+    (this->victory_attribute_list)->set_help_info(STRING_ID_HELP_EDITOR_ATTRIBUTE, -1);
+    (this->victory_tech_list)->set_help_info(STRING_ID_HELP_EDITOR_TECHNOLOGY, -1);
 
-    if (!(this->create_text(this->bottom_panel, &this->victory_condition_text, IDS_EDITOR_VICTORY_CONDITION))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_condition_type, IDS_EDITOR_VICTORY_TYPE))) goto fail;
-    if (!(this->create_button(this->bottom_panel, &this->victory_button_set_object, IDS_EDITOR_SET_OBJECT, 0))) goto fail;
-    if (!(this->create_button(this->bottom_panel, &this->victory_button_set_destination, IDS_EDITOR_SET_DESTINATION, 0))) goto fail;
-    if (!(this->create_button(this->bottom_panel, &this->victory_button_go_to_dest, IDS_EDITOR_GO_TO_DESTINATION, 0))) goto fail;
-    (this->victory_button_set_object)->set_help_info(IDS_HELP_EDITOR_SET_OBJECT, -1);
-    (this->victory_button_set_destination)->set_help_info(IDS_HELP_EDITOR_SET_DESTINATION, -1);
-    (this->victory_button_go_to_dest)->set_help_info(IDS_HELP_EDITOR_GO_TO_DESTINATION, -1);
-    if (!(this->create_text(this->bottom_panel, &this->victory_amount_text, IDS_EDITOR_QUANTITY))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->victory_which_enemy_text, IDS_EDITOR_WHICH_PLAYER))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_condition_text, STRING_ID_EDITOR_VICTORY_CONDITION))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_condition_type, STRING_ID_EDITOR_VICTORY_TYPE))) goto fail;
+    if (!(this->create_button(this->bottom_panel, &this->victory_button_set_object, STRING_ID_EDITOR_SET_OBJECT, 0))) goto fail;
+    if (!(this->create_button(this->bottom_panel, &this->victory_button_set_destination, STRING_ID_EDITOR_SET_DESTINATION, 0))) goto fail;
+    if (!(this->create_button(this->bottom_panel, &this->victory_button_go_to_dest, STRING_ID_EDITOR_GO_TO_DESTINATION, 0))) goto fail;
+    (this->victory_button_set_object)->set_help_info(STRING_ID_HELP_EDITOR_SET_OBJECT, -1);
+    (this->victory_button_set_destination)->set_help_info(STRING_ID_HELP_EDITOR_SET_DESTINATION, -1);
+    (this->victory_button_go_to_dest)->set_help_info(STRING_ID_HELP_EDITOR_GO_TO_DESTINATION, -1);
+    if (!(this->create_text(this->bottom_panel, &this->victory_amount_text, STRING_ID_EDITOR_QUANTITY))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->victory_which_enemy_text, STRING_ID_EDITOR_WHICH_PLAYER))) goto fail;
     if (!(this->create_edit(this->bottom_panel, &this->victory_amount_input, s_0, 5, FormatUnsignedInt, 0, 0))) goto fail;
 
     for (i = 0; i < 5; ++i) if (!(this->create_radio_button(this->bottom_panel, &this->message_button[i]))) goto fail;
     this->current_message = 0;
-    (this->message_button[0])->set_help_info(IDS_HELP_EDITOR_SCENARIO_INSTRUCTIONS, -1);
-    (this->message_button[1])->set_help_info(IDS_HELP_EDITOR_HINTS, -1);
-    (this->message_button[2])->set_help_info(IDS_HELP_EDITOR_VICTORY_MESSAGE, -1);
-    (this->message_button[3])->set_help_info(IDS_HELP_EDITOR_LOSS_MESSAGE, -1);
-    (this->message_button[4])->set_help_info(IDS_HELP_EDITOR_HISTORY, -1);
-    if (!(this->create_text(this->bottom_panel, &this->message_button_label[0], IDS_EDITOR_SCENARIO_INSTRUCTIONS_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->message_button_label[1], IDS_EDITOR_HINTS_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->message_button_label[2], IDS_EDITOR_VICTORY_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->message_button_label[3], IDS_EDITOR_LOSS_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->message_button_label[4], IDS_MISSION_HISTORY))) goto fail;
+    (this->message_button[0])->set_help_info(STRING_ID_HELP_EDITOR_SCENARIO_INSTRUCTIONS, -1);
+    (this->message_button[1])->set_help_info(STRING_ID_HELP_EDITOR_HINTS, -1);
+    (this->message_button[2])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_MESSAGE, -1);
+    (this->message_button[3])->set_help_info(STRING_ID_HELP_EDITOR_LOSS_MESSAGE, -1);
+    (this->message_button[4])->set_help_info(STRING_ID_HELP_EDITOR_HISTORY, -1);
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[0], STRING_ID_EDITOR_SCENARIO_INSTRUCTIONS_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[1], STRING_ID_EDITOR_HINTS_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[2], STRING_ID_EDITOR_VICTORY_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[3], STRING_ID_EDITOR_LOSS_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->message_button_label[4], STRING_ID_MISSION_HISTORY))) goto fail;
     for (i = 0; i < 5; ++i) this->message_button[i]->set_radio_info(this->message_button, 5);
     if (!(this->create_edit(this->bottom_panel, &this->message_input, s_592A40, 4095, FormatMultiLine, 1, 1))) goto fail;
     (this->message_input)->set_help_info(-1, -1);
 
-    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[0], IDS_EDITOR_PRE_GAME_CINEMATIC))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[1], IDS_EDITOR_VICTORY_CINEMATIC_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[2], IDS_EDITOR_LOSS_CINEMATIC_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[3], IDS_EDITOR_SCENARIO_INSTRUCTION_MAP))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[0], STRING_ID_EDITOR_PRE_GAME_CINEMATIC))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[1], STRING_ID_EDITOR_VICTORY_CINEMATIC_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[2], STRING_ID_EDITOR_LOSS_CINEMATIC_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->cinematic_label[3], STRING_ID_EDITOR_SCENARIO_INSTRUCTION_MAP))) goto fail;
     for (i = 0; i < 4; ++i) if (!(this->create_drop_down(this->bottom_panel, &this->cinematic_input[i]))) goto fail;
-    (this->cinematic_input[0])->set_help_info(IDS_HELP_EDITOR_INTRO_CINEMATIC, -1);
-    (this->cinematic_input[1])->set_help_info(IDS_HELP_EDITOR_VICTORY_CINEMATIC, -1);
-    (this->cinematic_input[2])->set_help_info(IDS_HELP_EDITOR_LOSS_CINEMATIC, -1);
-    (this->cinematic_input[3])->set_help_info(IDS_HELP_EDITOR_BRIEFING_MAP, -1);
+    (this->cinematic_input[0])->set_help_info(STRING_ID_HELP_EDITOR_INTRO_CINEMATIC, -1);
+    (this->cinematic_input[1])->set_help_info(STRING_ID_HELP_EDITOR_VICTORY_CINEMATIC, -1);
+    (this->cinematic_input[2])->set_help_info(STRING_ID_HELP_EDITOR_LOSS_CINEMATIC, -1);
+    (this->cinematic_input[3])->set_help_info(STRING_ID_HELP_EDITOR_BRIEFING_MAP, -1);
 
-    if (!(this->create_text(this->bottom_panel, &this->options_label[0], IDS_FULL_TECH_TREE_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_tech_text, IDS_EDITOR_DISABLE_TECHNOLOGY))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_label[0], STRING_ID_FULL_TECH_TREE_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_tech_text, STRING_ID_EDITOR_DISABLE_TECHNOLOGY))) goto fail;
     for (i = 0; i < 1; ++i) if (!(this->create_check_box(this->bottom_panel, &this->options_button[i]))) goto fail;
-    (this->options_button[0])->set_help_info(IDS_HELP_EDITOR_FULL_TECH_TREE, -1);
-    if (!(this->create_drop_down(this->bottom_panel, &this->options_player_list))) goto fail; (this->options_player_list)->set_help_info(IDS_HELP_EDITOR_OPTIONS_PLAYER, -1);
+    (this->options_button[0])->set_help_info(STRING_ID_HELP_EDITOR_FULL_TECH_TREE, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->options_player_list))) goto fail; (this->options_player_list)->set_help_info(STRING_ID_HELP_EDITOR_OPTIONS_PLAYER, -1);
     for (i = 0; i < 16; ++i) if (!(this->create_check_box(this->bottom_panel, &this->options_disable_button[i]))) goto fail;
-    (this->options_disable_button[0])->set_help_info(IDS_HELP_EDITOR_DISABLE_GRANARY, -1);
-    (this->options_disable_button[1])->set_help_info(IDS_HELP_EDITOR_DISABLE_STORAGE_PIT, -1);
-    (this->options_disable_button[2])->set_help_info(IDS_HELP_EDITOR_DISABLE_DOCK, -1);
-    (this->options_disable_button[3])->set_help_info(IDS_HELP_EDITOR_DISABLE_BARRACKS, -1);
-    (this->options_disable_button[4])->set_help_info(IDS_HELP_EDITOR_DISABLE_MARKET, -1);
-    (this->options_disable_button[5])->set_help_info(IDS_HELP_EDITOR_DISABLE_ARCHERY_RANGE, -1);
-    (this->options_disable_button[6])->set_help_info(IDS_HELP_EDITOR_DISABLE_STABLE, -1);
-    (this->options_disable_button[7])->set_help_info(IDS_HELP_EDITOR_DISABLE_TEMPLE, -1);
-    (this->options_disable_button[8])->set_help_info(IDS_HELP_EDITOR_DISABLE_GOVERNMENT_CENTER, -1);
-    (this->options_disable_button[9])->set_help_info(IDS_HELP_EDITOR_DISABLE_SIEGE_WORKSHOP, -1);
-    (this->options_disable_button[10])->set_help_info(IDS_HELP_EDITOR_DISABLE_ACADEMY, -1);
-    (this->options_disable_button[11])->set_help_info(IDS_HELP_EDITOR_DISABLE_TOOL_AGE, -1);
-    (this->options_disable_button[12])->set_help_info(IDS_HELP_EDITOR_DISABLE_BRONZE_AGE, -1);
-    (this->options_disable_button[13])->set_help_info(IDS_HELP_EDITOR_DISABLE_IRON_AGE, -1);
-    (this->options_disable_button[14])->set_help_info(IDS_HELP_EDITOR_DISABLE_TOWN_CENTER, -1);
-    (this->options_disable_button[15])->set_help_info(IDS_HELP_EDITOR_DISABLE_WONDER, -1);
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[0], IDS_EDITOR_DISABLE_GRANARY_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[1], IDS_EDITOR_DISABLE_STORAGE_PIT_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[2], IDS_EDITOR_DISABLE_DOCK_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[3], IDS_EDITOR_DISABLE_BARRACKS_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[4], IDS_EDITOR_DISABLE_MARKET_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[5], IDS_EDITOR_DISABLE_ARCHERY_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[6], IDS_EDITOR_DISABLE_STABLE_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[7], IDS_EDITOR_DISABLE_TEMPLE_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[8], IDS_EDITOR_DISABLE_GOVERNMENT_CENTER_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[9], IDS_EDITOR_DISABLE_SIEGE_WORKSHOP_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[10], IDS_EDITOR_DISABLE_ACADEMY_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[11], IDS_EDITOR_DISABLE_TOOL_AGE_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[12], IDS_EDITOR_DISABLE_BRONZE_AGE_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[13], IDS_EDITOR_DISABLE_IRON_AGE_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[14], IDS_EDITOR_DISABLE_TOWN_CENTER_LABEL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[15], IDS_EDITOR_DISABLE_WONDER_LABEL))) goto fail;
+    (this->options_disable_button[0])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_GRANARY, -1);
+    (this->options_disable_button[1])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_STORAGE_PIT, -1);
+    (this->options_disable_button[2])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_DOCK, -1);
+    (this->options_disable_button[3])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_BARRACKS, -1);
+    (this->options_disable_button[4])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_MARKET, -1);
+    (this->options_disable_button[5])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_ARCHERY_RANGE, -1);
+    (this->options_disable_button[6])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_STABLE, -1);
+    (this->options_disable_button[7])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_TEMPLE, -1);
+    (this->options_disable_button[8])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_GOVERNMENT_CENTER, -1);
+    (this->options_disable_button[9])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_SIEGE_WORKSHOP, -1);
+    (this->options_disable_button[10])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_ACADEMY, -1);
+    (this->options_disable_button[11])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_TOOL_AGE, -1);
+    (this->options_disable_button[12])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_BRONZE_AGE, -1);
+    (this->options_disable_button[13])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_IRON_AGE, -1);
+    (this->options_disable_button[14])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_TOWN_CENTER, -1);
+    (this->options_disable_button[15])->set_help_info(STRING_ID_HELP_EDITOR_DISABLE_WONDER, -1);
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[0], STRING_ID_EDITOR_DISABLE_GRANARY_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[1], STRING_ID_EDITOR_DISABLE_STORAGE_PIT_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[2], STRING_ID_EDITOR_DISABLE_DOCK_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[3], STRING_ID_EDITOR_DISABLE_BARRACKS_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[4], STRING_ID_EDITOR_DISABLE_MARKET_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[5], STRING_ID_EDITOR_DISABLE_ARCHERY_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[6], STRING_ID_EDITOR_DISABLE_STABLE_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[7], STRING_ID_EDITOR_DISABLE_TEMPLE_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[8], STRING_ID_EDITOR_DISABLE_GOVERNMENT_CENTER_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[9], STRING_ID_EDITOR_DISABLE_SIEGE_WORKSHOP_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[10], STRING_ID_EDITOR_DISABLE_ACADEMY_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[11], STRING_ID_EDITOR_DISABLE_TOOL_AGE_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[12], STRING_ID_EDITOR_DISABLE_BRONZE_AGE_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[13], STRING_ID_EDITOR_DISABLE_IRON_AGE_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[14], STRING_ID_EDITOR_DISABLE_TOWN_CENTER_LABEL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->options_disable_text[15], STRING_ID_EDITOR_DISABLE_WONDER_LABEL))) goto fail;
 
     i = 0;
     tt = this->Diplomacy_player_text;
@@ -1248,25 +1247,25 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
         ++i;
         if (i >= 8) break;
     }
-    if (!(this->create_drop_down(this->bottom_panel, &this->Diplomacy_player_list))) goto fail; (this->Diplomacy_player_list)->set_help_info(IDS_HELP_EDITOR_DIPLOMACY_PLAYER, -1);
+    if (!(this->create_drop_down(this->bottom_panel, &this->Diplomacy_player_list))) goto fail; (this->Diplomacy_player_list)->set_help_info(STRING_ID_HELP_EDITOR_DIPLOMACY_PLAYER, -1);
 
     i = 0;
     while (i < 8) {
-        if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][0]))) goto fail; (this->Diplomacy_friend_box[i][0])->set_help_info(IDS_HELP_EDITOR_DIPLOMACY_ALLY, -1);
-        if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][1]))) goto fail; (this->Diplomacy_friend_box[i][1])->set_help_info(IDS_HELP_EDITOR_DIPLOMACY_NEUTRAL, -1);
-        if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][2]))) goto fail; (this->Diplomacy_friend_box[i][2])->set_help_info(IDS_HELP_EDITOR_DIPLOMACY_ENEMY, -1);
+        if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][0]))) goto fail; (this->Diplomacy_friend_box[i][0])->set_help_info(STRING_ID_HELP_EDITOR_DIPLOMACY_ALLY, -1);
+        if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][1]))) goto fail; (this->Diplomacy_friend_box[i][1])->set_help_info(STRING_ID_HELP_EDITOR_DIPLOMACY_NEUTRAL, -1);
+        if (!(this->create_radio_button(this->bottom_panel, &this->Diplomacy_friend_box[i][2]))) goto fail; (this->Diplomacy_friend_box[i][2])->set_help_info(STRING_ID_HELP_EDITOR_DIPLOMACY_ENEMY, -1);
         this->Diplomacy_friend_box[i][0]->set_radio_info(this->Diplomacy_friend_box[i], 3);
         this->Diplomacy_friend_box[i][1]->set_radio_info(this->Diplomacy_friend_box[i], 3);
         this->Diplomacy_friend_box[i][2]->set_radio_info(this->Diplomacy_friend_box[i], 3);
         this->Diplomacy_friend_box[i][1]->set_radio_button();
         if (!(this->create_check_box(this->bottom_panel, &this->Diplomacy_AlliedVictory[i]))) goto fail;
-        this->Diplomacy_AlliedVictory[i]->set_help_info(IDS_HELP_EDITOR_ALLIED_VICTORY, -1);
+        this->Diplomacy_AlliedVictory[i]->set_help_info(STRING_ID_HELP_EDITOR_ALLIED_VICTORY, -1);
         ++i;
     }
-    if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[0], IDS_EDITOR_ALLY))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[1], IDS_EDITOR_NEUTRAL))) goto fail;
-    if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[2], IDS_EDITOR_ENEMY))) goto fail;
-    this->create_text(this->bottom_panel, &this->Diplomacy_status_label[3], IDS_EDITOR_ALLIED_VICTORY);
+    if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[0], STRING_ID_EDITOR_ALLY))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[1], STRING_ID_EDITOR_NEUTRAL))) goto fail;
+    if (!(this->create_text(this->bottom_panel, &this->Diplomacy_status_label[2], STRING_ID_EDITOR_ENEMY))) goto fail;
+    this->create_text(this->bottom_panel, &this->Diplomacy_status_label[3], STRING_ID_EDITOR_ALLIED_VICTORY);
 
 fail:
     return;
@@ -1573,10 +1572,10 @@ int TRIBE_Screen_Sed::MakeFileList(TDropDownPanel* drop_down, char* dir,
     count = 0;
     drop_down->empty_list();
     if (append_none) {
-        drop_down->append_line(IDS_EDITOR_NONE, 0);
+        drop_down->append_line(STRING_ID_EDITOR_NONE, 0);
     }
     if (append_random) {
-        drop_down->append_line(IDS_EDITOR_RANDOM, 0);
+        drop_down->append_line(STRING_ID_EDITOR_RANDOM, 0);
     }
 
     sprintf(path, "%s*%s", dir, extension);
@@ -1598,11 +1597,11 @@ int TRIBE_Screen_Sed::MakeFileList(TDropDownPanel* drop_down, char* dir,
 
 int TRIBE_Screen_Sed::Set_player_advance_civilization_text(int newmode) {
     this->player_advance_civilization_drop->empty_list();
-    this->player_advance_civilization_drop->append_line(IDS_HELP_AGE_STONE, 0);
-    this->player_advance_civilization_drop->append_line(IDS_HELP_AGE_TOOL, 1);
-    this->player_advance_civilization_drop->append_line(IDS_HELP_AGE_BRONZE, 2);
-    this->player_advance_civilization_drop->append_line(IDS_HELP_AGE_IRON, 3);
-    this->player_advance_civilization_drop->append_line(IDS_HELP_AGE_POST_IRON, 4);
+    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_STONE, 0);
+    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_TOOL, 1);
+    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_BRONZE, 2);
+    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_IRON, 3);
+    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_POST_IRON, 4);
     this->player_advance_civilization_drop->setCurrentLineNumber(0);
     this->player_advance_civilization_drop->set_active(0);
     return 1;
@@ -1624,10 +1623,10 @@ void TRIBE_Screen_Sed::SavePlayerActiveStatus() {
     this->player_list->empty_list();
     this->unit_player_list->empty_list();
 
-    this->unit_player_list->append_line(IDS_EDITOR_GAIA, 0);
+    this->unit_player_list->append_line(STRING_ID_EDITOR_GAIA, 0);
 
     if (active_players > 0) {
-        int string_id = IDS_PLAYER_NAME_BASE;
+        int string_id = STRING_ID_PLAYER_NAME_BASE;
         do {
             this->unit_player_list->append_line(string_id, 0);
             this->victory_player_list->append_line(string_id, 0);
@@ -1636,7 +1635,7 @@ void TRIBE_Screen_Sed::SavePlayerActiveStatus() {
             this->Diplomacy_player_list->append_line(string_id, 0);
             this->player_list->append_line(string_id, 0);
             ++string_id;
-        } while (string_id - IDS_PLAYER_NAME_BASE < active_players);
+        } while (string_id - STRING_ID_PLAYER_NAME_BASE < active_players);
     }
 
     if (this->player_num >= active_players) {

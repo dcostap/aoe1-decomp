@@ -89,8 +89,7 @@ uchar TRIBE_RMM_Database_Controller::init(RGE_Map* in_map, RGE_Game_World* in_wo
             }
         }
 
-        if (cliff_info.average_cliff_size > 0 &&
-            cliff_info.number_of_cliffs > 0) {
+        if (cliff_info.average_cliff_size > 0 && cliff_info.number_of_cliffs > 0) {
             new RGE_RMM_Cliffs_Generator(this->map, this, cliff_info);
         }
     }
@@ -105,8 +104,7 @@ uchar TRIBE_RMM_Database_Controller::de_init() {
 void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
     long original_edge =
         this->map_info.maps[this->map_type].land_info.land_placement_edge;
-    if ((this->map_type == 5 || this->map_type == 8) &&
-        this->map_width < 100) {
+    if ((this->map_type == 5 || this->map_type == 8) && this->map_width < 100) {
         int edge = this->map_width >= 80 ? 0 : -1;
         edge &= -5;
         this->map_info.maps[this->map_type].land_info.land_placement_edge =
@@ -259,8 +257,7 @@ void TRIBE_RMM_Database_Controller::add_terrain_module() {
             if (this->terrain_info.terrain[i].terrain_type == 6)
                 this->terrain_info.terrain[i].avoid_hot_spots = 0;
             else {
-                if (this->terrain_info.terrain[i].terrain_type == 10 ||
-                    this->terrain_info.terrain[i].terrain_type == 13)
+                if (this->terrain_info.terrain[i].terrain_type == 10 || this->terrain_info.terrain[i].terrain_type == 13)
                     this->terrain_info.terrain[i].avoid_hot_spots = 2;
             }
         }
@@ -275,8 +272,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
     this->RGE_RMM_Database_Controller::add_object_module();
     debug_rand(s_rmm_tdbc_path, 408);
 
-    if (((TRIBE_Game*)rge_base_game)->startingAge() ==
-        TRIBE_Game::NomadAge) {
+    if (((TRIBE_Game*)rge_base_game)->startingAge() == TRIBE_Game::NomadAge) {
         for (index = 0; index < this->object_info.object_num; ++index) {
             if (this->object_info.objects[index].obj_id == 0x53)
                 this->object_info.objects[index].number_of_groups = 1;
@@ -359,9 +355,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
                 y = debug_rand(s_rmm_tdbc_path, 479) *
                     (this->map_height - 16) / 0x7fff + 8;
 
-                for (int prior = 0;
-                     prior < this->land_info.land_num && done != 0;
-                     ++prior) {
+                for (int prior = 0; prior < this->land_info.land_num && done != 0; ++prior) {
                     long dx = x - this->land_info.land[prior].x;
                     long dy = y - this->land_info.land[prior].y;
                     if (dx * dx + dy * dy < 400)

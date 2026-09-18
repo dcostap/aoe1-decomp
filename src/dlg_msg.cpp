@@ -77,30 +77,30 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
 
     switch (dlg_type) {
     case 0:
-        button[0]->set_text(0, IDS_BUTTON_OK);
+        button[0]->set_text(0, STRING_ID_BUTTON_OK);
         break;
     case 1:
-        button[0]->set_text(0, IDS_BUTTON_OK);
-        button[1]->set_text(0, IDS_BUTTON_CANCEL);
+        button[0]->set_text(0, STRING_ID_BUTTON_OK);
+        button[1]->set_text(0, STRING_ID_BUTTON_CANCEL);
         button[1]->hotkey = 0x1B;
         button[1]->hotkey_shift = 0;
         break;
     case 2:
-        button[0]->set_text(0, IDS_BUTTON_YES);
-        button[1]->set_text(0, IDS_BUTTON_NO);
+        button[0]->set_text(0, STRING_ID_BUTTON_YES);
+        button[1]->set_text(0, STRING_ID_BUTTON_NO);
         button[1]->hotkey = 0x1B;
         button[1]->hotkey_shift = 0;
         break;
     case 3:
-        button[0]->set_text(0, IDS_BUTTON_RETRY);
-        button[1]->set_text(0, IDS_BUTTON_ABORT);
+        button[0]->set_text(0, STRING_ID_BUTTON_RETRY);
+        button[1]->set_text(0, STRING_ID_BUTTON_ABORT);
         button[1]->hotkey = 0x1B;
         button[1]->hotkey_shift = 0;
         break;
     case 4:
-        button[0]->set_text(0, IDS_BUTTON_YES);
-        button[1]->set_text(0, IDS_BUTTON_NO);
-        button[2]->set_text(0, IDS_BUTTON_CANCEL);
+        button[0]->set_text(0, STRING_ID_BUTTON_YES);
+        button[1]->set_text(0, STRING_ID_BUTTON_NO);
+        button[2]->set_text(0, STRING_ID_BUTTON_CANCEL);
         button[2]->hotkey = 0x1B;
         button[2]->hotkey_shift = 0;
         break;

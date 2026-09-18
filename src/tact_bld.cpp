@@ -147,10 +147,8 @@ unsigned char TRIBE_Action_Build::update() {
         }
     }
 
-    if (this->target_obj != 0 && this->target_obj->object_state != 0 &&
-        this->timer == 0.0f) {
-        if (this->target_obj->hp <
-            (float)(int)this->target_obj->master_obj->hp) {
+    if (this->target_obj != 0 && this->target_obj->object_state != 0 && this->timer == 0.0f) {
+        if (this->target_obj->hp < (float)(int)this->target_obj->master_obj->hp) {
             this->obj->removeAllFromPathingGroup();
             this->obj->owner->processAIOrder(this->obj->owner->id, this->obj->id, 0x2CE, this->target_obj->id,
                                              this->target_obj->owner->id, this->target_obj->world_x, this->target_obj->world_y,
@@ -202,8 +200,7 @@ unsigned char TRIBE_Action_Build::update() {
         break;
 
     case 7:
-        if (this->timer < 0.0 && this->target_obj != 0 &&
-            this->target_obj->attribute_amount_held > 0.0f) {
+        if (this->timer < 0.0 && this->target_obj != 0 && this->target_obj->attribute_amount_held > 0.0f) {
             this->obj->removeAllFromPathingGroup();
             this->obj->setWaitingToMove(1);
             this->obj->do_command(this->target_obj, this->target_obj->world_x, this->target_obj->world_y, 0);
@@ -218,10 +215,8 @@ unsigned char TRIBE_Action_Build::update() {
                 this->obj->owner->world->world_time_delta_seconds;
         }
 
-        if (this->target_obj == 0 ||
-            ((TRIBE_Building_Object*)this->target_obj)->build(work) != 0) {
-            if (this->target_obj != 0 &&
-                this->target_obj->master_obj->id == 0x32) {
+        if (this->target_obj == 0 || ((TRIBE_Building_Object*)this->target_obj)->build(work) != 0) {
+            if (this->target_obj != 0 && this->target_obj->master_obj->id == 0x32) {
                 this->timer = -1.0f;
                 return 0;
             }
@@ -268,8 +263,7 @@ int TRIBE_Action_Build::move_to(RGE_Static_Object* obj_in, float x, float y, flo
 int TRIBE_Action_Build::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         RGE_Player* target_owner = obj_in->owner;
-        if (target_owner == obj_in->owner &&
-            target_owner->id == this->obj->owner->id) {
+        if (target_owner == obj_in->owner && target_owner->id == this->obj->owner->id) {
             if (obj_in == this->target_obj) {
                 unsigned char action = this->state;
                 if (action == 4 || action == 6) {

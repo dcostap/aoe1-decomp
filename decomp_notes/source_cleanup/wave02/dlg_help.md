@@ -178,9 +178,9 @@ linked getter relocation order in `setup_help`. The approved resource mapping
 and provenance remain recorded below.
 
 The worker-local shared resource import `08038221ea7047376f742814ca1185dbf31268e8`
-contains `IDS_BUTTON_MORE_HELP` for `0x243D`. Root approved this mapping in
+contains `STRING_ID_BUTTON_MORE_HELP` for `0x243D`. Root approved this mapping in
 commit `8c56055b7feee1526f296bd306036a4c34f38041`. The source keeps the
-numeric value for the optional More Help button. `IDS_BUTTON_MORE_HELP` remains
+numeric value for the optional More Help button. `STRING_ID_BUTTON_MORE_HELP` remains
 a reviewed cleanup name, not an original macro.
 
 The approved mapping names `0x0FA1` as the OK caption. The source calls
@@ -220,7 +220,7 @@ mapping. Root approved it in commit
 
 | Numeric ID | Proposed cleanup name | Resource type | Language | Exact text and files | Lookup path | Purpose |
 | --- | --- | --- | --- | --- | --- | --- |
-| `0x243D` (`9277`) | `IDS_BUTTON_MORE_HELP` | `RT_STRING` | `0x0409` (`1033`) | `runtime/language.dll`: `More Help`; `runtime/languagex.dll`: missing; original XPack `languagex.dll`: missing | `TPanel::get_string` -> virtual `TRIBE_Game::get_string`; expansion table first, base table fallback | Caption passed to `create_button` for the optional More Help button in `THelpDialog::setup_help` |
+| `0x243D` (`9277`) | `STRING_ID_BUTTON_MORE_HELP` | `RT_STRING` | `0x0409` (`1033`) | `runtime/language.dll`: `More Help`; `runtime/languagex.dll`: missing; original XPack `languagex.dll`: missing | `TPanel::get_string` -> virtual `TRIBE_Game::get_string`; expansion table first, base table fallback | Caption passed to `create_button` for the optional More Help button in `THelpDialog::setup_help` |
 
 The name is a new cleanup name. It is not a recovered original macro. The source
 does not use the macro because its shared header changes VC5 relocation order.

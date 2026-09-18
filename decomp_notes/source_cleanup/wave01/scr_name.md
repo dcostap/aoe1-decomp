@@ -87,10 +87,10 @@ not edited.
 The source now reuses these existing macros from the root-owned
 `include/resource_ids.h`:
 
-- `0x0FA1` -> `IDS_BUTTON_OK`
-- `0x0FA2` -> `IDS_BUTTON_CANCEL`
-- `0x7531` -> `IDS_HELP_OK`
-- `0x7532` -> `IDS_HELP_CANCEL`
+- `0x0FA1` -> `STRING_ID_BUTTON_OK`
+- `0x0FA2` -> `STRING_ID_BUTTON_CANCEL`
+- `0x7531` -> `STRING_ID_HELP_OK`
+- `0x7532` -> `STRING_ID_HELP_CANCEL`
 
 The shared resource commit defines the following new mappings. The names are
 new cleanup names. No name is claimed as an original macro name.
@@ -108,17 +108,17 @@ The common resource evidence for every row is:
 
 | Numeric ID | Purpose evidence in `src/scr_name.cpp` | Exact text or status in base DLL | Applied macro |
 | --- | --- | --- | --- |
-| `0x29FE` | Screen title passed to `create_text` for `title`. | `Select Player` | `IDS_SELECT_PLAYER_TITLE` (applied) |
-| `0x29FF` | Player-name list label passed to `create_text` for `name_text`. | `Name` | `IDS_PLAYER_NAME_LABEL` (applied) |
-| `0x2A00` | New-player button caption passed to `create_button`. | `New` | `IDS_BUTTON_NEW_PLAYER` (applied) |
-| `0x2A01` | Remove-player button caption passed to `create_button`. | `Remove` | `IDS_BUTTON_REMOVE_PLAYER` (applied) |
-| `0x2A02` | Format string passed to `get_string` before `sprintf`; the format consumes the selected player name. | `Are you sure you want to remove player %s?` | `IDS_CONFIRM_REMOVE_PLAYER` (applied) |
-| `0x2A03` | New-player dialog heading passed to `create_text` for `title`. | `Name` | `IDS_NAME_DIALOG_TITLE` (applied) |
-| `0x2A04` | New-player dialog name label passed to `create_text` for `name_text`. | `New Player` | `IDS_NEW_PLAYER_NAME_LABEL` (applied) |
-| `0x03EA` | Close control caption passed to `create_button` for `close_button`. | `X` | `IDS_BUTTON_CLOSE` (applied) |
-| `0x765C` | Help ID passed to `set_help_info` for the player-name scrollbar. | `Select a player name.` | `IDS_HELP_PLAYER_NAME_LIST` (applied) |
-| `0x765D` | Help ID passed to `set_help_info` for the New button. | `Click to add a new player name.` | `IDS_HELP_ADD_PLAYER_NAME` (applied) |
-| `0x765E` | Help ID passed to `set_help_info` for the Remove button. | `Click to remove a player name.` | `IDS_HELP_REMOVE_PLAYER_NAME` (applied) |
+| `0x29FE` | Screen title passed to `create_text` for `title`. | `Select Player` | `STRING_ID_SELECT_PLAYER_TITLE` (applied) |
+| `0x29FF` | Player-name list label passed to `create_text` for `name_text`. | `Name` | `STRING_ID_PLAYER_NAME_LABEL` (applied) |
+| `0x2A00` | New-player button caption passed to `create_button`. | `New` | `STRING_ID_BUTTON_NEW_PLAYER` (applied) |
+| `0x2A01` | Remove-player button caption passed to `create_button`. | `Remove` | `STRING_ID_BUTTON_REMOVE_PLAYER` (applied) |
+| `0x2A02` | Format string passed to `get_string` before `sprintf`; the format consumes the selected player name. | `Are you sure you want to remove player %s?` | `STRING_ID_CONFIRM_REMOVE_PLAYER` (applied) |
+| `0x2A03` | New-player dialog heading passed to `create_text` for `title`. | `Name` | `STRING_ID_NAME_DIALOG_TITLE` (applied) |
+| `0x2A04` | New-player dialog name label passed to `create_text` for `name_text`. | `New Player` | `STRING_ID_NEW_PLAYER_NAME_LABEL` (applied) |
+| `0x03EA` | Close control caption passed to `create_button` for `close_button`. | `X` | `STRING_ID_BUTTON_CLOSE` (applied) |
+| `0x765C` | Help ID passed to `set_help_info` for the player-name scrollbar. | `Select a player name.` | `STRING_ID_HELP_PLAYER_NAME_LIST` (applied) |
+| `0x765D` | Help ID passed to `set_help_info` for the New button. | `Click to add a new player name.` | `STRING_ID_HELP_ADD_PLAYER_NAME` (applied) |
+| `0x765E` | Help ID passed to `set_help_info` for the Remove button. | `Click to remove a player name.` | `STRING_ID_HELP_REMOVE_PLAYER_NAME` (applied) |
 
 The source now uses these shared macros. It also uses the existing OK and
 Cancel macros. The shared header remains outside this module's commit.

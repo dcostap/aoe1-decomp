@@ -133,8 +133,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
                 y = debug_rand(s_rmm_cntr_path, 210) *
                     (this->map_height - 16) / 0x7FFF + 8;
 
-                if (x > minimum_x && x < maximum_x &&
-                    y > minimum_y && y < maximum_y) {
+                if (x > minimum_x && x < maximum_x && y > minimum_y && y < maximum_y) {
                     not_done = true;
                 } else {
                     previous = 0;

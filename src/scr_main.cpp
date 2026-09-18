@@ -42,28 +42,27 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
 
     long button_width = 178;
     clear_button = this->button;
-    for (; button_width < 428;
-         button_width += 50, ++clear_button) {
-        if (this->create_button(this, clear_button, "", 0, 170, button_width, 300, 40, 0, 0, 0) == 0) {
+    for (; button_width < 428; button_width += 50, ++clear_button) {
+        if (this->create_button(this, clear_button, "", 0, 170, button_width, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0) {
             return;
         }
     }
 
-    this->button[0]->set_text(0, IDS_MENU_SINGLE_PLAYER);
-    this->button[1]->set_text(0, IDS_MENU_MULTIPLAYER);
-    this->button[2]->set_text(0, IDS_MENU_HELP);
-    this->button[3]->set_text(0, IDS_MENU_SCENARIO_BUILDER);
-    this->button[4]->set_text(0, IDS_MENU_EXIT);
+    this->button[0]->set_text(0, STRING_ID_MENU_SINGLE_PLAYER);
+    this->button[1]->set_text(0, STRING_ID_MENU_MULTIPLAYER);
+    this->button[2]->set_text(0, STRING_ID_MENU_HELP);
+    this->button[3]->set_text(0, STRING_ID_MENU_SCENARIO_BUILDER);
+    this->button[4]->set_text(0, STRING_ID_MENU_EXIT);
 
     this->set_ideal_size(this->pnl_wid, this->pnl_hgt);
 
     long panel_height = this->pnl_hgt - 60;
-    this->create_text(this, &this->ms_title_text, IDS_PRODUCT_TITLE, 5, panel_height, this->pnl_wid - 10, 18, 10, 1, 0, 0);
+    this->create_text(this, &this->ms_title_text, STRING_ID_PRODUCT_TITLE, 5, panel_height, this->pnl_wid - 10, 18, RGE_FONT_ARIAL_10_NORMAL_ALT, 1, 0, 0);
 
-    this->get_string(IDS_COPYRIGHT_SEPARATOR, temp_str, 512);
+    this->get_string(STRING_ID_COPYRIGHT_SEPARATOR, temp_str, 512);
     if (temp_str[0] == 0) {
         TTextPanel** copy1 = &this->ms_copy_text1;
-        this->create_text(this, copy1, IDS_COPYRIGHT_PREFIX, 5, panel_height + 18, 50, 18, 10, 0, 0, 0);
+        this->create_text(this, copy1, STRING_ID_COPYRIGHT_PREFIX, 5, panel_height + 18, 50, 18, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
 
         if ((*copy1)->get_text_rect(&rect) != 0) {
             this->circle_p_pic = new TPicturePanel;
@@ -72,8 +71,8 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
                                           "circlep2", 0xC4E6, 0, 1);
 
                 TTextPanel** copy2 = &this->ms_copy_text2;
-                this->create_text(this, copy2, IDS_COPYRIGHT_SUFFIX, this->circle_p_pic->xPosition() - this->pnl_x +
-                                  this->circle_p_pic->width(), rect.top, 500, 18, 10, 0, 0, 0);
+                this->create_text(this, copy2, STRING_ID_COPYRIGHT_SUFFIX, this->circle_p_pic->xPosition() - this->pnl_x +
+                                  this->circle_p_pic->width(), rect.top, 500, 18, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
 
                 if ((*copy2)->get_text_rect(&rect) != 0) {
                     diff = (this->pnl_wid - rect.right - 5) / 2;
@@ -89,16 +88,16 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
             }
         }
     } else {
-        strcpy(temp_str, this->get_string(IDS_COPYRIGHT_PREFIX));
-        strcat(temp_str, this->get_string(IDS_COPYRIGHT_SEPARATOR));
+        strcpy(temp_str, this->get_string(STRING_ID_COPYRIGHT_PREFIX));
+        strcat(temp_str, this->get_string(STRING_ID_COPYRIGHT_SEPARATOR));
         strcat(temp_str, " ");
-        strcat(temp_str, this->get_string(IDS_COPYRIGHT_SUFFIX));
+        strcat(temp_str, this->get_string(STRING_ID_COPYRIGHT_SUFFIX));
 
-        this->create_text(this, &this->ms_copy_text1, temp_str, 5, panel_height + 18, this->pnl_wid - 10, 18, 10, 1, 0, 0);
+        this->create_text(this, &this->ms_copy_text1, temp_str, 5, panel_height + 18, this->pnl_wid - 10, 18, RGE_FONT_ARIAL_10_NORMAL_ALT, 1, 0, 0);
     }
 
-    this->create_text(this, &this->warning_text, IDS_COPYRIGHT_WARNING, 5, panel_height + 36, this->pnl_wid - 10,
-                      18, 10, 1, 0, 0);
+    this->create_text(this, &this->warning_text, STRING_ID_COPYRIGHT_WARNING, 5, panel_height + 36, this->pnl_wid - 10,
+                      18, RGE_FONT_ARIAL_10_NORMAL_ALT, 1, 0, 0);
 
     this->set_ideal_size(640, 480);
 
@@ -142,9 +141,8 @@ long TRIBE_Screen_Main_Menu::key_down_action(long key, short count, int alt_key,
         case 0x4C:
             {
                 if (rge_base_game->gameDeveloperMode() != 0) {
-                    if (static_cast<TRIBE_Game*>(rge_base_game)->load_db_files()
-                        == 0) {
-                        TEasy_Panel::popupOKDialog(IDS_ERROR_LOAD_GAME_DATA, 0, TEASY_POPUP_WIDTH, 100);
+                    if (static_cast<TRIBE_Game*>(rge_base_game)->load_db_files() == 0) {
+                        TEasy_Panel::popupOKDialog(STRING_ID_ERROR_LOAD_GAME_DATA, 0, TEASY_POPUP_WIDTH, 100);
                     }
                 }
                 return 1;
@@ -164,9 +162,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* fromPanel, long actionIn, unsigned l
     long result;
 
     if (fromPanel != 0) {
-        if (fromPanel->panelName() != 0 &&
-            strcmp(fromPanel->panelName(), "Confirm Dialog") == 0 &&
-            actionIn == 0) {
+        if (fromPanel->panelName() != 0 && strcmp(fromPanel->panelName(), "Confirm Dialog") == 0 && actionIn == 0) {
             panel_system.destroyPanel("Confirm Dialog");
             WinHelpA(rge_base_game->prog_window, "empires.hlp", 3, actionIn);
             result = 1;
@@ -177,7 +173,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* fromPanel, long actionIn, unsigned l
             if (fromPanel == this->button[0]) {
                 if (rge_base_game->save_check_for_cd == 0) {
                     if (rge_base_game->check_for_cd(0) == 0) {
-                        this->popupOKDialog(IDS_ERROR_INSERT_CD_SINGLE_PLAYER, 0, TEASY_POPUP_WIDTH, 100);
+                        this->popupOKDialog(STRING_ID_ERROR_INSERT_CD_SINGLE_PLAYER, 0, TEASY_POPUP_WIDTH, 100);
                         result = 1;
                         goto done;
                     }
@@ -202,7 +198,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* fromPanel, long actionIn, unsigned l
             }
 
             if (fromPanel == this->button[2]) {
-                this->popupOKDialog(IDS_HELP_NOTICE, "Confirm Dialog", TEASY_POPUP_WIDTH, 100);
+                this->popupOKDialog(STRING_ID_HELP_NOTICE, "Confirm Dialog", TEASY_POPUP_WIDTH, 100);
                 result = 1;
                 goto done;
             }
@@ -210,7 +206,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* fromPanel, long actionIn, unsigned l
             if (fromPanel == this->button[3]) {
                 if (rge_base_game->save_check_for_cd == 0) {
                     if (rge_base_game->check_for_cd(0) == 0) {
-                        this->popupOKDialog(IDS_ERROR_INSERT_CD_SCENARIO_BUILDER, 0, TEASY_POPUP_WIDTH, 100);
+                        this->popupOKDialog(STRING_ID_ERROR_INSERT_CD_SCENARIO_BUILDER, 0, TEASY_POPUP_WIDTH, 100);
                         result = 1;
                         goto done;
                     }
@@ -251,10 +247,10 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
 
     this->set_ideal_size(640, 480);
 
-    this->create_text(this, &this->message, "", 40, 40, 560, 400, 4, 1, 1, 1);
-    this->create_button(this, &this->cancel_button, IDS_BUTTON_OK, 0, 200, 440, 240, 30, 0, 0, 0);
+    this->create_text(this, &this->message, "", 40, 40, 560, 400, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 1);
+    this->create_button(this, &this->cancel_button, STRING_ID_BUTTON_OK, 0, 200, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
 
-    if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0) != 0) {
+    if (this->create_button(this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0) != 0) {
         this->close_button->set_active(1);
         this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
     }

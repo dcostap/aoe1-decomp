@@ -121,13 +121,11 @@ void RGE_Action_Enter::set_state(unsigned char new_state) {
 }
 
 unsigned char RGE_Action_Enter::update() {
-    if (this->targetID != -1 &&
-        this->obj->owner->world->object(this->targetID) == 0) {
+    if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         goto target_lost;
     }
 
-    if (this->target2ID != -1 &&
-        this->obj->owner->world->object(this->target2ID) == 0) {
+    if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
     }
 
@@ -148,8 +146,7 @@ unsigned char RGE_Action_Enter::update() {
             switch (result) {
             case 1:
             case 2:
-                if (this->obj->distance_to_object(this->target_obj) - 1.0f >
-                    this->task->work_range) {
+                if (this->obj->distance_to_object(this->target_obj) - 1.0f > this->task->work_range) {
                     this->set_state(2);
                     return 0;
                 }
@@ -179,8 +176,7 @@ unsigned char RGE_Action_Enter::update() {
             return 0;
         }
 
-        if (this->obj->distance_to_object(this->target_obj) - 1.0f >
-            this->task->work_range) {
+        if (this->obj->distance_to_object(this->target_obj) - 1.0f > this->task->work_range) {
             if (this->target_obj->actionState() == 2) {
                 XYPoint dest;
                 XYPoint start;

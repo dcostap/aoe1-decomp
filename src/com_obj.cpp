@@ -146,9 +146,8 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
             while (link != 0) {
                 RGE_Combat_Object* obj =
                     static_cast<RGE_Combat_Object*>(link->node);
-                if (obj != this &&
-                    obj->master_obj->area_effect_object_level >=
-                        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_level &&
+                if (obj != this && obj->master_obj->area_effect_object_level >=
+                    static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_level &&
                     obj != static_cast<RGE_Combat_Object*>(ignore_object)) {
                     float dx = obj->world_x - x;
                     float dy = obj->world_y - y;
@@ -163,8 +162,7 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
                     if (r2 > dx * dx + dy * dy) {
                         int rnd = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 250) * 100;
                         int chance = rnd / 0x7fff;
-                        if ((short)chance <=
-                            static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
+                        if ((short)chance <= static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
                             attack_modifier = this->calc_attack_modifier(obj);
                             obj->damage((int)static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_num,
                                         static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon,
@@ -212,8 +210,7 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target,
         missile->init_missile(attacker, target, rangeDistance);
         this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
 
-        if (static_cast<RGE_Master_Combat_Object*>(this->master_obj)
-                    ->weapon_range > DAT_0056f49c &&
+        if (static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->weapon_range > DAT_0056f49c &&
             target->owner->computerPlayer() == 1) {
             target->notify(this->id, target->id, 0x20F, this->id, (long)target->hp, target->master_obj->hp);
         }
@@ -270,8 +267,7 @@ unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat
     this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
     int r = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 379);
     int chance = (r * 100) / 0x7fff;
-    if (chance <=
-        (int)static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
+    if (chance <= (int)static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
         float attack_modifier = this->calc_attack_modifier(target);
         target->damage((int)static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_num,
                        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon, attack_modifier, this->owner,
@@ -684,15 +680,12 @@ int RGE_Combat_Object::gather(int targetID, int unconditional) {
         return 0;
     }
 
-    if (unconditional == 0 &&
-        this->actions->have_action() == 1 &&
-        this->actions->get_action()->get_target_obj() == target &&
-        this->actions->get_action()->type() == 5) {
+    if (unconditional == 0 && this->actions->have_action() == 1 &&
+        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == 5) {
         goto success;
     }
 
-    if (this->actions->have_action() == 1 &&
-        this->actions->get_action()->type() == 5) {
+    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == 5) {
         this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         goto success;
     }

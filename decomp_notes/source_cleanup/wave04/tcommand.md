@@ -144,7 +144,7 @@ The extraction outputs are `build/tcommand_resource_language.json`,
 
 The purpose is known from the dialog call and the fallback path. The base DLL
 supplies the text. The expansion DLLs do not. Root approved the direct source
-substitution with `IDS_ERROR_SYNC`.
+substitution with `STRING_ID_ERROR_SYNC`.
 
 ## Code-generation risks and unresolved mappings
 
@@ -199,7 +199,7 @@ Root provided and approved this base-language mapping in the root-owned
 `include/resource_ids.h` import:
 
 ```cpp
-#define IDS_ERROR_SYNC 0x0966
+#define STRING_ID_ERROR_SYNC 0x0966
 ```
 
 Evidence: the out-of-sync path passes `0x0966` to the string overload of
@@ -207,7 +207,7 @@ Evidence: the out-of-sync path passes `0x0966` to the string overload of
 above; the expansion DLLs miss the ID; and the fallback order is established in
 `TRIBE_Game::get_string` and `RGE_Base_Game::get_string`. This is a new cleanup
 name, not a recovered original macro. This worker did not edit the resource
-header. The source now uses `IDS_ERROR_SYNC` at the same call site. The cast,
+header. The source now uses `STRING_ID_ERROR_SYNC` at the same call site. The cast,
 buffer, call, arguments, order, control flow, and fallback remain unchanged.
 
 ## Validation status

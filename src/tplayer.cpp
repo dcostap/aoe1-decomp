@@ -278,8 +278,7 @@ void TRIBE_Player::update() {
             while (node != 0) {
                 RGE_Static_Object* object = node->node;
                 int group = object->master_obj->object_group;
-                if (group != 0xb && group != 0x1e && group != 0x1b &&
-                    group != 1 && group != 0x15 && group != 0x14 &&
+                if (group != 0xb && group != 0x1e && group != 0x1b && group != 1 && group != 0x15 && group != 0x14 &&
                     group != 2 && group != 0x25 && object->object_state == 2)
                     break;
                 node = node->next;
@@ -558,8 +557,7 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, 
             if (object->master_obj->master_type == 'P')
                 static_cast<TRIBE_Building_Object*>(object)->build(10000.0f);
         }
-        if (rge_base_game->prog_mode == 7 &&
-            (object->master_obj->object_group == 5 ||
+        if (rge_base_game->prog_mode == 7 && (object->master_obj->object_group == 5 ||
              object->master_obj->object_group == 0x21))
             object->sprite_list->set_frame(object->sprite, 5);
     }
@@ -573,8 +571,7 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** list, short* list_num, shor
     Tech_Tree* base_tech = static_cast<TRIBE_World*>(this->world)->tech->tech_tree;
 
     for (short i = 0; i < this->tech_tree->tech_player_tree_num; i++) {
-        if (this->tech_tree->tech_player_tree[i].state == 1 &&
-            base_tech[i].build_obj_id == obj_cat) {
+        if (this->tech_tree->tech_player_tree[i].state == 1 && base_tech[i].build_obj_id == obj_cat) {
             count++;
         }
     }
@@ -909,17 +906,11 @@ unsigned char TRIBE_Player::command_building_make_obj(short obj_id) {
 unsigned char TRIBE_Player::command_make_repair(RGE_Static_Object* obj) {
     short list_num;
     RGE_Static_Object** list;
-    if (!(((obj->owner == this || this->isAlly(obj->owner->id)) &&
-           obj->master_obj->master_type == 'P' &&
-           static_cast<float>(obj->master_obj->hp) > obj->hp &&
-           obj->object_state < 3) ||
-          ((obj->owner == this ||
-            (this->isAlly(obj->owner->id) && obj->owner->isAlly(this->id))) &&
-           (obj->master_obj->object_group == 2 ||
-            obj->master_obj->object_group == 0x14 ||
-            obj->master_obj->object_group == 0x15 ||
-            obj->master_obj->object_group == 0x16) &&
-           static_cast<float>(obj->master_obj->hp) > obj->hp &&
+    if (!(((obj->owner == this || this->isAlly(obj->owner->id)) && obj->master_obj->master_type == 'P' &&
+           static_cast<float>(obj->master_obj->hp) > obj->hp && obj->object_state < 3) || ((obj->owner == this ||
+            (this->isAlly(obj->owner->id) && obj->owner->isAlly(this->id))) && (obj->master_obj->object_group == 2 ||
+            obj->master_obj->object_group == 0x14 || obj->master_obj->object_group == 0x15 ||
+            obj->master_obj->object_group == 0x16) && static_cast<float>(obj->master_obj->hp) > obj->hp &&
            obj->object_state < 3)))
         return 0;
     if (!this->get_selected_objects_to_command(&list, &list_num, 4, 4, -1, -1))
@@ -968,8 +959,7 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed
         int type = combat->build_inventory[i].type;
         if (type < 0) continue;
         float amount = combat->build_inventory[i].amount * modifier;
-        if (type == 4 && ignore_pop == 0 &&
-            this->attributes[11] >= this->attributes[32]) {
+        if (type == 4 && ignore_pop == 0 && this->attributes[11] >= this->attributes[32]) {
             if (attribute_needed != 0) *attribute_needed = 0x20;
             return 0;
         }
@@ -980,10 +970,8 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed
                 return 0;
             }
         }
-        if (this->attributes[type] < amount &&
-            (type != 4 || ignore_pop == 0)) {
-            if (combat->build_inventory[i].flag == 0 ||
-                population + this->attributes[type] < amount) {
+        if (this->attributes[type] < amount && (type != 4 || ignore_pop == 0)) {
+            if (combat->build_inventory[i].flag == 0 || population + this->attributes[type] < amount) {
                 if (attribute_needed != 0) *attribute_needed = static_cast<short>(type);
                 return 0;
             }
@@ -1000,8 +988,7 @@ unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float modifier, int ignor
         TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
         for (int i = 0; i < 3; ++i) {
             int type = combat->build_inventory[i].type;
-            if (type >= 0 && combat->build_inventory[i].flag != 0 &&
-                (ignore_pop == 0 || type != 4)) {
+            if (type >= 0 && combat->build_inventory[i].flag != 0 && (ignore_pop == 0 || type != 4)) {
                 float amount = combat->build_inventory[i].amount * modifier;
                 if (amount > this->attributes[type]) {
                     this->attributes[3] -= amount - this->attributes[type];
@@ -1572,8 +1559,8 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
         case 4: this->playerAI->logCommonHistory(tplayerMapMessages[4]); break;
         default: this->playerAI->logCommonHistory(tplayerMapMessages[5]); break;
         }
-        rge_base_game->get_string(IDS_FILE_NONE, noneString, 256);
-        rge_base_game->get_string(IDS_AI_FILE_RANDOM, randomString, 256);
+        rge_base_game->get_string(STRING_ID_FILE_NONE, noneString, 256);
+        rge_base_game->get_string(STRING_ID_AI_FILE_RANDOM, randomString, 256);
 
         strcpy(buildListName, s_592A40);
         strcpy(ruleSetName, s_592A40);
@@ -1807,8 +1794,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0) {
         int civ = this->master_player_id - 1;
-        if (civ == 3 || civ == 0 || civ == 1 || civ == 4 || civ == 8 ||
-            civ == 6 || civ == 7 || civ == 10) {
+        if (civ == 3 || civ == 0 || civ == 1 || civ == 4 || civ == 8 || civ == 6 || civ == 7 || civ == 10) {
             int aggressiveSelections = tplayer_globals::aggressiveBuildListCount;
             int selectedBuildLists = tplayer_globals::selectedBuildListCount;
             if (mapType == 0) {
@@ -3234,8 +3220,7 @@ void TRIBE_Player::analyize_selected_objects() {
                 }
 
                 int object_id = (*p)->master_obj->id;
-                if (object_id == 0x4F || object_id == 0xC7 ||
-                    object_id == 0x45 || object_id == 0x116) {
+                if (object_id == 0x4F || object_id == 0xC7 || object_id == 0x45 || object_id == 0x116) {
                     this->sel_object_properties |= 1;
                 }
             }
@@ -3366,8 +3351,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
                 goto finish;
             case 1:
             case 8:
-                if ((this->sel_object_properties & 1) != 0 &&
-                    thisObj->object_state <= 2) {
+                if ((this->sel_object_properties & 1) != 0 && thisObj->object_state <= 2) {
                     newFacet = 4;
                     text_id = current + action_var;
                     goto finish;
@@ -3441,16 +3425,13 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
                 if ((this->sel_object_properties & 0x80) == 0) {
                     goto finish;
                 }
-                if (ObjPlayer == 0x12 &&
-                    this->attributes[27] == DAT_00576828) {
+                if (ObjPlayer == 0x12 && this->attributes[27] == DAT_00576828) {
                     goto finish;
                 }
-                if (ObjPlayer == 3 &&
-                    this->attributes[28] == DAT_00576828) {
+                if (ObjPlayer == 3 && this->attributes[28] == DAT_00576828) {
                     goto finish;
                 }
-                if (ObjPlayer == 3 &&
-                    (MstrObjId == 0x6D || MstrObjId == 0x114)) {
+                if (ObjPlayer == 3 && (MstrObjId == 0x6D || MstrObjId == 0x114)) {
                     goto finish;
                 }
                 newFacet = 5;

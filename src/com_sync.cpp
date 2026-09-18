@@ -118,8 +118,7 @@ int RGE_Communications_Synchronize::ValidateChecksums(
         }
 
         if (check->WTime == worldtime) {
-            if (check->cs1 != cs1 || check->cs2 != cs2 ||
-                check->cs3 != cs3 || check->cs4 != cs4 ||
+            if (check->cs1 != cs1 || check->cs2 != cs2 || check->cs3 != cs3 || check->cs4 != cs4 ||
                 check->cs5 != cs5 || check->Random != worldrandom) {
                 bad = 1;
             }
@@ -305,8 +304,7 @@ void RGE_Communications_Synchronize::LogChecksums(
     unsigned int player_index = 0;
     long* visible = DAT_0062D208;
     do {
-        if (this->Comm->IsPlayerHuman(player_index) ||
-            this->Comm->IsPlayerComputer(player_index)) {
+        if (this->Comm->IsPlayerHuman(player_index) || this->Comm->IsPlayerComputer(player_index)) {
             strcpy(TBuff, " \n");
             L->Log(TBuff);
             if (file != 0) {
@@ -407,10 +405,8 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     for (i = 1; i <= 0x36; i++) {
         CHECKSUMARRAY& entry = this->Check[i];
         if (entry.PlayerNo != pnum && entry.WTurn == worldturn) {
-            if (entry.WTime == myWorldTime && entry.cs1 == mycs1 &&
-                entry.cs2 == mycs2 && entry.cs3 == mycs3 &&
-                entry.cs4 == mycs4 && entry.cs5 == mycs5 &&
-                entry.Random == myRandom) {
+            if (entry.WTime == myWorldTime && entry.cs1 == mycs1 && entry.cs2 == mycs2 && entry.cs3 == mycs3 &&
+                entry.cs4 == mycs4 && entry.cs5 == mycs5 && entry.Random == myRandom) {
                 NumSame++;
                 L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d", i, myWorldTime, mycs1, mycs2, mycs3, mycs4, mycs5);
             }

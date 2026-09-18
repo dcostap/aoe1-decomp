@@ -85,7 +85,7 @@ packets show those literal values.
 
 The source includes `include/resource_ids.h` and replaces only the
 `0x2B2A` literal in the two population-label calls with
-`IDS_POPULATION_PREFIX`. The format string, buffers, fallback behavior, and
+`STRING_ID_POPULATION_PREFIX`. The format string, buffers, fallback behavior, and
 extra population arguments remain unchanged.
 
 ## Resource ID investigation and request
@@ -93,7 +93,7 @@ extra population arguments remain unchanged.
 The source investigates resource ID `0x2B2A` (decimal `11050`). Its call sites
 format `"%s%ld/%ld"` with the returned text and the current and maximum
 population values. This proves the purpose as a population label prefix. I
-propose the new cleanup name `IDS_POPULATION_PREFIX`. This is not an original
+propose the new cleanup name `STRING_ID_POPULATION_PREFIX`. This is not an original
 macro name.
 
 `TPanel::get_string(int)` calls the virtual buffer lookup. The expansion
@@ -116,7 +116,7 @@ Extraction outputs are in the worker build directory:
 Header requests:
 
 - Root owns `include/resource_ids.h`. Root approved the shared logical
-  game-string mapping `#define IDS_POPULATION_PREFIX 0x2B2A` in commit
+  game-string mapping `#define STRING_ID_POPULATION_PREFIX 0x2B2A` in commit
   `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`. The worker imported only that
   header in commit `4f9d0935285f4196aad52dcf1fd929349ae2a132`.
   The lookup checks the expansion string table first and uses the base table

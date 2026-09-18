@@ -347,8 +347,7 @@ int TDrawSystem::Init(void* inst_in, void* wnd_in, void* pal_in,
         if ((ddcaps.dwCaps & 0x08000000) != 0)
             this->IsBanked = 1;
 
-        if ((ddcaps.dwCaps & 0x00400000) != 0 &&
-            (ddcaps.dwCKeyCaps & 0x00000200) != 0)
+        if ((ddcaps.dwCaps & 0x00400000) != 0 && (ddcaps.dwCKeyCaps & 0x00000200) != 0)
             this->CanSrcBlt = 1;
     }
 
@@ -420,8 +419,7 @@ unsigned char TDrawSystem::CheckSurfaces() {
     if (this->DrawType != 2)
         return 0;
 
-    if (this->PrimarySurface != 0 && this->DrawArea != 0 &&
-        this->DrawArea->DrawSurface != 0) {
+    if (this->PrimarySurface != 0 && this->DrawArea != 0 && this->DrawArea->DrawSurface != 0) {
         unsigned char result = 0;
         _DDSURFACEDESC ddsd;
         _DDBLTFX ddbltfx;
@@ -433,10 +431,8 @@ unsigned char TDrawSystem::CheckSurfaces() {
             ddsd.dwSize = sizeof(ddsd);
 
             hr = this->DirDraw->GetDisplayMode(&ddsd);
-            if (hr == 0 &&
-                (ddsd.dwWidth != (unsigned long)this->ScreenWidth ||
-                 ddsd.dwHeight != (unsigned long)this->ScreenHeight ||
-                 ddsd.ddpfPixelFormat.dwRGBBitCount != 8))
+            if (hr == 0 && (ddsd.dwWidth != (unsigned long)this->ScreenWidth ||
+                 ddsd.dwHeight != (unsigned long)this->ScreenHeight || ddsd.ddpfPixelFormat.dwRGBBitCount != 8))
                 return 1;
 
             hr = this->PrimarySurface->Restore();
@@ -454,8 +450,7 @@ unsigned char TDrawSystem::CheckSurfaces() {
 
         DrawAreaNode* node = this->DrawAreaList;
         while (node != 0) {
-            if (node->DrawArea != this->PrimaryArea &&
-                node->DrawArea->CheckSurface() == 3)
+            if (node->DrawArea != this->PrimaryArea && node->DrawArea->CheckSurface() == 3)
                 return 3;
             node = node->NextNode;
         }
@@ -582,8 +577,7 @@ void TDrawSystem::Paint(tagRECT* rect) {
     tagRECT dest;
     tagRECT src;
 
-    if (this->DrawType == 1 || this->PrimarySurface == 0 ||
-        this->DrawArea == 0 || this->DrawArea->DrawSurface == 0)
+    if (this->DrawType == 1 || this->PrimarySurface == 0 || this->DrawArea == 0 || this->DrawArea->DrawSurface == 0)
         return;
 
     if (this->ScreenMode == 1) {
@@ -1070,10 +1064,8 @@ unsigned char TDrawArea::CheckSurface() {
             ddsd.dwSize = sizeof(ddsd);
 
             hr = this->DrawSystem->DirDraw->GetDisplayMode(&ddsd);
-            if (hr == 0 &&
-                (ddsd.dwWidth != (unsigned long)this->DrawSystem->ScreenWidth ||
-                 ddsd.dwHeight != (unsigned long)this->DrawSystem->ScreenHeight ||
-                 ddsd.ddpfPixelFormat.dwRGBBitCount != 8))
+            if (hr == 0 && (ddsd.dwWidth != (unsigned long)this->DrawSystem->ScreenWidth ||
+                 ddsd.dwHeight != (unsigned long)this->DrawSystem->ScreenHeight || ddsd.ddpfPixelFormat.dwRGBBitCount != 8))
                 return 1;
 
             hr = this->DrawSurface->Restore();
@@ -1188,10 +1180,8 @@ void TDrawArea::SetSize(long wid_in, long hgt_in, int ExtendSurface) {
     TDrawSystem* draw_system = this->DrawSystem;
 
     if (draw_system != 0 && draw_system->DrawType != 1) {
-        if (this->DrawSystem != 0 && this->DrawSystem->DirDraw != 0 &&
-            wid_in != 0 && hgt_in != 0 &&
-            (wid_in != this->Width || hgt_in != this->Height ||
-             this->DrawSurface == 0)) {
+        if (this->DrawSystem != 0 && this->DrawSystem->DirDraw != 0 && wid_in != 0 && hgt_in != 0 &&
+            (wid_in != this->Width || hgt_in != this->Height || this->DrawSurface == 0)) {
             if (wid_in < 1) {
                 wid_in = 1;
             }
@@ -1226,8 +1216,7 @@ void TDrawArea::SetSize(long wid_in, long hgt_in, int ExtendSurface) {
                 memset(&ddsd, 0, sizeof(ddsd));
                 ddsd.dwSize = sizeof(ddsd);
                 ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
-                if ((this->DrawSystem->Flags & 1) != 0 ||
-                    ExtendSurface != 0 || this->SystemMemOnly != 0) {
+                if ((this->DrawSystem->Flags & 1) != 0 || ExtendSurface != 0 || this->SystemMemOnly != 0) {
                     ddsd.ddsCaps.dwCaps =
                         DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
                 } else {
@@ -1576,8 +1565,7 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
         return;
     }
 
-    if (this->DrawSurface == 0 || dest_area == 0 ||
-        dest_area->DrawSurface == 0)
+    if (this->DrawSurface == 0 || dest_area == 0 || dest_area->DrawSurface == 0)
         return;
 
     if (src_rect == 0) {
@@ -1639,9 +1627,7 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
         src_rect2.bottom -= amount;
     }
 
-    if (dest_rect2.left >= dest_rect2.right ||
-        dest_rect2.top >= dest_rect2.bottom ||
-        src_rect2.left >= src_rect2.right ||
+    if (dest_rect2.left >= dest_rect2.right || dest_rect2.top >= dest_rect2.bottom || src_rect2.left >= src_rect2.right ||
         src_rect2.top >= src_rect2.bottom)
         return;
 
@@ -1925,8 +1911,7 @@ void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
             y2 = temp;
         }
 
-        if (x1 > this->ClipRect.right || x2 < this->ClipRect.left ||
-            y1 > this->ClipRect.bottom || y2 < this->ClipRect.top)
+        if (x1 > this->ClipRect.right || x2 < this->ClipRect.left || y1 > this->ClipRect.bottom || y2 < this->ClipRect.top)
             return;
 
         if (x1 < this->ClipRect.left)

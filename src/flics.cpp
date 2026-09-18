@@ -273,8 +273,7 @@ unsigned char RGE_Flic_Player::draw(TDrawArea* drawarea_in, long flic_x,
 
     this->flichead.oframe2 += frame->size;
     unsigned char result;
-    if ((this->flichead.oframe2 - (char*)this->flic_buffer) >=
-        this->flichead.size) {
+    if ((this->flichead.oframe2 - (char*)this->flic_buffer) >= this->flichead.size) {
         this->flichead.oframe2 = this->flichead.oframe1;
         if (this->flic_buffer != 0) {
             this->flichead.oframe2 =

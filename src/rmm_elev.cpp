@@ -86,9 +86,7 @@ uchar RGE_RMM_Elevation_Generator::check_start_elevation(
             RGE_Tile* cell = row_base;
             long col = x0;
             do {
-                if (base_terrain == 0xFF
-                    || cell->terrain_type != base_terrain
-                    || cell->height < base_elevation) {
+                if (base_terrain == 0xFF || cell->terrain_type != base_terrain || cell->height < base_elevation) {
                     return 0;
                 }
                 ++col;
@@ -138,9 +136,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(
                 RGE_Tile* cell = row;
                 long xx = x1;
                 do {
-                    if (base_terrain == 0xFF
-                        || cell->terrain_type != base_terrain
-                        || cell->height < base_elevation) {
+                    if (base_terrain == 0xFF || cell->terrain_type != base_terrain || cell->height < base_elevation) {
                         return 0;
                     }
                     ++xx;
@@ -285,8 +281,7 @@ void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* loc_stack) {
         ++node;
     }
 
-    for (long count = this->map_height * this->map_width / 16;
-         count > 0; --count) {
+    for (long count = this->map_height * this->map_width / 16; count > 0; --count) {
         long x = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 250)
             * max_x / 0x7FFF;
         long y = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 251)
@@ -401,8 +396,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
             Map_Stack* stack_ptr = stack;
             long count = info_line.clumps;
             do {
-                if (chance_count < info_line.elevation_size &&
-                    this->pop_stack(*stack_ptr, x, y, in_zone) != 0) {
+                if (chance_count < info_line.elevation_size && this->pop_stack(*stack_ptr, x, y, in_zone) != 0) {
                     done = 0;
 
                     uchar* modifier = &this->search_map_rows[y][x];
@@ -414,38 +408,29 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                         uchar elevation_count = this->check_elevation((uchar)info_line.elevation, x, y, info_line.spacing,
                                                                       (uchar)info_line.base_terrain_type, (uchar)info_line.base_elevation);
 
-                        if (tile->height == info_line.base_elevation &&
-                            elevation_count != 0) {
+                        if (tile->height == info_line.base_elevation && elevation_count != 0) {
                             chance = this->fig_chance(elevation_count, x, y);
                             tile->height = (uchar)info_line.elevation;
 
-                            if (x > 0 &&
-                                tile[-1].height ==
-                                    info_line.base_elevation) {
+                            if (x > 0 && tile[-1].height == info_line.base_elevation) {
                                 long clump_size =
                                     (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 381) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, x - 1, y, 0.0f, (float)clump_size + chance);
                             }
-                            if (x < max_x &&
-                                tile[1].height ==
-                                    info_line.base_elevation) {
+                            if (x < max_x && tile[1].height == info_line.base_elevation) {
                                 long clump_size =
                                     (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 383) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, x + 1, y, 0.0f, (float)clump_size + chance);
                             }
-                            if (y > 0 &&
-                                tile[-this->map_width].height ==
-                                    info_line.base_elevation) {
+                            if (y > 0 && tile[-this->map_width].height == info_line.base_elevation) {
                                 long clump_size =
                                     (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 385) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, x, y - 1, 0.0f, (float)clump_size + chance);
                             }
-                            if (y < max_y &&
-                                tile[this->map_width].height ==
-                                    info_line.base_elevation) {
+                            if (y < max_y && tile[this->map_width].height == info_line.base_elevation) {
                                 long clump_size =
                                     (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 387) * 100) /
                                     0x7fff;

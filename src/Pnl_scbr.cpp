@@ -350,11 +350,9 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
     case 3:
         if (this->orientationValue == Horizontal) {
             delta = x - this->item_x;
-            if (this->tab_x == this->tab_min_x && delta > 0 &&
-                x < this->tab_mouse_x + this->tab_x) {
+            if (this->tab_x == this->tab_min_x && delta > 0 && x < this->tab_mouse_x + this->tab_x) {
                 delta = 0;
-            } else if (this->tab_x == this->tab_max_x && delta < 0 &&
-                       this->tab_mouse_x + this->tab_x <= x) {
+            } else if (this->tab_x == this->tab_max_x && delta < 0 && this->tab_mouse_x + this->tab_x <= x) {
                 delta = 0;
             }
 
@@ -385,11 +383,9 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
             }
         } else {
             delta = y - this->item_y;
-            if (this->tab_y == this->tab_min_y && delta > 0 &&
-                y < this->tab_mouse_y + this->tab_y) {
+            if (this->tab_y == this->tab_min_y && delta > 0 && y < this->tab_mouse_y + this->tab_y) {
                 delta = 0;
-            } else if (this->tab_y == this->tab_max_y && delta < 0 &&
-                       this->tab_mouse_y + this->tab_y <= y) {
+            } else if (this->tab_y == this->tab_max_y && delta < 0 && this->tab_mouse_y + this->tab_y <= y) {
                 delta = 0;
             }
 

@@ -41,7 +41,7 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     setup_shadow_area(0);
     set_ideal_size(640, 480);
 
-    if (!create_text(this, &title, IDS_SCENARIO_OPEN_TITLE, 20, 20, 600, 30, 1, 1, 0, 0))
+    if (!create_text(this, &title, STRING_ID_SCENARIO_OPEN_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0))
         return;
 
     if (!create_list(this, &list, 20, 70, 600, 340, RGE_FONT_STANDARD))
@@ -50,13 +50,13 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     if (!create_auto_scrollbar(&scrollbar, list, 20))
         return;
 
-    if (!create_button(this, &okButton, IDS_BUTTON_OK, 0, 30, 440, 180, 30, 0, 0, 0))
+    if (!create_button(this, &okButton, STRING_ID_BUTTON_OK, 0, 30, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
         return;
 
-    if (!create_button(this, &deleteButton, IDS_BUTTON_DELETE, 0, 230, 440, 180, 30, 0, 0, 0))
+    if (!create_button(this, &deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
         return;
 
-    if (!create_button(this, &cancelButton, IDS_BUTTON_CANCEL, 0, 430, 440, 180, 30, 0, 0, 0))
+    if (!create_button(this, &cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
         return;
 
     TButtonPanel* cancel = cancelButton;
@@ -134,8 +134,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
     long curr_line;
 
     if (fromPanel != 0) {
-        if (fromPanel->panelName() != 0 &&
-            strcmp(fromPanel->panelName(), "Cancel Dialog") == 0) {
+        if (fromPanel->panelName() != 0 && strcmp(fromPanel->panelName(), "Cancel Dialog") == 0) {
             panel_system.destroyPanel("Cancel Dialog");
             if (actionIn == 0) {
                 char str[256];
@@ -168,7 +167,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
             if (line[0] != 0) {
                 char str[256];
                 char text[556];
-                get_string(IDS_CONFIRM_DELETE_FILE, str, 256);
+                get_string(STRING_ID_CONFIRM_DELETE_FILE, str, 256);
                 sprintf(text, str, list->currentLine());
                 popupYesNoDialog(text, "Cancel Dialog", TEASY_POPUP_WIDTH, 100);
             }
@@ -204,7 +203,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
                                 start_scenario_editor(fileName, 0);
                             return 1;
                         } else {
-                            popupOKDialog(IDS_ERROR_CANNOT_LOAD_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
+                            popupOKDialog(STRING_ID_ERROR_CANNOT_LOAD_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
                             return 1;
                         }
                     }

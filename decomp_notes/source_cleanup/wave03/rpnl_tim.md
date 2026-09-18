@@ -116,7 +116,7 @@ remain unchanged.
 
 The source looks up resource ID `0x2C24` through `TPanel::get_string(int)`.
 The result formats one per-player countdown line. Root approved the shared
-cleanup name `IDS_COUNTDOWN_YEARS_FORMAT`. This is a new descriptive name, not
+cleanup name `STRING_ID_COUNTDOWN_YEARS_FORMAT`. This is a new descriptive name, not
 a recovered original macro. The source now uses that macro.
 
 Root approval commit `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340` added the
@@ -165,7 +165,7 @@ types, order, or ABI.
 The approved definition is now present in the imported header:
 
 ```cpp
-#define IDS_COUNTDOWN_YEARS_FORMAT 0x2C24
+#define STRING_ID_COUNTDOWN_YEARS_FORMAT 0x2C24
 ```
 
 The constructor-name request remains non-blocking. The resource mapping is

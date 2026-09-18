@@ -59,8 +59,7 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar first_time) {
         static_cast<TRIBE_Player*>(this->obj->owner)->logMessage("Canceling Train #1a:  obj_id=%d, obj->id=%d",
                                                                  (int)this->obj_id, (int)this->obj->id, this->unique_id);
     } else {
-        if (static_cast<TRIBE_Player*>(this->obj->owner)
-                ->master_objects[this->obj_id] == 0) {
+        if (static_cast<TRIBE_Player*>(this->obj->owner) ->master_objects[this->obj_id] == 0) {
             static_cast<TRIBE_Player*>(this->obj->owner)->logMessage("Canceling Train #1b:  obj_id=%d, obj->id=%d",
                                                                      (int)this->obj_id, (int)this->obj->id, this->unique_id);
         } else {

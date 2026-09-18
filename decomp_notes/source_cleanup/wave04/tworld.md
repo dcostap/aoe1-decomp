@@ -162,19 +162,19 @@ I imported the approved shared resource names from root approval commit
 The source now includes `include/resource_ids.h` and uses these approved
 direct substitutions:
 
-- `0x0FA3` and `0x0FA4`: `IDS_BUTTON_YES` and `IDS_BUTTON_NO`.
-- `mapSize() + 0x2973`: `mapSize() + IDS_MAP_SIZE_BASE`.
-- `mapType() + 0x296A`: `mapType() + IDS_MAP_TYPE_BASE`.
-- `0x265C`-`0x265F`: `IDS_VICTORY_DESCRIPTION_STANDARD`,
-  `IDS_VICTORY_DESCRIPTION_TIME_LIMIT`, `IDS_VICTORY_DESCRIPTION_SCORE`,
-  and `IDS_VICTORY_DESCRIPTION_CONQUEST`.
+- `0x0FA3` and `0x0FA4`: `STRING_ID_BUTTON_YES` and `STRING_ID_BUTTON_NO`.
+- `mapSize() + 0x2973`: `mapSize() + STRING_ID_MAP_SIZE_BASE`.
+- `mapType() + 0x296A`: `mapType() + STRING_ID_MAP_TYPE_BASE`.
+- `0x265C`-`0x265F`: `STRING_ID_VICTORY_DESCRIPTION_STANDARD`,
+  `STRING_ID_VICTORY_DESCRIPTION_TIME_LIMIT`, `STRING_ID_VICTORY_DESCRIPTION_SCORE`,
+  and `STRING_ID_VICTORY_DESCRIPTION_CONQUEST`.
 - Direct format lookups `0x25B6`, `0x25B8`, `0x25BB`, `0x25DA`, `0x25E0`,
   `0x25E4`, `0x25E5`, `0x25E9`, and `0x25EC`: the matching approved format
   macros.
-- Direct `0x25F0` and `0x25F1`: `IDS_POPULATION_LIMIT_FORMAT` and
-  `IDS_PATH_FINDING_FORMAT`.
-- Direct `0x106E`, `0x10E7`, and `0x2BD0` base: `IDS_AGE_NOMAD`,
-  `IDS_OPTION_DEFAULT`, and `IDS_DIFFICULTY_BASE`.
+- Direct `0x25F0` and `0x25F1`: `STRING_ID_POPULATION_LIMIT_FORMAT` and
+  `STRING_ID_PATH_FINDING_FORMAT`.
+- Direct `0x106E`, `0x10E7`, and `0x2BD0` base: `STRING_ID_AGE_NOMAD`,
+  `STRING_ID_OPTION_DEFAULT`, and `STRING_ID_DIFFICULTY_BASE`.
 
 The macros preserve the original integer values and expression types. I did
 not define a new resource macro.
@@ -268,8 +268,8 @@ These numeric expressions remain deferred:
   slots are empty in the base DLL and missing in both inspected override DLLs.
 - Direct per-map switch IDs `0x296A`-`0x2972` and `0x2973`-`0x2978`. Only
   `mapType() + 0x296A` and `mapSize() + 0x2973` received base macros.
-- `age + 0x1067`. The approved `IDS_AGE_NOMAD` covers only direct `0x106E`.
-- `res + 0x25E5`. The approved `IDS_RESOURCE_LEVEL_FORMAT` covers only the
+- `age + 0x1067`. The approved `STRING_ID_AGE_NOMAD` covers only direct `0x106E`.
+- `res + 0x25E5`. The approved `STRING_ID_RESOURCE_LEVEL_FORMAT` covers only the
   direct format lookup.
 - Resource labels `0x25E6`-`0x25E8` have no approved source use here.
 - `0x2BD5`-`0x2BD9` remain outside the approved difficulty base. The first

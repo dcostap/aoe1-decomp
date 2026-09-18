@@ -139,8 +139,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             } while (row <= last_row);
         }
 
-        if (main_row != -1 && last_col >= first_col &&
-            last_col < start_col) {
+        if (main_row != -1 && last_col >= first_col && last_col < start_col) {
             long col = last_col;
             do {
                 long mode = (col == start_col || col == end_col) ? 2 : 0;
@@ -191,8 +190,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             } while (col >= first_col);
         }
 
-        if (main_col != -1 && first_row <= last_row &&
-            first_row > start_row) {
+        if (main_col != -1 && first_row <= last_row && first_row > start_row) {
             long row = first_row;
             do {
                 long mode = (row == start_row || row == end_row) ? 2 : 1;
@@ -260,8 +258,7 @@ int TRIBE_Main_View::command_place_object(long x, long y, int reset_mode) {
         if (this->pick1(0x28, 0, x, y, &pick_info, 0, 1) == 0x33) {
             this->fixup_pick_info(&pick_info);
             object_id = rge_base_game->master_obj_id;
-            if (object_id != -1 &&
-                (master_obj = this->player->master_objects[object_id]) != 0) {
+            if (object_id != -1 && (master_obj = this->player->master_objects[object_id]) != 0) {
                 master_obj->alignment(pick_info.x, pick_info.y, this->world, 0);
                 if (master_obj->check_placement(this->player, pick_info.x, pick_info.y, 0,
                                                 1, master_obj->elevation_flag, 0, 1, 1, 1) == 0) {
@@ -332,8 +329,7 @@ int TRIBE_Main_View::command_place_multi_object(long x1, long y1, long x2, long 
         }
         }
     } else {
-        if (master_id != -1 &&
-            static_cast<TRIBE_Player*>(this->player)->master_objects[master_id] != 0) {
+        if (master_id != -1 && static_cast<TRIBE_Player*>(this->player)->master_objects[master_id] != 0) {
             if (static_cast<TRIBE_Player*>(this->player)->command_make_wall(master_id, x1, y1, x2, y2) != 0)
                 result = 1;
         }
@@ -608,9 +604,7 @@ int TRIBE_Main_View::pick_through_fog(RGE_Static_Object* obj) {
 int TRIBE_Main_View::pick_weight(RGE_Static_Object* obj, int confidence) {
     unsigned char select_level = obj->master_obj->select_level;
 
-    if (obj->master_obj->id == 0x4F ||
-        obj->master_obj->id == 0xC7 ||
-        obj->master_obj->id == 0x45 ||
+    if (obj->master_obj->id == 0x4F || obj->master_obj->id == 0xC7 || obj->master_obj->id == 0x45 ||
         obj->master_obj->id == 0x116) {
         select_level = 3;
     }
@@ -665,8 +659,7 @@ long TRIBE_Main_View::mouse_left_dbl_click_action(long x, long y, int ctrl_key, 
     RGE_Pick_Info pick_info;
 
     if (this->pick1(0x29, 1, x, y, &pick_info, 0, 1) == 0x34) {
-        if ((pick_info.object->master_obj->select_level == 4) &&
-            (pick_info.object->owner == this->player)) {
+        if ((pick_info.object->master_obj->select_level == 4) && (pick_info.object->owner == this->player)) {
             if ((ctrl_key == 0) && (shift_key == 0)) {
                 this->player->unselect_object();
             }
@@ -682,8 +675,7 @@ long TRIBE_Main_View::mouse_left_dbl_click_action(long x, long y, int ctrl_key, 
             RGE_Object_Node* node = this->player->objects->list;
             while (node != 0) {
                 RGE_Static_Object* object = node->node;
-                if ((object->master_obj->id == object_id) ||
-                    (object->master_obj->unit_level == unit_level)) {
+                if ((object->master_obj->id == object_id) || (object->master_obj->unit_level == unit_level)) {
                     if (this->Object_Was_Displayed(object->id, false)) {
                         this->player->select_one_object(object, 0);
                     }

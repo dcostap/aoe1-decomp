@@ -55,13 +55,13 @@ The source now includes `include/resource_ids.h` and reuses these existing macro
 
 | Macro | Value | Use |
 | --- | --- | --- |
-| `IDS_HELP_SAVED_GAME_NAME` | `0x7670` | Save-name edit help |
-| `IDS_BUTTON_OK` | `0x0FA1` | OK button |
-| `IDS_BUTTON_DELETE` | `0x24C9` | Delete button |
-| `IDS_BUTTON_CANCEL` | `0x0FA2` | Cancel button |
-| `IDS_HELP_OK` | `0x7531` | OK-button help |
-| `IDS_HELP_CANCEL` | `0x7532` | Cancel-button help |
-| `IDS_CONFIRM_DELETE_FILE` | `0x24CA` | Delete confirmation format string |
+| `STRING_ID_HELP_SAVED_GAME_NAME` | `0x7670` | Save-name edit help |
+| `STRING_ID_BUTTON_OK` | `0x0FA1` | OK button |
+| `STRING_ID_BUTTON_DELETE` | `0x24C9` | Delete button |
+| `STRING_ID_BUTTON_CANCEL` | `0x0FA2` | Cancel button |
+| `STRING_ID_HELP_OK` | `0x7531` | OK-button help |
+| `STRING_ID_HELP_CANCEL` | `0x7532` | Cancel-button help |
+| `STRING_ID_CONFIRM_DELETE_FILE` | `0x24CA` | Delete confirmation format string |
 
 These replacements preserve the exact literal values and effective argument types. No resource macro was defined in this worktree.
 
@@ -77,34 +77,34 @@ Lookup path: `TRIBE_Game::get_string` first calls `LoadStringA` on `StringTableX
 
 All listed runtime strings use resource type `RT_STRING`, language `0x0409` (English, language ID `1033`). `languagex.dll` and the checked original XPack `languagex.dll` have no entries for these IDs. The exact text comes from the base runtime `language.dll`.
 
-1. Applied `IDS_SAVE_GAME_TITLE_BASE` for numeric `0x24C3`.
-   - The constructor uses `(this->modeValue != SaveGame) + IDS_SAVE_GAME_TITLE_BASE`.
+1. Applied `STRING_ID_SAVE_GAME_TITLE_BASE` for numeric `0x24C3`.
+   - The constructor uses `(this->modeValue != SaveGame) + STRING_ID_SAVE_GAME_TITLE_BASE`.
    - The contiguous range is `0x24C3` = `Save Game`, `0x24C4` = `Save Scenario`, and `0x24C5` = `Return to Game`.
    - The macro preserves the `0x24C3` and `0x24C4` arithmetic range.
    - Purpose: save-screen title selected by mode.
-2. Applied `IDS_ERROR_SAVE_GAME_NAME_REQUIRED` for `0x24C6`.
+2. Applied `STRING_ID_ERROR_SAVE_GAME_NAME_REQUIRED` for `0x24C6`.
    - Text: `You must enter a name to save the game.`
    - Purpose: empty save-game name dialog.
-3. Applied `IDS_ERROR_SAVE_SCENARIO_NAME_REQUIRED` for `0x24C7`.
+3. Applied `STRING_ID_ERROR_SAVE_SCENARIO_NAME_REQUIRED` for `0x24C7`.
    - Text: `You must enter a name to save the scenario.`
    - Purpose: empty save-scenario name dialog.
-4. Applied `IDS_CONFIRM_OVERWRITE_FILE` for `0x24C8`.
+4. Applied `STRING_ID_CONFIRM_OVERWRITE_FILE` for `0x24C8`.
    - Text: `That file exists. Overwrite it?`
    - Purpose: overwrite confirmation dialog.
-5. Applied `IDS_HELP_SELECT_SAVED_GAME` for `0x7671`.
+5. Applied `STRING_ID_HELP_SELECT_SAVED_GAME` for `0x7671`.
    - Text: `Select a saved game.`
    - Purpose: save-screen list help.
-6. Applied `IDS_ERROR_CANNOT_SAVE_GAME` for `0x0962`.
+6. Applied `STRING_ID_ERROR_CANNOT_SAVE_GAME` for `0x0962`.
    - Text: `The game could not be saved. Free some disk space, and then try again.`
    - Purpose: save-game failure dialog.
-7. Applied `IDS_ERROR_CANNOT_SAVE_SCENARIO` for `0x0963`.
+7. Applied `STRING_ID_ERROR_CANNOT_SAVE_SCENARIO` for `0x0963`.
    - Text: `The scenario could not be saved. Free some disk space, and then try again.`
    - Purpose: save-scenario failure dialog, including the scenario-editor helper.
-8. Applied `IDS_STATUS_SAVING_SCENARIO` for `0x0450`.
+8. Applied `STRING_ID_STATUS_SAVING_SCENARIO` for `0x0450`.
    - Text: `Saving scenario...`
    - Purpose: scenario-save status message.
 
-No lookup, fallback, format token, buffer size, or call order changed. The save-title expression preserves `(this->modeValue != SaveGame) + IDS_SAVE_GAME_TITLE_BASE` token order. The delete-confirmation text at `0x24CA` contains the `%s` token and uses the existing `IDS_CONFIRM_DELETE_FILE` macro. The source keeps the original format-string call.
+No lookup, fallback, format token, buffer size, or call order changed. The save-title expression preserves `(this->modeValue != SaveGame) + STRING_ID_SAVE_GAME_TITLE_BASE` token order. The delete-confirmation text at `0x24CA` contains the `%s` token and uses the existing `STRING_ID_CONFIRM_DELETE_FILE` macro. The source keeps the original format-string call.
 
 ## Constants and comments
 

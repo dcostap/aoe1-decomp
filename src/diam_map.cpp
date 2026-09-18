@@ -332,14 +332,12 @@ int RGE_Diamond_Map::create_surfaces() {
 extern RGE_Base_Game *rge_base_game;
 
 void RGE_Diamond_Map::draw() {
-  if (this->render_area == 0 || this->save_area == 0 || this->visible == 0 ||
-      this->active == 0) {
+  if (this->render_area == 0 || this->save_area == 0 || this->visible == 0 || this->active == 0) {
     this->need_redraw = 0;
     return;
   }
 
-  if (this->map != 0 && this->player != 0 && this->map_image_lines != 0 &&
-      this->map_tile_rows != 0) {
+  if (this->map != 0 && this->player != 0 && this->map_image_lines != 0 && this->map_tile_rows != 0) {
     this->draw_setup(0);
     this->cur_player_bit = 1 << this->world->curr_player;
 
@@ -415,8 +413,7 @@ void RGE_Diamond_Map::clear_image() {
   short end_y = this->map_image_hgt + y;
 
   for (; y < end_y; y++) {
-    if ((int)y >= this->clip_rect.top &&
-        (int)y <= this->clip_rect.bottom) {
+    if ((int)y >= this->clip_rect.top && (int)y <= this->clip_rect.bottom) {
       short sx = line->start_x;
       short s2 = (short)this->pnl_x + sx;
       short ex = s2 + line->line_len - 1;
@@ -428,8 +425,7 @@ void RGE_Diamond_Map::clear_image() {
       if ((int)ex > this->clip_rect.right)
         ex = (short)this->clip_rect.right;
 
-      if ((int)s2 >= this->clip_rect.left &&
-          (int)ex <= this->clip_rect.right)
+      if ((int)s2 >= this->clip_rect.left && (int)ex <= this->clip_rect.right)
         memset(p + sx, this->color, (int)ex - (int)s2 + 1);
     }
     line++;
@@ -492,8 +488,7 @@ void RGE_Diamond_Map::draw_tile(short col, short row, int fog, unsigned char ove
   RGE_Tile **map_rows = map->map_row_offset;
   RGE_Tile *tile = map_rows[row] + col;
 
-  if (map->map_visible_flag == 0 &&
-      (this->player->mutualExploredMask & unified_map_offsets[row][col]) == 0)
+  if (map->map_visible_flag == 0 && (this->player->mutualExploredMask & unified_map_offsets[row][col]) == 0)
     return;
 
   short min_coord = row;
@@ -672,8 +667,7 @@ void RGE_Diamond_Map::draw_objects() {
     return;
 
   this->draw_objects_mode = 1;
-  for (node = this->world->players[0]->objects->list; node != 0;
-       node = node->next) {
+  for (node = this->world->players[0]->objects->list; node != 0; node = node->next) {
     if (node->node != 0)
       this->draw_visible_object(node->node, 0xFF, 0xFF);
   }
@@ -686,16 +680,14 @@ void RGE_Diamond_Map::draw_objects() {
       color1 = player->color_table->map_color;
       color2 = player->color_table->map_color;
 
-      for (node = player->doppleganger_objects->list; node != 0;
-           node = node->next) {
+      for (node = player->doppleganger_objects->list; node != 0; node = node->next) {
         if (node->node != 0)
           this->draw_visible_object(node->node, color1, color2);
       }
 
       for (node = player->objects->list; node != 0; node = node->next) {
         object = node->node;
-        if (object != 0 && (object->selected & 1) == 0 &&
-            (object->owner != this->player || object->underAttack() == 0)) {
+        if (object != 0 && (object->selected & 1) == 0 && (object->owner != this->player || object->underAttack() == 0)) {
           this->draw_visible_object(object, color1, color2);
         }
       }
@@ -747,8 +739,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *game_obj, unsigned 
 
   if (player->visible == 0) {
     visible = 0x0F;
-  } else if (this->map->map_visible_flag != 0 &&
-             this->map->fog_flag == 0) {
+  } else if (this->map->map_visible_flag != 0 && this->map->fog_flag == 0) {
     visible = 0x0F;
   } else {
     map_value = unified_map_offsets[(short)row][(short)col];
@@ -763,8 +754,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *game_obj, unsigned 
       visible = 0x0F;
   }
 
-  if (visible != 0x0F &&
-      (visible != 0x80 || game_obj->master_obj->fog_flag == 0))
+  if (visible != 0x0F && (visible != 0x80 || game_obj->master_obj->fog_flag == 0))
     return;
 
   if (game_obj->type == 0x19) {
@@ -774,8 +764,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *game_obj, unsigned 
     if (visible == 0x0F)
       return;
 
-    if (player->mutualAlly[game_obj->owner->id] == 1 &&
-        (this->cur_player_bit & doppleganger->CantSeeBits) == 0) {
+    if (player->mutualAlly[game_obj->owner->id] == 1 && (this->cur_player_bit & doppleganger->CantSeeBits) == 0) {
       draw_level = doppleganger->map_draw_level;
       color1 = doppleganger->map_color;
       color2 = color1;
@@ -863,8 +852,7 @@ void RGE_Diamond_Map::draw_view_rect() {
   long row = (long)this->player->view_y;
 
   if (col != this->view_col || (short)row != this->view_row) {
-    if (col < 0 || col >= this->map->map_width || (short)row < 0 ||
-        (short)row >= this->map->map_height) {
+    if (col < 0 || col >= this->map->map_width || (short)row < 0 || (short)row >= this->map->map_height) {
       return;
     }
 
@@ -909,8 +897,7 @@ void RGE_Diamond_Map::draw_view_rect() {
 
   for (long y = this->view_rect.top; y <= this->view_rect.bottom; ++y) {
     long image_top = this->pnl_y + (long)this->map_image_start_y;
-    if (y < image_top ||
-        y > image_top + (long)this->map_image_hgt - 1) {
+    if (y < image_top || y > image_top + (long)this->map_image_hgt - 1) {
       continue;
     }
 
@@ -958,13 +945,11 @@ int RGE_Diamond_Map::pick_tile(long x, long y, short *col, short *row, RGE_Tile 
   int adjusted_x = x - this->pnl_x;
   int adjusted_y = y - this->pnl_y;
 
-  if (adjusted_y >= this->map_image_start_y &&
-      adjusted_y <= this->map_image_start_y + this->map_image_hgt - 1) {
+  if (adjusted_y >= this->map_image_start_y && adjusted_y <= this->map_image_start_y + this->map_image_hgt - 1) {
     int line_idx = adjusted_y - this->map_image_start_y;
     RGE_Map_Image_Line *line = &this->map_image_lines[line_idx];
 
-    if (adjusted_x >= line->start_x &&
-        adjusted_x <= line->start_x + line->line_len - 1) {
+    if (adjusted_x >= line->start_x && adjusted_x <= line->start_x + line->line_len - 1) {
       int tile_adjusted_x = adjusted_x - line->start_x;
       RGE_Map_Tile_Row *tile_row_ptr = &this->map_tile_rows[line->tile_row];
 

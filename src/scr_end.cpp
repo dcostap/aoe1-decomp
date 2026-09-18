@@ -38,7 +38,7 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
     background->set_positioning(TPanel::PositionCentered, 0, 0, 0, 0, pnl_wid * 640 / 640, pnl_wid * 640 / 640,
                                 pnl_hgt * 480 / 480, pnl_hgt * 480 / 480, 0, 0, 0, 0);
 
-    RGE_Font* font = rge_base_game->get_font(1);
+    RGE_Font* font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_21_BOLD);
     title = new TTextPanel;
     if (title == 0) {
         error_code = 1;
@@ -60,7 +60,7 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
     text->scroll(6, 0, 1);
 
     TDigital* sound = rge_base_game->get_sound(0);
-    font = rge_base_game->get_font(0);
+    font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_12_BOLD);
     okButton = new TButtonPanel;
     if (okButton == 0) {
         error_code = 1;
@@ -86,7 +86,7 @@ long TribeEndScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, 
         return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
     }
 
-    new TribeAchievementsScreen(get_string(IDS_ACHIEVEMENTS_TITLE), 1);
+    new TribeAchievementsScreen(get_string(STRING_ID_ACHIEVEMENTS_TITLE), 1);
     panel_system.setCurrentPanel("Achievements Screen", 0);
     panel_system.destroyPanel("End Screen");
     return 1;

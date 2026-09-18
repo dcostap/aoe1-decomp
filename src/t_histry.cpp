@@ -101,8 +101,7 @@ long TRIBE_History_Info::get_history_entry_num() {
 }
 
 unsigned char TRIBE_History_Info::get_history_entry(unsigned char history_type, long time) {
-    if ((time < this->number_of_entries) && (time >= 0) &&
-        (history_type == 0)) {
+    if ((time < this->number_of_entries) && (time >= 0) && (history_type == 0)) {
         return this->history[time].population;
     }
     return 0;

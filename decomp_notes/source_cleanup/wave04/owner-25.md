@@ -85,13 +85,13 @@ The integration commit is
 `0ba799c79de710bf581abed34cbcf3ca655442c7`.
 The import also contains approved names for other groups.
 
-`tcommand.cpp` now uses `IDS_ERROR_SYNC` for `0x0966`.
+`tcommand.cpp` now uses `STRING_ID_ERROR_SYNC` for `0x0966`.
 The base DLL text and the out-of-sync call site support this name.
 
 `tplayer.cpp` now uses these approved names:
 
-- `IDS_FILE_NONE` for `0x2775`.
-- `IDS_AI_FILE_RANDOM` for `0x277B`.
+- `STRING_ID_FILE_NONE` for `0x2775`.
+- `STRING_ID_AI_FILE_RANDOM` for `0x277B`.
 
 Both IDs have exact runtime-base text and are missing from both checked expansion DLLs.
 The unused `noneString` load remains unchanged.

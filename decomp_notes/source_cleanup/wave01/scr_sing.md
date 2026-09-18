@@ -135,14 +135,14 @@ It also has `RT_STRING` resources, but every requested ID below is missing.
 
 | ID | Proposed macro | Purpose evidence | Base text |
 | --- | --- | --- | --- |
-| `0x3EA` | `IDS_BUTTON_CLOSE` | Long `create_button` call creates the close button. | `X` |
-| `0x2404` | `IDS_MENU_SINGLE_PLAYER_TITLE` | `create_text` sets the screen title. | `Single Player Menu` |
-| `0x2405` | `IDS_MENU_SCENARIO` | `button[3]->set_text` labels the scenario route. | `Scenario` |
-| `0x2407` | `IDS_MENU_SAVED_GAME` | `button[4]->set_text` labels the saved-game route. | `Saved Game` |
-| `0x2408` | `IDS_MENU_CAMPAIGN` | `button[1]->set_text` labels the campaign route. | `Campaign` |
-| `0x2409` | `IDS_MENU_SINGLE_PLAYER_CANCEL` | `button[5]->set_text` labels the return route. | `Cancel` |
-| `0x240A` | `IDS_MENU_RANDOM_MAP` | `button[0]->set_text` labels the random-map route. | `Random Map` |
-| `0x240B` | `IDS_MENU_DEATH_MATCH` | `button[2]->set_text` labels the death-match route. | `Death Match` |
+| `0x3EA` | `STRING_ID_BUTTON_CLOSE` | Long `create_button` call creates the close button. | `X` |
+| `0x2404` | `STRING_ID_MENU_SINGLE_PLAYER_TITLE` | `create_text` sets the screen title. | `Single Player Menu` |
+| `0x2405` | `STRING_ID_MENU_SCENARIO` | `button[3]->set_text` labels the scenario route. | `Scenario` |
+| `0x2407` | `STRING_ID_MENU_SAVED_GAME` | `button[4]->set_text` labels the saved-game route. | `Saved Game` |
+| `0x2408` | `STRING_ID_MENU_CAMPAIGN` | `button[1]->set_text` labels the campaign route. | `Campaign` |
+| `0x2409` | `STRING_ID_MENU_SINGLE_PLAYER_CANCEL` | `button[5]->set_text` labels the return route. | `Cancel` |
+| `0x240A` | `STRING_ID_MENU_RANDOM_MAP` | `button[0]->set_text` labels the random-map route. | `Random Map` |
+| `0x240B` | `STRING_ID_MENU_DEATH_MATCH` | `button[2]->set_text` labels the death-match route. | `Death Match` |
 
 These are new descriptive cleanup names. No original macro name is claimed.
 The proposed macros retain the existing numeric values and introduce no storage.

@@ -42,14 +42,14 @@ Root returned the group for report and presentation corrections through owner `s
 - The campaign-editor report cites extraction files in the preserved pilot worktree.
   Identify the actual files and any out-of-scope writes; preserve prior evidence and correct the report.
 - Apply 1TBS to the remaining join-screen constructors and remove the newly introduced short `setPlayerColor` wrap.
-- Name `0x1D4F7` as `IDS_HELP_NOTICE`, not `IDS_HELP_DIALOG_TITLE`.
+- Name `0x1D4F7` as `STRING_ID_HELP_NOTICE`, not `STRING_ID_HELP_DIALOG_TITLE`.
   The popup lookup supplies displayed dialog text; an internal buffer name does not establish a window-title role.
 
 Root extends owner 03's editing scope to `include/scr_set_screen.h` for its two requested parameter-name changes only.
 No other header ownership changes. Root continues to own `include/resource_ids.h`.
 
 Root approved 64 distinct new resource definitions from the six module request tables.
-The shared Close ID has one definition. Other mappings retain the requested names except `IDS_HELP_NOTICE` above.
+The shared Close ID has one definition. Other mappings retain the requested names except `STRING_ID_HELP_NOTICE` above.
 The save-title expression must retain its existing arithmetic and use the named base only.
 
 Root independently read all 64 IDs from the actual runtime PE files using the local string extractor.

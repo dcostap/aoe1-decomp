@@ -234,8 +234,7 @@ unsigned char RGE_Doppleganger_Object::update() {
 
     unsigned long map_value = *this->MapAddress;
     if (map_value != this->LastMapValue) {
-        if ((this->owner->mutualVisibleMask & map_value) != 0 &&
-            this->object_state < 3) {
+        if ((this->owner->mutualVisibleMask & map_value) != 0 && this->object_state < 3) {
             if (DDlogf != 0) {
                 fprintf(DDlogf, "DIE DOP (@%d) id=%d own=%d\n", this->owner->world->world_time, this->id, this->owner->id);
             }
@@ -299,10 +298,7 @@ void RGE_Doppleganger_Object::validate() {
         do {
             RGE_Doppleganger_Object* obj =
                 (RGE_Doppleganger_Object*)entry->node;
-            if (obj != 0 &&
-                obj->type == 0x19 &&
-                obj->id != this->id &&
-                obj->doppledObjectID == this->doppledObjectID &&
+            if (obj != 0 && obj->type == 0x19 && obj->id != this->id && obj->doppledObjectID == this->doppledObjectID &&
                 obj->object_state == check_value) {
 
                 short owner_id = this->owner->id;
@@ -418,14 +414,11 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
         for (i = 0; i < this->active_size; i++) {
             Unified_Map_Value = *this->Map_Addresses[i];
             if (Unified_Map_Value != this->Last_Map_Value[i]) {
-                if (this->Objects[i] != 0 &&
-                    this->owner->world->object(this->Object_ids[i]) ==
-                        this->Objects[i]) {
+                if (this->Objects[i] != 0 && this->owner->world->object(this->Object_ids[i]) == this->Objects[i]) {
                     unsigned long mask =
                         ((this->Last_Map_Value[i] ^ Unified_Map_Value) >> 1) &
                         (this->Last_Map_Value[i] >> 1) & 0x7fff;
-                    for (int player_id = 1; mask != 0;
-                         player_id++, mask >>= 1) {
+                    for (int player_id = 1; mask != 0; player_id++, mask >>= 1) {
                         if ((mask & 1) == 1) {
                             int owner_id = (int)this->owner->id;
                             if (player_id != owner_id) {

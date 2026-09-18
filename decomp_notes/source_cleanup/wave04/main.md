@@ -112,17 +112,17 @@ It expands to `0x00000010L`. The API converts it to its `UINT` parameter. The
 effective flag value stays `0x10`. I did not use the newer `MB_ICONERROR` alias.
 
 The source now includes the existing `resource_ids.h` header. It replaces only
-the title lookup argument with the exact unsuffixed macro `IDS_ERROR_TITLE`.
+the title lookup argument with the exact unsuffixed macro `STRING_ID_ERROR_TITLE`.
 Both `0x100` buffer lengths and all other literals remain unchanged.
 
 Root approved this mapping in commit
 `0aa69b43219d638bf1a6667b832257d633635ccf`:
 
 ```cpp
-#define IDS_ERROR_TITLE 0x07D1
+#define STRING_ID_ERROR_TITLE 0x07D1
 ```
 
-`IDS_ERROR_TITLE` is a new cleanup name, not a proved original name. The error
+`STRING_ID_ERROR_TITLE` is a new cleanup name, not a proved original name. The error
 path passes this ID to `TRIBE_Game::get_string`. The purpose is an error-dialog
 title.
 
@@ -153,7 +153,7 @@ No other comment was added or changed.
 
 ## Shared requests and unresolved mappings
 
-- Root approval: `IDS_ERROR_TITLE` is approved as `0x07D1` in commit `0aa69b43219d638bf1a6667b832257d633635ccf`.
+- Root approval: `STRING_ID_ERROR_TITLE` is approved as `0x07D1` in commit `0aa69b43219d638bf1a6667b832257d633635ccf`.
 - No `include/main.h` request is needed. It has no `WinMain` declaration.
 - The original spelling of the optimized `game` declaration is unresolved.
   Its current type and source name remain unchanged.

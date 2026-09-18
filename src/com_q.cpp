@@ -85,9 +85,7 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(
     i = 0;
     Count = seq;
     do {
-        if (this->Queue[i].ExecTurn == TurnID &&
-            this->Queue[i].From == PlayerNo &&
-            this->Queue[i].Size != 0) {
+        if (this->Queue[i].ExecTurn == TurnID && this->Queue[i].From == PlayerNo && this->Queue[i].Size != 0) {
             seq++;
             Count = seq;
         }
@@ -132,8 +130,7 @@ unsigned int RGE_Communications_Queue::FlushTurnRange(
     do {
         unsigned int execTurn = Queue[i].ExecTurn;
         MsgQueue* entry = &Queue[i];
-        if (((execTurn >= LowRange) && (execTurn <= HiRange)) ||
-            ((LowRange == 0) && (HiRange == 0))) {
+        if (((execTurn >= LowRange) && (execTurn <= HiRange)) || ((LowRange == 0) && (HiRange == 0))) {
             Count++;
             if (entry->Size > 0) {
                 entry->Code = 0;
@@ -312,8 +309,7 @@ void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long ThisTurn) {
                 TestShowQueue();
             }
 
-            if (Queue[i].Code < bestControlCommand &&
-                Queue[i].ExecTurn == ThisTurn) {
+            if (Queue[i].Code < bestControlCommand && Queue[i].ExecTurn == ThisTurn) {
                 bestControlCommand = Queue[i].Code;
                 SendMsg = i;
             }

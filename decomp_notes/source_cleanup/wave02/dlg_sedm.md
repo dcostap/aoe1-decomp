@@ -120,13 +120,13 @@ The constructor passes these IDs to the long-ID overload of
 
 | Applied macro and ID | Button role | Name status | Provenance |
 | --- | --- | --- | --- |
-| `IDS_SCENARIO_MENU_QUIT_TO_MAIN_MENU` (`0x2443`) | button 0, Quit to Main Menu | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
-| `IDS_SCENARIO_MENU_SAVE` (`0x2441`) | button 1, Save | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
-| `IDS_SCENARIO_MENU_SAVE_AS` (`0x2442`) | button 2, Save As | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
-| `IDS_SCENARIO_MENU_EDIT_SCENARIO` (`0x2445`) | button 3, Edit Scenario | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
-| `IDS_SCENARIO_MENU_CREATE_SCENARIO` (`0x242E`) | button 4, Create Scenario | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
-| `IDS_SCENARIO_MENU_TEST` (`0x2446`) | button 5, Test | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
-| `IDS_SCENARIO_MENU_CANCEL` (`0x2444`) | button 6, Cancel | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `STRING_ID_SCENARIO_MENU_QUIT_TO_MAIN_MENU` (`0x2443`) | button 0, Quit to Main Menu | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `STRING_ID_SCENARIO_MENU_SAVE` (`0x2441`) | button 1, Save | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `STRING_ID_SCENARIO_MENU_SAVE_AS` (`0x2442`) | button 2, Save As | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `STRING_ID_SCENARIO_MENU_EDIT_SCENARIO` (`0x2445`) | button 3, Edit Scenario | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `STRING_ID_SCENARIO_MENU_CREATE_SCENARIO` (`0x242E`) | button 4, Create Scenario | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `STRING_ID_SCENARIO_MENU_TEST` (`0x2446`) | button 5, Test | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `STRING_ID_SCENARIO_MENU_CANCEL` (`0x2444`) | button 6, Cancel | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
 
 The current base resource file is:
 
@@ -234,13 +234,13 @@ The worker-local import contains these base-language mappings from commit
 `8c56055b7feee1526f296bd306036a4c34f38041`:
 
 ```cpp
-#define IDS_SCENARIO_MENU_QUIT_TO_MAIN_MENU 0x2443
-#define IDS_SCENARIO_MENU_SAVE              0x2441
-#define IDS_SCENARIO_MENU_SAVE_AS           0x2442
-#define IDS_SCENARIO_MENU_EDIT_SCENARIO     0x2445
-#define IDS_SCENARIO_MENU_CREATE_SCENARIO   0x242E
-#define IDS_SCENARIO_MENU_TEST              0x2446
-#define IDS_SCENARIO_MENU_CANCEL            0x2444
+#define STRING_ID_SCENARIO_MENU_QUIT_TO_MAIN_MENU 0x2443
+#define STRING_ID_SCENARIO_MENU_SAVE              0x2441
+#define STRING_ID_SCENARIO_MENU_SAVE_AS           0x2442
+#define STRING_ID_SCENARIO_MENU_EDIT_SCENARIO     0x2445
+#define STRING_ID_SCENARIO_MENU_CREATE_SCENARIO   0x242E
+#define STRING_ID_SCENARIO_MENU_TEST              0x2446
+#define STRING_ID_SCENARIO_MENU_CANCEL            0x2444
 ```
 
 These are cleanup names. No original macro names were recovered.

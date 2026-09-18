@@ -139,8 +139,7 @@ RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Obje
             }
         }
 
-        if (target_obj->object_state < 3 &&
-            target_obj->master_obj->combat_level > 0) {
+        if (target_obj->object_state < 3 && target_obj->master_obj->combat_level > 0) {
             for (i = 0; i < list_num; i++) {
                 RGE_Task* task = list[i];
                 if (task->combat_level > 0) {
@@ -157,8 +156,7 @@ RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Obje
         short tile_y = (short)(int)target_y;
         RGE_Map* map = obj->owner->world->map;
 
-        if (tile_x >= 0 && tile_x < map->map_width &&
-            tile_y >= 0 && tile_y < map->map_height) {
+        if (tile_x >= 0 && tile_x < map->map_width && tile_y >= 0 && tile_y < map->map_height) {
             terrain_type = (unsigned char)map->get_terrain(tile_x, tile_y);
             for (i = 0; i < list_num; i++) {
                 RGE_Task* task = list[i];
@@ -178,8 +176,7 @@ int RGE_Task_List::is_attack_task(RGE_Task* task) {
 int RGE_Task_List::check_task(RGE_Task* task, RGE_Action_Object* obj, RGE_Static_Object* target_obj) {
     // Reject a missing held attribute or a non-positive amount.
     if (task->holding_attr == 1) {
-        if (target_obj->attribute_type_held == -1 ||
-            target_obj->attribute_amount_held <= DAT_00576544)
+        if (target_obj->attribute_type_held == -1 || target_obj->attribute_amount_held <= DAT_00576544)
             return 0;
     }
 
@@ -222,8 +219,7 @@ int RGE_Task_List::check_task(RGE_Task* task, RGE_Action_Object* obj, RGE_Static
             if (!obj->owner->relation(target_obj->owner->id))
                 goto case5_failure;
         }
-        if (target_obj->owner->id == 0 &&
-            obj->master_obj->combat_level == 0)
+        if (target_obj->owner->id == 0 && obj->master_obj->combat_level == 0)
             goto case5_failure;
         break;
 

@@ -179,8 +179,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
     this->create_all_buttons_etc();
     int idx;
     if (scenario_name_in && *scenario_name_in) {
-        if (strstr(scenario_name_in, ".scn") != 0 ||
-            strstr(scenario_name_in, ".SCN") != 0) {
+        if (strstr(scenario_name_in, ".scn") != 0 || strstr(scenario_name_in, ".SCN") != 0) {
             char *source = scenario_name_in;
             int i = 0;
             do {
@@ -239,7 +238,7 @@ int TRIBE_Screen_Sed::create_button(TPanel *parent, TButtonPanel **button, long 
 int TRIBE_Screen_Sed::create_button(TPanel *parent, TButtonPanel **button,
                                     char *text1, char *text2,
                                     char *text3, char *text4) {
-    if (this->TEasy_Panel::create_button(parent, button, text1, text2, 0, 0, 0, 0, 10, 1, 0) == 0)
+    if (this->TEasy_Panel::create_button(parent, button, text1, text2, 0, 0, 0, 0, RGE_FONT_ARIAL_10_NORMAL_ALT, 1, 0) == 0)
         return 0;
 
     if (text3 != 0)
@@ -259,7 +258,7 @@ int TRIBE_Screen_Sed::create_button(TPanel *parent, TButtonPanel **button,
 }
 
 int TRIBE_Screen_Sed::create_text(TPanel *parent, TTextPanel **text_panel, long text_id) {
-    int ok = this->TEasy_Panel::create_text(parent, text_panel, text_id, 0, 0, 0, 0, 10, 0, 0, 0);
+    int ok = this->TEasy_Panel::create_text(parent, text_panel, text_id, 0, 0, 0, 0, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
     if (!ok)
         return 0;
     (*text_panel)->set_z_order(1, 0);
@@ -268,7 +267,7 @@ int TRIBE_Screen_Sed::create_text(TPanel *parent, TTextPanel **text_panel, long 
 }
 
 int TRIBE_Screen_Sed::create_text(TPanel *parent, TTextPanel **text_panel, char *text) {
-    int ok = this->TEasy_Panel::create_text(parent, text_panel, text, 0, 0, 0, 0, 10, 0, 0, 0);
+    int ok = this->TEasy_Panel::create_text(parent, text_panel, text, 0, 0, 0, 0, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
     if (!ok)
         return 0;
     (*text_panel)->set_z_order(1, 0);
@@ -280,7 +279,7 @@ int TRIBE_Screen_Sed::create_input(TPanel *parent, TInputPanel **input_panel,
                                    char *value, short max_len,
                                    TInputPanel::FormatType format_type) {
     if (this->TEasy_Panel::create_input(parent, input_panel, value, max_len,
-                                        static_cast<TInputPanel::FormatType>(format_type), 0, 0, 0, 0, 10) == 0) {
+                                        static_cast<TInputPanel::FormatType>(format_type), 0, 0, 0, 0, RGE_FONT_ARIAL_10_NORMAL_ALT) == 0) {
         return 0;
     }
     (*input_panel)->set_z_order(1, 0);
@@ -293,7 +292,7 @@ int TRIBE_Screen_Sed::create_edit(TPanel *parent, TEditPanel **edit_panel,
                                   TEditPanel::FormatType format_type, int enable_ime,
                                   int turn_ime_on) {
     int result = this->TEasy_Panel::create_edit(parent, edit_panel, value, max_len,
-                                                static_cast<TEditPanel::FormatType>(format_type), 0, 0, 0, 0, 10, enable_ime, turn_ime_on);
+                                                static_cast<TEditPanel::FormatType>(format_type), 0, 0, 0, 0, RGE_FONT_ARIAL_10_NORMAL_ALT, enable_ime, turn_ime_on);
     if (result == 0)
         return 0;
     (*edit_panel)->set_z_order(1, 0);
@@ -304,36 +303,25 @@ int TRIBE_Screen_Sed::create_edit(TPanel *parent, TEditPanel **edit_panel,
 int TRIBE_Screen_Sed::create_drop_down(TPanel *parent, TDropDownPanel **drop_panel) {
     long height;
 
-    if (drop_panel == &this->victory_object_list ||
-        drop_panel == &this->victory_attribute_list ||
-        drop_panel == &this->victory_ages_list ||
-        drop_panel == &this->victory_tech_list ||
-        drop_panel == &this->BuildList ||
-        drop_panel == &this->CityLayout ||
-        drop_panel == &this->AiRules ||
+    if (drop_panel == &this->victory_object_list || drop_panel == &this->victory_attribute_list ||
+        drop_panel == &this->victory_ages_list || drop_panel == &this->victory_tech_list ||
+        drop_panel == &this->BuildList || drop_panel == &this->CityLayout || drop_panel == &this->AiRules ||
         drop_panel == &this->victory_time) {
         height = 220;
         goto create;
     }
     if (drop_panel != &this->victory_drop_down) {
-        if (drop_panel == this->cinematic_input ||
-            drop_panel == this->cinematic_input + 1 ||
-            drop_panel == this->cinematic_input + 2 ||
-            drop_panel == this->cinematic_input + 3 ||
-            drop_panel == &this->default_terrain_drop ||
-            drop_panel == &this->map_size_drop ||
+        if (drop_panel == this->cinematic_input || drop_panel == this->cinematic_input + 1 ||
+            drop_panel == this->cinematic_input + 2 || drop_panel == this->cinematic_input + 3 ||
+            drop_panel == &this->default_terrain_drop || drop_panel == &this->map_size_drop ||
             drop_panel == &this->map_style_drop) {
             height = 170;
             goto create;
         }
-        if (drop_panel == &this->player_advance_civilization_drop ||
-            drop_panel == &this->player_list ||
-            drop_panel == &this->player_number_list ||
-            drop_panel == &this->unit_player_list ||
-            drop_panel == &this->victory_player_list ||
-            drop_panel == &this->options_player_list ||
-            drop_panel == &this->Diplomacy_player_list ||
-            drop_panel == &this->victory_enemy_player_list) {
+        if (drop_panel == &this->player_advance_civilization_drop || drop_panel == &this->player_list ||
+            drop_panel == &this->player_number_list || drop_panel == &this->unit_player_list ||
+            drop_panel == &this->victory_player_list || drop_panel == &this->options_player_list ||
+            drop_panel == &this->Diplomacy_player_list || drop_panel == &this->victory_enemy_player_list) {
             height = 150;
             goto create;
         }
@@ -344,7 +332,7 @@ int TRIBE_Screen_Sed::create_drop_down(TPanel *parent, TDropDownPanel **drop_pan
 
 create:
 
-    if (this->TEasy_Panel::create_drop_down(parent, drop_panel, height, 100, 0, 0, height, 22, 10) == 0) {
+    if (this->TEasy_Panel::create_drop_down(parent, drop_panel, height, 100, 0, 0, height, 22, RGE_FONT_ARIAL_10_NORMAL_ALT) == 0) {
         return 0;
     }
 
@@ -356,26 +344,26 @@ create:
 
     list = &this->map_size_drop;
     if (drop_panel == list) {
-        (*list)->append_line(IDS_MAP_SIZE_BASE, 0);
-        (*list)->append_line(IDS_MAP_SIZE_BASE + 1, 0);
-        (*list)->append_line(IDS_MAP_SIZE_BASE + 2, 0);
-        (*list)->append_line(IDS_MAP_SIZE_BASE + 3, 0);
-        (*list)->append_line(IDS_MAP_SIZE_BASE + 4, 0);
-        (*list)->append_line(IDS_MAP_SIZE_BASE + 5, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_BASE, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 1, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 2, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 3, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 4, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 5, 0);
         (*list)->set_line(3);
         goto done;
     } else {
         list = &this->map_style_drop;
         if (drop_panel == list) {
-            (*list)->append_line(IDS_MAP_TYPE_BASE, 0);
-            (*list)->append_line(IDS_MAP_TYPE_BASE + 1, 0);
-            (*list)->append_line(IDS_MAP_TYPE_BASE + 2, 0);
-            (*list)->append_line(IDS_MAP_TYPE_BASE + 3, 0);
-            (*list)->append_line(IDS_MAP_TYPE_BASE + 4, 0);
-            (*list)->append_line(IDS_MAP_TYPE_BASE + 5, 0);
-            (*list)->append_line(IDS_MAP_TYPE_BASE + 6, 0);
-            (*list)->append_line(IDS_MAP_TYPE_BASE + 7, 0);
-            (*list)->append_line(IDS_MAP_TYPE_BASE + 8, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_BASE, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 1, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 2, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 3, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 4, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 5, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 6, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 7, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 8, 0);
             (*list)->set_line(3);
             goto done;
         } else {
@@ -383,7 +371,7 @@ create:
             if (drop_panel == list) {
                 int i = 0;
                 do {
-                    (*list)->append_line(i + IDS_PLAYER_COUNT_BASE, 0);
+                    (*list)->append_line(i + STRING_ID_PLAYER_COUNT_BASE, 0);
                     i++;
                 } while (i < 8);
                 (*list)->set_line(0);
@@ -393,7 +381,7 @@ create:
                 if (drop_panel == list) {
                     int i = 0;
                     do {
-                        (*list)->append_line(i + IDS_PLAYER_COUNT_BASE, 0);
+                        (*list)->append_line(i + STRING_ID_PLAYER_COUNT_BASE, 0);
                         i++;
                     } while (i < 8);
                     (*list)->set_line(0);
@@ -402,88 +390,88 @@ create:
                     list = &this->victory_attribute_list;
                     if (drop_panel == list) {
                         // These attribute codes have no reviewed symbolic names.
-                        (*list)->append_line(IDS_VICTORY_RAZINGS, 0x2B);
-                        (*list)->append_line(IDS_VICTORY_CONVERSIONS, 0x29);
-                        (*list)->append_line(IDS_VICTORY_KILL_RATIO, 0x2C);
-                        (*list)->append_line(IDS_VICTORY_MILITARY_POPULATION, 0x28);
-                        (*list)->append_line(IDS_VICTORY_TECHNOLOGIES, 0x15);
-                        (*list)->append_line(IDS_VICTORY_KILLS, 0x14);
-                        (*list)->append_line(IDS_VICTORY_VILLAGER_POPULATION, 0x25);
+                        (*list)->append_line(STRING_ID_VICTORY_RAZINGS, 0x2B);
+                        (*list)->append_line(STRING_ID_VICTORY_CONVERSIONS, 0x29);
+                        (*list)->append_line(STRING_ID_VICTORY_KILL_RATIO, 0x2C);
+                        (*list)->append_line(STRING_ID_VICTORY_MILITARY_POPULATION, 0x28);
+                        (*list)->append_line(STRING_ID_VICTORY_TECHNOLOGIES, 0x15);
+                        (*list)->append_line(STRING_ID_VICTORY_KILLS, 0x14);
+                        (*list)->append_line(STRING_ID_VICTORY_VILLAGER_POPULATION, 0x25);
                         (*list)->set_line(0);
                         goto done;
                     } else {
                         list = &this->default_terrain_drop;
                         if (drop_panel == list) {
-                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE, 0);
-                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 1, 0);
-                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 2, 0);
-                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 3, 0);
-                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 4, 0);
-                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 5, 0);
-                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 6, 0);
-                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 7, 0);
-                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 8, 0);
+                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE, 0);
+                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 1, 0);
+                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 2, 0);
+                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 3, 0);
+                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 4, 0);
+                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 5, 0);
+                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 6, 0);
+                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 7, 0);
+                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 8, 0);
                             (*list)->set_line(0);
                             goto done;
                         } else {
                             list = this->player_setting_drop;
                             if (drop_panel == list) {
-                                (*list)->append_line(IDS_PLAYER_SETTING_COMPUTER, 0);
-                                (*list)->append_line(IDS_PLAYER_SETTING_EITHER, 0);
+                                (*list)->append_line(STRING_ID_PLAYER_SETTING_COMPUTER, 0);
+                                (*list)->append_line(STRING_ID_PLAYER_SETTING_EITHER, 0);
                                 (*list)->set_line(0);
                                 goto done;
                             } else {
                                 list = &this->victory_drop_down;
                                 if (drop_panel == list) {
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 1, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 2, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 3, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 4, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 5, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 6, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 7, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 8, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 9, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 10, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 11, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 12, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 13, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 14, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 15, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 16, 0);
-                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 17, 0);
-                                    (*list)->append_line(IDS_TECHNOLOGIES_LABEL, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 1, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 2, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 3, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 4, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 5, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 6, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 7, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 8, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 9, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 10, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 11, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 12, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 13, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 14, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 15, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 16, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 17, 0);
+                                    (*list)->append_line(STRING_ID_TECHNOLOGIES_LABEL, 0);
                                     (*list)->set_line(0);
                                     goto done;
                                 } else {
                                     list = this->player_setting_drop + 1;
                                     if (drop_panel == list) {
-                                        (*list)->append_line(IDS_CIVILIZATION_EGYPTIAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_GREEK, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_BABYLONIAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_ASSYRIAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_MINOAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_HITTITE, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_PHOENICIAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_SUMERIAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_PERSIAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_SHANG, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_YAMATO, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_CHOSON, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_ROMAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_CARTHAGINIAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_PALMYRAN, 0);
-                                        (*list)->append_line(IDS_CIVILIZATION_MACEDONIAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_EGYPTIAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_GREEK, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_BABYLONIAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_ASSYRIAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_MINOAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_HITTITE, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_PHOENICIAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_SUMERIAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_PERSIAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_SHANG, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_YAMATO, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_CHOSON, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_ROMAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_CARTHAGINIAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_PALMYRAN, 0);
+                                        (*list)->append_line(STRING_ID_CIVILIZATION_MACEDONIAN, 0);
                                         (*list)->set_line(0);
                                         goto done;
                                     } else {
                                         list = &this->victory_ages_list;
                                         if (drop_panel == list) {
-                                            (*list)->append_line(IDS_HELP_AGE_STONE, 0);
-                                            (*list)->append_line(IDS_HELP_AGE_TOOL, 0);
-                                            (*list)->append_line(IDS_HELP_AGE_BRONZE, 0);
-                                            (*list)->append_line(IDS_HELP_AGE_IRON, 0);
+                                            (*list)->append_line(STRING_ID_HELP_AGE_STONE, 0);
+                                            (*list)->append_line(STRING_ID_HELP_AGE_TOOL, 0);
+                                            (*list)->append_line(STRING_ID_HELP_AGE_BRONZE, 0);
+                                            (*list)->append_line(STRING_ID_HELP_AGE_IRON, 0);
                                             (*list)->set_line(0);
                                             goto done;
                                         } else {
@@ -593,15 +581,15 @@ done:
 
 int TRIBE_Screen_Sed::SetupListOfTerrain(TListPanel *list) {
     list->empty_list();
-    list->append_line(IDS_DEFAULT_TERRAIN_BASE, 0);
-    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 1, 0);
-    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 2, 0);
-    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 3, 0);
-    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 4, 0);
-    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 5, 0);
-    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 6, 0);
-    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 7, 0);
-    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 8, 0);
+    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE, 0);
+    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 1, 0);
+    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 2, 0);
+    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 3, 0);
+    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 4, 0);
+    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 5, 0);
+    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 6, 0);
+    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 7, 0);
+    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 8, 0);
     return 8;
 }
 
@@ -610,7 +598,7 @@ int TRIBE_Screen_Sed::create_list(TPanel *parent, TListPanel **list_panel, TScro
     char str2[60];
     int i;
 
-    if (this->TEasy_Panel::create_list(parent, list_panel, 0, 0, 0, 0, 10) == 0)
+    if (this->TEasy_Panel::create_list(parent, list_panel, 0, 0, 0, 0, RGE_FONT_ARIAL_10_NORMAL_ALT) == 0)
         return 0;
 
     (*list_panel)->set_active(0);
@@ -620,7 +608,7 @@ int TRIBE_Screen_Sed::create_list(TPanel *parent, TListPanel **list_panel, TScro
         return 0;
 
     if (list_panel == &this->paint_elevation_list) {
-        this->set_string(str1, IDS_TERRAIN_ELEVATION_LABEL, 50);
+        this->set_string(str1, STRING_ID_TERRAIN_ELEVATION_LABEL, 50);
         for (i = 0; i < 7; i++) {
             sprintf(str2, "%s %d", str1, i + 1);
             this->paint_elevation_list->append_line(str2, 0);
@@ -994,19 +982,19 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode new_mode
                 this->message_input->set_text(text);
                 switch (this->current_message) {
                 case 0:
-                        this->message_input->set_help_info(IDS_HELP_EDIT_SCENARIO_INSTRUCTIONS, -1);
+                        this->message_input->set_help_info(STRING_ID_HELP_EDIT_SCENARIO_INSTRUCTIONS, -1);
                     break;
                 case 1:
-                        this->message_input->set_help_info(IDS_HELP_EDIT_SCENARIO_HINTS, -1);
+                        this->message_input->set_help_info(STRING_ID_HELP_EDIT_SCENARIO_HINTS, -1);
                     break;
                 case 2:
-                        this->message_input->set_help_info(IDS_HELP_EDIT_VICTORY_MESSAGE, -1);
+                        this->message_input->set_help_info(STRING_ID_HELP_EDIT_VICTORY_MESSAGE, -1);
                     break;
                 case 3:
-                        this->message_input->set_help_info(IDS_HELP_EDIT_LOSS_MESSAGE, -1);
+                        this->message_input->set_help_info(STRING_ID_HELP_EDIT_LOSS_MESSAGE, -1);
                     break;
                 case 4:
-                        this->message_input->set_help_info(IDS_HELP_EDIT_HISTORY, -1);
+                        this->message_input->set_help_info(STRING_ID_HELP_EDIT_HISTORY, -1);
                     break;
                 default:
                     break;
@@ -1573,7 +1561,7 @@ void TRIBE_Screen_Sed::set_unit_player(short val) {
         if (this->unit_list_info == 0)
             return;
         this->unit_list_info[0].id = -1;
-        this->set_string(this->unit_list_info[0].text, IDS_FILE_NONE, 20);
+        this->set_string(this->unit_list_info[0].text, STRING_ID_FILE_NONE, 20);
 
         short out = 1; // The original loads this index as a word.
         short i = 0;
@@ -1793,8 +1781,7 @@ long TRIBE_Screen_Sed::key_down_action(long key, short count,
                     this->bottom_panel->set_curr_child(this->player_inven_input[0]);
                     return 0;
                 }
-            } else if ((this->scenario_mode == ScenarioModeVictory) &&
-                       (this->bottom_panel->curr_child == 0) &&
+            } else if ((this->scenario_mode == ScenarioModeVictory) && (this->bottom_panel->curr_child == 0) &&
                        (this->victory_amount_input->active != 0)) {
                 this->bottom_panel->set_curr_child(this->victory_amount_input);
                 return 0;
@@ -1864,20 +1851,13 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
     }
 
     if (action_in == 0) {
-        if (from_panel == this->random_seed_input ||
-            from_panel == this->player_inven_input[0] ||
-            from_panel == this->player_inven_input[1] ||
-            from_panel == this->player_inven_input[2] ||
-            from_panel == this->player_inven_input[3] ||
-            from_panel == this->player_inven_input[4] ||
-            from_panel == this->player_setting_label[0] ||
-            from_panel == this->victory_condition_explore ||
-            from_panel == this->victory_condition_ruins ||
-            from_panel == this->victory_condition_artifacts ||
-            from_panel == this->victory_condition_discoveries ||
-            from_panel == this->victory_condition_gold ||
-            from_panel == this->victory_amount_input ||
-            from_panel == this->message_input) {
+        if (from_panel == this->random_seed_input || from_panel == this->player_inven_input[0] ||
+            from_panel == this->player_inven_input[1] || from_panel == this->player_inven_input[2] ||
+            from_panel == this->player_inven_input[3] || from_panel == this->player_inven_input[4] ||
+            from_panel == this->player_setting_label[0] || from_panel == this->victory_condition_explore ||
+            from_panel == this->victory_condition_ruins || from_panel == this->victory_condition_artifacts ||
+            from_panel == this->victory_condition_discoveries || from_panel == this->victory_condition_gold ||
+            from_panel == this->victory_amount_input || from_panel == this->message_input) {
             this->need_to_save_flag = 1;
         }
     }
@@ -1955,19 +1935,19 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
             this->message_input->set_text(this->world->scenario->Get_message(this->current_message));
             switch (this->current_message) {
             case 0:
-                this->message_input->set_help_info(IDS_HELP_EDIT_SCENARIO_INSTRUCTIONS, -1);
+                this->message_input->set_help_info(STRING_ID_HELP_EDIT_SCENARIO_INSTRUCTIONS, -1);
                 break;
             case 1:
-                this->message_input->set_help_info(IDS_HELP_EDIT_SCENARIO_HINTS, -1);
+                this->message_input->set_help_info(STRING_ID_HELP_EDIT_SCENARIO_HINTS, -1);
                 break;
             case 2:
-                this->message_input->set_help_info(IDS_HELP_EDIT_VICTORY_MESSAGE, -1);
+                this->message_input->set_help_info(STRING_ID_HELP_EDIT_VICTORY_MESSAGE, -1);
                 break;
             case 3:
-                this->message_input->set_help_info(IDS_HELP_EDIT_LOSS_MESSAGE, -1);
+                this->message_input->set_help_info(STRING_ID_HELP_EDIT_LOSS_MESSAGE, -1);
                 break;
             case 4:
-                this->message_input->set_help_info(IDS_HELP_EDIT_HISTORY, -1);
+                this->message_input->set_help_info(STRING_ID_HELP_EDIT_HISTORY, -1);
                 break;
             }
         }
@@ -2420,10 +2400,8 @@ void TRIBE_Screen_Sed::draw() {
     this->TEasy_Panel::draw();
 
     if (use_bevels != 0 && main_view != 0) {
-        if (render_rect.left == clip_rect.left &&
-            render_rect.top == clip_rect.top &&
-            render_rect.right == clip_rect.right &&
-            render_rect.bottom == clip_rect.bottom) {
+        if (render_rect.left == clip_rect.left && render_rect.top == clip_rect.top &&
+            render_rect.right == clip_rect.right && render_rect.bottom == clip_rect.bottom) {
             this->draw_setup(0);
 
             unsigned char *locked = render_area->Lock("scr_sed::draw", 1);
@@ -2461,7 +2439,7 @@ int TRIBE_Screen_Sed::command_menu() {
 
 void TRIBE_Screen_Sed::command_new(void) {
     if (this->need_to_save()) {
-        this->popupYesNoCancelDialog(IDS_CONFIRM_SAVE_SCENARIO_CHANGES, s_NewSaveDialog, TEASY_POPUP_WIDTH, 100);
+        this->popupYesNoCancelDialog(STRING_ID_CONFIRM_SAVE_SCENARIO_CHANGES, s_NewSaveDialog, TEASY_POPUP_WIDTH, 100);
         return;
     }
     static_cast<TRIBE_Game *>(rge_base_game)->start_scenario_editor(0, 0);
@@ -2478,7 +2456,7 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
     this->need_to_save_flag = 0;
     if (rge_base_game->world == 0) {
         if (display_in != 0) {
-            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_LOADING_GAME_DATA, 0, -1);
+            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(STRING_ID_STATUS_LOADING_GAME_DATA, 0, -1);
         }
         if (static_cast<TRIBE_Game *>(rge_base_game)->load_game_data() == 0) {
             if (display_in != 0) {
@@ -2491,9 +2469,9 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
     this->world = static_cast<TRIBE_World *>(rge_base_game->world);
     if (display_in != 0) {
         if (scenario_name_in == 0) {
-            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_SETTING_UP_SCENARIO, 0, -1);
+            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(STRING_ID_STATUS_SETTING_UP_SCENARIO, 0, -1);
         } else {
-            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_LOADING_SCENARIO, 0, -1);
+            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(STRING_ID_STATUS_LOADING_SCENARIO, 0, -1);
         }
     }
 
@@ -2511,7 +2489,7 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
         if (tribe >= this->world->master_player_num) {
             tribe = 1;
         }
-        this->set_string(player_info.name[i], IDS_PLAYER_NAME_BASE + i, 65);
+        this->set_string(player_info.name[i], STRING_ID_PLAYER_NAME_BASE + i, 65);
         player_info.type[i] = 0;
         player_info.tribe[i] = static_cast<char>(tribe);
         player_info.color[i] = -1;
@@ -2550,7 +2528,7 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
 
 void TRIBE_Screen_Sed::command_open(void) {
     if (this->need_to_save()) {
-        this->popupYesNoCancelDialog(IDS_CONFIRM_SAVE_SCENARIO_CHANGES, s_OpenSaveDialog, TEASY_POPUP_WIDTH, 100);
+        this->popupYesNoCancelDialog(STRING_ID_CONFIRM_SAVE_SCENARIO_CHANGES, s_OpenSaveDialog, TEASY_POPUP_WIDTH, 100);
         return;
     }
 
@@ -2581,7 +2559,7 @@ void TRIBE_Screen_Sed::command_player(int id) {
 
 void TRIBE_Screen_Sed::command_quit() {
     if (need_to_save()) {
-        popupYesNoCancelDialog(IDS_CONFIRM_SAVE_SCENARIO_CHANGES, s_QuitSaveDialog, TEASY_POPUP_WIDTH, TEASY_POPUP_HEIGHT);
+        popupYesNoCancelDialog(STRING_ID_CONFIRM_SAVE_SCENARIO_CHANGES, s_QuitSaveDialog, TEASY_POPUP_WIDTH, TEASY_POPUP_HEIGHT);
         return;
     }
     if (!static_cast<TRIBE_Game *>(rge_base_game)->start_menu()) {
@@ -2598,22 +2576,22 @@ void TRIBE_Screen_Sed::command_save(unsigned char kill_menu, unsigned char quit_
     static_cast<T_Scenario *>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
         panel_system.destroyPanel(s_Scenario_Menu_Dialog);
-        this->popupOKDialog(IDS_ERROR_NO_ACTIVE_PLAYERS, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_NO_ACTIVE_PLAYERS, 0, TEASY_POPUP_WIDTH, 100);
     } else if (this->world->scenario->any_player_count() < 1) {
         panel_system.destroyPanel(s_Scenario_Menu_Dialog);
-        this->popupOKDialog(IDS_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
     } else {
         char *name = this->world->scenario->Get_scenario_name();
         if (*name == 0) {
             this->command_save_as(quit_after_save);
         } else {
-            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_SAVING_SCENARIO, 0, -1);
+            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(STRING_ID_STATUS_SAVING_SCENARIO, 0, -1);
             if (kill_menu != 0) {
                 panel_system.destroyPanel(s_Scenario_Menu_Dialog);
             }
             if (this->world->save_scenario(name) == 0) {
                 static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
-                this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
+                this->popupOKDialog(STRING_ID_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
             } else {
                 static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
                 sprintf(temp_name, "default%d", rge_base_game->registry->RegGetInt(0, "Game File Number"));
@@ -2645,9 +2623,9 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char quit_after_save) {
     this->set_scenario_mode(ScenarioModeSave);
     static_cast<T_Scenario *>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
-        this->popupOKDialog(IDS_ERROR_NO_ACTIVE_PLAYERS, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_NO_ACTIVE_PLAYERS, 0, TEASY_POPUP_WIDTH, 100);
     } else if (this->world->scenario->any_player_count() < 1) {
-        this->popupOKDialog(IDS_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
     } else {
         scenario_name[0] = 0;
         new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenarioEdit, scenario_name, quit_after_save);
@@ -2679,19 +2657,19 @@ char *TRIBE_Screen_Sed::scenario_save_defaulted() {
     this->set_scenario_mode(ScenarioModeSave);
     static_cast<T_Scenario *>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
-        this->popupOKDialog(IDS_ERROR_NO_ACTIVE_PLAYERS, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_NO_ACTIVE_PLAYERS, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
     if (this->world->scenario->any_player_count() < 1) {
-        this->popupOKDialog(IDS_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
 
-    static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_SAVING_SCENARIO, 0, -1);
+    static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(STRING_ID_STATUS_SAVING_SCENARIO, 0, -1);
     sprintf(scenario_default_file_name, "default%d.scx", rge_base_game->registry->RegGetInt(0, "Game File Number"));
     if (this->world->save_scenario(scenario_default_file_name) == 0) {
         static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
-        this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
 

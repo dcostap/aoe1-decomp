@@ -356,8 +356,7 @@ int TTextPanel::word_wrap_append(char* text_in) {
                 if (japanese) {
                     CharType first = this->char_type(next_char);
                     CharType second = this->char_type(old_next);
-                    if (first == SingleByteChar && second == SingleByteChar &&
-                        _ismbcspace(*next_char) != 0) {
+                    if (first == SingleByteChar && second == SingleByteChar && _ismbcspace(*next_char) != 0) {
                         found_space = 1;
                         break;
                     }
@@ -770,10 +769,8 @@ void TTextPanel::draw() {
         void* old_font = SelectObject(dc, this->font);
         SetBkMode(dc, TRANSPARENT);
 
-        for (short line = this->top_line, line_index = 0;
-             line <= this->bot_line; ++line, ++line_index) {
-            if ((this->tab_stop != 0 && this->have_focus != 0) ||
-                this->mouse_captured != 0) {
+        for (short line = this->top_line, line_index = 0; line <= this->bot_line; ++line, ++line_index) {
+            if ((this->tab_stop != 0 && this->have_focus != 0) || this->mouse_captured != 0) {
                 this->draw_line(dc, line_index, line, this->highlightTextColor1, this->highlightTextColor2);
             } else {
                 this->draw_line(dc, line_index, line, this->text_color1, this->text_color2);
@@ -1041,8 +1038,7 @@ void TTextPanel::calc_line_pos(void* dc, short draw_row, short text_line,
         text_width = 0;
     }
 
-    if (this->horz_align != AlignCenter &&
-        this->horz_align != AlignWordwrap) {
+    if (this->horz_align != AlignCenter && this->horz_align != AlignWordwrap) {
         col_offset += 5;
     }
 

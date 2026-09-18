@@ -70,8 +70,7 @@ void RGE_RMM_Cliffs_Generator::setup_cliff_maps() {
                                 }
                             } else {
                                 valid = 0;
-                                if (terrain == 1 || terrain == 4 ||
-                                    terrain == 0x16) {
+                                if (terrain == 1 || terrain == 4 || terrain == 0x16) {
                                     water_area = 1;
                                 }
                             }
@@ -122,11 +121,8 @@ void RGE_RMM_Cliffs_Generator::setup_cliff_maps() {
             if (terrain_width > 0) {
                 do {
                     unsigned char* cell = this->search_map_rows[y] + x;
-                    if (this->search_map_rows[y][x] != 0 &&
-                        (y <= 0 || this->search_map_rows[y - 1][x] == 0) &&
-                        (x <= 0 || cell[-1] == 0) &&
-                        (y >= cliff_height2 ||
-                         this->search_map_rows[y + 1][x] == 0) &&
+                    if (this->search_map_rows[y][x] != 0 && (y <= 0 || this->search_map_rows[y - 1][x] == 0) &&
+                        (x <= 0 || cell[-1] == 0) && (y >= cliff_height2 || this->search_map_rows[y + 1][x] == 0) &&
                         (x >= cliff_width2 || cell[1] == 0)) {
                         *cell = 0;
                         this->remove_stack_node(this->stack_offsets[y] + x);

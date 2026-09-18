@@ -48,10 +48,10 @@ The source now directly includes the root-owned `include/resource_ids.h` and reu
 
 | Macro | Value | Uses |
 | --- | --- | --- |
-| `IDS_BUTTON_OK` | `0x0FA1` | Settings-screen OK button caption. |
-| `IDS_BUTTON_CANCEL` | `0x0FA2` | Settings-screen Cancel button caption. |
-| `IDS_HELP_OK` | `0x7531` | OK button help ID. |
-| `IDS_HELP_CANCEL` | `0x7532` | Cancel button help ID. |
+| `STRING_ID_BUTTON_OK` | `0x0FA1` | Settings-screen OK button caption. |
+| `STRING_ID_BUTTON_CANCEL` | `0x0FA2` | Settings-screen Cancel button caption. |
+| `STRING_ID_HELP_OK` | `0x7531` | OK button help ID. |
+| `STRING_ID_HELP_CANCEL` | `0x7532` | Cancel button help ID. |
 
 These are existing shared definitions, not new resource names. No new resource mapping request is proposed. Other numeric resource IDs remain unchanged because no reviewed shared mapping was available. No new non-resource constant was added.
 
@@ -69,7 +69,7 @@ I restored the existing accurate evidence comment above `second_column_pos`: `Th
 
 ## Output risk and unresolved items
 
-The identifier changes do not change types, storage, expressions, control flow, calls, or symbol identity. The resource macros expand to the existing integer values. The `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` definitions use `0x0FA1` and `0x0FA2`, which have the same effective integer type and value as the former literals.
+The identifier changes do not change types, storage, expressions, control flow, calls, or symbol identity. The resource macros expand to the existing integer values. The `STRING_ID_BUTTON_OK` and `STRING_ID_BUTTON_CANCEL` definitions use `0x0FA1` and `0x0FA2`, which have the same effective integer type and value as the former literals.
 
 Formatting and comment changes can alter debug line records. A direct include and macro substitutions can also alter line mapping. No compiler-output, program-data, relocation, or direct-target comparison was run. The PDB provides no safe original mappings for the inferred locals listed above. The optimized scenario-loop stack reuse remains an unresolved storage-mapping detail, and this cleanup does not imitate it.
 

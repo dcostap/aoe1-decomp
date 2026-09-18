@@ -53,26 +53,23 @@ long TDropDownPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, v
 
     this->val_panel = new TTextPanel;
     result = (long)this->val_panel;
-    if (result != 0 &&
-        (result = this->val_panel->setup(render_area_in, this, 0, 0, this->val_wid, this->val_hgt,
-                                         font_in, font_wid_in, font_hgt_in, (char*)0,
-                                         fill_back_in, back_color_in, outline_in, outline_color_in, val_len_in,
-                                         list_in[(short)this->val_num])) != 0) {
+    if (result != 0 && (result = this->val_panel->setup(render_area_in, this, 0, 0, this->val_wid, this->val_hgt,
+                                                        font_in, font_wid_in, font_hgt_in, (char*)0,
+                                                        fill_back_in, back_color_in, outline_in, outline_color_in, val_len_in,
+                                                        list_in[(short)this->val_num])) != 0) {
         this->val_panel->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignLeft);
 
         this->btn_panel = new TDropDownButtonPanel(this);
         result = (long)this->btn_panel;
-        if (result != 0 &&
-            (result = this->btn_panel->setup(render_area_in, this, 0, 0, this->btn_wid, this->btn_hgt,
-                                             TButtonPanel::DrawBevelPicture, (TDigital*)0,
-                                             TButtonPanel::NotifyAction, 0)) != 0) {
+        if (result != 0 && (result = this->btn_panel->setup(render_area_in, this, 0, 0, this->btn_wid, this->btn_hgt,
+                                                            TButtonPanel::DrawBevelPicture, (TDigital*)0,
+                                                            TButtonPanel::NotifyAction, 0)) != 0) {
             this->list_panel = new TListPanel;
             result = (long)this->list_panel;
-            if (result != 0 &&
-                (result = this->list_panel->setup(render_area_in, this, 0, 0, this->list_wid, this->list_hgt,
-                                                  font_in, font_wid_in, font_hgt_in, (char*)0,
-                                                  fill_back_in, back_color_in, outline_in,
-                                                  outline_color_in, val_len_in, list_in, list_num_lines_in)) != 0) {
+            if (result != 0 && (result = this->list_panel->setup(render_area_in, this, 0, 0, this->list_wid, this->list_hgt,
+                                                                 font_in, font_wid_in, font_hgt_in, (char*)0,
+                                                                 fill_back_in, back_color_in, outline_in,
+                                                                 outline_color_in, val_len_in, list_in, list_num_lines_in)) != 0) {
                 this->list_panel->set_auto_track(1);
                 this->list_panel->set_active(0);
                 ((TTextPanel*)this->list_panel)->setCurrentLineNumber(this->val_num);
@@ -291,12 +288,9 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode_in) {
     this->mode = ModeNone;
 
     if (mode_in == ModeValue) {
-        if (save_mode == ModeList && this->parent_panel != 0 &&
-            this->parent_panel->parent_panel != 0 &&
-            (this->clip_rect.left < parent_x ||
-             this->clip_rect.top < parent_y ||
-             this->clip_rect.right > parent_x + parent_wid - 1 ||
-             this->clip_rect.bottom > parent_y + parent_hgt - 1)) {
+        if (save_mode == ModeList && this->parent_panel != 0 && this->parent_panel->parent_panel != 0 &&
+            (this->clip_rect.left < parent_x || this->clip_rect.top < parent_y ||
+             this->clip_rect.right > parent_x + parent_wid - 1 || this->clip_rect.bottom > parent_y + parent_hgt - 1)) {
             this->parent_panel->parent_panel->set_redraw(TPanel::RedrawImmediate);
         }
 

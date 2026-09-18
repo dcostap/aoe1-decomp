@@ -345,11 +345,8 @@ int TMousePointer::update_mouse_position() {
     }
     this->mouse_x = point.x;
     this->mouse_y = point.y;
-    if (this->GameMode != 0 && this->GameEnabled != 0 &&
-        this->mouse_x >= this->game_window.left &&
-        this->mouse_x < this->game_window.right &&
-        point.y >= this->game_window.top &&
-        point.y < this->game_window.bottom) {
+    if (this->GameMode != 0 && this->GameEnabled != 0 && this->mouse_x >= this->game_window.left &&
+        this->mouse_x < this->game_window.right && point.y >= this->game_window.top && point.y < this->game_window.bottom) {
         this->next_facet = this->game_facet;
         in_game = 1;
     } else {
@@ -381,8 +378,7 @@ int TMousePointer::update_mouse_position() {
     this->cursor_rect = this->new_save_rect;
     if (this->mouse_rect.right >= 0 && this->mouse_rect.bottom >= 0) {
         TDrawArea* da = this->render_area;
-        if (this->mouse_rect.left <= da->Width &&
-            this->mouse_rect.top <= da->Height) {
+        if (this->mouse_rect.left <= da->Width && this->mouse_rect.top <= da->Height) {
             if (this->mouse_rect.left < 0) {
                 this->cursor_rect.left = -this->mouse_rect.left;
                 this->new_save_rect.right -= this->cursor_rect.left;
@@ -426,8 +422,7 @@ void TMousePointer::draw(int dMode) {
         }
         if (this->update_mouse_position() != 0 || dMode != 0) {
             this->LastDrawTime = t;
-            if (this->save_area_valid != 0 &&
-                this->restoreSurface != this->PrimarySurface) {
+            if (this->save_area_valid != 0 && this->restoreSurface != this->PrimarySurface) {
                 long err = this->restoreSurface->Blt(&this->restore_rect, this->save_area->DrawSurface,
                                                      &this->save_rect, DDBLT_WAIT, 0);
                 if (err != 0) {
@@ -563,8 +558,7 @@ void TMousePointer::set_game_facet(int facet_in) {
 
 void TMousePointer::off() {
     if (this->Shutdown == 0) {
-        if (this->custom_draw != 0 && this->drawn != 0 &&
-            this->save_area_valid != 0) {
+        if (this->custom_draw != 0 && this->drawn != 0 && this->save_area_valid != 0) {
             this->erase();
             this->render_area->DrawSystem->Paint(&this->restore_rect);
         }
@@ -608,8 +602,7 @@ void TMousePointer::center() {
 void TMousePointer::Poll() {
     IDirectDrawClipper* lplpDDClipper;
     lplpDDClipper = 0;
-    if (this->active != 0 && this->custom_draw != 0 &&
-        this->GameMode != 0 && this->GameEnabled != 0) {
+    if (this->active != 0 && this->custom_draw != 0 && this->GameMode != 0 && this->GameEnabled != 0) {
         ulong t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 1070);
         if (t - this->LastDrawTime >= 0x22) {
             if (this->update_mouse_position() != 0) {

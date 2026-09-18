@@ -96,8 +96,7 @@ void TMessagePanel::set_justification(TMessagePanel::JustType horz_just_in, TMes
 }
 
 void TMessagePanel::show_message(TMessagePanel::MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn, void* font_in, long font_wid_in, long font_hgt_in) {
-    if (this->showing_message && this->message_type == message_type_in &&
-        strncmp(text_in, this->text, 0x1ff) == 0) {
+    if (this->showing_message && this->message_type == message_type_in && strncmp(text_in, this->text, 0x1ff) == 0) {
         if (font_in == 0) {
             return;
         }
@@ -140,11 +139,9 @@ void TMessagePanel::show_message2(
     unsigned long color1, unsigned long color2, void* font_in,
     long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in,
     TShape* Icon2_in, int Frame2_in) {
-    if (this->showing_message && this->message_type == message_type_in &&
-        strncmp(text_in, this->text, 0x1ff) == 0) {
+    if (this->showing_message && this->message_type == message_type_in && strncmp(text_in, this->text, 0x1ff) == 0) {
         if (font_in == 0 || font_in == this->font) {
-            if (this->Icon1 == Icon1_in && this->Icon2 == Icon2_in &&
-                this->IconFrame1 == Frame1_in &&
+            if (this->Icon1 == Icon1_in && this->Icon2 == Icon2_in && this->IconFrame1 == Frame1_in &&
                 this->IconFrame2 == Frame2_in) {
                 return;
             }
@@ -210,8 +207,7 @@ void TMessagePanel::draw(void) {
     tagRECT rect;
     unsigned int flags;
 
-    if (this->render_area == 0 || this->visible == 0 ||
-        this->active == 0 || this->showing_message == 0) {
+    if (this->render_area == 0 || this->visible == 0 || this->active == 0 || this->showing_message == 0) {
         this->need_redraw = 0;
         return;
     }
@@ -316,8 +312,7 @@ finish:
 }
 
 void TMessagePanel::get_true_render_rect(tagRECT& drawRect) {
-    if (this->ImageBuffer && this->render_area && this->visible &&
-        this->active && this->showing_message) {
+    if (this->ImageBuffer && this->render_area && this->visible && this->active && this->showing_message) {
         drawRect = this->UsedScreenRect;
     } else {
         drawRect = this->render_rect;
@@ -326,8 +321,7 @@ void TMessagePanel::get_true_render_rect(tagRECT& drawRect) {
 
 long TMessagePanel::handle_idle() {
     if (active && showing_message) {
-        if (message_type == BadMessage || message_type == ChatMessage ||
-            message_type == ColoredChatMessage) {
+        if (message_type == BadMessage || message_type == ChatMessage || message_type == ColoredChatMessage) {
             long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 442);
             if (now - start_time >= show_message_interval) {
                 remove_message();

@@ -122,8 +122,7 @@ int DriveInformation::numberOfFilesWithFilenameOrAttribute(char* n, int a) {
     }
     count = 1;
     while (_findnext(handle, &fileInfo) != -1) {
-        if ((fileInfo.attrib & a) != 0 ||
-            strstr(fileInfo.name, n) != 0) {
+        if ((fileInfo.attrib & a) != 0 || strstr(fileInfo.name, n) != 0) {
             count++;
         }
     }

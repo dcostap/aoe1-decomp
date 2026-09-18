@@ -22,19 +22,19 @@ TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed* scenario_editor_i
                     scenario_editor_in->get_popup_info_file(), scenario_editor_in->get_popup_info_id(), 1) == 0)
         return;
 
-    if (this->create_button(this, &this->buttons[0], IDS_SCENARIO_MENU_QUIT_TO_MAIN_MENU, 0, 30, 20, 400, 40, 0, 0, 0) == 0)
+    if (this->create_button(this, &this->buttons[0], STRING_ID_SCENARIO_MENU_QUIT_TO_MAIN_MENU, 0, 30, 20, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0)
         return;
-    if (this->create_button(this, &this->buttons[1], IDS_SCENARIO_MENU_SAVE, 0, 30, 70, 400, 40, 0, 0, 0) == 0)
+    if (this->create_button(this, &this->buttons[1], STRING_ID_SCENARIO_MENU_SAVE, 0, 30, 70, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0)
         return;
-    if (this->create_button(this, &this->buttons[2], IDS_SCENARIO_MENU_SAVE_AS, 0, 30, 120, 400, 40, 0, 0, 0) == 0)
+    if (this->create_button(this, &this->buttons[2], STRING_ID_SCENARIO_MENU_SAVE_AS, 0, 30, 120, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0)
         return;
-    if (this->create_button(this, &this->buttons[3], IDS_SCENARIO_MENU_EDIT_SCENARIO, 0, 30, 170, 400, 40, 0, 0, 0) == 0)
+    if (this->create_button(this, &this->buttons[3], STRING_ID_SCENARIO_MENU_EDIT_SCENARIO, 0, 30, 170, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0)
         return;
-    if (this->create_button(this, &this->buttons[4], IDS_SCENARIO_MENU_CREATE_SCENARIO, 0, 30, 220, 400, 40, 0, 0, 0) == 0)
+    if (this->create_button(this, &this->buttons[4], STRING_ID_SCENARIO_MENU_CREATE_SCENARIO, 0, 30, 220, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0)
         return;
-    if (this->create_button(this, &this->buttons[5], IDS_SCENARIO_MENU_TEST, 0, 30, 270, 400, 40, 0, 0, 0) == 0)
+    if (this->create_button(this, &this->buttons[5], STRING_ID_SCENARIO_MENU_TEST, 0, 30, 270, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0)
         return;
-    if (this->create_button(this, &this->buttons[6], IDS_SCENARIO_MENU_CANCEL, 0, 30, 340, 400, 40, 0, 0, 0) == 0)
+    if (this->create_button(this, &this->buttons[6], STRING_ID_SCENARIO_MENU_CANCEL, 0, 30, 340, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0)
         return;
 
     TButtonPanel* cancel = this->buttons[6];
@@ -113,8 +113,7 @@ long TRIBE_Dialog_Sed_Menu::action(TPanel* from_panel, long action_in, unsigned 
     }
 
     if (from_panel != 0) {
-        if (from_panel->panelName() != 0 &&
-            strcmp(from_panel->panelName(), "New Dialog") == 0) {
+        if (from_panel->panelName() != 0 && strcmp(from_panel->panelName(), "New Dialog") == 0) {
             panel_system.setCurrentPanel("Scenario Editor Screen", 0);
             panel_system.destroyPanel("New Dialog");
             panel_system.destroyPanel("Scenario Menu Dialog");
@@ -133,8 +132,7 @@ long TRIBE_Dialog_Sed_Menu::action(TPanel* from_panel, long action_in, unsigned 
             return 1;
         }
 
-        if (from_panel->panelName() != 0 &&
-            strcmp(from_panel->panelName(), "Open Dialog") == 0) {
+        if (from_panel->panelName() != 0 && strcmp(from_panel->panelName(), "Open Dialog") == 0) {
             panel_system.setCurrentPanel("Scenario Editor Screen", 0);
             panel_system.destroyPanel("Open Dialog");
             panel_system.destroyPanel("Scenario Menu Dialog");

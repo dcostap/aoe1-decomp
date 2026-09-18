@@ -126,8 +126,7 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
         if (target == 0) return;
         short id = target->master_obj->object_group;
         if (id != 2 && id != 0x14 && id != 0x15 && id != 0x16) return;
-        if (((RGE_Action_Object*)target)->command_flag !=
-            this->save_target_command_flag) return;
+        if (((RGE_Action_Object*)target)->command_flag != this->save_target_command_flag) return;
         target->moveTo(this->obj->world_x, this->obj->world_y, this->obj->world_z, 0, 1);
         return;
     }
@@ -185,8 +184,7 @@ unsigned char TRIBE_Action_Repair::update() {
         if (check_target->object_state != 2) {
             goto invalid_target;
         }
-        if (this->target_obj != 0 &&
-            this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {
+        if (this->target_obj != 0 && this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {
             goto invalid_target;
         }
     }
@@ -250,8 +248,7 @@ unsigned char TRIBE_Action_Repair::update() {
             this->set_state(1);
             return 0;
         }
-        if (this->target_obj->world_x != this->target_x ||
-            this->target_y != this->target_obj->world_y) {
+        if (this->target_obj->world_x != this->target_x || this->target_y != this->target_obj->world_y) {
             DAT_0086bc08 =
                 this->obj->distance_to_object(this->target_obj) - DAT_0057526c;
             if (DAT_0086bc08 > DAT_00575270) {
@@ -364,8 +361,7 @@ void TRIBE_Action_Repair::meet_target() {
         while (node != 0) {
             RGE_Static_Object* action = node->node;
             if (action != this->obj && action->master_obj->id == 0x9C) {
-                if (action->get_target_obj() == this->target_obj &&
-                    action->actionState() != 2) {
+                if (action->get_target_obj() == this->target_obj && action->actionState() != 2) {
                     if (this->target_obj->actionState() == 0x0B) {
                         this->target_x =
                             ((RGE_Action_Object*)this->target_obj)

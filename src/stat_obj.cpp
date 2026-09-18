@@ -1873,8 +1873,7 @@ void RGE_Static_Object::remove_visible_resource() {
                         player = this->owner->world->players[player_index];
                         player->VR_List->Remove_Resource(this->id, this->master_obj->resource_group);
                     }
-                    if (this->master_obj->create_doppleganger_on_death == 1 && (ExploredVal & 1) == 0 &&
-                        player_index > 0) {
+                    if (this->master_obj->create_doppleganger_on_death == 1 && (ExploredVal & 1) == 0 && player_index > 0) {
                         player = this->owner->world->players[player_index];
                         static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[243])
                             ->make_new_obj(player, this->world_x, this->world_y, this->world_z, this);
@@ -1894,8 +1893,7 @@ void RGE_Static_Object::remove_visible_resource() {
 typedef unsigned long ulong;
 
 void RGE_Static_Object::create_doppleganger_when_dying() {
-    if (this->id >= 0 && this->owner != 0 && this->master_obj != 0 &&
-        this->master_obj->create_doppleganger_on_death == 2) {
+    if (this->id >= 0 && this->owner != 0 && this->master_obj != 0 && this->master_obj->create_doppleganger_on_death == 2) {
         ulong ExploredVal = unified_map_offsets[(int)this->world_y][(int)this->world_x];
         ulong explored = ExploredVal >> 16;
         ExploredVal &= 0xFFFF;

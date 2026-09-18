@@ -543,8 +543,7 @@ void RGE_Player::scenario_load(int infile, long* player_id_hash, float version) 
         has_team = 0;
         if (rge_base_game->prog_mode != 7) {
             for (int player = 1; player < 9; player++) {
-                if (rge_base_game->playerID(player) == this->id &&
-                    (comm->GetPlayerHumanity(player) == 2 ||
+                if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == 2 ||
                      comm->GetPlayerHumanity(player) == 4)) {
                     if (rge_base_game->playerTeam(player - 1) > 1) {
                         has_team = 1;
@@ -650,8 +649,7 @@ void RGE_Player::scenario_postload(int infile, long* player_id_hash,
     has_team = 0;
     if (rge_base_game->prog_mode != 7) {
         for (int player = 1; player < 9; ++player) {
-            if (rge_base_game->playerID(player) == this->id &&
-                (comm->GetPlayerHumanity(player) == 2 ||
+            if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == 2 ||
                  comm->GetPlayerHumanity(player) == 4)) {
                 if (rge_base_game->playerTeam(player - 1) > 1) {
                     has_team = 1;
@@ -1108,8 +1106,7 @@ unsigned char RGE_Player::check_victory(void) {
         unsigned char found = 0;
         if (this->allied_victory) {
             for (int i = 1; i < this->world->player_num; i++) {
-                if ((i == this->id || this->relations[i] == 0) &&
-                    this->world->players[i]->check_ally_group(count) == 0) {
+                if ((i == this->id || this->relations[i] == 0) && this->world->players[i]->check_ally_group(count) == 0) {
                     found = 1;
                     break;
                 }
@@ -1118,8 +1115,7 @@ unsigned char RGE_Player::check_victory(void) {
         if (this->allied_victory) {
             if (found) return this->game_status;
             for (int i = 1; i < this->world->player_num; i++) {
-                if (this->relations[i] == 0 &&
-                    this->world->players[i]->check_victory_conditions() == 0) {
+                if (this->relations[i] == 0 && this->world->players[i]->check_victory_conditions() == 0) {
                     found = 1;
                     break;
                 }
@@ -1153,8 +1149,7 @@ void RGE_Player::modify_tobj(short obj_id, short group,
         short index = 0;
         if (master_object_num > 0) {
             do {
-                if (master_objects[index] != 0 &&
-                    master_objects[index]->object_group == group) {
+                if (master_objects[index] != 0 && master_objects[index]->object_group == group) {
                     if (objects != 0) {
                         RGE_Object_Node* node = objects->list;
                         while (node != 0) {
@@ -1192,8 +1187,7 @@ void RGE_Player::modify_tobj_delta(short obj_id, short group,
         short index = 0;
         if (master_object_num > 0) {
             do {
-                if (master_objects[index] != 0 &&
-                    master_objects[index]->object_group == group) {
+                if (master_objects[index] != 0 && master_objects[index]->object_group == group) {
                     if (objects != 0) {
                         RGE_Object_Node* node = objects->list;
                         while (node != 0) {
@@ -1231,8 +1225,7 @@ void RGE_Player::modify_tobj_percent(short obj_id, short group,
         short index = 0;
         if (master_object_num > 0) {
             do {
-                if (master_objects[index] != 0 &&
-                    master_objects[index]->object_group == group) {
+                if (master_objects[index] != 0 && master_objects[index]->object_group == group) {
                     if (objects != 0) {
                         RGE_Object_Node* node = objects->list;
                         while (node != 0) {
@@ -1691,14 +1684,10 @@ unsigned char RGE_Player::get_selected_objects_to_command(
             if (object->object_state == 2 && object->owner == player) {
                 master = object->master_obj;
                 if (master->select_level >= min_select_level || player->id == 0) {
-                    if (object_group == -1 ||
-                        master->object_group == (unsigned char)object_group) {
-                        if (object_id == -1 ||
-                            master->id == (unsigned char)object_id) {
-                            if (unit_level == -1 ||
-                                master->unit_level == (unsigned char)unit_level) {
-                                if (master->master_type >= 0x28 &&
-                                    master->master_type != 0x5A) {
+                    if (object_group == -1 || master->object_group == (unsigned char)object_group) {
+                        if (object_id == -1 || master->id == (unsigned char)object_id) {
+                            if (unit_level == -1 || master->unit_level == (unsigned char)unit_level) {
+                                if (master->master_type >= 0x28 && master->master_type != 0x5A) {
                                     locals.list[count] = object;
                                     ++count;
                                 }

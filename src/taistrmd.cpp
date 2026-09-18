@@ -266,9 +266,7 @@ int VictoryConditionRuleSystem::loadRules(char* rName) {
     char temp[256];
     FILE* file;
 
-    if (strcmp(rName, "NONE") != 0 &&
-        rName != 0 &&
-        strlen(rName) != 0) {
+    if (strcmp(rName, "NONE") != 0 && rName != 0 && strlen(rName) != 0) {
         sprintf(temp, "%s", rName);
         file = fopen(temp, "r");
         if (file != 0) {
@@ -276,8 +274,7 @@ int VictoryConditionRuleSystem::loadRules(char* rName) {
                 // The shipped parser ignores both sscanf results.
                 // Keep these outputs uninitialized for malformed input.
                 sscanf(temp, " %c%c", &commentTemp1, &commentTemp2);
-                if ((commentTemp1 != '/' || commentTemp2 != '/') &&
-                    (commentTemp1 != 'D' || commentTemp2 != 'E') &&
+                if ((commentTemp1 != '/' || commentTemp2 != '/') && (commentTemp1 != 'D' || commentTemp2 != 'E') &&
                     (commentTemp1 != 'V' || commentTemp2 != 'C')) {
                     if (commentTemp1 == 'E' && commentTemp2 == 'N') {
                         break;
@@ -986,8 +983,7 @@ int TribeStrategyAIModule::update(int timeLimit) {
         }
     }
 
-    if (bestRule != -1 &&
-        this->vcRules.execute(this->md->aiPlayer, this->currentVictoryConditionValue, bestRule) == 1) {
+    if (bestRule != -1 && this->vcRules.execute(this->md->aiPlayer, this->currentVictoryConditionValue, bestRule) == 1) {
         this->executingRules.add(bestRule);
         this->idleRules.remove(bestRule);
     }
@@ -1002,8 +998,7 @@ int TribeStrategyAIModule::update(int timeLimit) {
         }
     }
 
-    if (worstRule != -1 &&
-        this->vcRules.stopExecution(this->md->aiPlayer, worstRule) == 1) {
+    if (worstRule != -1 && this->vcRules.stopExecution(this->md->aiPlayer, worstRule) == 1) {
         this->executingRules.remove(worstRule);
         this->idleRules.add(worstRule);
     }

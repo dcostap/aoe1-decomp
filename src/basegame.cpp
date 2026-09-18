@@ -317,10 +317,8 @@ int RGE_Base_Game::setup() {
                 this->error_code = RGE_ERROR_SETUP;
             } else {
                 GlobalMemoryStatus(&ms);
-                if ((ms.dwTotalPageFile >= 20971520UL &&
-                     ms.dwTotalVirtual >= 10485760UL) ||
-                    (ms.dwTotalPageFile >= 10485760UL &&
-                     ms.dwTotalVirtual >= 20971520UL) ||
+                if ((ms.dwTotalPageFile >= 20971520UL && ms.dwTotalVirtual >= 10485760UL) ||
+                    (ms.dwTotalPageFile >= 10485760UL && ms.dwTotalVirtual >= 20971520UL) ||
                     ms.dwTotalVirtual >= 31457280UL) {
                     this->set_interface_messages();
 
@@ -329,14 +327,11 @@ int RGE_Base_Game::setup() {
 
                     unsigned long DXVersion;
                     unsigned long DXPlatform;
-                    if (this->prog_info->check_expiration != 0 &&
-                        this->check_expiration() == 0) {
+                    if (this->prog_info->check_expiration != 0 && this->check_expiration() == 0) {
                         this->error_code = RGE_ERROR_CHECK_EXPIRATION;
-                    } else if (this->prog_info->check_multi_copies != 0 &&
-                               this->check_multi_copies() == 0) {
+                    } else if (this->prog_info->check_multi_copies != 0 && this->check_multi_copies() == 0) {
                         this->error_code = RGE_ERROR_CHECK_MULTI_COPIES;
-                    } else if (this->check_prog_argument("NODXCHECK") == 0 &&
-                               (GetDXVersion(&DXVersion, &DXPlatform),
+                    } else if (this->check_prog_argument("NODXCHECK") == 0 && (GetDXVersion(&DXVersion, &DXPlatform),
                                 DXVersion < RGE_REQUIRED_DIRECTX_VERSION)) {
                         this->error_code = RGE_ERROR_DIRECTX_VERSION;
                     } else {
@@ -584,7 +579,7 @@ RGE_Base_Game::~RGE_Base_Game() {
     if (this->prog_window != 0)
         DestroyWindow(this->prog_window);
 
-    this->get_string(IDS_HELP_WINDOW_TITLE, str, 256);
+    this->get_string(STRING_ID_HELP_WINDOW_TITLE, str, 256);
     if (str[0] != 0) {
         HWND help_window = FindWindowA("MS_WINHELP", str);
         if (help_window != 0)
@@ -728,31 +723,31 @@ char* RGE_Base_Game::get_string2(int string_type, long id, long id2, char* str, 
         case RGE_ERROR_SETUP_MAIN_WINDOW:
         case RGE_ERROR_SETUP_REGISTRY:
         case RGE_ERROR_SETUP_DEBUG_LOG:
-            return this->get_string(IDS_ERROR_INITIALIZE_PROGRAM, str, max_len);
+            return this->get_string(STRING_ID_ERROR_INITIALIZE_PROGRAM, str, max_len);
         case RGE_ERROR_SETUP_GRAPHICS:
         case RGE_ERROR_SETUP_MOUSE:
         case RGE_ERROR_SETUP_FONTS:
         case RGE_ERROR_SETUP_BLANK_SCREEN:
         case RGE_ERROR_SETUP_PALETTE:
-            return this->get_string(IDS_ERROR_INITIALIZE_GRAPHICS, str, max_len);
+            return this->get_string(STRING_ID_ERROR_INITIALIZE_GRAPHICS, str, max_len);
         case RGE_ERROR_SETUP_COLOR_DEPTH:
-            return this->get_string(IDS_ERROR_COLOR_PALETTE, str, max_len);
+            return this->get_string(STRING_ID_ERROR_COLOR_PALETTE, str, max_len);
         case RGE_ERROR_SETUP_COMM:
         case RGE_ERROR_SETUP_CHAT:
-            return this->get_string(IDS_ERROR_INITIALIZE_COMMUNICATIONS, str, max_len);
+            return this->get_string(STRING_ID_ERROR_INITIALIZE_COMMUNICATIONS, str, max_len);
         case RGE_ERROR_SETUP_SOUND:
         case RGE_ERROR_SETUP_SOUNDS:
-            return this->get_string(IDS_ERROR_INITIALIZE_SOUND, str, max_len);
+            return this->get_string(STRING_ID_ERROR_INITIALIZE_SOUND, str, max_len);
         case RGE_ERROR_OUT_OF_SYNC:
-            return this->get_string(IDS_ERROR_OUT_OF_SYNC, str, max_len);
+            return this->get_string(STRING_ID_ERROR_OUT_OF_SYNC, str, max_len);
         case RGE_ERROR_DIRECTX_VERSION:
-            return this->get_string(IDS_ERROR_DIRECTX_VERSION, str, max_len);
+            return this->get_string(STRING_ID_ERROR_DIRECTX_VERSION, str, max_len);
         case RGE_ERROR_WINDOWS_VERSION:
-            return this->get_string(IDS_ERROR_WINDOWS_VERSION, str, max_len);
+            return this->get_string(STRING_ID_ERROR_WINDOWS_VERSION, str, max_len);
         case RGE_ERROR_MEMORY:
-            return this->get_string(IDS_ERROR_MEMORY, str, max_len);
+            return this->get_string(STRING_ID_ERROR_MEMORY, str, max_len);
         case RGE_ERROR_GAME_EXECUTABLE:
-            return this->get_string(IDS_ERROR_GAME_EXECUTABLE, str, max_len);
+            return this->get_string(STRING_ID_ERROR_GAME_EXECUTABLE, str, max_len);
         default:
             break;
         }
@@ -840,15 +835,9 @@ RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* scenario_file, int
     rge_read_uncompressed(fd, &version, sizeof(version));
 
     result = 0;
-    if (version == *(const long*)"1.03" ||
-        version == *(const long*)"1.04" ||
-        version == *(const long*)"1.05" ||
-        version == *(const long*)"1.06" ||
-        version == *(const long*)"1.07" ||
-        version == *(const long*)"1.08" ||
-        version == *(const long*)"1.09" ||
-        version == *(const long*)"1.10" ||
-        version == *(const long*)"1.11") {
+    if (version == *(const long*)"1.03" || version == *(const long*)"1.04" || version == *(const long*)"1.05" ||
+        version == *(const long*)"1.06" || version == *(const long*)"1.07" || version == *(const long*)"1.08" ||
+        version == *(const long*)"1.09" || version == *(const long*)"1.10" || version == *(const long*)"1.11") {
         result = this->new_scenario_header(fd);
     }
 
@@ -1512,9 +1501,7 @@ int RGE_Base_Game::setup_cmd_options() {
         speed_val2 = atol(temp_str);
     }
 
-    if (this->prog_info->use_sound == 0 ||
-        strstr(cmd_line, "NOMUSIC") != 0 ||
-        strstr(cmd_line, "NO MUSIC") != 0 ||
+    if (this->prog_info->use_sound == 0 || strstr(cmd_line, "NOMUSIC") != 0 || strstr(cmd_line, "NO MUSIC") != 0 ||
         strstr(cmd_line, "NO_MUSIC") != 0) {
         this->prog_info->use_music = 0;
     }
@@ -1561,8 +1548,7 @@ int RGE_Base_Game::setup_main_window() {
     RECT win_rect;
     RECT client_rect;
 
-    if (this->prog_info->full_screen == 0 &&
-        (screen_width != this->prog_info->main_wid ||
+    if (this->prog_info->full_screen == 0 && (screen_width != this->prog_info->main_wid ||
          screen_height != this->prog_info->main_hgt)) {
         this->prog_window = CreateWindowExA(0, this->prog_info->prog_name, this->prog_info->prog_title,
                                             WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 0, 0,
@@ -1578,8 +1564,7 @@ int RGE_Base_Game::setup_main_window() {
     GetWindowRect(this->prog_window, &win_rect);
     GetClientRect(this->prog_window, &client_rect);
 
-    if (client_rect.right != this->prog_info->main_wid ||
-        client_rect.bottom != this->prog_info->main_hgt) {
+    if (client_rect.right != this->prog_info->main_wid || client_rect.bottom != this->prog_info->main_hgt) {
         SetWindowPos(this->prog_window, 0, win_rect.left, win_rect.top,
                      (win_rect.right - win_rect.left) - client_rect.right + this->prog_info->main_wid,
                      (win_rect.bottom - win_rect.top) - client_rect.bottom + this->prog_info->main_hgt, 0);
@@ -1839,10 +1824,8 @@ int RGE_Base_Game::setup_music_system() {
                 new TMusic_System(music_type, this->prog_info->instance, this->prog_window, this->sound_system, music_path);
             this->music_system = music_system;
 
-            if (music_system != 0 && music_type == 1 &&
-                this->prog_info->use_cd_audio == 0) {
-                if (music_system->device_open == 0 ||
-                    music_system->track_count < 2) {
+            if (music_system != 0 && music_type == 1 && this->prog_info->use_cd_audio == 0) {
+                if (music_system->device_open == 0 || music_system->track_count < 2) {
                     if (music_system->set_music_type(2) == 0)
                         this->music_system->set_music_type(3);
                 }
@@ -1929,31 +1912,31 @@ int RGE_Base_Game::setup_fonts() {
         HFONT font;
         switch (i) {
         case 0:
-            font = this->make_font(dc, IDS_FONT_COPPERPLATE_12_BOLD, 0);
+            font = this->make_font(dc, STRING_ID_FONT_COPPERPLATE_12_BOLD, 0);
             break;
         case 1:
-            font = this->make_font(dc, IDS_FONT_COPPERPLATE_21_BOLD, 0);
+            font = this->make_font(dc, STRING_ID_FONT_COPPERPLATE_21_BOLD, 0);
             break;
         case 4:
-            font = this->make_font(dc, IDS_FONT_COPPERPLATE_12_BOLD_ALT, 0);
+            font = this->make_font(dc, STRING_ID_FONT_COPPERPLATE_12_BOLD_ALT, 0);
             break;
         case 6:
-            font = this->make_font(dc, IDS_FONT_ARIAL_8_NORMAL, 0);
+            font = this->make_font(dc, STRING_ID_FONT_ARIAL_8_NORMAL, 0);
             break;
         case 7:
-            font = this->make_font(dc, IDS_FONT_ARIAL_10_NORMAL, 0);
+            font = this->make_font(dc, STRING_ID_FONT_ARIAL_10_NORMAL, 0);
             break;
         case 8:
-            font = this->make_font(dc, IDS_FONT_ARIAL_10_BOLD, 1);
+            font = this->make_font(dc, STRING_ID_FONT_ARIAL_10_BOLD, 1);
             break;
         case 9:
-            font = this->make_font(dc, IDS_FONT_ARIAL_9_BOLD, 0);
+            font = this->make_font(dc, STRING_ID_FONT_ARIAL_9_BOLD, 0);
             break;
         case 10:
-            font = this->make_font(dc, IDS_FONT_ARIAL_10_NORMAL_ALT, 0);
+            font = this->make_font(dc, STRING_ID_FONT_ARIAL_10_NORMAL_ALT, 0);
             break;
         case 11:
-            font = this->make_font(dc, IDS_FONT_ARIAL_10_BOLD, 0);
+            font = this->make_font(dc, STRING_ID_FONT_ARIAL_10_BOLD, 0);
             break;
         default:
             font = 0;
@@ -2126,7 +2109,7 @@ HFONT RGE_Base_Game::make_font(HDC dc, char* face_name, int point_size, int wgt,
     LOGFONTA logfont;
     char charset;
 
-    this->get_string(IDS_FONT_CHARSET, str, 256);
+    this->get_string(STRING_ID_FONT_CHARSET, str, 256);
     charset = (char)atoi(str);
     memset(&logfont, 0, sizeof(logfont));
     logfont.lfHeight = -MulDiv(point_size, 96, 72);
@@ -2162,8 +2145,7 @@ int RGE_Base_Game::check_for_cd(int num_players) {
         int cd_count = 0;
         int i = 0;
         do {
-            if (this->comm_handler->GetPlayerHumanity(i + 1) == 2 &&
-                this->playerHasCD(i) != 0) {
+            if (this->comm_handler->GetPlayerHumanity(i + 1) == 2 && this->playerHasCD(i) != 0) {
                 ++cd_count;
             }
             ++i;
@@ -2618,8 +2600,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
         break;
 
     case WM_SYSCOMMAND:
-        if (wparam == SC_KEYMENU && this->prog_info->full_screen != 0 &&
-            IsIconic(this->prog_window) == 0) {
+        if (wparam == SC_KEYMENU && this->prog_info->full_screen != 0 && IsIconic(this->prog_window) == 0) {
             return 0;
         }
         break;
@@ -2724,8 +2705,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
                 }
             }
 
-            if (wnd == this->prog_window && LOWORD(wparam) != 0 &&
-                HIWORD(wparam) != 0 && save_active_wnd != 0) {
+            if (wnd == this->prog_window && LOWORD(wparam) != 0 && HIWORD(wparam) != 0 && save_active_wnd != 0) {
                 save_active_wnd = 0;
             }
         }
@@ -2909,10 +2889,8 @@ int RGE_Base_Game::handle_key_down(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpa
     basegame_shift_key_down = (get_key_state(VK_SHIFT) < 0);
 
     if (wnd == this->prog_window && msg == WM_SYSKEYDOWN &&
-        (basegame_key_message == VK_MENU || basegame_key_message == VK_SPACE ||
-         basegame_key_message == VK_F10) &&
-        this->prog_info->full_screen != 0 &&
-        IsIconic(this->prog_window) == 0) {
+        (basegame_key_message == VK_MENU || basegame_key_message == VK_SPACE || basegame_key_message == VK_F10) &&
+        this->prog_info->full_screen != 0 && IsIconic(this->prog_window) == 0) {
         return 0;
     }
 
@@ -2979,10 +2957,8 @@ int RGE_Base_Game::handle_paint(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam
         return 0;
     }
 
-    if (((this->prog_mode == 4 || this->prog_mode == 6 ||
-          this->prog_mode == 7) &&
-         this->draw_system->DrawType != 1 && this->custom_mouse != 0) &&
-        this->mouse_blit_sync != 0) {
+    if (((this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 7) &&
+         this->draw_system->DrawType != 1 && this->custom_mouse != 0) && this->mouse_blit_sync != 0) {
         IDirectDrawSurface* surface = this->draw_system->PrimarySurface;
         result = surface->GetBltStatus(1);
         time_a = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 4348);
@@ -3042,8 +3018,7 @@ paint_done:
     color_log(0x32, 0x24, 4);
     if (basegame_palette_restore_pending != 0) {
         basegame_palette_restore_pending = 0;
-        if ((this->prog_mode == 4 || this->prog_mode == 5) &&
-            this->do_show_timings != 0)
+        if ((this->prog_mode == 4 || this->prog_mode == 5) && this->do_show_timings != 0)
             this->show_timings();
     }
 
@@ -3108,8 +3083,7 @@ int RGE_Base_Game::handle_activate(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpa
     }
 
     if (this->prog_active != 0) {
-        if ((this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 7) &&
-            this->auto_paused == 1) {
+        if ((this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 7) && this->auto_paused == 1) {
             this->auto_paused = 0;
             this->set_paused(0, 0);
         }
@@ -3264,8 +3238,7 @@ void RGE_Base_Game::calc_timings() {
     else
         this->timings[4].last_time = 0;
 
-    if (this->timings[2].last_time >
-        this->timings[6].last_time + this->timings[7].last_time)
+    if (this->timings[2].last_time > this->timings[6].last_time + this->timings[7].last_time)
         this->timings[9].last_time =
             this->timings[2].last_time - this->timings[6].last_time -
             this->timings[7].last_time;
@@ -3273,23 +3246,20 @@ void RGE_Base_Game::calc_timings() {
         this->timings[9].last_time = 0;
 
     unsigned long total = this->timings[0].last_time;
-    if (total == 0 || this->frame_count == 0 ||
-        total / this->frame_count == 0) {
+    if (total == 0 || this->frame_count == 0 || total / this->frame_count == 0) {
         this->fps = 1000;
     } else {
         this->fps = 1000 / (total / this->frame_count);
     }
 
-    if (total == 0 || this->view_update_count == 0 ||
-        total / this->view_update_count == 0) {
+    if (total == 0 || this->view_update_count == 0 || total / this->view_update_count == 0) {
         this->view_update_fps = 0;
     } else {
         this->view_update_fps =
             1000 / (total / this->view_update_count);
     }
 
-    if (total == 0 || this->world_update_count == 0 ||
-        total / this->world_update_count == 0) {
+    if (total == 0 || this->world_update_count == 0 || total / this->world_update_count == 0) {
         this->world_update_fps = 0;
     } else {
         this->world_update_fps =
@@ -3816,8 +3786,7 @@ void RGE_Base_Game::set_screen_size(long wid, long hgt) {
     RECT client_rect;
 
     if (this->draw_area->Width != wid || this->draw_area->Height != hgt) {
-        if (this->draw_system->DrawType == 2 &&
-            this->draw_system->ScreenMode == 2) {
+        if (this->draw_system->DrawType == 2 && this->draw_system->ScreenMode == 2) {
             SetCursor(NULL);
             SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
             this->mouse_pointer->Shutdown_Mouse();

@@ -199,7 +199,7 @@ This worker did not edit that header.
 | `set_single_player_difficulty(int)` | `val` |
 
 No registry change is needed. The historical root request for
-`IDS_HELP_WINDOW_TITLE` (`0x03EB`) remains pending. This correction does not
+`STRING_ID_HELP_WINDOW_TITLE` (`0x03EB`) remains pending. This correction does not
 resolve it. The source keeps numeric `0x3EB`. The destructor loads `0x03EB`
 and passes the result to `FindWindowA("MS_WINHELP", str)`. The wave02 root
 review records base text `Age of Empires Help` and missing expansion text.

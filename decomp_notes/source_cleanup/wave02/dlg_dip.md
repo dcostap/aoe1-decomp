@@ -108,21 +108,21 @@ The base file returned these exact strings. The current expansion file reported 
 
 | ID | Exact base text | Call-site purpose | Applied cleanup macro |
 | --- | --- | --- | --- |
-| `0x267B` | `Diplomacy` | Dialog title | `IDS_DIPLOMACY_TITLE` |
-| `0x267C` | `Civilization` | Civilization column title | `IDS_DIPLOMACY_CIVILIZATION` |
-| `0x267D` | `Ally` | Ally column title | `IDS_DIPLOMACY_ALLY` |
-| `0x267E` | `Neutral` | Neutral column title | `IDS_DIPLOMACY_NEUTRAL` |
-| `0x267F` | `Enemy` | Enemy column title | `IDS_DIPLOMACY_ENEMY` |
-| `0x2680` | `Pay Tribute (cost %d%%)` | Formatted tribute-cost title | `IDS_DIPLOMACY_PAY_TRIBUTE_FORMAT` |
-| `0x2681` | `Allied Victory` | Allied-victory label | `IDS_DIPLOMACY_ALLIED_VICTORY` |
-| `0x2683` | `Clear Tributes` | Clear button label | `IDS_DIPLOMACY_CLEAR_TRIBUTES` |
-| `0x2686` | `Name` | Player-name column title | `IDS_DIPLOMACY_NAME` |
-| `0x2687` | `You need a Market to pay tribute.` | Market requirement notice | `IDS_DIPLOMACY_NEED_MARKET` |
-| `0x0FA9` | `?` | Help button label | `IDS_BUTTON_HELP` |
+| `0x267B` | `Diplomacy` | Dialog title | `STRING_ID_DIPLOMACY_TITLE` |
+| `0x267C` | `Civilization` | Civilization column title | `STRING_ID_DIPLOMACY_CIVILIZATION` |
+| `0x267D` | `Ally` | Ally column title | `STRING_ID_DIPLOMACY_ALLY` |
+| `0x267E` | `Neutral` | Neutral column title | `STRING_ID_DIPLOMACY_NEUTRAL` |
+| `0x267F` | `Enemy` | Enemy column title | `STRING_ID_DIPLOMACY_ENEMY` |
+| `0x2680` | `Pay Tribute (cost %d%%)` | Formatted tribute-cost title | `STRING_ID_DIPLOMACY_PAY_TRIBUTE_FORMAT` |
+| `0x2681` | `Allied Victory` | Allied-victory label | `STRING_ID_DIPLOMACY_ALLIED_VICTORY` |
+| `0x2683` | `Clear Tributes` | Clear button label | `STRING_ID_DIPLOMACY_CLEAR_TRIBUTES` |
+| `0x2686` | `Name` | Player-name column title | `STRING_ID_DIPLOMACY_NAME` |
+| `0x2687` | `You need a Market to pay tribute.` | Market requirement notice | `STRING_ID_DIPLOMACY_NEED_MARKET` |
+| `0x0FA9` | `?` | Help button label | `STRING_ID_BUTTON_HELP` |
 
-The existing shared definitions `IDS_BUTTON_OK` (`0x0FA1`) and `IDS_BUTTON_CANCEL` (`0x0FA2`) were reused. The base file contains exact text `OK` and `Cancel` for these IDs. The expansion file and pinned original expansion file report both IDs as missing.
+The existing shared definitions `STRING_ID_BUTTON_OK` (`0x0FA1`) and `STRING_ID_BUTTON_CANCEL` (`0x0FA2`) were reused. The base file contains exact text `OK` and `Cancel` for these IDs. The expansion file and pinned original expansion file report both IDs as missing.
 
-The existing shared definitions `IDS_HELP_OK` (`0x7531`) and `IDS_HELP_CANCEL` (`0x7532`) were reused. The current base file reports both IDs as missing. The current expansion file and pinned original expansion file also report both IDs as missing. Their purpose is established by `set_help_info` on the OK and Cancel buttons. Missing text does not change that purpose.
+The existing shared definitions `STRING_ID_HELP_OK` (`0x7531`) and `STRING_ID_HELP_CANCEL` (`0x7532`) were reused. The current base file reports both IDs as missing. The current expansion file and pinned original expansion file also report both IDs as missing. Their purpose is established by `set_help_info` on the OK and Cancel buttons. Missing text does not change that purpose.
 
 ### Diplomacy help IDs
 
@@ -130,15 +130,15 @@ The base file contains these exact texts. The current expansion file contains th
 
 | ID | Exact base text | Current expansion result | Call-site purpose | Applied cleanup macro |
 | --- | --- | --- | --- | --- |
-| `0x7684` | `Click to set your diplomatic stance toward this player as Ally. Your military units do not attack this civilization.` | Empty slot | Ally stance help | `IDS_HELP_DIPLOMACY_ALLY` |
-| `0x7685` | `Click to set your diplomatic stance toward this player as Neutral. Your military units attack all buildings and military units (but not villagers) who enter their sight.` | `Click to set your diplomatic stance toward this  player as Neutral. Your military units attack buildings and villagers when commanded and automatically attack all military units in their sight.` | Neutral stance help | `IDS_HELP_DIPLOMACY_NEUTRAL` |
-| `0x7686` | `Click to set your diplomatic stance toward this player as Enemy. Your military units (except Scouts) attack all buildings, military units, and villagers who enter their sight.` | Empty slot | Enemy stance help | `IDS_HELP_DIPLOMACY_ENEMY` |
-| `0x7687` | `Click to tribute this player 100 wood. Each time you click the button, 125 wood is deducted from your stockpile (100 goes to the player and 25 is paid as a fee).` | Empty slot | Wood tribute help | `IDS_HELP_DIPLOMACY_TRIBUTE_WOOD` |
-| `0x7688` | `Click to tribute this player 100 food. Each time you click the button, 125 food is deducted from your stockpile (100 goes to the player and 25 is paid as a fee).` | Empty slot | Food tribute help | `IDS_HELP_DIPLOMACY_TRIBUTE_FOOD` |
-| `0x7689` | `Click to tribute this player 100 gold. Each time you click the button, 125 gold is deducted from your stockpile (100 goes to the player and 25 is paid as a fee).` | Empty slot | Gold tribute help | `IDS_HELP_DIPLOMACY_TRIBUTE_GOLD` |
-| `0x768A` | `Click to tribute this player 100 stone. Each time you click the button, 125 stone is deducted from your stockpile (100 goes to the player and 25 is paid as a fee).` | Empty slot | Stone tribute help | `IDS_HELP_DIPLOMACY_TRIBUTE_STONE` |
-| `0x768B` | `Click to clear all tributes before they are paid.` | Empty slot | Clear-tributes help | `IDS_HELP_DIPLOMACY_CLEAR_TRIBUTES` |
-| `0x768C` | `If there is a check in the box, allied players win or lose as a team. Any allied player who achieves the victory condition wins the game for all allies. All players who want to pursue an allied victory must select Allied Victory.` | Empty slot | Allied-victory help | `IDS_HELP_DIPLOMACY_ALLIED_VICTORY` |
+| `0x7684` | `Click to set your diplomatic stance toward this player as Ally. Your military units do not attack this civilization.` | Empty slot | Ally stance help | `STRING_ID_HELP_DIPLOMACY_ALLY` |
+| `0x7685` | `Click to set your diplomatic stance toward this player as Neutral. Your military units attack all buildings and military units (but not villagers) who enter their sight.` | `Click to set your diplomatic stance toward this  player as Neutral. Your military units attack buildings and villagers when commanded and automatically attack all military units in their sight.` | Neutral stance help | `STRING_ID_HELP_DIPLOMACY_NEUTRAL` |
+| `0x7686` | `Click to set your diplomatic stance toward this player as Enemy. Your military units (except Scouts) attack all buildings, military units, and villagers who enter their sight.` | Empty slot | Enemy stance help | `STRING_ID_HELP_DIPLOMACY_ENEMY` |
+| `0x7687` | `Click to tribute this player 100 wood. Each time you click the button, 125 wood is deducted from your stockpile (100 goes to the player and 25 is paid as a fee).` | Empty slot | Wood tribute help | `STRING_ID_HELP_DIPLOMACY_TRIBUTE_WOOD` |
+| `0x7688` | `Click to tribute this player 100 food. Each time you click the button, 125 food is deducted from your stockpile (100 goes to the player and 25 is paid as a fee).` | Empty slot | Food tribute help | `STRING_ID_HELP_DIPLOMACY_TRIBUTE_FOOD` |
+| `0x7689` | `Click to tribute this player 100 gold. Each time you click the button, 125 gold is deducted from your stockpile (100 goes to the player and 25 is paid as a fee).` | Empty slot | Gold tribute help | `STRING_ID_HELP_DIPLOMACY_TRIBUTE_GOLD` |
+| `0x768A` | `Click to tribute this player 100 stone. Each time you click the button, 125 stone is deducted from your stockpile (100 goes to the player and 25 is paid as a fee).` | Empty slot | Stone tribute help | `STRING_ID_HELP_DIPLOMACY_TRIBUTE_STONE` |
+| `0x768B` | `Click to clear all tributes before they are paid.` | Empty slot | Clear-tributes help | `STRING_ID_HELP_DIPLOMACY_CLEAR_TRIBUTES` |
+| `0x768C` | `If there is a check in the box, allied players win or lose as a team. Any allied player who achieves the victory condition wins the game for all allies. All players who want to pursue an allied victory must select Allied Victory.` | Empty slot | Allied-victory help | `STRING_ID_HELP_DIPLOMACY_ALLIED_VICTORY` |
 
 The worker-local header import commit `46805ee2a76f12ba7a50fa925461d1f787a00e61` defines all proposed diplomacy names. Root approval is recorded by commit `8c56055b7feee1526f296bd306036a4c34f38041`. The source now uses these approved macros. They are cleanup names, not recovered macro names.
 
@@ -158,26 +158,26 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned
 The worker-local `include/resource_ids.h` import at commit `46805ee2a76f12ba7a50fa925461d1f787a00e61` contains the applied definitions below. Root approval is recorded by commit `8c56055b7feee1526f296bd306036a4c34f38041`:
 
 ```cpp
-#define IDS_DIPLOMACY_TITLE 0x267B
-#define IDS_DIPLOMACY_CIVILIZATION 0x267C
-#define IDS_DIPLOMACY_ALLY 0x267D
-#define IDS_DIPLOMACY_NEUTRAL 0x267E
-#define IDS_DIPLOMACY_ENEMY 0x267F
-#define IDS_DIPLOMACY_PAY_TRIBUTE_FORMAT 0x2680
-#define IDS_DIPLOMACY_ALLIED_VICTORY 0x2681
-#define IDS_DIPLOMACY_CLEAR_TRIBUTES 0x2683
-#define IDS_DIPLOMACY_NAME 0x2686
-#define IDS_DIPLOMACY_NEED_MARKET 0x2687
-#define IDS_BUTTON_HELP 0x0FA9
-#define IDS_HELP_DIPLOMACY_ALLY 0x7684
-#define IDS_HELP_DIPLOMACY_NEUTRAL 0x7685
-#define IDS_HELP_DIPLOMACY_ENEMY 0x7686
-#define IDS_HELP_DIPLOMACY_TRIBUTE_WOOD 0x7687
-#define IDS_HELP_DIPLOMACY_TRIBUTE_FOOD 0x7688
-#define IDS_HELP_DIPLOMACY_TRIBUTE_GOLD 0x7689
-#define IDS_HELP_DIPLOMACY_TRIBUTE_STONE 0x768A
-#define IDS_HELP_DIPLOMACY_CLEAR_TRIBUTES 0x768B
-#define IDS_HELP_DIPLOMACY_ALLIED_VICTORY 0x768C
+#define STRING_ID_DIPLOMACY_TITLE 0x267B
+#define STRING_ID_DIPLOMACY_CIVILIZATION 0x267C
+#define STRING_ID_DIPLOMACY_ALLY 0x267D
+#define STRING_ID_DIPLOMACY_NEUTRAL 0x267E
+#define STRING_ID_DIPLOMACY_ENEMY 0x267F
+#define STRING_ID_DIPLOMACY_PAY_TRIBUTE_FORMAT 0x2680
+#define STRING_ID_DIPLOMACY_ALLIED_VICTORY 0x2681
+#define STRING_ID_DIPLOMACY_CLEAR_TRIBUTES 0x2683
+#define STRING_ID_DIPLOMACY_NAME 0x2686
+#define STRING_ID_DIPLOMACY_NEED_MARKET 0x2687
+#define STRING_ID_BUTTON_HELP 0x0FA9
+#define STRING_ID_HELP_DIPLOMACY_ALLY 0x7684
+#define STRING_ID_HELP_DIPLOMACY_NEUTRAL 0x7685
+#define STRING_ID_HELP_DIPLOMACY_ENEMY 0x7686
+#define STRING_ID_HELP_DIPLOMACY_TRIBUTE_WOOD 0x7687
+#define STRING_ID_HELP_DIPLOMACY_TRIBUTE_FOOD 0x7688
+#define STRING_ID_HELP_DIPLOMACY_TRIBUTE_GOLD 0x7689
+#define STRING_ID_HELP_DIPLOMACY_TRIBUTE_STONE 0x768A
+#define STRING_ID_HELP_DIPLOMACY_CLEAR_TRIBUTES 0x768B
+#define STRING_ID_HELP_DIPLOMACY_ALLIED_VICTORY 0x768C
 ```
 
 No resource declaration request remains. No request exists for the already defined OK and Cancel mappings.

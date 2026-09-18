@@ -119,7 +119,7 @@ worker's correction.
 
 ## Resource evidence
 
-The root resource header approves cleanup macro `IDS_AI_FILE_RANDOM`.
+The root resource header approves cleanup macro `STRING_ID_AI_FILE_RANDOM`.
 The approval is in root commit `bf943f3339643ee5beca7dd74e98b4cb729e48d3`.
 The macro retains value `0x277B`.
 The random-game path passes this ID through the virtual `get_string` call.
@@ -150,13 +150,13 @@ The lookup path is:
 
 1. `RGE_Base_Game` sets `string_dll_name` to `language.dll`.
 2. Base setup loads that name with `LoadLibraryA` into `StringTable`.
-3. `World::new_game` calls `rge_base_game->get_string(IDS_AI_FILE_RANDOM, ...)`.
+3. `World::new_game` calls `rge_base_game->get_string(STRING_ID_AI_FILE_RANDOM, ...)`.
 4. The virtual `TRIBE_Game::get_string` checks `StringTableX` first.
 5. `TRIBE_Game::setup` loads `languagex.dll` into `StringTableX`, unless a
    `STRING=` command option selects another override DLL.
 6. If `StringTableX` has no entry, `TRIBE_Game::get_string` calls the base
    method.
-7. The base method calls `LoadStringA(StringTable, IDS_AI_FILE_RANDOM, ...)`.
+7. The base method calls `LoadStringA(StringTable, STRING_ID_AI_FILE_RANDOM, ...)`.
 8. The base fallback therefore returns `Random` from `language.dll`.
 
 The inspected runtime files are not called original files. The XPack file is

@@ -95,8 +95,7 @@ int RGE_Dialog_List::create_object_list() {
         int object_index = 0;
         count = end_i;
         do {
-            if (player->master_objects[object_index] &&
-                player->master_objects[object_index]->hide_in_scenario_editor == 0)
+            if (player->master_objects[object_index] && player->master_objects[object_index]->hide_in_scenario_editor == 0)
                 this->list_size++;
             object_index++;
             count--;

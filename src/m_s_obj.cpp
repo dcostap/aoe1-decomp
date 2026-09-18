@@ -455,16 +455,13 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     this->resource_group = static_cast<unsigned char>(temp_draw_flag);
     this->draw_color = static_cast<unsigned char>(temp_elevation_flag);
 
-    if (this->outline_radius_x == DAT_00570618 ||
-        this->outline_radius_x != this->outline_radius_x) {
+    if (this->outline_radius_x == DAT_00570618 || this->outline_radius_x != this->outline_radius_x) {
         this->outline_radius_x = this->radius_x;
     }
-    if (this->outline_radius_y == DAT_00570618 ||
-        this->outline_radius_y != this->outline_radius_y) {
+    if (this->outline_radius_y == DAT_00570618 || this->outline_radius_y != this->outline_radius_y) {
         this->outline_radius_y = this->radius_y;
     }
-    if (this->outline_radius_z == DAT_00570618 ||
-        this->outline_radius_z != this->outline_radius_z) {
+    if (this->outline_radius_z == DAT_00570618 || this->outline_radius_z != this->outline_radius_z) {
         this->outline_radius_z = this->radius_z;
     }
 
@@ -851,9 +848,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
     float min_y_value = row - radius_y;
     float max_y_value = row + radius_y - DAT_0057061c;
 
-    if (!(min_x_value >= DAT_00570620) ||
-        !(max_x_value < (float)map->map_width) ||
-        !(min_y_value >= DAT_00570620) ||
+    if (!(min_x_value >= DAT_00570620) || !(max_x_value < (float)map->map_width) || !(min_y_value >= DAT_00570620) ||
         !(max_y_value < (float)map->map_height)) {
         return 7;
     }
@@ -872,8 +867,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
         short center_x = (short)(long)col;
         short center_terrain =
             map->map_row_offset[center_y][center_x].terrain_type;
-        if (center_terrain != this->center_tile_req1 &&
-            center_terrain != this->center_tile_req2) {
+        if (center_terrain != this->center_tile_req1 && center_terrain != this->center_tile_req2) {
             return 1;
         }
         edge_x1 = center_x;
@@ -950,17 +944,14 @@ unsigned char RGE_Master_Static_Object::check_placement(
                 return 2;
             }
 
-            if (check_vis != 0 &&
-                (rge_base_game->prog_mode == 7 ||
-                 player->visible->get_visible(x_index, y_index) != 0)) {
+            if (check_vis != 0 && (rge_base_game->prog_mode == 7 || player->visible->get_visible(x_index, y_index) != 0)) {
                 part_vis = 1;
             }
 
             if (check_flat != 0) {
                 unsigned char tile_type = tile->tile_type;
                 if (this->elevation_flag == 1) {
-                    if (tile_type != 0 && tile_type != 5 && tile_type != 7 &&
-                        tile_type != 6 && tile_type != 8) {
+                    if (tile_type != 0 && tile_type != 5 && tile_type != 7 && tile_type != 6 && tile_type != 8) {
                         return 3;
                     }
                 } else if (this->elevation_flag == 2 && tile_type != 0) {
@@ -992,32 +983,24 @@ unsigned char RGE_Master_Static_Object::check_placement(
         object_max_y = (short)map->map_height - 1;
     }
 
-    if (check_objects != 0 &&
-        (can_be_built_on_flag != 0 || this->radius_z > DAT_00570620) &&
+    if (check_objects != 0 && (can_be_built_on_flag != 0 || this->radius_z > DAT_00570620) &&
         object_min_y <= object_max_y) {
-        for (short y_index = object_min_y;
-             y_index <= object_max_y; y_index++) {
+        for (short y_index = object_min_y; y_index <= object_max_y; y_index++) {
             RGE_Tile* tile =
                 &map->map_row_offset[y_index][object_min_x];
-            for (short x_index = object_min_x;
-                 x_index <= object_max_x; x_index++, tile++) {
+            for (short x_index = object_min_x; x_index <= object_max_x; x_index++, tile++) {
                 RGE_Object_Node* object_node = tile->objects.list;
                 while (object_node != 0) {
                     RGE_Static_Object* object = object_node->node;
-                    if (object->object_state < 7 &&
-                        (can_be_built_on_flag == 0 ||
-                         object->master_obj->can_be_built_on != 1 ||
-                         this->can_be_built_on != 0)) {
+                    if (object->object_state < 7 && (can_be_built_on_flag == 0 ||
+                         object->master_obj->can_be_built_on != 1 || this->can_be_built_on != 0)) {
                         RGE_Master_Static_Object* master = object->master_obj;
                         float object_radius_x = master->radius_x;
                         float object_radius_y = master->radius_y;
                         float object_radius_z = master->radius_z;
-                        if (object_radius_x > DAT_00570620 &&
-                            object_radius_y > DAT_00570620 &&
-                            ((object_radius_z > DAT_00570620 &&
-                              this->radius_z > DAT_00570620) ||
-                             (!(object_radius_z > DAT_00570620) &&
-                              !(this->radius_z > DAT_00570620)))) {
+                        if (object_radius_x > DAT_00570620 && object_radius_y > DAT_00570620 &&
+                            ((object_radius_z > DAT_00570620 && this->radius_z > DAT_00570620) ||
+                             (!(object_radius_z > DAT_00570620) && !(this->radius_z > DAT_00570620)))) {
                             float distance_y = object->world_y - row;
                             float distance_x = object->world_x - col;
                             if (distance_y < DAT_00570618) {

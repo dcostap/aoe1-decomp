@@ -38,9 +38,7 @@ RGE_Action_Missile::RGE_Action_Missile(RGE_Action_Object* obj_in, RGE_Static_Obj
 
 void RGE_Action_Missile::first_in_stack(unsigned char first_time) {
     if (first_time != 0) {
-        if (this->target_obj == 0 &&
-            (*(int*)&this->target_x == 0xBF800000 ||
-             *(int*)&this->target_y == 0xBF800000)) {
+        if (this->target_obj == 0 && (*(int*)&this->target_x == 0xBF800000 || *(int*)&this->target_y == 0xBF800000)) {
             this->set_state(1);
         } else {
             this->set_state(3);
@@ -82,16 +80,12 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
         dz = tz - this->obj->world_z;
         d = (float)sqrt(dx * dx + dy * dy + dz * dz);
 
-        if (((RGE_Master_Missile_Object*)this->obj->master_obj)
-                    ->targetting_type == 1 &&
-            this->target_obj != 0 &&
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj) ->targetting_type == 1 && this->target_obj != 0 &&
             this->target_obj->getSpeed() > DAT_0056e388) {
             float target_speed = this->target_obj->getSpeed();
 
-            if (this->target_obj2 != 0 &&
-                (this->target_obj2->master_obj->id == 0x23 ||
-                 this->target_obj2->master_obj->id == 0x24 ||
-                 this->target_obj2->master_obj->id == 0x118) &&
+            if (this->target_obj2 != 0 && (this->target_obj2->master_obj->id == 0x23 ||
+                 this->target_obj2->master_obj->id == 0x24 || this->target_obj2->master_obj->id == 0x118) &&
                 target_speed > DAT_0056e390) {
                 target_speed = 1.0f;
             }
@@ -105,9 +99,7 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
                 (float)sqrt((dx + target_vx) * (dx + target_vx) + (dy + target_vy) * (dy + target_vy) + dz * dz) +
                 ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed;
 
-            if (target_speed >
-                ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed *
-                    DAT_0056e380) {
+            if (target_speed > ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed * DAT_0056e380) {
                 float adjustment = d / target_speed;
                 dx += target_vx * adjustment;
                 dy += target_vy * adjustment;
@@ -115,8 +107,7 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
             }
         }
 
-        switch (((RGE_Master_Missile_Object*)this->obj->master_obj)
-                    ->missile_type) {
+        switch (((RGE_Master_Missile_Object*)this->obj->master_obj) ->missile_type) {
         case 0:
             this->velocity_x = dx / d;
             this->velocity_y = dy / d;
@@ -141,11 +132,9 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
             break;
         }
 
-        if (((RGE_Master_Missile_Object*)this->obj->master_obj)
-                ->ballistics_ratio > DAT_0056e388) {
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj) ->ballistics_ratio > DAT_0056e388) {
             float time;
-            if (((RGE_Master_Animated_Object*)this->obj->master_obj)->speed >
-                DAT_0056e394) {
+            if (((RGE_Master_Animated_Object*)this->obj->master_obj)->speed > DAT_0056e394) {
                 time = d /
                        ((RGE_Master_Animated_Object*)this->obj->master_obj)
                            ->speed;
@@ -184,12 +173,10 @@ unsigned char RGE_Action_Missile::update() {
     float s = ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed * t;
     unsigned char hit_ground;
 
-    if (this->targetID != -1 &&
-        this->obj->owner->world->object(this->targetID) == 0) {
+    if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
     }
-    if (this->target2ID != -1 &&
-        this->obj->owner->world->object(this->target2ID) == 0) {
+    if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
     }
 
@@ -204,8 +191,7 @@ unsigned char RGE_Action_Missile::update() {
     case 1:
         return 1;
     case 4:
-        if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type ==
-            0) {
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type == 0) {
             this->timer += s;
             vx = this->velocity_x * s;
             vy = this->velocity_y * s;
@@ -213,15 +199,13 @@ unsigned char RGE_Action_Missile::update() {
             if (this->timer >= ((RGE_Missile_Object*)this->obj)->max_range) {
                 this->set_state(1);
             }
-        } else if (((RGE_Master_Missile_Object*)this->obj->master_obj)
-                       ->missile_type == 3) {
+        } else if (((RGE_Master_Missile_Object*)this->obj->master_obj) ->missile_type == 3) {
             vx = this->velocity_x;
             vy = this->velocity_y;
             vz = this->velocity_z;
         }
 
-        if (((RGE_Master_Missile_Object*)this->obj->master_obj)
-                ->ballistics_ratio > DAT_0056e388) {
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj) ->ballistics_ratio > DAT_0056e388) {
             float change = this->ballistic_acceleration * t;
             float new_velocity = this->ballistic_velocity + change;
             float average_velocity =
@@ -233,8 +217,7 @@ unsigned char RGE_Action_Missile::update() {
         this->obj->set_velocity(vx, vy, vz);
         hit_ground = ((RGE_Missile_Object*)this->obj)->missile_move();
 
-        switch (
-            ((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type) {
+        switch (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type) {
         case 0:
         case 1:
         case 2: {
@@ -246,8 +229,7 @@ unsigned char RGE_Action_Missile::update() {
                 while (node != 0) {
                     RGE_Combat_Object* source;
 
-                    switch (((RGE_Master_Missile_Object*)this->obj->master_obj)
-                                ->missile_hit_info) {
+                    switch (((RGE_Master_Missile_Object*)this->obj->master_obj) ->missile_hit_info) {
                     case 0:
                         if (node->node != this->target_obj) {
                             break;
@@ -262,8 +244,7 @@ unsigned char RGE_Action_Missile::update() {
                         break;
 
                     case 1:
-                        if (node->node->owner == this->obj->owner ||
-                            node->node->owner->id == 0) {
+                        if (node->node->owner == this->obj->owner || node->node->owner->id == 0) {
                             break;
                         }
                         if (this->target_obj2 != 0) {
@@ -285,8 +266,7 @@ unsigned char RGE_Action_Missile::update() {
                             source = (RGE_Combat_Object*)this->obj;
                         }
 
-                        if (node->node->owner != this->obj->owner &&
-                            node->node->owner->id != 0) {
+                        if (node->node->owner != this->obj->owner && node->node->owner->id != 0) {
                             source->do_attack(node->node, source, this->obj->world_x,
                                               this->obj->world_y, this->obj->world_z);
                         } else {

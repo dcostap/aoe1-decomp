@@ -102,7 +102,7 @@ The source keeps the explicit casts, literal values, calls, declaration order, s
 
 Request the root resource-ID owner to review one shared mapping for the base-game lookup use only. This source does not replace the literal because it passes the value as an `AIModuleID`, not directly to a string lookup.
 
-- Proposed cleanup name for the base-game lookup: `IDS_HELP_WINDOW_TITLE`.
+- Proposed cleanup name for the base-game lookup: `STRING_ID_HELP_WINDOW_TITLE`.
 - Numeric ID: `0x03EB` (decimal `1003`).
 - Resource type: `RT_STRING`.
 - Current base runtime: `runtime/language.dll`.

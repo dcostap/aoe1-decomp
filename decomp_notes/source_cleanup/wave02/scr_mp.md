@@ -21,11 +21,11 @@ Owner review requested 1TBS formatting for all function definitions. The source 
 
 The correction source commit is `0a0f4dffe28d63d8279ef278b8d4d0551317ddbf`. The report update follows it.
 
-Owner review later found one missed approved substitution: `0x0FA9` is the help-button text ID. The correction uses `IDS_BUTTON_HELP` from the imported header. The source correction commit is `d09089fcf744127174d5b809ac5f519139e6f6a5`; this report update follows it.
+Owner review later found one missed approved substitution: `0x0FA9` is the help-button text ID. The correction uses `STRING_ID_BUTTON_HELP` from the imported header. The source correction commit is `d09089fcf744127174d5b809ac5f519139e6f6a5`; this report update follows it.
 
 ## Resource integration history
 
-Root approval and definition provenance for the approved shared resource set is root commit `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Owner 11 imported only `include/resource_ids.h` in integration commit `bdb8bc1af`. The first worker substitution commit `4d8093aad58008af81d2772dbd3f289903b3fde1` replaced the nine multiplayer connection IDs. Owner review then found the missed `0x0FA9` help-button ID. The imported header provides root macro `IDS_BUTTON_HELP`; this worker replaced that ID in source commit `d09089fcf744127174d5b809ac5f519139e6f6a5`.
+Root approval and definition provenance for the approved shared resource set is root commit `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Owner 11 imported only `include/resource_ids.h` in integration commit `bdb8bc1af`. The first worker substitution commit `4d8093aad58008af81d2772dbd3f289903b3fde1` replaced the nine multiplayer connection IDs. Owner review then found the missed `0x0FA9` help-button ID. The imported header provides root macro `STRING_ID_BUTTON_HELP`; this worker replaced that ID in source commit `d09089fcf744127174d5b809ac5f519139e6f6a5`.
 
 The worker kept the existing lookup calls, argument types, casts, buffers, format arguments, arithmetic, fallback paths, recovered names, and 1TBS formatting. The report update follows the source substitution commit.
 
@@ -67,12 +67,12 @@ No invented local or parameter names were added. No public symbol, class member,
 
 I included `../include/resource_ids.h` and reused existing shared names for these unchanged values:
 
-- `IDS_BUTTON_OK` = `0x0FA1`; constructor button text lookup. Base text is `OK`.
-- `IDS_BUTTON_CANCEL` = `0x0FA2`; constructor button text lookup. Base text is `Cancel`.
-- `IDS_BUTTON_HELP` = `0x0FA9`; constructor help-button text lookup. The original constructor packet identifies the base text as `?`.
-- `IDS_BUTTON_CLOSE` = `0x03EA`; constructor close-button text lookup. Base text is `X`.
-- `IDS_HELP_OK` = `0x7531`; OK-button help lookup. Text is missing in every checked file.
-- `IDS_HELP_CANCEL` = `0x7532`; Cancel-button help lookup. Text is missing in every checked file.
+- `STRING_ID_BUTTON_OK` = `0x0FA1`; constructor button text lookup. Base text is `OK`.
+- `STRING_ID_BUTTON_CANCEL` = `0x0FA2`; constructor button text lookup. Base text is `Cancel`.
+- `STRING_ID_BUTTON_HELP` = `0x0FA9`; constructor help-button text lookup. The original constructor packet identifies the base text as `?`.
+- `STRING_ID_BUTTON_CLOSE` = `0x03EA`; constructor close-button text lookup. Base text is `X`.
+- `STRING_ID_HELP_OK` = `0x7531`; OK-button help lookup. Text is missing in every checked file.
+- `STRING_ID_HELP_CANCEL` = `0x7532`; Cancel-button help lookup. Text is missing in every checked file.
 
 These are existing shared declarations. They are not new recovered macro names.
 
@@ -88,17 +88,17 @@ F1 is the staged runtime base-language input. F2 is the staged expansion input. 
 
 | ID | Proposed name | Call-site purpose and lookup path | Language and F1 text | F2/F3 result |
 | --- | --- | --- | --- | --- |
-| `0x258B` | `IDS_MULTIPLAYER_CONNECTION_TITLE` | `create_text` for the startup screen title; `TEasy_Panel::create_text` -> `TPanel::get_string` -> base `language.dll` | `0x0409`: `Multiplayer Connection` | Missing in both files |
-| `0x258C` | `IDS_MULTIPLAYER_NAME_LABEL` | `create_text` for the player-name label; same base lookup path | `0x0409`: `Name` | Missing in both files |
-| `0x258D` | `IDS_MULTIPLAYER_CONNECTION_TYPE_LABEL` | `create_text` for the connection-type label; same base lookup path | `0x0409`: `Connection Type` | Missing in both files |
-| `0x258E` | `IDS_MULTIPLAYER_GAMING_ZONE` | `TTextPanel::append_line` for the browser-based Gaming Zone service when the browser exists; base `language.dll` lookup | `0x0409`: `Microsoft Internet Gaming Zone` | Missing in both files |
-| `0x258F` | `IDS_ERROR_PLAYER_NAME_REQUIRED` | `popupOKDialog` after an empty player-name check; base `language.dll` lookup | `0x0409`: `You must enter a valid player name.` | Missing in both files |
-| `0x2592` | `IDS_ERROR_NO_MULTIPLAYER_CONNECTIONS` | `popupOKDialog` when the service list has no lines; base `language.dll` lookup | `0x0409`: `No multiplayer connections are available.` | Missing in both files |
-| `0x2593` | `IDS_CONFIRM_START_GAMING_ZONE` | `popupYesNoDialog` before starting the Gaming Zone browser; base `language.dll` lookup | `0x0409`: `Start your Web browser and go to The Internet Gaming Zone?` | Missing in both files |
-| `0x7595` | `IDS_HELP_MULTIPLAYER_PLAYER_NAME` | `input->set_help_info`; help text is resolved through the panel/base-game string lookup | `0x0409`: `Type your player name.` | Missing in both files |
-| `0x7596` | `IDS_HELP_MULTIPLAYER_CONNECTION_TYPE` | `list->set_help_info`; help text is resolved through the panel/base-game string lookup | `0x0409`: `Select the type of connection to make. For more information, click More Help.` | Missing in both files |
+| `0x258B` | `STRING_ID_MULTIPLAYER_CONNECTION_TITLE` | `create_text` for the startup screen title; `TEasy_Panel::create_text` -> `TPanel::get_string` -> base `language.dll` | `0x0409`: `Multiplayer Connection` | Missing in both files |
+| `0x258C` | `STRING_ID_MULTIPLAYER_NAME_LABEL` | `create_text` for the player-name label; same base lookup path | `0x0409`: `Name` | Missing in both files |
+| `0x258D` | `STRING_ID_MULTIPLAYER_CONNECTION_TYPE_LABEL` | `create_text` for the connection-type label; same base lookup path | `0x0409`: `Connection Type` | Missing in both files |
+| `0x258E` | `STRING_ID_MULTIPLAYER_GAMING_ZONE` | `TTextPanel::append_line` for the browser-based Gaming Zone service when the browser exists; base `language.dll` lookup | `0x0409`: `Microsoft Internet Gaming Zone` | Missing in both files |
+| `0x258F` | `STRING_ID_ERROR_PLAYER_NAME_REQUIRED` | `popupOKDialog` after an empty player-name check; base `language.dll` lookup | `0x0409`: `You must enter a valid player name.` | Missing in both files |
+| `0x2592` | `STRING_ID_ERROR_NO_MULTIPLAYER_CONNECTIONS` | `popupOKDialog` when the service list has no lines; base `language.dll` lookup | `0x0409`: `No multiplayer connections are available.` | Missing in both files |
+| `0x2593` | `STRING_ID_CONFIRM_START_GAMING_ZONE` | `popupYesNoDialog` before starting the Gaming Zone browser; base `language.dll` lookup | `0x0409`: `Start your Web browser and go to The Internet Gaming Zone?` | Missing in both files |
+| `0x7595` | `STRING_ID_HELP_MULTIPLAYER_PLAYER_NAME` | `input->set_help_info`; help text is resolved through the panel/base-game string lookup | `0x0409`: `Type your player name.` | Missing in both files |
+| `0x7596` | `STRING_ID_HELP_MULTIPLAYER_CONNECTION_TYPE` | `list->set_help_info`; help text is resolved through the panel/base-game string lookup | `0x0409`: `Select the type of connection to make. For more information, click More Help.` | Missing in both files |
 
-The resource extraction tool reported the missing slots for `0x7531` and `0x7532` in F1, F2, and F3. This is missing text, not an empty slot. Existing shared names remain valid because the call sites prove their help-ID roles. The nine approved IDs have proven purposes and recovered base text in F1. The additional `IDS_BUTTON_HELP` macro is defined by the imported root header and now replaces `0x0FA9`. All approved and existing macros preserve lookup order and values.
+The resource extraction tool reported the missing slots for `0x7531` and `0x7532` in F1, F2, and F3. This is missing text, not an empty slot. Existing shared names remain valid because the call sites prove their help-ID roles. The nine approved IDs have proven purposes and recovered base text in F1. The additional `STRING_ID_BUTTON_HELP` macro is defined by the imported root header and now replaces `0x0FA9`. All approved and existing macros preserve lookup order and values.
 
 ## Shared-file requests
 

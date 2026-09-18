@@ -154,102 +154,102 @@ The call sites use these IDs for screen text, buttons, results, and headings.
 
 | ID | Approved name | Base text or purpose |
 | --- | --- | --- |
-| `0x0C1D` | `IDS_CONFIRM_QUIT_GAME` | `Are you sure you want to quit this game?` |
-| `0x0FA3` | `IDS_BUTTON_YES` | `Yes` |
-| `0x269C` | `IDS_ACHIEVEMENTS_CLOSE` | `Close` |
-| `0x269E` | `IDS_ACHIEVEMENTS_TITLE` | `Achievements` |
-| `0x269F` | `IDS_ACHIEVEMENTS_RESTART` | `Restart` |
-| `0x26AC` | `IDS_ACHIEVEMENTS_MILITARY` | `Military` |
-| `0x26AD` | `IDS_ACHIEVEMENTS_ECONOMY` | `Economy` |
-| `0x26AE` | `IDS_ACHIEVEMENTS_RELIGION` | `Religion` |
-| `0x26AF` | `IDS_ACHIEVEMENTS_TECHNOLOGY` | `Technology` |
-| `0x26B1` | `IDS_ACHIEVEMENTS_TOTAL_SCORE_SUMMARY` | Summary `Total Score` |
-| `0x26B2` | `IDS_ACHIEVEMENTS_AFTERMATH` | `Aftermath` |
-| `0x26B5` | `IDS_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY` | Category `Total Score` |
-| `0x26B6` | `IDS_ACHIEVEMENTS_KILLS` | `Kills` |
-| `0x26B7` | `IDS_ACHIEVEMENTS_RAZINGS` | `Razings` |
-| `0x26B8` | `IDS_ACHIEVEMENTS_KILLS_LOSSES` | `Kills - Losses` |
-| `0x26B9` | `IDS_ACHIEVEMENTS_LOSSES` | `Losses` |
-| `0x26BA` | `IDS_ACHIEVEMENTS_LARGEST_ARMY` | `Largest Army` |
-| `0x26BE` | `IDS_ACHIEVEMENTS_GOLD_COLLECTED` | `Gold Collected` |
-| `0x26BF` | `IDS_ACHIEVEMENTS_VILLAGER_HIGH` | `Villager High` |
-| `0x26C0` | `IDS_ACHIEVEMENTS_VILLAGER_BONUS` | `Villager Bonus` |
-| `0x26C1` | `IDS_ACHIEVEMENTS_EXPLORATION` | `Exploration` |
-| `0x26C2` | `IDS_ACHIEVEMENTS_MOST_EXPLORED` | `Most Explored` |
-| `0x26C3` | `IDS_ACHIEVEMENTS_TRIBUTE_GIVEN` | `Tribute Given` |
-| `0x26C6` | `IDS_ACHIEVEMENTS_CONVERSIONS` | `Conversions` |
-| `0x26C7` | `IDS_ACHIEVEMENTS_MOST_CONVERSIONS` | `Most Conversions` |
-| `0x26C8` | `IDS_ACHIEVEMENTS_RUINS` | `Ruins` |
-| `0x26C9` | `IDS_ACHIEVEMENTS_ARTIFACTS` | `Artifacts` |
-| `0x26CA` | `IDS_ACHIEVEMENTS_TEMPLES` | `Temples` |
-| `0x26CE` | `IDS_ACHIEVEMENTS_TECHNOLOGIES` | `Technologies` |
-| `0x26CF` | `IDS_ACHIEVEMENTS_BRONZE_AGE_FIRST` | `Bronze Age First` |
-| `0x26D0` | `IDS_ACHIEVEMENTS_IRON_AGE_FIRST` | `Iron Age First` |
-| `0x26D1` | `IDS_ACHIEVEMENTS_MOST_TECHNOLOGIES` | `Most Technologies` |
-| `0x26D6` | `IDS_ACHIEVEMENTS_SURVIVAL` | `Survival` |
-| `0x26D7` | `IDS_ACHIEVEMENTS_WONDER` | `Wonder` |
-| `0x26D8` | `IDS_ACHIEVEMENTS_TIMELINE` | `Timeline` |
-| `0x26D9` | `IDS_ACHIEVEMENTS_SUMMARY` | `Summary` |
-| `0x26DA` | `IDS_ACHIEVEMENTS_BACK` | `Back` |
-| `0x26DB` | `IDS_ACHIEVEMENTS_COLUMN_INSTRUCTION` | `Click a column for more details.` |
-| `0x26DC` | `IDS_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS` | `All Artifacts/Ruins.` |
+| `0x0C1D` | `STRING_ID_CONFIRM_QUIT_GAME` | `Are you sure you want to quit this game?` |
+| `0x0FA3` | `STRING_ID_BUTTON_YES` | `Yes` |
+| `0x269C` | `STRING_ID_ACHIEVEMENTS_CLOSE` | `Close` |
+| `0x269E` | `STRING_ID_ACHIEVEMENTS_TITLE` | `Achievements` |
+| `0x269F` | `STRING_ID_ACHIEVEMENTS_RESTART` | `Restart` |
+| `0x26AC` | `STRING_ID_ACHIEVEMENTS_MILITARY` | `Military` |
+| `0x26AD` | `STRING_ID_ACHIEVEMENTS_ECONOMY` | `Economy` |
+| `0x26AE` | `STRING_ID_ACHIEVEMENTS_RELIGION` | `Religion` |
+| `0x26AF` | `STRING_ID_ACHIEVEMENTS_TECHNOLOGY` | `Technology` |
+| `0x26B1` | `STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_SUMMARY` | Summary `Total Score` |
+| `0x26B2` | `STRING_ID_ACHIEVEMENTS_AFTERMATH` | `Aftermath` |
+| `0x26B5` | `STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY` | Category `Total Score` |
+| `0x26B6` | `STRING_ID_ACHIEVEMENTS_KILLS` | `Kills` |
+| `0x26B7` | `STRING_ID_ACHIEVEMENTS_RAZINGS` | `Razings` |
+| `0x26B8` | `STRING_ID_ACHIEVEMENTS_KILLS_LOSSES` | `Kills - Losses` |
+| `0x26B9` | `STRING_ID_ACHIEVEMENTS_LOSSES` | `Losses` |
+| `0x26BA` | `STRING_ID_ACHIEVEMENTS_LARGEST_ARMY` | `Largest Army` |
+| `0x26BE` | `STRING_ID_ACHIEVEMENTS_GOLD_COLLECTED` | `Gold Collected` |
+| `0x26BF` | `STRING_ID_ACHIEVEMENTS_VILLAGER_HIGH` | `Villager High` |
+| `0x26C0` | `STRING_ID_ACHIEVEMENTS_VILLAGER_BONUS` | `Villager Bonus` |
+| `0x26C1` | `STRING_ID_ACHIEVEMENTS_EXPLORATION` | `Exploration` |
+| `0x26C2` | `STRING_ID_ACHIEVEMENTS_MOST_EXPLORED` | `Most Explored` |
+| `0x26C3` | `STRING_ID_ACHIEVEMENTS_TRIBUTE_GIVEN` | `Tribute Given` |
+| `0x26C6` | `STRING_ID_ACHIEVEMENTS_CONVERSIONS` | `Conversions` |
+| `0x26C7` | `STRING_ID_ACHIEVEMENTS_MOST_CONVERSIONS` | `Most Conversions` |
+| `0x26C8` | `STRING_ID_ACHIEVEMENTS_RUINS` | `Ruins` |
+| `0x26C9` | `STRING_ID_ACHIEVEMENTS_ARTIFACTS` | `Artifacts` |
+| `0x26CA` | `STRING_ID_ACHIEVEMENTS_TEMPLES` | `Temples` |
+| `0x26CE` | `STRING_ID_ACHIEVEMENTS_TECHNOLOGIES` | `Technologies` |
+| `0x26CF` | `STRING_ID_ACHIEVEMENTS_BRONZE_AGE_FIRST` | `Bronze Age First` |
+| `0x26D0` | `STRING_ID_ACHIEVEMENTS_IRON_AGE_FIRST` | `Iron Age First` |
+| `0x26D1` | `STRING_ID_ACHIEVEMENTS_MOST_TECHNOLOGIES` | `Most Technologies` |
+| `0x26D6` | `STRING_ID_ACHIEVEMENTS_SURVIVAL` | `Survival` |
+| `0x26D7` | `STRING_ID_ACHIEVEMENTS_WONDER` | `Wonder` |
+| `0x26D8` | `STRING_ID_ACHIEVEMENTS_TIMELINE` | `Timeline` |
+| `0x26D9` | `STRING_ID_ACHIEVEMENTS_SUMMARY` | `Summary` |
+| `0x26DA` | `STRING_ID_ACHIEVEMENTS_BACK` | `Back` |
+| `0x26DB` | `STRING_ID_ACHIEVEMENTS_COLUMN_INSTRUCTION` | `Click a column for more details.` |
+| `0x26DC` | `STRING_ID_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS` | `All Artifacts/Ruins.` |
 
-`IDS_BUTTON_CLOSE` for `0x03EA` already exists and is reused.
-The approved binary names are `RESID_ACHIEVEMENTS_END_WIN_LAYOUT` for `0xC389`,
-`RESID_ACHIEVEMENTS_END_OTHER_LAYOUT` for `0xC38A`, and
-`RESID_ACHIEVEMENTS_IN_GAME_LAYOUT` for `0xC38D`.
+`STRING_ID_BUTTON_CLOSE` for `0x03EA` already exists and is reused.
+The approved binary names are `BINARY_RESOURCE_ID_ACHIEVEMENTS_END_WIN_LAYOUT` for `0xC389`,
+`BINARY_RESOURCE_ID_ACHIEVEMENTS_END_OTHER_LAYOUT` for `0xC38A`, and
+`BINARY_RESOURCE_ID_ACHIEVEMENTS_IN_GAME_LAYOUT` for `0xC38D`.
 
 ### Multiplayer startup screen
 
 | ID | Approved name | Base text |
 | --- | --- | --- |
-| `0x258B` | `IDS_MULTIPLAYER_CONNECTION_TITLE` | `Multiplayer Connection` |
-| `0x258C` | `IDS_MULTIPLAYER_NAME_LABEL` | `Name` |
-| `0x258D` | `IDS_MULTIPLAYER_CONNECTION_TYPE_LABEL` | `Connection Type` |
-| `0x258E` | `IDS_MULTIPLAYER_GAMING_ZONE` | `Microsoft Internet Gaming Zone` |
-| `0x258F` | `IDS_ERROR_PLAYER_NAME_REQUIRED` | `You must enter a valid player name.` |
-| `0x2592` | `IDS_ERROR_NO_MULTIPLAYER_CONNECTIONS` | `No multiplayer connections are available.` |
-| `0x2593` | `IDS_CONFIRM_START_GAMING_ZONE` | `Start your Web browser and go to The Internet Gaming Zone?` |
-| `0x7595` | `IDS_HELP_MULTIPLAYER_PLAYER_NAME` | `Type your player name.` |
-| `0x7596` | `IDS_HELP_MULTIPLAYER_CONNECTION_TYPE` | `Select the type of connection to make. For more information, click More Help.` |
+| `0x258B` | `STRING_ID_MULTIPLAYER_CONNECTION_TITLE` | `Multiplayer Connection` |
+| `0x258C` | `STRING_ID_MULTIPLAYER_NAME_LABEL` | `Name` |
+| `0x258D` | `STRING_ID_MULTIPLAYER_CONNECTION_TYPE_LABEL` | `Connection Type` |
+| `0x258E` | `STRING_ID_MULTIPLAYER_GAMING_ZONE` | `Microsoft Internet Gaming Zone` |
+| `0x258F` | `STRING_ID_ERROR_PLAYER_NAME_REQUIRED` | `You must enter a valid player name.` |
+| `0x2592` | `STRING_ID_ERROR_NO_MULTIPLAYER_CONNECTIONS` | `No multiplayer connections are available.` |
+| `0x2593` | `STRING_ID_CONFIRM_START_GAMING_ZONE` | `Start your Web browser and go to The Internet Gaming Zone?` |
+| `0x7595` | `STRING_ID_HELP_MULTIPLAYER_PLAYER_NAME` | `Type your player name.` |
+| `0x7596` | `STRING_ID_HELP_MULTIPLAYER_CONNECTION_TYPE` | `Select the type of connection to make. For more information, click More Help.` |
 
-The module also reuses existing `IDS_BUTTON_OK`, `IDS_BUTTON_CANCEL`,
-`IDS_BUTTON_CLOSE`, `IDS_HELP_OK`, and `IDS_HELP_CANCEL`.
+The module also reuses existing `STRING_ID_BUTTON_OK`, `STRING_ID_BUTTON_CANCEL`,
+`STRING_ID_BUTTON_CLOSE`, `STRING_ID_HELP_OK`, and `STRING_ID_HELP_CANCEL`.
 
 ### Multiplayer setup screens
 
 | ID | Approved name | Base text |
 | --- | --- | --- |
-| `0x0FA9` | `IDS_BUTTON_HELP` | `?` |
-| `0x238C` | `IDS_HOST_NAME_FORMAT` | `Host name: %s` |
-| `0x238D` | `IDS_NO_IP_INFO_ERROR` | `No IP addressing information is available.` |
-| `0x25AE` | `IDS_MP_PLAYER_COLOR_LABEL` | `Player` |
-| `0x25AF` | `IDS_MP_TEAM_LABEL` | `Team` |
-| `0x25B5` | `IDS_RANDOM_MAP` | `Random Map` |
-| `0x25BF` | `IDS_MP_READY_LABEL` | `I'm Ready!` |
-| `0x25C8` | `IDS_KICK_PLAYER_PROMPT` | `Do you want to eject %s?` |
-| `0x25C9` | `IDS_PLAYER_DROPPED_NOTICE` | `You were dropped from the game.` |
-| `0x25CA` | `IDS_GAME_CANCELED_NOTICE` | `The game was canceled.` |
-| `0x25CB` | `IDS_VICTORY_PERCENT_LABEL` | `Percent` |
-| `0x25CC` | `IDS_VICTORY_COUNT_LABEL` | `Count` |
-| `0x25CD` | `IDS_VICTORY_QUANTITY_LABEL` | `Quantity` |
-| `0x25D0` | `IDS_MP_PLAYER_NAME_LABEL` | `Name` |
-| `0x25D1` | `IDS_MP_CIV_LABEL` | `Civ` |
-| `0x25D2` | `IDS_MP_SETTINGS_LABEL` | `Settings` |
-| `0x25D3` | `IDS_MP_COMPUTER_LABEL` | `Computer` |
-| `0x25D4` | `IDS_MP_CLOSED_LABEL` | `Closed` |
-| `0x25D5` | `IDS_MP_OPEN_LABEL` | `Open` |
-| `0x25D6` | `IDS_MP_NONE_LABEL` | `None` |
-| `0x25D7` | `IDS_MP_CHAT_LABEL` | `Chat` |
-| `0x25D8` | `IDS_MP_NUMBER_PLAYERS_LABEL` | `Number of Players` |
-| `0x25E1` | `IDS_SCENARIO_VERSION_ERROR` | Scenario version mismatch format |
-| `0x25E2` | `IDS_PLAYER_VERSION_ERROR` | Player version mismatch text |
-| `0x25E3` | `IDS_HOST_VERSION_ERROR` | Host version mismatch text |
-| `0x25ED` | `IDS_SCENARIO_FORMAT` | `Scenario: %s` |
-| `0x25EE` | `IDS_START_GAME` | `Start Game` |
-| `0x25EF` | `IDS_IP_LABEL` | `IP` |
-| `0x25F0` | `IDS_POPULATION_LIMIT_FORMAT` | `Population Limit: %d` |
-| `0x25F1` | `IDS_PATH_FINDING_FORMAT` | `Path Finding: %s` |
+| `0x0FA9` | `STRING_ID_BUTTON_HELP` | `?` |
+| `0x238C` | `STRING_ID_HOST_NAME_FORMAT` | `Host name: %s` |
+| `0x238D` | `STRING_ID_NO_IP_INFO_ERROR` | `No IP addressing information is available.` |
+| `0x25AE` | `STRING_ID_MP_PLAYER_COLOR_LABEL` | `Player` |
+| `0x25AF` | `STRING_ID_MP_TEAM_LABEL` | `Team` |
+| `0x25B5` | `STRING_ID_RANDOM_MAP` | `Random Map` |
+| `0x25BF` | `STRING_ID_MP_READY_LABEL` | `I'm Ready!` |
+| `0x25C8` | `STRING_ID_KICK_PLAYER_PROMPT` | `Do you want to eject %s?` |
+| `0x25C9` | `STRING_ID_PLAYER_DROPPED_NOTICE` | `You were dropped from the game.` |
+| `0x25CA` | `STRING_ID_GAME_CANCELED_NOTICE` | `The game was canceled.` |
+| `0x25CB` | `STRING_ID_VICTORY_PERCENT_LABEL` | `Percent` |
+| `0x25CC` | `STRING_ID_VICTORY_COUNT_LABEL` | `Count` |
+| `0x25CD` | `STRING_ID_VICTORY_QUANTITY_LABEL` | `Quantity` |
+| `0x25D0` | `STRING_ID_MP_PLAYER_NAME_LABEL` | `Name` |
+| `0x25D1` | `STRING_ID_MP_CIV_LABEL` | `Civ` |
+| `0x25D2` | `STRING_ID_MP_SETTINGS_LABEL` | `Settings` |
+| `0x25D3` | `STRING_ID_MP_COMPUTER_LABEL` | `Computer` |
+| `0x25D4` | `STRING_ID_MP_CLOSED_LABEL` | `Closed` |
+| `0x25D5` | `STRING_ID_MP_OPEN_LABEL` | `Open` |
+| `0x25D6` | `STRING_ID_MP_NONE_LABEL` | `None` |
+| `0x25D7` | `STRING_ID_MP_CHAT_LABEL` | `Chat` |
+| `0x25D8` | `STRING_ID_MP_NUMBER_PLAYERS_LABEL` | `Number of Players` |
+| `0x25E1` | `STRING_ID_SCENARIO_VERSION_ERROR` | Scenario version mismatch format |
+| `0x25E2` | `STRING_ID_PLAYER_VERSION_ERROR` | Player version mismatch text |
+| `0x25E3` | `STRING_ID_HOST_VERSION_ERROR` | Host version mismatch text |
+| `0x25ED` | `STRING_ID_SCENARIO_FORMAT` | `Scenario: %s` |
+| `0x25EE` | `STRING_ID_START_GAME` | `Start Game` |
+| `0x25EF` | `STRING_ID_IP_LABEL` | `IP` |
+| `0x25F0` | `STRING_ID_POPULATION_LIMIT_FORMAT` | `Population Limit: %d` |
+| `0x25F1` | `STRING_ID_PATH_FINDING_FORMAT` | `Path Finding: %s` |
 
 See `decomp_notes/source_cleanup/wave02/scr_mps.md` for the complete long
 version-message payloads and per-call purpose.

@@ -80,7 +80,7 @@ this module.
 ## Constants, resources, and comments
 
 No resource value changed. The source now uses the approved
-`IDS_SELECT_OBJECT_TITLE` macro. It expands to the original `0x232A` literal.
+`STRING_ID_SELECT_OBJECT_TITLE` macro. It expands to the original `0x232A` literal.
 No enum or constant was added in this worker change.
 
 The `0x232A` lookup has this evidence:
@@ -111,7 +111,7 @@ The worker did not edit `include/resource_ids.h`.
 The source applies the approved macro:
 
 ```cpp
-#define IDS_SELECT_OBJECT_TITLE 0x232A
+#define STRING_ID_SELECT_OBJECT_TITLE 0x232A
 ```
 
 This is a new descriptive name, not a recovered original macro.
@@ -150,7 +150,7 @@ void game_mode_changed(int old_mode, int new_mode);
 ```
 
 - Root approval and the worker header import cover
-`IDS_SELECT_OBJECT_TITLE`; no new resource declaration request remains.
+`STRING_ID_SELECT_OBJECT_TITLE`; no new resource declaration request remains.
 - No other shared declaration request exists.
 
 ## Validation and open risks

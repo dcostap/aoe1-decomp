@@ -99,8 +99,8 @@ They are not claimed as PDB recoveries.
 
 The source keeps the approved resource macro substitutions:
 
-- `0x0FA1` uses existing `IDS_BUTTON_OK`.
-- `0x0FA2` uses existing `IDS_BUTTON_CANCEL`.
+- `0x0FA1` uses existing `STRING_ID_BUTTON_OK`.
+- `0x0FA2` uses existing `STRING_ID_BUTTON_CANCEL`.
 
 The source includes the existing shared `resource_ids.h`.
 No new resource macro was added.

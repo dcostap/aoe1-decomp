@@ -154,8 +154,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             draw_item(0, 7, ValueTypeBonus, amount, amount);
             item_index = 1;
         } else {
-            if (unit_level != 9 && unit_level != 4 && unit_level != 5 &&
-                unit_level != 6 && unit_level != 7) {
+            if (unit_level != 9 && unit_level != 4 && unit_level != 5 && unit_level != 6 && unit_level != 7) {
                 if (unit_level == 1) {
                     short attr_type = -1;
                     int attr_index = 0;
@@ -227,22 +226,19 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
         RGE_Master_Combat_Object* combat =
             static_cast<RGE_Master_Combat_Object*>(master_game_obj);
         short armor_value = combat->orig_armor;
-        if (master_game_obj->unit_level == 4 ||
-            master_game_obj->unit_level == 6) {
+        if (master_game_obj->unit_level == 4 || master_game_obj->unit_level == 6) {
             draw_item(item_index, 8, ValueTypeBonus, armor_value, armor_value);
             ++item_index;
         }
 
         long pierce_armor = get_pierce_armor();
         short pierce_value = (short)pierce_armor;
-        if (master_game_obj->unit_level == 4 ||
-            master_game_obj->unit_level == 6) {
+        if (master_game_obj->unit_level == 4 || master_game_obj->unit_level == 6) {
             draw_item(item_index, 10, ValueTypeBonus, pierce_value, pierce_value);
             ++item_index;
         }
 
-        if (master_game_obj->unit_level == 4 ||
-            master_game_obj->unit_level == 6) {
+        if (master_game_obj->unit_level == 4 || master_game_obj->unit_level == 6) {
             short speed_value = static_cast<short>(static_cast<RGE_Master_Combat_Object*>(master_game_obj)
                                                    ->orig_weapon_range);
             draw_item(item_index, 6, ValueTypeBonus, speed_value, pierce_value);

@@ -62,7 +62,7 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
 
     this->set_ideal_size(640, 480);
 
-    RGE_Font* font = rge_base_game->get_font(4);
+    RGE_Font* font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_12_BOLD_ALT);
     char* file_buf = 0;
     int fd = _open("data2\\list.cr", _O_BINARY);
     int size = 0;
@@ -137,13 +137,11 @@ long TRIBE_Credits_Screen::handle_idle() {
             goto set_time_f1;
         }
 
-        if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 245)
-                - this->last_picture_time < 10000) {
+        if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 245) - this->last_picture_time < 10000) {
             goto tail;
         }
 
-        if (this->render_area->DrawSystem->ScreenMode == 2 ||
-            this->render_area->DrawSystem->DrawType == 1) {
+        if (this->render_area->DrawSystem->ScreenMode == 2 || this->render_area->DrawSystem->DrawType == 1) {
             this->mode = 2;
             this->color.peRed = 0;
             this->color.peGreen = 0;
@@ -186,8 +184,7 @@ long TRIBE_Credits_Screen::handle_idle() {
         this->handle_paint();
         this->render_area->DrawSystem->Paint((tagRECT*)0);
 
-        if (this->render_area->DrawSystem->ScreenMode == 2 ||
-            this->render_area->DrawSystem->DrawType == 1) {
+        if (this->render_area->DrawSystem->ScreenMode == 2 || this->render_area->DrawSystem->DrawType == 1) {
             RGE_fade_palette_start(this->render_area, this->color, 0.5f, 2, this->color_table, 0xFF, -1);
             goto tail;
         }
@@ -256,8 +253,7 @@ long TRIBE_Credits_Screen::key_down_action(long key, short count, int alt_key,
 long TRIBE_Credits_Screen::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     long action_result;
 
-    if (from_panel != 0 && from_panel == this->text_panel &&
-        (action_in == 1)) {
+    if (from_panel != 0 && from_panel == this->text_panel && (action_in == 1)) {
         this->text_done = 1;
         return 1;
     }
@@ -267,8 +263,7 @@ long TRIBE_Credits_Screen::action(TPanel* from_panel, long action_in, unsigned l
 
 void TRIBE_Credits_Screen::close_screen() {
     if (panel_system.panel("Game Screen")) {
-        if (rge_base_game->singlePlayerGame() == 1 &&
-            rge_base_game->save_paused == 0) {
+        if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
             rge_base_game->set_paused(0, 0);
         }
         panel_system.setCurrentPanel("Game Screen", 0);
@@ -385,8 +380,7 @@ void TScrollTextPanel::draw_scrolled_line(void* dc, short draw_row,
     }
     long second_text_x = this->second_column_pos + x2;
     text_y = this->pnl_hgt - this->scroll + line_rect.top;
-    if ((text_line == (short)this->num_lines - 1) &&
-        (this->font_hgt + text_y < this->pnl_y)) {
+    if ((text_line == (short)this->num_lines - 1) && (this->font_hgt + text_y < this->pnl_y)) {
         this->done = 1;
     }
 
@@ -510,8 +504,7 @@ int RGE_fade_palette_step() {
         int ticks = cur - DAT_0086b294;
         delta_time = (float)ticks * 0.001f;
 
-        if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 ||
-            delta_time < 0.0f) {
+        if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 || delta_time < 0.0f) {
             amount = 100;
         } else {
             float v = delta_time * delta_time / DAT_0086b2ac * DAT_0057297c;
@@ -527,8 +520,7 @@ int RGE_fade_palette_step() {
         int ticks = cur - DAT_0086b294;
         delta_time = DAT_0086b290 - (float)ticks * 0.001f;
 
-        if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 ||
-            delta_time < 0.0f) {
+        if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 || delta_time < 0.0f) {
             amount = 0;
         } else {
             float v = delta_time * delta_time / DAT_0086b2ac * DAT_0057297c;

@@ -281,10 +281,8 @@ int PointMaker::CreateShape(int xt, int yt) {
 }
 
 void PointMaker::Branch(int which) {
-    if (CurrentNumberOfBranchLevels > 1 &&
-        debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 278) % 100 <
-            ChanceOfNextNode * 10 &&
-        ProbabilityTiles < MinimumNumTiles * 2) {
+    if (CurrentNumberOfBranchLevels > 1 && debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 278) % 100 <
+        ChanceOfNextNode * 10 && ProbabilityTiles < MinimumNumTiles * 2) {
         CurrentNumberOfBranchLevels--;
         for (int i = 0; i < NumSplitsPerBranch; i++) {
             x = Point[which].x;
@@ -521,8 +519,7 @@ void PointMaker::DrawCurrentBranchIntoProbArray(int which) {
             for (; i < BranchRadius; ++i) {
                 AddingRect(min_x, min_y, max_x, desty);
                 ++min_x;
-                if (min_x >= Width || ++min_y >= Height || --max_x < 0 ||
-                    --desty < 0) {
+                if (min_x >= Width || ++min_y >= Height || --max_x < 0 || --desty < 0) {
                     break;
                 }
                 ++ProbabilityAdd;

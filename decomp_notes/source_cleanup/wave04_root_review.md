@@ -36,7 +36,7 @@ Twenty-two age, civilization, and dropped-player macros require later shared-hea
 Import commit `3f5867e84cda53a3103593a0e74f952a3f0798b7` supplies resource-header blob `3670c49563f971137b89644d4a0069796cf3d2af`.
 That blob equals main's header before the new error-title definition. Reports must distinguish root approval from group imports.
 
-Root approved `IDS_ERROR_TITLE`, unsuffixed `0x07D1`, as a new cleanup name.
+Root approved `STRING_ID_ERROR_TITLE`, unsuffixed `0x07D1`, as a new cleanup name.
 The `main.cpp` lookup fills the caption passed to `MessageBoxA`.
 Runtime expansion has an empty slot; pinned expansion misses the ID. Runtime base supplies `Error` in language `0x0409`.
 Preserve the override-first lookup and base fallback. Evidence is under `build/source-cleanup-20260915/reviewer-owner27/`.
@@ -58,7 +58,7 @@ This deferred mapping does not block integration. Final validation remains defer
 - Reviewer: `sa-32cff643`, Sol medium, read only.
 
 The assignment covers eight sources, six changed headers, and nine reports.
-The reviewer will check `IDS_ERROR_TITLE` at `0x07D1` and the shared chat-header request.
+The reviewer will check `STRING_ID_ERROR_TITLE` at `0x07D1` and the shared chat-header request.
 Main already contains the approved chat header. Review must still check the group's import and consumer state.
 The historical `0x03EB` help-window mapping remains subject to caller and resource evidence.
 All groups have now delivered. Owners 14 and 27 still need final review before cleanup can close.
@@ -153,7 +153,7 @@ Records `0051F600` and `005204A0` require type, scope, and use agreement, not st
 Restore baseline descriptive names where that evidence remains uncertain. Do not change types or storage to fit names.
 The `Timeline` comment must state that the second lookup tests `this_player_id` but indexes `target_player_id`.
 
-Root approved the three existing `IDS_HELP_AGE_*` names only for the `tpnl_tml::draw_icon` uses.
+Root approved the three existing `STRING_ID_HELP_AGE_*` names only for the `tpnl_tml::draw_icon` uses.
 Import the existing resource header; do not add duplicate definitions or change Owner 26 option labels.
 Base strings are `Tool Age`, `Bronze Age`, and `Iron Age`; checked expansion lookups miss these IDs.
 Evidence is under `build/source-cleanup-20260915/reviewer-owner28/`.
@@ -199,9 +199,9 @@ Root returned two blockers to the same workers:
 
 The ledger must correct its full-restoration claim. The positional `scenario_make_player` mapping passed review.
 
-Root broadens the new `0x2775` name to `IDS_FILE_NONE`, without a duplicate alias.
+Root broadens the new `0x2775` name to `STRING_ID_FILE_NONE`, without a duplicate alias.
 Scenario consumers use it for cinematic, bitmap, and city-plan defaults, not only AI files.
-Owner 25 received the name correction. `0x277B` remains `IDS_AI_FILE_RANDOM`.
+Owner 25 received the name correction. `0x277B` remains `STRING_ID_AI_FILE_RANDOM`.
 
 Root approved the payload-backed world resource definitions in `include/resource_ids.h`.
 These include victory descriptions, map bases, format strings, Nomad, default, resource levels, and difficulty base.
@@ -211,7 +211,7 @@ The resource-level offset overlaps `0x25E5`, which is also a format ID. Preserve
 
 Root defers the empty victory-log range and keeps its numeric base.
 Root also defers the four option-age substitutions at `0x1069` through `0x106C`.
-Existing `IDS_HELP_AGE_*` names describe another caller role; no duplicate numeric aliases will be added.
+Existing `STRING_ID_HELP_AGE_*` names describe another caller role; no duplicate numeric aliases will be added.
 These deferred names do not block source integration.
 
 Evidence uses runtime base SHA256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
@@ -236,9 +236,9 @@ The cleanup reversed those roles. The report must withdraw its identifier-only c
 
 Root approved three unsuffixed hexadecimal macros as new cleanup names:
 
-- `IDS_ERROR_SYNC`, `0x0966`: sync-error popup text in `tcommand`.
-- `IDS_AI_FILE_NONE`, `0x2775`: ` <None> ` in AI file selection.
-- `IDS_AI_FILE_RANDOM`, `0x277B`: `Random` for build-list, city-plan, and ruleset selection.
+- `STRING_ID_ERROR_SYNC`, `0x0966`: sync-error popup text in `tcommand`.
+- `STRING_ID_AI_FILE_NONE`, `0x2775`: ` <None> ` in AI file selection.
+- `STRING_ID_AI_FILE_RANDOM`, `0x277B`: `Random` for build-list, city-plan, and ruleset selection.
 
 The `noneString` buffer is loaded but unused in the recovered `loadAIInformation` body. Preserve that behavior.
 Runtime base supplies all three strings in language `0x0409`; both expansion DLLs miss all three IDs.
@@ -246,7 +246,7 @@ Runtime base SHA256: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3ab
 The pinned original tree lacks the base DLL. Evidence is staged runtime data, not an original base-file claim.
 Extraction is under `build/source-cleanup-20260915/reviewer-owner25/`.
 
-Root rejects `IDS_CIVILIZATION_NAME_BASE` for `0x27F6` at this time.
+Root rejects `STRING_ID_CIVILIZATION_NAME_BASE` for `0x27F6` at this time.
 Its arithmetic reaches empty `0x2803`, `Unknown` at `0x2804`, and `Tribe Name` at `0x2805`.
 It reaches `Roman` at `0x2806`, not the full expansion civilization mapping. Preserve the literal and original arithmetic.
 Root also defers the missing build-list range `0x26930` through `0x269AC`.

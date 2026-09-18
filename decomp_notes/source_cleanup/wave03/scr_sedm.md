@@ -40,15 +40,15 @@ The source now uses these approved macros:
 
 | ID | Approved macro | Source use |
 | --- | --- | --- |
-| `0x242D` | `IDS_SCENARIO_EDITOR_TITLE` | `create_text` title argument |
-| `0x242E` | `IDS_SCENARIO_MENU_CREATE_SCENARIO` | `button[0]->set_text` caption |
-| `0x242F` | `IDS_BUTTON_EDIT_SCENARIO` | `button[1]->set_text` caption |
-| `0x2430` | `IDS_SCENARIO_EDITOR_CANCEL` | `button[3]->set_text` caption |
-| `0x2431` | `IDS_MENU_CAMPAIGN_EDITOR` | `button[2]->set_text` caption |
+| `0x242D` | `STRING_ID_SCENARIO_EDITOR_TITLE` | `create_text` title argument |
+| `0x242E` | `STRING_ID_SCENARIO_MENU_CREATE_SCENARIO` | `button[0]->set_text` caption |
+| `0x242F` | `STRING_ID_BUTTON_EDIT_SCENARIO` | `button[1]->set_text` caption |
+| `0x2430` | `STRING_ID_SCENARIO_EDITOR_CANCEL` | `button[3]->set_text` caption |
+| `0x2431` | `STRING_ID_MENU_CAMPAIGN_EDITOR` | `button[2]->set_text` caption |
 
 For `0x242E`, the source uses the approved existing
-`IDS_SCENARIO_MENU_CREATE_SCENARIO` name. It does not use the rejected duplicate
-proposal `IDS_BUTTON_CREATE_SCENARIO`.
+`STRING_ID_SCENARIO_MENU_CREATE_SCENARIO` name. It does not use the rejected duplicate
+proposal `STRING_ID_BUTTON_CREATE_SCENARIO`.
 
 Commit `583dd22308e40f66a78eb00d1d4ba291d7d141ea` changed only these five
 resource expressions. It preserved argument types, casts, buffers, order,
@@ -144,7 +144,7 @@ slot created a supported local mapping.
 
 - Added the existing root-owned `include/resource_ids.h` include.
 - Replaced the proven close-button ID `0x3EA` with existing
-  `IDS_BUTTON_CLOSE`.
+  `STRING_ID_BUTTON_CLOSE`.
 - Replaced the proven Escape virtual-key value `0x1B` with the pinned SDK macro
   `VK_ESCAPE`. The macro expands to the same integer value.
 - Restored the four PDB parameter names in `action`.
@@ -199,25 +199,25 @@ expansion fallback for this checked path.
 
 | ID | Call-site purpose | Base runtime text, language `0x0409` | Runtime expansion status, language `0x0409` | Pinned XPack expansion status, language `0x0409` | Name status |
 | --- | --- | --- | --- | --- | --- |
-| `0x03EA` | Close-button caption passed to long `create_button` | `X` | Missing | Missing | Existing `IDS_BUTTON_CLOSE` applied |
-| `0x242D` | Scenario-editor menu title passed to `create_text` | `Scenario Builder` | Empty string | Missing | Approved `IDS_SCENARIO_EDITOR_TITLE` applied |
-| `0x242E` | Create-scenario button caption passed to `set_text` | `Create Scenario` | Empty string | Missing | Approved `IDS_SCENARIO_MENU_CREATE_SCENARIO` applied |
-| `0x242F` | Edit-scenario button caption passed to `set_text` | `Edit Scenario` | Empty string | Missing | Approved `IDS_BUTTON_EDIT_SCENARIO` applied |
-| `0x2430` | Cancel button caption passed to `set_text` | `Cancel` | Missing | Missing | Approved `IDS_SCENARIO_EDITOR_CANCEL` applied |
-| `0x2431` | Campaign-editor button caption passed to `set_text` | `Campaign Editor` | Missing | Missing | Approved `IDS_MENU_CAMPAIGN_EDITOR` applied |
+| `0x03EA` | Close-button caption passed to long `create_button` | `X` | Missing | Missing | Existing `STRING_ID_BUTTON_CLOSE` applied |
+| `0x242D` | Scenario-editor menu title passed to `create_text` | `Scenario Builder` | Empty string | Missing | Approved `STRING_ID_SCENARIO_EDITOR_TITLE` applied |
+| `0x242E` | Create-scenario button caption passed to `set_text` | `Create Scenario` | Empty string | Missing | Approved `STRING_ID_SCENARIO_MENU_CREATE_SCENARIO` applied |
+| `0x242F` | Edit-scenario button caption passed to `set_text` | `Edit Scenario` | Empty string | Missing | Approved `STRING_ID_BUTTON_EDIT_SCENARIO` applied |
+| `0x2430` | Cancel button caption passed to `set_text` | `Cancel` | Missing | Missing | Approved `STRING_ID_SCENARIO_EDITOR_CANCEL` applied |
+| `0x2431` | Campaign-editor button caption passed to `set_text` | `Campaign Editor` | Missing | Missing | Approved `STRING_ID_MENU_CAMPAIGN_EDITOR` applied |
 
-`IDS_BUTTON_CLOSE` is an existing cleanup name in the root-owned
+`STRING_ID_BUTTON_CLOSE` is an existing cleanup name in the root-owned
 `include/resource_ids.h`. It is not an original macro name. The other five
 names are cleanup names approved by root. No original macro spelling is
 claimed. Root approved these declarations in
 `f5b7d6668f785b97811119493bea0e04403d1d10`:
 
 ```cpp
-#define IDS_SCENARIO_EDITOR_TITLE          0x242D
-#define IDS_SCENARIO_MENU_CREATE_SCENARIO  0x242E
-#define IDS_BUTTON_EDIT_SCENARIO           0x242F
-#define IDS_SCENARIO_EDITOR_CANCEL         0x2430
-#define IDS_MENU_CAMPAIGN_EDITOR           0x2431
+#define STRING_ID_SCENARIO_EDITOR_TITLE          0x242D
+#define STRING_ID_SCENARIO_MENU_CREATE_SCENARIO  0x242E
+#define STRING_ID_BUTTON_EDIT_SCENARIO           0x242F
+#define STRING_ID_SCENARIO_EDITOR_CANCEL         0x2430
+#define STRING_ID_MENU_CAMPAIGN_EDITOR           0x2431
 ```
 
 The numeric values and effective integer type match the current expressions.
@@ -246,7 +246,7 @@ remains for these IDs.
 
 - Parameter renames change debug names only. They do not change an ABI symbol,
   type, storage slot, or call target.
-- `IDS_BUTTON_CLOSE` is a macro for the same `0x03EA` integer and adds no
+- `STRING_ID_BUTTON_CLOSE` is a macro for the same `0x03EA` integer and adds no
   object storage.
 - `VK_ESCAPE` is the pinned SDK macro for `0x1B`. It preserves the hotkey
   value and field type.

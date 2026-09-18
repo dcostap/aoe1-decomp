@@ -112,8 +112,8 @@ Root approved the payload-backed shared declarations in commit
 The approved declarations are:
 
 ```cpp
-#define IDS_SCENARIO_OPEN_TITLE 0x24CD
-#define IDS_ERROR_CANNOT_LOAD_SCENARIO 0x24CF
+#define STRING_ID_SCENARIO_OPEN_TITLE 0x24CD
+#define STRING_ID_ERROR_CANNOT_LOAD_SCENARIO 0x24CF
 ```
 
 This approval is shared-header evidence. It is separate from the worker's
@@ -126,16 +126,16 @@ approved names:
 
 | Macro | Value | Use | Text from staged base resource |
 | --- | --- | --- | --- |
-| `IDS_BUTTON_OK` | `0x0FA1` | OK button caption | `OK` |
-| `IDS_BUTTON_CANCEL` | `0x0FA2` | Cancel button caption | `Cancel` |
-| `IDS_BUTTON_DELETE` | `0x24C9` | Delete button caption | `Delete` |
-| `IDS_CONFIRM_DELETE_FILE` | `0x24CA` | Delete confirmation format string | `Are you sure you want to delete the file \n'%s'?` |
+| `STRING_ID_BUTTON_OK` | `0x0FA1` | OK button caption | `OK` |
+| `STRING_ID_BUTTON_CANCEL` | `0x0FA2` | Cancel button caption | `Cancel` |
+| `STRING_ID_BUTTON_DELETE` | `0x24C9` | Delete button caption | `Delete` |
+| `STRING_ID_CONFIRM_DELETE_FILE` | `0x24CA` | Delete confirmation format string | `Are you sure you want to delete the file \n'%s'?` |
 
 The source now uses the root-approved names for these two IDs:
 
 ```cpp
-#define IDS_SCENARIO_OPEN_TITLE 0x24CD
-#define IDS_ERROR_CANNOT_LOAD_SCENARIO 0x24CF
+#define STRING_ID_SCENARIO_OPEN_TITLE 0x24CD
+#define STRING_ID_ERROR_CANNOT_LOAD_SCENARIO 0x24CF
 ```
 
 These are new cleanup names. No original macro name is claimed. Their uses are:

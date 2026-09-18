@@ -396,7 +396,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* order) {
             draw_system->SetPalette(panel->get_palette());
             rge_base_game->set_render_all();
             rge_base_game->draw_window();
-            panel->popupOKDialog(IDS_ERROR_SYNC, 0, TEASY_POPUP_WIDTH, 100);
+            panel->popupOKDialog(STRING_ID_ERROR_SYNC, 0, TEASY_POPUP_WIDTH, 100);
         }
         panel_system.destroyPanel("Temp Screen");
         break;

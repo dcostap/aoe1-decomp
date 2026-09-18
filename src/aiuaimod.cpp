@@ -350,8 +350,7 @@ int UnitAIModule::orderQueueSize() const {
 
 
 OrderEvent* UnitAIModule::orderQueueElement(int v) const {
-    if (v >= 0 && v < this->orderQueueSizeValue &&
-        this->orderQueueValue != 0) {
+    if (v >= 0 && v < this->orderQueueSizeValue && this->orderQueueValue != 0) {
         return this->orderQueueValue + v;
     }
     return 0;
@@ -518,8 +517,7 @@ int UnitAIModule::update(unsigned long uTime) {
                 this->idleTimerValue = this->idleTimeoutValue;
             }
         } else {
-            if (this->objectValue->object_state == 2 &&
-                target->object_state > 2 &&
+            if (this->objectValue->object_state == 2 && target->object_state > 2 &&
                 this->actionRequiresLiveTarget(this->currentActionValue) == 1) {
                 this->stopAfterTargetKilledValue = 0;
                 if (this->currentActionValue == 0x258) {
@@ -562,8 +560,7 @@ int UnitAIModule::update(unsigned long uTime) {
                 }
             }
 
-            if (this->objectValue->owner->computerPlayer() == 1 &&
-                this->currentOrderPriorityValue != -1 &&
+            if (this->objectValue->owner->computerPlayer() == 1 && this->currentOrderPriorityValue != -1 &&
                 this->currentOrderPriorityValue < 100) {
                 int priority = (int)(DAT_0056ebc0 / this->objectValue->distance_to_object(target));
                 if (priority > 99) {
@@ -574,16 +571,14 @@ int UnitAIModule::update(unsigned long uTime) {
         }
     }
 
-    if (this->attackingUnitsValue.numberValue == 0 &&
-        this->objectValue->underAttack() != 0) {
+    if (this->attackingUnitsValue.numberValue == 0 && this->objectValue->underAttack() != 0) {
         this->objectValue->setUnderAttack(0);
     } else {
         int i = 0;
         while (i < this->attackingUnitsValue.numberValue) {
             RGE_Static_Object* attacker =
                 this->lookupObject(this->attackingUnitsValue[i]);
-            if (attacker == 0 || attacker->unitAI() == 0 ||
-                attacker->object_state > 2 ||
+            if (attacker == 0 || attacker->unitAI() == 0 || attacker->object_state > 2 ||
                 attacker->unitAI()->currentTarget() != this->objectValue->id) {
                 this->attackingUnitsValue.remove(this->attackingUnitsValue[i]);
                 break;
@@ -647,20 +642,17 @@ int UnitAIModule::update(unsigned long uTime) {
     this->processMisc();
 
     if (this->idleTimerValue > this->adjustedIdleTimeoutValue) {
-        if (this->currentActionValue == -1 &&
-            this->currentTargetValue == -1) {
+        if (this->currentActionValue == -1 && this->currentTargetValue == -1) {
             this->idleTimerValue = 0;
             this->processIdle(1);
         } else {
             this->idleTimerValue = 0;
         }
-    } else if (this->currentActionValue != -1 ||
-               this->currentTargetValue != -1) {
+    } else if (this->currentActionValue != -1 || this->currentTargetValue != -1) {
         this->idleTimerValue = 0;
     }
 
-    if (this->objectValue->owner->computerPlayer() == 1 &&
-        this->lookAroundTimerValue > this->lookAroundTimeoutValue) {
+    if (this->objectValue->owner->computerPlayer() == 1 && this->lookAroundTimerValue > this->lookAroundTimeoutValue) {
         this->lookAround();
     }
 
@@ -697,8 +689,7 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                     break;
                 }
 
-                if (this->objectValue->groupMembers[i] !=
-                    this->objectValue->id) {
+                if (this->objectValue->groupMembers[i] != this->objectValue->id) {
                     member = this->lookupObject(this->objectValue->groupMembers[i]);
                     if (member != 0 && member->unitAI() != 0) {
                         newTarget = member->unitAI()->bestUnitToAttack(1, 0, 0);
@@ -743,13 +734,11 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                         do {
                             member->addUserDefinedWaypoint(this->objectValue->userDefinedWaypoint(i), 1);
                             ++i;
-                        } while (i <
-                                 this->objectValue->numberUserDefinedWaypoints());
+                        } while (i < this->objectValue->numberUserDefinedWaypoints());
                     }
                 }
                 ++a;
-            } while (a <
-                     this->objectValue->groupMembers.numberValue);
+            } while (a < this->objectValue->groupMembers.numberValue);
         }
 
         this->playStatus->lastPhaseChangeTimeValue =
@@ -846,8 +835,7 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                     ++groupingIndex;
                 } while (groupingIndex < 50);
 
-                if (numberInGroup == 0 ||
-                    trigger->value2() <= deadCount * 100 / numberInGroup) {
+                if (numberInGroup == 0 || trigger->value2() <= deadCount * 100 / numberInGroup) {
                     triggerSatisfied = 1;
                 }
                 break;
@@ -869,9 +857,7 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                     ++groupingIndex;
                 } while (groupingIndex < 50);
 
-                if (trigger->value2() <=
-                    (this->playStatus->originalHitPoints(trigger->value1()) -
-                     currentHitPoints) * 100 /
+                if (trigger->value2() <= (this->playStatus->originalHitPoints(trigger->value1()) - currentHitPoints) * 100 /
                     this->playStatus->originalHitPoints(trigger->value1())) {
                     triggerSatisfied = 1;
                 }
@@ -932,9 +918,8 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                 break;
 
             case AIPlayPhaseTrigger::TimeTrigger:
-                if (trigger->value1() <
-                    (int)(this->objectValue->owner->world->world_time -
-                          this->playStatus->lastPhaseChangeTimeValue) / 1000) {
+                if (trigger->value1() < (int)(this->objectValue->owner->world->world_time -
+                                              this->playStatus->lastPhaseChangeTimeValue) / 1000) {
                     triggerSatisfied = 1;
                 }
                 break;
@@ -943,8 +928,7 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                 break;
             }
 
-            if (triggerSatisfied == 1 &&
-                this->selectNewPlayPhase(trigger->nextPhase(), 0) == 1) {
+            if (triggerSatisfied == 1 && this->selectNewPlayPhase(trigger->nextPhase(), 0) == 1) {
                 return;
             }
         }
@@ -990,8 +974,7 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
         AIPlayPhaseCommand* command = phase->command(i);
         if (command != 0 && command->type() != 0) {
             if ((command->type() == AIPlayPhaseCommand::ResetHitPointsCommand ||
-                 command->type() == AIPlayPhaseCommand::ResetAliveCountCommand) &&
-                pickup == 0) {
+                 command->type() == AIPlayPhaseCommand::ResetAliveCountCommand) && pickup == 0) {
                 if (command->type() == AIPlayPhaseCommand::ResetHitPointsCommand) {
                     this->playStatus->resetHitPoints(command->group(), this->objectValue->owner->world);
                 } else {
@@ -1154,8 +1137,7 @@ int UnitAIModule::notify(int callerID, int recipientID, int mType, long p1,
     } else {
 found:
         if ((msg != 0x1FB) || (p1 == currentActionValue)) {
-            if ((msg == 0x1FA) && (p1 == 0x262) &&
-                (currentActionValue != 0x262) && (currentActionValue != 0x268))
+            if ((msg == 0x1FA) && (p1 == 0x262) && (currentActionValue != 0x262) && (currentActionValue != 0x268))
                 return 1;
             return addToNotifyQueue(callerID, recipientID, mType, p1, p2, p3);
         }
@@ -1287,10 +1269,8 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
     this->search();
     difficulty = this->objectValue->owner->world->difficultyLevel();
 
-    if (((rge_base_game->scenarioGame() == 1) &&
-         (rge_base_game->singlePlayerGame() == 1) &&
-         (difficulty >= 3) && (this->objectValue->owner->id != 1)) ||
-        ((rge_base_game->singlePlayerGame() == 1) &&
+    if (((rge_base_game->scenarioGame() == 1) && (rge_base_game->singlePlayerGame() == 1) &&
+         (difficulty >= 3) && (this->objectValue->owner->id != 1)) || ((rge_base_game->singlePlayerGame() == 1) &&
          (difficulty >= 3) && (this->objectValue->owner->type == 3) &&
          ((this->objectValue->owner->strategicNumber(0xDB) != 100) ||
           (this->objectValue->owner->strategicNumber(0xDA) != 100)))) {
@@ -1338,22 +1318,15 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
             do {
                 RGE_Static_Object* target =
                     world->object(VisibleUnitList[i][j].object_id);
-                if (target != 0 && target->object_state <= 2 &&
-                    this->objectValue->owner->isAlly(target->owner->id) != 1 &&
-                    target->inside_obj == 0 &&
-                    ((allowWallAttacks != 0 && numberObjectsInRange != 0) ||
-                     target->master_obj->object_group != 0x1B) &&
-                    ((target->master_obj->object_group != 3 ||
-                      target->hp > DAT_0056ebd0 ||
-                      (this->objectValue->master_obj->id != 0x23 &&
-                       this->objectValue->master_obj->id != 0x24))) &&
-                    this->canAttackUnit(target) != 0 &&
-                    (i != 3 ||
+                if (target != 0 && target->object_state <= 2 && this->objectValue->owner->isAlly(target->owner->id) != 1 &&
+                    target->inside_obj == 0 && ((allowWallAttacks != 0 && numberObjectsInRange != 0) ||
+                     target->master_obj->object_group != 0x1B) && ((target->master_obj->object_group != 3 ||
+                      target->hp > DAT_0056ebd0 || (this->objectValue->master_obj->id != 0x23 &&
+                       this->objectValue->master_obj->id != 0x24))) && this->canAttackUnit(target) != 0 && (i != 3 ||
                      this->canAttackUnitAtNeutrality(target->master_obj->object_group) != 0)) {
                     float distance =
                         this->objectValue->distance_to_object(target);
-                    if (this->objectValue->minimumWeaponRange() <= distance &&
-                        modifier >= VisibleUnitList[i][j].distance) {
+                    if (this->objectValue->minimumWeaponRange() <= distance && modifier >= VisibleUnitList[i][j].distance) {
                         if (target->id != this->currentTargetValue) {
                             ++currentTargetIsWall;
                         }
@@ -1364,8 +1337,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
                             ++largestThreatIsBuilding;
                         }
                         if (target->master_obj->object_group != 3) {
-                            if (distance <
-                                this->objectValue->weaponRange() - DAT_0056ebd4) {
+                            if (distance < this->objectValue->weaponRange() - DAT_0056ebd4) {
                                 ++closestEnemyDistance;
                             }
                             if (distance < enemyDistance) {
@@ -1380,8 +1352,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
         }
     }
 
-    if (this->currentTargetValue != -1 && quickCheck == 0 &&
-        this->currentActionValue == 600) {
+    if (this->currentTargetValue != -1 && quickCheck == 0 && this->currentActionValue == 600) {
         RGE_Static_Object* target =
             this->lookupObject(this->currentTargetValue);
         if (target != 0) {
@@ -1392,15 +1363,13 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
                 if (visible != 0x0F) {
                     goto skipCurrentTarget;
                 }
-                if (this->objectValue->inAttackRange(target) != 1 &&
-                    this->objectValue->canPath(this->currentTargetValue,
-                                               this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
+                if (this->objectValue->inAttackRange(target) != 1 && this->objectValue->canPath(this->currentTargetValue,
+                                                                                                this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
                     goto skipCurrentTarget;
                 }
             }
             target = world->object(this->currentTargetValue);
-            if (target != 0 && target->object_state == 2 &&
-                this->objectValue->owner->isAlly(target->owner->id) == 0) {
+            if (target != 0 && target->object_state == 2 && this->objectValue->owner->isAlly(target->owner->id) == 0) {
                 if (target->master_obj->id == 0x114) {
                     return target->id;
                 }
@@ -1455,21 +1424,14 @@ skipCurrentTarget:
             do {
                 RGE_Static_Object* target =
                     world->object(VisibleUnitList[i][j].object_id);
-                if (target != 0 && target->object_state <= 2 &&
-                    this->objectValue->owner->isAlly(target->owner->id) != 1 &&
-                    target->inside_obj == 0 &&
-                    ((allowWallAttacks != 0 && numberObjectsInRange != 0) ||
-                     target->master_obj->object_group != 0x1B) &&
-                    ((target->master_obj->object_group != 3 ||
-                      target->hp > DAT_0056ebd0 ||
-                      (this->objectValue->master_obj->id != 0x23 &&
-                       this->objectValue->master_obj->id != 0x24))) &&
-                    this->canAttackUnit(target) != 0 &&
-                    (i != 3 ||
+                if (target != 0 && target->object_state <= 2 && this->objectValue->owner->isAlly(target->owner->id) != 1 &&
+                    target->inside_obj == 0 && ((allowWallAttacks != 0 && numberObjectsInRange != 0) ||
+                     target->master_obj->object_group != 0x1B) && ((target->master_obj->object_group != 3 ||
+                      target->hp > DAT_0056ebd0 || (this->objectValue->master_obj->id != 0x23 &&
+                       this->objectValue->master_obj->id != 0x24))) && this->canAttackUnit(target) != 0 && (i != 3 ||
                      this->canAttackUnitAtNeutrality(target->master_obj->object_group) != 0)) {
                     float distance = this->objectValue->distance_to_object(target);
-                    if (this->objectValue->minimumWeaponRange() <= distance &&
-                        modifier >= VisibleUnitList[i][j].distance &&
+                    if (this->objectValue->minimumWeaponRange() <= distance && modifier >= VisibleUnitList[i][j].distance &&
                         (quickCheck != 1 || this->objectValue->inAttackRange(target) != 0)) {
                         if (quickCheck == 0 && this->objectValue->inAttackRange(target) == 0 &&
                             this->objectValue->canPath(VisibleUnitList[i][j].object_id,
@@ -1495,12 +1457,9 @@ skipCurrentTarget:
                                 score /= (float)(distanceValue * distanceValue * distanceValue);
                             }
                             int group = target->master_obj->object_group;
-                            if (numberNonCurrentTargets == -1 ||
-                                (currentTargetIsBuilding != 0 || group != 3)) {
-                                if (numberNonCurrentTargets == -1 ||
-                                    ((currentTargetIsBuilding == 1 && group != 3) ||
-                                     (float)score >
-                                         (float)numberMovingTargets)) {
+                            if (numberNonCurrentTargets == -1 || (currentTargetIsBuilding != 0 || group != 3)) {
+                                if (numberNonCurrentTargets == -1 || ((currentTargetIsBuilding == 1 && group != 3) ||
+                                     (float)score > (float)numberMovingTargets)) {
                                     numberNonCurrentTargets =
                                         VisibleUnitList[i][j].object_id;
                                     currentTargetIsBuilding = (group == 3);
@@ -1632,21 +1591,17 @@ int UnitAIModule::closestObject(int objectGroup, int desiredRelation,
         if (VisibleUnitList_Size[category] > 0) {
             do {
                 objectsOfPlayer[VisibleUnitList[category][i].player] = 1;
-                if (this->objectValue->id !=
-                    VisibleUnitList[category][i].object_id) {
+                if (this->objectValue->id != VisibleUnitList[category][i].object_id) {
                     RGE_Static_Object* object =
                         this->objectValue->owner->world->object(VisibleUnitList[category][i].object_id);
                     if (object != 0 && object->object_state < 7) {
                         if ((desiredRelation != 0 || category == 2 || category == 1) &&
-                            (desiredRelation != 2 || category == 4) &&
-                            (desiredRelation != 3 || category == 1) &&
-                            (desiredRelation != 1 || category == 3) &&
-                            (objectGroup == -1 ||
+                            (desiredRelation != 2 || category == 4) && (desiredRelation != 3 || category == 1) &&
+                            (desiredRelation != 1 || category == 3) && (objectGroup == -1 ||
                              object->master_obj->object_group == objectGroup) &&
                             (objectType == -1 || object->master_obj->id == objectType) &&
                             (objectState == -1 || object->object_state == objectState)) {
-                            if (closestObjectID == -1 ||
-                                (float)VisibleUnitList[category][i].distance < closestDistance) {
+                            if (closestObjectID == -1 || (float)VisibleUnitList[category][i].distance < closestDistance) {
                                 closestObjectID = VisibleUnitList[category][i].object_id;
                                 closestDistance = (float)VisibleUnitList[category][i].distance;
                             }
@@ -1685,8 +1640,7 @@ int UnitAIModule::closestResourceObject(int resourceType, int* dSlot) {
             return -1;
         }
 
-        if ((float)resource->distance >
-            this->objectValue->master_obj->los - DAT_0056ebe0) {
+        if ((float)resource->distance > this->objectValue->master_obj->los - DAT_0056ebe0) {
             return -1;
         }
 
@@ -2652,16 +2606,14 @@ void UnitAIModule::askForHelp(int unitToAttack) {
             int i = 0;
             if (VisibleUnitList_Size[category + 1] > 0) {
                 do {
-                    if (this->objectValue->id !=
-                        VisibleUnitList[category + 1][i].object_id) {
+                    if (this->objectValue->id != VisibleUnitList[category + 1][i].object_id) {
                         RGE_Static_Object* object =
                             this->lookupObject(VisibleUnitList[category + 1][i].object_id);
                         if (object != 0 && object->unitAI() != 0) {
                             RGE_Player* owner = object->owner;
                             if (owner != 0 && object->object_state <= 2) {
                                 short group = object->master_obj->object_group;
-                                if (group != 1 && group != 3 && group != 4 &&
-                                    group != 0x15 && group != 0x12 &&
+                                if (group != 1 && group != 3 && group != 4 && group != 0x15 && group != 0x12 &&
                                     group != 0x14 && group != 0x1b) {
                                     short ownerId = this->objectValue->owner->id;
                                     if (owner->id == ownerId || owner->isAlly(ownerId)) {
@@ -2875,8 +2827,7 @@ int UnitAIModule::processOrder(OrderEvent* oEvent, int orderNumber) {
         } else {
             if (orderType == 0x2d9) {
                 this->currentOrderValue = 700;
-            } else if (orderType == 700 &&
-                       this->objectValue->master_obj->id == 0x7d) {
+            } else if (orderType == 700 && this->objectValue->master_obj->id == 0x7d) {
                 this->currentOrderValue = -1;
                 this->currentTargetValue = -1;
             } else {
@@ -2886,8 +2837,7 @@ int UnitAIModule::processOrder(OrderEvent* oEvent, int orderNumber) {
         }
     }
 
-    if (orderNumber >= 0 && orderNumber < this->orderQueueSizeValue &&
-        this->orderQueueValue != 0) {
+    if (orderNumber >= 0 && orderNumber < this->orderQueueSizeValue && this->orderQueueValue != 0) {
         if (orderNumber < this->orderQueueSizeValue - 1) {
             do {
                 this->orderQueueValue[orderNumber].issuer =
@@ -2930,23 +2880,20 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
             return 4;
         }
 
-        if (this->attackingUnitsValue.numberValue == 0 ||
-            this->objectValue->owner->computerPlayer() == 1) {
+        if (this->attackingUnitsValue.numberValue == 0 || this->objectValue->owner->computerPlayer() == 1) {
             this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x201, nEvent->caller, 0, 0);
         }
 
         {
             int i = 0;
-            while (i < this->attackingUnitsValue.numberValue &&
-                   i < this->attackingUnitsValue.maximumSizeValue) {
+            while (i < this->attackingUnitsValue.numberValue && i < this->attackingUnitsValue.maximumSizeValue) {
                 if (this->attackingUnitsValue.value[i] == nEvent->caller) {
                     goto caller_recorded;
                 }
                 ++i;
             }
 
-            if (this->objectValue->owner->computerPlayer() == 0 &&
-                this->currentTargetValue != nEvent->caller) {
+            if (this->objectValue->owner->computerPlayer() == 0 && this->currentTargetValue != nEvent->caller) {
                 this->askForHelp(nEvent->caller);
             }
         }
@@ -2955,23 +2902,20 @@ caller_recorded:
         {
             int caller = nEvent->caller;
             int i = 0;
-            while (i < this->attackingUnitsValue.numberValue &&
-                   i < this->attackingUnitsValue.maximumSizeValue) {
+            while (i < this->attackingUnitsValue.numberValue && i < this->attackingUnitsValue.maximumSizeValue) {
                 if (this->attackingUnitsValue.value[i] == caller) {
                     goto attacker_recorded;
                 }
                 ++i;
             }
 
-            if (this->attackingUnitsValue.maximumSizeValue - 1 <
-                this->attackingUnitsValue.numberValue) {
+            if (this->attackingUnitsValue.maximumSizeValue - 1 < this->attackingUnitsValue.numberValue) {
                 int newSize = this->attackingUnitsValue.numberValue + 1;
                 int* newValues =
                     (int*)::operator new(newSize * sizeof(int));
                 if (newValues != 0) {
                     int j = 0;
-                    while (j < this->attackingUnitsValue.maximumSizeValue &&
-                           j < newSize) {
+                    while (j < this->attackingUnitsValue.maximumSizeValue && j < newSize) {
                         newValues[j] = this->attackingUnitsValue.value[j];
                         ++j;
                     }
@@ -2989,8 +2933,7 @@ caller_recorded:
 attacker_recorded:
         this->objectValue->setUnderAttack(1);
 
-        if (this->currentOrderValue != 0x2d5 &&
-            this->currentOrderValue != -1 &&
+        if (this->currentOrderValue != 0x2d5 && this->currentOrderValue != -1 &&
             this->objectValue->owner->computerPlayer() == 0) {
             return 2;
         }
@@ -3007,8 +2950,7 @@ attacker_recorded:
                 return 2;
             }
 
-            if (this->currentActionValue == 0x25b &&
-                this->runAwayFromAttackers(1) == 1) {
+            if (this->currentActionValue == 0x25b && this->runAwayFromAttackers(1) == 1) {
                 return 3;
             }
 
@@ -3019,11 +2961,8 @@ attacker_recorded:
 
             if (target != 0) {
                 short group = target->master_obj->object_group;
-                if ((group == 3 || group == 0x1b) &&
-                    target->master_obj->id != 0x4f &&
-                    target->master_obj->id != 0xc7 &&
-                    target->master_obj->id != 0x45 &&
-                    this->objectValue->owner->computerPlayer() == 0) {
+                if ((group == 3 || group == 0x1b) && target->master_obj->id != 0x4f && target->master_obj->id != 0xc7 &&
+                    target->master_obj->id != 0x45 && this->objectValue->owner->computerPlayer() == 0) {
                     if (this->canAttackUnit(attacker) != 1) {
                         this->runAwayFromAttackers(1);
                         return 3;
@@ -3051,8 +2990,7 @@ attacker_recorded:
                     ownDamage = this->objectValue->damageCapability(target);
                 }
 
-                if (this->canAttackUnit(attacker) == 1 &&
-                    ownDamage == DAT_0056ebc8) {
+                if (this->canAttackUnit(attacker) == 1 && ownDamage == DAT_0056ebc8) {
                     if (this->objectValue->inAttackRange(attacker) != 1 &&
                         this->objectValue->canPath(nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
                         goto compare_attacker;
@@ -3077,8 +3015,7 @@ compare_attacker:
                     killTimeAttacker = 25000.0f;
                 }
 
-                if (this->canAttackUnit(attacker) != 1 ||
-                    !(killTimeAttacker < killTimeTarget)) {
+                if (this->canAttackUnit(attacker) != 1 || !(killTimeAttacker < killTimeTarget)) {
                     return 2;
                 }
                 if (this->objectValue->inAttackRange(attacker) != 1 &&
@@ -3117,8 +3054,7 @@ no_target_fallback:
                 return 2;
             }
 
-            if (this->currentOrderValue == 0x2d5 ||
-                this->objectValue->owner->computerPlayer() == 0) {
+            if (this->currentOrderValue == 0x2d5 || this->objectValue->owner->computerPlayer() == 0) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3146,8 +3082,7 @@ no_target_fallback:
             return 2;
         }
 
-        if (this->currentOrderValue != -1 &&
-            this->currentOrderValue == this->currentActionValue + 100) {
+        if (this->currentOrderValue != -1 && this->currentOrderValue == this->currentActionValue + 100) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3156,8 +3091,7 @@ no_target_fallback:
             this->stopObject(1);
             return 2;
         }
-        if (this->currentOrderValue == -1 &&
-            this->currentActionValue == nEvent->p1) {
+        if (this->currentOrderValue == -1 && this->currentActionValue == nEvent->p1) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3197,8 +3131,7 @@ no_target_fallback:
                 return 2;
             }
 
-            if (this->currentOrderValue == 0x2d5 ||
-                this->objectValue->owner->computerPlayer() == 0) {
+            if (this->currentOrderValue == 0x2d5 || this->objectValue->owner->computerPlayer() == 0) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3226,8 +3159,7 @@ no_target_fallback:
             return 2;
         }
 
-        if (this->currentOrderValue != -1 &&
-            this->currentOrderValue == this->currentActionValue + 100) {
+        if (this->currentOrderValue != -1 && this->currentOrderValue == this->currentActionValue + 100) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3237,8 +3169,7 @@ no_target_fallback:
             this->notifyCommander(nEvent);
             return 2;
         }
-        if (this->currentOrderValue == -1 &&
-            this->currentActionValue == nEvent->p1) {
+        if (this->currentOrderValue == -1 && this->currentActionValue == nEvent->p1) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3279,8 +3210,7 @@ no_target_fallback:
                 return 2;
             }
 
-            if (this->currentOrderValue == 0x2d5 ||
-                this->objectValue->owner->computerPlayer() == 0) {
+            if (this->currentOrderValue == 0x2d5 || this->objectValue->owner->computerPlayer() == 0) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3308,8 +3238,7 @@ no_target_fallback:
             return 2;
         }
 
-        if (this->currentOrderValue != -1 &&
-            this->currentOrderValue == this->currentActionValue + 100) {
+        if (this->currentOrderValue != -1 && this->currentOrderValue == this->currentActionValue + 100) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3319,8 +3248,7 @@ no_target_fallback:
             this->notifyCommander(nEvent);
             return 2;
         }
-        if (this->currentOrderValue == -1 &&
-            this->currentActionValue == nEvent->p1) {
+        if (this->currentOrderValue == -1 && this->currentActionValue == nEvent->p1) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3368,9 +3296,7 @@ no_target_fallback:
                     float lastTargetXValue = this->currentTargetXValue;
                     float lastTargetYValue = this->currentTargetYValue;
                     int newTarget = this->bestUnitToAttack(1, 0, 0);
-                    if (newTarget != -1 &&
-                        newTarget != this->currentTargetValue &&
-                        this->attackObject(newTarget, 1) == 1) {
+                    if (newTarget != -1 && newTarget != this->currentTargetValue && this->attackObject(newTarget, 1) == 1) {
                         this->currentOrderValue = -1;
                         return 3;
                     }
@@ -3505,23 +3431,20 @@ no_target_fallback:
         {
             int caller = nEvent->caller;
             int i = 0;
-            while (i < this->attackingUnitsValue.numberValue &&
-                   i < this->attackingUnitsValue.maximumSizeValue) {
+            while (i < this->attackingUnitsValue.numberValue && i < this->attackingUnitsValue.maximumSizeValue) {
                 if (this->attackingUnitsValue.value[i] == caller) {
                     goto already_attacking;
                 }
                 ++i;
             }
 
-            if (this->attackingUnitsValue.maximumSizeValue - 1 <
-                this->attackingUnitsValue.numberValue) {
+            if (this->attackingUnitsValue.maximumSizeValue - 1 < this->attackingUnitsValue.numberValue) {
                 int newSize = this->attackingUnitsValue.numberValue + 1;
                 int* newValues =
                     (int*)::operator new(newSize * sizeof(int));
                 if (newValues != 0) {
                     int j = 0;
-                    while (j < this->attackingUnitsValue.maximumSizeValue &&
-                           j < newSize) {
+                    while (j < this->attackingUnitsValue.maximumSizeValue && j < newSize) {
                         newValues[j] = this->attackingUnitsValue.value[j];
                         ++j;
                     }
@@ -3544,8 +3467,7 @@ already_attacking:
         {
             int count = this->attackingUnitsValue.numberValue;
             int i = 0;
-            while (i < count &&
-                   i < this->attackingUnitsValue.maximumSizeValue) {
+            while (i < count && i < this->attackingUnitsValue.maximumSizeValue) {
                 if (this->attackingUnitsValue.value[i] == nEvent->caller) {
                     goto remove_attacker;
                 }
@@ -3627,8 +3549,7 @@ void UnitAIModule::processGroupNotify(NotifyEvent* nEvent) {
 
     if (this->playStatus != 0 &&
         (play = this->objectValue->owner->world->playbook->play(this->playStatus->playNumberValue)) != 0 &&
-        (phase = play->phase(this->playStatus->currentPhaseValue)) != 0 &&
-        nEvent->mType == 500) {
+        (phase = play->phase(this->playStatus->currentPhaseValue)) != 0 && nEvent->mType == 500) {
         this->playStatus->savedAttackerValue = nEvent->caller;
         int i = 0;
         do {
@@ -3685,16 +3606,14 @@ int UnitAIModule::processMisc() {
 
     switch (order) {
     case 700: {
-        if (taskedThisUpdate != 1 &&
-            this->objectValue->owner->computerPlayer() != 0 &&
+        if (taskedThisUpdate != 1 && this->objectValue->owner->computerPlayer() != 0 &&
             this->objectValue->can_attack() != 0) {
             RGE_Static_Object* oldTarget =
                 this->lookupObject(this->currentTargetValue);
             if (oldTarget == 0 || oldTarget->master_obj->id != 0x114) {
                 int candidateID = this->bestUnitToAttack(0, 0, 0);
                 RGE_Static_Object* candidate = this->lookupObject(candidateID);
-                if (candidateID != invalidValue && candidate != 0 &&
-                    candidateID != this->currentTargetValue) {
+                if (candidateID != invalidValue && candidate != 0 && candidateID != this->currentTargetValue) {
                     short group = candidate->master_obj->object_group;
                     if (group == 3 || group == 0x1B) {
                         if (candidate->master_obj->id == 0x114) {
@@ -3702,8 +3621,7 @@ int UnitAIModule::processMisc() {
                                         candidate->world_x, candidate->world_y, candidate->world_z,
                                         this->objectValue->weaponRange(), 1, 0, this->currentOrderPriorityValue);
                         }
-                    } else if (oldTarget == 0 ||
-                               oldTarget->master_obj->object_group == 3 ||
+                    } else if (oldTarget == 0 || oldTarget->master_obj->object_group == 3 ||
                                oldTarget->master_obj->object_group == 0x1B) {
                         this->order(this->objectValue->id, 700, candidateID, candidate->owner->id,
                                     candidate->world_x, candidate->world_y, candidate->world_z, this->objectValue->weaponRange(),
@@ -3761,8 +3679,7 @@ int UnitAIModule::processMisc() {
             }
         }
 
-        if (this->currentActionValue != 600 &&
-            (this->currentActionValue != 0x262 ||
+        if (this->currentActionValue != 600 && (this->currentActionValue != 0x262 ||
              this->objectValue->currentTargetID() != this->defendTargetValue)) {
             float distance;
             if (this->defendTargetValue != invalidValue) {
@@ -3846,8 +3763,7 @@ int UnitAIModule::processMisc() {
             yDiff = -10.0f;
         }
 
-        if (xDiff < DAT_0056ec00 || xDiff > DAT_0056ec08 ||
-            yDiff < DAT_0056ec00 || yDiff > DAT_0056ec08) {
+        if (xDiff < DAT_0056ec00 || xDiff > DAT_0056ec08 || yDiff < DAT_0056ec00 || yDiff > DAT_0056ec08) {
             float distance;
             if (this->currentTargetValue != invalidValue) {
                 this->currentTargetXValue = target->world_x;
@@ -4105,8 +4021,7 @@ void UnitAIModule::purgeNotifyQueue(unsigned long uTime) {
 
 
 RGE_Static_Object* UnitAIModule::lookupObject(int id) {
-    if (this->objectValue && this->objectValue->owner &&
-        this->objectValue->owner->world) {
+    if (this->objectValue && this->objectValue->owner && this->objectValue->owner->world) {
         return this->objectValue->owner->world->object(id);
     }
     return 0;

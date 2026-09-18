@@ -156,8 +156,7 @@ void RGE_Object_List::draw(TDrawArea* render_area, short x, short y,
                 break;
             case 4:
                 if (fogged_tile && number_of_objects > 1) {
-                    for (RGE_Object_Node* current = list; current;
-                         current = current->next) {
+                    for (RGE_Object_Node* current = list; current; current = current->next) {
                         if (current->node->type == 0x19) {
                             should_draw = 0;
                             break;
@@ -269,8 +268,7 @@ RGE_Object_Node* RGE_Object_List::sort() {
             for (scan = sorted; scan != 0; scan = scan->next) {
                 RGE_Static_Object* scanned_object = scan->node;
                 unsigned char scanned_sort = scanned_object->master_obj->sort_number;
-                if ((scanned_sort < current_sort) ||
-                    (scanned_sort == current_sort &&
+                if ((scanned_sort < current_sort) || (scanned_sort == current_sort &&
                      scanned_object->screen_y_offset > current_y)) {
                     break;
                 }
@@ -481,8 +479,7 @@ RGE_Static_Object* RGE_Object_List::find_by_type(
 
     while (node != 0) {
         RGE_Static_Object* object = node->node;
-        if (object != 0 && object->type == type &&
-            (!certain_state || object->object_state == object_state)) {
+        if (object != 0 && object->type == type && (!certain_state || object->object_state == object_state)) {
             if (x == -1.0f && y == -1.0f) {
                 return node->node;
             }

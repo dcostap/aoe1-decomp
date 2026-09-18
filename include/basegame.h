@@ -151,9 +151,16 @@ enum RGE_Attribute_String_Id {
     RGE_ATTRIBUTE_ERROR_CANNOT_REPAIR = 0x6A
 };
 
-// Font index 11 is the normal Arial font loaded by setup_fonts().
+// These values index the font array loaded by RGE_Base_Game::setup_fonts().
 enum RGE_Font_Index {
+    RGE_FONT_COPPERPLATE_12_BOLD = 0,
+    RGE_FONT_COPPERPLATE_21_BOLD = 1,
+    RGE_FONT_COPPERPLATE_12_BOLD_ALT = 4,
+    RGE_FONT_ARIAL_8_NORMAL = 6,
+    RGE_FONT_ARIAL_10_NORMAL = 7,
     RGE_FONT_STRIKEOUT = 8,
+    RGE_FONT_ARIAL_9_BOLD = 9,
+    RGE_FONT_ARIAL_10_NORMAL_ALT = 10,
     RGE_FONT_STANDARD = 11
 };
 

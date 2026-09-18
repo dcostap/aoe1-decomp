@@ -103,9 +103,7 @@ int Path::operator==(const Path& p) const {
     for (int i = 0; i < currentSizeValue; i++) {
         Waypoint* path = pathValue + i;
         Waypoint* other_path = p.pathValue + i;
-        if (path->x != other_path->x ||
-            path->y != other_path->y ||
-            path->z != other_path->z ||
+        if (path->x != other_path->x || path->y != other_path->y || path->z != other_path->z ||
             path->facetToNextWaypoint != other_path->facetToNextWaypoint) {
             return 0;
         }
@@ -163,8 +161,7 @@ int Path::insertAtEnd(Waypoint w) {
 
 int Path::contains(const Waypoint& w) const {
     for (int i = 0; i < currentSizeValue; i++) {
-        if (floor(pathValue[i].x) == floor(w.x) &&
-            floor(pathValue[i].y) == floor(w.y)) {
+        if (floor(pathValue[i].x) == floor(w.x) && floor(pathValue[i].y) == floor(w.y)) {
             return 1;
         }
     }

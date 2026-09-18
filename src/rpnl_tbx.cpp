@@ -177,7 +177,7 @@ long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in, unsigned lon
             if (this->dialog != 0) {
                 if (static_cast<RGE_Dialog_List*>(this->dialog)->setup(this->screen_panel,
                                                                        this->screen_panel->get_popup_info_file(), this->screen_panel->get_popup_info_id(),
-                                                                       1, this->get_string(IDS_SELECT_OBJECT_TITLE)) == 0) {
+                                                                       1, this->get_string(STRING_ID_SELECT_OBJECT_TITLE)) == 0) {
                     delete this->dialog;
                     this->dialog = 0;
                 }
@@ -250,9 +250,7 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key, int
     long y2;
 
     if (rge_base_game->get_paused() == 0) {
-        if (rge_base_game->prog_mode != 4 &&
-            rge_base_game->prog_mode != 6 &&
-            rge_base_game->prog_mode != 7) {
+        if (rge_base_game->prog_mode != 4 && rge_base_game->prog_mode != 6 && rge_base_game->prog_mode != 7) {
             return 0;
         }
 
@@ -355,8 +353,7 @@ void RGE_Panel_Tool_Box::game_mode_changed(int old_mode, int new_mode) {
 }
 
 void RGE_Panel_Tool_Box::draw() {
-    if (this->render_area != 0 && this->visible != 0 &&
-        this->active != 0) {
+    if (this->render_area != 0 && this->visible != 0 && this->active != 0) {
         this->draw_setup(0);
         this->render_area->Clear(&this->clip_rect, 0);
         this->draw_finish();

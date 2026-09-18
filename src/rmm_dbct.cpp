@@ -89,8 +89,7 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
 
             if (data->land_num > 0) {
                 data->land = (RGE_Land_Data_Entry*)calloc(data->land_num, sizeof(RGE_Land_Data_Entry));
-                for (long land_index = 0;
-                     land_index < data->land_num; ++land_index) {
+                for (long land_index = 0; land_index < data->land_num; ++land_index) {
                     RGE_Land_Data_Entry* land = &data->land[land_index];
                     fscanf(infile, "%d %d %d %d %d %d %d %d %d %d %d %d", &land->land_id, &temp_terrain_type,
                            &land->land_avoidance_tiles, &land->base_square_radius, &temp_zone, &temp_placement_type, &land->x,
@@ -120,8 +119,7 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
             fscanf(infile, "%d", &data->terrain_num);
             if (data->terrain_num > 0) {
                 data->terrain = (RGE_Terrain_Data_Entry*)calloc(data->terrain_num, sizeof(RGE_Terrain_Data_Entry));
-                for (long terrain_index = 0;
-                     terrain_index < data->terrain_num; ++terrain_index) {
+                for (long terrain_index = 0; terrain_index < data->terrain_num; ++terrain_index) {
                     RGE_Terrain_Data_Entry* terrain =
                         &data->terrain[terrain_index];
                     fscanf(infile, "%d %d %d %d %d", &terrain->terrain_percent, &terrain->terrain_type, &terrain->clumps,
@@ -145,8 +143,7 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
             fscanf(infile, "%d", &data->object_num);
             if (data->object_num > 0) {
                 data->objects = (RGE_Object_Data_Entry*)calloc(data->object_num, sizeof(RGE_Object_Data_Entry));
-                for (long object_index = 0;
-                     object_index < data->object_num; ++object_index) {
+                for (long object_index = 0; object_index < data->object_num; ++object_index) {
                     RGE_Object_Data_Entry* object =
                         &data->objects[object_index];
                     fscanf(infile, "%d %d %d %d %d %d %d %d %d %d %d %d", &object->obj_id, &object->terrain,
@@ -175,9 +172,7 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int infile)
         this->map_info.maps = (RGE_Map_Data_Entry*)calloc(this->map_info.map_num, sizeof(RGE_Map_Data_Entry));
         rge_read(infile, this->map_info.maps, this->map_info.map_num * sizeof(RGE_Map_Data_Entry));
 
-        for (int index = 0;
-             index < this->map_info.map_num;
-             ++index) {
+        for (int index = 0; index < this->map_info.map_num; ++index) {
             RGE_Land_Data* land_data =
                 &this->map_info.maps[index].land_info;
             RGE_Terrain_Data* terrain_data =
@@ -244,8 +239,7 @@ uchar RGE_RMM_Database_Controller::save(int outfile) {
         rge_write(outfile, this->map_info.maps, this->map_info.map_num * sizeof(RGE_Map_Data_Entry));
 
         int map_index = 0;
-        for (int index = 0; index < this->map_info.map_num;
-             ++index, ++map_index) {
+        for (int index = 0; index < this->map_info.map_num; ++index, ++map_index) {
             RGE_Land_Data* land_data =
                 &this->map_info.maps[map_index].land_info;
             RGE_Terrain_Data* terrain_data =
@@ -408,8 +402,7 @@ void RGE_RMM_Database_Controller::calc_land_start(
                     y = debug_rand(s_rmm_dbct_path, 509) *
                         (this->map_height - edge * 2) / 0x7fff + edge;
 
-                    if (x > min_x && x < max_x &&
-                        y > min_y && y < max_y) {
+                    if (x > min_x && x < max_x && y > min_y && y < max_y) {
                         not_done = 1;
                     } else {
                         index2 = land_index;
@@ -424,8 +417,7 @@ void RGE_RMM_Database_Controller::calc_land_start(
                                 dy = y - *prior;
                                 if (dy < 0)
                                     dy = -dy;
-                                if ((float)(dx * dx + dy * dy) <=
-                                    bound_square) {
+                                if ((float)(dx * dx + dy * dy) <= bound_square) {
                                     if (index2 == index - 1) {
                                         long* fallback =
                                             &this->land_info.land[index - 1].y;
@@ -486,8 +478,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
         RGE_Land_Data_Entry* source = &map_land->land[index];
         if (source->by_player_flag != 0) {
             this->calc_land_start(index2, placement_edge, this->number_of_players, source);
-            for (long player = 0;
-                 player < this->number_of_players; ++player) {
+            for (long player = 0; player < this->number_of_players; ++player) {
                 RGE_Land_Info_Line* land =
                     &this->land_info.land[index2];
                 land->terrain_type = source->terrain_type;
@@ -583,10 +574,8 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
         if (player_teams[index] == -1) {
             player_teams[index] = current_team;
             team_size[current_team] = 1;
-            for (index1 = 0;
-                 index1 < this->land_info.land_num; ++index1) {
-                if (this->world->players[index + 1]->relation(index1 + 1) ==
-                    0) {
+            for (index1 = 0; index1 < this->land_info.land_num; ++index1) {
+                if (this->world->players[index + 1]->relation(index1 + 1) == 0) {
                     player_teams[index1] = current_team;
                     ++team_size[current_team];
                 }
@@ -600,9 +589,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
         land_claimed[index] = -1;
 
     for (index1 = 0; index1 < current_team; ++index1) {
-        for (index = 0;
-             index < this->land_info.land_num && land_claimed[index] != -1;
-             ++index) {
+        for (index = 0; index < this->land_info.land_num && land_claimed[index] != -1; ++index) {
         }
 
         long edge = 0;
@@ -623,8 +610,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
             if (land_wanted < this->land_info.land_num)
                 ++land_wanted;
 
-            for (index2 = this->land_info.land_num - 1;
-                 index2 >= 0; --index2) {
+            for (index2 = this->land_info.land_num - 1; index2 >= 0; --index2) {
                 long candidate = distances[index][index2];
                 if (land_claimed[candidate] == -1) {
                     start_land = candidate;
@@ -633,17 +619,13 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
             }
 
             long other_team = -1;
-            for (long candidate_index = 0;
-                 candidate_index < this->land_info.land_num;
-                 ++candidate_index) {
+            for (long candidate_index = 0; candidate_index < this->land_info.land_num; ++candidate_index) {
                 long candidate =
                     distances[start_land][candidate_index];
-                if (land_claimed[candidate] != index1 &&
-                    land_claimed[candidate] > -1) {
+                if (land_claimed[candidate] != index1 && land_claimed[candidate] > -1) {
                     other_team = land_claimed[candidate];
                     other_land = candidate;
-                    for (long wanted_index = 0;
-                         wanted_index < land_wanted; ++wanted_index) {
+                    for (long wanted_index = 0; wanted_index < land_wanted; ++wanted_index) {
                         candidate = distances[index][wanted_index];
                         if (land_claimed[candidate] == other_team) {
                             other_team = land_claimed[candidate];
@@ -658,17 +640,13 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
             land_claimed[start_land] = other_team;
             land_claimed[other_land] = -1;
 
-            for (index2 = this->land_info.land_num - 1;
-                 index2 >= 0; --index2) {
+            for (index2 = this->land_info.land_num - 1; index2 >= 0; --index2) {
                 long candidate = distances[other_team][index2];
                 if (land_claimed[candidate] == other_team) {
-                    for (long wanted_index = 0;
-                         wanted_index < this->land_info.land_num;
-                         ++wanted_index) {
+                    for (long wanted_index = 0; wanted_index < this->land_info.land_num; ++wanted_index) {
                         long replacement =
                             distances[start_land][wanted_index];
-                        if (land_claimed[replacement] == -1 &&
-                            replacement != other_land) {
+                        if (land_claimed[replacement] == -1 && replacement != other_land) {
                             land_claimed[candidate] = -1;
                             land_claimed[replacement] = other_team;
                             break;
@@ -684,8 +662,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
         player_hash[index] = -1;
     for (index = 0; index < this->land_info.land_num; ++index) {
         for (index1 = 0; index1 < this->land_info.land_num; ++index1) {
-            if (player_hash[index1] == -1 &&
-                player_teams[index1] == land_claimed[index]) {
+            if (player_hash[index1] == -1 && player_teams[index1] == land_claimed[index]) {
                 player_hash[index1] = index;
                 break;
             }
@@ -711,8 +688,7 @@ void RGE_RMM_Database_Controller::add_terrain_module() {
         map->land_info.grown_land_percent / 100;
 
     this->terrain_info.terrain_num = map->terrain_info.terrain_num;
-    for (long terrain_index = 0;
-         terrain_index < map->terrain_info.terrain_num; ++terrain_index) {
+    for (long terrain_index = 0; terrain_index < map->terrain_info.terrain_num; ++terrain_index) {
         RGE_Terrain_Data_Entry& map_terrain =
             map->terrain_info.terrain[terrain_index];
         RGE_Terrain_Info_Line& terrain =
@@ -730,8 +706,7 @@ void RGE_RMM_Database_Controller::add_terrain_module() {
     }
 
     long hot_spot_index = 0;
-    for (long land_index = 0;
-         land_index < map->land_info.land_num; ++land_index) {
+    for (long land_index = 0; land_index < map->land_info.land_num; ++land_index) {
         RGE_Land_Data_Entry& map_land = map->land_info.land[land_index];
         if (map_land.radius < 0)
             continue;
@@ -865,14 +840,12 @@ void RGE_RMM_Database_Controller::add_elevation_module() {
     this->elevation_info.elevation[3].spacing = 1;
 
     long hot_spot_index = 0;
-    for (long land_index = 0;
-         land_index < land_data->land_num; ++land_index) {
+    for (long land_index = 0; land_index < land_data->land_num; ++land_index) {
         if (land_data->land[land_index].radius < 0)
             continue;
 
         if (land_data->land[land_index].by_player_flag != 0) {
-            for (long index = 0;
-                 index < this->number_of_players; ++index) {
+            for (long index = 0; index < this->number_of_players; ++index) {
                 this->elevation_info.hot_spots[hot_spot_index].x =
                     this->land_info.land[hot_spot_index].x;
                 this->elevation_info.hot_spots[hot_spot_index].y =

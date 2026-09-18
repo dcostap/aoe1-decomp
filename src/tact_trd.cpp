@@ -53,9 +53,7 @@ void TRIBE_Action_Trade::save(int outfile) {
 }
 
 void TRIBE_Action_Trade::first_in_stack(unsigned char first_time) {
-    if (this->obj->attribute_type_held != 0 &&
-        this->obj->attribute_type_held != 2 &&
-        this->obj->attribute_type_held != 1) {
+    if (this->obj->attribute_type_held != 0 && this->obj->attribute_type_held != 2 && this->obj->attribute_type_held != 1) {
         this->obj->attribute_type_held = 1;
     }
     if (first_time != 0) {
@@ -140,9 +138,8 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
 
     case 8:
         if (this->obj->attribute_amount_held > DAT_00575348) {
-            if (this->target_obj2 == 0 ||
-                this->target_obj2->master_obj->id !=
-                    ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
+            if (this->target_obj2 == 0 || this->target_obj2->master_obj->id !=
+                ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
                 short drop_site =
                     ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site;
                 if (drop_site != -1) {
@@ -171,8 +168,7 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
             return;
         }
 
-        if (this->target_obj != 0 &&
-            this->target_obj->attribute_amount_held <= DAT_00575348 &&
+        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= DAT_00575348 &&
             this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) == 0) {
             this->set_target_obj(0);
             this->set_state(3);
@@ -188,12 +184,10 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
 extern double DAT_00575350;
 
 unsigned char TRIBE_Action_Trade::update() {
-    if (this->targetID != -1 &&
-        this->obj->owner->world->object(this->targetID) == 0) {
+    if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
     }
-    if (this->target2ID != -1 &&
-        this->obj->owner->world->object(this->target2ID) == 0) {
+    if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
     }
 
@@ -204,8 +198,7 @@ unsigned char TRIBE_Action_Trade::update() {
         this->set_target_obj2(0);
     }
 
-    if (this->target_obj != 0 &&
-        this->obj->owner->id == this->target_obj->owner->id) {
+    if (this->target_obj != 0 && this->obj->owner->id == this->target_obj->owner->id) {
         this->set_target_obj(0);
         this->set_target_obj2(0);
         this->set_state(1);
@@ -307,8 +300,7 @@ unsigned char TRIBE_Action_Trade::update() {
             return 0;
         }
 
-        if (this->obj->attribute_type_held != 0 &&
-            this->obj->attribute_type_held != 2 &&
+        if (this->obj->attribute_type_held != 0 && this->obj->attribute_type_held != 2 &&
             this->obj->attribute_type_held != 1) {
             this->obj->attribute_type_held = 1;
         }
@@ -367,8 +359,7 @@ unsigned char TRIBE_Action_Trade::update() {
                     }
 
                     float modifier;
-                    if (this->pick_up_x < DAT_00575350 ||
-                        this->pick_up_y < DAT_00575350) {
+                    if (this->pick_up_x < DAT_00575350 || this->pick_up_y < DAT_00575350) {
                         modifier = DAT_00575360;
                     } else {
                         float dx = this->pick_up_x - this->target_obj2->world_x;
@@ -435,8 +426,7 @@ RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void) {
     RGE_Task* task = action->task;
     short task_facet = task->attribute_type;
 
-    if (task_facet != (short)0xFFFF &&
-        task_facet == action->obj->attribute_type_held &&
+    if (task_facet != (short)0xFFFF && task_facet == action->obj->attribute_type_held &&
         (int)action->obj->attribute_amount_held > 0 && task->carry_sprite != 0) {
         return task->carry_sprite;
     }
@@ -451,8 +441,7 @@ int TRIBE_Action_Trade::stop() {
 int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in->owner == this->obj->owner) {
-            if (obj_in->master_obj->id ==
-                ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
+            if (obj_in->master_obj->id == ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
                 if (obj_in == this->target_obj2 && this->state == 8) {
                     return 1;
                 }
@@ -482,8 +471,7 @@ int TRIBE_Action_Trade::work(RGE_Static_Object* obj_in, float x, float y, float 
 
         // Check owner/id match.
         if (obj_in->owner == this->obj->owner) {
-            if (obj_in->master_obj->id ==
-                ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
+            if (obj_in->master_obj->id == ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
                 this->set_target_obj2(obj_in);
                 this->set_state(8);
                 return 1;

@@ -7,7 +7,7 @@
 TRIBE_Panel_Time::TRIBE_Panel_Time(TDrawArea* render_area_in, TPanel* parent_in)
     : TPanel() {
     this->handle_mouse_input = 0;
-    this->font = rge_base_game->get_font(0xB)->font;
+    this->font = rge_base_game->get_font(RGE_FONT_STANDARD)->font;
     this->color1 = 0xFFFFFF;
     this->color2 = 0;
     this->clock_type = 0;
@@ -208,10 +208,8 @@ void TRIBE_Panel_Time::draw() {
     }
 
     if (this->ImageBuffer != 0) {
-        if (this->display_time != this->last_display_time ||
-            this->clock_type != this->old_clock_type ||
-            this->clock_format != this->old_clock_format ||
-            this->need_restore) {
+        if (this->display_time != this->last_display_time || this->clock_type != this->old_clock_type ||
+            this->clock_format != this->old_clock_format || this->need_restore) {
             this->render_to_image_buffer();
             if (this->need_restore) {
                 this->need_restore = 0;
@@ -258,16 +256,16 @@ void TRIBE_Panel_Time::draw() {
         int rounded_time = ((this->game_time + 4) / 5) * 5;
         switch (this->clock_type) {
         case 4:
-            sprintf(str, this->get_string(IDS_WONDER_YEARS_FORMAT), rounded_time);
+            sprintf(str, this->get_string(STRING_ID_WONDER_YEARS_FORMAT), rounded_time);
             break;
         case 5:
-            sprintf(str, this->get_string(IDS_ARTIFACTS_YEARS_FORMAT), rounded_time);
+            sprintf(str, this->get_string(STRING_ID_ARTIFACTS_YEARS_FORMAT), rounded_time);
             break;
         case 6:
-            sprintf(str, this->get_string(IDS_RUINS_YEARS_FORMAT), rounded_time);
+            sprintf(str, this->get_string(STRING_ID_RUINS_YEARS_FORMAT), rounded_time);
             break;
         default:
-            sprintf(str, this->get_string(IDS_COUNTDOWN_YEARS_FORMAT), rounded_time);
+            sprintf(str, this->get_string(STRING_ID_COUNTDOWN_YEARS_FORMAT), rounded_time);
             break;
         }
         text_flags = DT_SINGLELINE | DT_RIGHT;
@@ -307,8 +305,7 @@ finish:
 }
 
 void TRIBE_Panel_Time::get_true_render_rect(tagRECT& drawRect) {
-    if (this->ImageBuffer != 0 && this->render_area != 0 &&
-        this->visible != 0 && this->active != 0) {
+    if (this->ImageBuffer != 0 && this->render_area != 0 && this->visible != 0 && this->active != 0) {
         drawRect = this->UsedScreenRect;
         return;
     }
@@ -403,16 +400,16 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
         int rounded_time = ((this->game_time + 4) / 5) * 5;
         switch (this->clock_type) {
         case 4:
-            sprintf(str, this->get_string(IDS_WONDER_YEARS_FORMAT), rounded_time);
+            sprintf(str, this->get_string(STRING_ID_WONDER_YEARS_FORMAT), rounded_time);
             break;
         case 5:
-            sprintf(str, this->get_string(IDS_ARTIFACTS_YEARS_FORMAT), rounded_time);
+            sprintf(str, this->get_string(STRING_ID_ARTIFACTS_YEARS_FORMAT), rounded_time);
             break;
         case 6:
-            sprintf(str, this->get_string(IDS_RUINS_YEARS_FORMAT), rounded_time);
+            sprintf(str, this->get_string(STRING_ID_RUINS_YEARS_FORMAT), rounded_time);
             break;
         default:
-            sprintf(str, this->get_string(IDS_COUNTDOWN_YEARS_FORMAT), rounded_time);
+            sprintf(str, this->get_string(STRING_ID_COUNTDOWN_YEARS_FORMAT), rounded_time);
             break;
         }
         text_flags = DT_SINGLELINE | DT_RIGHT;

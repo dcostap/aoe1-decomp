@@ -59,9 +59,9 @@ Root approved these existing base-language mappings for only the three `tpnl_tml
 
 | ID | Language | Text | Proposed cleanup name |
 | --- | --- | --- | --- |
-| `0x106A` | `0x0409` | `Tool Age` | `IDS_HELP_AGE_TOOL` |
-| `0x106B` | `0x0409` | `Bronze Age` | `IDS_HELP_AGE_BRONZE` |
-| `0x106C` | `0x0409` | `Iron Age` | `IDS_HELP_AGE_IRON` |
+| `0x106A` | `0x0409` | `Tool Age` | `STRING_ID_HELP_AGE_TOOL` |
+| `0x106B` | `0x0409` | `Bronze Age` | `STRING_ID_HELP_AGE_BRONZE` |
+| `0x106C` | `0x0409` | `Iron Age` | `STRING_ID_HELP_AGE_IRON` |
 
 Lookup path: `Time_Line_Panel::draw_icon` calls `TPanel::get_string`, which calls the virtual game method. `TRIBE_Game::get_string` tries `StringTableX` first, then the base-game fallback.
 

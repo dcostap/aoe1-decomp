@@ -91,8 +91,7 @@ unsigned char RGE_Action_Transport::update(void) {
 
     case 6: {
         int zone = this->targetZone();
-        if (zone != -1 &&
-            this->obj->withinRangeOfZone((unsigned char)zone, 2.0f) == 0) {
+        if (zone != -1 && this->obj->withinRangeOfZone((unsigned char)zone, 2.0f) == 0) {
             RGE_Action_Object* object = this->obj;
             RGE_Player* owner = object->owner;
             int id = object->id;
@@ -167,8 +166,7 @@ int RGE_Action_Transport::work(RGE_Static_Object* obj_in, float x, float y, floa
     float distance = this->obj->distance_to_position(x, y, this->obj->world_z);
 
     if (zone != -1) {
-        if (this->obj->withinRangeOfZone((unsigned char)zone, 2.0f) == 1 &&
-            distance <= 2.0f) {
+        if (this->obj->withinRangeOfZone((unsigned char)zone, 2.0f) == 1 && distance <= 2.0f) {
             this->target_x = x;
             this->target_y = y;
             this->target_z = z;
@@ -222,10 +220,8 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
 
     for (int y = y1; y <= y2; ++y) {
         for (int x = x1; x <= x2; ++x) {
-            if (target_zone == -1 ||
-                this->obj->lookupZone(x, y) == target_zone) {
-                if (map->get_terrain((short)x, (short)y) == 2 ||
-                    map->get_terrain((short)x, (short)y) == 4) {
+            if (target_zone == -1 || this->obj->lookupZone(x, y) == target_zone) {
+                if (map->get_terrain((short)x, (short)y) == 2 || map->get_terrain((short)x, (short)y) == 4) {
                     return 1;
                 }
             }

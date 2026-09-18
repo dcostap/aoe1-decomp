@@ -168,7 +168,7 @@ They remain outside the handwritten source owner.
 
 ## Resource IDs
 
-The source now uses the existing shared macro `IDS_HELP_OK` for `0x7531`.
+The source now uses the existing shared macro `STRING_ID_HELP_OK` for `0x7531`.
 The macro is in `include/resource_ids.h`. It expands to the original literal.
 It adds no storage. It is a new descriptive cleanup name, not a recovered
 original macro name.
@@ -218,38 +218,38 @@ The exact extraction outputs are under `build/resource-strings/`:
 
 | ID | Approved name and source use | Lookup path | Base DLL: full SHA-256, language, result | Runtime expansion DLL: full SHA-256, language, result | Pinned original expansion DLL: full SHA-256, language, result |
 | --- | --- | --- | --- | --- | --- |
-| `0x2667` | `IDS_SEND_MESSAGE_TITLE`; main dialog title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Send Messages to` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x2668` | `IDS_SEND_MESSAGE_CHAT`; chat title and quick-chat title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Chat` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x2669` | `IDS_SEND_MESSAGE_ALLIES`; allies radio title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Allies` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x266A` | `IDS_SEND_MESSAGE_ENEMIES`; enemies radio title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Enemies` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x266B` | `IDS_SEND_MESSAGE_EVERYONE`; everyone radio title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Everyone` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x266C` | `IDS_BUTTON_RETURN_TO_GAME`; return button caption | `create_button` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Return to Game` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x266D` | `IDS_QUICK_MESSAGE_COMMENT`; quick-message title for `AsTaunt` | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Comment` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x266E` | `IDS_SEND_MESSAGE_SELECT_PLAYER`; select-player radio title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Select Player` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x27F7` | `IDS_CIVILIZATION_EGYPTIAN`; master player ID 1 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Egyptian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x27F8` | `IDS_CIVILIZATION_GREEK`; master player ID 2 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Greek` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x27F9` | `IDS_CIVILIZATION_BABYLONIAN`; master player ID 3 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Babylonian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x27FA` | `IDS_CIVILIZATION_ASSYRIAN`; master player ID 4 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Assyrian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x27FB` | `IDS_CIVILIZATION_MINOAN`; master player ID 5 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Minoan` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x27FC` | `IDS_CIVILIZATION_HITTITE`; master player ID 6 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Hittite` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x27FD` | `IDS_CIVILIZATION_PHOENICIAN`; master player ID 7 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Phoenician` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x27FE` | `IDS_CIVILIZATION_SUMERIAN`; master player ID 8 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Sumerian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x27FF` | `IDS_CIVILIZATION_PERSIAN`; master player ID 9 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Persian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x2800` | `IDS_CIVILIZATION_SHANG`; master player ID 10 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Shang` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x2801` | `IDS_CIVILIZATION_YAMATO`; master player ID 11 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Yamato` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x2802` | `IDS_CIVILIZATION_CHOSON`; master player ID 12 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Choson` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x2804` | `IDS_CIVILIZATION_UNKNOWN`; default mapping | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Unknown` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x2806` | `IDS_CIVILIZATION_ROMAN`; master player ID 13 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, empty slot | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, `Roman` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, `Roman` |
-| `0x2807` | `IDS_CIVILIZATION_CARTHAGINIAN`; master player ID 14 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, empty slot | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, `Carthaginian` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, `Carthaginian` |
-| `0x2808` | `IDS_CIVILIZATION_MACEDONIAN`; master player ID 16 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, empty slot | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, `Macedonian` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, `Macedonian` |
-| `0x2809` | `IDS_CIVILIZATION_PALMYRAN`; master player ID 15 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, empty slot | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, `Palmyran` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, `Palmyran` |
-| `0x7531` | existing `IDS_HELP_OK`; OK button help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, missing ID | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x767A` | `IDS_HELP_CHAT_INPUT`; chat input help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Type a message. Press ENTER to send.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x767B` | `IDS_HELP_CHAT_ALLIES`; allies radio help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Click to send a message to all allies.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x767C` | `IDS_HELP_CHAT_ENEMIES`; enemies radio help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Click to send a message to all enemies.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x767D` | `IDS_HELP_CHAT_ALL_PLAYERS`; everyone radio help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Click to send a message to all players.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x767E` | `IDS_HELP_CHAT_RECIPIENTS`; recipient radio help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Select which players receive your messages.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
-| `0x767F` | `IDS_HELP_CHAT_PLAYER`; player checkbox help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Click to send a message to this player.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x2667` | `STRING_ID_SEND_MESSAGE_TITLE`; main dialog title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Send Messages to` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x2668` | `STRING_ID_SEND_MESSAGE_CHAT`; chat title and quick-chat title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Chat` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x2669` | `STRING_ID_SEND_MESSAGE_ALLIES`; allies radio title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Allies` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x266A` | `STRING_ID_SEND_MESSAGE_ENEMIES`; enemies radio title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Enemies` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x266B` | `STRING_ID_SEND_MESSAGE_EVERYONE`; everyone radio title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Everyone` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x266C` | `STRING_ID_BUTTON_RETURN_TO_GAME`; return button caption | `create_button` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Return to Game` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x266D` | `STRING_ID_QUICK_MESSAGE_COMMENT`; quick-message title for `AsTaunt` | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Comment` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x266E` | `STRING_ID_SEND_MESSAGE_SELECT_PLAYER`; select-player radio title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Select Player` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x27F7` | `STRING_ID_CIVILIZATION_EGYPTIAN`; master player ID 1 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Egyptian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x27F8` | `STRING_ID_CIVILIZATION_GREEK`; master player ID 2 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Greek` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x27F9` | `STRING_ID_CIVILIZATION_BABYLONIAN`; master player ID 3 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Babylonian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x27FA` | `STRING_ID_CIVILIZATION_ASSYRIAN`; master player ID 4 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Assyrian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x27FB` | `STRING_ID_CIVILIZATION_MINOAN`; master player ID 5 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Minoan` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x27FC` | `STRING_ID_CIVILIZATION_HITTITE`; master player ID 6 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Hittite` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x27FD` | `STRING_ID_CIVILIZATION_PHOENICIAN`; master player ID 7 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Phoenician` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x27FE` | `STRING_ID_CIVILIZATION_SUMERIAN`; master player ID 8 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Sumerian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x27FF` | `STRING_ID_CIVILIZATION_PERSIAN`; master player ID 9 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Persian` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x2800` | `STRING_ID_CIVILIZATION_SHANG`; master player ID 10 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Shang` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x2801` | `STRING_ID_CIVILIZATION_YAMATO`; master player ID 11 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Yamato` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x2802` | `STRING_ID_CIVILIZATION_CHOSON`; master player ID 12 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Choson` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x2804` | `STRING_ID_CIVILIZATION_UNKNOWN`; default mapping | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Unknown` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x2806` | `STRING_ID_CIVILIZATION_ROMAN`; master player ID 13 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, empty slot | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, `Roman` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, `Roman` |
+| `0x2807` | `STRING_ID_CIVILIZATION_CARTHAGINIAN`; master player ID 14 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, empty slot | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, `Carthaginian` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, `Carthaginian` |
+| `0x2808` | `STRING_ID_CIVILIZATION_MACEDONIAN`; master player ID 16 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, empty slot | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, `Macedonian` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, `Macedonian` |
+| `0x2809` | `STRING_ID_CIVILIZATION_PALMYRAN`; master player ID 15 | `get_string2(0x69, ...)` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, empty slot | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, `Palmyran` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, `Palmyran` |
+| `0x7531` | existing `STRING_ID_HELP_OK`; OK button help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, missing ID | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x767A` | `STRING_ID_HELP_CHAT_INPUT`; chat input help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Type a message. Press ENTER to send.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x767B` | `STRING_ID_HELP_CHAT_ALLIES`; allies radio help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Click to send a message to all allies.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x767C` | `STRING_ID_HELP_CHAT_ENEMIES`; enemies radio help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Click to send a message to all enemies.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x767D` | `STRING_ID_HELP_CHAT_ALL_PLAYERS`; everyone radio help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Click to send a message to all players.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x767E` | `STRING_ID_HELP_CHAT_RECIPIENTS`; recipient radio help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Select which players receive your messages.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
+| `0x767F` | `STRING_ID_HELP_CHAT_PLAYER`; player checkbox help | `set_help_info` -> later `TPanel::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Click to send a message to this player.` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
 
 Empty slots and missing IDs are separate findings. The base DLL has empty
 slots for `0x2806`-`0x2809`. Its `0x7531` entry is missing. The expansion DLL
@@ -267,7 +267,7 @@ short comment that states the observed behavior. The original action packet
 supports that empty branch. No bug repair or structural rewrite was added.
 
 Parameter and local-name changes do not change ABI types, order, layout, or
-symbol identity. `IDS_HELP_OK` and the approved macros expand to their existing
+symbol identity. `STRING_ID_HELP_OK` and the approved macros expand to their existing
 numeric values. They add no storage.
 The added include and formatting can change debug line records or compiler
 output. Generated code, relocations, direct targets, and runtime behavior are
@@ -285,37 +285,37 @@ The worker requested these base-language macros. Root approved them in
 recovered original symbols. The listed values are unchanged.
 
 ```cpp
-#define IDS_SEND_MESSAGE_TITLE              0x2667
-#define IDS_SEND_MESSAGE_CHAT               0x2668
-#define IDS_SEND_MESSAGE_ALLIES             0x2669
-#define IDS_SEND_MESSAGE_ENEMIES            0x266A
-#define IDS_SEND_MESSAGE_EVERYONE           0x266B
-#define IDS_BUTTON_RETURN_TO_GAME           0x266C
-#define IDS_QUICK_MESSAGE_COMMENT           0x266D
-#define IDS_SEND_MESSAGE_SELECT_PLAYER      0x266E
-#define IDS_CIVILIZATION_EGYPTIAN           0x27F7
-#define IDS_CIVILIZATION_GREEK              0x27F8
-#define IDS_CIVILIZATION_BABYLONIAN         0x27F9
-#define IDS_CIVILIZATION_ASSYRIAN           0x27FA
-#define IDS_CIVILIZATION_MINOAN             0x27FB
-#define IDS_CIVILIZATION_HITTITE            0x27FC
-#define IDS_CIVILIZATION_PHOENICIAN         0x27FD
-#define IDS_CIVILIZATION_SUMERIAN           0x27FE
-#define IDS_CIVILIZATION_PERSIAN            0x27FF
-#define IDS_CIVILIZATION_SHANG              0x2800
-#define IDS_CIVILIZATION_YAMATO             0x2801
-#define IDS_CIVILIZATION_CHOSON             0x2802
-#define IDS_CIVILIZATION_UNKNOWN            0x2804
-#define IDS_CIVILIZATION_ROMAN              0x2806
-#define IDS_CIVILIZATION_CARTHAGINIAN       0x2807
-#define IDS_CIVILIZATION_MACEDONIAN         0x2808
-#define IDS_CIVILIZATION_PALMYRAN           0x2809
-#define IDS_HELP_CHAT_INPUT                 0x767A
-#define IDS_HELP_CHAT_ALLIES                0x767B
-#define IDS_HELP_CHAT_ENEMIES               0x767C
-#define IDS_HELP_CHAT_ALL_PLAYERS           0x767D
-#define IDS_HELP_CHAT_RECIPIENTS            0x767E
-#define IDS_HELP_CHAT_PLAYER               0x767F
+#define STRING_ID_SEND_MESSAGE_TITLE              0x2667
+#define STRING_ID_SEND_MESSAGE_CHAT               0x2668
+#define STRING_ID_SEND_MESSAGE_ALLIES             0x2669
+#define STRING_ID_SEND_MESSAGE_ENEMIES            0x266A
+#define STRING_ID_SEND_MESSAGE_EVERYONE           0x266B
+#define STRING_ID_BUTTON_RETURN_TO_GAME           0x266C
+#define STRING_ID_QUICK_MESSAGE_COMMENT           0x266D
+#define STRING_ID_SEND_MESSAGE_SELECT_PLAYER      0x266E
+#define STRING_ID_CIVILIZATION_EGYPTIAN           0x27F7
+#define STRING_ID_CIVILIZATION_GREEK              0x27F8
+#define STRING_ID_CIVILIZATION_BABYLONIAN         0x27F9
+#define STRING_ID_CIVILIZATION_ASSYRIAN           0x27FA
+#define STRING_ID_CIVILIZATION_MINOAN             0x27FB
+#define STRING_ID_CIVILIZATION_HITTITE            0x27FC
+#define STRING_ID_CIVILIZATION_PHOENICIAN         0x27FD
+#define STRING_ID_CIVILIZATION_SUMERIAN           0x27FE
+#define STRING_ID_CIVILIZATION_PERSIAN            0x27FF
+#define STRING_ID_CIVILIZATION_SHANG              0x2800
+#define STRING_ID_CIVILIZATION_YAMATO             0x2801
+#define STRING_ID_CIVILIZATION_CHOSON             0x2802
+#define STRING_ID_CIVILIZATION_UNKNOWN            0x2804
+#define STRING_ID_CIVILIZATION_ROMAN              0x2806
+#define STRING_ID_CIVILIZATION_CARTHAGINIAN       0x2807
+#define STRING_ID_CIVILIZATION_MACEDONIAN         0x2808
+#define STRING_ID_CIVILIZATION_PALMYRAN           0x2809
+#define STRING_ID_HELP_CHAT_INPUT                 0x767A
+#define STRING_ID_HELP_CHAT_ALLIES                0x767B
+#define STRING_ID_HELP_CHAT_ENEMIES               0x767C
+#define STRING_ID_HELP_CHAT_ALL_PLAYERS           0x767D
+#define STRING_ID_HELP_CHAT_RECIPIENTS            0x767E
+#define STRING_ID_HELP_CHAT_PLAYER               0x767F
 ```
 
 Evidence for every request is in the resource table above. The source call

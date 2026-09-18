@@ -231,17 +231,17 @@ mappings were approved by root in commit
 
 | Source name | ID | Base payload or role | Override state |
 | --- | ---: | --- | --- |
-| `IDS_STATUS_SAVING_SCENARIO` | `0x0450` | `Saving scenario...` | The override lacks this requested ID, so the base lookup remains effective. |
-| `IDS_ERROR_CANNOT_SAVE_GAME` | `0x0962` | `The game could not be saved. Free some disk space, and then try again.` | The override lacks this requested ID. |
-| `IDS_ERROR_CANNOT_SAVE_SCENARIO` | `0x0963` | `The scenario could not be saved. Free some disk space, and then try again.` | The override lacks this requested ID. |
-| `IDS_HELP_AGE_STONE` | `0x1069` | `Stone Age` | The override lacks this requested ID. |
-| `IDS_HELP_AGE_TOOL` | `0x106A` | `Tool Age` | The override lacks this requested ID. |
-| `IDS_HELP_AGE_BRONZE` | `0x106B` | `Bronze Age` | The override lacks this requested ID. |
-| `IDS_HELP_AGE_IRON` | `0x106C` | `Iron Age` | The override lacks this requested ID. |
-| `IDS_CIVILIZATION_EGYPTIAN` through `IDS_CIVILIZATION_CHOSON` | `0x27F7`-`0x2802` | `Egyptian`, `Greek`, `Babylonian`, `Assyrian`, `Minoan`, `Hittite`, `Phoenician`, `Sumerian`, `Persian`, `Shang`, `Yamato`, `Choson` | The override has empty entries for `0x2800`-`0x2802`; the base entries remain effective there. |
-| `IDS_CIVILIZATION_UNKNOWN` | `0x2804` | `Unknown` | The override entry is empty. |
-| `IDS_CIVILIZATION_ROMAN` through `IDS_CIVILIZATION_PALMYRAN` | `0x2806`-`0x2809` | The base slots are empty. | The override supplies `Roman`, `Carthaginian`, `Macedonian`, and `Palmyran`. |
-| `IDS_PLAYER_DROPPED_NOTICE` | `0x25C9` | `You were dropped from the game.` | The override lacks this requested ID. |
+| `STRING_ID_STATUS_SAVING_SCENARIO` | `0x0450` | `Saving scenario...` | The override lacks this requested ID, so the base lookup remains effective. |
+| `STRING_ID_ERROR_CANNOT_SAVE_GAME` | `0x0962` | `The game could not be saved. Free some disk space, and then try again.` | The override lacks this requested ID. |
+| `STRING_ID_ERROR_CANNOT_SAVE_SCENARIO` | `0x0963` | `The scenario could not be saved. Free some disk space, and then try again.` | The override lacks this requested ID. |
+| `STRING_ID_HELP_AGE_STONE` | `0x1069` | `Stone Age` | The override lacks this requested ID. |
+| `STRING_ID_HELP_AGE_TOOL` | `0x106A` | `Tool Age` | The override lacks this requested ID. |
+| `STRING_ID_HELP_AGE_BRONZE` | `0x106B` | `Bronze Age` | The override lacks this requested ID. |
+| `STRING_ID_HELP_AGE_IRON` | `0x106C` | `Iron Age` | The override lacks this requested ID. |
+| `STRING_ID_CIVILIZATION_EGYPTIAN` through `STRING_ID_CIVILIZATION_CHOSON` | `0x27F7`-`0x2802` | `Egyptian`, `Greek`, `Babylonian`, `Assyrian`, `Minoan`, `Hittite`, `Phoenician`, `Sumerian`, `Persian`, `Shang`, `Yamato`, `Choson` | The override has empty entries for `0x2800`-`0x2802`; the base entries remain effective there. |
+| `STRING_ID_CIVILIZATION_UNKNOWN` | `0x2804` | `Unknown` | The override entry is empty. |
+| `STRING_ID_CIVILIZATION_ROMAN` through `STRING_ID_CIVILIZATION_PALMYRAN` | `0x2806`-`0x2809` | The base slots are empty. | The override supplies `Roman`, `Carthaginian`, `Macedonian`, and `Palmyran`. |
+| `STRING_ID_PLAYER_DROPPED_NOTICE` | `0x25C9` | `You were dropped from the game.` | The override lacks this requested ID. |
 
 The macro substitutions preserve the underlying integer values. They do not
 change resource lookup, formatting tokens, buffer sizes, or fallback order.
@@ -291,7 +291,7 @@ blob `3670c49563f971137b89644d4a0069796cf3d2af`. Later commit
 `3f5867e84cda53a3103593a0e74f952a3f0798b7` imported the same blob. Owner 27
 imports the later root header from commit
 `0aa69b43219d638bf1a6667b832257d633635ccf`. That header retains these
-mappings and adds `IDS_ERROR_TITLE`. No new resource macro request is needed
+mappings and adds `STRING_ID_ERROR_TITLE`. No new resource macro request is needed
 for this source. Root must keep this later header available when it integrates
 `src/tribegam.cpp`.
 

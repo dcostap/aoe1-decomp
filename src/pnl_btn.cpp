@@ -312,8 +312,7 @@ void TButtonPanel::set_radio_button(void) {
         radio_buttons[i]->is_down = 0;
         radio_buttons[i]->set_state(0);
     }
-    if (drawTypeValue == TButtonPanel::DrawText ||
-        drawTypeValue == TButtonPanel::DrawFillAndText) {
+    if (drawTypeValue == TButtonPanel::DrawText || drawTypeValue == TButtonPanel::DrawFillAndText) {
         is_down = 1;
     }
     set_state(1);
@@ -431,8 +430,7 @@ void TButtonPanel::draw() {
     short text_length;
     char* text;
 
-    if (render_area == 0 || visible == 0 || active == 0 ||
-        drawTypeValue == DrawClear) {
+    if (render_area == 0 || visible == 0 || active == 0 || drawTypeValue == DrawClear) {
         need_redraw = 0;
         return;
     }
@@ -449,9 +447,7 @@ void TButtonPanel::draw() {
 
     draw_setup(0);
 
-    if (drawTypeValue == DrawPicture ||
-        drawTypeValue == DrawPictureAndText ||
-        drawTypeValue == DrawBevelPicture) {
+    if (drawTypeValue == DrawPicture || drawTypeValue == DrawPictureAndText || drawTypeValue == DrawBevelPicture) {
         if (render_area->Lock(s_pnl_btn_draw, 1) != 0) {
             if (pic[cur_state] != 0) {
                 if (auto_pic_pos != 0) {
@@ -462,8 +458,7 @@ void TButtonPanel::draw() {
 
                 x = pic_x + pnl_x;
                 y = pic_y + pnl_y;
-                if ((draw_reverse == 0 && is_down != 0) ||
-                    (draw_reverse != 0 && is_down == 0)) {
+                if ((draw_reverse == 0 && is_down != 0) || (draw_reverse != 0 && is_down == 0)) {
                     ++x;
                     --y;
                 }
@@ -473,9 +468,7 @@ void TButtonPanel::draw() {
         }
     }
 
-    if (drawTypeValue == DrawText ||
-        drawTypeValue == DrawPictureAndText ||
-        drawTypeValue == DrawFillAndText) {
+    if (drawTypeValue == DrawText || drawTypeValue == DrawPictureAndText || drawTypeValue == DrawFillAndText) {
         void* dc = render_area->GetDc(s_pnl_btn_draw);
         if (dc != 0) {
             SelectClipRgn(dc, clip_rgn);
@@ -506,8 +499,7 @@ void TButtonPanel::draw() {
                     text_y_pos = y - font_hgt / 2 + pnl_y;
                 }
 
-                if ((draw_reverse == 0 && is_down != 0) ||
-                    (draw_reverse != 0 && is_down == 0)) {
+                if ((draw_reverse == 0 && is_down != 0) || (draw_reverse != 0 && is_down == 0)) {
                     ++text_x_pos;
                     --text_y_pos;
                 }
@@ -534,8 +526,7 @@ void TButtonPanel::draw() {
                     text_x_pos = calc_x - text_size.cx / 2 + pnl_x;
                     text_y_pos = y + pnl_y;
 
-                    if ((draw_reverse == 0 && is_down != 0) ||
-                        (draw_reverse != 0 && is_down == 0)) {
+                    if ((draw_reverse == 0 && is_down != 0) || (draw_reverse != 0 && is_down == 0)) {
                         ++text_x_pos;
                         --text_y_pos;
                     }
@@ -560,16 +551,13 @@ void TButtonPanel::draw() {
         }
     }
 
-    if (drawTypeValue == DrawText ||
-        drawTypeValue == DrawPictureAndText ||
-        drawTypeValue == DrawFillAndText ||
+    if (drawTypeValue == DrawText || drawTypeValue == DrawPictureAndText || drawTypeValue == DrawFillAndText ||
         drawTypeValue == DrawBevelPicture) {
         if (render_area->Lock(s_pnl_btn_draw2, 1) != 0) {
             if (disabled != 0) {
                 render_area->DrawRect(pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6);
                 render_area->DrawRect(pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2, pnl_y + pnl_hgt - 2, bevel_color1);
-            } else if ((draw_reverse == 0 && is_down == 0) ||
-                       (draw_reverse != 0 && is_down != 0)) {
+            } else if ((draw_reverse == 0 && is_down == 0) || (draw_reverse != 0 && is_down != 0)) {
                 switch (bevel_type) {
                 case 1:
                     render_area->DrawVertLine(pnl_x + pnl_wid - 1, pnl_y + 1, pnl_hgt - 1, 0);
@@ -787,8 +775,7 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl_key, int shift
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::handle_key_down(long key, short count, int alt_key, int ctrl_key, int shift_key) {
-    if (active != 0 && disabled == 0 && alt_key == 0 && ctrl_key == 0 &&
-        hotkey != 0 && key == hotkey && key_down == 0 &&
+    if (active != 0 && disabled == 0 && alt_key == 0 && ctrl_key == 0 && hotkey != 0 && key == hotkey && key_down == 0 &&
         (hotkey_shift == 0 || shift_key == hotkey_shift)) {
         if (tab_stop != 0 && parent_panel != 0 && have_focus == 0) {
             parent_panel->set_curr_child(this);
@@ -824,8 +811,7 @@ long TButtonPanel::key_down_action(long key, short count, int alt_key, int ctrl_
 
     switch (key) {
     case VK_DOWN:
-        if (alt_key == 0 && ctrl_key == 0 && tab_stop != 0 &&
-            parent_panel != 0) {
+        if (alt_key == 0 && ctrl_key == 0 && tab_stop != 0 && parent_panel != 0) {
             child = tab_next_panel;
             if (child != 0) {
                 parent_panel->set_curr_child(child);
@@ -834,8 +820,7 @@ long TButtonPanel::key_down_action(long key, short count, int alt_key, int ctrl_
         return 1;
 
     case VK_UP:
-        if (alt_key == 0 && ctrl_key == 0 && tab_stop != 0 &&
-            parent_panel != 0) {
+        if (alt_key == 0 && ctrl_key == 0 && tab_stop != 0 && parent_panel != 0) {
             child = tab_prev_panel;
             if (child != 0) {
                 parent_panel->set_curr_child(child);
@@ -877,8 +862,7 @@ extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* hwnd, unsigne
 
 
 long TButtonPanel::wnd_proc(void* hwnd, unsigned msg, unsigned wParam, long lParam) {
-    if (msg == WM_KEYUP && this->key_down != 0 &&
-        wParam == this->key_down) {
+    if (msg == WM_KEYUP && this->key_down != 0 && wParam == this->key_down) {
         int buttonType = this->buttonTypeValue;
         this->key_down = 0;
         if (buttonType != TButtonPanel::Radio) {
@@ -944,8 +928,7 @@ void TButtonPanel::do_action(void) {
             this->parent_panel->action(this, 1, this->id[this->cur_state], this->id2[this->cur_state]);
             return;
         }
-    } else if (this->id[this->cur_state] != 0 ||
-               this->id2[this->cur_state] != 0) {
+    } else if (this->id[this->cur_state] != 0 || this->id2[this->cur_state] != 0) {
         SendMessageA(this->render_area->Wnd, WM_COMMAND, this->id[this->cur_state], this->id2[this->cur_state]);
     }
 }
@@ -980,8 +963,7 @@ void TButtonPanel::do_right_action(int shift_key) {
             this->parent_panel->action(this, 4, id_value, id2_value);
             return;
         }
-    } else if (this->id[this->cur_state] != 0 ||
-               this->id2[this->cur_state] != 0) {
+    } else if (this->id[this->cur_state] != 0 || this->id2[this->cur_state] != 0) {
         SendMessageA(this->render_area->Wnd, WM_COMMAND, id_value, id2_value);
     }
 }

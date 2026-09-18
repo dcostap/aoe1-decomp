@@ -65,8 +65,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
 
     if (parentPanel->yPosition() <= mouse_y - panel_height - 10) {
         y = abs(mouse_y - panel_height - parentPanel->yPosition() - 10);
-    } else if (panel_height + mouse_y + 10 <=
-               parentPanel->yPosition() + parentPanel->height()) {
+    } else if (panel_height + mouse_y + 10 <= parentPanel->yPosition() + parentPanel->height()) {
         y = abs(mouse_y - parentPanel->yPosition() + 10);
     } else {
         y = parentPanel->height() / 2 - panel_height / 2;
@@ -82,16 +81,16 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     if (rge_base_game->singlePlayerGame() && in_help_page_id >= 0) {
         char* help_topic = this->get_string(in_help_page_id);
         if (help_topic != 0 && *help_topic != '\0') {
-            this->create_button(this, &this->encyclopedia_button, IDS_BUTTON_MORE_HELP, 0, 25,
+            this->create_button(this, &this->encyclopedia_button, STRING_ID_BUTTON_MORE_HELP, 0, 25,
                                 line_height * rge_text_font->font_hgt + 20, 120, 25, RGE_FONT_STANDARD, 0, 0);
         }
     }
 
     if (this->encyclopedia_button == 0) {
-        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 110, line_height * rge_text_font->font_hgt + 20,
+        this->create_button(this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 110, line_height * rge_text_font->font_hgt + 20,
                             120, 25, RGE_FONT_STANDARD, 0, 0);
     } else {
-        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 195, line_height * rge_text_font->font_hgt + 20,
+        this->create_button(this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 195, line_height * rge_text_font->font_hgt + 20,
                             120, 25, RGE_FONT_STANDARD, 0, 0);
     }
     TButtonPanel* button = this->ok_button;

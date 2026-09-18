@@ -71,8 +71,7 @@ int RGE_Communications_Addresses::SetIPAliases(char* sz) {
 // pIPAD[Num] is formed before the count check. The fallback is
 // the natural empty string literal used by the original source.
 char* RGE_Communications_Addresses::GetAddress(unsigned int Num) {
-    if (this->pIPAD + Num != 0 &&
-        Num <= this->AddressesAvailable) {
+    if (this->pIPAD + Num != 0 && Num <= this->AddressesAvailable) {
         return this->pIPAD[Num].DottedIPAddress;
     }
     return "";

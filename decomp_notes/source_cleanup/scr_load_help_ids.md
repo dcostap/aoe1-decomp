@@ -6,7 +6,7 @@
 `0x7532` (30002) identifies help text for the Cancel button.
 These are string lookup IDs, not button captions, action codes, or help-page numbers.
 
-Suggested cleanup names are `IDS_HELP_OK` and `IDS_HELP_CANCEL`.
+Suggested cleanup names are `STRING_ID_HELP_OK` and `STRING_ID_HELP_CANCEL`.
 These are descriptive names, not recovered original macro names.
 The exact historical text remains unknown.
 

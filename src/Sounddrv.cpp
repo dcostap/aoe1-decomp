@@ -451,8 +451,7 @@ int TDigital::load(char* file_name, long res_id) {
                 goto fail_return;
             }
 
-            if (strncmp((char*)wave_hdr.szRIFF, "RIFF", 4) != 0 ||
-                wave_hdr.wFormatTag != WAVE_FORMAT_PCM) {
+            if (strncmp((char*)wave_hdr.szRIFF, "RIFF", 4) != 0 || wave_hdr.wFormatTag != WAVE_FORMAT_PCM) {
                 this->failed = 1;
                 close(fd);
                 goto fail_return;
@@ -778,8 +777,7 @@ int TDigital::is_playing() {
     if (target == 0) {
         target = this;
     }
-    if (this->sound_system != 0 && target->loaded != 0 &&
-        target->sound_buffer != 0) {
+    if (this->sound_system != 0 && target->loaded != 0 && target->sound_buffer != 0) {
         if (target->sound_buffer->GetStatus(&status) == 0) {
             if (status == DSBSTATUS_PLAYING || status == DSBSTATUS_LOOPING) {
                 return 1;

@@ -60,10 +60,10 @@ No source comments were added. No new source identifiers were invented.
 
 The approved resource names replaced the numeric IDs in both call paths:
 
-- `0x2C24` -> `IDS_COUNTDOWN_YEARS_FORMAT`
-- `0x2C25` -> `IDS_WONDER_YEARS_FORMAT`
-- `0x2C26` -> `IDS_ARTIFACTS_YEARS_FORMAT`
-- `0x2C27` -> `IDS_RUINS_YEARS_FORMAT`
+- `0x2C24` -> `STRING_ID_COUNTDOWN_YEARS_FORMAT`
+- `0x2C25` -> `STRING_ID_WONDER_YEARS_FORMAT`
+- `0x2C26` -> `STRING_ID_ARTIFACTS_YEARS_FORMAT`
+- `0x2C27` -> `STRING_ID_RUINS_YEARS_FORMAT`
 
 The source includes `../include/resource_ids.h`. The substitutions preserve the
 numeric values, calls, arithmetic, buffers, fallback, and formatting arguments.
@@ -169,10 +169,10 @@ Root approval and worker import:
 - The worker did not edit the imported header.
 
 ```cpp
-#define IDS_COUNTDOWN_YEARS_FORMAT 0x2C24
-#define IDS_WONDER_YEARS_FORMAT    0x2C25
-#define IDS_ARTIFACTS_YEARS_FORMAT 0x2C26
-#define IDS_RUINS_YEARS_FORMAT     0x2C27
+#define STRING_ID_COUNTDOWN_YEARS_FORMAT 0x2C24
+#define STRING_ID_WONDER_YEARS_FORMAT    0x2C25
+#define STRING_ID_ARTIFACTS_YEARS_FORMAT 0x2C26
+#define STRING_ID_RUINS_YEARS_FORMAT     0x2C27
 ```
 
 These reviewed names describe one logical game string namespace and their

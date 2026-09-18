@@ -18,7 +18,7 @@ Compiler and runtime validation remain deferred.
 
 Reviewer `sa-187152fa` approved all 824 correction-diff lines at `616082391a771bacc7305fad75c21cc2e602a5f4`.
 The correction retains supported `x2` and six `userN` names, but restores unproved coordinate and index names.
-Root approved 74 new string macros and three separate `RESID_` binary layout macros.
+Root approved 74 new string macros and three separate `BINARY_RESOURCE_ID_` binary layout macros.
 Four of the 78 requested string names already exist and are not duplicated.
 
 All 78 string payloads exist in runtime `language.dll`, language `0x0409`.
@@ -280,19 +280,19 @@ The module reports retain exact payloads, purpose, and pinned-original expansion
 Root added 79 proposed definitions to `include/resource_ids.h`.
 The complete path-finding range contains `Default`, `Medium`, and `High` at `0x260E` through `0x2610`.
 Only the range base needs a macro. The two unused interior-ID proposals remain undeclared.
-Workers must preserve `IDS_PATH_FINDING_OPTION_BASE + i`, not create a table or switch.
+Workers must preserve `STRING_ID_PATH_FINDING_OPTION_BASE + i`, not create a table or switch.
 
 Expansion text overrides the version, About warning, and neutral diplomacy help at `0x241A`, `0x241F`, and `0x7685`.
 Its other returned slots are empty; the remaining requested IDs have missing blocks.
 The unchanged game lookup uses the base fallback for both empty and missing expansion entries.
 These findings do not prove why any slot is empty.
 
-Menu confirmation IDs describe message text, not window titles. Their proposed `IDS_CONFIRM_*` names remain suitable.
+Menu confirmation IDs describe message text, not window titles. Their proposed `STRING_ID_CONFIRM_*` names remain suitable.
 Keep the extra player-name argument in the game-speed notification, although the current text has no format placeholder.
 Keep distinct IDs for equal captions, all original casts, all buffer sizes, and all lookup calls.
 These are new cleanup names, not recovered original macros.
 
-The `IDS_HELP_WINDOW_TITLE` purpose is supported by `basegame.cpp` passing the loaded string to `FindWindowA("MS_WINHELP", str)`.
+The `STRING_ID_HELP_WINDOW_TITLE` purpose is supported by `basegame.cpp` passing the loaded string to `FindWindowA("MS_WINHELP", str)`.
 That unassigned module remains unchanged. Defer its definition and substitution until its own cleanup.
 
 ## Wave 03 delivery awaiting review

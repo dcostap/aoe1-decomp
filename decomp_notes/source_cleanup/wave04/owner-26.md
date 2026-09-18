@@ -56,8 +56,8 @@ The `TRIBE_World::logStatus` declaration uses its own `out` and `firstTime` PDB 
 ## Resource result and deferrals
 
 Root approved the direct substitutions in `bf943f3339643ee5beca7dd74e98b4cb729e48d3`.
-`scenario.cpp` uses `IDS_FILE_NONE` for `0x2775` and `IDS_AI_FILE_RANDOM` for `0x277B`.
-`world.cpp` uses `IDS_AI_FILE_RANDOM` for `0x277B`.
+`scenario.cpp` uses `STRING_ID_FILE_NONE` for `0x2775` and `STRING_ID_AI_FILE_RANDOM` for `0x277B`.
+`world.cpp` uses `STRING_ID_AI_FILE_RANDOM` for `0x277B`.
 `tworld.cpp` uses the approved descriptions, bases, formats, Nomad, default, and difficulty symbols.
 
 The victory-log base `0x28A6` remains numeric because its payload is empty.
@@ -65,7 +65,7 @@ The age expression `age + 0x1067` remains numeric.
 The source does not reuse `HELP_AGE_*` names for this option role.
 The resource-level expression `res + 0x25E5` remains unchanged.
 Direct map switch IDs remain numeric because root approved only the range bases.
-No alias was introduced for `IDS_FILE_NONE` or `IDS_AI_FILE_RANDOM`.
+No alias was introduced for `STRING_ID_FILE_NONE` or `STRING_ID_AI_FILE_RANDOM`.
 
 ## Validation limits
 

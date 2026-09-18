@@ -400,8 +400,7 @@ unsigned char RGE_Moving_Object::turn_towards(RGE_Static_Object* obj,
     }
 
     world_time = (float)this->owner->world->world_time * DAT_00570b84;
-    if (world_time - this->turn_towards_time <
-        ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed) {
+    if (world_time - this->turn_towards_time < ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed) {
         return 0;
     }
 
@@ -450,8 +449,7 @@ void RGE_Moving_Object::set_angle() {
 }
 
 float RGE_Moving_Object::teleport(float x, float y, float z) {
-    if (((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_options != 0 &&
-        this->tile != 0) {
+    if (((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_options != 0 && this->tile != 0) {
         RGE_Master_Static_Object* trail_master =
             this->owner->master_objects[
                 ((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_id];
@@ -702,8 +700,7 @@ int RGE_Moving_Object::doMove() {
     }
 
     distanceToGoal = (float)sqrt(dY * dY + dX * dX);
-    if (this->actionRange > DAT_00570b98 &&
-        distanceToGoal <= this->actionRange) {
+    if (this->actionRange > DAT_00570b98 && distanceToGoal <= this->actionRange) {
         this->speed = 0.0f;
         this->rangeStatusValue = 1;
         this->removeAllUserDefinedWaypoints(0);
@@ -784,8 +781,7 @@ int RGE_Moving_Object::doMove() {
     }
 
     newDY = 0.0f;
-    if (this->numberUserDefinedWaypointsValue > 1 &&
-        distanceToGoal > DAT_00570ba0) {
+    if (this->numberUserDefinedWaypointsValue > 1 && distanceToGoal > DAT_00570ba0) {
         unsigned char firstZone = this->lookupZone((int)this->userDefinedWaypoints[0].x,
                                                    (int)this->userDefinedWaypoints[0].y);
         unsigned char secondZone = this->lookupZone((int)this->userDefinedWaypoints[1].x,
@@ -796,8 +792,7 @@ int RGE_Moving_Object::doMove() {
     }
 
     if (waypointStatus == 0) {
-        if (distanceToGoal <= newDY + radiusDistance +
-                                this->actionRange) {
+        if (distanceToGoal <= newDY + radiusDistance + this->actionRange) {
             this->speed = 0.0f;
             this->rangeStatusValue = 1;
             this->removeAllUserDefinedWaypoints(0);
@@ -813,8 +808,7 @@ int RGE_Moving_Object::doMove() {
             }
             dX = (float)this->userDefinedWaypoints->x - this->world_x;
             dY = (float)this->userDefinedWaypoints->y - this->world_y;
-            if (radiusDistance + this->actionRange - DAT_00570ba8 <
-                (float)sqrt(dY * dY + dX * dX)) {
+            if (radiusDistance + this->actionRange - DAT_00570ba8 < (float)sqrt(dY * dY + dX * dX)) {
                 reachedWaypoint = 1;
             }
         } while (reachedWaypoint == 0);
@@ -970,8 +964,7 @@ int RGE_Moving_Object::doMove() {
             }
             dX = (float)this->userDefinedWaypoints->x - this->world_x;
             dY = (float)this->userDefinedWaypoints->y - this->world_y;
-            if (radiusDistance + this->actionRange - DAT_00570ba8 <
-                (float)sqrt(dY * dY + dX * dX)) {
+            if (radiusDistance + this->actionRange - DAT_00570ba8 < (float)sqrt(dY * dY + dX * dX)) {
                 reachedWaypoint = 1;
             }
         } while (reachedWaypoint == 0);
@@ -1079,8 +1072,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
     int alreadyMoving = 1;
     if (this->speed == DAT_00570b98) {
         alreadyMoving = 0;
-        if (this->sprite != 0 &&
-            this->sprite->base_speed > DAT_00570b98) {
+        if (this->sprite != 0 && this->sprite->base_speed > DAT_00570b98) {
             this->speed =
                 ((RGE_Master_Moving_Object*)this->master_obj)->speed *
                 this->sprite->base_speed;
@@ -1102,8 +1094,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
         this->collisionAvoidanceDistance = -1.0f;
     }
 
-    if (((RGE_Master_Moving_Object*)this->master_obj)->turn_speed >
-        DAT_00570b98) {
+    if (((RGE_Master_Moving_Object*)this->master_obj)->turn_speed > DAT_00570b98) {
         if (this->turnTimer >= DAT_00570b98) {
             this->turnTimer -= this->owner->world->world_time_delta_seconds;
         } else {
@@ -1141,8 +1132,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
     float facetDelta =
         angleDelta * (float)numberFacets * DAT_00570b78;
     this->boundAngle(&this->angle, numberFacets);
-    while (this->turnTimer <= DAT_00570b48 &&
-           (facetDelta > DAT_00570bb0 || facetDelta < DAT_00570bb8)) {
+    while (this->turnTimer <= DAT_00570b48 && (facetDelta > DAT_00570bb0 || facetDelta < DAT_00570bb8)) {
         this->turnTimer +=
             ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed;
         if (angleDelta >= DAT_00570b48) {
@@ -1163,8 +1153,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
     float newY = this->world_y + this->velocity_y;
 
     int result = 1;
-    if (((RGE_Master_Moving_Object*)this->master_obj)->radius_z >
-        DAT_00570b48) {
+    if (((RGE_Master_Moving_Object*)this->master_obj)->radius_z > DAT_00570b48) {
         result = pathSystem.passable(this, newX, newY, 1);
     }
 
@@ -1199,8 +1188,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
                 if ((float)sqrt((target->world_x - this->world_x) * (target->world_x - this->world_x) +
                                 (target->world_y - this->world_y) * (target->world_y - this->world_y)) <
                     (float)sqrt(currentMaster->radius_x * currentMaster->radius_x +
-                                currentMaster->radius_y * currentMaster->radius_y) +
-                        this->actionRange - DAT_00570ba8) {
+                                currentMaster->radius_y * currentMaster->radius_y) + this->actionRange - DAT_00570ba8) {
                     return 5;
                 }
             }
@@ -1369,11 +1357,8 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
         dY = waypoint->y - (this->world_y + this->velocity_y);
         float newDistance = (float)sqrt(dX * dX + dY * dY);
 
-        if ((this->closestDistanceToWaypoint < newDistance &&
-             curDistance < DAT_00570bd8) ||
-            (this->lastFacet2 == this->facet &&
-             this->lastFacet2 != this->lastFacet &&
-             curDistance < DAT_00570b7c)) {
+        if ((this->closestDistanceToWaypoint < newDistance && curDistance < DAT_00570bd8) ||
+            (this->lastFacet2 == this->facet && this->lastFacet2 != this->lastFacet && curDistance < DAT_00570b7c)) {
             if (pathSystem.passable(this, this->pathValue.currentWaypoint()->x,
                                     this->pathValue.currentWaypoint()->y, 1) == 0) {
                 return 2;
@@ -1401,8 +1386,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
         speedMultiplier = 0.9f;
     } else if (speedOffset > DAT_00570bf0) {
         speedMultiplier = 1.03f;
-    } else if (this->sprite != 0 &&
-               this->sprite->base_speed > DAT_00570b98) {
+    } else if (this->sprite != 0 && this->sprite->base_speed > DAT_00570b98) {
         this->speed =
             ((RGE_Master_Moving_Object*)this->master_obj)->speed *
             this->sprite->base_speed;
@@ -1667,9 +1651,7 @@ int RGE_Moving_Object::canPathWithAdditionalPassability(
     XYZPoint p, float aRange, int targetID, float* pathDistance,
     int eTerrain1, int eTerrain2, int aiCheck,
     int unobstructiblePlayerID, int unobstructibleGroupID) {
-    if (p.x < 0 || p.y < 0 ||
-        p.x >= this->owner->world->map->map_width ||
-        p.y >= this->owner->world->map->map_height) {
+    if (p.x < 0 || p.y < 0 || p.x >= this->owner->world->map->map_width || p.y >= this->owner->world->map->map_height) {
         return 0;
     }
 
@@ -1760,8 +1742,7 @@ int RGE_Moving_Object::canLinePath(const XYPoint& s, const XYPoint& d,
     xDistance = (float)(endX - startX);
     yDistance = (float)(endY - startY);
 
-    if ((xDistance == DAT_00570b48) &&
-        (yDistance == DAT_00570b48)) {
+    if ((xDistance == DAT_00570b48) && (yDistance == DAT_00570b48)) {
         return 0;
     }
 
@@ -1819,8 +1800,7 @@ int RGE_Moving_Object::canLinePath(int sX, int sY, int dX, int dY,
     float xDistance = (float)(dX - sX);
     float yDistance = (float)(dY - sY);
 
-    if ((xDistance == DAT_00570b48) &&
-        (yDistance == DAT_00570b48)) {
+    if ((xDistance == DAT_00570b48) && (yDistance == DAT_00570b48)) {
         return 0;
     }
 
@@ -1880,8 +1860,7 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& s,
     float xDistance = (float)(d.x - s.x);
     float yDistance = (float)(d.y - s.y);
 
-    if ((xDistance == DAT_00570b48) &&
-        (yDistance == DAT_00570b48)) {
+    if ((xDistance == DAT_00570b48) && (yDistance == DAT_00570b48)) {
         return 0;
     }
 
@@ -1920,9 +1899,7 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& s,
             lastX = tile_x;
             lastY = tile_y;
             tileType = map->get_terrain((short)tile_x, (short)tile_y);
-            if (((int)tileType == tType1 ||
-                 (int)tileType == tType2) &&
-                (checkPassability == 1)) {
+            if (((int)tileType == tType1 || (int)tileType == tType2) && (checkPassability == 1)) {
                 if (this->passableTile(xTile, yTile, 0) == 1) {
                     rPoint.x = tile_x;
                     rPoint.y = tile_y;
@@ -1966,8 +1943,7 @@ int RGE_Moving_Object::addUserDefinedWaypoint(XYZBYTEPoint* p, int stopObject) {
         this->finalUserDefinedWaypoint = 0;
     }
 
-    if (this->maxUserDefinedWaypointsValue >
-        this->numberUserDefinedWaypointsValue) {
+    if (this->maxUserDefinedWaypointsValue > this->numberUserDefinedWaypointsValue) {
         this->userDefinedWaypoints[
             this->numberUserDefinedWaypointsValue].x = p->x;
         this->userDefinedWaypoints[

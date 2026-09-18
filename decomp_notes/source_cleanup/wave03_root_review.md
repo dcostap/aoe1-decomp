@@ -131,10 +131,10 @@ Root resumed the same workers for three blockers:
 
 Root approved the reviewed payload-backed resource names, with two existing-name substitutions:
 
-- Use existing `IDS_SCENARIO_MENU_CREATE_SCENARIO` for `0x242E`.
-- Use existing `IDS_GAME_SPEED_CHANGED` for `0x0BF3`.
+- Use existing `STRING_ID_SCENARIO_MENU_CREATE_SCENARIO` for `0x242E`.
+- Use existing `STRING_ID_GAME_SPEED_CHANGED` for `0x0BF3`.
 
-Keep `IDS_SCENARIO_OPEN_TITLE` (`0x24CD`) distinct from `IDS_SCENARIO_LIST_TITLE` (`0x25FE`).
+Keep `STRING_ID_SCENARIO_OPEN_TITLE` (`0x24CD`) distinct from `STRING_ID_SCENARIO_LIST_TITLE` (`0x25FE`).
 Both say `Select Scenario`, but their callers assign different title roles.
 Only the building hotkey base has a definition. Preserve the existing index arithmetic.
 Preserve master-player IDs and `get_string2` lookup logic; civilization resource IDs are not master-player IDs.
@@ -271,11 +271,11 @@ Reviewer `sa-e5a8d4d2` read all 3,182 diff lines and all 25 changed files at `fe
 The reviewer found no blocking source change and inspected the resource lookup paths and DLL payloads.
 Root approved ten shared names in `include/resource_ids.h`:
 
-- `0x232A`: `IDS_SELECT_OBJECT_TITLE`.
+- `0x232A`: `STRING_ID_SELECT_OBJECT_TITLE`.
 - `0x1D4ED`–`0x1D4F0`: inventory food, wood, gold, and stone help format names.
-  The exact prefix is `IDS_HELP_INVENTORY_`; each name ends with `_FORMAT`.
-- `0x2B2A`: `IDS_POPULATION_PREFIX`.
-- `0x2C24`: `IDS_COUNTDOWN_YEARS_FORMAT`, covering both countdown call paths and the years unit.
+  The exact prefix is `STRING_ID_HELP_INVENTORY_`; each name ends with `_FORMAT`.
+- `0x2B2A`: `STRING_ID_POPULATION_PREFIX`.
+- `0x2C24`: `STRING_ID_COUNTDOWN_YEARS_FORMAT`, covering both countdown call paths and the years unit.
 - `0x2C25`–`0x2C27`: wonder, artifacts, and ruins years format names.
 
 The inventory help IDs are missing from all three checked DLLs; their formatting roles are proved by callers.

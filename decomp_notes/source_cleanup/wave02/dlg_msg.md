@@ -118,7 +118,7 @@ The destructor's `i` local has no scoped PDB record. It remains an existing desc
 
 ## Constants and resource evidence
 
-`include/resource_ids.h` defines all six button IDs used by this module. The worker-local import has provenance commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. Root approved these definitions in commit `8c56055b7feee1526f296bd306036a4c34f38041`. The source now uses `IDS_BUTTON_OK`, `IDS_BUTTON_CANCEL`, `IDS_BUTTON_YES`, `IDS_BUTTON_NO`, `IDS_BUTTON_RETRY`, and `IDS_BUTTON_ABORT`. Each macro preserves its original literal value and type after expansion. No local macros were added.
+`include/resource_ids.h` defines all six button IDs used by this module. The worker-local import has provenance commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. Root approved these definitions in commit `8c56055b7feee1526f296bd306036a4c34f38041`. The source now uses `STRING_ID_BUTTON_OK`, `STRING_ID_BUTTON_CANCEL`, `STRING_ID_BUTTON_YES`, `STRING_ID_BUTTON_NO`, `STRING_ID_BUTTON_RETRY`, and `STRING_ID_BUTTON_ABORT`. Each macro preserves its original literal value and type after expansion. No local macros were added.
 
 The resource extraction outputs are under the worker build directory:
 
@@ -145,14 +145,14 @@ The pinned original expansion reference is `C:/Projects/my_decomps/aoe1_attempt3
 
 | ID | Proposed cleanup name | Proven purpose and lookup path | Base result (`language.dll`, SHA-256 above, language `0x0409`) | Expansion result |
 | --- | --- | --- | --- | --- |
-| `0x0FA3` | `IDS_BUTTON_YES` | First caption for dialog types 2 and 4. `TMessageDialog::setup` calls `TButtonPanel::set_text` with this ID. | Exact text `Yes`; block 251, slot 3. | Missing in runtime `languagex.dll` (SHA-256 above) and pinned original `XPack/languagex.dll` (SHA-256 above). Base fallback applies. |
-| `0x0FA4` | `IDS_BUTTON_NO` | Second caption for dialog types 2 and 4. `TMessageDialog::setup` calls `TButtonPanel::set_text` with this ID. | Exact text `No`; block 251, slot 4. | Missing in runtime `languagex.dll` (SHA-256 above) and pinned original `XPack/languagex.dll` (SHA-256 above). Base fallback applies. |
-| `0x0FA5` | `IDS_BUTTON_RETRY` | First caption for dialog type 3. `TMessageDialog::setup` calls `TButtonPanel::set_text` with this ID. | Exact text `Retry`; block 251, slot 5. | Missing in runtime `languagex.dll` (SHA-256 above) and pinned original `XPack/languagex.dll` (SHA-256 above). Base fallback applies. |
-| `0x0FA7` | `IDS_BUTTON_ABORT` | Second caption for dialog type 3. `TMessageDialog::setup` calls `TButtonPanel::set_text` with this ID. | Exact text `Abort`; block 251, slot 7. | Missing in runtime `languagex.dll` (SHA-256 above) and pinned original `XPack/languagex.dll` (SHA-256 above). Base fallback applies. |
+| `0x0FA3` | `STRING_ID_BUTTON_YES` | First caption for dialog types 2 and 4. `TMessageDialog::setup` calls `TButtonPanel::set_text` with this ID. | Exact text `Yes`; block 251, slot 3. | Missing in runtime `languagex.dll` (SHA-256 above) and pinned original `XPack/languagex.dll` (SHA-256 above). Base fallback applies. |
+| `0x0FA4` | `STRING_ID_BUTTON_NO` | Second caption for dialog types 2 and 4. `TMessageDialog::setup` calls `TButtonPanel::set_text` with this ID. | Exact text `No`; block 251, slot 4. | Missing in runtime `languagex.dll` (SHA-256 above) and pinned original `XPack/languagex.dll` (SHA-256 above). Base fallback applies. |
+| `0x0FA5` | `STRING_ID_BUTTON_RETRY` | First caption for dialog type 3. `TMessageDialog::setup` calls `TButtonPanel::set_text` with this ID. | Exact text `Retry`; block 251, slot 5. | Missing in runtime `languagex.dll` (SHA-256 above) and pinned original `XPack/languagex.dll` (SHA-256 above). Base fallback applies. |
+| `0x0FA7` | `STRING_ID_BUTTON_ABORT` | Second caption for dialog type 3. `TMessageDialog::setup` calls `TButtonPanel::set_text` with this ID. | Exact text `Abort`; block 251, slot 7. | Missing in runtime `languagex.dll` (SHA-256 above) and pinned original `XPack/languagex.dll` (SHA-256 above). Base fallback applies. |
 
 ID `0x0FA6` was inspected in the same string block. It contains `Cancel`, but this module does not use it. No name or declaration request is made for it.
 
-The four names approved by root in commit `8c56055b7feee1526f296bd306036a4c34f38041` are new cleanup names. The worker-local import provenance is commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. No original macro name is claimed. The existing `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` names belong to the shared header and were not created by this module.
+The four names approved by root in commit `8c56055b7feee1526f296bd306036a4c34f38041` are new cleanup names. The worker-local import provenance is commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. No original macro name is claimed. The existing `STRING_ID_BUTTON_OK` and `STRING_ID_BUTTON_CANCEL` names belong to the shared header and were not created by this module.
 
 ## Comments and formatting
 

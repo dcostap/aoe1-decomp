@@ -23,16 +23,16 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
     }
     setup_shadow_area(0);
     set_ideal_size(640, 480);
-    if (create_text(this, &title, IDS_CAMPAIGN_LABEL, 20, 10, 600, 30, 1, 1, 0, 0)) {
+    if (create_text(this, &title, STRING_ID_CAMPAIGN_LABEL, 20, 10, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0)) {
         campaignListX = 20;
         campaignListY = 70;
         campaignListWidth = 600;
         campaignListHeight = 130;
         if (create_list(this, &campaignList, 20, 70, 600, 130, RGE_FONT_STANDARD)) {
             if (create_auto_scrollbar(&campaignScrollbar, campaignList, 20)) {
-                if (create_text(this, &campaignTitle, IDS_SELECT_CAMPAIGN, campaignListX - 5, campaignListY - 20,
-                                200, 20, 4, 0, 0, 0)) {
-                    campaignList->set_text(IDS_CAMPAIGN_LIST_LOADING);
+                if (create_text(this, &campaignTitle, STRING_ID_SELECT_CAMPAIGN, campaignListX - 5, campaignListY - 20,
+                                200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0)) {
+                    campaignList->set_text(STRING_ID_CAMPAIGN_LIST_LOADING);
                     scenarioListX = 20;
                     scenarioListY = campaignListY + campaignListHeight + 30;
                     scenarioListWidth = 600;
@@ -40,28 +40,28 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                     if (create_list(this, &scenarioList, scenarioListX, scenarioListY, scenarioListWidth,
                                     scenarioListHeight, RGE_FONT_STANDARD)) {
                         if (create_auto_scrollbar(&scenarioScrollbar, scenarioList, 20)) {
-                            if (create_text(this, &scenarioTitle, IDS_SCENARIO_LIST_TITLE, scenarioListX - 5,
-                                            scenarioListY - 20, 200, 20, 4, 0, 0, 0)) {
+                            if (create_text(this, &scenarioTitle, STRING_ID_SCENARIO_LIST_TITLE, scenarioListX - 5,
+                                            scenarioListY - 20, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0)) {
                                 scenarioList->sorted = 0;
-                                if (create_text(this, &difficultyTitle, IDS_DIFFICULTY_LABEL, 15, 370, 200, 20, 4,
+                                if (create_text(this, &difficultyTitle, STRING_ID_DIFFICULTY_LABEL, 15, 370, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT,
                                                 0, 0, 0)) {
                                     if (create_drop_down(this, &difficultyDrop, 130, 100, 20, 390, 130, 24,
                                                          RGE_FONT_STANDARD)) {
                                         difficultyDrop->empty_list();
-                                        difficultyDrop->append_line(IDS_DIFFICULTY_EASIEST, 4);
-                                        difficultyDrop->append_line(IDS_DIFFICULTY_EASY, 3);
-                                        difficultyDrop->append_line(IDS_DIFFICULTY_MODERATE, 2);
-                                        difficultyDrop->append_line(IDS_DIFFICULTY_HARD, 1);
-                                        difficultyDrop->append_line(IDS_DIFFICULTY_HARDEST, 0);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASIEST, 4);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASY, 3);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_MODERATE, 2);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARD, 1);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARDEST, 0);
                                         difficultyDrop->set_line(difficultyDrop->get_line(rge_base_game->difficulty()));
-                                        if (create_button(this, &okButton, IDS_BUTTON_OK, 0, 70, 440, 240, 30, 0, 0, 0)) {
-                                            if (create_button(this, &cancelButton, IDS_BUTTON_CANCEL, 0, 330, 440,
-                                                              240, 30, 0, 0, 0)) {
+                                        if (create_button(this, &okButton, STRING_ID_BUTTON_OK, 0, 70, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
+                                            if (create_button(this, &cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440,
+                                                              240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
                                                 TButtonPanel* cancel =
                                                     cancelButton;
                                                 cancel->hotkey = VK_ESCAPE;
                                                 cancel->hotkey_shift = 0;
-                                                if (create_button(this, &close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0,
+                                                if (create_button(this, &close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0,
                                                                   -1, -1, 0)) {
                                                     close_button->set_active(1);
                                                     close_button->set_positioning(TPanel::PositionRightTop,
@@ -261,7 +261,7 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     int first_color = 0;
     RGE_Scenario* scen = rge_base_game->get_scenario_info(0, 1);
     if (scen == 0) {
-        this->popupOKDialog(IDS_ERROR_TRIAL_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_TRIAL_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
         return;
     }
 
@@ -289,8 +289,7 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     if (first_human != -1) {
         int j;
         for (j = 1; j < player_count; ++j) {
-            if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(j) ==
-                first_human) {
+            if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(j) == first_human) {
                 static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
                     j, static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(0));
                 static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
@@ -311,6 +310,6 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     }
 
     if (!static_cast<TRIBE_Game*>(rge_base_game)->start_game(0)) {
-        this->popupOKDialog(IDS_ERROR_START_GAME, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(STRING_ID_ERROR_START_GAME, 0, TEASY_POPUP_WIDTH, 100);
     }
 }

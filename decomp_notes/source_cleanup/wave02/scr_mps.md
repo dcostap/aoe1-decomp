@@ -171,9 +171,9 @@ mapped `file_info2` declaration. I did not rewrite the union.
 The source uses exact macros from the root-approved resource header for the
 IDs in this report. Earlier source work already used these definitions:
 
-- `IDS_BUTTON_CANCEL` for `0x0FA2`.
-- `IDS_BUTTON_CLOSE` for `0x03EA`.
-- `IDS_HELP_CANCEL` for `0x7532`.
+- `STRING_ID_BUTTON_CANCEL` for `0x0FA2`.
+- `STRING_ID_BUTTON_CLOSE` for `0x03EA`.
+- `STRING_ID_HELP_CANCEL` for `0x7532`.
 
 The first two IDs are present in base language resources. The cancel help ID
 has missing historical text. The role is established by
@@ -208,36 +208,36 @@ The proposed names are new descriptive names, not recovered macro names.
 
 | ID | Proposed name | Call-site purpose | Base text, language |
 | --- | --- | --- | --- |
-| `0x0FA9` | `IDS_BUTTON_HELP` | Help button glyph in the setup screen. | `"?"`, `0x0409` |
-| `0x238C` | `IDS_HOST_NAME_FORMAT` | Host name line in `showNetInfo`. | `"Host name: %s"`, `0x0409` |
-| `0x238D` | `IDS_NO_IP_INFO_ERROR` | No-address result in `showNetInfo`. | `"No IP addressing information is available."`, `0x0409` |
-| `0x25AE` | `IDS_MP_PLAYER_COLOR_LABEL` | Player-color column heading. | `"Player"`, `0x0409` |
-| `0x25AF` | `IDS_MP_TEAM_LABEL` | Team column heading. | `"Team"`, `0x0409` |
-| `0x25B5` | `IDS_RANDOM_MAP` | Random-map scenario summary. | `"Random Map"`, `0x0409` |
-| `0x25BF` | `IDS_MP_READY_LABEL` | Ready check box label. | `"I'm Ready!"`, `0x0409` |
-| `0x25C8` | `IDS_KICK_PLAYER_PROMPT` | Eject-player confirmation format. | `"Do you want to eject %s?"`, `0x0409` |
-| `0x25C9` | `IDS_PLAYER_DROPPED_NOTICE` | Notice for a player kicked or dropped from the game. | `"You were dropped from the game."`, `0x0409` |
-| `0x25CA` | `IDS_GAME_CANCELED_NOTICE` | Host-cancel and cancel-game notice. | `"The game was canceled."`, `0x0409` |
-| `0x25CB` | `IDS_VICTORY_PERCENT_LABEL` | Victory amount label for percent mode. | `"Percent"`, `0x0409` |
-| `0x25CC` | `IDS_VICTORY_COUNT_LABEL` | Victory amount label for count modes. | `"Count"`, `0x0409` |
-| `0x25CD` | `IDS_VICTORY_QUANTITY_LABEL` | Victory amount label for quantity mode. | `"Quantity"`, `0x0409` |
-| `0x25D0` | `IDS_MP_PLAYER_NAME_LABEL` | Player-name column heading. | `"Name"`, `0x0409` |
-| `0x25D1` | `IDS_MP_CIV_LABEL` | Civilization column heading. | `"Civ"`, `0x0409` |
-| `0x25D2` | `IDS_MP_SETTINGS_LABEL` | Game-settings heading and button text. | `"Settings"`, `0x0409` |
-| `0x25D3` | `IDS_MP_COMPUTER_LABEL` | Computer entry in the player list. | `"Computer"`, `0x0409` |
-| `0x25D4` | `IDS_MP_CLOSED_LABEL` | Closed entry in the player list. | `"Closed"`, `0x0409` |
-| `0x25D5` | `IDS_MP_OPEN_LABEL` | Open entry in the player list. | `"Open"`, `0x0409` |
-| `0x25D6` | `IDS_MP_NONE_LABEL` | None entry in the single-player list. | `"None"`, `0x0409` |
-| `0x25D7` | `IDS_MP_CHAT_LABEL` | Chat heading. | `"Chat"`, `0x0409` |
-| `0x25D8` | `IDS_MP_NUMBER_PLAYERS_LABEL` | Number-of-players heading. | `"Number of Players"`, `0x0409` |
-| `0x25E1` | `IDS_SCENARIO_VERSION_ERROR` | Scenario checksum mismatch format. | `"%s does not have this scenario or has a different version of it."`, `0x0409` |
-| `0x25E2` | `IDS_PLAYER_VERSION_ERROR` | Player version mismatch format. | `"%s is not running version 1.0b of the game... Everyone must run the same version of Age of Empires before you can start the game."`, `0x0409` |
-| `0x25E3` | `IDS_HOST_VERSION_ERROR` | Host version mismatch message. | `"The host is not running version 1.0b of the game... Everyone must run the same version of Age of Empires to play a multiplayer game."`, `0x0409` |
-| `0x25ED` | `IDS_SCENARIO_FORMAT` | Scenario name summary format. | `"Scenario: %s"`, `0x0409` |
-| `0x25EE` | `IDS_START_GAME` | Start button text. | `"Start Game"`, `0x0409` |
-| `0x25EF` | `IDS_IP_LABEL` | Network-information button text. | `"IP"`, `0x0409` |
-| `0x25F0` | `IDS_POPULATION_LIMIT_FORMAT` | Population summary format. | `"Population Limit: %d"`, `0x0409` |
-| `0x25F1` | `IDS_PATH_FINDING_FORMAT` | Path-finding summary format. | `"Path Finding: %s"`, `0x0409` |
+| `0x0FA9` | `STRING_ID_BUTTON_HELP` | Help button glyph in the setup screen. | `"?"`, `0x0409` |
+| `0x238C` | `STRING_ID_HOST_NAME_FORMAT` | Host name line in `showNetInfo`. | `"Host name: %s"`, `0x0409` |
+| `0x238D` | `STRING_ID_NO_IP_INFO_ERROR` | No-address result in `showNetInfo`. | `"No IP addressing information is available."`, `0x0409` |
+| `0x25AE` | `STRING_ID_MP_PLAYER_COLOR_LABEL` | Player-color column heading. | `"Player"`, `0x0409` |
+| `0x25AF` | `STRING_ID_MP_TEAM_LABEL` | Team column heading. | `"Team"`, `0x0409` |
+| `0x25B5` | `STRING_ID_RANDOM_MAP` | Random-map scenario summary. | `"Random Map"`, `0x0409` |
+| `0x25BF` | `STRING_ID_MP_READY_LABEL` | Ready check box label. | `"I'm Ready!"`, `0x0409` |
+| `0x25C8` | `STRING_ID_KICK_PLAYER_PROMPT` | Eject-player confirmation format. | `"Do you want to eject %s?"`, `0x0409` |
+| `0x25C9` | `STRING_ID_PLAYER_DROPPED_NOTICE` | Notice for a player kicked or dropped from the game. | `"You were dropped from the game."`, `0x0409` |
+| `0x25CA` | `STRING_ID_GAME_CANCELED_NOTICE` | Host-cancel and cancel-game notice. | `"The game was canceled."`, `0x0409` |
+| `0x25CB` | `STRING_ID_VICTORY_PERCENT_LABEL` | Victory amount label for percent mode. | `"Percent"`, `0x0409` |
+| `0x25CC` | `STRING_ID_VICTORY_COUNT_LABEL` | Victory amount label for count modes. | `"Count"`, `0x0409` |
+| `0x25CD` | `STRING_ID_VICTORY_QUANTITY_LABEL` | Victory amount label for quantity mode. | `"Quantity"`, `0x0409` |
+| `0x25D0` | `STRING_ID_MP_PLAYER_NAME_LABEL` | Player-name column heading. | `"Name"`, `0x0409` |
+| `0x25D1` | `STRING_ID_MP_CIV_LABEL` | Civilization column heading. | `"Civ"`, `0x0409` |
+| `0x25D2` | `STRING_ID_MP_SETTINGS_LABEL` | Game-settings heading and button text. | `"Settings"`, `0x0409` |
+| `0x25D3` | `STRING_ID_MP_COMPUTER_LABEL` | Computer entry in the player list. | `"Computer"`, `0x0409` |
+| `0x25D4` | `STRING_ID_MP_CLOSED_LABEL` | Closed entry in the player list. | `"Closed"`, `0x0409` |
+| `0x25D5` | `STRING_ID_MP_OPEN_LABEL` | Open entry in the player list. | `"Open"`, `0x0409` |
+| `0x25D6` | `STRING_ID_MP_NONE_LABEL` | None entry in the single-player list. | `"None"`, `0x0409` |
+| `0x25D7` | `STRING_ID_MP_CHAT_LABEL` | Chat heading. | `"Chat"`, `0x0409` |
+| `0x25D8` | `STRING_ID_MP_NUMBER_PLAYERS_LABEL` | Number-of-players heading. | `"Number of Players"`, `0x0409` |
+| `0x25E1` | `STRING_ID_SCENARIO_VERSION_ERROR` | Scenario checksum mismatch format. | `"%s does not have this scenario or has a different version of it."`, `0x0409` |
+| `0x25E2` | `STRING_ID_PLAYER_VERSION_ERROR` | Player version mismatch format. | `"%s is not running version 1.0b of the game... Everyone must run the same version of Age of Empires before you can start the game."`, `0x0409` |
+| `0x25E3` | `STRING_ID_HOST_VERSION_ERROR` | Host version mismatch message. | `"The host is not running version 1.0b of the game... Everyone must run the same version of Age of Empires to play a multiplayer game."`, `0x0409` |
+| `0x25ED` | `STRING_ID_SCENARIO_FORMAT` | Scenario name summary format. | `"Scenario: %s"`, `0x0409` |
+| `0x25EE` | `STRING_ID_START_GAME` | Start button text. | `"Start Game"`, `0x0409` |
+| `0x25EF` | `STRING_ID_IP_LABEL` | Network-information button text. | `"IP"`, `0x0409` |
+| `0x25F0` | `STRING_ID_POPULATION_LIMIT_FORMAT` | Population summary format. | `"Population Limit: %d"`, `0x0409` |
+| `0x25F1` | `STRING_ID_PATH_FINDING_FORMAT` | Path-finding summary format. | `"Path Finding: %s"`, `0x0409` |
 
 Resource extraction outputs are `build/evidence/request_base.json`,
 `build/evidence/request_runtime_expansion.json`, and
@@ -268,7 +268,7 @@ signatures, types, scopes, evaluation order, calls, control flow, storage
 sizes, class layout, or symbol identity. The source keeps the existing
 `position_used[9]` declaration and `file_scratch` union despite narrower or
 reused PDB records. The `handleKickedPlayer` expression remains
-`IDS_GAME_CANCELED_NOTICE + (really_kicked != 0 ? -1 : 0)`.
+`STRING_ID_GAME_CANCELED_NOTICE + (really_kicked != 0 ? -1 : 0)`.
 
 Formatting moved selected opening braces and changed no executable statement.
 It can change debug line records. No compiler output claim is made.

@@ -95,9 +95,7 @@ unsigned char RGE_Missile_Object::missile_move() {
     new_y = this->world_y + this->velocity_y;
     new_z = this->world_z + this->velocity_z;
 
-    if (new_x < DAT_00570934 ||
-        new_x >= (float)this->owner->world->map->map_width ||
-        new_y < DAT_00570934 ||
+    if (new_x < DAT_00570934 || new_x >= (float)this->owner->world->map->map_width || new_y < DAT_00570934 ||
         new_y >= (float)this->owner->world->map->map_height) {
         this->die_die_die();
     }

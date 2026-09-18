@@ -82,18 +82,17 @@ void TRIBE_World::logStatus(FILE* out, int firstTime) {
         fprintf(out, "AI Log file for Game Started %s", asctime(localtime(&clock)));
         fprintf(out, "Number Players:          %d\n", static_cast<int>(this->player_num) - 1);
 
-        if (this->scenario->scenario_name != 0 &&
-            strlen(this->scenario->scenario_name) != 0) {
+        if (this->scenario->scenario_name != 0 && strlen(this->scenario->scenario_name) != 0) {
             fprintf(out, "Scenario:                %s\n", this->scenario->scenario_name);
             return;
         }
 
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            static_cast<TRIBE_Game*>(rge_base_game)->mapSize() + IDS_MAP_SIZE_BASE, tempString, 256);
+            static_cast<TRIBE_Game*>(rge_base_game)->mapSize() + STRING_ID_MAP_SIZE_BASE, tempString, 256);
         fprintf(out, "Map Size:                %s\n", tempString);
 
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            static_cast<TRIBE_Game*>(rge_base_game)->mapType() + IDS_MAP_TYPE_BASE, tempString, 256);
+            static_cast<TRIBE_Game*>(rge_base_game)->mapType() + STRING_ID_MAP_TYPE_BASE, tempString, 256);
         fprintf(out, "Map Type:                %s\n", tempString);
 
         // This victory-description resource range is not verified.
@@ -309,8 +308,7 @@ void TRIBE_World::check_destructables(short player_id, short obj_id,
                                 RGE_Static_Object* object = node->node;
                                 RGE_Master_Static_Object* object_master = object->master_obj;
 
-                                if (object_master->id != obj_id &&
-                                    object_master->can_be_built_on != 0) {
+                                if (object_master->id != obj_id && object_master->can_be_built_on != 0) {
                                     float object_radius_x = object_master->radius_x;
                                     float object_radius_y = object_master->radius_y;
                                     float dy = object->world_y - row;
@@ -320,8 +318,7 @@ void TRIBE_World::check_destructables(short player_id, short obj_id,
                                     if (dx < 0.0f)
                                         dx = -dx;
 
-                                    if (dx < object_radius_x + radius_x &&
-                                        dy < object_radius_y + radius_y) {
+                                    if (dx < object_radius_x + radius_x && dy < object_radius_y + radius_y) {
                                         if (delete_flag != 0) {
                                             if (object != 0)
                                                 delete object;
@@ -429,112 +426,112 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
     case TRIBE_Game::VictoryDefault:
     case TRIBE_Game::VictoryStandard:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_VICTORY_DESCRIPTION_STANDARD, description, 4096);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_VICTORY_DESCRIPTION_STANDARD, description, 4096);
         break;
     case TRIBE_Game::VictoryConquest:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_VICTORY_DESCRIPTION_CONQUEST, description, 4096);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_VICTORY_DESCRIPTION_CONQUEST, description, 4096);
         break;
     case TRIBE_Game::VictoryTime:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_VICTORY_DESCRIPTION_TIME_LIMIT, description, 4096);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_VICTORY_DESCRIPTION_TIME_LIMIT, description, 4096);
         break;
     case TRIBE_Game::VictoryScore:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_VICTORY_DESCRIPTION_SCORE, description, 4096);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_VICTORY_DESCRIPTION_SCORE, description, 4096);
         break;
     default:
         break;
     }
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
-    case TRIBE_Game::Tiny: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE)); break;
-    case TRIBE_Game::Small: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 1)); break;
-    case TRIBE_Game::Medium: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 2)); break;
-    case TRIBE_Game::Large: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 3)); break;
-    case TRIBE_Game::Huge: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 4)); break;
-    case TRIBE_Game::Humongous: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 5)); break;
+    case TRIBE_Game::Tiny: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE)); break;
+    case TRIBE_Game::Small: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 1)); break;
+    case TRIBE_Game::Medium: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 2)); break;
+    case TRIBE_Game::Large: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 3)); break;
+    case TRIBE_Game::Huge: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 4)); break;
+    case TRIBE_Game::Humongous: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 5)); break;
     }
-    sprintf(str2, rge_base_game->get_string(IDS_MAP_SIZE_FORMAT), str1);
+    sprintf(str2, rge_base_game->get_string(STRING_ID_MAP_SIZE_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case TRIBE_Game::AllWater: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE)); break;
-        case TRIBE_Game::MostlyWater: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 1)); break;
-        case TRIBE_Game::WaterAndLand: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 2)); break;
-        case TRIBE_Game::MostlyLand: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 3)); break;
-        case TRIBE_Game::AllLand: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 4)); break;
-        case TRIBE_Game::Continental: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 5)); break;
-        case TRIBE_Game::Lake: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 6)); break;
-        case TRIBE_Game::Hilly: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 7)); break;
-        case TRIBE_Game::Isthmas: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 8)); break;
+        case TRIBE_Game::AllWater: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE)); break;
+        case TRIBE_Game::MostlyWater: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 1)); break;
+        case TRIBE_Game::WaterAndLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 2)); break;
+        case TRIBE_Game::MostlyLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 3)); break;
+        case TRIBE_Game::AllLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 4)); break;
+        case TRIBE_Game::Continental: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 5)); break;
+        case TRIBE_Game::Lake: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 6)); break;
+        case TRIBE_Game::Hilly: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 7)); break;
+        case TRIBE_Game::Isthmas: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 8)); break;
         }
-        sprintf(str2, rge_base_game->get_string(IDS_MAP_TYPE_FORMAT), str1);
+        sprintf(str2, rge_base_game->get_string(STRING_ID_MAP_TYPE_FORMAT), str1);
         sprintf(description, newline_join_format, description, str2);
     }
 
     age = static_cast<TRIBE_Game*>(rge_base_game)->startingAge();
     if (age == TRIBE_Game::DefaultAge) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_OPTION_DEFAULT, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
     } else if (age == TRIBE_Game::NomadAge) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_AGE_NOMAD, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_AGE_NOMAD, str1, 256);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(age + IDS_AGE_NAME_BASE, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(age + STRING_ID_AGE_NAME_BASE, str1, 256);
     }
-    sprintf(str2, rge_base_game->get_string(IDS_STARTING_AGE_FORMAT), str1);
+    sprintf(str2, rge_base_game->get_string(STRING_ID_STARTING_AGE_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
 
     res = static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel();
     if (res == TRIBE_Game::DefaultResources) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_OPTION_DEFAULT, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(res + IDS_RESOURCE_LEVEL_BASE, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(res + STRING_ID_RESOURCE_LEVEL_BASE, str1, 256);
     }
-    sprintf(str2, rge_base_game->get_string(IDS_RESOURCE_LEVEL_FORMAT), str1);
+    sprintf(str2, rge_base_game->get_string(STRING_ID_RESOURCE_LEVEL_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
 
     static_cast<TRIBE_Game*>(rge_base_game)->difficulty();
     static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-        static_cast<TRIBE_Game*>(rge_base_game)->difficulty() + IDS_DIFFICULTY_BASE, str1, 256);
-    static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_DIFFICULTY_FORMAT, str2, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->difficulty() + STRING_ID_DIFFICULTY_BASE, str1, 256);
+    static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_DIFFICULTY_FORMAT, str2, 256);
     sprintf(str3, str2, str1);
     sprintf(description, newline_join_format, description, str3);
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->randomizePositions() == 0) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_YES, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_YES, str1, 256);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_NO, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_NO, str1, 256);
     }
-    sprintf(str2, rge_base_game->get_string(IDS_FIXED_POSITIONS_FORMAT), str1);
+    sprintf(str2, rge_base_game->get_string(STRING_ID_FIXED_POSITIONS_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
     if (static_cast<TRIBE_Game*>(rge_base_game)->fullVisibility() == 0) {
-        strcpy(str1, rge_base_game->get_string(IDS_BUTTON_NO));
+        strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_NO));
     } else {
-        strcpy(str1, rge_base_game->get_string(IDS_BUTTON_YES));
+        strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_YES));
     }
-    sprintf(str2, rge_base_game->get_string(IDS_REVEAL_MAP_FORMAT), str1);
+    sprintf(str2, rge_base_game->get_string(STRING_ID_REVEAL_MAP_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
     if (static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() == 0) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_NO, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_NO, str1, 256);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_YES, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_YES, str1, 256);
     }
-    sprintf(str2, rge_base_game->get_string(IDS_FULL_TECH_TREE_FORMAT), str1);
+    sprintf(str2, rge_base_game->get_string(STRING_ID_FULL_TECH_TREE_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame()) {
         if (static_cast<TRIBE_Game*>(rge_base_game)->allowCheatCodes() == 0) {
-            strcpy(str1, rge_base_game->get_string(IDS_BUTTON_NO));
+            strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_NO));
         } else {
-            strcpy(str1, rge_base_game->get_string(IDS_BUTTON_YES));
+            strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_YES));
         }
-        sprintf(str2, rge_base_game->get_string(IDS_CHEATING_ENABLED_FORMAT), str1);
+        sprintf(str2, rge_base_game->get_string(STRING_ID_CHEATING_ENABLED_FORMAT), str1);
         sprintf(description, newline_join_format, description, str2);
     }
 
-    rge_base_game->get_string((static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame() ? static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() : static_cast<TRIBE_Game*>(rge_base_game)->pathFinding()) + IDS_PATH_FINDING_OPTION_BASE, str1, 256);
-    sprintf(str2, rge_base_game->get_string(IDS_PATH_FINDING_FORMAT), str1);
+    rge_base_game->get_string((static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame() ? static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() : static_cast<TRIBE_Game*>(rge_base_game)->pathFinding()) + STRING_ID_PATH_FINDING_OPTION_BASE, str1, 256);
+    sprintf(str2, rge_base_game->get_string(STRING_ID_PATH_FINDING_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
 
-    sprintf(str2, rge_base_game->get_string(IDS_POPULATION_LIMIT_FORMAT),
+    sprintf(str2, rge_base_game->get_string(STRING_ID_POPULATION_LIMIT_FORMAT),
             static_cast<int>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit()));
     sprintf(description, newline_join_format, description, str2);
         static_cast<T_Scenario*>(this->scenario)->add_description(description);
@@ -889,8 +886,7 @@ unsigned char TRIBE_World::check_game_state() {
     int i;
 
     if (this->game_state == 0) {
-        if (this->victory_type == 2 && this->countdown_victory != 0 &&
-            this->countdown_clock >= 1.0f) {
+        if (this->victory_type == 2 && this->countdown_victory != 0 && this->countdown_clock >= 1.0f) {
             this->countdown_clock -= this->world_time_delta_seconds * 2.0f;
             if (this->countdown_clock < 1.0f) {
                 long team_score[9];
@@ -904,9 +900,7 @@ unsigned char TRIBE_World::check_game_state() {
 
                     if (this->players[i]->allied_victory != 0) {
                         for (int j = 1; j < this->player_num; ++j) {
-                            if (j != i &&
-                                this->players[i]->relation(j) == 0 &&
-                                this->players[j]->relation(i) == 0 &&
+                            if (j != i && this->players[i]->relation(j) == 0 && this->players[j]->relation(i) == 0 &&
                                 this->players[j]->allied_victory != 0) {
                                 team_score[i] += this->players[j]
                                     ->victory_conditions->get_victory_points();
@@ -952,10 +946,8 @@ unsigned char TRIBE_World::check_game_state() {
 
                     if (this->players[i]->allied_victory != 0) {
                         for (int j = 1; j < this->player_num; ++j) {
-                            if (player_team[j] == -1 &&
-                                this->players[j]->allied_victory != 0 &&
-                                this->players[i]->relation(j) == 0 &&
-                                this->players[j]->relation(i) == 0) {
+                            if (player_team[j] == -1 && this->players[j]->allied_victory != 0 &&
+                                this->players[i]->relation(j) == 0 && this->players[j]->relation(i) == 0) {
                                 player_team[j] = team_count;
                                 team_player[team_count][team_size[team_count]++] =
                                     static_cast<TRIBE_Player*>(this->players[j]);
@@ -1170,13 +1162,11 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             die_die_die = 1;
             if (this->player_num > 1) {
                 do {
-                    if (i != player || this->players[player]->isAlly(i) == 0 ||
-                        this->players[i]->isAlly(player) == 0) {
+                    if (i != player || this->players[player]->isAlly(i) == 0 || this->players[i]->isAlly(player) == 0) {
                         RGE_Object_Node* node = this->players[i]->objects->list;
                         while (node != 0) {
                             RGE_Static_Object* object = node->node;
-                            if (object->object_state < 3 &&
-                                object->master_obj->object_group != 1)
+                            if (object->object_state < 3 && object->master_obj->object_group != 1)
                                 object->die_die_die();
                             node = node->next;
                         }
@@ -1190,8 +1180,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             RGE_Object_Node* node = this->players[player]->objects->list;
             while (node != 0) {
                 RGE_Static_Object* object = node->node;
-                if (object->object_state < 3 &&
-                    object->master_obj->object_group != 1)
+                if (object->object_state < 3 && object->master_obj->object_group != 1)
                     object->die_die_die();
                 node = node->next;
             }
@@ -1215,15 +1204,12 @@ void TRIBE_World::cheat(short player, short cheat_code) {
         case 208:
         case 209: {
             int other_player = cheat_code - 200;
-            if ((other_player != player ||
-                 this->players[player]->isAlly(other_player) == 0 ||
-                 this->players[other_player]->isAlly(player) == 0) &&
-                this->players[other_player]->objects->list != 0) {
+            if ((other_player != player || this->players[player]->isAlly(other_player) == 0 ||
+                 this->players[other_player]->isAlly(player) == 0) && this->players[other_player]->objects->list != 0) {
                 RGE_Object_Node* node = this->players[other_player]->objects->list;
                 while (node != 0) {
                     RGE_Static_Object* object = node->node;
-                    if (object->object_state < 3 &&
-                        object->master_obj->object_group != 1)
+                    if (object->object_state < 3 && object->master_obj->object_group != 1)
                         object->die_die_die();
                     node = node->next;
                 }
@@ -1276,8 +1262,7 @@ void TRIBE_World::fill_in_score(TRIBE_Zone_High_Score_Info& info, long score_gro
     player = 1;
     if (1 < this->player_num) {
         do {
-            if ((player != hi_player) &&
-                (this->players[player]->relation(hi_player) == 0) &&
+            if ((player != hi_player) && (this->players[player]->relation(hi_player) == 0) &&
                 (this->players[hi_player]->relation(player) == 0)) {
                 count++;
             }

@@ -337,8 +337,7 @@ void ConstructionAIModule::setReferencePoint(int mXSize, int mYSize, float x, fl
         item->setY(item->y() + y);
         item->setZ(item->z() + z);
 
-        if (item->x() - item->xSize() * 0.5f < 0.0f ||
-            item->y() - item->ySize() * 0.5f < 0.0f ||
+        if (item->x() - item->xSize() * 0.5f < 0.0f || item->y() - item->ySize() * 0.5f < 0.0f ||
             item->x() - item->xSize() * -0.5f > (float)(this->mapXSizeValue - 1) ||
             item->y() - item->ySize() * -0.5f > (float)(this->mapYSizeValue - 1)) {
             this->numberConstructionLotsValue--;

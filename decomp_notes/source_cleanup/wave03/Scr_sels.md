@@ -69,11 +69,11 @@ It reuses these existing reviewed cleanup names:
 
 | Macro | Value | Source use | Text result |
 | --- | --- | --- | --- |
-| `IDS_BUTTON_OK` | `0x0FA1` | OK button caption | `OK` |
-| `IDS_BUTTON_CANCEL` | `0x0FA2` | Cancel button caption | `Cancel` |
-| `IDS_BUTTON_CLOSE` | `0x03EA` | Close button caption | `X` |
-| `IDS_HELP_OK` | `0x7531` | OK button help ID | Missing in checked files |
-| `IDS_HELP_CANCEL` | `0x7532` | Cancel button help ID | Missing in checked files |
+| `STRING_ID_BUTTON_OK` | `0x0FA1` | OK button caption | `OK` |
+| `STRING_ID_BUTTON_CANCEL` | `0x0FA2` | Cancel button caption | `Cancel` |
+| `STRING_ID_BUTTON_CLOSE` | `0x03EA` | Close button caption | `X` |
+| `STRING_ID_HELP_OK` | `0x7531` | OK button help ID | Missing in checked files |
+| `STRING_ID_HELP_CANCEL` | `0x7532` | Cancel button help ID | Missing in checked files |
 
 These macros are existing shared names.
 They are not claimed as original macro names.
@@ -81,7 +81,7 @@ The source did not add a competing definition.
 
 The mission scrollbar also receives numeric ID `0x7532`.
 I left this occurrence numeric because this call targets a scrollbar, not a Cancel button.
-The numeric equality does not prove that `IDS_HELP_CANCEL` describes this use.
+The numeric equality does not prove that `STRING_ID_HELP_CANCEL` describes this use.
 The original value and call stay unchanged.
 
 ## Root-approved scenario IDs
@@ -101,15 +101,15 @@ It must be integrated with the approved root commit.
 
 | ID | Approved cleanup name | Proven source role | Language payload |
 | --- | --- | --- | --- |
-| `0x25FA` | `IDS_SCENARIO_SELECTION_TITLE` | Screen title passed to `create_text` | `Scenarios` |
-| `0x25FD` | `IDS_SCENARIO_LIST_LOADING` | Initial text passed to the scenario list | `Loading list of scenarios...` |
-| `0x25FE` | `IDS_SCENARIO_LIST_TITLE` | Scenario-list title passed to `create_text` | `Select Scenario` |
-| `0x25FF` | `IDS_SCENARIO_PLAYERS_TITLE` | Player-count column title | `Players` |
-| `0x2600` | `IDS_SCENARIO_INSTRUCTIONS_TITLE` | Mission-text title | `Scenario Instructions` |
+| `0x25FA` | `STRING_ID_SCENARIO_SELECTION_TITLE` | Screen title passed to `create_text` | `Scenarios` |
+| `0x25FD` | `STRING_ID_SCENARIO_LIST_LOADING` | Initial text passed to the scenario list | `Loading list of scenarios...` |
+| `0x25FE` | `STRING_ID_SCENARIO_LIST_TITLE` | Scenario-list title passed to `create_text` | `Select Scenario` |
+| `0x25FF` | `STRING_ID_SCENARIO_PLAYERS_TITLE` | Player-count column title | `Players` |
+| `0x2600` | `STRING_ID_SCENARIO_INSTRUCTIONS_TITLE` | Mission-text title | `Scenario Instructions` |
 
 The names above are new cleanup names.
 They are not recovered original macro names.
-The existing `IDS_SCENARIOS_TITLE` name belongs to value `0x2BC7`, so it cannot name `0x25FA`.
+The existing `STRING_ID_SCENARIOS_TITLE` name belongs to value `0x2BC7`, so it cannot name `0x25FA`.
 
 ## Resource provenance
 

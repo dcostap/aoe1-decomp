@@ -8,7 +8,7 @@ TRIBE_Panel_Pop::TRIBE_Panel_Pop(TDrawArea* render_area_in, TPanel* parent_in) {
     RGE_Font* f;
 
     this->handle_mouse_input = 0;
-    f = rge_base_game->get_font(0xB);
+    f = rge_base_game->get_font(RGE_FONT_STANDARD);
     this->font = f->font;
     this->color1 = 0xFFFFFF;
     this->color2 = 0;
@@ -135,8 +135,7 @@ void TRIBE_Panel_Pop::draw() {
     changed_mode = 0;
 
     if (this->mode == 0) {
-        if (static_cast<TRIBE_Game*>(rge_base_game)
-                ->queue_is_waiting_on_pop_counter[player->id] > 0) {
+        if (static_cast<TRIBE_Game*>(rge_base_game) ->queue_is_waiting_on_pop_counter[player->id] > 0) {
             this->mode = 1;
             this->timer = 0.0f;
             changed_mode = 1;
@@ -160,8 +159,7 @@ void TRIBE_Panel_Pop::draw() {
         if (max_pop > max_available)
             max_pop = max_available;
 
-        if (this->ImageBuffer != 0 &&
-            (changed_mode != 0 || this->need_restore != 0 ||
+        if (this->ImageBuffer != 0 && (changed_mode != 0 || this->need_restore != 0 ||
              this->pop != pop || this->max_pop != max_pop)) {
             this->pop = pop;
             this->max_pop = max_pop;
@@ -185,7 +183,7 @@ void TRIBE_Panel_Pop::draw() {
         SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
         old_font = SelectObject(this->render_area->DrawDc, this->font);
         SetBkMode(this->render_area->DrawDc, TRANSPARENT);
-        sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX), this->pop, this->max_pop);
+        sprintf(str, "%s%ld/%ld", this->get_string(STRING_ID_POPULATION_PREFIX), this->pop, this->max_pop);
 
         SetTextColor(this->render_area->DrawDc, this->color2);
 
@@ -225,8 +223,7 @@ finish:
 }
 
 void TRIBE_Panel_Pop::get_true_render_rect(RECT& drawRect) {
-    if (this->ImageBuffer && this->render_area && this->visible &&
-        this->active) {
+    if (this->ImageBuffer && this->render_area && this->visible && this->active) {
         drawRect = this->UsedScreenRect;
     } else {
         drawRect = this->render_rect;
@@ -257,7 +254,7 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
     SetBkMode(this->ImageBuffer->DrawDc, TRANSPARENT);
 
-    sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX), this->pop, this->max_pop);
+    sprintf(str, "%s%ld/%ld", this->get_string(STRING_ID_POPULATION_PREFIX), this->pop, this->max_pop);
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
 
     {

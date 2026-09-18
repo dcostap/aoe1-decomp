@@ -72,7 +72,7 @@ cleanup names use snake case. The module reports distinguish both name classes.
 Request root review for one base-language resource declaration:
 
 ```cpp
-#define IDS_HELP_WINDOW_TITLE 0x03EB
+#define STRING_ID_HELP_WINDOW_TITLE 0x03EB
 ```
 
 This request applies only to the `RGE_Base_Game::~RGE_Base_Game` lookup.

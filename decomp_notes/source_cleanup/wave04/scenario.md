@@ -141,8 +141,8 @@ The missing results mean that the requested IDs have no resource row.
 They do not mean that a present row has empty text.
 
 Root approved the shared resource names in commit `bf943f3339643ee5beca7dd74e98b4cb729e48d3`.
-The broad `0x2775` None role uses the approved name `IDS_FILE_NONE`.
-The `0x277B` AI-file Random role uses the approved name `IDS_AI_FILE_RANDOM`.
+The broad `0x2775` None role uses the approved name `STRING_ID_FILE_NONE`.
+The `0x277B` AI-file Random role uses the approved name `STRING_ID_AI_FILE_RANDOM`.
 These are approved cleanup names, not recovered original macro names.
 
 `RGE_Base_Game` sets the base DLL name to `language.dll` and loads it into `StringTable`.

@@ -95,8 +95,8 @@ close, credits, and base-action paths.
 - Applied 1TBS function brace placement.
 - Joined the short action signature on one line.
 - Applied all eleven approved dialog resource macros. The four existing macros
-  are `IDS_PRODUCT_TITLE` (`0x2419`), `IDS_COPYRIGHT_PREFIX` (`0x241B`),
-  `IDS_COPYRIGHT_SUFFIX` (`0x241C`), and `IDS_COPYRIGHT_SEPARATOR` (`0x2424`).
+  are `STRING_ID_PRODUCT_TITLE` (`0x2419`), `STRING_ID_COPYRIGHT_PREFIX` (`0x241B`),
+  `STRING_ID_COPYRIGHT_SUFFIX` (`0x241C`), and `STRING_ID_COPYRIGHT_SEPARATOR` (`0x2424`).
   The seven newly approved macros are listed in the shared-resource section.
 
 No new source comment was needed. No function, class, member, global, type,
@@ -136,17 +136,17 @@ empty string-table slot. `missing` means no matching block or slot.
 
 | ID | Name status and macro name | Proven purpose | Base `language.dll` | Current `languagex.dll` | Pinned XPack `languagex.dll` |
 | --- | --- | --- | --- | --- | --- |
-| `0x2419` | Existing `IDS_PRODUCT_TITLE` | About-dialog product title. | `Microsoft© Age of Empires™` | `Microsoft® Age of Empires® Expansion:` | `Microsoft© Age of Empires, the Rise of Rome™` |
-| `0x241A` | Applied `IDS_PRODUCT_VERSION` | About-dialog version text. | `Version 1.0b` | `Version 1.0` | `Version 1.0` |
-| `0x241B` | Existing `IDS_COPYRIGHT_PREFIX` | First copyright segment. | `© & ` | empty | empty |
-| `0x241C` | Existing `IDS_COPYRIGHT_SUFFIX` | Final copyright segment. | `1997 Microsoft Corporation. All rights reserved.` | `1997-1998 Microsoft Corporation. All rights reserved.` | `1998 Microsoft Corporation. All rights reserved.` |
-| `0x241D` | Applied `IDS_COPYRIGHT_ENSEMBLE` | Developed by Ensemble Studios text. | `Developed by Ensemble Studios Corp. for Microsoft Corporation.` | empty | empty |
-| `0x241E` | Applied `IDS_PRODUCT_ID_LABEL` | Product ID label beside the registry value. | `Product ID:` | empty | empty |
-| `0x241F` | Applied `IDS_ABOUT_COPYRIGHT_WARNING` | About-dialog copyright warning text. | See exact records below. | See exact records below. | empty |
-| `0x2420` | Applied `IDS_ABOUT_CREDITS_BUTTON` | Credits button caption. | `Credits` | empty | missing |
-| `0x2421` | Applied `IDS_ABOUT_CLOSE_BUTTON` | Close button caption. | `Close` | empty | missing |
-| `0x2423` | Applied `IDS_GENIE_ENGINE_COPYRIGHT` | Genie engine copyright text. | `Genie engine technology © Copyright 1995, 1996, 1997 by Ensemble Studios Corp. All rights reserved.` | empty | missing |
-| `0x2424` | Existing `IDS_COPYRIGHT_SEPARATOR` | Selects split or combined copyright layout. | empty | empty | missing |
+| `0x2419` | Existing `STRING_ID_PRODUCT_TITLE` | About-dialog product title. | `Microsoft© Age of Empires™` | `Microsoft® Age of Empires® Expansion:` | `Microsoft© Age of Empires, the Rise of Rome™` |
+| `0x241A` | Applied `STRING_ID_PRODUCT_VERSION` | About-dialog version text. | `Version 1.0b` | `Version 1.0` | `Version 1.0` |
+| `0x241B` | Existing `STRING_ID_COPYRIGHT_PREFIX` | First copyright segment. | `© & ` | empty | empty |
+| `0x241C` | Existing `STRING_ID_COPYRIGHT_SUFFIX` | Final copyright segment. | `1997 Microsoft Corporation. All rights reserved.` | `1997-1998 Microsoft Corporation. All rights reserved.` | `1998 Microsoft Corporation. All rights reserved.` |
+| `0x241D` | Applied `STRING_ID_COPYRIGHT_ENSEMBLE` | Developed by Ensemble Studios text. | `Developed by Ensemble Studios Corp. for Microsoft Corporation.` | empty | empty |
+| `0x241E` | Applied `STRING_ID_PRODUCT_ID_LABEL` | Product ID label beside the registry value. | `Product ID:` | empty | empty |
+| `0x241F` | Applied `STRING_ID_ABOUT_COPYRIGHT_WARNING` | About-dialog copyright warning text. | See exact records below. | See exact records below. | empty |
+| `0x2420` | Applied `STRING_ID_ABOUT_CREDITS_BUTTON` | Credits button caption. | `Credits` | empty | missing |
+| `0x2421` | Applied `STRING_ID_ABOUT_CLOSE_BUTTON` | Close button caption. | `Close` | empty | missing |
+| `0x2423` | Applied `STRING_ID_GENIE_ENGINE_COPYRIGHT` | Genie engine copyright text. | `Genie engine technology © Copyright 1995, 1996, 1997 by Ensemble Studios Corp. All rights reserved.` | empty | missing |
+| `0x2424` | Existing `STRING_ID_COPYRIGHT_SEPARATOR` | Selects split or combined copyright layout. | empty | empty | missing |
 
 The exact `0x241F` records are:
 
@@ -158,7 +158,7 @@ The exact `0x2424` empty base and current-expansion slots cause the constructor
 to use its split copyright path. The pinned expansion record is missing, so the
 base fallback still produces an empty separator.
 
-The existing `IDS_COPYRIGHT_WARNING` macro has value `0x2425`, not `0x241F`.
+The existing `STRING_ID_COPYRIGHT_WARNING` macro has value `0x2425`, not `0x241F`.
 I did not use it for this dialog. The two IDs have separate source uses and
 must not be merged by numeric proximity or similar purpose.
 
@@ -184,13 +184,13 @@ The worker-local import commit is
 macro names:
 
 ```cpp
-#define IDS_PRODUCT_VERSION         0x241A
-#define IDS_COPYRIGHT_ENSEMBLE      0x241D
-#define IDS_PRODUCT_ID_LABEL        0x241E
-#define IDS_ABOUT_COPYRIGHT_WARNING 0x241F
-#define IDS_ABOUT_CREDITS_BUTTON    0x2420
-#define IDS_ABOUT_CLOSE_BUTTON      0x2421
-#define IDS_GENIE_ENGINE_COPYRIGHT  0x2423
+#define STRING_ID_PRODUCT_VERSION         0x241A
+#define STRING_ID_COPYRIGHT_ENSEMBLE      0x241D
+#define STRING_ID_PRODUCT_ID_LABEL        0x241E
+#define STRING_ID_ABOUT_COPYRIGHT_WARNING 0x241F
+#define STRING_ID_ABOUT_CREDITS_BUTTON    0x2420
+#define STRING_ID_ABOUT_CLOSE_BUTTON      0x2421
+#define STRING_ID_GENIE_ENGINE_COPYRIGHT  0x2423
 ```
 
 Each applied definition has one proven `RT_STRING` role and one resource

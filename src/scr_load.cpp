@@ -38,10 +38,10 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    if (this->create_text(this, &this->screenTitle, IDS_SAVED_GAMES_TITLE, 20, 10, 600, 30, 1, 1, 0, 0) == 0) {
+    if (this->create_text(this, &this->screenTitle, STRING_ID_SAVED_GAMES_TITLE, 20, 10, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0) == 0) {
         return;
     }
-    if (this->create_text(this, &this->listTitle, IDS_SELECT_SAVED_GAME_TITLE, 20, 45, 600, 20, 4, 0, 0, 0) == 0) {
+    if (this->create_text(this, &this->listTitle, STRING_ID_SELECT_SAVED_GAME_TITLE, 20, 45, 600, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0) == 0) {
         return;
     }
     if (this->create_list(this, &this->list, 20, 65, 600, 352, RGE_FONT_STANDARD) == 0) {
@@ -51,21 +51,21 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
         return;
     }
 
-    this->scrollbar->set_help_info(IDS_HELP_SAVED_GAME_NAME, -1);
+    this->scrollbar->set_help_info(STRING_ID_HELP_SAVED_GAME_NAME, -1);
 
     TButtonPanel** ok_button = &this->okButton;
-    if (this->create_button(this, ok_button, IDS_BUTTON_OK, 0, 30, 440, 180, 30, 0, 0, 0) == 0) {
+    if (this->create_button(this, ok_button, STRING_ID_BUTTON_OK, 0, 30, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0) {
         return;
     }
-    if (this->create_button(this, &this->deleteButton, IDS_BUTTON_DELETE, 0, 230, 440, 180, 30, 0, 0, 0) == 0) {
+    if (this->create_button(this, &this->deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0) {
         return;
     }
-    if (this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 430, 440, 180, 30, 0, 0, 0) == 0) {
+    if (this->create_button(this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0) {
         return;
     }
 
-    (*ok_button)->set_help_info(IDS_HELP_OK, -1);
-    this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
+    (*ok_button)->set_help_info(STRING_ID_HELP_OK, -1);
+    this->cancelButton->set_help_info(STRING_ID_HELP_CANCEL, -1);
     TButtonPanel* cancel_button = this->cancelButton;
     cancel_button->hotkey = 0x1B;
     cancel_button->hotkey_shift = 0;
@@ -148,8 +148,7 @@ long TribeLoadSavedGameScreen::action(TPanel* fromPanel, long actionIn, unsigned
     char fileNameNoExt[260];
 
     if (fromPanel != 0) {
-        if (fromPanel->panelName() != 0 &&
-            strcmp(fromPanel->panelName(), "Cancel Dialog") == 0) {
+        if (fromPanel->panelName() != 0 && strcmp(fromPanel->panelName(), "Cancel Dialog") == 0) {
             panel_system.destroyPanel("Cancel Dialog");
 
             if (actionIn == 0) {
@@ -176,7 +175,7 @@ long TribeLoadSavedGameScreen::action(TPanel* fromPanel, long actionIn, unsigned
             if (*this->list->currentLine() != 0) {
                 char text[556];
 
-                this->get_string(IDS_CONFIRM_DELETE_FILE, fileName, 256);
+                this->get_string(STRING_ID_CONFIRM_DELETE_FILE, fileName, 256);
                 sprintf(text, fileName, this->list->currentLine());
                 this->popupYesNoDialog(text, "Cancel Dialog", TEASY_POPUP_WIDTH, 100);
             }
@@ -210,7 +209,7 @@ long TribeLoadSavedGameScreen::action(TPanel* fromPanel, long actionIn, unsigned
                 }
                 loaded = static_cast<TRIBE_Game*>(rge_base_game)->load_game(fileName);
                 if (loaded == 0) {
-                    this->popupOKDialog(IDS_ERROR_CANNOT_LOAD_SAVED_GAME, 0, TEASY_POPUP_WIDTH, 100);
+                    this->popupOKDialog(STRING_ID_ERROR_CANNOT_LOAD_SAVED_GAME, 0, TEASY_POPUP_WIDTH, 100);
                     return 1;
                 }
             }
@@ -220,8 +219,7 @@ long TribeLoadSavedGameScreen::action(TPanel* fromPanel, long actionIn, unsigned
             }
 
             if (panel_system.panel("Game Screen") != 0) {
-                if (rge_base_game->singlePlayerGame() == 1 &&
-                    rge_base_game->save_paused == 0) {
+                if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
                 }
                 panel_system.setCurrentPanel("Game Screen", 0);

@@ -322,8 +322,7 @@ int __cdecl DSParseWaveResource(void* pvRes, void** ppWaveHeader,
                 }
                 *ppWaveHeader = pdw;
 
-                if ((!ppbData || *ppbData) &&
-                    (!pdwDataSize || *pdwDataSize)) {
+                if ((!ppbData || *ppbData) && (!pdwDataSize || *pdwDataSize)) {
                     return 1;
                 }
             }
@@ -359,8 +358,7 @@ int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn,
         goto error;
     }
 
-    if (pckInRIFF->ckid != mmioFOURCC('R', 'I', 'F', 'F') ||
-        pckInRIFF->fccType != mmioFOURCC('W', 'A', 'V', 'E')) {
+    if (pckInRIFF->ckid != mmioFOURCC('R', 'I', 'F', 'F') || pckInRIFF->fccType != mmioFOURCC('W', 'A', 'V', 'E')) {
         err = 0xE101;
         goto error;
     }
@@ -375,8 +373,7 @@ int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn,
         goto error;
     }
 
-    if (mmioRead(hmmioIn, (char*)&pcmWaveFormat, sizeof(pcmWaveFormat)) !=
-        sizeof(pcmWaveFormat)) {
+    if (mmioRead(hmmioIn, (char*)&pcmWaveFormat, sizeof(pcmWaveFormat)) != sizeof(pcmWaveFormat)) {
         err = 0xE102;
         goto error;
     }
@@ -384,8 +381,7 @@ int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn,
     if (pcmWaveFormat.wf.wFormatTag == WAVE_FORMAT_PCM) {
         cbExtraAlloc = 0;
     } else {
-        if (mmioRead(hmmioIn, (char*)&cbExtraAlloc, sizeof(cbExtraAlloc)) !=
-            sizeof(cbExtraAlloc)) {
+        if (mmioRead(hmmioIn, (char*)&cbExtraAlloc, sizeof(cbExtraAlloc)) != sizeof(cbExtraAlloc)) {
             err = 0xE102;
             goto error;
         }
@@ -536,8 +532,7 @@ int __cdecl WaveCreateFile(char* pszFileName, HMMIO* phmmioOut,
             goto done;
         }
     } else {
-        if ((UINT)mmioWrite(*phmmioOut, (const char*)pwfxDest, 18 + pwfxDest->cbSize) !=
-            (18 + pwfxDest->cbSize)) {
+        if ((UINT)mmioWrite(*phmmioOut, (const char*)pwfxDest, 18 + pwfxDest->cbSize) != (18 + pwfxDest->cbSize)) {
             goto fail;
         }
     }
@@ -552,8 +547,7 @@ int __cdecl WaveCreateFile(char* pszFileName, HMMIO* phmmioOut,
         goto done;
     }
 
-    if (mmioWrite(*phmmioOut, (const char*)&dwFactChunk, sizeof(dwFactChunk)) !=
-        sizeof(dwFactChunk)) {
+    if (mmioWrite(*phmmioOut, (const char*)&dwFactChunk, sizeof(dwFactChunk)) != sizeof(dwFactChunk)) {
         goto fail;
     }
 
@@ -661,8 +655,7 @@ int __cdecl WaveCopyUselessChunks(HMMIO* phmmioIn, MMCKINFO* pckIn,
                 break;
             }
             if (pckIn->ckid != mmioFOURCC('P', 'A', 'D', ' ')) {
-                if (pckIn->ckid == mmioFOURCC('D', 'I', 'S', 'P') ||
-                    pckIn->ckid == mmioFOURCC('p', 'l', 's', 't')) {
+                if (pckIn->ckid == mmioFOURCC('D', 'I', 'S', 'P') || pckIn->ckid == mmioFOURCC('p', 'l', 's', 't')) {
                     riffCopyChunk(*phmmioIn, *phmmioOut, pckIn);
                 }
             }
@@ -694,8 +687,7 @@ int __cdecl riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst,
     if (mmioCreateChunk(hmmioDst, (LPMMCKINFO)&ck, 0) != 0) {
         goto fail;
     }
-    if (mmioRead(hmmioSrc, data, pckIn->cksize) !=
-        (LONG)pckIn->cksize) {
+    if (mmioRead(hmmioSrc, data, pckIn->cksize) != (LONG)pckIn->cksize) {
         goto fail;
     }
     if (mmioWrite(hmmioDst, data, pckIn->cksize) != pckIn->cksize) {
@@ -806,8 +798,7 @@ void __cdecl ds_stream_init(void* hWnd, LPDIRECTSOUND lpd,
 
 void __cdecl ds_stream_exit(void) {
     if (_ds_ready != 0) {
-        if ((_bFileOpen != 0) || (_bPlaying != 0) ||
-            (_bTimerInstalled != 0)) {
+        if ((_bFileOpen != 0) || (_bPlaying != 0) || (_bTimerInstalled != 0)) {
             ds_stream_stop();
         }
         _ds_ready = 0;
@@ -1027,8 +1018,7 @@ void __stdcall ds_stream_time_func(unsigned int uTimerID,
     stream = ds_stream_buffer;
     IDirectSoundBuffer_GetCurrentPosition(stream, &dwPlay, &dwWrite);
 
-    if (ds_write_cursor < dwPlay &&
-        dwPlay < ds_write_cursor + ds_chunk_size) {
+    if (ds_write_cursor < dwPlay && dwPlay < ds_write_cursor + ds_chunk_size) {
         goto done;
     }
 
@@ -1113,8 +1103,7 @@ void __stdcall ds_stream_time_func(unsigned int uTimerID,
                     } while (uChkErr < dwLen1);
                 }
             }
-        } else if (dwLen1 != 0 && ds_stream_stop_requested != 0 &&
-                   _wiWave != 0 && lpWrite1 != 0) {
+        } else if (dwLen1 != 0 && ds_stream_stop_requested != 0 && _wiWave != 0 && lpWrite1 != 0) {
             memset(lpWrite1, ((_wiWave->wBitsPerSample != 8) - 1) & 0x80, dwLen1);
         }
 
@@ -1150,8 +1139,7 @@ void __stdcall ds_stream_time_func(unsigned int uTimerID,
                         } while (uChkErr < dwLen2);
                     }
                 }
-            } else if (ds_stream_stop_requested != 0 && _wiWave != 0 &&
-                       lpWrite2 != 0) {
+            } else if (ds_stream_stop_requested != 0 && _wiWave != 0 && lpWrite2 != 0) {
                 memset(lpWrite2, ((_wiWave->wBitsPerSample != 8) - 1) & 0x80, dwLen2);
             }
         }

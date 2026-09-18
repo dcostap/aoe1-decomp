@@ -168,46 +168,46 @@ entries.
 
 | ID or range | Exact base text | Call-site purpose | Proposed cleanup name |
 | --- | --- | --- | --- |
-| `0x1023` | `S` | Score button label | `IDS_SCORE_BUTTON_LABEL` |
-| `0x1024` | `Score (F4)` | Score button message text | `IDS_SCORE_BUTTON_MESSAGE` |
-| `0x1037` | `B` | Build command hotkey | `IDS_HOTKEY_BUILD` |
-| `0x1038` | `S` | Stop command hotkey | `IDS_HOTKEY_STOP` |
-| `0x1039` | `G` | Group command hotkey | `IDS_HOTKEY_GROUP` |
-| `0x103A` | `U` | Ungroup command hotkey | `IDS_HOTKEY_UNGROUP` |
-| `0x103B` | `X` | More command hotkey | `IDS_HOTKEY_MORE` |
+| `0x1023` | `S` | Score button label | `STRING_ID_SCORE_BUTTON_LABEL` |
+| `0x1024` | `Score (F4)` | Score button message text | `STRING_ID_SCORE_BUTTON_MESSAGE` |
+| `0x1037` | `B` | Build command hotkey | `STRING_ID_HOTKEY_BUILD` |
+| `0x1038` | `S` | Stop command hotkey | `STRING_ID_HOTKEY_STOP` |
+| `0x1039` | `G` | Group command hotkey | `STRING_ID_HOTKEY_GROUP` |
+| `0x103A` | `U` | Ungroup command hotkey | `STRING_ID_HOTKEY_UNGROUP` |
+| `0x103B` | `X` | More command hotkey | `STRING_ID_HOTKEY_MORE` |
 | `0x103C` | Empty slot | No reviewed source call; no macro request | None |
-| `0x103D` | `D` | Stand-ground command hotkey | `IDS_HOTKEY_STAND_GROUND` |
-| `0x103E` | `T` | Attack-ground command hotkey | `IDS_HOTKEY_ATTACK_GROUND` |
-| `0x103F` | `H` | Town-center view hotkey | `IDS_HOTKEY_VIEW_TOWN_CENTER` |
-| `0x1040`–`0x1047` | `N`, `B`, `D`, `A`, `K`, `L`, `P`, `Y` | Eight `command_select_building` hotkeys | `IDS_HOTKEY_SELECT_BUILDING_BASE` with the existing `+ i` range |
-| `0x1048` | `E` | Heal command hotkey | `IDS_HOTKEY_HEAL` |
-| `0x1049` | `C` | Convert command hotkey | `IDS_HOTKEY_CONVERT` |
-| `0x104A` | `M` | Move command hotkey | `IDS_HOTKEY_MOVE` |
-| `0x104B` | `W` | Work command hotkey | `IDS_HOTKEY_WORK` |
-| `0x104C` | `A` | Attack command hotkey | `IDS_HOTKEY_ATTACK` |
-| `0x104D` | `R` | Repair command hotkey | `IDS_HOTKEY_REPAIR` |
-| `0x104E` | `L` | Unload command hotkey | `IDS_HOTKEY_UNLOAD` |
-| `0x1069` | `Stone Age` | Stone Age help string | `IDS_HELP_AGE_STONE` |
-| `0x106A` | `Tool Age` | Tool Age help string | `IDS_HELP_AGE_TOOL` |
-| `0x106B` | `Bronze Age` | Bronze Age help string | `IDS_HELP_AGE_BRONZE` |
-| `0x106C` | `Iron Age` | Iron Age help string | `IDS_HELP_AGE_IRON` |
-| `0x0BE0` | `Click an area to move there.` | Move-command status message | `IDS_MESSAGE_MOVE` |
-| `0x0BE1` | `Click an item or unit to work on it.` | Work-command status message | `IDS_MESSAGE_WORK` |
-| `0x0BE2` | `Click the item or unit to attack.` | Attack-command status message | `IDS_MESSAGE_ATTACK` |
-| `0x0BE3` | `Click the unit to heal.` | Heal-command status message | `IDS_MESSAGE_HEAL` |
-| `0x0BE4` | `Click the unit to convert.` | Convert-command status message | `IDS_MESSAGE_CONVERT` |
-| `0x0BE5` | `Click an area to attack ground.` | Attack-ground status message | `IDS_MESSAGE_ATTACK_GROUND` |
-| `0x0BEC` | `Click the building or boat to repair.` | Repair-command status message | `IDS_MESSAGE_REPAIR` |
-| `0x0BED` | `Click where you want the transport to unload.` | Unload-command status message | `IDS_MESSAGE_UNLOAD` |
-| `0x0BF3` | `Game speed changed.` | Multiplayer speed-change message | `IDS_GAME_SPEED_CHANGED` |
-| `0x0BF4` | `Game paused/unpaused.` | Multiplayer pause message | `IDS_MESSAGE_GAME_PAUSED` |
-| `0x0BFE` | `You cannot chat after you have resigned or been defeated.` | Chat restriction error | `IDS_ERROR_CHAT_AFTER_DEFEAT` |
-| `0x2329` | `GAME PAUSED` | Pause overlay | `IDS_GAME_PAUSED` |
-| `0x232E` | `Game over. Click Menu/Quit Game to exit.` | Quit overlay | `IDS_GAME_OVER_MESSAGE` |
-| `0x4E25` | `Inventory` | Inventory panel help | `IDS_HELP_INVENTORY` |
-| `0x4E33` | `Diamond Map` | Diamond-map panel help | `IDS_HELP_DIAMOND_MAP` |
-| `0x4E35` | `Age` | Age panel help | `IDS_HELP_AGE` |
-| `0x4E43` | `Ungroup Button` | Ungroup button help | `IDS_HELP_UNGROUP_BUTTON` |
+| `0x103D` | `D` | Stand-ground command hotkey | `STRING_ID_HOTKEY_STAND_GROUND` |
+| `0x103E` | `T` | Attack-ground command hotkey | `STRING_ID_HOTKEY_ATTACK_GROUND` |
+| `0x103F` | `H` | Town-center view hotkey | `STRING_ID_HOTKEY_VIEW_TOWN_CENTER` |
+| `0x1040`–`0x1047` | `N`, `B`, `D`, `A`, `K`, `L`, `P`, `Y` | Eight `command_select_building` hotkeys | `STRING_ID_HOTKEY_SELECT_BUILDING_BASE` with the existing `+ i` range |
+| `0x1048` | `E` | Heal command hotkey | `STRING_ID_HOTKEY_HEAL` |
+| `0x1049` | `C` | Convert command hotkey | `STRING_ID_HOTKEY_CONVERT` |
+| `0x104A` | `M` | Move command hotkey | `STRING_ID_HOTKEY_MOVE` |
+| `0x104B` | `W` | Work command hotkey | `STRING_ID_HOTKEY_WORK` |
+| `0x104C` | `A` | Attack command hotkey | `STRING_ID_HOTKEY_ATTACK` |
+| `0x104D` | `R` | Repair command hotkey | `STRING_ID_HOTKEY_REPAIR` |
+| `0x104E` | `L` | Unload command hotkey | `STRING_ID_HOTKEY_UNLOAD` |
+| `0x1069` | `Stone Age` | Stone Age help string | `STRING_ID_HELP_AGE_STONE` |
+| `0x106A` | `Tool Age` | Tool Age help string | `STRING_ID_HELP_AGE_TOOL` |
+| `0x106B` | `Bronze Age` | Bronze Age help string | `STRING_ID_HELP_AGE_BRONZE` |
+| `0x106C` | `Iron Age` | Iron Age help string | `STRING_ID_HELP_AGE_IRON` |
+| `0x0BE0` | `Click an area to move there.` | Move-command status message | `STRING_ID_MESSAGE_MOVE` |
+| `0x0BE1` | `Click an item or unit to work on it.` | Work-command status message | `STRING_ID_MESSAGE_WORK` |
+| `0x0BE2` | `Click the item or unit to attack.` | Attack-command status message | `STRING_ID_MESSAGE_ATTACK` |
+| `0x0BE3` | `Click the unit to heal.` | Heal-command status message | `STRING_ID_MESSAGE_HEAL` |
+| `0x0BE4` | `Click the unit to convert.` | Convert-command status message | `STRING_ID_MESSAGE_CONVERT` |
+| `0x0BE5` | `Click an area to attack ground.` | Attack-ground status message | `STRING_ID_MESSAGE_ATTACK_GROUND` |
+| `0x0BEC` | `Click the building or boat to repair.` | Repair-command status message | `STRING_ID_MESSAGE_REPAIR` |
+| `0x0BED` | `Click where you want the transport to unload.` | Unload-command status message | `STRING_ID_MESSAGE_UNLOAD` |
+| `0x0BF3` | `Game speed changed.` | Multiplayer speed-change message | `STRING_ID_GAME_SPEED_CHANGED` |
+| `0x0BF4` | `Game paused/unpaused.` | Multiplayer pause message | `STRING_ID_MESSAGE_GAME_PAUSED` |
+| `0x0BFE` | `You cannot chat after you have resigned or been defeated.` | Chat restriction error | `STRING_ID_ERROR_CHAT_AFTER_DEFEAT` |
+| `0x2329` | `GAME PAUSED` | Pause overlay | `STRING_ID_GAME_PAUSED` |
+| `0x232E` | `Game over. Click Menu/Quit Game to exit.` | Quit overlay | `STRING_ID_GAME_OVER_MESSAGE` |
+| `0x4E25` | `Inventory` | Inventory panel help | `STRING_ID_HELP_INVENTORY` |
+| `0x4E33` | `Diamond Map` | Diamond-map panel help | `STRING_ID_HELP_DIAMOND_MAP` |
+| `0x4E35` | `Age` | Age panel help | `STRING_ID_HELP_AGE` |
+| `0x4E43` | `Ungroup Button` | Ungroup button help | `STRING_ID_HELP_UNGROUP_BUTTON` |
 
 The base file returns `?` for `0x0FA9`. The source uses that ID as the text
 for button panel 15. The text is known, but this pass does not establish a
@@ -221,30 +221,30 @@ accepts the help-resource namespace.
 
 | ID | Call-site role | Proposed cleanup name |
 | --- | --- | --- |
-| `0x19BB8` | Inventory panel help string | `IDS_HELP_INVENTORY_STRING` |
-| `0x265AC` | Inventory panel help page | `IDS_HELP_INVENTORY_PAGE` |
-| `0x1A25C` | Trade-attribute button 0 help string | `IDS_HELP_TRADE_ATTRIBUTE_0` |
-| `0x1A25D` | Trade-attribute button 1 help string | `IDS_HELP_TRADE_ATTRIBUTE_1` |
-| `0x1A25E` | Trade-attribute button 2 help string | `IDS_HELP_TRADE_ATTRIBUTE_2` |
-| `0x265AF` | Trade-attribute help page | `IDS_HELP_TRADE_ATTRIBUTE_PAGE` |
-| `0x1D4CD` | Menu button help | `IDS_HELP_MENU` |
-| `0x1D4CF` | Chat button help | `IDS_HELP_CHAT` |
-| `0x1D4D1` | Diplomacy button help | `IDS_HELP_DIPLOMACY` |
-| `0x1D4D7` | More button help | `IDS_HELP_MORE` |
-| `0x1D4D9` | Cancel button help | `IDS_HELP_CANCEL_COMMAND` |
-| `0x1D4DB` | Help button help | `IDS_HELP_HELP` |
-| `0x1D4DC` | Score button help | `IDS_HELP_SCORE` |
-| `0x1D4DD` | Stop button help | `IDS_HELP_STOP` |
-| `0x1D4DF` | Build button help | `IDS_HELP_BUILD` |
-| `0x1D4E1` | Group button help | `IDS_HELP_GROUP` |
-| `0x1D4E3` | Ungroup button help | `IDS_HELP_UNGROUP_ALTERNATE` |
-| `0x1D4E5` | Cancel-building button help | `IDS_HELP_CANCEL_BUILDING` |
-| `0x1D4E9` | Unload button help | `IDS_HELP_UNLOAD` |
-| `0x1D4EA` | Stand-ground button help | `IDS_HELP_STAND_GROUND` |
-| `0x1D4EB` | Attack-ground button help | `IDS_HELP_ATTACK_GROUND` |
-| `0x1D4F1` | Heal button help | `IDS_HELP_HEAL` |
-| `0x1D4F2` | Convert button help | `IDS_HELP_CONVERT` |
-| `0x1D4F6` | Repair button help | `IDS_HELP_REPAIR` |
+| `0x19BB8` | Inventory panel help string | `STRING_ID_HELP_INVENTORY_STRING` |
+| `0x265AC` | Inventory panel help page | `STRING_ID_HELP_INVENTORY_PAGE` |
+| `0x1A25C` | Trade-attribute button 0 help string | `STRING_ID_HELP_TRADE_ATTRIBUTE_0` |
+| `0x1A25D` | Trade-attribute button 1 help string | `STRING_ID_HELP_TRADE_ATTRIBUTE_1` |
+| `0x1A25E` | Trade-attribute button 2 help string | `STRING_ID_HELP_TRADE_ATTRIBUTE_2` |
+| `0x265AF` | Trade-attribute help page | `STRING_ID_HELP_TRADE_ATTRIBUTE_PAGE` |
+| `0x1D4CD` | Menu button help | `STRING_ID_HELP_MENU` |
+| `0x1D4CF` | Chat button help | `STRING_ID_HELP_CHAT` |
+| `0x1D4D1` | Diplomacy button help | `STRING_ID_HELP_DIPLOMACY` |
+| `0x1D4D7` | More button help | `STRING_ID_HELP_MORE` |
+| `0x1D4D9` | Cancel button help | `STRING_ID_HELP_CANCEL_COMMAND` |
+| `0x1D4DB` | Help button help | `STRING_ID_HELP_HELP` |
+| `0x1D4DC` | Score button help | `STRING_ID_HELP_SCORE` |
+| `0x1D4DD` | Stop button help | `STRING_ID_HELP_STOP` |
+| `0x1D4DF` | Build button help | `STRING_ID_HELP_BUILD` |
+| `0x1D4E1` | Group button help | `STRING_ID_HELP_GROUP` |
+| `0x1D4E3` | Ungroup button help | `STRING_ID_HELP_UNGROUP_ALTERNATE` |
+| `0x1D4E5` | Cancel-building button help | `STRING_ID_HELP_CANCEL_BUILDING` |
+| `0x1D4E9` | Unload button help | `STRING_ID_HELP_UNLOAD` |
+| `0x1D4EA` | Stand-ground button help | `STRING_ID_HELP_STAND_GROUND` |
+| `0x1D4EB` | Attack-ground button help | `STRING_ID_HELP_ATTACK_GROUND` |
+| `0x1D4F1` | Heal button help | `STRING_ID_HELP_HEAL` |
+| `0x1D4F2` | Convert button help | `STRING_ID_HELP_CONVERT` |
+| `0x1D4F6` | Repair button help | `STRING_ID_HELP_REPAIR` |
 
 The proposed help names remain new cleanup names. The source call sites prove
 their button roles, but the checked language DLLs provide no text for them.
@@ -261,17 +261,17 @@ type-correction commit `7d50116c57c6bbab86f2448df4b3937d11d464ae`. It includes
 
 The source substitutions are:
 
-- `0x1024`: `IDS_SCORE_BUTTON_MESSAGE`.
-- Root approved `IDS_SCORE_BUTTON_LABEL` for `0x1023`, but the source keeps
+- `0x1024`: `STRING_ID_SCORE_BUTTON_MESSAGE`.
+- Root approved `STRING_ID_SCORE_BUTTON_LABEL` for `0x1023`, but the source keeps
   `0x1023L` numeric because the macro has no `L` suffix. This preserves the
   exact literal token type.
 - `0x1037`–`0x103B`, `0x103D`–`0x103F`, and `0x1048`–`0x104E`: the matching
-  `IDS_HOTKEY_*` names. The source keeps `i +
-  IDS_HOTKEY_SELECT_BUILDING_BASE` for the `0x1040` range.
-- `0x1069`–`0x106C`: the four `IDS_HELP_AGE_*` names.
+  `STRING_ID_HOTKEY_*` names. The source keeps `i +
+  STRING_ID_HOTKEY_SELECT_BUILDING_BASE` for the `0x1040` range.
+- `0x1069`–`0x106C`: the four `STRING_ID_HELP_AGE_*` names.
 - `0x0BE0`–`0x0BE5`, `0x0BEC`, `0x0BED`, and `0x0BF4`: the matching
-  `IDS_MESSAGE_*` names.
-- `0x0BF3` uses the existing `IDS_GAME_SPEED_CHANGED` name.
+  `STRING_ID_MESSAGE_*` names.
+- `0x0BF3` uses the existing `STRING_ID_GAME_SPEED_CHANGED` name.
 - `0x0BFE`, `0x2329`, `0x232E`, `0x4E25`, `0x4E33`, `0x4E35`, and `0x4E43`:
   the approved error, overlay, and panel-help names.
 
@@ -335,7 +335,7 @@ Missing and empty entries do not supply invented text.
    reason to defer them.
 2. Root approved the base-language ID requests in
    `include/resource_ids.h`. The source preserves the `i +
-   IDS_HOTKEY_SELECT_BUILDING_BASE` range.
+   STRING_ID_HOTKEY_SELECT_BUILDING_BASE` range.
 3. Root should decide whether the missing RT_STRING help IDs belong in the
    shared base-language namespace or a separate help-resource namespace.
 4. Root should review the unresolved `temp_value` and `low_fps_player` PDB

@@ -60,7 +60,7 @@ Root review found one unnecessary `scr_cams` call wrap. The same worker restored
 Root review found one remaining `scr_cj` constructor brace. The same worker applied 1TBS.
 
 The `scr_main` worker traced `0x1D4F7` through `TMessageDialog::setup`.
-The report now proposes `IDS_HELP_NOTICE` for displayed notice text.
+The report now proposes `STRING_ID_HELP_NOTICE` for displayed notice text.
 
 The `scr_cam` report first cited old pilot extraction artifacts. The same worker re-extracted data under slot 25.
 
@@ -196,14 +196,14 @@ All requested IDs are missing from both checked expansion files. Runtime lookup 
 
 | Value | Applied macro | Proven role |
 | --- | --- | --- |
-| `0x24C3` | `IDS_SAVE_GAME_TITLE_BASE` | Save-screen title range base. |
-| `0x24C6` | `IDS_ERROR_SAVE_GAME_NAME_REQUIRED` | Empty save-game name error. |
-| `0x24C7` | `IDS_ERROR_SAVE_SCENARIO_NAME_REQUIRED` | Empty scenario name error. |
-| `0x24C8` | `IDS_CONFIRM_OVERWRITE_FILE` | Overwrite prompt. |
-| `0x7671` | `IDS_HELP_SELECT_SAVED_GAME` | Save-list help. |
-| `0x0962` | `IDS_ERROR_CANNOT_SAVE_GAME` | Save-game failure. |
-| `0x0963` | `IDS_ERROR_CANNOT_SAVE_SCENARIO` | Scenario-save failure. |
-| `0x0450` | `IDS_STATUS_SAVING_SCENARIO` | Scenario-save status. |
+| `0x24C3` | `STRING_ID_SAVE_GAME_TITLE_BASE` | Save-screen title range base. |
+| `0x24C6` | `STRING_ID_ERROR_SAVE_GAME_NAME_REQUIRED` | Empty save-game name error. |
+| `0x24C7` | `STRING_ID_ERROR_SAVE_SCENARIO_NAME_REQUIRED` | Empty scenario name error. |
+| `0x24C8` | `STRING_ID_CONFIRM_OVERWRITE_FILE` | Overwrite prompt. |
+| `0x7671` | `STRING_ID_HELP_SELECT_SAVED_GAME` | Save-list help. |
+| `0x0962` | `STRING_ID_ERROR_CANNOT_SAVE_GAME` | Save-game failure. |
+| `0x0963` | `STRING_ID_ERROR_CANNOT_SAVE_SCENARIO` | Scenario-save failure. |
+| `0x0450` | `STRING_ID_STATUS_SAVING_SCENARIO` | Scenario-save status. |
 
 ### `scr_name`
 
@@ -211,17 +211,17 @@ All requested IDs are missing from both checked expansion files. Runtime lookup 
 
 | Value | Applied macro | Proven role |
 | --- | --- | --- |
-| `0x29FE` | `IDS_SELECT_PLAYER_TITLE` | Screen title. |
-| `0x29FF` | `IDS_PLAYER_NAME_LABEL` | Player-name label. |
-| `0x2A00` | `IDS_BUTTON_NEW_PLAYER` | New-player button. |
-| `0x2A01` | `IDS_BUTTON_REMOVE_PLAYER` | Remove-player button. |
-| `0x2A02` | `IDS_CONFIRM_REMOVE_PLAYER` | Remove-player format prompt. |
-| `0x2A03` | `IDS_NAME_DIALOG_TITLE` | Name-dialog title. |
-| `0x2A04` | `IDS_NEW_PLAYER_NAME_LABEL` | New-player label. |
-| `0x03EA` | `IDS_BUTTON_CLOSE` | Close control. |
-| `0x765C` | `IDS_HELP_PLAYER_NAME_LIST` | Player-list help. |
-| `0x765D` | `IDS_HELP_ADD_PLAYER_NAME` | Add-name help. |
-| `0x765E` | `IDS_HELP_REMOVE_PLAYER_NAME` | Remove-name help. |
+| `0x29FE` | `STRING_ID_SELECT_PLAYER_TITLE` | Screen title. |
+| `0x29FF` | `STRING_ID_PLAYER_NAME_LABEL` | Player-name label. |
+| `0x2A00` | `STRING_ID_BUTTON_NEW_PLAYER` | New-player button. |
+| `0x2A01` | `STRING_ID_BUTTON_REMOVE_PLAYER` | Remove-player button. |
+| `0x2A02` | `STRING_ID_CONFIRM_REMOVE_PLAYER` | Remove-player format prompt. |
+| `0x2A03` | `STRING_ID_NAME_DIALOG_TITLE` | Name-dialog title. |
+| `0x2A04` | `STRING_ID_NEW_PLAYER_NAME_LABEL` | New-player label. |
+| `0x03EA` | `STRING_ID_BUTTON_CLOSE` | Close control. |
+| `0x765C` | `STRING_ID_HELP_PLAYER_NAME_LIST` | Player-list help. |
+| `0x765D` | `STRING_ID_HELP_ADD_PLAYER_NAME` | Add-name help. |
+| `0x765E` | `STRING_ID_HELP_REMOVE_PLAYER_NAME` | Remove-name help. |
 
 ### `scr_sing`
 
@@ -229,34 +229,34 @@ All requested IDs are missing from both checked expansion files. Runtime lookup 
 
 | Value | Applied macro | Proven role |
 | --- | --- | --- |
-| `0x03EA` | `IDS_BUTTON_CLOSE` | Close control. |
-| `0x2404` | `IDS_MENU_SINGLE_PLAYER_TITLE` | Screen title. |
-| `0x2405` | `IDS_MENU_SCENARIO` | Scenario route. |
-| `0x2407` | `IDS_MENU_SAVED_GAME` | Saved-game route. |
-| `0x2408` | `IDS_MENU_CAMPAIGN` | Campaign route. |
-| `0x2409` | `IDS_MENU_SINGLE_PLAYER_CANCEL` | Return route. |
-| `0x240A` | `IDS_MENU_RANDOM_MAP` | Random-map route. |
-| `0x240B` | `IDS_MENU_DEATH_MATCH` | Death-match route. |
+| `0x03EA` | `STRING_ID_BUTTON_CLOSE` | Close control. |
+| `0x2404` | `STRING_ID_MENU_SINGLE_PLAYER_TITLE` | Screen title. |
+| `0x2405` | `STRING_ID_MENU_SCENARIO` | Scenario route. |
+| `0x2407` | `STRING_ID_MENU_SAVED_GAME` | Saved-game route. |
+| `0x2408` | `STRING_ID_MENU_CAMPAIGN` | Campaign route. |
+| `0x2409` | `STRING_ID_MENU_SINGLE_PLAYER_CANCEL` | Return route. |
+| `0x240A` | `STRING_ID_MENU_RANDOM_MAP` | Random-map route. |
+| `0x240B` | `STRING_ID_MENU_DEATH_MATCH` | Death-match route. |
 
 ### `scr_main`
 
 | Value | Applied macro | Proven role | Runtime expansion | Pinned expansion |
 | --- | --- | --- | --- | --- |
-| `0x23F2` | `IDS_MENU_SINGLE_PLAYER` | Single-player route. | Missing | Missing |
-| `0x23F3` | `IDS_MENU_MULTIPLAYER` | Multiplayer route. | Missing | Missing |
-| `0x23F5` | `IDS_MENU_HELP` | Help route. | Missing | Missing |
-| `0x23F6` | `IDS_MENU_SCENARIO_BUILDER` | Scenario-builder route. | Missing | Missing |
-| `0x23F7` | `IDS_MENU_EXIT` | Exit route. | Missing | Missing |
-| `0x2419` | `IDS_PRODUCT_TITLE` | Product title. | Override text | Override text |
-| `0x241B` | `IDS_COPYRIGHT_PREFIX` | Copyright prefix. | Empty | Empty |
-| `0x241C` | `IDS_COPYRIGHT_SUFFIX` | Copyright suffix. | Override text | Override text |
-| `0x2424` | `IDS_COPYRIGHT_SEPARATOR` | Copyright separator. | Empty | Missing |
-| `0x2425` | `IDS_COPYRIGHT_WARNING` | Copyright warning. | Empty | Missing |
-| `0x03EA` | `IDS_BUTTON_CLOSE` | Close control. | Missing | Missing |
-| `0x07D7` | `IDS_ERROR_LOAD_GAME_DATA` | Data-load error. | Empty | Missing |
-| `0x07D8` | `IDS_ERROR_INSERT_CD_SINGLE_PLAYER` | Single-player CD error. | Empty | Missing |
-| `0x07DA` | `IDS_ERROR_INSERT_CD_SCENARIO_BUILDER` | Scenario-builder CD error. | Empty | Missing |
-| `0x1D4F7` | `IDS_HELP_NOTICE` | Displayed help notice; exact text unknown. | Missing | Missing |
+| `0x23F2` | `STRING_ID_MENU_SINGLE_PLAYER` | Single-player route. | Missing | Missing |
+| `0x23F3` | `STRING_ID_MENU_MULTIPLAYER` | Multiplayer route. | Missing | Missing |
+| `0x23F5` | `STRING_ID_MENU_HELP` | Help route. | Missing | Missing |
+| `0x23F6` | `STRING_ID_MENU_SCENARIO_BUILDER` | Scenario-builder route. | Missing | Missing |
+| `0x23F7` | `STRING_ID_MENU_EXIT` | Exit route. | Missing | Missing |
+| `0x2419` | `STRING_ID_PRODUCT_TITLE` | Product title. | Override text | Override text |
+| `0x241B` | `STRING_ID_COPYRIGHT_PREFIX` | Copyright prefix. | Empty | Empty |
+| `0x241C` | `STRING_ID_COPYRIGHT_SUFFIX` | Copyright suffix. | Override text | Override text |
+| `0x2424` | `STRING_ID_COPYRIGHT_SEPARATOR` | Copyright separator. | Empty | Missing |
+| `0x2425` | `STRING_ID_COPYRIGHT_WARNING` | Copyright warning. | Empty | Missing |
+| `0x03EA` | `STRING_ID_BUTTON_CLOSE` | Close control. | Missing | Missing |
+| `0x07D7` | `STRING_ID_ERROR_LOAD_GAME_DATA` | Data-load error. | Empty | Missing |
+| `0x07D8` | `STRING_ID_ERROR_INSERT_CD_SINGLE_PLAYER` | Single-player CD error. | Empty | Missing |
+| `0x07DA` | `STRING_ID_ERROR_INSERT_CD_SCENARIO_BUILDER` | Scenario-builder CD error. | Empty | Missing |
+| `0x1D4F7` | `STRING_ID_HELP_NOTICE` | Displayed help notice; exact text unknown. | Missing | Missing |
 
 ### `scr_cam`
 
@@ -264,19 +264,19 @@ All requested IDs are missing from both checked expansion files. Runtime lookup 
 
 | Value | Applied macro | Proven role |
 | --- | --- | --- |
-| `0x2BC1` | `IDS_CAMPAIGN_EDITOR_TITLE` | Editor title. |
-| `0x2BC2` | `IDS_CAMPAIGN_FILENAME_LABEL` | Filename label. |
-| `0x2BC4` | `IDS_BUTTON_SAVE` | Save button. |
-| `0x2BC5` | `IDS_BUTTON_ADD` | Add button. |
-| `0x2BC6` | `IDS_BUTTON_REMOVE` | Remove button. |
-| `0x2BC7` | `IDS_SCENARIOS_TITLE` | Available-scenarios label. |
-| `0x2BC8` | `IDS_CAMPAIGN_SCENARIOS_TITLE` | Campaign-scenarios label. |
-| `0x2BC9` | `IDS_CONFIRM_SAVE_CAMPAIGN` | Save-changes format prompt. |
-| `0x2BCA` | `IDS_DEFAULT_CAMPAIGN_NAME` | Default campaign name. |
-| `0x2BCB` | `IDS_ERROR_CAMPAIGN_REQUIRES_SCENARIO` | Empty-campaign error. |
-| `0x2BCC` | `IDS_ERROR_CAMPAIGN_NAME_REQUIRED` | Empty-name error. |
-| `0x2BD5` | `IDS_BUTTON_MOVE_SCENARIO_UP` | Move-up button. |
-| `0x2BD6` | `IDS_BUTTON_MOVE_SCENARIO_DOWN` | Move-down button. |
+| `0x2BC1` | `STRING_ID_CAMPAIGN_EDITOR_TITLE` | Editor title. |
+| `0x2BC2` | `STRING_ID_CAMPAIGN_FILENAME_LABEL` | Filename label. |
+| `0x2BC4` | `STRING_ID_BUTTON_SAVE` | Save button. |
+| `0x2BC5` | `STRING_ID_BUTTON_ADD` | Add button. |
+| `0x2BC6` | `STRING_ID_BUTTON_REMOVE` | Remove button. |
+| `0x2BC7` | `STRING_ID_SCENARIOS_TITLE` | Available-scenarios label. |
+| `0x2BC8` | `STRING_ID_CAMPAIGN_SCENARIOS_TITLE` | Campaign-scenarios label. |
+| `0x2BC9` | `STRING_ID_CONFIRM_SAVE_CAMPAIGN` | Save-changes format prompt. |
+| `0x2BCA` | `STRING_ID_DEFAULT_CAMPAIGN_NAME` | Default campaign name. |
+| `0x2BCB` | `STRING_ID_ERROR_CAMPAIGN_REQUIRES_SCENARIO` | Empty-campaign error. |
+| `0x2BCC` | `STRING_ID_ERROR_CAMPAIGN_NAME_REQUIRED` | Empty-name error. |
+| `0x2BD5` | `STRING_ID_BUTTON_MOVE_SCENARIO_UP` | Move-up button. |
+| `0x2BD6` | `STRING_ID_BUTTON_MOVE_SCENARIO_DOWN` | Move-down button. |
 
 ### `scr_cj`
 
@@ -284,17 +284,17 @@ All requested IDs are missing from both checked expansion files. Runtime lookup 
 
 | Value | Applied macro | Proven role |
 | --- | --- | --- |
-| `0x25A0` | `IDS_MULTIPLAYER_JOIN` | Join button. |
-| `0x25A1` | `IDS_MULTIPLAYER_SHOW_GAMES` | Show-games button. |
-| `0x25A2` | `IDS_MULTIPLAYER_CREATE` | Create button. |
-| `0x25A3` | `IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME` | Join-failure message. |
-| `0x25A4` | `IDS_MULTIPLAYER_NO_GAMES_TO_JOIN` | No-games message. |
-| `0x25A6` | `IDS_MULTIPLAYER_CREATE_GAME_TITLE` | Create-game title. |
-| `0x25A8` | `IDS_MULTIPLAYER_SELECT_GAME_TO_JOIN` | Join-list title. |
-| `0x25A9` | `IDS_MULTIPLAYER_LOOKING_FOR_GAMES` | Refresh progress. |
-| `0x25AA` | `IDS_MULTIPLAYER_GAME_NAME` | Game-name label. |
-| `0x25AB` | `IDS_MULTIPLAYER_NO_GAMES_INSTRUCTIONS` | Empty-list instructions. |
-| `0x25AD` | `IDS_MULTIPLAYER_UNABLE_TO_CREATE_GAME` | Create-failure message. |
+| `0x25A0` | `STRING_ID_MULTIPLAYER_JOIN` | Join button. |
+| `0x25A1` | `STRING_ID_MULTIPLAYER_SHOW_GAMES` | Show-games button. |
+| `0x25A2` | `STRING_ID_MULTIPLAYER_CREATE` | Create button. |
+| `0x25A3` | `STRING_ID_MULTIPLAYER_UNABLE_TO_JOIN_GAME` | Join-failure message. |
+| `0x25A4` | `STRING_ID_MULTIPLAYER_NO_GAMES_TO_JOIN` | No-games message. |
+| `0x25A6` | `STRING_ID_MULTIPLAYER_CREATE_GAME_TITLE` | Create-game title. |
+| `0x25A8` | `STRING_ID_MULTIPLAYER_SELECT_GAME_TO_JOIN` | Join-list title. |
+| `0x25A9` | `STRING_ID_MULTIPLAYER_LOOKING_FOR_GAMES` | Refresh progress. |
+| `0x25AA` | `STRING_ID_MULTIPLAYER_GAME_NAME` | Game-name label. |
+| `0x25AB` | `STRING_ID_MULTIPLAYER_NO_GAMES_INSTRUCTIONS` | Empty-list instructions. |
+| `0x25AD` | `STRING_ID_MULTIPLAYER_UNABLE_TO_CREATE_GAME` | Create-failure message. |
 
 `scr_set` and `scr_cams` needed no new resource definitions.
 

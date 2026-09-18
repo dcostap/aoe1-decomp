@@ -255,8 +255,7 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
     char commentTemp2;
 
     strncpy(this->buildListNameValue, lName, 63);
-    if (strcmp(this->buildListNameValue, "NONE") == 0 ||
-        this->buildListNameValue == 0 ||
+    if (strcmp(this->buildListNameValue, "NONE") == 0 || this->buildListNameValue == 0 ||
         strlen(this->buildListNameValue) == 0) {
         goto no_build_list;
     }
@@ -328,8 +327,7 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
             }
         }
 
-        if ((buildCategory == 0 || buildCategory == 2) && quantity >= 0 &&
-            quantity < player->master_object_num &&
+        if ((buildCategory == 0 || buildCategory == 2) && quantity >= 0 && quantity < player->master_object_num &&
             player->master_objects[quantity] != 0) {
             RGE_Master_Static_Object* master = player->master_objects[quantity];
             ySize = master->radius_x;
@@ -390,8 +388,7 @@ int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int 
 
     BuildItem* insertAfter = this->buildList.next;
     int itemNumber = 0;
-    while (insertAfter != &this->buildList &&
-           itemNumber < insertAfterItemNumber) {
+    while (insertAfter != &this->buildList && itemNumber < insertAfterItemNumber) {
         insertAfter = insertAfter->next;
         itemNumber++;
     }

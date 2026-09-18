@@ -46,7 +46,7 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned
 ## Constants and comments
 
 - Added `#include "../include/resource_ids.h"`.
-- Replaced `0x0FA1` with existing `IDS_BUTTON_OK` and `0x0FA2` with existing `IDS_BUTTON_CANCEL` in button creation calls. The macros expand to the same numeric values.
+- Replaced `0x0FA1` with existing `STRING_ID_BUTTON_OK` and `0x0FA2` with existing `STRING_ID_BUTTON_CANCEL` in button creation calls. The macros expand to the same numeric values.
 - No new constant was defined.
 - No source comment was added. The module has no comment need that is stronger than the existing code evidence.
 - The eleven proved join-screen IDs now use shared resource macros. Their numeric values remain unchanged.
@@ -67,19 +67,19 @@ The base `language.dll` results use language `0x0409` and provide the exact text
 
 | ID | Purpose evidence in `scr_cj.cpp` | Exact base text | Proposed cleanup macro |
 | --- | --- | --- | --- |
-| `0x25A0` | Join button caption in `TribeJoinScreen` | `Join` | `IDS_MULTIPLAYER_JOIN` |
-| `0x25A1` | Refresh/show-games button caption | `Show Games` | `IDS_MULTIPLAYER_SHOW_GAMES` |
-| `0x25A2` | Create button caption | `Create` | `IDS_MULTIPLAYER_CREATE` |
-| `0x25A3` | Join-failure format lookup and timeout dialog | `Unable to join game.` | `IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME` |
-| `0x25A4` | No-games dialog | `There are no games to join.` | `IDS_MULTIPLAYER_NO_GAMES_TO_JOIN` |
-| `0x25A6` | Create-game dialog title | `Create Game` | `IDS_MULTIPLAYER_CREATE_GAME_TITLE` |
-| `0x25A8` | Join-screen list title | `Select Game to Join` | `IDS_MULTIPLAYER_SELECT_GAME_TO_JOIN` |
-| `0x25A9` | List refresh progress text | `Looking for games...` | `IDS_MULTIPLAYER_LOOKING_FOR_GAMES` |
-| `0x25AA` | Create-dialog game-name label | `Game Name` | `IDS_MULTIPLAYER_GAME_NAME` |
-| `0x25AB` | Empty-list instructions | `Click Show Games to see a list of games. Click Create to start a new game.` | `IDS_MULTIPLAYER_NO_GAMES_INSTRUCTIONS` |
-| `0x25AD` | Create-failure dialog | `Unable to create game. For TCP/IP games, you may need to connect to the Internet before starting Age of Empires.` | `IDS_MULTIPLAYER_UNABLE_TO_CREATE_GAME` |
+| `0x25A0` | Join button caption in `TribeJoinScreen` | `Join` | `STRING_ID_MULTIPLAYER_JOIN` |
+| `0x25A1` | Refresh/show-games button caption | `Show Games` | `STRING_ID_MULTIPLAYER_SHOW_GAMES` |
+| `0x25A2` | Create button caption | `Create` | `STRING_ID_MULTIPLAYER_CREATE` |
+| `0x25A3` | Join-failure format lookup and timeout dialog | `Unable to join game.` | `STRING_ID_MULTIPLAYER_UNABLE_TO_JOIN_GAME` |
+| `0x25A4` | No-games dialog | `There are no games to join.` | `STRING_ID_MULTIPLAYER_NO_GAMES_TO_JOIN` |
+| `0x25A6` | Create-game dialog title | `Create Game` | `STRING_ID_MULTIPLAYER_CREATE_GAME_TITLE` |
+| `0x25A8` | Join-screen list title | `Select Game to Join` | `STRING_ID_MULTIPLAYER_SELECT_GAME_TO_JOIN` |
+| `0x25A9` | List refresh progress text | `Looking for games...` | `STRING_ID_MULTIPLAYER_LOOKING_FOR_GAMES` |
+| `0x25AA` | Create-dialog game-name label | `Game Name` | `STRING_ID_MULTIPLAYER_GAME_NAME` |
+| `0x25AB` | Empty-list instructions | `Click Show Games to see a list of games. Click Create to start a new game.` | `STRING_ID_MULTIPLAYER_NO_GAMES_INSTRUCTIONS` |
+| `0x25AD` | Create-failure dialog | `Unable to create game. For TCP/IP games, you may need to connect to the Internet before starting Age of Empires.` | `STRING_ID_MULTIPLAYER_UNABLE_TO_CREATE_GAME` |
 
-Existing shared mappings `IDS_BUTTON_OK` (`0x0FA1`, text `OK`) and `IDS_BUTTON_CANCEL` (`0x0FA2`, text `Cancel`) are already defined in `include/resource_ids.h` and are used by this cleanup. No duplicate definitions are requested.
+Existing shared mappings `STRING_ID_BUTTON_OK` (`0x0FA1`, text `OK`) and `STRING_ID_BUTTON_CANCEL` (`0x0FA2`, text `Cancel`) are already defined in `include/resource_ids.h` and are used by this cleanup. No duplicate definitions are requested.
 
 ## Output-risk review
 

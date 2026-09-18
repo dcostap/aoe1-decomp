@@ -145,7 +145,7 @@ no handwritten source declaration. It remains outside `src/scr_vc.cpp`.
 
 ## Resource IDs
 
-The source uses the existing shared macro `IDS_BUTTON_OK` for `0x0FA1`.
+The source uses the existing shared macro `STRING_ID_BUTTON_OK` for `0x0FA1`.
 The source now also uses the four approved mission macros for `0x2655`,
 `0x2A31`, `0x2A32`, and `0x2A37`. All five macros preserve their original
 literal values and add no storage. The source already included the shared
@@ -153,11 +153,11 @@ header. The macro names are descriptive cleanup names, not original symbols.
 
 | ID | Source use and approved name | Runtime base result | Runtime expansion result | Pinned original expansion result |
 | --- | --- | --- | --- | --- |
-| `0x0FA1` | `ok_button` caption; existing `IDS_BUTTON_OK` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409` (`1033`), exact text `OK` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
-| `0x2655` | Fallback title when `Get_scenario_name()` returns null or empty; approved `IDS_MISSION_TITLE_INSTRUCTIONS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Instructions` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
-| `0x2A31` | `text_buttons[0]` caption; it selects scenario message index `4`; approved `IDS_MISSION_HISTORY` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `History` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
-| `0x2A32` | `text_buttons[1]` caption; it selects scenario message index `0`; approved `IDS_MISSION_INSTRUCTIONS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Instructions` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
-| `0x2A37` | `text_buttons[2]` caption; it selects scenario message index `1`; approved `IDS_MISSION_HINTS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Hints` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+| `0x0FA1` | `ok_button` caption; existing `STRING_ID_BUTTON_OK` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409` (`1033`), exact text `OK` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+| `0x2655` | Fallback title when `Get_scenario_name()` returns null or empty; approved `STRING_ID_MISSION_TITLE_INSTRUCTIONS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Instructions` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+| `0x2A31` | `text_buttons[0]` caption; it selects scenario message index `4`; approved `STRING_ID_MISSION_HISTORY` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `History` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+| `0x2A32` | `text_buttons[1]` caption; it selects scenario message index `0`; approved `STRING_ID_MISSION_INSTRUCTIONS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Instructions` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+| `0x2A37` | `text_buttons[2]` caption; it selects scenario message index `1`; approved `STRING_ID_MISSION_HINTS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Hints` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
 
 ### Root approval record
 
@@ -168,10 +168,10 @@ This worker did not edit the header. The follow-up source commit only replaced
 the four direct literals with the approved macro names.
 
 ```cpp
-#define IDS_MISSION_TITLE_INSTRUCTIONS 0x2655
-#define IDS_MISSION_HISTORY            0x2A31
-#define IDS_MISSION_INSTRUCTIONS       0x2A32
-#define IDS_MISSION_HINTS              0x2A37
+#define STRING_ID_MISSION_TITLE_INSTRUCTIONS 0x2655
+#define STRING_ID_MISSION_HISTORY            0x2A31
+#define STRING_ID_MISSION_INSTRUCTIONS       0x2A32
+#define STRING_ID_MISSION_HINTS              0x2A37
 ```
 
 This approval is separate from the worker evidence above. The packets and
@@ -226,7 +226,7 @@ explicit behavior.
 - Parameter-name changes do not change ABI types, order, or symbol identity.
 - The local `setup_file` to `info_file` rename does not change its `char[260]`
   storage or its setup call.
-- `IDS_BUTTON_OK` expands to the existing `0x0FA1` value. No new storage or
+- `STRING_ID_BUTTON_OK` expands to the existing `0x0FA1` value. No new storage or
   layout was added.
 - Formatting and the added include can change debug line records or compiler
   details. Generated code, relocations, and direct-call targets are unvalidated.

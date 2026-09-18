@@ -228,8 +228,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
         // The shipped check reads target_obj (+0x10), not
         // target_obj2 (+0x14), before clearing target_obj.
         // LIKELY INTENT: Clear the current target before state 3.
-        if (this->target_obj != 0 &&
-            this->target_obj->attribute_amount_held <= DAT_00575150) {
+        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= DAT_00575150) {
             this->set_target_obj(0);
         }
         this->set_state(3);
@@ -248,12 +247,10 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
 }
 
 unsigned char TRIBE_Action_Hunt::update() {
-    if (this->targetID != -1 &&
-        this->obj->owner->world->object(this->targetID) == 0) {
+    if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
     }
-    if (this->target2ID != -1 &&
-        this->obj->owner->world->object(this->target2ID) == 0) {
+    if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
     }
 
@@ -414,8 +411,7 @@ unsigned char TRIBE_Action_Hunt::update() {
         this->target_obj->set_attribute_amount(-give_amount, 1, 1);
         this->obj->set_attribute_amount(adjusted_amount, 1, 0);
 
-        if (this->obj->attribute_amount_held < max_hold &&
-            this->target_obj->attribute_amount_held > DAT_00575150) {
+        if (this->obj->attribute_amount_held < max_hold && this->target_obj->attribute_amount_held > DAT_00575150) {
             return 0;
         }
         this->set_state(8);
@@ -446,8 +442,7 @@ unsigned char TRIBE_Action_Hunt::update() {
                     this->set_state(8);
                     return 0;
                 }
-                if (this->obj->distance_to_object(this->target_obj2) >
-                    DAT_00575168) {
+                if (this->obj->distance_to_object(this->target_obj2) > DAT_00575168) {
                     this->timer = -3.0f;
                     this->obj->stop_moving();
                     return 0;

@@ -177,8 +177,7 @@ unsigned char RGE_RMM_Object_Generator::to_close(
         long dy = y - *p;
         if (dy < 0) dy = -dy;
 
-        if (dx < info_line.land_inner_radius &&
-            dy < info_line.land_inner_radius) {
+        if (dx < info_line.land_inner_radius && dy < info_line.land_inner_radius) {
             return 1;
         }
     }
@@ -275,8 +274,7 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
 
     while (this->pop_stack(obj_stack, x, y, zone) && count > 0) {
         if (info_line.terrain >= 0) {
-            if ((this->map_row_offset[y][x].terrain_type & 0x1f) !=
-                (unsigned int)info_line.terrain) {
+            if ((this->map_row_offset[y][x].terrain_type & 0x1f) != (unsigned int)info_line.terrain) {
                 goto next;
             }
         }
@@ -336,8 +334,7 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info_line) {
 
     while (this->pop_stack(obj_stack, x, y, zone) && count > 0) {
         if (info_line.terrain >= 0) {
-            if ((this->map_row_offset[y][x].terrain_type & 0x1f) !=
-                (unsigned int)info_line.terrain) {
+            if ((this->map_row_offset[y][x].terrain_type & 0x1f) != (unsigned int)info_line.terrain) {
                 goto next;
             }
         }
@@ -429,14 +426,9 @@ void RGE_RMM_Object_Generator::place_land_objects(
         land_zone = map_zone->get_zone_info(map_x, map_y);
 
         long count = object->number_of_groups;
-        while (this->pop_stack(obj_stack, y, min_x0, zone) != 0 &&
-               count > 0) {
-            if ((unsigned char)land_zone ==
-                    map_zone->get_zone_info(y, min_x0) &&
-                (object->terrain < 0 ||
-                 (this->map_row_offset[min_x0][y].terrain_type & 0x1f) ==
-                     object->terrain) &&
-                (y <= min_x1 || y >= max_x ||
+        while (this->pop_stack(obj_stack, y, min_x0, zone) != 0 && count > 0) {
+            if ((unsigned char)land_zone == map_zone->get_zone_info(y, min_x0) && (object->terrain < 0 ||
+                 (this->map_row_offset[min_x0][y].terrain_type & 0x1f) == object->terrain) && (y <= min_x1 || y >= max_x ||
                  min_x0 <= min_y1 || min_x0 >= min_y0)) {
                 float fx = (float)y;
                 RGE_Master_Static_Object* placement_master =
@@ -466,8 +458,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
                         break;
                     }
                     --count;
-                } else if (object->group_flag == 0 &&
-                           obj_stack.next == 0) {
+                } else if (object->group_flag == 0 && obj_stack.next == 0) {
                     player->make_new_object(object->obj_id, fx, fy, 0, 1);
                 }
             }
@@ -499,8 +490,7 @@ void RGE_RMM_Object_Generator::place_group(
     if (count < 1) count = 1;
 
     while (pop_stack(obj_stack, col, x, cost) && count > 0) {
-        if (info_line.terrain < 0 ||
-            ((this->map_row_offset[x][col].terrain_type & 0x1f) ==
+        if (info_line.terrain < 0 || ((this->map_row_offset[x][col].terrain_type & 0x1f) ==
              (unsigned int)info_line.terrain)) {
             fx = (float)col;
             fy = (float)x;

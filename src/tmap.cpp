@@ -130,8 +130,7 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     } else if (tile->terrain_type == 18) {
         RGE_Object_Node* node = tile->objects.list;
         while (node != 0) {
-            if (node->node->master_obj->object_group == 15 &&
-                node->node->object_state < 8)
+            if (node->node->master_obj->object_group == 15 && node->node->object_state < 8)
                 forest_object = 1;
             node = node->next;
         }
@@ -190,9 +189,7 @@ void TRIBE_Map::change_terrain(short map_col, short map_row, unsigned char new_t
             unsigned char save_border_shape = tile->border_shape;
             this->get_border_type(col2, row);
 
-            if (player != 0 &&
-                (tile->border_type != old_border ||
-                 tile->border_shape != save_border_shape) &&
+            if (player != 0 && (tile->border_type != old_border || tile->border_shape != save_border_shape) &&
                 world->game_state != 3) {
                 player->diam_tile_list.add_node(col2, row);
             }
@@ -327,8 +324,7 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1][x1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= 0x108 &&
-                node->node->master_obj->id <= 0x111)
+            if (node->node->master_obj->id >= 0x108 && node->node->master_obj->id <= 0x111)
                 return node->node;
             node = node->next;
         }
@@ -336,28 +332,23 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1 + 1][x1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= 0x108 &&
-                node->node->master_obj->id <= 0x111)
+            if (node->node->master_obj->id >= 0x108 && node->node->master_obj->id <= 0x111)
                 return node->node;
             node = node->next;
         }
     }
 
-    if (RGE_Object_Node* node =
-            this->map_row_offset[y1][x1 + 1].objects.list) {
+    if (RGE_Object_Node* node = this->map_row_offset[y1][x1 + 1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= 0x108 &&
-                node->node->master_obj->id <= 0x111)
+            if (node->node->master_obj->id >= 0x108 && node->node->master_obj->id <= 0x111)
                 return node->node;
             node = node->next;
         }
     }
 
-    if (RGE_Object_Node* node =
-            this->map_row_offset[y1 + 1][x1 + 1].objects.list) {
+    if (RGE_Object_Node* node = this->map_row_offset[y1 + 1][x1 + 1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= 0x108 &&
-                node->node->master_obj->id <= 0x111)
+            if (node->node->master_obj->id >= 0x108 && node->node->master_obj->id <= 0x111)
                 return node->node;
             node = node->next;
         }
@@ -375,10 +366,8 @@ TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* cliff) {
     int facet = (int)cliff->facet;
     int master_obj_id = (int)cliff->master_obj->id;
     for (int i = 0; i < 0x100; ++i) {
-        if ((cliff_master_table[i].id == master_obj_id &&
-             cliff_master_table[i].facet == facet) ||
-            (cliff_master_table[i].id2 == master_obj_id &&
-             cliff_master_table[i].facet2 == facet)) {
+        if ((cliff_master_table[i].id == master_obj_id && cliff_master_table[i].facet == facet) ||
+            (cliff_master_table[i].id2 == master_obj_id && cliff_master_table[i].facet2 == facet)) {
             return cliff_master_table[i].info;
         }
     }
@@ -699,9 +688,7 @@ unsigned char TRIBE_Map::do_cliff_brush(long x, long y, unsigned char cliff_id, 
     if (old_x == cliff_x && this->old_cliff_y == cliff_y)
         return 0;
 
-    if (cliff_x * 3 + 2 >= this->map_width ||
-        cliff_y * 3 + 2 >= this->map_height ||
-        cliff_x < 0 || cliff_y < 0)
+    if (cliff_x * 3 + 2 >= this->map_width || cliff_y * 3 + 2 >= this->map_height || cliff_x < 0 || cliff_y < 0)
         return 0;
 
     if (old_x != -1 && this->old_cliff_y != -1) {
@@ -940,33 +927,25 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
                     short place8 = 0;
                     short west = 0;
 
-                    if (row > 0 &&
-                        this->water(til[offset2].terrain_type & 0x1f))
+                    if (row > 0 && this->water(til[offset2].terrain_type & 0x1f))
                         place3 = 1;
-                    if (row < this->map_height - 1 &&
-                        this->water(til[map_width].terrain_type & 0x1f))
+                    if (row < this->map_height - 1 && this->water(til[map_width].terrain_type & 0x1f))
                         place7 = 1;
-                    if (col > 0 &&
-                        this->water(til[-1].terrain_type & 0x1f))
+                    if (col > 0 && this->water(til[-1].terrain_type & 0x1f))
                         west = 1;
-                    if (col < this->map_width - 1 &&
-                        this->water(til[1].terrain_type & 0x1f))
+                    if (col < this->map_width - 1 && this->water(til[1].terrain_type & 0x1f))
                         place5 = 1;
 
                     if (row > 0) {
-                        if (col > 0 &&
-                            this->water(til[offset1].terrain_type & 0x1f))
+                        if (col > 0 && this->water(til[offset1].terrain_type & 0x1f))
                             place2 = 1;
-                        if (col < this->map_width - 1 &&
-                            this->water(til[offset3].terrain_type & 0x1f))
+                        if (col < this->map_width - 1 && this->water(til[offset3].terrain_type & 0x1f))
                             place4 = 1;
                     }
                     if (row < this->map_height - 1) {
-                        if (col > 0 &&
-                            this->water(til[offset7].terrain_type & 0x1f))
+                        if (col > 0 && this->water(til[offset7].terrain_type & 0x1f))
                             place8 = 1;
-                        if (col < this->map_width - 1 &&
-                            this->water(til[offset5].terrain_type & 0x1f))
+                        if (col < this->map_width - 1 && this->water(til[offset5].terrain_type & 0x1f))
                             place6 = 1;
                     }
 
@@ -976,37 +955,25 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
                             fix = 1;
                     } else {
                         if (place2) {
-                            if ((place4 && !place3) ||
-                                (place5 && !place4) ||
-                                (place8 && !west) ||
-                                (place7 && !place8))
+                            if ((place4 && !place3) || (place5 && !place4) || (place8 && !west) || (place7 && !place8))
                                 fix = 1;
                             else if (place6 && !place7 && !place5)
                                 fix = 1;
                         }
                         if (place4 && !fix) {
-                            if ((place2 && !place3) ||
-                                (west && !place2) ||
-                                (place6 && !place5) ||
-                                (place7 && !place6))
+                            if ((place2 && !place3) || (west && !place2) || (place6 && !place5) || (place7 && !place6))
                                 fix = 1;
                             else if (place8 && !west && !place7)
                                 fix = 1;
                         }
                         if (place6 && !fix) {
-                            if ((place4 && !place5) ||
-                                (place3 && !place4) ||
-                                (place8 && !place7) ||
-                                (west && !place8))
+                            if ((place4 && !place5) || (place3 && !place4) || (place8 && !place7) || (west && !place8))
                                 fix = 1;
                             else if (place2 && !west && !place3)
                                 fix = 1;
                         }
                         if (place8 && !fix) {
-                            if ((place2 && !west) ||
-                                (place3 && !place2) ||
-                                (place6 && !place7) ||
-                                (place5 && !place6))
+                            if ((place2 && !west) || (place3 && !place2) || (place6 && !place7) || (place5 && !place6))
                                 fix = 1;
                             else if (place4 && !place5 && !place3)
                                 fix = 1;

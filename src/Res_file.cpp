@@ -85,8 +85,7 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
         }
         newFile->header = (resfile_header*)malloc(rHeader.directory_size);
         lseek(fHandle, 0, 0);
-        if (read(fHandle, newFile->header, rHeader.directory_size) !=
-            rHeader.directory_size) {
+        if (read(fHandle, newFile->header, rHeader.directory_size) != rHeader.directory_size) {
             MessageBoxA(0, "Error: Reading resfile header data.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
@@ -468,8 +467,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         typeDirNode.type = typeNode->type;
         typeDirNode.dirOffset = typeNode->idOffset;
         typeDirNode.numID = typeNode->nIds;
-        if (write(resHandle, &typeDirNode, sizeof(typeDirNode)) !=
-            sizeof(typeDirNode)) {
+        if (write(resHandle, &typeDirNode, sizeof(typeDirNode)) != sizeof(typeDirNode)) {
             L->Log("Error writing resource file header: type node");
             return 0;
         }
@@ -489,8 +487,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
             idDirNode.id = iq->id;
             idDirNode.itemOffset = iq->dataOffset;
             idDirNode.itemSize = iq->resSize;
-            if (write(resHandle, &idDirNode, sizeof(idDirNode)) !=
-                sizeof(idDirNode)) {
+            if (write(resHandle, &idDirNode, sizeof(idDirNode)) != sizeof(idDirNode)) {
                 L->Log("Error writing resource file header: id node");
                 return 0;
             }
@@ -508,8 +505,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
                 L->Log("Error writing resource file data: pos out of sync 2");
                 return 0;
             }
-            if (write(resHandle, iq->resData, iq->resSize) !=
-                iq->resSize) {
+            if (write(resHandle, iq->resData, iq->resSize) != iq->resSize) {
                 L->Log("Error writing resource file data");
                 return 0;
             }

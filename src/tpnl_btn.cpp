@@ -116,8 +116,7 @@ void TRIBE_Panel_Button::draw() {
                 else
                     y = calc_y - font_hgt / 2 + pnl_y;
 
-                if ((draw_reverse == 0 && is_down != 0) ||
-                    (draw_reverse != 0 && is_down == 0)) {
+                if ((draw_reverse == 0 && is_down != 0) || (draw_reverse != 0 && is_down == 0)) {
                     x++;
                     y++;
                 }
@@ -139,8 +138,7 @@ void TRIBE_Panel_Button::draw() {
                     x = center_x - text_size.cx / 2 + pnl_x;
                     y = calc_y + pnl_y;
 
-                    if ((draw_reverse == 0 && is_down != 0) ||
-                        (draw_reverse != 0 && is_down == 0)) {
+                    if ((draw_reverse == 0 && is_down != 0) || (draw_reverse != 0 && is_down == 0)) {
                         x++;
                         y++;
                     }

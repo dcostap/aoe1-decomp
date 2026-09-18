@@ -367,8 +367,7 @@ int InfluenceMap::setCoverageCount(const XYPoint& min, const XYPoint& max,
                                    int valueLevel) {
     this->coverageCountValue = 0;
 
-    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue ||
-        min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
+    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue || min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
         max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
         return 0;
     }
@@ -393,8 +392,7 @@ int InfluenceMap::setConnectionCount(
 
     self->connectionCountValue = 0;
 
-    if (min.x < 0 || min.y < 0 || min.x >= self->xSizeValue ||
-        min.y >= self->ySizeValue || max.x < 0 || max.y < 0 ||
+    if (min.x < 0 || min.y < 0 || min.x >= self->xSizeValue || min.y >= self->ySizeValue || max.x < 0 || max.y < 0 ||
         max.x >= self->xSizeValue || max.y >= self->ySizeValue) {
         return 0;
     }
@@ -436,13 +434,11 @@ int InfluenceMap::setConnectionCount(
                             if (neighborX >= 0 && neighborX < self->xSizeValue &&
                                 neighborY >= 0 && neighborY < self->ySizeValue) {
                                 if (rows[neighborY - self->yReferencePointValue]
-                                           [neighborX - self->xReferencePointValue] >= valueLevel) {
+                                    [neighborX - self->xReferencePointValue] >= valueLevel) {
                                     ++self->connectionCountValue;
                                 }
-                            } else if ((countOrthogonalEdgesAsConnections == 1 &&
-                                        (direction % 2) == 1) ||
-                                       (countDiagonalEdgesAsConnections == 1 &&
-                                        (direction % 2) == 0)) {
+                            } else if ((countOrthogonalEdgesAsConnections == 1 && (direction % 2) == 1) ||
+                                       (countDiagonalEdgesAsConnections == 1 && (direction % 2) == 0)) {
                                 ++self->connectionCountValue;
                             }
                         }
@@ -461,8 +457,7 @@ int InfluenceMap::coverageIncluding(const XYPoint& min, const XYPoint& max,
                                     unsigned char newValueLevel) {
     int rVal = this->coverageCountValue;
 
-    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue ||
-        min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
+    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue || min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
         max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
         return 0;
     }
@@ -470,11 +465,8 @@ int InfluenceMap::coverageIncluding(const XYPoint& min, const XYPoint& max,
     for (int i = min.x; i <= max.x; ++i) {
         for (int j = min.y; j <= max.y; ++j) {
             int xr = i - this->xReferencePointValue;
-            if (this->rowValue[j - this->yReferencePointValue]
-                              [xr] < valueLevel) {
-                if (this->rowValue[j - this->yReferencePointValue]
-                                  [xr] +
-                        newValueLevel >= valueLevel) {
+            if (this->rowValue[j - this->yReferencePointValue] [xr] < valueLevel) {
+                if (this->rowValue[j - this->yReferencePointValue] [xr] + newValueLevel >= valueLevel) {
                     ++rVal;
                 }
             }
@@ -494,8 +486,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
     int i;
     int j;
 
-    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue ||
-        min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
+    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue || min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
         max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
         return 0;
     }
@@ -507,8 +498,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
             int xOffset = i - this->xReferencePointValue;
 
             do {
-                if (this->rowValue[j - this->yReferencePointValue][xOffset] + newValueLevel >=
-                        valueLevel) {
+                if (this->rowValue[j - this->yReferencePointValue][xOffset] + newValueLevel >= valueLevel) {
                     if (this->rowValue[j - this->yReferencePointValue][xOffset] >= valueLevel) {
                         int neighborX = i;
                         int neighborY = j;
@@ -583,7 +573,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
                                     --rVal;
                                 }
                             } else if (rowsMap[neighborY - this->yReferencePointValue]
-                                             [neighborX - this->xReferencePointValue] >= valueLevel) {
+                                       [neighborX - this->xReferencePointValue] >= valueLevel) {
                                 rVal += 2;
                             }
                         }

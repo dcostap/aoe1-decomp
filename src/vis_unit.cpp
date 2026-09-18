@@ -503,8 +503,7 @@ int Visible_Resource_Manager::Remove_Resource(int Obj_Id, int ObjGroup) {
 }
 
 VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(int Xpos, int Ypos, int Zone, int ResType, int* excList, int elSize) {
-    if (ResType >= 0 && this->num_visible_resource_lists != 0 &&
-        ResType < this->num_visible_resource_lists) {
+    if (ResType >= 0 && this->num_visible_resource_lists != 0 && ResType < this->num_visible_resource_lists) {
         int count = this->VR_ListUsed[ResType];
         if (count != 0) {
             int bestdist = 9999;

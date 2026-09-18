@@ -63,7 +63,7 @@ rename.
 
 ## Resource and constant evidence
 
-The source now reuses the existing `IDS_MENU_HELP` macro from
+The source now reuses the existing `STRING_ID_MENU_HELP` macro from
 `include/resource_ids.h` for `0x23F5`. The packet call site passes this ID to
 `create_button`, and the text is `Help`. No new macro was defined in this
 worker.
@@ -100,21 +100,21 @@ These strings do not select resource payloads.
 
 | ID | exact base text | call-site purpose | applied cleanup name |
 | --- | --- | --- | --- |
-| `0x23F9` | `About` | menu button label | `IDS_MENU_ABOUT` |
-| `0x2437` | `Achievements` | menu button label | `IDS_MENU_ACHIEVEMENTS` |
-| `0x2438` | `Save` | menu button label | `IDS_MENU_SAVE` |
-| `0x2439` | `Quit Game` | menu button label | `IDS_MENU_QUIT_GAME` |
-| `0x243A` | `Game Settings` | menu button label | `IDS_MENU_GAME_SETTINGS` |
-| `0x243B` | `Cancel` | menu button label | `IDS_MENU_CANCEL` |
-| `0x243C` | `Load` | menu button label | `IDS_MENU_LOAD` |
-| `0x243E` | `Scenario Instructions` | menu button label | `IDS_MENU_SCENARIO_INSTRUCTIONS` |
-| `0x243F` | `Restart` | menu button label | `IDS_MENU_RESTART` |
-| `0x2440` | `Resign` | multiplayer menu button label | `IDS_MENU_RESIGN` |
-| `0x269E` | `Achievements` | title passed to `TribeAchievementsScreen` | `IDS_ACHIEVEMENTS_TITLE` |
-| `0x0C1C` | `Are you sure you want to quit and load a new game?` | quit-and-load confirmation message text | `IDS_CONFIRM_QUIT_AND_LOAD` |
-| `0x0C1D` | `Are you sure you want to quit this game?` | quit confirmation message text | `IDS_CONFIRM_QUIT_GAME` |
-| `0x0C1E` | `Are you sure you want to restart this game?` | restart confirmation message text | `IDS_CONFIRM_RESTART_GAME` |
-| `0x0C1F` | `Are you sure you want to resign?` | resign confirmation message text | `IDS_CONFIRM_RESIGN` |
+| `0x23F9` | `About` | menu button label | `STRING_ID_MENU_ABOUT` |
+| `0x2437` | `Achievements` | menu button label | `STRING_ID_MENU_ACHIEVEMENTS` |
+| `0x2438` | `Save` | menu button label | `STRING_ID_MENU_SAVE` |
+| `0x2439` | `Quit Game` | menu button label | `STRING_ID_MENU_QUIT_GAME` |
+| `0x243A` | `Game Settings` | menu button label | `STRING_ID_MENU_GAME_SETTINGS` |
+| `0x243B` | `Cancel` | menu button label | `STRING_ID_MENU_CANCEL` |
+| `0x243C` | `Load` | menu button label | `STRING_ID_MENU_LOAD` |
+| `0x243E` | `Scenario Instructions` | menu button label | `STRING_ID_MENU_SCENARIO_INSTRUCTIONS` |
+| `0x243F` | `Restart` | menu button label | `STRING_ID_MENU_RESTART` |
+| `0x2440` | `Resign` | multiplayer menu button label | `STRING_ID_MENU_RESIGN` |
+| `0x269E` | `Achievements` | title passed to `TribeAchievementsScreen` | `STRING_ID_ACHIEVEMENTS_TITLE` |
+| `0x0C1C` | `Are you sure you want to quit and load a new game?` | quit-and-load confirmation message text | `STRING_ID_CONFIRM_QUIT_AND_LOAD` |
+| `0x0C1D` | `Are you sure you want to quit this game?` | quit confirmation message text | `STRING_ID_CONFIRM_QUIT_GAME` |
+| `0x0C1E` | `Are you sure you want to restart this game?` | restart confirmation message text | `STRING_ID_CONFIRM_RESTART_GAME` |
+| `0x0C1F` | `Are you sure you want to resign?` | resign confirmation message text | `STRING_ID_CONFIRM_RESIGN` |
 
 The runtime expansion and pinned original expansion returned missing entries,
 not empty slots, for every requested ID. The missing expansion results do not
@@ -127,7 +127,7 @@ format arguments, and buffer contracts remain unchanged.
 
 Parameter renames affect names only. They do not change types, calling
 conventions, layouts, symbol identity, call targets, or evaluation order.
-`IDS_MENU_HELP` expands to the existing literal `0x23F5`; it introduces no
+`STRING_ID_MENU_HELP` expands to the existing literal `0x23F5`; it introduces no
 object or storage. Signature wrapping and definition brace placement changed
 for 1TBS presentation only.
 No helper, layout, cast, control-flow, declaration scope, or initialization
@@ -141,7 +141,7 @@ Shared requests:
 2. Root approved all resource IDs in
    `8c56055b7feee1526f296bd306036a4c34f38041`. The worker-local import
    provenance is `5bc93fcb069dce227999254757e001423ec4959e`.
-   `IDS_MENU_HELP` was already present and remains reused.
+   `STRING_ID_MENU_HELP` was already present and remains reused.
 
 The preserved pre-cleanup reference is under
 `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/`.

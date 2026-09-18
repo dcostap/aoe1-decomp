@@ -98,8 +98,8 @@ It reuses these existing resource macros:
 
 | Macro | Value | Use |
 | --- | --- | --- |
-| `IDS_BUTTON_OK` | `0x0FA1` | `TListDialog::setup` OK button label |
-| `IDS_BUTTON_CANCEL` | `0x0FA2` | `TListDialog::setup` Cancel button label |
+| `STRING_ID_BUTTON_OK` | `0x0FA1` | `TListDialog::setup` OK button label |
+| `STRING_ID_BUTTON_CANCEL` | `0x0FA2` | `TListDialog::setup` Cancel button label |
 
 The macro values preserve the old integer literals and their effective type.
 No new macro, enum, or constant was defined.

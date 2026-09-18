@@ -632,9 +632,7 @@ void RGE_View::CreateBlitQueue(tagRECT& src_rect, tagRECT& dest_rect, int xDelta
 
     if (xDelta == 0 && yDelta == 0) return;
 
-    if (src_rect.top > dest_rect.bottom ||
-        src_rect.left > dest_rect.right ||
-        src_rect.bottom < dest_rect.top ||
+    if (src_rect.top > dest_rect.bottom || src_rect.left > dest_rect.right || src_rect.bottom < dest_rect.top ||
         src_rect.right < dest_rect.left) {
         one_blit = 1;
         nBlits = 1;
@@ -740,15 +738,12 @@ void RGE_View::ProcessQueuedBlit(int WaitIfBusy) {
     tagRECT src;
 
     if (this->Queued_Blits != 0) {
-        if (WaitIfBusy == 0 &&
-            this->render_area->DrawSurface->GetBltStatus(1) != 0) {
+        if (WaitIfBusy == 0 && this->render_area->DrawSurface->GetBltStatus(1) != 0) {
             return;
         }
 
         this->Current_Blit++;
-        if (this->Blit_Queue != 0 &&
-            this->Current_Blit >= 0 &&
-            this->Current_Blit < this->Blit_Queue_Size) {
+        if (this->Blit_Queue != 0 && this->Current_Blit >= 0 && this->Current_Blit < this->Blit_Queue_Size) {
             Blit_Queue_Entry* entry =
                 &this->Blit_Queue[this->Current_Blit];
 
@@ -819,10 +814,8 @@ void RGE_View::draw() {
     this->update();
     this->draw_setup(0);
 
-    if (this->render_terrain_mode == 1 &&
-        (this->start_map_col != old_start_map_col ||
-         this->start_map_row != old_start_map_row ||
-         this->start_scr_col != old_start_scr_col ||
+    if (this->render_terrain_mode == 1 && (this->start_map_col != old_start_map_col ||
+         this->start_map_row != old_start_map_row || this->start_scr_col != old_start_scr_col ||
          this->start_scr_row != old_start_scr_row)) {
         x_diff = (short)((short)this->map_scr_x_offset - (short)old_map_scr_x_offset);
         y_diff = (short)((short)this->map_scr_y_offset - (short)old_map_scr_y_offset);
@@ -840,8 +833,7 @@ void RGE_View::draw() {
             new_rect.right = old_rect.right + x_diff;
             new_rect.bottom = old_rect.bottom + y_diff;
 
-            if (new_rect.bottom < 0 || new_rect.right < 0 ||
-                old_rect.bottom < new_rect.top ||
+            if (new_rect.bottom < 0 || new_rect.right < 0 || old_rect.bottom < new_rect.top ||
                 old_rect.right < new_rect.left) {
                 this->render_terrain_mode = 0;
             } else {
@@ -889,8 +881,7 @@ void RGE_View::draw() {
                     new_rect.bottom = this->pnl_hgt - y_diff - 1;
                 }
 
-                if (this->render_area->DrawSystem->DrawType == 1 ||
-                    this->render_area->UsingVidMem == 0) {
+                if (this->render_area->DrawSystem->DrawType == 1 || this->render_area->UsingVidMem == 0) {
                     this->render_area->OverlayMemCopy(old_rect, new_rect, x_diff, y_diff,
                                                       this->render_rect.left, this->render_rect.top);
                     this->Queued_Blits = 0;
@@ -940,11 +931,9 @@ void RGE_View::draw() {
                 }
                 this->save_area1->SetFloatOffsets(this->Float_X_Delta, this->Float_Y_Delta);
 
-                if (new_rect.left == 0 &&
-                    new_rect.right == this->pnl_wid - 1) {
+                if (new_rect.left == 0 && new_rect.right == this->pnl_wid - 1) {
                     clip_rect1.left = -1;
-                    if (new_rect.top == 0 &&
-                        new_rect.bottom == this->pnl_hgt - 1) {
+                    if (new_rect.top == 0 && new_rect.bottom == this->pnl_hgt - 1) {
                         clip_rect2.left = -1;
                     } else {
                         clip_rect2.left = 0;
@@ -962,8 +951,7 @@ void RGE_View::draw() {
                     clip_rect1.top = 0;
                     clip_rect1.right = this->pnl_wid - 1;
                     clip_rect1.bottom = this->pnl_hgt - 1;
-                    if (new_rect.top == 0 &&
-                        new_rect.bottom == this->pnl_hgt - 1) {
+                    if (new_rect.top == 0 && new_rect.bottom == this->pnl_hgt - 1) {
                         clip_rect2.left = -1;
                     } else {
                         clip_rect2.left = 0;
@@ -982,8 +970,7 @@ void RGE_View::draw() {
                     clip_rect1.top = 0;
                     clip_rect1.right = new_rect.left - 1;
                     clip_rect1.bottom = this->pnl_hgt - 1;
-                    if (new_rect.top == 0 &&
-                        new_rect.bottom == this->pnl_hgt - 1) {
+                    if (new_rect.top == 0 && new_rect.bottom == this->pnl_hgt - 1) {
                         clip_rect2.left = -1;
                     } else {
                         clip_rect2.left = new_rect.left;
@@ -1046,9 +1033,7 @@ void RGE_View::draw() {
 void RGE_View::update() {
     RGE_Player* view_player = this->player;
 
-    if (view_player == 0 ||
-        (view_player->view_x == this->last_view_x &&
-         view_player->view_y == this->last_view_y)) {
+    if (view_player == 0 || (view_player->view_x == this->last_view_x && view_player->view_y == this->last_view_y)) {
         return;
     }
 
@@ -1178,9 +1163,7 @@ void RGE_View::draw_object_outline() {
         return;
 
     rge_base_game->get_mouse_pos(point);
-    if (point.x < this->render_rect.left ||
-        point.x > this->render_rect.right ||
-        point.y < this->render_rect.top ||
+    if (point.x < this->render_rect.left || point.x > this->render_rect.right || point.y < this->render_rect.top ||
         point.y > this->render_rect.bottom)
         return;
 
@@ -1221,9 +1204,7 @@ void RGE_View::draw_object_outline() {
         else
             frame_color = 0x97;
 
-        if (rge_base_game->game_mode == 8 &&
-            rge_base_game->sub_game_mode == 1 &&
-            this->movable_object != 0) {
+        if (rge_base_game->game_mode == 8 && rge_base_game->sub_game_mode == 1 && this->movable_object != 0) {
             RGE_Static_Object* movable = this->movable_object;
             master->draw(this->render_area, scr_x, scr_y, movable->owner->color_table,
                          movable->facet, 0, draw_flag, frame_color);
@@ -1246,9 +1227,7 @@ void RGE_View::draw_paint_brush() {
 
     rge_base_game->get_mouse_pos(point);
 
-    if (point.x < this->render_rect.left ||
-        point.x > this->render_rect.right ||
-        point.y < this->render_rect.top ||
+    if (point.x < this->render_rect.left || point.x > this->render_rect.right || point.y < this->render_rect.top ||
         point.y > this->render_rect.bottom)
         return;
 
@@ -1568,9 +1547,7 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
         *item_scr_x = 0;
         *item_scr_y = 0;
 
-        if (this->function_mode == 0x29 ||
-            this->function_mode == 0x2a ||
-            this->function_mode == 0x2b ||
+        if (this->function_mode == 0x29 || this->function_mode == 0x2a || this->function_mode == 0x2b ||
             this->function_mode == 0x2c) {
             orig_picked_obj = (RGE_Static_Object*)*picked_item;
         }
@@ -1604,13 +1581,11 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
             if (cols_to_scan > 0) {
                 do {
                     int in_map = 0;
-                    if (map_col >= 0 && map_col < this->map->map_width &&
-                        map_row >= 0 && map_row < this->map->map_height) {
+                    if (map_col >= 0 && map_col < this->map->map_width && map_row >= 0 && map_row < this->map->map_height) {
                         in_map = 1;
                     }
 
-                    if (in_map || this->function_mode == 0x28 ||
-                        this->function_mode == 0x2a) {
+                    if (in_map || this->function_mode == 0x28 || this->function_mode == 0x2a) {
                         unsigned char visibility;
 
                         if (in_map) {
@@ -1622,8 +1597,7 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                                 }
                             } else {
                                 visibility = visible->get_visible(map_col, map_row);
-                                if (this->function_mode == 0x1e ||
-                                    this->function_mode == 0x1f) {
+                                if (this->function_mode == 0x1e || this->function_mode == 0x1f) {
                                     visibility = 0x0f;
                                 }
                             }
@@ -1643,10 +1617,8 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                             visibility = 0;
                         }
 
-                        if (visibility != 0 || this->function_mode == 0x0e ||
-                            this->function_mode == 0x28 ||
-                            this->function_mode == 0x3c ||
-                            this->function_mode == 0x2a) {
+                        if (visibility != 0 || this->function_mode == 0x0e || this->function_mode == 0x28 ||
+                            this->function_mode == 0x3c || this->function_mode == 0x2a) {
                             RGE_Tile* tile;
                             unsigned char tile_type;
                             unsigned char tile_height;
@@ -1675,32 +1647,20 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                             }
 
                             int outside;
-                            if (screen_x > this->render_rect.right ||
-                                tile_screen_row > this->render_rect.bottom ||
-                                screen_x + this->map->tilesizes[tile_type].width <=
-                                    this->render_rect.left ||
-                                tile_screen_row + this->map->tilesizes[tile_type].height <=
-                                    this->render_rect.top ||
-                                (this->function_mode == 0x0e &&
-                                 (map_col < calc_sel_col1 ||
-                                  map_col > calc_sel_col2 ||
-                                  map_row < calc_sel_row1 ||
-                                  map_row > calc_sel_row2))) {
+                            if (screen_x > this->render_rect.right || tile_screen_row > this->render_rect.bottom ||
+                                screen_x + this->map->tilesizes[tile_type].width <= this->render_rect.left ||
+                                tile_screen_row + this->map->tilesizes[tile_type].height <= this->render_rect.top ||
+                                (this->function_mode == 0x0e && (map_col < calc_sel_col1 || map_col > calc_sel_col2 ||
+                                  map_row < calc_sel_row1 || map_row > calc_sel_row2))) {
                                 outside = 1;
                             } else {
                                 outside = 0;
                             }
 
-                            if (this->function_mode == 10 ||
-                                this->function_mode == 0x1e ||
-                                this->function_mode == 0x1f ||
-                                this->function_mode == 0x20 ||
-                                this->function_mode == 0x15 ||
-                                this->function_mode == 0x0b ||
+                            if (this->function_mode == 10 || this->function_mode == 0x1e || this->function_mode == 0x1f ||
+                                this->function_mode == 0x20 || this->function_mode == 0x15 || this->function_mode == 0x0b ||
                                 this->function_mode == 0x0e) {
-                                if (!outside &&
-                                    (this->function_mode == 10 ||
-                                     this->function_mode == 0x0b ||
+                                if (!outside && (this->function_mode == 10 || this->function_mode == 0x0b ||
                                      this->function_mode == 0x0e)) {
                                     unsigned char terrain_type = tile->terrain_type;
                                     short terrain_to_draw =
@@ -1710,10 +1670,8 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                                         terrain_type = (unsigned char)terrain_to_draw;
                                     }
 
-                                    if (this->function_mode == 10 &&
-                                        this->calc_draw_count != 0 &&
-                                        (short)terrain_type <
-                                            this->map->num_terrain) {
+                                    if (this->function_mode == 10 && this->calc_draw_count != 0 && (short)terrain_type <
+                                        this->map->num_terrain) {
                                         ++this->map->terrain_types[terrain_type].drawn;
                                     }
 
@@ -1722,10 +1680,8 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                                     }
                                 }
 
-                                if ((visibility == 0x0f || visibility == 0x80) &&
-                                    (this->function_mode == 0x1e ||
-                                     this->function_mode == 0x1f ||
-                                     this->function_mode == 0x20 ||
+                                if ((visibility == 0x0f || visibility == 0x80) && (this->function_mode == 0x1e ||
+                                     this->function_mode == 0x1f || this->function_mode == 0x20 ||
                                      this->function_mode == 0x15)) {
                                     unsigned char fog_flag =
                                         (visibility == 0x0f ||
@@ -1765,16 +1721,14 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                                     }
 
                                     if (this->function_mode == 0x20) {
-                                        if (this->map->fog_flag != 0 &&
-                                            visibility == 0x80) {
+                                        if (this->map->fog_flag != 0 && visibility == 0x80) {
                                             fog_next_shape = 1;
                                         }
                                         tile->objects.shadow_draw(this->cur_render_area, screen_x,
                                                                   start_screen_y, 0, fog_flag);
                                         fog_next_shape = 0;
                                     } else if (this->function_mode == 0x15) {
-                                        if (this->map->fog_flag != 0 &&
-                                            visibility == 0x80) {
+                                        if (this->map->fog_flag != 0 && visibility == 0x80) {
                                             fog_next_shape = 1;
                                         }
                                         tile->objects.normal_draw(this->cur_render_area, screen_x,
@@ -1783,10 +1737,8 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                                     }
                                 }
                             } else {
-                                if ((visibility == 0x0f || visibility == 0x80) &&
-                                    (this->function_mode == 0x29 ||
-                                     this->function_mode == 0x2a ||
-                                     this->function_mode == 0x2b ||
+                                if ((visibility == 0x0f || visibility == 0x80) && (this->function_mode == 0x29 ||
+                                     this->function_mode == 0x2a || this->function_mode == 0x2b ||
                                      this->function_mode == 0x2c)) {
                                     unsigned char fog_flag =
                                         (visibility == 0x0f ||
@@ -1802,19 +1754,14 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                                         if (this->function_mode == 0x2c) {
                                             result = 0x34;
                                         } else {
-                                            if (orig_picked_obj != 0 &&
-                                                object == orig_picked_obj &&
-                                                result == 0x34) {
+                                            if (orig_picked_obj != 0 && object == orig_picked_obj && result == 0x34) {
                                                 *picked_item = last_picked_obj;
                                                 return 0x34;
                                             }
 
-                                            if (last_picked_obj == 0 ||
-                                                object->master_obj->select_level >=
-                                                    last_picked_obj->master_obj
-                                                        ->select_level ||
-                                                (last_picked_obj == orig_picked_obj &&
-                                                 object != orig_picked_obj)) {
+                                            if (last_picked_obj == 0 || object->master_obj->select_level >=
+                                                last_picked_obj->master_obj ->select_level ||
+                                                (last_picked_obj == orig_picked_obj && object != orig_picked_obj)) {
                                                 *item_x = object->world_x;
                                                 *item_y = object->world_y;
                                                 last_picked_obj = object;
@@ -1824,9 +1771,7 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                                     }
                                 }
 
-                                if (this->function_mode == 0x28 ||
-                                    (this->function_mode == 0x2a &&
-                                     result == 0x32)) {
+                                if (this->function_mode == 0x28 || (this->function_mode == 0x2a && result == 0x32)) {
                                     if (this->hit_tile(tile, screen_x, tile_screen_row, map_col, map_row, mouse_pos)) {
                                         if (tile != 0) {
                                             this->map->tile_map_coords((short)(mouse_pos->x - screen_x),
@@ -1842,9 +1787,7 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
                                         result = 0x33;
                                         *picked_item = tile;
                                     }
-                                } else if (this->function_mode == 0x3c &&
-                                           map_col == find_col &&
-                                           map_row == find_row) {
+                                } else if (this->function_mode == 0x3c && map_col == find_col && map_row == find_row) {
                                     *item_x = (float)map_col;
                                     *item_y = (float)map_row;
                                     *item_scr_x = screen_x;
@@ -1910,10 +1853,7 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
         }
     }
 
-    if ((this->function_mode == 0x29 ||
-         this->function_mode == 0x2a ||
-         this->function_mode == 0x2b) &&
-        result == 0x34) {
+    if ((this->function_mode == 0x29 || this->function_mode == 0x2a || this->function_mode == 0x2b) && result == 0x34) {
         *picked_item = last_picked_obj;
     }
 
@@ -2004,11 +1944,9 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                             short draw_y = (short)tile_y;
                             unsigned char MapVis;
 
-                            if ((unified_map_offsets[map_row][map_col] &
-                                 TileVisibleMask) != 0) {
+                            if ((unified_map_offsets[map_row][map_col] & TileVisibleMask) != 0) {
                                 MapVis = 0x0f;
-                            } else if ((unified_map_offsets[map_row][map_col] &
-                                        TileFoggedMask) != 0 ||
+                            } else if ((unified_map_offsets[map_row][map_col] & TileFoggedMask) != 0 ||
                                        Full_Visibility != 0) {
                                 MapVis = this->map->fog_flag != 0 ? 0x80 : 0x0f;
                             } else {
@@ -2016,24 +1954,19 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                                 tile->last_drawn_as = 0;
                             }
 
-                            if (MapVis != 0 &&
-                                tile_x <= this->render_rect.right &&
-                                tile_y <= this->render_rect.bottom &&
-                                tile_right > this->render_rect.left &&
-                                tile_bottom > this->render_rect.top) {
+                            if (MapVis != 0 && tile_x <= this->render_rect.right && tile_y <= this->render_rect.bottom &&
+                                tile_right > this->render_rect.left && tile_bottom > this->render_rect.top) {
                                 unsigned char terrain_num = tile->terrain_type;
                                 int black_tile_mask_num = -1;
                                 int tile_mask_num = -1;
                                 int region = 0;
                                 int clip_to = 0;
 
-                                if (this->calc_draw_count != 0 &&
-                                    (short)terrain_num < this->map->num_terrain) {
+                                if (this->calc_draw_count != 0 && (short)terrain_num < this->map->num_terrain) {
                                     this->map->terrain_types[terrain_num].drawn++;
                                 }
 
-                                if (this->render_terrain_mode != 0 &&
-                                    tile->last_drawn_as == MapVis) {
+                                if (this->render_terrain_mode != 0 && tile->last_drawn_as == MapVis) {
                                     if (MapVis == 0x0f) {
                                         if (this->map->fog_flag == 0) {
                                             black_tile_mask_num = 0;
@@ -2041,8 +1974,7 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                                             black_tile_mask_num = this->get_tile_mask_num(map_col, map_row, Map_Width,
                                                                                           Map_Height, TileVisibleMask);
                                         }
-                                        if ((int)tile->last_drawn_shape !=
-                                            black_tile_mask_num) {
+                                        if ((int)tile->last_drawn_shape != black_tile_mask_num) {
                                             goto draw_this_tile;
                                         }
                                     }
@@ -2054,8 +1986,7 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                                         } else {
                                             tile_mask_num = 0;
                                         }
-                                        if ((int)tile->last_drawn_shape2 !=
-                                            tile_mask_num) {
+                                        if ((int)tile->last_drawn_shape2 != tile_mask_num) {
                                             goto draw_this_tile;
                                         }
                                     }
@@ -2064,18 +1995,14 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                                         goto tile_off_screen;
                                     }
 
-                                    if (this->Use_Rect2 != 0 &&
-                                        this->Render_Rect2.right >= tile_x &&
-                                        tile_right >= this->Render_Rect2.left &&
-                                        this->Render_Rect2.bottom >= tile_y &&
+                                    if (this->Use_Rect2 != 0 && this->Render_Rect2.right >= tile_x &&
+                                        tile_right >= this->Render_Rect2.left && this->Render_Rect2.bottom >= tile_y &&
                                         tile_bottom >= this->Render_Rect2.top) {
                                         clip_to = 1;
                                     }
 
-                                    if (this->Render_Rect1.right >= tile_x &&
-                                        tile_right >= this->Render_Rect1.left &&
-                                        this->Render_Rect1.bottom >= tile_y &&
-                                        tile_bottom >= this->Render_Rect1.top) {
+                                    if (this->Render_Rect1.right >= tile_x && tile_right >= this->Render_Rect1.left &&
+                                        this->Render_Rect1.bottom >= tile_y && tile_bottom >= this->Render_Rect1.top) {
                                         region = 1;
                                     } else {
                                         if (clip_to == 0) {
@@ -2232,8 +2159,7 @@ draw_this_tile:
                             }
 
 tile_off_screen:
-                            if (tile != 0 &&
-                                (tile->draw_attribute & 0x40) == 0x40) {
+                            if (tile != 0 && (tile->draw_attribute & 0x40) == 0x40) {
                                 unsigned char terrain_num = tile->terrain_type;
                                 short terrain_to_draw =
                                     this->map->terrain_types[terrain_num]
@@ -2318,16 +2244,13 @@ tile_off_screen:
                 if (sprite->theShape != 0) {
                     if (sprite->LastDrawTime == 0) {
                         sprite->LastDrawTime = current_time;
-                    } else if ((sprite->displayfunction == 1 ||
-                                sprite->displayfunction == 2) &&
-                               current_time - sprite->LastDrawTime >=
-                                   sprite->DrawTimeInterval) {
+                    } else if ((sprite->displayfunction == 1 || sprite->displayfunction == 2) &&
+                               current_time - sprite->LastDrawTime >= sprite->DrawTimeInterval) {
                         unsigned long elapsed =
                             current_time - sprite->LastDrawTime;
                         do {
                             sprite->thefacet++;
-                            if (sprite->thefacet >=
-                                sprite->theShape->shape_count()) {
+                            if (sprite->thefacet >= sprite->theShape->shape_count()) {
                                 sprite->thefacet = 0;
                                 if (sprite->displayfunction == 2) {
                                     remove_sprite = 1;
@@ -2445,8 +2368,7 @@ tile_off_screen:
         MouseSystem->Poll();
     }
 
-    if (rge_base_game->prog_mode == 4 && this->have_focus != 0 &&
-        MouseSystem->get_game_enable() != 0) {
+    if (rge_base_game->prog_mode == 4 && this->have_focus != 0 && MouseSystem->get_game_enable() != 0) {
         unsigned long current_time = debug_timeGetTime((char*)s_C__msdev_work_age1_x1_view_cpp, 3857);
         tagPOINT CPoint;
 
@@ -2455,8 +2377,7 @@ tile_off_screen:
             int picked = this->pick_touched_object(this->futur_objs, CPoint.x, CPoint.y, 10, 0x28, object_id);
             if (picked == 1) {
                 int old_object_id = this->UC_TouchedObj;
-                if (this->UC_ObjectTouched != 0 &&
-                    old_object_id == object_id) {
+                if (this->UC_ObjectTouched != 0 && old_object_id == object_id) {
                     goto no_mouse_process;
                 }
 
@@ -2472,8 +2393,7 @@ tile_off_screen:
                     int text_id = 0;
                     if (this->player->get_mouse_pointer_action_vars(object_id, cursor_facet, text_id) == 1) {
                         MouseSystem->set_game_facet(cursor_facet);
-                        if (this->message_panel != 0 &&
-                            rge_base_game->rollover != 0) {
+                        if (this->message_panel != 0 && rge_base_game->rollover != 0) {
                             char pText[128];
                             this->get_string(text_id, pText, 127);
                             this->message_panel->show_message(
@@ -2484,16 +2404,14 @@ tile_off_screen:
                 }
 
                 MouseSystem->set_game_facet(0);
-                if (this->message_panel != 0 &&
-                    rge_base_game->rollover != 0) {
+                if (this->message_panel != 0 && rge_base_game->rollover != 0) {
                     this->message_panel->remove_message();
                 }
             } else if (this->UC_ObjectTouched != 0) {
                 this->UC_ObjectTouched = 0;
                 this->UC_TouchedObj = 0x80000000;
                 MouseSystem->set_game_facet(0);
-                if (this->message_panel != 0 &&
-                    rge_base_game->rollover != 0) {
+                if (this->message_panel != 0 && rge_base_game->rollover != 0) {
                     this->message_panel->remove_message();
                 }
             }
@@ -2611,8 +2529,7 @@ no_mouse_process:
                         DClipInfo_Node* old_node =
                             this->prior_objs->Draw_Clip_Nodes[line];
                         while (old_node != 0) {
-                            if (old_node->Draw_Level > 5 &&
-                                old_node->Node_Type != -1) {
+                            if (old_node->Draw_Level > 5 && old_node->Node_Type != -1) {
                                 DClipInfo_Node* new_node2 =
                                     this->futur_objs->Draw_Clip_Nodes[line];
                                 int add_node = 1;
@@ -2903,17 +2820,13 @@ int RGE_View::get_tile_mask_num(int map_col, int map_row, int map_width, int map
         int max_row = map_height - 1;
         if (map_row < max_row && (unified_map_offsets[map_row + 1][map_col] & VisibleMask) == 0)
             mask_number |= 0x20;
-        if (0 < map_col && 0 < map_row &&
-            (unified_map_offsets[map_row - 1][map_col - 1] & VisibleMask) == 0)
+        if (0 < map_col && 0 < map_row && (unified_map_offsets[map_row - 1][map_col - 1] & VisibleMask) == 0)
             mask_number |= 0x01;
-        if (0 < map_col && map_row < max_row &&
-            (unified_map_offsets[map_row + 1][map_col - 1] & VisibleMask) == 0)
+        if (0 < map_col && map_row < max_row && (unified_map_offsets[map_row + 1][map_col - 1] & VisibleMask) == 0)
             mask_number |= 0x02;
-        if (map_col < max_col && 0 < map_row &&
-            (unified_map_offsets[map_row - 1][map_col + 1] & VisibleMask) == 0)
+        if (map_col < max_col && 0 < map_row && (unified_map_offsets[map_row - 1][map_col + 1] & VisibleMask) == 0)
             mask_number |= 0x08;
-        if (map_col < max_col && map_row < max_row &&
-            (unified_map_offsets[map_row + 1][map_col + 1] & VisibleMask) == 0)
+        if (map_col < max_col && map_row < max_row && (unified_map_offsets[map_row + 1][map_col + 1] & VisibleMask) == 0)
             mask_number |= 0x04;
     }
 
@@ -2927,8 +2840,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
                         unsigned char visible, int norm_draw, int fog_draw) {
     unsigned char draw_attribute = tile->draw_attribute;
 
-    if ((short)terrain_type >= this->map->num_terrain ||
-        this->map->terrain_types[terrain_type].loaded == 0) {
+    if ((short)terrain_type >= this->map->num_terrain || this->map->terrain_types[terrain_type].loaded == 0) {
         return 0;
     }
 
@@ -2941,8 +2853,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
     int bottom_index;
     int top_index;
 
-    if (border_type != 0 &&
-        this->map->border_types[border_type].loaded != 0 &&
+    if (border_type != 0 && this->map->border_types[border_type].loaded != 0 &&
         this->map->border_types[border_type].shape != 0) {
         if (this->map->border_types[border_type].border_style == 0) {
             short frame = this->get_border_picture(border_type, tile->tile_type, tile->border_shape, map_col, map_row);
@@ -3223,10 +3134,8 @@ void RGE_View::get_tile_bounding_coords(int Tile_X, int Tile_Y, int& bx1, int& b
 int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
                            int range, int max_confidence,
                            int ignoreNeg) {
-    if (range < 0 || max_level < min_level ||
-        Xpos < this->render_rect.left || Xpos > this->render_rect.right ||
-        Ypos < this->render_rect.top || Ypos > this->render_rect.bottom ||
-        min_level > 40 || max_level < 0) {
+    if (range < 0 || max_level < min_level || Xpos < this->render_rect.left || Xpos > this->render_rect.right ||
+        Ypos < this->render_rect.top || Ypos > this->render_rect.bottom || min_level > 40 || max_level < 0) {
         return 0;
     }
 
@@ -3256,15 +3165,13 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
         while (clip != 0) {
             int confidence = 0;
 
-            if (clip->Node_Type == 0 &&
-                (ignoreNeg == 0 || clip->Object_ID >= 0)) {
+            if (clip->Node_Type == 0 && (ignoreNeg == 0 || clip->Object_ID >= 0)) {
                 int left = clip->x1;
                 int top = clip->y1;
                 int right = clip->x2;
                 int bottom = clip->y2;
 
-                if (Xpos >= left - range && Ypos >= top - range &&
-                    Xpos <= right + range && Ypos <= bottom + range) {
+                if (Xpos >= left - range && Ypos >= top - range && Xpos <= right + range && Ypos <= bottom + range) {
                     confidence = 4;
                     if (Xpos >= left && Ypos >= top && Xpos <= right && Ypos <= bottom) {
                         confidence = 3;
@@ -3303,9 +3210,7 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
                 }
 
                 if (old != 0) {
-                    if (old_confidence < confidence ||
-                        (old_confidence == confidence &&
-                         draw_level < old->draw_level)) {
+                    if (old_confidence < confidence || (old_confidence == confidence && draw_level < old->draw_level)) {
                         add = 0;
                     }
 
@@ -3357,8 +3262,7 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
                             head[confidence] = pick;
                             tail[confidence] = pick;
                         } else {
-                            while (draw_level < at->draw_level &&
-                                   at->next != 0) {
+                            while (draw_level < at->draw_level && at->next != 0) {
                                 at = at->next;
                             }
 
@@ -3421,8 +3325,7 @@ int RGE_View::sprite_check(uchar* Shape_Base, Shape_Info* Shape, int check_x, in
                         uchar* outline = Shape_Base + Shape->Shape_Outline_Offset;
                         int r = *(short*)(outline + check_y * 4);
                         int right_pad = *(short*)(outline + check_y * 4 + 2);
-                        if (r >= 0 && check_x >= r &&
-                            check_x <= width - right_pad) {
+                        if (r >= 0 && check_x >= r && check_x <= width - right_pad) {
                                     int* data_offsets = (int*)(Shape_Base + Shape->Shape_Data_Offsets);
                                     uchar* p = Shape_Base + data_offsets[check_y];
                                     if (r < width) {
@@ -3510,11 +3413,8 @@ int RGE_View::pick_multi_objects(int Xpos1, int Ypos1, int Xpos2, int Ypos2,
                                  unsigned char select_level, int ignoreNeg) {
     int num_picked = 0;
 
-    if (Xpos2 < this->render_rect.left ||
-        Xpos1 > this->render_rect.right ||
-        Ypos2 < this->render_rect.top ||
-        Ypos1 > this->render_rect.bottom ||
-        min_level > 0x28 || max_level < 0) {
+    if (Xpos2 < this->render_rect.left || Xpos1 > this->render_rect.right || Ypos2 < this->render_rect.top ||
+        Ypos1 > this->render_rect.bottom || min_level > 0x28 || max_level < 0) {
         return 0;
     }
 
@@ -3542,13 +3442,10 @@ int RGE_View::pick_multi_objects(int Xpos1, int Ypos1, int Xpos2, int Ypos2,
             int object_id;
             if (node->Node_Type == 0) {
                 object_id = node->Object_ID;
-                if (object_id >= 0 &&
-                    Xpos1 <= node->x2 && node->x1 <= Xpos2 &&
-                    Ypos1 <= node->y2 && node->y1 <= Ypos2) {
+                if (object_id >= 0 && Xpos1 <= node->x2 && node->x1 <= Xpos2 && Ypos1 <= node->y2 && node->y1 <= Ypos2) {
                     RGE_Static_Object* object =
                         this->world->objectsValue[object_id];
-                    if ((player == -1 || object->owner->id == player) &&
-                        object->object_state == 2 &&
+                    if ((player == -1 || object->owner->id == player) && object->object_state == 2 &&
                         object->master_obj->select_level >= select_level) {
                         found = 1;
                     }
@@ -3595,10 +3492,8 @@ int RGE_View::pick_multi_objects(int Xpos1, int Ypos1, int Xpos2, int Ypos2,
 
 int RGE_View::pick_touched_object(DClipInfo_List* obj_list, int Xpos, int Ypos, int min_level, int max_level, int& touched_object_id) {
     touched_object_id = 0;
-    if (max_level >= min_level &&
-        Xpos >= this->render_rect.left && Xpos <= this->render_rect.right &&
-        Ypos >= this->render_rect.top && Ypos <= this->render_rect.bottom &&
-        min_level <= 0x28 && max_level >= 0) {
+    if (max_level >= min_level && Xpos >= this->render_rect.left && Xpos <= this->render_rect.right &&
+        Ypos >= this->render_rect.top && Ypos <= this->render_rect.bottom && min_level <= 0x28 && max_level >= 0) {
         if (min_level < 0) {
             min_level = 0;
         }
@@ -3738,12 +3633,10 @@ int RGE_View::hit_tile(RGE_Tile* tile, short x, short y, short map_col, short ma
     }
 
     if (mouse_pos->x >= x) {
-        if (mouse_pos->x < x + this->map->tilesizes[(int)tile_type].width &&
-            mouse_pos->y >= y &&
+        if (mouse_pos->x < x + this->map->tilesizes[(int)tile_type].width && mouse_pos->y >= y &&
             mouse_pos->y < y + this->map->tilesizes[(int)tile_type].height) {
             RGE_Map* map = this->map;
-            if (terrain_type < map->num_terrain &&
-                map->terrain_types[terrain_type].loaded) {
+            if (terrain_type < map->num_terrain && map->terrain_types[terrain_type].loaded) {
                 TShape* sh = map->terrain_types[terrain_type].shape;
                 short pic = this->get_tile_picture(terrain_type, (unsigned char)tile_type, map_col, map_row);
 
@@ -3788,8 +3681,7 @@ RGE_Static_Object* RGE_View::hit_object(RGE_Tile* tile, short x, short y, short 
         RGE_Static_Object* obj;
         for (; cur != 0 && (obj = cur->node) != 0; cur = cur->next) {
                 if (obj->object_state < 7) {
-                    if ((!fog_flag || obj->master_obj->fog_flag) &&
-                        obj->master_obj->select_level >= this->function_parm) {
+                    if ((!fog_flag || obj->master_obj->fog_flag) && obj->master_obj->select_level >= this->function_parm) {
                         if (this->function_mode == '+' || this->function_mode == ',') {
                             if (obj->owner == this->player) {
                             if (this->function_mode == ',') {
@@ -3866,8 +3758,7 @@ int RGE_View::start_scroll_view(unsigned char scroll_action_in, long x, long y, 
     this->mouse_down_y = y;
     this->capture_mouse();
 
-    if (this->scroll_action == 1 || this->scroll_action == 2 ||
-        this->scroll_action == 6 || this->scroll_action == 7 ||
+    if (this->scroll_action == 1 || this->scroll_action == 2 || this->scroll_action == 6 || this->scroll_action == 7 ||
         this->scroll_action == 8) {
         rge_base_game->mouse_off();
     }
@@ -3916,14 +3807,12 @@ int RGE_View::handle_scroll_view(long x, long y) {
         return 0;
 
     case 6:
-        if (this->is_inside(x, y) &&
-            this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
+        if (this->is_inside(x, y) && this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
             this->player->set_view_loc(pick_info.x - DAT_005776c0, pick_info.y - DAT_005776c0);
         }
         this->mouse_last_x = x;
         this->mouse_last_y = y;
-        if (save_view_x == this->player->view_x &&
-            save_view_y == this->player->view_y) {
+        if (save_view_x == this->player->view_x && save_view_y == this->player->view_y) {
             return 0;
         }
         this->set_redraw((TPanel::RedrawMode)1);
@@ -3944,8 +3833,7 @@ int RGE_View::handle_scroll_view(long x, long y) {
             this->player->map_x += amount;
         }
 
-        if (abs(y - this->mouse_down_y) <= 8 &&
-            abs(x - this->mouse_down_x) <= 8) {
+        if (abs(y - this->mouse_down_y) <= 8 && abs(x - this->mouse_down_x) <= 8) {
             this->mouse_last_x = x;
             this->mouse_last_y = y;
         } else {
@@ -3972,8 +3860,7 @@ int RGE_View::handle_scroll_view(long x, long y) {
             this->player->set_view_loc(this->player->view_x + amount, this->player->view_y + amount);
         }
 
-        if (abs(y - this->mouse_down_y) <= 8 &&
-            abs(x - this->mouse_down_x) <= 8) {
+        if (abs(y - this->mouse_down_y) <= 8 && abs(x - this->mouse_down_x) <= 8) {
             this->mouse_last_x = x;
             this->mouse_last_y = y;
         } else {
@@ -3985,16 +3872,14 @@ int RGE_View::handle_scroll_view(long x, long y) {
             this->mouse_last_y = this->mouse_down_y;
         }
 
-        if (save_view_x == this->player->view_x &&
-            save_view_y == this->player->view_y) {
+        if (save_view_x == this->player->view_x && save_view_y == this->player->view_y) {
             return 0;
         }
         this->set_redraw((TPanel::RedrawMode)1);
         return 1;
     }
 
-    if (this->scroll_action == 3 || this->scroll_action == 4 ||
-        this->scroll_action == 9) {
+    if (this->scroll_action == 3 || this->scroll_action == 4 || this->scroll_action == 9) {
         move_view =
             (x < this->clip_rect.left + 64 && x < this->mouse_last_x) ||
             (x > this->clip_rect.right - 64 && x > this->mouse_last_x) ||
@@ -4022,8 +3907,7 @@ int RGE_View::handle_scroll_view(long x, long y) {
     this->mouse_last_y = y;
 
     if (move_view) {
-        if (abs(y - this->mouse_down_y) > 8 ||
-            abs(x - this->mouse_down_x) > 8) {
+        if (abs(y - this->mouse_down_y) > 8 || abs(x - this->mouse_down_x) > 8) {
             point.x = this->mouse_down_x;
             point.y = this->mouse_down_y;
             ClientToScreen(this->render_area->Wnd, &point);
@@ -4037,13 +3921,11 @@ int RGE_View::handle_scroll_view(long x, long y) {
     }
 
     if (this->scroll_action == 3) {
-        if (this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33 &&
-            this->player != 0) {
+        if (this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33 && this->player != 0) {
             this->set_selection_area(this->sel_col1, this->sel_row1, (long)pick_info.x, (long)pick_info.y);
         }
     } else if (this->scroll_action == 4) {
-        if (this->player->selected_obj != 0 &&
-            this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
+        if (this->player->selected_obj != 0 && this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
             this->player->selected_obj->teleport(pick_info.x, pick_info.y, 0);
             unsigned char draw_level;
             if (this->player->selected_obj->sprite_list != 0) {
@@ -4066,8 +3948,7 @@ int RGE_View::handle_scroll_view(long x, long y) {
         this->set_redraw((TPanel::RedrawMode)1);
     }
 
-    if (save_view_x == this->player->view_x &&
-        save_view_y == this->player->view_y) {
+    if (save_view_x == this->player->view_x && save_view_y == this->player->view_y) {
         return 0;
     }
     this->set_redraw((TPanel::RedrawMode)1);
@@ -4120,8 +4001,7 @@ void RGE_View::end_scroll_view() {
         break;
     }
 
-    if (this->scroll_action == 1 || this->scroll_action == 2
-        || this->scroll_action == 6 || this->scroll_action == 7
+    if (this->scroll_action == 1 || this->scroll_action == 2 || this->scroll_action == 6 || this->scroll_action == 7
         || this->scroll_action == 8) {
         rge_base_game->mouse_on();
     }
@@ -4447,8 +4327,7 @@ void DClipInfo_List::AddDrawNode(void* ShapeBase, Shape_Info* theShape,
     HotX = Xpos + shp->Hotspot_X;
     HotY = Ypos + shp->Hotspot_Y;
 
-    if (!(Xpos <= this->SD_XMax && right >= this->SD_XMin &&
-          Ypos <= this->SD_YMax && bottom >= this->SD_YMin &&
+    if (!(Xpos <= this->SD_XMax && right >= this->SD_XMin && Ypos <= this->SD_YMax && bottom >= this->SD_YMin &&
           line >= 0 && line < this->YLine_Size))
         return;
 

@@ -340,8 +340,7 @@ void TSpan_List_Manager::AddSpan(int LeftPx, int RightPx, int Line) {
                 current->StartPx = LeftPx;
             }
 
-            if (current->EndPx < RightPx
-                && (tail = current->Next) != 0) {
+            if (current->EndPx < RightPx && (tail = current->Next) != 0) {
                 for (;;) {
                     if (RightPx + 1 < tail->StartPx) {
                         current->EndPx = RightPx;
@@ -493,8 +492,7 @@ void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num, int Xpos, int
                 do {
                     unsigned short start = *outline++;
                     unsigned short end = *outline++;
-                    if (line >= this->Min_Line && line <= this->Max_Line
-                        && (start & 0x8000) == 0) {
+                    if (line >= this->Min_Line && line <= this->Max_Line && (start & 0x8000) == 0) {
                         AddSpan((short)start + Xpos, X2 - (short)end, line);
                     }
                     line++;
@@ -507,8 +505,7 @@ void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num, int Xpos, int
                 do {
                     unsigned short start = *outline++;
                     unsigned short end = *outline++;
-                    if (line >= this->Min_Line && line <= this->Max_Line
-                        && (end & 0x8000) == 0) {
+                    if (line >= this->Min_Line && line <= this->Max_Line && (end & 0x8000) == 0) {
                         AddSpan((short)end + Xpos, X2 - (short)start, line);
                     }
                     line++;
@@ -533,8 +530,7 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base, Shape_Info* S
                 do {
                     start = *outline++;
                     end = *outline++;
-                    if (line >= this->Min_Line && line <= this->Max_Line
-                        && (start & 0x8000) == 0) {
+                    if (line >= this->Min_Line && line <= this->Max_Line && (start & 0x8000) == 0) {
                         AddSpan((short)start + Xpos & 0xfffffffc, X2 - (short)end | 3, line);
                     }
                     line++;
@@ -547,8 +543,7 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base, Shape_Info* S
                 do {
                     start = *outline++;
                     end = *outline++;
-                    if (line >= this->Min_Line && line <= this->Max_Line
-                        && (end & 0x8000) == 0) {
+                    if (line >= this->Min_Line && line <= this->Max_Line && (end & 0x8000) == 0) {
                         AddSpan((short)end + Xpos & 0xfffffffc, X2 - (short)start | 3, line);
                     }
                     line++;
@@ -681,8 +676,7 @@ void TSpan_List_Manager::DeleteSpan(int LeftPx, int RightPx, int Line) {
     if (head != 0) {
         if (RightPx >= this->LeftMostPx[Line]) {
             if (LeftPx <= this->RightMostPx[Line]) {
-                if (LeftPx <= this->LeftMostPx[Line]
-                    && RightPx >= this->RightMostPx[Line]) {
+                if (LeftPx <= this->LeftMostPx[Line] && RightPx >= this->RightMostPx[Line]) {
                     this->VSList.FreeThread(head, this->Line_Tail_Ptrs[Line]);
                     this->Line_Head_Ptrs[Line] = 0;
                     this->Line_Tail_Ptrs[Line] = 0;
@@ -878,8 +872,7 @@ void TSpan_List_Manager::AlignamizeSpans() {
 
 void TSpan_List_Manager::ScrollSpansHorizontally(int XOffset, int ClipToCurrentRegion) {
     if (XOffset != 0) {
-        if (ClipToCurrentRegion != 0
-            && abs(XOffset) > this->Max_Span_Px - this->Min_Span_Px) {
+        if (ClipToCurrentRegion != 0 && abs(XOffset) > this->Max_Span_Px - this->Min_Span_Px) {
             this->ResetAll();
             return;
         }
@@ -1015,9 +1008,7 @@ int TSpan_List_Manager::ValidateSpan(int Line) {
     if (Line >= 0 && Line < this->Num_Lines) {
         VSpan_Node* node = this->Line_Head_Ptrs[Line];
         if (node == 0) {
-            if (this->Line_Tail_Ptrs[Line] == 0
-                && this->Span_Count[Line] == 0
-                && this->LeftMostPx[Line] == 0) {
+            if (this->Line_Tail_Ptrs[Line] == 0 && this->Span_Count[Line] == 0 && this->LeftMostPx[Line] == 0) {
                 return this->RightMostPx[Line] == 0;
             }
         } else {

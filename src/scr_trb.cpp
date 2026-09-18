@@ -52,7 +52,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     backgroundPanel->set_positioning(TPanel::PositionCentered, 0, 0, 0, 0, secondWidth, secondWidth,
                                      secondHeight, secondHeight, 0, 0, 0, 0);
 
-    font = rge_base_game->get_font(1);
+    font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_21_BOLD);
     this->title = new TTextPanel;
     if (this->title == 0) {
         this->error_code = 1;
@@ -63,7 +63,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
                        0, 0, 0, 0, 0, 0, "Civilization Selection");
 
     buttonSound = rge_base_game->get_sound(0);
-    font = rge_base_game->get_font(0);
+    font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_12_BOLD);
     secondWidth = 0;
     secondHeight = 0;
     i = 0;
@@ -90,7 +90,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         ++secondHeight;
     }
 
-    font = rge_base_game->get_font(0xB);
+    font = rge_base_game->get_font(RGE_FONT_STANDARD);
     this->tribeText = new TTextPanel;
     if (this->tribeText == 0) {
         this->error_code = 1;

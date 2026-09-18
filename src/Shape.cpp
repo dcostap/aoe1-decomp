@@ -155,8 +155,7 @@ byte TShape::Check_shape(long shape_num, char* proc) {
         }
     }
 
-    if (this->FShape != 0 && shape_num >= 0 &&
-        shape_num >= this->FShape->Num_Shapes) {
+    if (this->FShape != 0 && shape_num >= 0 && shape_num >= this->FShape->Num_Shapes) {
         addstring(&msg, "ERROR: (", proc);
         addstring(&msg, msg, ") Fshape number out of bounds");
         free(msg);
@@ -225,8 +224,7 @@ byte TShape::shape_minmax(long& x_min, long& y_min, long& x_max, long& y_max, lo
 }
 
 byte TShape::shape_check(long check_x, long check_y, long shape_num) {
-    if (shape_num < 0 ||
-        this->Check_shape(shape_num, (char*)"RGL_shape_draw") != 0)
+    if (shape_num < 0 || this->Check_shape(shape_num, (char*)"RGL_shape_draw") != 0)
         return 0;
 
     if (this->FShape != 0) {
@@ -235,15 +233,13 @@ byte TShape::shape_check(long check_x, long check_y, long shape_num) {
         long shape_y = info->Hotspot_Y + check_y;
         long width = info->Width;
 
-        if (shape_x0 >= 0 && shape_y >= 0 && shape_x0 < width &&
-            shape_y < info->Height) {
+        if (shape_x0 >= 0 && shape_y >= 0 && shape_x0 < width && shape_y < info->Height) {
             short* outline =
                 (short*)(this->FShape->Version + info->Shape_Outline_Offset);
             long left = outline[shape_y * 2];
             long right = outline[shape_y * 2 + 1];
 
-            if (left >= 0 && left <= shape_x0 &&
-                shape_x0 <= width - right) {
+            if (left >= 0 && left <= shape_x0 && shape_x0 <= width - right) {
                 long* data_offsets =
                     (long*)(this->FShape->Version + info->Shape_Data_Offsets);
                 byte* source =
@@ -328,8 +324,7 @@ byte TShape::shape_check(long check_x, long check_y, long shape_num) {
         long shape_y = header->ymin;
         byte* source = (byte*)(header + 1);
 
-        if (shape_y <= check_y && check_y <= header->ymax && r <= check_x &&
-            check_x <= header->xmax) {
+        if (shape_y <= check_y && check_y <= header->ymax && r <= check_x && check_x <= header->xmax) {
             if (shape_y < check_y) {
                 long rows = check_y - shape_y;
                 do {
@@ -393,8 +388,7 @@ byte TShape::shape_draw(TDrawArea* drawarea, long x, long y, long shape_num, byt
     long clip_y0;
     tagRECT rect;
 
-    if (shape_num >= 0 &&
-        this->Check_shape(shape_num, (char*)"RGL_shape_draw") == 0) {
+    if (shape_num >= 0 && this->Check_shape(shape_num, (char*)"RGL_shape_draw") == 0) {
         if (this->FShape != 0) {
             if (SDI_Capture_Info != 0) {
                 Shape_Info* info = (Shape_Info*)(this->FShape + shape_num + 1);
@@ -457,8 +451,7 @@ byte TShape::shape_draw(TDrawArea* drawarea, long x, long y, long shape_num, byt
                 y = drawarea->Height - 1;
 
             if (x <= clip_x1 && clip_y0 <= y) {
-                if (x != shape_x0 || clip_y0 != raw_y0 ||
-                    clip_x1 != shape_x1 || y != shape_y1) {
+                if (x != shape_x0 || clip_y0 != raw_y0 || clip_x1 != shape_x1 || y != shape_y1) {
                     switch ((unsigned char)flags) {
                     case 2:
                         if (color_table != 0) {
@@ -1250,8 +1243,7 @@ byte TShape::shape_mirror(TDrawArea* drawarea, long x, long y, long shape_num, b
     tagRECT rect;
     ret_num = 0;
 
-    if (shape_num >= 0 &&
-        this->Check_shape(shape_num, (char*)"RGL_shape_draw") == 0) {
+    if (shape_num >= 0 && this->Check_shape(shape_num, (char*)"RGL_shape_draw") == 0) {
         if (this->FShape != 0) {
             if (SDI_Capture_Info != 0) {
                 Shape_Info* info = (Shape_Info*)((char*)this->FShape + ((shape_num + 1) << 5));
@@ -1313,9 +1305,7 @@ byte TShape::shape_mirror(TDrawArea* drawarea, long x, long y, long shape_num, b
                     shape_y1 = drawarea->Height - 1;
 
                 if (x <= shape_x1 && y <= shape_y1) {
-                    if (x == x0 && y == y0 &&
-                        shape_x1 == original_x1 &&
-                        shape_y1 == original_y1) {
+                    if (x == x0 && y == y0 && shape_x1 == original_x1 && shape_y1 == original_y1) {
                         switch ((unsigned char)flags) {
                         case 2:
                             if (color_table == 0) {
@@ -2191,8 +2181,7 @@ byte TShape::shape_dither(TDrawArea* drawarea, long x, long y, long shape_num, l
         clip_y1 = drawarea->Height - 1;
 
     if (clip_x0 <= clip_x1 && clip_y0 <= clip_y1) {
-        if (clip_x0 == shape_x0 && clip_y0 == shape_y0 &&
-            clip_x1 == shape_x1 && clip_y1 == shape_y1) {
+        if (clip_x0 == shape_x0 && clip_y0 == shape_y0 && clip_x1 == shape_x1 && clip_y1 == shape_y1) {
             return this->shape_dithered_unclipped(drawarea, shape_x0, shape_y0, dx, dy);
         }
 

@@ -241,8 +241,7 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
     case VK_PRIOR:
         if (this->num_lines < 1) return 1;
         if (this->cur_line <= 0) break;
-        if (this->cur_line < this->top_line ||
-            this->cur_line > this->bot_line) {
+        if (this->cur_line < this->top_line || this->cur_line > this->bot_line) {
             this->cur_line = this->top_line;
         }
         if (this->cur_line == this->top_line) {
@@ -260,8 +259,7 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
     case VK_NEXT:
         if (this->num_lines < 1) return 1;
         if (this->cur_line >= this->num_lines - 1) break;
-        if (this->cur_line < this->top_line ||
-            this->cur_line > this->bot_line) {
+        if (this->cur_line < this->top_line || this->cur_line > this->bot_line) {
             this->cur_line = this->bot_line;
         }
         if (this->cur_line == this->bot_line) {

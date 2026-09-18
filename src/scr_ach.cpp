@@ -19,7 +19,7 @@ extern int confirmed_close;
 
 TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
     : TScreenPanel("Achievements Screen") {
-    char info_file[260];
+    char layout_file[260];
     char str[100];
     TPanel* tabList[8];
     long seconds;
@@ -59,21 +59,21 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
         }
     }
 
-    long info_id;
+    long layout_resource_id;
     if (this->end_game_flag != 0) {
         if (rge_base_game->get_player()->game_status == 1) {
-            strcpy(info_file, "scr7");
-            info_id = RESID_ACHIEVEMENTS_END_WIN_LAYOUT;
+            strcpy(layout_file, "scr7");
+            layout_resource_id = BINARY_RESOURCE_ID_ACHIEVEMENTS_END_WIN_LAYOUT;
         } else {
-            strcpy(info_file, "scr8");
-            info_id = RESID_ACHIEVEMENTS_END_OTHER_LAYOUT;
+            strcpy(layout_file, "scr8");
+            layout_resource_id = BINARY_RESOURCE_ID_ACHIEVEMENTS_END_OTHER_LAYOUT;
         }
     } else {
-        strcpy(info_file, "scr10");
-        info_id = RESID_ACHIEVEMENTS_IN_GAME_LAYOUT;
+        strcpy(layout_file, "scr10");
+        layout_resource_id = BINARY_RESOURCE_ID_ACHIEVEMENTS_IN_GAME_LAYOUT;
     }
 
-    if (this->setup(rge_base_game->draw_area, info_file, info_id, 1) == 0) {
+    if (this->setup(rge_base_game->draw_area, layout_file, layout_resource_id, 1) == 0) {
         this->error_code = 1;
         return;
     }
@@ -93,9 +93,9 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
 
     this->create_text(this, &this->time, str, 480, 10, 110, 20, RGE_FONT_STANDARD, 0, 0, 0);
     this->time->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
-    this->create_text(this, &this->title, IDS_ACHIEVEMENTS_TITLE, 0, 5, 640, 30, 1, 1, 0, 0);
-    this->create_text(this, &this->summary_text, 0, 10, 35, 620, 30, 1, 1, 0, 0);
-    this->create_text(this, &this->instruction, IDS_ACHIEVEMENTS_COLUMN_INSTRUCTION, 10, 410, 620,
+    this->create_text(this, &this->title, STRING_ID_ACHIEVEMENTS_TITLE, 0, 5, 640, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0);
+    this->create_text(this, &this->summary_text, 0, 10, 35, 620, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0);
+    this->create_text(this, &this->instruction, STRING_ID_ACHIEVEMENTS_COLUMN_INSTRUCTION, 10, 410, 620,
                       20, RGE_FONT_STANDARD, 1, 0, 0);
 
     if (this->end_game_flag != 0) {
@@ -123,7 +123,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
                                     this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->time_line->set_special_events("timeline.slp");
 
-    if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0) == 0) {
+    if (this->create_button(this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0) == 0) {
         return;
     }
     this->close_button->set_active(1);
@@ -207,28 +207,28 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
     long ok_x;
     if (this->end_game_flag != 0 && rge_base_game->singlePlayerGame() != 0) {
         if (this->win_loss_text != 0) {
-            this->create_button(this, &this->aftermathButton, IDS_ACHIEVEMENTS_AFTERMATH, 0, 5, 441, 150, 30, 0, 0, 0);
-            this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0, 165, 441, 150, 30, 0, 0, 0);
-            this->create_button(this, &this->restartButton, IDS_ACHIEVEMENTS_RESTART, 0, 325, 441, 150, 30, 0, 0, 0);
+            this->create_button(this, &this->aftermathButton, STRING_ID_ACHIEVEMENTS_AFTERMATH, 0, 5, 441, 150, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+            this->create_button(this, &this->timelineButton, STRING_ID_ACHIEVEMENTS_TIMELINE, 0, 165, 441, 150, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+            this->create_button(this, &this->restartButton, STRING_ID_ACHIEVEMENTS_RESTART, 0, 325, 441, 150, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
             button_width = 150;
             ok_x = 485;
         } else {
-            this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0, 20, 441, 180, 30, 0, 0, 0);
-            this->create_button(this, &this->restartButton, IDS_ACHIEVEMENTS_RESTART, 0, 230, 441, 180, 30, 0, 0, 0);
+            this->create_button(this, &this->timelineButton, STRING_ID_ACHIEVEMENTS_TIMELINE, 0, 20, 441, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+            this->create_button(this, &this->restartButton, STRING_ID_ACHIEVEMENTS_RESTART, 0, 230, 441, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
             button_width = 180;
             ok_x = 440;
         }
     } else {
-        this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0, 100, 441, 200, 30, 0, 0, 0);
+        this->create_button(this, &this->timelineButton, STRING_ID_ACHIEVEMENTS_TIMELINE, 0, 100, 441, 200, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
         button_width = 200;
         ok_x = 340;
     }
-    this->create_button(this, &this->okButton, IDS_ACHIEVEMENTS_CLOSE, 0, ok_x, 441, button_width, 30, 0, 0, 0);
-    this->create_button(this, &this->backButton, IDS_ACHIEVEMENTS_BACK, 0, 200, 441, 240, 30, 0, 0, 0);
+    this->create_button(this, &this->okButton, STRING_ID_ACHIEVEMENTS_CLOSE, 0, ok_x, 441, button_width, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+    this->create_button(this, &this->backButton, STRING_ID_ACHIEVEMENTS_BACK, 0, 200, 441, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
     this->backButton->set_active(0);
     this->backButton->hotkey = VK_ESCAPE;
     this->backButton->hotkey_shift = 0;
-    this->create_button(this, &this->backButton2, IDS_ACHIEVEMENTS_CLOSE, 0, 200, 441, 240, 30, 0, 0, 0);
+    this->create_button(this, &this->backButton2, STRING_ID_ACHIEVEMENTS_CLOSE, 0, 200, 441, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
     this->backButton2->set_active(0);
     this->backButton2->hotkey = VK_ESCAPE;
     this->backButton2->hotkey_shift = 0;
@@ -399,14 +399,14 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
         }
 
         this->instruction->set_active(1);
-        this->summary_text->set_text(static_cast<long>(IDS_ACHIEVEMENTS_SUMMARY));
-        this->title_bar[0]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_MILITARY));
-        this->title_bar[1]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_ECONOMY));
-        this->title_bar[2]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_RELIGION));
-        this->title_bar[3]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TECHNOLOGY));
-        this->title_bar[4]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_SURVIVAL));
-        this->title_bar[5]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_WONDER));
-        this->title_bar[6]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TOTAL_SCORE_SUMMARY));
+        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_SUMMARY));
+        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MILITARY));
+        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ECONOMY));
+        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RELIGION));
+        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TECHNOLOGY));
+        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_SURVIVAL));
+        this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_WONDER));
+        this->title_bar[6]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_SUMMARY));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -425,12 +425,12 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(0x16) > 0) {
-                    this->statistics[player_index][4]->set_text(static_cast<long>(IDS_BUTTON_YES));
+                    this->statistics[player_index][4]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
                 } else {
                     this->statistics[player_index][4]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(0x17) > 0) {
-                    this->statistics[player_index][5]->set_text(static_cast<long>(IDS_BUTTON_YES));
+                    this->statistics[player_index][5]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
                 } else {
                     this->statistics[player_index][5]->set_text("");
                 }
@@ -446,13 +446,13 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
 
     case 1: {
         this->size = 6;
-        this->summary_text->set_text(static_cast<long>(IDS_ACHIEVEMENTS_MILITARY));
-        this->title_bar[0]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_KILLS));
-        this->title_bar[1]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_RAZINGS));
-        this->title_bar[2]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_LOSSES));
-        this->title_bar[3]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_KILLS_LOSSES));
-        this->title_bar[4]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_LARGEST_ARMY));
-        this->title_bar[5]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
+        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MILITARY));
+        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_KILLS));
+        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RAZINGS));
+        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_LOSSES));
+        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_KILLS_LOSSES));
+        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_LARGEST_ARMY));
+        this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -472,7 +472,7 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(3) > 0) {
-                    this->statistics[player_index][4]->set_text(static_cast<long>(IDS_BUTTON_YES));
+                    this->statistics[player_index][4]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
                 } else {
                     this->statistics[player_index][4]->set_text("");
                 }
@@ -488,14 +488,14 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
 
     case 2: {
         this->size = 7;
-        this->summary_text->set_text(static_cast<long>(IDS_ACHIEVEMENTS_ECONOMY));
-        this->title_bar[0]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_GOLD_COLLECTED));
-        this->title_bar[1]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_VILLAGER_HIGH));
-        this->title_bar[2]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_VILLAGER_BONUS));
-        this->title_bar[3]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_EXPLORATION));
-        this->title_bar[4]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_MOST_EXPLORED));
-        this->title_bar[5]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TRIBUTE_GIVEN));
-        this->title_bar[6]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
+        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ECONOMY));
+        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_GOLD_COLLECTED));
+        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_VILLAGER_HIGH));
+        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_VILLAGER_BONUS));
+        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_EXPLORATION));
+        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MOST_EXPLORED));
+        this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TRIBUTE_GIVEN));
+        this->title_bar[6]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -510,7 +510,7 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][1]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(6) > 0) {
-                    this->statistics[player_index][2]->set_text(static_cast<long>(IDS_BUTTON_YES));
+                    this->statistics[player_index][2]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
                 } else {
                     this->statistics[player_index][2]->set_text("");
                 }
@@ -519,7 +519,7 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(8) > 0) {
-                    this->statistics[player_index][4]->set_text(static_cast<long>(IDS_BUTTON_YES));
+                    this->statistics[player_index][4]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
                 } else {
                     this->statistics[player_index][4]->set_text("");
                 }
@@ -537,14 +537,14 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
 
     case 3: {
         this->size = 7;
-        this->summary_text->set_text(static_cast<long>(IDS_ACHIEVEMENTS_RELIGION));
-        this->title_bar[0]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_CONVERSIONS));
-        this->title_bar[1]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_MOST_CONVERSIONS));
-        this->title_bar[2]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_RUINS));
-        this->title_bar[3]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_ARTIFACTS));
-        this->title_bar[4]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TEMPLES));
-        this->title_bar[5]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS));
-        this->title_bar[6]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
+        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RELIGION));
+        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_CONVERSIONS));
+        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MOST_CONVERSIONS));
+        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RUINS));
+        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ARTIFACTS));
+        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TEMPLES));
+        this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS));
+        this->title_bar[6]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -558,7 +558,7 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][0]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(11) > 0) {
-                    this->statistics[player_index][1]->set_text(static_cast<long>(IDS_BUTTON_YES));
+                    this->statistics[player_index][1]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
                 } else {
                     this->statistics[player_index][1]->set_text("");
                 }
@@ -587,12 +587,12 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
 
     case 4: {
         this->size = 5;
-        this->summary_text->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TECHNOLOGY));
-        this->title_bar[0]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TECHNOLOGIES));
-        this->title_bar[1]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_MOST_TECHNOLOGIES));
-        this->title_bar[2]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_BRONZE_AGE_FIRST));
-        this->title_bar[3]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_IRON_AGE_FIRST));
-        this->title_bar[4]->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
+        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TECHNOLOGY));
+        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TECHNOLOGIES));
+        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MOST_TECHNOLOGIES));
+        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_BRONZE_AGE_FIRST));
+        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_IRON_AGE_FIRST));
+        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -604,17 +604,17 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 itoa(player->victory_conditions->get_attribute_id(17), temptxt, 10);
                 this->statistics[player_index][0]->set_text(temptxt);
                 if (player->victory_conditions->get_victory_points_id(18) > 0) {
-                    this->statistics[player_index][1]->set_text(static_cast<long>(IDS_BUTTON_YES));
+                    this->statistics[player_index][1]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
                 } else {
                     this->statistics[player_index][1]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(19) > 0) {
-                    this->statistics[player_index][2]->set_text(static_cast<long>(IDS_BUTTON_YES));
+                    this->statistics[player_index][2]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
                 } else {
                     this->statistics[player_index][2]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(20) > 0) {
-                    this->statistics[player_index][3]->set_text(static_cast<long>(IDS_BUTTON_YES));
+                    this->statistics[player_index][3]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
                 } else {
                     this->statistics[player_index][3]->set_text("");
                 }
@@ -630,13 +630,13 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
     case 6:
         this->size = 0;
         this->time_line->set_active(1);
-        this->summary_text->set_text(static_cast<long>(IDS_ACHIEVEMENTS_TIMELINE));
+        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TIMELINE));
         this->time->set_active(1);
         break;
 
     case 5:
         this->size = 0;
-        this->summary_text->set_text(static_cast<long>(IDS_ACHIEVEMENTS_AFTERMATH));
+        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_AFTERMATH));
         if (this->win_loss_text != 0) {
             this->win_loss_text->set_active(1);
         }
@@ -675,8 +675,7 @@ void TribeAchievementsScreen::draw() {
     if (this->current_mode < 5) {
         this->draw_setup(0);
 
-        if (this->win_decal != 0 &&
-            this->render_area->Lock("scr_ach::draw", 1) != 0) {
+        if (this->win_decal != 0 && this->render_area->Lock("scr_ach::draw", 1) != 0) {
             RGE_Game_World* world = rge_base_game->world;
             int count = world->player_num - 1;
 
@@ -728,8 +727,7 @@ long TribeAchievementsScreen::action(TPanel* fromPanel, long actionIn, unsigned 
         if (this->end_game_flag != 0) {
             static_cast<TRIBE_Game*>(rge_base_game)->quit_game();
         } else {
-            if (rge_base_game->singlePlayerGame() == 1 &&
-                rge_base_game->save_paused == 0) {
+            if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
                 rge_base_game->set_paused(0, 0);
             }
             panel_system.setCurrentPanel("Game Screen", 0);
@@ -763,8 +761,7 @@ long TribeAchievementsScreen::action(TPanel* fromPanel, long actionIn, unsigned 
         }
     } else {
         if (fromPanel != this->aftermathButton || actionIn != 1) {
-            if ((fromPanel == this->backButton || fromPanel == this->backButton2) &&
-                actionIn == 1) {
+            if ((fromPanel == this->backButton || fromPanel == this->backButton2) && actionIn == 1) {
                 this->set_mode(0);
                 return actionIn;
             } else if (fromPanel == this->close_button && actionIn == 1) {
@@ -772,8 +769,7 @@ long TribeAchievementsScreen::action(TPanel* fromPanel, long actionIn, unsigned 
                 return actionIn;
             } else {
                 char* panel_name = fromPanel->panelName();
-                if (panel_name != 0 &&
-                    strcmp(fromPanel->panelName(), "YesNoDialog") == 0) {
+                if (panel_name != 0 && strcmp(fromPanel->panelName(), "YesNoDialog") == 0) {
                     panel_system.destroyPanel("YesNoDialog");
                     if (actionIn == 0) {
                         rge_base_game->close();
@@ -821,7 +817,7 @@ long TribeAchievementsScreen::wnd_proc(void* hwnd, unsigned int msg, unsigned in
         int mode = rge_base_game->prog_mode;
         if (mode == 5 || mode == 4 || mode == 6 || mode == 7) {
             if (IsIconic(render_area->Wnd) == 0) {
-                popupYesNoDialog(get_string(IDS_CONFIRM_QUIT_GAME), 0, TEASY_POPUP_WIDTH, 100);
+                popupYesNoDialog(get_string(STRING_ID_CONFIRM_QUIT_GAME), 0, TEASY_POPUP_WIDTH, 100);
                 return 1;
             }
         }

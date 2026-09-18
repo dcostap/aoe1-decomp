@@ -39,20 +39,20 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
         return;
 
     TEasy_Panel::create_text(this, &this->background, "", 10, 10, 500,
-                             350, 4, 0, 0, 0);
+                             350, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0);
 
     this->background->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
                                      this->bevel_color5, this->bevel_color6);
 
-    TEasy_Panel::create_text(this, &this->title_text, IDS_PRODUCT_TITLE, 20, 20,
-                             480, 20, 4, 0, 0, 0);
-    TEasy_Panel::create_text(this, &this->version_text, IDS_PRODUCT_VERSION, 20, 40,
-                             480, 20, 0xb, 0, 0, 0);
+    TEasy_Panel::create_text(this, &this->title_text, STRING_ID_PRODUCT_TITLE, 20, 20,
+                             480, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0);
+    TEasy_Panel::create_text(this, &this->version_text, STRING_ID_PRODUCT_VERSION, 20, 40,
+                             480, 20, RGE_FONT_STANDARD, 0, 0, 0);
 
-    TPanel::get_string(IDS_COPYRIGHT_SEPARATOR, temp_str, 512);
+    TPanel::get_string(STRING_ID_COPYRIGHT_SEPARATOR, temp_str, 512);
     if (temp_str[0] == '\0') {
-        TEasy_Panel::create_text(this, &this->ms_copy_text1, IDS_COPYRIGHT_PREFIX, 20,
-                                 65, 480, 20, 10, 0, 0, 0);
+        TEasy_Panel::create_text(this, &this->ms_copy_text1, STRING_ID_COPYRIGHT_PREFIX, 20,
+                                 65, 480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
 
         if (this->ms_copy_text1) {
             if (this->ms_copy_text1->get_text_rect(&rect)) {
@@ -61,28 +61,28 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
                     this->circle_p_pic->setup(this->render_area, this, (rect.right - this->pnl_x) + 3,
                                               0x42, 0xf, 0xe, "circlep", 0xc4e0, 0, 1);
                     TEasy_Panel::create_text(
-                        this, &this->ms_copy_text2, IDS_COPYRIGHT_SUFFIX,
+                        this, &this->ms_copy_text2, STRING_ID_COPYRIGHT_SUFFIX,
                         this->circle_p_pic->xPosition() - this->pnl_x +
                             this->circle_p_pic->width(),
-                        65, 480, 20, 10, 0, 0, 0);
+                        65, 480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
                 }
             }
         }
     } else {
-        strcpy(temp_str, TPanel::get_string(IDS_COPYRIGHT_PREFIX));
-        strcat(temp_str, TPanel::get_string(IDS_COPYRIGHT_SEPARATOR));
+        strcpy(temp_str, TPanel::get_string(STRING_ID_COPYRIGHT_PREFIX));
+        strcat(temp_str, TPanel::get_string(STRING_ID_COPYRIGHT_SEPARATOR));
         strcat(temp_str, " ");
-        strcat(temp_str, TPanel::get_string(IDS_COPYRIGHT_SUFFIX));
+        strcat(temp_str, TPanel::get_string(STRING_ID_COPYRIGHT_SUFFIX));
         TEasy_Panel::create_text(this, &this->ms_copy_text1, temp_str, 20,
-                                 65, 480, 20, 10, 0, 0, 0);
+                                 65, 480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
     }
 
-    TEasy_Panel::create_text(this, &this->ens_copy_text, IDS_COPYRIGHT_ENSEMBLE, 20, 85,
-                             480, 20, 10, 0, 0, 0);
-    TEasy_Panel::create_text(this, &this->genie_copy_text, IDS_GENIE_ENGINE_COPYRIGHT, 20,
-                             105, 480, 40, 10, 0, 0, 1);
-    TEasy_Panel::create_text(this, &this->pid_label_text, IDS_PRODUCT_ID_LABEL, 20,
-                             150, 95, 20, 10, 0, 0, 0);
+    TEasy_Panel::create_text(this, &this->ens_copy_text, STRING_ID_COPYRIGHT_ENSEMBLE, 20, 85,
+                             480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
+    TEasy_Panel::create_text(this, &this->genie_copy_text, STRING_ID_GENIE_ENGINE_COPYRIGHT, 20,
+                             105, 480, 40, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 1);
+    TEasy_Panel::create_text(this, &this->pid_label_text, STRING_ID_PRODUCT_ID_LABEL, 20,
+                             150, 95, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
 
     if (this->pid_label_text) {
         if (this->pid_label_text->get_text_rect(&rect)) {
@@ -92,19 +92,19 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
             sprintf(str, "%s", pid_str);
             TEasy_Panel::create_text(
                 this, &this->pid_text, str,
-                (rect.right - this->pnl_x) + 4, 150, 200, 20, 0xb, 0, 0,
+                (rect.right - this->pnl_x) + 4, 150, 200, 20, RGE_FONT_STANDARD, 0, 0,
                 0);
         }
     }
 
-    TPanel::get_string(IDS_ABOUT_COPYRIGHT_WARNING, str, 4096);
+    TPanel::get_string(STRING_ID_ABOUT_COPYRIGHT_WARNING, str, 4096);
     TEasy_Panel::create_text(this, &this->warning_text, str, 20, 175,
-                             480, 220, 10, 0, 0, 1);
+                             480, 220, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 1);
 
-    TEasy_Panel::create_button(this, &this->credits_button, IDS_ABOUT_CREDITS_BUTTON, 0, 70,
-                               370, 170, 30, 0, 0, 0);
-    TEasy_Panel::create_button(this, &this->close_button, IDS_ABOUT_CLOSE_BUTTON, 0, 280,
-                               370, 170, 30, 0, 0, 0);
+    TEasy_Panel::create_button(this, &this->credits_button, STRING_ID_ABOUT_CREDITS_BUTTON, 0, 70,
+                               370, 170, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+    TEasy_Panel::create_button(this, &this->close_button, STRING_ID_ABOUT_CLOSE_BUTTON, 0, 280,
+                               370, 170, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
 
     TButtonPanel* close_button = this->close_button;
     close_button->hotkey = 0x1b;

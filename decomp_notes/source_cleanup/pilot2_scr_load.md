@@ -88,16 +88,16 @@ I added `include/resource_ids.h`. Every macro is a new descriptive cleanup name.
 
 | ID | New name | Proven role | Text result |
 | --- | --- | --- | --- |
-| `0x0FA1` | `IDS_BUTTON_OK` | OK button caption | `OK` |
-| `0x0FA2` | `IDS_BUTTON_CANCEL` | Cancel button caption | `Cancel` |
-| `0x24C9` | `IDS_BUTTON_DELETE` | Delete button caption | `Delete` |
-| `0x24CA` | `IDS_CONFIRM_DELETE_FILE` | Delete confirmation format string | `Are you sure you want to delete the file \n'%s'?` |
-| `0x24FF` | `IDS_SAVED_GAMES_TITLE` | Load-screen title | `Saved Games` |
-| `0x2501` | `IDS_ERROR_CANNOT_LOAD_SAVED_GAME` | Load failure message | `Cannot load that saved game.` |
-| `0x2502` | `IDS_SELECT_SAVED_GAME_TITLE` | Saved-game list title | `Select Saved Game` |
-| `0x7531` | `IDS_HELP_OK` | Help text ID assigned to the OK button | Missing in all checked files |
-| `0x7532` | `IDS_HELP_CANCEL` | Help text ID assigned to the Cancel button | Missing in all checked files |
-| `0x7670` | `IDS_HELP_SAVED_GAME_NAME` | Help text ID assigned to the saved-game list scrollbar | `Type a name for the game.` |
+| `0x0FA1` | `STRING_ID_BUTTON_OK` | OK button caption | `OK` |
+| `0x0FA2` | `STRING_ID_BUTTON_CANCEL` | Cancel button caption | `Cancel` |
+| `0x24C9` | `STRING_ID_BUTTON_DELETE` | Delete button caption | `Delete` |
+| `0x24CA` | `STRING_ID_CONFIRM_DELETE_FILE` | Delete confirmation format string | `Are you sure you want to delete the file \n'%s'?` |
+| `0x24FF` | `STRING_ID_SAVED_GAMES_TITLE` | Load-screen title | `Saved Games` |
+| `0x2501` | `STRING_ID_ERROR_CANNOT_LOAD_SAVED_GAME` | Load failure message | `Cannot load that saved game.` |
+| `0x2502` | `STRING_ID_SELECT_SAVED_GAME_TITLE` | Saved-game list title | `Select Saved Game` |
+| `0x7531` | `STRING_ID_HELP_OK` | Help text ID assigned to the OK button | Missing in all checked files |
+| `0x7532` | `STRING_ID_HELP_CANCEL` | Help text ID assigned to the Cancel button | Missing in all checked files |
+| `0x7670` | `STRING_ID_HELP_SAVED_GAME_NAME` | Help text ID assigned to the saved-game list scrollbar | `Type a name for the game.` |
 
 The role of `0x7531` and `0x7532` does not depend on recovered text. The executable passes each ID to `TPanel::set_help_info`. The source and cross-screen call sites assign `0x7531` to OK buttons and `0x7532` to Cancel buttons. The supplied help-ID note records the same executable evidence.
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Join short source lines that break inside function-call parentheses.
+"""Join short source lines that break inside expression parentheses.
 
 The default mode is a dry run.  The script only joins a line when the
 resulting physical line is shorter than the selected column limit.
 It skips comments, strings, character literals, and preprocessor lines.
+Function signatures remain separate from call and control-expression groups.
 """
 
 from __future__ import annotations
@@ -45,9 +46,9 @@ class LineState:
 
 @dataclass
 class ParenGroup:
-    """An open parenthesis tracked while reindenting continuation lines."""
+    """An expression parenthesis tracked while reindenting continuations."""
 
-    call_like: bool
+    joinable: bool
     first_arg_column: Optional[int]
     open_line: int
 
@@ -81,6 +82,17 @@ def is_call_open(previous_kind: Optional[str], previous_value: Optional[str]) ->
         return previous_value not in CONTROL_KEYWORDS
     return previous_value in {")", "]", ">"
     }
+
+
+def is_joinable_open(previous_kind: Optional[str], previous_value: Optional[str]) -> bool:
+    """Return whether an expression parenthesis can join short continuations."""
+
+    # Calls and postfix expressions were the original cleanup scope.  Control
+    # and type-expression keywords use the same safe token-joining rule.  A
+    # declaration or definition is excluded separately by the signature test.
+    return is_call_open(previous_kind, previous_value) or (
+        previous_kind == "identifier" and previous_value in CONTROL_KEYWORDS
+    )
 
 
 def is_function_signature_prefix(
@@ -207,7 +219,7 @@ def scan_lines(lines: list[str]) -> list[LineState]:
                     body[:index], previous_kind, previous_value
                 )
                 paren_stack.append(
-                    False if signature else is_call_open(previous_kind, previous_value)
+                    False if signature else is_joinable_open(previous_kind, previous_value)
                 )
                 previous_kind = "punctuation"
                 previous_value = char
@@ -301,7 +313,7 @@ def reindent_call_continuations(text: str) -> tuple[str, int]:
 
         if not is_preprocessor and lexical_state == "normal" and stripped:
             for group in reversed(groups):
-                if group.call_like and group.first_arg_column is not None:
+                if group.joinable and group.first_arg_column is not None:
                     if group.open_line < line_index and groups[-1] is group:
                         target_column = group.first_arg_column
                     break
@@ -392,14 +404,14 @@ def reindent_call_continuations(text: str) -> tuple[str, int]:
                 signature = is_function_signature_prefix(
                     body[:index], previous_kind, previous_value
                 )
-                call_like = False if signature else is_call_open(previous_kind, previous_value)
+                joinable = False if signature else is_joinable_open(previous_kind, previous_value)
                 first_arg_column: Optional[int] = None
                 after_open = index + 1
                 while after_open < length and body[after_open] in " \t":
                     after_open += 1
                 if after_open < length and body[after_open] != ")":
                     first_arg_column = visual_width(body[:after_open])
-                groups.append(ParenGroup(call_like, first_arg_column, line_index))
+                groups.append(ParenGroup(joinable, first_arg_column, line_index))
                 previous_kind = "punctuation"
                 previous_value = char
                 index += 1
@@ -445,7 +457,14 @@ def transform(text: str, max_column: int) -> tuple[str, int]:
     changes = 0
 
     for line_index, line in enumerate(lines):
-        if output and states[line_index - 1].join_after:
+        right_body, _ = split_body(line)
+        if (
+            output
+            and states[line_index - 1].join_after
+            and not states[line_index].has_comment
+            and not states[line_index].is_preprocessor
+            and right_body.strip()
+        ):
             candidate = join_lines(output[-1], line)
             candidate_body, _ = split_body(candidate)
             if visual_width(candidate_body) < max_column:
@@ -494,7 +513,7 @@ def parse_extensions(value: str) -> frozenset[str]:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Join short lines broken inside call-like parentheses. "
+            "Join short lines broken inside expression parentheses. "
             "Dry-run by default."
         )
     )

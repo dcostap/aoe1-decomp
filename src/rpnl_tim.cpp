@@ -93,7 +93,7 @@ void RGE_Panel_Time::draw() {
 
                         {
                             char str[100];
-                            sprintf(str, get_string(IDS_COUNTDOWN_YEARS_FORMAT), countdown_timer);
+                            sprintf(str, get_string(STRING_ID_COUNTDOWN_YEARS_FORMAT), countdown_timer);
                             TextOutA(render_area->DrawDc, render_rect.left, yo + render_rect.top, str, strlen(str));
                         }
                         yo += 13;

@@ -168,10 +168,10 @@ A missing ID has no returned language or text record. This is not an empty slot.
 
 | ID | Approved cleanup name | Proven purpose | Base runtime result | Runtime expansion result | Pinned XPack expansion result |
 | --- | --- | --- | --- | --- | --- |
-| `0x1D4ED` | `IDS_HELP_INVENTORY_FOOD_FORMAT` | Help format for `attributes[0]`, the food field | Missing; no text | Missing; no text | Missing; no text |
-| `0x1D4EE` | `IDS_HELP_INVENTORY_WOOD_FORMAT` | Help format for `attributes[1]`, the wood field | Missing; no text | Missing; no text | Missing; no text |
-| `0x1D4EF` | `IDS_HELP_INVENTORY_GOLD_FORMAT` | Help format for `attributes[3]`, the gold field | Missing; no text | Missing; no text | Missing; no text |
-| `0x1D4F0` | `IDS_HELP_INVENTORY_STONE_FORMAT` | Help format for `attributes[2]`, the stone field | Missing; no text | Missing; no text | Missing; no text |
+| `0x1D4ED` | `STRING_ID_HELP_INVENTORY_FOOD_FORMAT` | Help format for `attributes[0]`, the food field | Missing; no text | Missing; no text | Missing; no text |
+| `0x1D4EE` | `STRING_ID_HELP_INVENTORY_WOOD_FORMAT` | Help format for `attributes[1]`, the wood field | Missing; no text | Missing; no text | Missing; no text |
+| `0x1D4EF` | `STRING_ID_HELP_INVENTORY_GOLD_FORMAT` | Help format for `attributes[3]`, the gold field | Missing; no text | Missing; no text | Missing; no text |
+| `0x1D4F0` | `STRING_ID_HELP_INVENTORY_STONE_FORMAT` | Help format for `attributes[2]`, the stone field | Missing; no text | Missing; no text | Missing; no text |
 
 Resource file provenance and hashes:
 
@@ -225,10 +225,10 @@ void set_player(TRIBE_Player* player_in);
 Root owns `include/resource_ids.h`. Root approved these shared resource
 mappings in commit `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`:
 
-- `0x1D4ED` -> `IDS_HELP_INVENTORY_FOOD_FORMAT`
-- `0x1D4EE` -> `IDS_HELP_INVENTORY_WOOD_FORMAT`
-- `0x1D4EF` -> `IDS_HELP_INVENTORY_GOLD_FORMAT`
-- `0x1D4F0` -> `IDS_HELP_INVENTORY_STONE_FORMAT`
+- `0x1D4ED` -> `STRING_ID_HELP_INVENTORY_FOOD_FORMAT`
+- `0x1D4EE` -> `STRING_ID_HELP_INVENTORY_WOOD_FORMAT`
+- `0x1D4EF` -> `STRING_ID_HELP_INVENTORY_GOLD_FORMAT`
+- `0x1D4F0` -> `STRING_ID_HELP_INVENTORY_STONE_FORMAT`
 
 The worker imported the approved header in commit
 `9a69d07001fa96f93d72ada89e3a094a579e4428`. The source now applies these

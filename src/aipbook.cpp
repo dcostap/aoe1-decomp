@@ -362,8 +362,7 @@ int AIPlay::isTargetType(unsigned char v) const {
 
 int AIPlay::addTargetType(unsigned char v) {
     for (int i = 0; i < 5; i++) {
-        if (this->targetTypeValue[i] == 0 ||
-            this->targetTypeValue[i] == 5) {
+        if (this->targetTypeValue[i] == 0 || this->targetTypeValue[i] == 5) {
             this->targetTypeValue[i] = v;
             return 1;
         }
@@ -387,8 +386,7 @@ int AIPlay::isTargetCharacteristic(unsigned char v) const {
 
 int AIPlay::addTargetCharacteristic(unsigned char v) {
     for (int i = 0; i < 5; i++) {
-        if (this->targetCharacteristicValue[i] == 0 ||
-            this->targetCharacteristicValue[i] == 5) {
+        if (this->targetCharacteristicValue[i] == 0 || this->targetCharacteristicValue[i] == 5) {
             this->targetCharacteristicValue[i] = v;
             return 1;
         }
@@ -405,8 +403,7 @@ int AIPlay::gatherTolerance(int groupID, int phaseID) {
     int i = 0;
     while (i < AIPlayPhase::MaxTriggers) {
         AIPlayPhaseTrigger* trigger_ptr = phase_ptr->trigger(i);
-        if (trigger_ptr != 0 &&
-            trigger_ptr->type() == AIPlayPhaseTrigger::GatherTrigger) {
+        if (trigger_ptr != 0 && trigger_ptr->type() == AIPlayPhaseTrigger::GatherTrigger) {
             return trigger_ptr->value1();
         }
         i++;
@@ -449,8 +446,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
     for (i = 0; i < numberGroupMembers; i++) {
         RGE_Static_Object* object = world->object(groupMembers[i]);
         int type;
-        if (object == 0 ||
-            (type = world->playbook->convertUnitToIntType(object)) < 0 ||
+        if (object == 0 || (type = world->playbook->convertUnitToIntType(object)) < 0 ||
             type >= AIPlayGroup::MaxUnitTypes) {
             minUnits = 0;
         } else {
@@ -460,8 +456,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
     }
 
     int groupNumber;
-    for (groupNumber = 0; groupNumber < play->numberGroupsValue;
-         groupNumber++) {
+    for (groupNumber = 0; groupNumber < play->numberGroupsValue; groupNumber++) {
         AIPlayGroup* group = play->group(groupNumber);
         if (group == 0) {
             return 0;
@@ -471,9 +466,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
             int minimum = group->minimum(type);
             if (minimum != 0) {
                 int added = 0;
-                for (int unit = 0;
-                     unit < unitsByTypeCount[type] && added < minimum;
-                     unit++) {
+                for (int unit = 0; unit < unitsByTypeCount[type] && added < minimum; unit++) {
                     int& id = unitsByType[type][unit];
                     if (id != -1) {
                         if (playStatus->addGrouping(id, (unsigned char)groupNumber, (unsigned char)type) == 1) {
@@ -492,11 +485,8 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
         }
     }
 
-    for (overflowType = 0; overflowType < AIPlayGroup::MaxUnitTypes;
-         overflowType++) {
-        for (overflowUnit = 0;
-             overflowUnit < unitsByTypeCount[overflowType];
-             overflowUnit++) {
+    for (overflowType = 0; overflowType < AIPlayGroup::MaxUnitTypes; overflowType++) {
+        for (overflowUnit = 0; overflowUnit < unitsByTypeCount[overflowType]; overflowUnit++) {
             int& id = unitsByType[overflowType][overflowUnit];
             if (id == -1) {
                 continue;
@@ -506,15 +496,10 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                 int smallestGroup = -1;
                 int smallestGroupSize = 0;
 
-                for (groupNumber = 0;
-                     groupNumber < play->numberGroupsValue;
-                     groupNumber++) {
+                for (groupNumber = 0; groupNumber < play->numberGroupsValue; groupNumber++) {
                     AIPlayGroup* group = play->group(groupNumber);
-                    if (group != 0 &&
-                        playStatus->numberOfTypeInGroup(groupNumber, overflowType) <
-                            group->maximum(overflowType) &&
-                        (smallestGroup == -1 ||
-                         playStatus->numberInGroup(groupNumber) <
+                    if (group != 0 && playStatus->numberOfTypeInGroup(groupNumber, overflowType) <
+                        group->maximum(overflowType) && (smallestGroup == -1 || playStatus->numberInGroup(groupNumber) <
                              smallestGroupSize)) {
                         smallestGroupSize =
                             playStatus->numberInGroup(groupNumber);
@@ -534,15 +519,11 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                     }
                 }
             } else if (this->overflowValue == 2) {
-                for (groupNumber = 0;
-                     groupNumber < play->numberGroupsValue;
-                     groupNumber++) {
+                for (groupNumber = 0; groupNumber < play->numberGroupsValue; groupNumber++) {
                     AIPlayGroup* group = play->group(groupNumber);
-                    if (group != 0 &&
-                        playStatus->numberOfTypeInGroup(groupNumber, overflowType) <
-                            group->maximum(overflowType)) {
-                        if (playStatus->addGrouping(id, (unsigned char)groupNumber, (unsigned char)overflowType) ==
-                            1) {
+                    if (group != 0 && playStatus->numberOfTypeInGroup(groupNumber, overflowType) <
+                        group->maximum(overflowType)) {
+                        if (playStatus->addGrouping(id, (unsigned char)groupNumber, (unsigned char)overflowType) == 1) {
                             maximumUnits = play->maximumNumberUnitsValue;
                             id = -1;
                             if (playStatus->numberInPlay() == maximumUnits) {
@@ -559,8 +540,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
 
 CountDeviation:
     int deviation = 0;
-    for (groupNumber = 0; groupNumber < play->numberGroupsValue;
-         groupNumber++) {
+    for (groupNumber = 0; groupNumber < play->numberGroupsValue; groupNumber++) {
         AIPlayGroup* group = play->group(groupNumber);
         if (group != 0) {
             for (int type = 0; type < AIPlayGroup::MaxUnitTypes; type++) {
@@ -706,8 +686,7 @@ unsigned char AIPlayStatus::numberOfTypeInGroup(int n, int type) {
     unsigned char count = 0;
     for (int i = 0; i < 50; i++) {
         const GroupingStruct& g = this->groupings[i];
-        if ((g.id != -1) && (g.groupID == n) &&
-            (g.type == type)) {
+        if ((g.id != -1) && (g.groupID == n) && (g.type == type)) {
             count++;
         }
     }
@@ -999,8 +978,7 @@ int AIPlayBook::loadPlays(char* filename) {
                     this->plays[currentPlay].overflowValue = 1;
                 else if (strcmp(temp2, s_FirstGroup) == 0)
                     this->plays[currentPlay].overflowValue = 2;
-            } else if (strcmp(temp2, s_DeathPercentage) == 0 &&
-                     currentPlay != -1) {
+            } else if (strcmp(temp2, s_DeathPercentage) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 if (temp4 < 0)
                     this->plays[currentPlay].deathPercentageValue = 0;
@@ -1008,8 +986,7 @@ int AIPlayBook::loadPlays(char* filename) {
                     this->plays[currentPlay].deathPercentageValue = 100;
                 else
                     this->plays[currentPlay].deathPercentageValue = temp4;
-            } else if (strcmp(temp2, s_Intelligence) == 0 &&
-                     currentPlay != -1) {
+            } else if (strcmp(temp2, s_Intelligence) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 if (temp4 < 0)
                     this->plays[currentPlay].intelligenceValue = 0;
@@ -1030,8 +1007,7 @@ int AIPlayBook::loadPlays(char* filename) {
             } else if (strcmp(temp2, s_NumberGroups) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].numberGroupsValue = temp4;
-            } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 &&
-                     currentPhase == -1) {
+            } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 && currentPhase == -1) {
                 sscanf(temp, s_format_group_range, &temp4, temp6, &temp3, &i);
                 if (temp4 >= 0 && temp4 < 5) {
                     int type = this->convertUnitNameToIntType(temp6);
@@ -1052,8 +1028,7 @@ int AIPlayBook::loadPlays(char* filename) {
             } else if (strcmp(temp2, s_Phase) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 currentPhase = temp4;
-            } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 &&
-                     currentPhase != -1) {
+            } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3, &i, &temp5);
                 if (temp4 >= 0 && temp4 < 5) {
                     AIPlayPhase* phase =
@@ -1062,8 +1037,7 @@ int AIPlayBook::loadPlays(char* filename) {
                                                temp3, i, temp5);
                     phase->addCommand(command);
                 }
-            } else if (strcmp(temp2, s_Trigger) == 0 && currentPlay != -1 &&
-                     currentPhase != -1) {
+            } else if (strcmp(temp2, s_Trigger) == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, s_format_trigger, &temp4, temp6, &temp3, &temp7);
                 AIPlayPhase* phase =
                     this->plays[currentPlay].phase(currentPhase);
@@ -1071,8 +1045,7 @@ int AIPlayBook::loadPlays(char* filename) {
                                            (unsigned char)currentPhase,
                                            (unsigned char)temp4, 0);
                 phase->addTrigger(trigger);
-            } else if (strcmp(temp2, s_RTrigger) == 0 && currentPlay != -1 &&
-                     currentPhase != -1) {
+            } else if (strcmp(temp2, s_RTrigger) == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3, &temp7, &temp5);
                 AIPlayPhase* phase =
                     this->plays[currentPlay].phase(currentPhase);
@@ -1125,8 +1098,7 @@ int AIPlayBook::loadPlays(char* filename) {
                         for (int iPhases = 0; iPhases < 10; iPhases++) {
                             AIPlayPhase* refPhase = source->phase(iPhases);
                             AIPlayPhase* curPhase = destination->phase(iPhases);
-                            for (int a = 0; a < AIPlayPhase::MaxCommands;
-                                 a++) {
+                            for (int a = 0; a < AIPlayPhase::MaxCommands; a++) {
                                 AIPlayPhaseCommand* command =
                                     refPhase->command(a);
                                 if (command->type() == AIPlayPhaseCommand::MoveCommand) {

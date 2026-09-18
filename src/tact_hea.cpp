@@ -121,15 +121,13 @@ extern double DAT_005750e8;
 unsigned char TRIBE_Action_Heal::update() {
     float work;
 
-    if (this->targetID != -1 &&
-        this->obj->owner->world->object(this->targetID) == 0) {
+    if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
         this->set_state(3);
         return 0;
     }
 
-    if (this->target2ID != -1 &&
-        this->obj->owner->world->object(this->target2ID) == 0) {
+    if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
     }
 
@@ -139,8 +137,7 @@ unsigned char TRIBE_Action_Heal::update() {
         return 0;
     }
 
-    if (this->target_obj != 0 &&
-        this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {
+    if (this->target_obj != 0 && this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {
         this->set_state(1);
         this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x25B, 0, 0);
         return 4;
@@ -198,8 +195,7 @@ unsigned char TRIBE_Action_Heal::update() {
             return 0;
         }
 
-        if (this->target_obj->world_x != this->target_x ||
-            this->target_y != this->target_obj->world_y) {
+        if (this->target_obj->world_x != this->target_x || this->target_y != this->target_obj->world_y) {
             float distance = this->obj->distance_to_object(this->target_obj);
             if (this->task->work_range < distance && DAT_005750e8 < distance) {
                 this->set_state(3);

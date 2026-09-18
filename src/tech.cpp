@@ -264,8 +264,7 @@ unsigned char TRIBE_Player_Tech::undo_tech(short tech_id) {
 }
 
 unsigned char TRIBE_Player_Tech::do_tech(short tech_id) {
-    if (this->tech_player_tree[tech_id].state < 3 &&
-        this->tech_player_tree[tech_id].state > -1) {
+    if (this->tech_player_tree[tech_id].state < 3 && this->tech_player_tree[tech_id].state > -1) {
         this->tech_player_tree[tech_id].state = 3;
         this->base_tech->do_tech(tech_id, this->owner);
         check_for_new_tech();
@@ -284,8 +283,7 @@ unsigned char TRIBE_Player_Tech::do_tech(short tech_id) {
 unsigned char TRIBE_Player_Tech::research(short tech_id, float amount) {
     if (this->tech_player_tree[tech_id].state == 2) {
         this->tech_player_tree[tech_id].research_done += amount;
-        if (!(this->tech_player_tree[tech_id].research_done <
-              (float)(int)this->base_tech->tech_tree[tech_id].research)) {
+        if (!(this->tech_player_tree[tech_id].research_done < (float)(int)this->base_tech->tech_tree[tech_id].research)) {
             do_tech(tech_id);
             return 0;
         }
@@ -317,8 +315,7 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, sho
         attr1 = tech->attribute[0];
         if (attr1 >= 0) {
             cost1 = tech->attribute_cost[0];
-            if (this->owner->attributes[attr1] < (float)(int)cost1 &&
-                can_use_carry) {
+            if (this->owner->attributes[attr1] < (float)(int)cost1 && can_use_carry) {
                 total += (short)(cost1 - (short)this->owner->attributes[attr1]);
                 cost1 = (short)this->owner->attributes[attr1];
             }
@@ -329,8 +326,7 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, sho
         attr2 = tech->attribute[1];
         if (attr2 >= 0) {
             cost2 = tech->attribute_cost[1];
-            if (this->owner->attributes[attr2] < (float)(int)cost2 &&
-                can_use_carry) {
+            if (this->owner->attributes[attr2] < (float)(int)cost2 && can_use_carry) {
                 total += (short)(cost2 - (short)this->owner->attributes[attr2]);
                 cost2 = (short)this->owner->attributes[attr2];
             }
@@ -341,8 +337,7 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, sho
         attr3 = tech->attribute[2];
         if (attr3 >= 0) {
             cost3 = tech->attribute_cost[2];
-            if (this->owner->attributes[attr3] < (float)(int)cost3 &&
-                can_use_carry) {
+            if (this->owner->attributes[attr3] < (float)(int)cost3 && can_use_carry) {
                 total += (short)(cost3 - (short)this->owner->attributes[attr3]);
                 cost3 = (short)this->owner->attributes[attr3];
             }
@@ -494,8 +489,7 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech() {
         {
             short i;
             for (i = 0; i < this->tech_player_tree_num; i++) {
-                if (this->tech_player_tree[i].state < 2 &&
-                    this->tech_player_tree[i].state > -1) {
+                if (this->tech_player_tree[i].state < 2 && this->tech_player_tree[i].state > -1) {
                     active_count++;
                     prereq_done = 0;
                     short prereq_count;
@@ -509,8 +503,7 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech() {
                         }
                     }
                     if (prereq_done >= tech[i].pre_reqs_required) {
-                        if ((float)(int)tech[i].research <=
-                            this->tech_player_tree[i].research_done) {
+                        if ((float)(int)tech[i].research <= this->tech_player_tree[i].research_done) {
                             do_tech(i);
                             active_count--;
                         } else if (this->tech_player_tree[i].state < 1) {
