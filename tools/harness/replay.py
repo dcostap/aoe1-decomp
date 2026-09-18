@@ -195,7 +195,7 @@ def run(fixture, output, seconds, runs=3, jobs=None, resolution=None):
 
     def one(index, target):
         try:
-            runtime = stage(target)
+            runtime = stage(target, select=False)
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/capture.py'),
                        '--runtime', str(runtime), '--fixture', str(frozen.resolve()),
                        '--clock', 'calls', '--seconds', str(seconds)]

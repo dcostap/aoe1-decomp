@@ -209,7 +209,8 @@ def test_original_repeat_comparison_survives_rebuilt_capture_failure(tmp_path, m
     case = {'id':'case', 'route':'main', 'steps':[]}
     monkeypatch.setattr(suite, 'load_suite', lambda **kwargs: (definition, [case]))
     staged = []
-    def stage(target):
+    def stage(target, **kwargs):
+        assert kwargs == {'select': False}
         path = tmp_path/f'{target}-{len(staged)}'
         path.mkdir()
         staged.append(path)

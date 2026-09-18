@@ -91,7 +91,7 @@ def validate_fixture(folder):
 
 def stage_fixture(target, fixture_folder):
     fixture = validate_fixture(fixture_folder)  # Reject changed inputs before staging or starting a game.
-    runtime = stage(target)
+    runtime = stage(target, select=False)
     destination = runtime / 'savegame' / fixture['name']
     if destination.exists():
         raise ValueError('Feature-lab save already exists in the new runtime.')
@@ -160,7 +160,8 @@ def worker(runtime, output, mode, turns, visible=False, civilization_offset=0, l
     rng_file = (output / 'rng.bin').open('xb')
     state_file = gzip.open(output / 'states.jsonl.gz', 'xb')
     try:
-        key, registry, _ = registry_state.create()
+        # Automated feature runs use the fixed profile, not the live registry.
+        key, registry, _ = registry_state.create(registry_state.automated_values())
         cfg['registryBase'] = key
         source = template.replace('__CONFIG__', json.dumps(cfg))
         (output / 'instrumentation.js').write_text(source)
@@ -349,9 +350,15 @@ def compare_pair(left_path, right_path):
     for key in ('profile', 'mode', 'turns', 'script_sha256', 'registry_inputs', 'frida_version'):
         if a.get(key) != b.get(key):
             return {'passed': False, 'error': 'Incompatible ' + key}
-    for key in ('feature_lab', 'graphics_sha256', 'graphics_config_sha256', 'copied_files_before_exe_replacement'):
+    for key in ('feature_lab', 'graphics_sha256', 'graphics_config_sha256'):
         if a['manifest'].get(key) != b['manifest'].get(key):
             return {'passed': False, 'error': 'Incompatible runtime input: ' + key}
+    left_files = [{key: row.get(key) for key in ('path', 'sha256', 'size')}
+                  for row in a['manifest'].get('copied_files_before_exe_replacement', [])]
+    right_files = [{key: row.get(key) for key in ('path', 'sha256', 'size')}
+                   for row in b['manifest'].get('copied_files_before_exe_replacement', [])]
+    if left_files != right_files:
+        return {'passed': False, 'error': 'Incompatible runtime input: copied_files_before_exe_replacement'}
     state = first_difference(a['states'], b['states'])
     kinds = ('lab-world', 'lab-tour', 'lab-loaded', 'lab-command', 'lab-clock-site', 'lab-draw-summary')
     observations = first_difference([e for e in a['events'] if e.get('kind') in kinds],
@@ -378,7 +385,7 @@ def compare_pair(left_path, right_path):
 
 def run_one(output, mode, target='original', fixture=None, turns=800, civilization_offset=0, layout='features'):
     output.mkdir(parents=True, exist_ok=False)
-    runtime = stage('original') if mode == 'generate' else stage_fixture(target, fixture)
+    runtime = stage('original', select=False) if mode == 'generate' else stage_fixture(target, fixture)
     command = [str(ROOT / 'build/harness-env/Scripts/python.exe'), str(Path(__file__).resolve()), 'worker',
                '--runtime', str(runtime), '--output', str(output), '--mode', mode, '--turns', str(turns),
                '--civilization-offset', str(civilization_offset), '--layout', layout]

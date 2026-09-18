@@ -211,6 +211,7 @@ def test_default_suite_runs_every_case_and_keeps_failures(tmp_path, monkeypatch,
         assert '--upgrade-v1-to-v4' not in command and '--rng-only' not in command
     assert commands[-1][1].endswith('feature_lab.py') and commands[-1][2] == 'test-all'
     assert commands[-1][commands[-1].index('--runs') + 1] == '3'
+    assert commands[-1][commands[-1].index('--jobs') + 1] == '3'
     assert result['complete'] is True
     assert result['passed'] is (failure is None)
 

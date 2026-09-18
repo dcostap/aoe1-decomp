@@ -295,7 +295,7 @@ class GameJob:
 
 def run_session(output, session, visible):
     validate_session(session)
-    runtime = stage(session.get('target','original'))
+    runtime = stage(session.get('target','original'), select=False)
     fixture = runtime / 'human-fixture.json'
     fixture.write_text(json.dumps({'name':'human-original-v1','human':session}, indent=2)+'\n')
     seconds = min(300, session['duration_ms']/1000*2+90)

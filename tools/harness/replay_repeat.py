@@ -24,7 +24,7 @@ def run(fixture, output, runs, jobs, seconds, target='original', resolution=None
     frozen = output / 'scenario.json'
     frozen.write_text(json.dumps(scenario, indent=2) + '\n')
     # Prepare first, so filesystem staging does not serialize the requested parallel launches.
-    runtimes = [stage(target) for _ in range(runs)]
+    runtimes = [stage(target, select=False) for _ in range(runs)]
     started = time.monotonic()
 
     def one(index):

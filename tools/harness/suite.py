@@ -85,7 +85,7 @@ def run_case(case, definition, folder, original_runs=2, visible=False, resolutio
     print(f"UI test: {case['id']}", flush=True)
     try:
         for target in ['original'] * original_runs + ['rebuilt']:
-            runtime = game.stage(target)
+            runtime = game.stage(target, select=False)
             code = capture(runtime, case.get('seconds', 20), fixture, 'calls', visible)
             missing = [name for name in case.get('files_exist', []) if not (runtime / name).is_file()]
             row['captures'].append({'target': target, 'report': str(runtime / 'capture/report.json'),

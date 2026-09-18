@@ -131,7 +131,8 @@ def build():
     return validate_build(reports[0].with_name("empiresx.exe"))
 
 
-def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets="hardlink", harness_saves=True):
+def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets="hardlink",
+          harness_saves=True, select=True):
     if target == "original":
         exe = ORIGINAL
         if digest(exe) != ORIGINAL_SHA256:
@@ -164,8 +165,9 @@ def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets=
         'set "code=%errorlevel%"\r\npopd\r\nexit /b %code%\r\n'
     ).encode("ascii"))
     (output / "runtime_manifest.json").write_text(json.dumps(report, indent=2) + "\n")
-    STATE.mkdir(parents=True, exist_ok=True)
-    save_selection(STATE / f"{target}.json", {"exe": str(exe), "runtime": str(output)})
+    if select:
+        STATE.mkdir(parents=True, exist_ok=True)
+        save_selection(STATE / f"{target}.json", {"exe": str(exe), "runtime": str(output)})
     print(f"Runtime: {output}", flush=True)
     print(f"Shared assets: {report['shared_bytes'] / 1048576:.1f} MiB", flush=True)
     print(f"Launch: {output / 'Launch.cmd'}", flush=True)

@@ -271,7 +271,10 @@ def test_feature_fixture_does_not_change_the_legacy_save_set(tmp_path, monkeypat
     (runtime / 'runtime_manifest.json').write_text(json.dumps(dict(
         selected_exe_sha256=lab.ORIGINAL_SHA256,
         savegame_source='repository-fixtures', copied_files_before_exe_replacement=[])))
-    monkeypatch.setattr(lab, 'stage', lambda target: runtime)
+    def stage(target, **kwargs):
+        assert kwargs == {'select': False}
+        return runtime
+    monkeypatch.setattr(lab, 'stage', stage)
     assert lab.stage_fixture('original', fixture) == runtime
     report = json.loads((runtime / 'runtime_manifest.json').read_text())
     assert report['savegame_source'] == 'feature-lab-fixture'

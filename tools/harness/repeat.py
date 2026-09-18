@@ -32,7 +32,7 @@ def main():
     try:
         baseline = None
         for index in range(args.count):
-            runtime = game.stage(args.target)
+            runtime = game.stage(args.target, select=False)
             code = capture(runtime, args.seconds, args.fixture, args.clock, args.visible, args.resolution)
             path = runtime / 'capture/report.json'
             comparison = None

@@ -119,6 +119,7 @@ Do not describe it as full-process determinism or use it as proof of gameplay eq
 
 Captured runs redirect the game's registry-key creation to private, per-run copies under HKCU.
 Automated runs use `config/harness/automated-registry.json` instead of the current 32-bit game registry values.
+Feature-lab workers use the same profile.
 The selected resolution replaces its `Screen Size` value in the private copy.
 The harness records those input values and deletes its private keys after stopping the game.
 Fixtures can provide a complete `registry_inputs` object to select another private profile.

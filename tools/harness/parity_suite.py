@@ -309,8 +309,9 @@ def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
                 commands.append((label, [python, str(ROOT / 'tools/harness/human_session.py'),
                     '--recording', str(EDITOR_RECORDING), '--target', target, '--runs', '3',
                     '--output', str(output / label)], 1170))
+        # Bound nested feature captures so private desktops do not starve each other.
         commands.append(('native-features', [python, str(ROOT / 'tools/harness/feature_lab.py'),
-            'test-all', '--runs', '3', '--output', str(output / 'native-features')], 3600))
+            'test-all', '--runs', '3', '--jobs', '3', '--output', str(output / 'native-features')], 3600))
         result['jobs'] = min(len(commands), jobs if jobs is not None else len(commands))
         result['workers'] = run_commands(commands, output, runner, jobs)
         try:

@@ -113,6 +113,7 @@ game.cmd test-parity
 The independent workers in both suites run in parallel by default. Use
 `--jobs N` to limit the worker count. Set `--jobs` to one for a serial diagnostic.
 Each hidden worker owns its private desktop and output folder.
+The parity suite limits nested native-feature captures to three workers.
 
 `test-captures` runs the menu/UI suite. `--list` only lists cases; `--case` selects a subset.
 Automated runs use a fixed registry profile and default to 640x480.
