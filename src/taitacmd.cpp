@@ -9002,42 +9002,42 @@ UnitData* TribeTacticalAIModule::addGatherer(int id) {
 }
 
 int TribeTacticalAIModule::removeGatherer(int id) {
-    UnitData* pU;
-    int* piVar2;
-    int i;
+    UnitData* gatherer;
+    int* gatherer_data;
+    int index;
 
     if (id == -1) {
         this->logCommonHistory("ERROR removing gatherer id -1.");
         return 0;
     }
-    i = 0;
-    pU = this->gatherers;
-    while (i < 0x32) {
-        if (pU->id == id) {
-            piVar2 = &this->gatherers[i].data1;
-            this->gatherers[i].id = -1;
-            *piVar2 = -1;
-            this->gatherers[i].data2 = -1;
-            this->gatherers[i].data3 = -1;
-            this->gatherers[i].target = -1;
+    index = 0;
+    gatherer = this->gatherers;
+    while (index < 0x32) {
+        if (gatherer->id == id) {
+            gatherer_data = &this->gatherers[index].data1;
+            this->gatherers[index].id = -1;
+            *gatherer_data = -1;
+            this->gatherers[index].data2 = -1;
+            this->gatherers[index].data3 = -1;
+            this->gatherers[index].target = -1;
             this->numberGatherersValue = this->numberGatherersValue + -1;
-            for (; i < 0x31 && piVar2[5] != -1; piVar2 = piVar2 + 6) {
-                ((UnitData*)(piVar2 - 1))->id = piVar2[5];
-                *piVar2 = piVar2[6];
-                piVar2[1] = piVar2[7];
-                piVar2[2] = piVar2[8];
-                piVar2[3] = piVar2[9];
-                piVar2[5] = -1;
-                piVar2[6] = -1;
-                piVar2[7] = -1;
-                piVar2[8] = -1;
-                piVar2[9] = -1;
-                i = i + 1;
+            for (; index < 0x31 && gatherer_data[5] != -1; gatherer_data = gatherer_data + 6) {
+                ((UnitData*)(gatherer_data - 1))->id = gatherer_data[5];
+                *gatherer_data = gatherer_data[6];
+                gatherer_data[1] = gatherer_data[7];
+                gatherer_data[2] = gatherer_data[8];
+                gatherer_data[3] = gatherer_data[9];
+                gatherer_data[5] = -1;
+                gatherer_data[6] = -1;
+                gatherer_data[7] = -1;
+                gatherer_data[8] = -1;
+                gatherer_data[9] = -1;
+                index = index + 1;
             }
             return 1;
         }
-        i = i + 1;
-        pU = pU + 1;
+        index = index + 1;
+        gatherer = gatherer + 1;
     }
     return 0;
 }
