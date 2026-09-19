@@ -231,9 +231,6 @@ void __cdecl debug_srand(char* file, int line,
                          unsigned int seed);
 extern void __cdecl GetDXVersion(unsigned long* version, unsigned long* platform);
 extern int debugActions;
-extern int do_draw_log;
-extern char draw_log_name[260];
-extern FILE* draw_log;
 extern int do_fps_log;
 extern FILE* fps_log;
 
@@ -444,8 +441,6 @@ extern void __cdecl debug_random_write(void);
 extern void __cdecl dump_vismap_log(void);
 extern int do_debug_random;
 extern int wrote_debug_random_log;
-extern FILE* fps_log;
-extern FILE* draw_log;
 
 RGE_Base_Game::~RGE_Base_Game() {
     int i;
@@ -808,9 +803,6 @@ RGE_Scenario* RGE_Base_Game::get_scenario_info(char* scenario_file, int from_cam
     return result;
 }
 
-extern int rge_open(char* path, int flags);
-extern void rge_read_uncompressed(int fd, void* buf, int len);
-extern int rge_close(int fd);
 
 RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* scenario_file, int from_campaign) {
     char temp_name[300];
@@ -947,19 +939,13 @@ extern int numberPathingIterations;
 extern int useNewPathing;
 extern int pathingCapValue;
 extern int force_cd;
-extern int do_fps_log;
 extern int Sys_DDLOG_Enable;
 extern int Sys_DDLOG_ErrorOn;
 extern int DDlogAutoFlush;
 extern int debug_log_lock;
-extern int do_debug_random;
-extern int debugActions;
 extern int logDebugID;
 extern int speed_val1;
 extern int speed_val2;
-extern int do_draw_log;
-extern int safe_draw_log;
-extern char draw_log_name[260];
 extern int log_output;
 extern int DDSys_CanColorFill;
 extern unsigned char do_color_log;
@@ -1710,7 +1696,6 @@ int RGE_Base_Game::setup_registry() {
     return reg != 0;
 }
 
-extern int log_output;
 
 int RGE_Base_Game::setup_debugging_log() {
     TDebuggingLog* log = new TDebuggingLog;
@@ -1724,8 +1709,6 @@ int RGE_Base_Game::setup_debugging_log() {
     return 1;
 }
 
-extern int speed_val1;
-extern int speed_val2;
 
 int RGE_Base_Game::setup_comm() {
     TCommunications_Handler* new_comm;
@@ -2128,7 +2111,6 @@ HFONT RGE_Base_Game::make_font(HDC dc, char* face_name, int point_size, int wgt,
     return CreateFontIndirectA(&logfont);
 }
 
-extern int force_cd;
 
 int RGE_Base_Game::check_for_cd(int num_players) {
     char vol_name[256];
@@ -2787,7 +2769,6 @@ handled:
     return retval;
 }
 
-extern void color_log(unsigned char a, unsigned char b, int c);
 
 int RGE_Base_Game::handle_idle() {
     if (!this->prog_ready || !this->prog_window)
@@ -2937,7 +2918,6 @@ int RGE_Base_Game::handle_music_done(HWND wnd, UINT msg, WPARAM wparam, LPARAM l
     return this->action_music_done() != 0;
 }
 
-extern void color_log(unsigned char a, unsigned char b, int c);
 int RGE_Base_Game::handle_paint(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     unsigned long time_a;
     unsigned long time_b;
@@ -3200,8 +3180,6 @@ int RGE_Base_Game::handle_destroy(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpar
     return 1;
 }
 
-extern int do_fps_log;
-extern FILE* fps_log;
 extern unsigned long start_mem_total;
 extern unsigned long start_mem_high;
 extern unsigned long cur_mem_total;
@@ -3965,8 +3943,6 @@ void __cdecl debug_random_reset() {
     debug_random_index = -1;
 }
 
-extern int debug_random_index;
-extern int wrote_debug_random_log;
 
 void debug_random_write(void) {
     FILE* file;
@@ -3993,10 +3969,7 @@ void debug_random_write(void) {
     wrote_debug_random_log = 1;
 }
 
-extern int do_debug_random;
 extern int debug_random_on;
-extern int debug_random_index;
-extern char debug_random_log[5000][100];
 
 int __cdecl debug_rand(char* source_name, int source_line) {
     int rv = rand();
@@ -4024,10 +3997,6 @@ int __cdecl debug_rand(char* source_name, int source_line) {
     return rv;
 }
 
-extern int do_debug_random;
-extern int debug_random_on;
-extern int debug_random_index;
-extern char debug_random_log[5000][100];
 
 void __cdecl debug_srand(char* source_name, int source_line,
                          unsigned int seed) {
@@ -4054,9 +4023,7 @@ void __cdecl debug_srand(char* source_name, int source_line,
     }
     srand(seed);
 }
-extern int do_debug_timeGetTime;
 extern int debug_timeGetTime_cnt;
-extern int debug_timeGetTime_interval;
 extern int debug_timeGetTime_time;
 
 unsigned long __cdecl debug_timeGetTime(char* source_name, int source_line) {
