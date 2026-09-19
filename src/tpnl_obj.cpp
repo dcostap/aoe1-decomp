@@ -293,14 +293,14 @@ void TRIBE_Panel_Object::draw() {
 
         if (this->game_obj->master_obj->unit_level == 4 || this->game_obj->master_obj->unit_level == 6) {
             this->game_obj->get_weapon_range(cur_fval, orig_fval);
-            if (cur_fval > DAT_00576dac) {
+            if (cur_fval > g_trade_display_range_threshold) {
                 this->draw_item(row, 6, ValueTypeBonus, (int)orig_fval, (int)cur_fval);
                 ++row;
             }
         }
 
         if (this->game_obj->master_obj->unit_level == 6) {
-            this->draw_item(row, 9, ValueTypePercent, (int)(this->game_obj->attribute_amount_held - DAT_00576D84), 0);
+            this->draw_item(row, 9, ValueTypePercent, (int)(this->game_obj->attribute_amount_held - g_tactical_panel_rounding_offset), 0);
             ++row;
         }
 
@@ -318,7 +318,7 @@ void TRIBE_Panel_Object::draw() {
 
         if (level == 9) {
             if (this->game_obj->attribute_type_held == 0x11 || this->game_obj->attribute_type_held == 0)
-                cur_val = (short)(int)(this->game_obj->attribute_amount_held - DAT_00576D84);
+                cur_val = (short)(int)(this->game_obj->attribute_amount_held - g_tactical_panel_rounding_offset);
             else
                 cur_val = 0;
             this->draw_item(row, 2, ValueTypeNumber, cur_val, 0);
@@ -351,8 +351,8 @@ void TRIBE_Panel_Object::draw() {
                 goto invalid_item;
             }
 
-            if (this->game_obj->attribute_amount_held > DAT_00576db0) {
-                this->draw_item(row, 3, ValueTypeNumber, (int)(this->game_obj->attribute_amount_held - DAT_00576D84), 0);
+            if (this->game_obj->attribute_amount_held > g_trade_display_zero_amount) {
+                this->draw_item(row, 3, ValueTypeNumber, (int)(this->game_obj->attribute_amount_held - g_tactical_panel_rounding_offset), 0);
             } else {
                 this->draw_item(row, item_type, ValueTypeNone, -1, 0);
             }
@@ -360,7 +360,7 @@ void TRIBE_Panel_Object::draw() {
             return;
         }
 
-        if ((int)(this->game_obj->attribute_amount_held - DAT_00576D84) < 1) {
+        if ((int)(this->game_obj->attribute_amount_held - g_tactical_panel_rounding_offset) < 1) {
             goto finish;
         }
 
@@ -389,7 +389,7 @@ void TRIBE_Panel_Object::draw() {
         }
         final_frame = item_type;
         final_type = ValueTypeNumber;
-        final_value = (int)(this->game_obj->attribute_amount_held - DAT_00576D84);
+        final_value = (int)(this->game_obj->attribute_amount_held - g_tactical_panel_rounding_offset);
         final_value2 = 0;
         goto final_item;
     }
@@ -418,7 +418,7 @@ void TRIBE_Panel_Object::draw() {
         default:
             goto invalid_item;
         }
-        this->draw_item(0, item_type, ValueTypeNumber, (int)(this->game_obj->attribute_amount_held - DAT_00576D84), 0);
+        this->draw_item(0, item_type, ValueTypeNumber, (int)(this->game_obj->attribute_amount_held - g_tactical_panel_rounding_offset), 0);
         this->draw_finish();
         return;
     }
@@ -470,7 +470,7 @@ void TRIBE_Panel_Object::draw() {
                         RGE_Action* action = bldg_obj->actions->get_action();
                         if (action != 0) {
                             this->draw_item(row, 2, ValueTypeNumber, (int)(action->timer +
-                                                                           this->game_obj->attribute_amount_held - DAT_00576D84), 0);
+                                                                           this->game_obj->attribute_amount_held - g_tactical_panel_rounding_offset), 0);
                             ++row;
                         }
                     }
@@ -521,10 +521,10 @@ void TRIBE_Panel_Object::draw() {
 
                 if (this->game_obj->master_obj->id == 0x2d) {
                     this->draw_item(row, item_type, ValueTypeNumber, (int)(this->game_obj->owner->attributes[9] -
-                                                                           DAT_00576D84), 0);
+                                                                           g_tactical_panel_rounding_offset), 0);
                 } else {
                     this->draw_item(row, item_type, ValueTypeNumber, (int)(this->game_obj->attribute_amount_held -
-                                                                           DAT_00576D84), 0);
+                                                                           g_tactical_panel_rounding_offset), 0);
                 }
                 ++row;
             }
@@ -539,18 +539,18 @@ resource_done:
             if (nearby != 0) {
                 dx = nearby->world_x - this->game_obj->world_x;
                 float dy = nearby->world_y - this->game_obj->world_y;
-                float distance = DAT_00576d8c *
-                    ((dx * dx + dy * dy) * DAT_00576d88);
+                float distance = g_trade_display_distance_scale *
+                    ((dx * dx + dy * dy) * g_trade_display_distance_factor);
                 if (this->player->master_player_id == 0x0f)
                     distance += distance;
-                if (!(distance >= DAT_00576d98))
-                    distance = DAT_00576da0;
-                distance *= DAT_00576da4;
-                if (distance > DAT_00576da8)
-                    distance = DAT_00576da8;
+                if (!(distance >= g_trade_display_modifier_threshold))
+                    distance = g_trade_display_minimum_modifier;
+                distance *= g_trade_display_distance_scale_percent;
+                if (distance > g_trade_display_max_transfer_amount)
+                    distance = g_trade_display_max_transfer_amount;
                 final_frame = 3;
                 final_type = ValueTypeCompare;
-                final_value = (int)(distance - DAT_00576D84);
+                final_value = (int)(distance - g_tactical_panel_rounding_offset);
                 final_value2 = 0x14;
                 goto final_item;
             }
@@ -798,7 +798,7 @@ long TRIBE_Panel_Object::handle_idle() {
                     short progress = bldg_obj->get_construction_progress();
                     if ((float)progress != this->save_build_pts) {
                         changed = 1;
-                        if ((float)progress > DAT_00576db8)
+                        if ((float)progress > g_building_progress_redraw_threshold)
                             do_buttons = 1;
                     }
                 }
@@ -838,7 +838,7 @@ long TRIBE_Panel_Object::handle_idle() {
                     this->game_obj->master_obj->id == 0x32) {
                     RGE_Action* action = bldg_obj->actions->get_action();
                     if (action != 0 && (int)(action->timer + this->game_obj->attribute_amount_held -
-                                             DAT_00576D84) != this->save_farm_amt) {
+                                             g_tactical_panel_rounding_offset) != this->save_farm_amt) {
                         changed = 1;
                     }
                 }
@@ -923,7 +923,7 @@ void TRIBE_Panel_Object::save_object_info() {
             if (action != 0) {
                 float action_amount = action->timer;
                 this->save_farm_amt =
-                    (int)(action_amount + this->game_obj->attribute_amount_held - DAT_00576D84);
+                    (int)(action_amount + this->game_obj->attribute_amount_held - g_tactical_panel_rounding_offset);
             }
         }
     }

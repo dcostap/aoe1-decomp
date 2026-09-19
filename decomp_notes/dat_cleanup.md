@@ -191,6 +191,17 @@ original storage as a reviewed symbol.
 | `DAT_00576570`, `DAT_00576574`, `DAT_00576578`, `DAT_005766c0`, `DAT_005766c8`, `DAT_005766d0`, `DAT_005766e0`, and `DAT_005766f8` | removed | These read-only values have no source references or PDB symbols. |
 | `DAT_00576828` | named | This read-only zero float gates two player-selection attribute checks. |
 | `DAT_00576818`, `DAT_0057681c`, `DAT_00576820`, `DAT_00576824`, `DAT_0057682c`, `DAT_00576830`, `DAT_00576838`, `DAT_00576840`, `DAT_00576848`, `DAT_00576850`, `DAT_00576858`, `DAT_00576860`, `DAT_00576868`, and `DAT_0057686c` | removed | These read-only values have no source references or PDB symbols. |
+| `DAT_00576D84` | named | This read-only `-0.5f` rounds tactical-panel amount displays before integer conversion. |
+| `DAT_00576d88` | named | This read-only factor converts squared trade distance to a panel modifier. |
+| `DAT_00576d8c` | named | This read-only scale adjusts the panel's distance-based trade modifier. |
+| `DAT_00576d98` | named | This read-only `0.35` double is the panel trade modifier threshold. |
+| `DAT_00576da0` | named | This read-only `0.35f` supplies the panel trade minimum modifier. |
+| `DAT_00576da4` | named | This read-only `20.0f` scales the panel trade modifier to an amount. |
+| `DAT_00576da8` | named | This read-only `75.0f` caps the panel trade amount. |
+| `DAT_00576dac` | named | This read-only `0.99f` filters small weapon-range changes in the panel. |
+| `DAT_00576db0` | named | This read-only zero double gates positive panel resource amounts. |
+| `DAT_00576db8` | named | This read-only `99.0f` controls panel redraw for near-complete building progress. |
+| `DAT_00576ea0`, `DAT_005770b0`, `DAT_005770b4`, `DAT_005770b8`, `DAT_005770c0`, `DAT_005772f0`, and `DAT_005772f8` | removed | These read-only values have no source references or PDB symbols. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |
