@@ -137,7 +137,7 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
         return;
 
     case 8:
-        if (this->obj->attribute_amount_held > DAT_00575348) {
+        if (this->obj->attribute_amount_held > g_trade_positive_amount_threshold) {
             if (this->target_obj2 == 0 || this->target_obj2->master_obj->id !=
                 ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
                 short drop_site =
@@ -168,7 +168,7 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
             return;
         }
 
-        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= DAT_00575348 &&
+        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= g_trade_positive_amount_threshold &&
             this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) == 0) {
             this->set_target_obj(0);
             this->set_state(3);
@@ -181,7 +181,7 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
 }
 
 // The original frame is eight bytes plus ESI and EDI.
-extern double DAT_00575350;
+extern double g_trade_zero_value;
 
 unsigned char TRIBE_Action_Trade::update() {
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
@@ -213,9 +213,9 @@ unsigned char TRIBE_Action_Trade::update() {
         return 1;
 
     case 11:
-        if (this->timer < DAT_00575350) {
+        if (this->timer < g_trade_zero_value) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > DAT_00575350) {
+            if (this->timer > g_trade_zero_value) {
                 this->timer = 0.0f;
                 if (this->target_obj != 0) {
                     this->set_state(4);
@@ -242,9 +242,9 @@ unsigned char TRIBE_Action_Trade::update() {
         return 0;
 
     case 4:
-        if (this->timer < DAT_00575350) {
+        if (this->timer < g_trade_zero_value) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > DAT_00575350) {
+            if (this->timer > g_trade_zero_value) {
                 this->timer = 0.0f;
                 if (this->target_obj != 0) {
                     this->set_state(4);
@@ -279,7 +279,7 @@ unsigned char TRIBE_Action_Trade::update() {
             return 0;
         }
         if (this->obj->turn_towards(this->target_obj, 0, 0)) {
-            if (this->target_obj->attribute_amount_held > DAT_00575348 ||
+            if (this->target_obj->attribute_amount_held > g_trade_positive_amount_threshold ||
                 this->obj->keepGatheringWhenObjectIsOut((short)this->target_obj->master_obj->id) != 0) {
                 this->set_state(7);
                 return 0;
@@ -292,7 +292,7 @@ unsigned char TRIBE_Action_Trade::update() {
 
     case 7: {
         if (this->target_obj == 0) {
-            if (this->obj->attribute_amount_held > DAT_00575348) {
+            if (this->obj->attribute_amount_held > g_trade_positive_amount_threshold) {
                 this->set_state(8);
                 return 0;
             }
@@ -323,7 +323,7 @@ unsigned char TRIBE_Action_Trade::update() {
             this->set_state(8);
             return 0;
         }
-        if (this->target_obj->owner->attributes[9] <= DAT_00575348 &&
+        if (this->target_obj->owner->attributes[9] <= g_trade_positive_amount_threshold &&
             this->obj->keepGatheringWhenObjectIsOut((short)this->target_obj->master_obj->id) == 0) {
             this->set_state(8);
             return 0;
@@ -332,9 +332,9 @@ unsigned char TRIBE_Action_Trade::update() {
     }
 
     case 8:
-        if (this->timer < DAT_00575350) {
+        if (this->timer < g_trade_zero_value) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > DAT_00575350) {
+            if (this->timer > g_trade_zero_value) {
                 this->timer = 0.0f;
                 this->set_state(8);
                 return 0;
@@ -353,30 +353,30 @@ unsigned char TRIBE_Action_Trade::update() {
                     this->set_state(8);
                     return 0;
                 }
-                if (this->obj->attribute_amount_held > DAT_00575348) {
+                if (this->obj->attribute_amount_held > g_trade_positive_amount_threshold) {
                     if (this->task->work_sound2 != 0) {
                         this->task->work_sound2->play(1);
                     }
 
                     float modifier;
-                    if (this->pick_up_x < DAT_00575350 || this->pick_up_y < DAT_00575350) {
-                        modifier = DAT_00575360;
+                    if (this->pick_up_x < g_trade_zero_value || this->pick_up_y < g_trade_zero_value) {
+                        modifier = g_trade_minimum_transfer_modifier;
                     } else {
                         float dx = this->pick_up_x - this->target_obj2->world_x;
                         float dy = this->pick_up_y - this->target_obj2->world_y;
-                        modifier = (dx * dx + dy * dy) * DAT_00575358;
-                        modifier *= DAT_0057535c;
+                        modifier = (dx * dx + dy * dy) * g_trade_distance_modifier_factor;
+                        modifier *= g_trade_distance_modifier_scale;
                     }
                     if (this->obj->owner->master_player_id == 0x0F) {
                         modifier += modifier;
                     }
-                    if (modifier < DAT_00575368) {
-                        modifier = DAT_00575360;
+                    if (modifier < g_trade_modifier_threshold) {
+                        modifier = g_trade_minimum_transfer_modifier;
                     }
 
                     float take_amount =
                         this->obj->attribute_amount_held * modifier;
-                    if (take_amount > DAT_00575370) {
+                    if (take_amount > g_trade_max_transfer_amount) {
                         take_amount = 75.0f;
                     }
                     this->obj->owner->add_attribute_num(3, take_amount, 1);

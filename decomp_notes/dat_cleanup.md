@@ -166,6 +166,14 @@ original storage as a reviewed symbol.
 | `DAT_0056ee78` | named | This read-only `0.001` double is the minimum sprite animation interval. |
 | `DAT_0056ee80` | named | This read-only scale converts random values to sprite frame time. |
 | `DAT_0056ebec`, `DAT_0056ebf8`, `DAT_0056ebe8`, `DAT_0056ee00`, and `DAT_0056ee88` | removed | These read-only values have no source references or PDB symbols. Their owners use direct literals or do not need separate storage. |
+| `DAT_00575348` | named | This read-only zero float gates carried trade goods and source-player resource checks. |
+| `DAT_00575350` | named | This read-only zero double gates trade action timers and invalid pickup coordinates. |
+| `DAT_00575358` | named | This read-only factor converts squared pickup distance to a trade modifier. |
+| `DAT_0057535c` | named | This read-only scale adjusts the distance-based trade modifier. |
+| `DAT_00575360` | named | This read-only `0.35f` supplies the initial and minimum trade transfer modifier. |
+| `DAT_00575368` | named | This read-only `0.35` double is the trade modifier threshold. |
+| `DAT_00575370` | named | This read-only `75.0f` caps a trade transfer amount. |
+| `DAT_005753d8` | removed | This read-only value has no source references or PDB symbols. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |
