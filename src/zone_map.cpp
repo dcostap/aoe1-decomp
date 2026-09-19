@@ -59,8 +59,7 @@ RGE_Zone_Map::RGE_Zone_Map(int infile, RGE_Map* new_map) {
 
     rge_read(infile, &this->terrain_passability_rules_num, 4);
     if (this->terrain_passability_rules_num > 0) {
-        this->terrain_passability_rules =
-            (float*)calloc(this->terrain_passability_rules_num, 4);
+        this->terrain_passability_rules = (float*)calloc(this->terrain_passability_rules_num, 4);
         rge_read(infile, this->terrain_passability_rules, this->terrain_passability_rules_num * 4);
     } else {
         this->terrain_passability_rules = NULL;

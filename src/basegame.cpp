@@ -56,8 +56,7 @@ void __cdecl write_draw_log2(char* s) {
     }
 }
 
-LRESULT CALLBACK rge_base_game_wnd_proc(
-    HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+LRESULT CALLBACK rge_base_game_wnd_proc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     RGE_Base_Game* game = rge_base_game;
     if (game != 0)
         return game->wnd_proc(wnd, msg, wparam, lparam);

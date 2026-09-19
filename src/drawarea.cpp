@@ -1217,8 +1217,7 @@ void TDrawArea::SetSize(long wid_in, long hgt_in, int ExtendSurface) {
                 ddsd.dwSize = sizeof(ddsd);
                 ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
                 if ((this->DrawSystem->Flags & 1) != 0 || ExtendSurface != 0 || this->SystemMemOnly != 0) {
-                    ddsd.ddsCaps.dwCaps =
-                        DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+                    ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
                 } else {
                     ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
                 }
