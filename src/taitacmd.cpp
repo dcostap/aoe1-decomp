@@ -1533,12 +1533,12 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
       averageUpdateAreaTimeValue(-1),
       updateAreaAverageCount(0),
       updateAreaAverageTotal(0) {
-    int iVar1;
-    int* piVar2;
-    TacticalAIGroup* pTVar5;
-    int iVar6;
+    int index;
+    int* value_ptr;
+    TacticalAIGroup* loaded_group;
+    int remaining;
     int tempInt;
-    int local_2c;
+    int loaded_value;
 
     TacticalAIGroup* group = &this->groups;
     this->groups.next = group;
@@ -1547,8 +1547,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->civilians.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->civilians.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1556,8 +1556,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->civilianExplorers.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->civilianExplorers.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1566,44 +1566,44 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     if (!(save_game_version < 7.19f)) {
         rge_read(infile, this->gatherers, 1200);
     } else {
-        piVar2 = &this->gatherers[0].data1;
-        iVar6 = 0x32;
+        value_ptr = &this->gatherers[0].data1;
+        remaining = 0x32;
         if (!(save_game_version < 7.17f)) {
             OldUnitData2 tempUD;
 
             do {
                 rge_read(infile, &tempUD, 20);
-                ((UnitData*)(piVar2 + -1))->id = tempUD.id;
-                *piVar2 = tempUD.data1;
-                piVar2[1] = tempUD.data2;
-                piVar2[2] = tempUD.data3;
-                piVar2[3] = tempUD.target;
-                piVar2[4] = 0;
-                piVar2 = piVar2 + 6;
-                iVar6 = iVar6 + -1;
-            } while (iVar6 != 0);
+                ((UnitData*)(value_ptr + -1))->id = tempUD.id;
+                *value_ptr = tempUD.data1;
+                value_ptr[1] = tempUD.data2;
+                value_ptr[2] = tempUD.data3;
+                value_ptr[3] = tempUD.target;
+                value_ptr[4] = 0;
+                value_ptr = value_ptr + 6;
+                remaining = remaining + -1;
+            } while (remaining != 0);
         } else {
             OldUnitData tempUD;
 
             do {
                 rge_read(infile, &tempUD, 16);
-                ((UnitData*)(piVar2 + -1))->id = tempUD.id;
-                *piVar2 = tempUD.data1;
-                piVar2[1] = tempUD.data2;
-                piVar2[2] = tempUD.data3;
-                piVar2[3] = -1;
-                piVar2[4] = 0;
-                piVar2 = piVar2 + 6;
-                iVar6 = iVar6 + -1;
-            } while (iVar6 != 0);
+                ((UnitData*)(value_ptr + -1))->id = tempUD.id;
+                *value_ptr = tempUD.data1;
+                value_ptr[1] = tempUD.data2;
+                value_ptr[2] = tempUD.data3;
+                value_ptr[3] = -1;
+                value_ptr[4] = 0;
+                value_ptr = value_ptr + 6;
+                remaining = remaining + -1;
+            } while (remaining != 0);
         }
     }
     rge_read(infile, &pID, 4);
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->soldiers.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->soldiers.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1612,8 +1612,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
         tempInt = 0;
         if (0 < pID) {
             do {
-                rge_read(infile, &local_2c, 4);
-                this->ungroupedSoldiers.add(local_2c);
+                rge_read(infile, &loaded_value, 4);
+                this->ungroupedSoldiers.add(loaded_value);
                 tempInt = tempInt + 1;
             } while (tempInt < pID);
         }
@@ -1622,8 +1622,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->boats.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->boats.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1631,8 +1631,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->warBoats.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->warBoats.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1640,8 +1640,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->fishingBoats.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->fishingBoats.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1649,8 +1649,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->tradeBoats.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->tradeBoats.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1658,8 +1658,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->transportBoats.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->transportBoats.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1668,28 +1668,28 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
         tempInt = 0;
         if (0 < pID) {
             do {
-                rge_read(infile, &local_2c, 4);
-                this->artifacts.add(local_2c);
+                rge_read(infile, &loaded_value, 4);
+                this->artifacts.add(loaded_value);
                 tempInt = tempInt + 1;
             } while (tempInt < pID);
         }
     }
     rge_read(infile, &pID, 4);
-    iVar1 = 0;
+    index = 0;
     if (0 < pID) {
-        piVar2 = this->sn;
+        value_ptr = this->sn;
         do {
-            rge_read(infile, piVar2, 4);
-            iVar1 = iVar1 + 1;
-            piVar2 = piVar2 + 1;
-        } while (iVar1 < pID);
+            rge_read(infile, value_ptr, 4);
+            index = index + 1;
+            value_ptr = value_ptr + 1;
+        } while (index < pID);
     }
     rge_read(infile, &pID, 4);
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->playersToAttack.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->playersToAttack.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1697,8 +1697,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->playersToDefend.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->playersToDefend.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1706,8 +1706,8 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->workingArea.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->workingArea.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
@@ -1715,71 +1715,71 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     tempInt = 0;
     if (0 < pID) {
         do {
-            rge_read(infile, &local_2c, 4);
-            this->unitsTaskedThisUpdate.add(local_2c);
+            rge_read(infile, &loaded_value, 4);
+            this->unitsTaskedThisUpdate.add(loaded_value);
             tempInt = tempInt + 1;
         } while (tempInt < pID);
     }
-    piVar2 = this->actualGathererDistribution;
-    iVar1 = 4;
+    value_ptr = this->actualGathererDistribution;
+    index = 4;
     do {
-        rge_read(infile, piVar2, 4);
-        piVar2 = piVar2 + 1;
-        iVar1 = iVar1 + -1;
-    } while (iVar1 != 0);
-    piVar2 = this->desiredGathererDistribution;
-    iVar1 = 4;
+        rge_read(infile, value_ptr, 4);
+        value_ptr = value_ptr + 1;
+        index = index + -1;
+    } while (index != 0);
+    value_ptr = this->desiredGathererDistribution;
+    index = 4;
     do {
-        rge_read(infile, piVar2, 4);
-        piVar2 = piVar2 + 1;
-        iVar1 = iVar1 + -1;
-    } while (iVar1 != 0);
-    piVar2 = this->neededResourceValue;
-    iVar1 = 4;
+        rge_read(infile, value_ptr, 4);
+        value_ptr = value_ptr + 1;
+        index = index + -1;
+    } while (index != 0);
+    value_ptr = this->neededResourceValue;
+    index = 4;
     do {
-        rge_read(infile, piVar2, 4);
-        piVar2 = piVar2 + 1;
-        iVar1 = iVar1 + -1;
-    } while (iVar1 != 0);
-    piVar2 = this->resourceDifferenceValue;
-    iVar1 = 4;
+        rge_read(infile, value_ptr, 4);
+        value_ptr = value_ptr + 1;
+        index = index + -1;
+    } while (index != 0);
+    value_ptr = this->resourceDifferenceValue;
+    index = 4;
     do {
-        rge_read(infile, piVar2, 4);
-        piVar2 = piVar2 + 1;
-        iVar1 = iVar1 + -1;
-    } while (iVar1 != 0);
-    piVar2 = this->numberStoragePitsBuilt;
-    iVar1 = 4;
+        rge_read(infile, value_ptr, 4);
+        value_ptr = value_ptr + 1;
+        index = index + -1;
+    } while (index != 0);
+    value_ptr = this->numberStoragePitsBuilt;
+    index = 4;
     do {
-        rge_read(infile, piVar2, 4);
-        piVar2 = piVar2 + 1;
-        iVar1 = iVar1 + -1;
-    } while (iVar1 != 0);
-    piVar2 = this->numberGranariesBuilt;
-    iVar1 = 4;
+        rge_read(infile, value_ptr, 4);
+        value_ptr = value_ptr + 1;
+        index = index + -1;
+    } while (index != 0);
+    value_ptr = this->numberGranariesBuilt;
+    index = 4;
     do {
-        rge_read(infile, piVar2, 4);
-        piVar2 = piVar2 + 1;
-        iVar1 = iVar1 + -1;
-    } while (iVar1 != 0);
-    iVar1 = 0;
+        rge_read(infile, value_ptr, 4);
+        value_ptr = value_ptr + 1;
+        index = index + -1;
+    } while (index != 0);
+    index = 0;
     do {
-        rge_read(infile, &local_2c, 4);
-        this->neededResources.setValue(iVar1, local_2c);
-        iVar1 = iVar1 + 1;
-    } while (iVar1 < 4);
+        rge_read(infile, &loaded_value, 4);
+        this->neededResources.setValue(index, loaded_value);
+        index = index + 1;
+    } while (index < 4);
     rge_read(infile, &this->groupIDValue, 4);
-    piVar2 = &this->numberGroupsValue;
-    rge_read(infile, piVar2, 4);
-    iVar1 = 0;
-    if (0 < *piVar2) {
+    value_ptr = &this->numberGroupsValue;
+    rge_read(infile, value_ptr, 4);
+    index = 0;
+    if (0 < *value_ptr) {
         do {
-            pTVar5 = this->createGroup(0);
-            if (pTVar5 != (TacticalAIGroup*)0x0) {
-                pTVar5->load(infile);
+            loaded_group = this->createGroup(0);
+            if (loaded_group != (TacticalAIGroup*)0x0) {
+                loaded_group->load(infile);
             }
-            iVar1 = iVar1 + 1;
-        } while (iVar1 < *piVar2);
+            index = index + 1;
+        } while (index < *value_ptr);
     }
     rge_read(infile, &this->lastGroupAttackTime, 4);
     if (!(save_game_version < 2.4f)) {
@@ -1841,10 +1841,10 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     if (!(save_game_version < 7.15f)) {
         rge_read(infile, this->hitsByPlayer, 36);
     } else {
-        piVar2 = this->hitsByPlayer;
-        for (iVar6 = 9; iVar6 != 0; iVar6 = iVar6 + -1) {
-            *piVar2 = 0;
-            piVar2 = piVar2 + 1;
+        value_ptr = this->hitsByPlayer;
+        for (remaining = 9; remaining != 0; remaining = remaining + -1) {
+            *value_ptr = 0;
+            value_ptr = value_ptr + 1;
         }
     }
 }
