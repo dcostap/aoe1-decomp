@@ -187,7 +187,6 @@ void TButtonPanel::set_picture(short state_in, TShape* pic_in, short pic_index_i
 
 #include <string.h>
 
-extern "C" void __cdecl free(void* ptr);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
 
@@ -229,8 +228,6 @@ void TButtonPanel::set_text(short state_in, char* text_in) {
 
 #include <string.h>
 
-extern "C" void __cdecl free(void* ptr);
-extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
 
 void TButtonPanel::set_text(short state_in, char* text1_in, char* text2_in) {
@@ -650,7 +647,6 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int ctrl_key, int shif
 }
 
 // 00473240_mouse_left_move_action.cpp
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::mouse_left_move_action(long x, long y, int ctrl_key, int shift_key) {
     int new_state = (this->is_inside(x, y) != 0);
@@ -701,7 +697,6 @@ long TButtonPanel::mouse_right_dbl_click_action(long x, long y, int ctrl_key, in
 }
 
 // 004733A0_mouse_right_down_action.cpp
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::mouse_right_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (disabled != 0) {
@@ -724,7 +719,6 @@ long TButtonPanel::mouse_right_down_action(long x, long y, int ctrl_key, int shi
 }
 
 // 00473450_mouse_right_move_action.cpp
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::mouse_right_move_action(long x, long y, int ctrl_key, int shift_key) {
     int new_is_down = (this->is_inside(x, y) != 0);
@@ -749,7 +743,6 @@ long TButtonPanel::mouse_right_move_action(long x, long y, int ctrl_key, int shi
 }
 
 // 00473520_mouse_right_up_action.cpp
-extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 
 
 long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl_key, int shift_key) {
@@ -772,7 +765,6 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl_key, int shift
 
 // 004735B0_handle_key_down.cpp
 
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::handle_key_down(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     if (active != 0 && disabled == 0 && alt_key == 0 && ctrl_key == 0 && hotkey != 0 && key == hotkey && key_down == 0 &&
@@ -800,7 +792,6 @@ long TButtonPanel::handle_key_down(long key, short count, int alt_key, int ctrl_
 
 // 004736F0_key_down_action.cpp
 
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     TPanel* child;
@@ -936,7 +927,6 @@ void TButtonPanel::do_action(void) {
 // 00473AA0_do_right_action.cpp
 // Pnl_btn.cpp
 
-extern "C" __declspec(dllimport) long __stdcall SendMessageA(
     void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 
 void TButtonPanel::do_right_action(int shift_key) {

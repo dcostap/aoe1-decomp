@@ -276,7 +276,6 @@ int TribeLionUnitAIModule::canAttackUnitAtNeutrality(int oType) { return 1; }
 
 
 extern FILE* actionFile;
-extern int fprintf(void*, const char*, ...);
 extern const char str_taiuaimd_path[];
 extern const char str_fmt_stopObject[];
 
@@ -1092,10 +1091,6 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* distance) {
 }
 
 
-extern FILE* actionFile;
-extern int fprintf(void*, const char*, ...);
-extern const char str_taiuaimd_path[];
-extern const char str_fmt_stopObject[];
 
 
 int TribePriestUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uTime) {
@@ -1223,7 +1218,6 @@ int TribePriestUnitAIModule::processIdle(int doSearch) {
     return 5;
 }
 
-extern FILE* actionFile;
 
 int TribePriestUnitAIModule::processMisc() {
     if (this->objectValue->owner->computerPlayer() == 1) {
@@ -2015,10 +2009,6 @@ TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(RGE_Static_Object* o, int i
 }
 
 
-extern FILE* actionFile;
-extern int fprintf(void*, const char*, ...);
-extern const char str_taiuaimd_path[];
-extern const char str_fmt_stopObject[];
 int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uTime) {
     switch (nEvent->mType) {
     case 0x1fc: {
@@ -2226,7 +2216,6 @@ int TribeArtifactUnitAIModule::processIdle(int doSearch) {
     return 5;
 }
 
-extern FILE* actionFile;
 
 
 int TribeArtifactUnitAIModule::processMisc() {

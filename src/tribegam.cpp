@@ -224,7 +224,6 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* prog_info_in, int do_setup)
     }
 }
 
-extern void* StringTableX;
 
 TRIBE_Game::~TRIBE_Game() {
     this->inHandleIdle = 0;
@@ -483,7 +482,6 @@ int TRIBE_Game::setup() {
 
 #include <string.h>
 
-extern "C" {
 __declspec(dllimport) char* __stdcall CharUpperA(char* string);
 char* __cdecl strncpy(char* destination, const char* source, unsigned int count);
 long __cdecl atol(const char* string);
@@ -493,7 +491,6 @@ char* __cdecl strchr(const char* string, int character);
 
 void encrypt_codes(char* source, char* destination, int maxlen);
 
-extern int disable_terrain_sounds;
 extern int quick_start_game_mode;
 
 int TRIBE_Game::setup_cmd_options() {
@@ -737,7 +734,6 @@ void TRIBE_Game::set_load_game_name(char* file_name) {
 
 #include <windows.h>
 
-extern void* StringTableX;
 
 char* TRIBE_Game::get_string(long string_id, char* str, int max_len) {
     // The expansion table takes precedence; the base table supplies missing strings.
@@ -1610,8 +1606,6 @@ int TRIBE_Game::save_scenario(char* fileName) {
     return 1;
 }
 
-extern "C" char* __cdecl strcpy(char* destination, const char* source);
-extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 
 extern int show_timing_max;
 
@@ -1713,7 +1707,6 @@ void TRIBE_Game::show_ai() {
 
 #include <stdio.h>
 
-extern int player_dropped[9];
 
 void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, long val4) {
     char msg[256];
@@ -2197,7 +2190,6 @@ int TRIBE_Game::test_scenario(char* scenario_file) {
     return 0;
 }
 
-extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 
 int TRIBE_Game::start_scenario(char* scenario_file) {
     char scenario_file2[260];
@@ -3286,7 +3278,6 @@ int TRIBE_Game::processCheatCode(int playerID, char* text) {
 extern void __cdecl run_log(char* str, int show_time);
 extern "C" __declspec(dllimport) int __stdcall IsIconic(void* window);
 
-extern TPanelSystem panel_system;
 extern TChat* chat;
 
 void TRIBE_Game::let_game_begin() {
@@ -3926,12 +3917,6 @@ int TRIBE_Game::handle_activate(void* wnd, unsigned int msg, unsigned int wparam
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 
-extern int do_debug_random;
-extern int out_of_sync;
-extern int out_of_sync2;
-extern int player_dropped[9];
-extern void debug_random_write();
-extern void dump_vismap_log();
 
 int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
     char msg[256];

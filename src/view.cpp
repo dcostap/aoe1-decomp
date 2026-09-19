@@ -384,7 +384,6 @@ next_entry:
 }
 
 
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 
 void RGE_View::display_object_selection(int id, int duration, int select_type, int reset_type) {

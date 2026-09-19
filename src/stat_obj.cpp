@@ -2126,7 +2126,6 @@ int RGE_Static_Object::explore_terrain(RGE_Player* whos, unsigned char explore_t
     return 0;
 }
 
-extern "C" long __cdecl _ftol(void);
 
 void RGE_Static_Object::unexplore_terrain(RGE_Player* whos, unsigned char explore_type, int Override_LOS) {
     if (whos != 0) {

@@ -545,7 +545,6 @@ void TRIBE_Command::command_make(RGE_Static_Object* unit, short obj_id) {
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_make(
     int playerID, int buildingID, int objID, int uniqueID) {
@@ -563,7 +562,6 @@ void TRIBE_Command::command_make(
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_research(RGE_Static_Object* unit, short tech_id) {
     if (unit) {
@@ -584,7 +582,6 @@ void TRIBE_Command::command_research(RGE_Static_Object* unit, short tech_id) {
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_research(
     int playerID, int buildingID, int techID, int uniqueID) {
@@ -602,7 +599,6 @@ void TRIBE_Command::command_research(
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_build(
     RGE_Static_Object** unit, short list_num, short obj_id,
@@ -640,7 +636,6 @@ void TRIBE_Command::command_build(
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_build(int playerID, int* unitID, int numUnits,
                                   int objectID, float xLoc, float yLoc,
@@ -667,7 +662,6 @@ void TRIBE_Command::command_build(int playerID, int* unitID, int numUnits,
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_build_wall(
     RGE_Static_Object** unit, short list_num, short obj_id,
@@ -718,7 +712,6 @@ void TRIBE_Command::command_build_wall(
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_explore(
     int playerID, int* unitID, int numUnits, float x, float y) {
@@ -742,7 +735,6 @@ void TRIBE_Command::command_explore(
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_allied_victory(short player, unsigned char flag) {
     TRIBE_Command_Game* cmd = static_cast<TRIBE_Command_Game*>(calloc(1, sizeof(TRIBE_Command_Game)));
@@ -844,7 +836,6 @@ void TRIBE_Command::command_shared_los(short player) {
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_cancel_build(RGE_Static_Object* unit) {
     TRIBE_Command_Cancel_Build* cmd =
@@ -857,7 +848,6 @@ void TRIBE_Command::command_cancel_build(RGE_Static_Object* unit) {
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_attack_ground(RGE_Static_Object** unit, short list_num, float x, float y) {
     if (unit && list_num >= 1) {
@@ -919,7 +909,6 @@ void TRIBE_Command::command_give_attribute(
     this->submit(packet, sizeof(TRIBE_Command_Give_Attribute));
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_trade_attribute(RGE_Static_Object** unit, short list_num, long attribute) {
     if (unit && list_num >= 1) {
@@ -997,7 +986,6 @@ void TRIBE_Command::command_repair(
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_unload(RGE_Static_Object** unit, short list_num, float x, float y) {
     if (unit && list_num >= 1) {
@@ -1026,7 +1014,6 @@ void TRIBE_Command::command_unload(RGE_Static_Object** unit, short list_num, flo
     }
 }
 
-extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_queue(
     RGE_Static_Object* bldg_obj,

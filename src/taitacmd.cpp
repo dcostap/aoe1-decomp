@@ -7777,8 +7777,6 @@ void TribeTacticalAIModule::setupBoatGroups() {
     }
 }
 
-extern void* operator new(unsigned int);
-extern void operator delete(void*);
 
 void TribeTacticalAIModule::fillBoatGroups() {
     int bestUnit;
