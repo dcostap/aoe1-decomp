@@ -1,7 +1,6 @@
 #include "../include/pnl_drop.h"
+#include "../include/game_globals.h"
 #include "../include/Pnl_scbr.h"
-
-extern char s_592A40[];
 
 TDropDownPanel::TDropDownPanel() : TPanel() {
     this->val_panel = 0;

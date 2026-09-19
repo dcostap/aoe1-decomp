@@ -1,5 +1,6 @@
 
 #include "../include/basegame.h"
+#include "../include/game_globals.h"
 #include "../include/main.h"
 #include "../include/view.h"
 #include "../include/map.h"
@@ -17,7 +18,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int allow_user_commands;
 
 void TRIBE_Main_View::draw_multi_object_outline() {
     long start_col;

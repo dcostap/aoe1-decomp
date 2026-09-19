@@ -1,5 +1,6 @@
 
 #include "../include/tm_b_obj.h"
+#include "../include/game_globals.h"
 #include "../include/basegame.h"
 #include "../include/color.h"
 #include "../include/map.h"
@@ -12,7 +13,6 @@
 
 #include <stdio.h>
 
-extern RGE_Base_Game* rge_base_game;
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(
     TRIBE_Master_Building_Object* other_object, int do_setup)

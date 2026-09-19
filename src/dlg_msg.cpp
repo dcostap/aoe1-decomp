@@ -1,10 +1,10 @@
 
 #include "../include/dlg_msg.h"
+#include "../include/game_globals.h"
 #include "../include/resource_ids.h"
 #include "../include/basegame.h"
 #include "../include/rge_base_game_global.h"
 
-extern char s_592A40[];
 
 TMessageDialog::TMessageDialog(char* name)
     : TDialogPanel(name), dlg_type(0), text(0) {

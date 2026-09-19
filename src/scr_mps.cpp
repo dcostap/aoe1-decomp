@@ -1,5 +1,6 @@
 
 #include "../include/scr_mps.h"
+#include "../include/game_globals.h"
 #include "../include/resource_ids.h"
 #include "../include/scr_set_screen.h"
 #include "../include/scr_main.h"
@@ -34,9 +35,6 @@
 #include <string.h>
 #include <io.h>
 
-extern TChat* chat;
-extern TDebuggingLog* L;
-extern TCommunications_Handler* comm;
 
 
 

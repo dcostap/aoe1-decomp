@@ -1,5 +1,6 @@
 
 #include "../include/tpnl_tml.h"
+#include "../include/game_globals.h"
 #include "../include/pnl_lst.h"
 #include "../include/Shape.h"
 #include "../include/basegame.h"
@@ -346,7 +347,6 @@ void Time_Line_Panel::draw_border() {
     }
 }
 
-extern RGE_Base_Game* rge_base_game;
 
 void Time_Line_Panel::init_timeline() {
     int i = 0;

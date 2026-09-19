@@ -1,5 +1,6 @@
 
 #include "../include/com_hand.h"
+#include "../include/game_globals.h"
 #include "../include/debuglog.h"
 #include "../include/basegame.h"
 #include "../include/pathsys.h"
@@ -12,7 +13,6 @@
 #include <stdio.h>
 #include <string.h>
 
-extern TDebuggingLog* L;
 
 RGE_Communications_Synchronize::RGE_Communications_Synchronize(
     TCommunications_Handler* c) {

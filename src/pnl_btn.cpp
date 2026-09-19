@@ -1,5 +1,6 @@
 // Recovered direct owner module for C:\msdev\work\age1_x1\Pnl_btn.cpp.
 #include "../include/pnl_btn.h"
+#include "../include/game_globals.h"
 #include "../include/Shape.h"
 #include "../include/sounddrv.h"
 // 00471EC0_TButtonPanel.cpp
@@ -978,7 +979,6 @@ void TButtonPanel::stop_sound_system(void) {
 }
 
 // 00473BE0_restart_sound_system.cpp
-extern RGE_Base_Game* rge_base_game;
 
 int TButtonPanel::restart_sound_system(void) {
     if (this->sound_number != -1) {

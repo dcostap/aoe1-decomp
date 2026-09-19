@@ -1,5 +1,6 @@
 
 #include "../include/scr_cams.h"
+#include "../include/game_globals.h"
 #include "../include/resource_ids.h"
 #include "../include/scr_name.h"
 #include "../include/pnl_btn.h"
@@ -12,7 +13,6 @@
 #include "../include/tribegam.h"
 #include <stdlib.h>
 
-extern TCommunications_Handler* comm;
 
 TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
     : TScreenPanel("Campaign Selection Screen") {

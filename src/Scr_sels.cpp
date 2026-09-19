@@ -1,4 +1,5 @@
 #include "../include/scr_sels.h"
+#include "../include/game_globals.h"
 #include "../include/resource_ids.h"
 #include "../include/panel.h"
 #include "../include/panel_ez.h"
@@ -16,7 +17,6 @@
 #include <string.h>
 #include <stdio.h>
 
-extern RGE_Base_Game* rge_base_game;
 extern TPanelSystem panel_system;
 
 static const char s_fmt_range[] = "%d - %d";

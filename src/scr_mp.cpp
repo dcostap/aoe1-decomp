@@ -2,6 +2,7 @@
 #include <string.h>
 #include <io.h>
 #include "../include/com_serv.h"
+#include "../include/game_globals.h"
 #include "../include/resource_ids.h"
 #include "../include/scr_mp.h"
 #include "../include/Pnl_btn.h"
@@ -14,8 +15,6 @@
 #include "../include/scr_main.h"
 #include "../include/scr_cj.h"
 
-extern TRegistry* Regs;
-extern TCommunications_Handler* comm;
 
 
 TribeMPStartupScreen::TribeMPStartupScreen()

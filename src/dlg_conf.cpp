@@ -1,5 +1,6 @@
 
 #include "../include/dlg_conf.h"
+#include "../include/game_globals.h"
 #include "../include/resource_ids.h"
 #include "../include/panel.h"
 #include "../include/Pnl_txt.h"
@@ -20,9 +21,6 @@
 #include <string.h>
 #include <stdio.h>
 
-extern TCommunications_Handler* comm;
-extern TRegistry* Regs;
-extern int allow_user_commands;
 extern unsigned char do_color_log;
 extern int numberPathingIterations;
 

@@ -1,8 +1,8 @@
 #include "../include/com_loby.h"
+#include "../include/game_globals.h"
 #include "../include/debuglog.h"
 #include <string.h>
 
-extern TDebuggingLog* L;
 extern char _s_Release[];
 
 int __stdcall EnumPlayersCallbackLobby(

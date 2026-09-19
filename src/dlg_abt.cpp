@@ -1,5 +1,6 @@
 
 #include "../include/dlg_abt.h"
+#include "../include/game_globals.h"
 #include "../include/pnl_lst.h"
 #include "../include/pnl_btn.h"
 #include "../include/pnl_pic.h"
@@ -11,7 +12,6 @@
 #include <stdio.h>
 #include <string.h>
 
-extern TRegistry* Regs;
 
 TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
     : TDialogPanel("About Dialog") {

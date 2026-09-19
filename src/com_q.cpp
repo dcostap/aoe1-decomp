@@ -1,8 +1,8 @@
 #include "../include/com_q.h"
+#include "../include/game_globals.h"
 #include "../include/debuglog.h"
 #include <string.h>
 
-extern TDebuggingLog* L;
 
 RGE_Communications_Queue::RGE_Communications_Queue(int MaxSize) {
     if (MaxSize < 0x14) {

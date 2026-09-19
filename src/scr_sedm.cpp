@@ -1,5 +1,6 @@
 
 #include "../include/scr_sedm.h"
+#include "../include/game_globals.h"
 #include "../include/pnl_btn.h"
 #include "../include/Pnl_txt.h"
 #include "../include/basegame.h"
@@ -12,7 +13,6 @@
 
 extern char s_Scenario_Editor_Menu[];
 extern char s_scr4[];
-extern char s_592A40[];
 extern char s_Scenario_Editor_Open[];
 extern char s_Campaign_Editor_Screen[];
 extern char s_Main_Menu[];
