@@ -249,21 +249,20 @@ int RGE_Base_Game::setup() {
     char s[256];
     OFSTRUCT of;
     _finddata_t file_info;
-    debug_srand("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522,
-                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522));
+    debug_srand("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522));
 
     temp_val = this->registry->RegGetInt(1, "Screen Size");
     switch (temp_val) {
     case 640:
-        this->prog_info->main_wid = 640;
+        this->prog_info->main_wid = temp_val;
         this->prog_info->main_hgt = 480;
         break;
     case 800:
-        this->prog_info->main_wid = 800;
+        this->prog_info->main_wid = temp_val;
         this->prog_info->main_hgt = 600;
         break;
     case 1024:
-        this->prog_info->main_wid = 1024;
+        this->prog_info->main_wid = temp_val;
         this->prog_info->main_hgt = 768;
         break;
     case 1280:
@@ -317,9 +316,9 @@ int RGE_Base_Game::setup() {
                 this->error_code = RGE_ERROR_SETUP;
             } else {
                 GlobalMemoryStatus(&ms);
-                if ((ms.dwTotalPageFile >= 20971520UL && ms.dwTotalVirtual >= 10485760UL) ||
-                    (ms.dwTotalPageFile >= 10485760UL && ms.dwTotalVirtual >= 20971520UL) ||
-                    ms.dwTotalVirtual >= 31457280UL) {
+                if ((ms.dwTotalPageFile >= 20971520UL && ms.dwTotalVirtual >= 10485760UL)
+                    || (ms.dwTotalPageFile >= 10485760UL && ms.dwTotalVirtual >= 20971520UL)
+                    || ms.dwTotalVirtual >= 31457280UL) {
                     this->set_interface_messages();
 
                     if (debugActions == 1)
@@ -331,8 +330,7 @@ int RGE_Base_Game::setup() {
                         this->error_code = RGE_ERROR_CHECK_EXPIRATION;
                     } else if (this->prog_info->check_multi_copies != 0 && this->check_multi_copies() == 0) {
                         this->error_code = RGE_ERROR_CHECK_MULTI_COPIES;
-                    } else if (this->check_prog_argument("NODXCHECK") == 0 && (GetDXVersion(&DXVersion, &DXPlatform),
-                                DXVersion < RGE_REQUIRED_DIRECTX_VERSION)) {
+                    } else if (this->check_prog_argument("NODXCHECK") == 0 && (GetDXVersion(&DXVersion, &DXPlatform), DXVersion < RGE_REQUIRED_DIRECTX_VERSION)) {
                         this->error_code = RGE_ERROR_DIRECTX_VERSION;
                     } else {
                         SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &this->screen_saver_enabled, 0);
