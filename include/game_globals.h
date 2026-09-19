@@ -521,7 +521,6 @@ extern float DAT_00575768;
 extern double DAT_00575770;
 extern float DAT_00575778;
 extern float DAT_0057577c;
-extern float DAT_00575780;
 extern float DAT_00575784;
 extern float DAT_005758b0;
 extern float DAT_005758b4;
