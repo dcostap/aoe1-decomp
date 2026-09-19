@@ -38,6 +38,11 @@ original storage as a reviewed symbol.
 | `DAT_00575564` through `DAT_0057557c` | removed | These seven read-only information-AI constants have no PDB symbols. Source now uses their direct float literals for distance, placement, size, and sentinel operations. |
 | `DAT_00575580` through `DAT_005755c0` | removed | These 14 read-only information-AI constants have no PDB symbols. Source now uses direct literals for ratings, radii, influence factors, resource scores, and fallback times. |
 | `DAT_0057548c` through `DAT_00575498` | removed | These four read-only build-AI constants have no PDB symbols. `TribeBuildAIModule::cancelBuildItem` already uses the corresponding literals for half-size and two-tile bounds. |
+| `DAT_00575268` | removed | The original read-only `6.5f` has no source reference. `TRIBE_Action_Repair::setup` already uses the literal save-version threshold. |
+| `DAT_0057526c` | named | The original read-only `2.0f` is subtracted from repair distance before range checks. The new `g_repair_distance_offset` name describes that role. |
+| `DAT_00575270` | named | The original read-only `0.4` double is the repair distance threshold. The new `g_repair_distance_threshold` name describes that role. |
+| `DAT_00575278` | removed | The original read-only `0.0f` has no source reference. The repair update path uses the literal zero threshold. |
+| `DAT_0057527c` | removed | The original read-only `-0.5f` has no source reference. `meet_target` uses the corresponding literal coordinate offset. |
 
 ## Related duplicate storage
 
