@@ -5441,21 +5441,21 @@ void TribeTacticalAIModule::updateGathererDistribution() {
     int gSTT;
     int gAction;
     int i;
-    int local_4;
-    int bVar1;
+    int gatherer_index;
+    int distribution_set;
 
     for (i = 0; i < 4; ++i)
         this->actualGathererDistribution[i] = 0;
 
-    local_4 = 0;
+    gatherer_index = 0;
     if (this->numberGatherersValue > 0) {
         do {
             RGE_Static_Object* object =
-                this->md->object(this->gatherers[local_4].id);
+                this->md->object(this->gatherers[gatherer_index].id);
             if (object != 0 && object->unitAI() != 0) {
                 gSTT = object->unitAI()->currentAction();
-                gAction = this->gatherers[local_4].data1;
-                this->gatherers[local_4].target =
+                gAction = this->gatherers[gatherer_index].data1;
+                this->gatherers[gatherer_index].target =
                     object->unitAI()->currentTarget();
 
                 if (gSTT == 0x261 && object->master_obj->id == 0x103 && gAction != 0) {
@@ -5476,7 +5476,7 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                         } while (j < taskedCount);
                     }
                     if (found == 0)
-                        this->gatherers[local_4].data1 = 0;
+                        this->gatherers[gatherer_index].data1 = 0;
                 }
 
                 if (gAction >= 0 && gAction <= 3) {
@@ -5490,7 +5490,7 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                             do {
                                 if (this->unitsTaskedThisUpdate.maximumSizeValue <= j)
                                     break;
-                                if (this->unitsTaskedThisUpdate.value[j] == this->gatherers[local_4].id) {
+                                if (this->unitsTaskedThisUpdate.value[j] == this->gatherers[gatherer_index].id) {
                                     this->actualGathererDistribution[gAction]++;
                                     break;
                                 }
@@ -5500,15 +5500,15 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                     }
                 }
             }
-            ++local_4;
-        } while (local_4 < this->numberGatherersValue);
+            ++gatherer_index;
+        } while (gatherer_index < this->numberGatherersValue);
     }
 
     this->desiredGathererDistribution[0] = 0;
     this->desiredGathererDistribution[1] = 0;
     this->desiredGathererDistribution[2] = 0;
     this->desiredGathererDistribution[3] = 0;
-    bVar1 = 0;
+    distribution_set = 0;
 
     if (this->inAge(1) != 0) {
         if (this->sn[0xB5] == 1) {
@@ -5521,13 +5521,13 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                         this->gatherers[i].data2 = 5;
                 }
                 this->zoomingToNextAge = 1;
-                bVar1 = 1;
+                distribution_set = 1;
             } else {
                 int desired = this->desiredNumberGatherersValue;
                 this->zoomingToNextAge = 0;
                 this->desiredGathererDistribution[1] =
                     desired;
-                bVar1 = 1;
+                distribution_set = 1;
             }
         } else {
             this->zoomingToNextAge = 0;
@@ -5543,13 +5543,13 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                         this->gatherers[i].data2 = 5;
                 }
                 this->zoomingToNextAge = 1;
-                bVar1 = 1;
+                distribution_set = 1;
             } else {
                 int desired = this->desiredNumberGatherersValue;
                 this->zoomingToNextAge = 0;
                 this->desiredGathererDistribution[1] =
                     desired;
-                bVar1 = 1;
+                distribution_set = 1;
             }
         } else {
             this->zoomingToNextAge = 0;
@@ -5562,7 +5562,7 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                 this->desiredGathererDistribution[0] = third;
                 this->desiredGathererDistribution[3] = third;
                 this->desiredGathererDistribution[1] = third;
-                bVar1 = 1;
+                distribution_set = 1;
             } else {
                 int half = this->desiredNumberGatherersValue / 2;
                 this->desiredGathererDistribution[0] = half;
@@ -5572,14 +5572,14 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                         this->gatherers[i].data2 = 5;
                 }
                 this->zoomingToNextAge = 1;
-                bVar1 = 1;
+                distribution_set = 1;
             }
         } else {
             this->zoomingToNextAge = 0;
         }
     }
 
-    if (bVar1 == 0) {
+    if (distribution_set == 0) {
         int desired2Percent = this->sn[0x77];
         int desired2ExtraPercent = this->sn[0x9E];
         int desired = this->desiredNumberGatherersValue;
@@ -9147,13 +9147,13 @@ int TribeTacticalAIModule::numberAvailableGranaries(int& numGranaries, int& numU
 }
 
 int TribeTacticalAIModule::initialExplorationSatisfied() {
-    int iVar1;
+    int explored_percent;
 
     if (this->sn[0xA7] <= 0)
         return 1;
 
-    iVar1 = (int)(this->md->player->visible->percentExplored() * 100.0f);
-    return iVar1 >= this->sn[0xA7];
+    explored_percent = (int)(this->md->player->visible->percentExplored() * 100.0f);
+    return explored_percent >= this->sn[0xA7];
 }
 
 void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int position) {

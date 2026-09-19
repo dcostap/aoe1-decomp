@@ -213,12 +213,12 @@ int TRIBE_Main_View::draw_wall_outline(long col, long row, TRIBE_Master_Building
     short scr_x;
     short x3;
     short y4;
-    short local_4[2];
+    short alignment_y4[2];
 
     if (this->get_tile_screen_coords(static_cast<short>(col), static_cast<short>(row), &x3, &scr_x, 0) != 0) {
         float world_x = static_cast<float>(col) + 0.5f;
         master_bldg->alignment_box(this->world, world_x, static_cast<float>(row) + 0.5f,
-                                   x4, y2, scr_y, y3, y4, y1, x2, local_4[0]);
+                                   x4, y2, scr_y, y3, y4, y1, x2, alignment_y4[0]);
 
         if (master_bldg->check_placement(this->player, world_x, static_cast<float>(row) + 0.5f,
                                          0, 1, master_bldg->elevation_flag, 0, 1, 1, 1) == 0) {
@@ -235,7 +235,7 @@ int TRIBE_Main_View::draw_wall_outline(long col, long row, TRIBE_Master_Building
 
         if (master_bldg->sprite != 0) {
             x3 = static_cast<short>(x3 + (x4 - y4) / 2 + y4);
-            scr_x = static_cast<short>(scr_x + (y3 - local_4[0]) / 2 + local_4[0]);
+            scr_x = static_cast<short>(scr_x + (y3 - alignment_y4[0]) / 2 + alignment_y4[0]);
             SDI_Draw_Line = scr_x;
             master_bldg->draw(this->render_area, x3, scr_x, rge_base_game->get_player()->color_table, facet + 1, 0, 0, 0);
         }

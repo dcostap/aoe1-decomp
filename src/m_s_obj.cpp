@@ -328,8 +328,8 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     short temp_can_be_built_on;
     short temp_elevation_flag;
     short temp_damage_percent;
-    unsigned char local_84[2];
-    unsigned char local_82[2];
+    unsigned char temp_elevation_flag_bytes[2];
+    unsigned char temp_damage_percent_bytes[2];
     char temp_name[120];
 
     this->master_type = 10;
@@ -344,7 +344,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
            &temp_damage_percent, &this->button_pict, &temp_attack_reaction,
            &this->portrait_pict, &temp_attribute_flag, &this->tile_req1,
            &this->tile_req2, &this->center_tile_req1, &this->center_tile_req2,
-           &this->construction_radius_x, &this->construction_radius_y, local_84,
+           &this->construction_radius_x, &this->construction_radius_y, temp_elevation_flag_bytes,
            &temp_sort_number, &temp_undead_flag, &temp_can_be_built_on, &temp_created_sound, &this->attribute_max_amount,
            &this->multiple_attribute_mod, &this->attribute_rot, &temp_damage_sprite, &temp_select_level, &temp_map_draw_level,
            &temp_command_level, &temp_terrain, &temp_track_as_resource,
@@ -375,7 +375,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
         short index = 0;
         if (this->damage_sprite_num != 0) {
             do {
-                fscanf(infile, "%hd %hd %hd", &temp_flag, local_82, &temp_death_sound);
+                fscanf(infile, "%hd %hd %hd", &temp_flag, temp_damage_percent_bytes, &temp_death_sound);
 
                 RGE_Sprite* damage_sprite;
                 if (temp_flag < 0) {
@@ -384,7 +384,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
                     damage_sprite = sprites[temp_flag];
                 }
                 this->damage_sprites[index].sprite = damage_sprite;
-                this->damage_sprites[index].damage_percent = local_82[0];
+                this->damage_sprites[index].damage_percent = temp_damage_percent_bytes[0];
                 this->damage_sprites[index].flag =
                     static_cast<unsigned char>(temp_death_sound);
                 ++index;
@@ -426,7 +426,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
         this->undead_sprite = sprites[temp_fog_flag];
     }
 
-    this->elevation_flag = local_84[0];
+    this->elevation_flag = temp_elevation_flag_bytes[0];
     this->sort_number = static_cast<unsigned char>(temp_available);
     this->movement_type = static_cast<unsigned char>(temp_created_sound);
     this->fog_flag = static_cast<unsigned char>(temp_sort_number);
