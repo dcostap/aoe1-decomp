@@ -50,6 +50,13 @@ original storage as a reviewed symbol.
 | `DAT_00575198` | named | This read-only scale converts the random integer to a placement fraction in `TRIBE_Action_Make_Obj::place_obj`. |
 | `DAT_0057519c` | removed | The original read-only `4.0f` has no source reference. `place_obj` already uses the corresponding literal expansion factor. |
 | `DAT_005751a0` | named | This read-only `100.0f` converts make-object work into a percentage in `get_info`. The new `g_make_obj_progress_percent` name states that role. |
+| `DAT_00575000` | named | This read-only `4.0f` multiplies conversion chance for the special player branch. The new `g_conversion_special_player_factor` name states that role. |
+| `DAT_00575004` | named | This read-only `8.0f` multiplies conversion chance for selected object groups. The new `g_conversion_special_group_factor` name states that role. |
+| `DAT_00575070` | named | This read-only zero is the discovery-artifact timer threshold. The new `g_discovery_artifact_timer_threshold` name states that role. |
+| `DAT_00575078` | named | This read-only `1.0f` adjusts the lower discovery-artifact scan bounds. The new `g_discovery_artifact_scan_lower_adjustment` name replaces the source-local DAT label. |
+| `DAT_0057507c` | named | This read-only `-1.0f` adjusts the upper discovery-artifact scan bounds. The new `g_discovery_artifact_scan_upper_adjustment` name states that role. |
+| `DAT_005750e0` | named | This read-only `0.1f` is the healing attribute threshold before work is scaled. The new `g_heal_attribute_threshold` name states that role. |
+| `DAT_005750e8` | named | This read-only `0.5` double is the minimum healing distance threshold. The new `g_heal_distance_threshold` name states that role. |
 
 ## Related duplicate storage
 

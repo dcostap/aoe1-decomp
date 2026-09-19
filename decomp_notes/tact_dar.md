@@ -38,9 +38,9 @@ source file. The module adds only its `flags` pointer at `+0x40`.
 The map scan uses `RGE_Object_Node::node`, which is the canonical list-node
 member. No discovery-specific layout remains.
 
-The two named globals use `game_globals.h`. `DAT_00575078` has no named shared
-owner and remains a narrow source-local declaration for its shipped read-only
-reference. File I/O uses the canonical `rge_fio.h` declarations.
+The discovery-artifact constants use `game_globals.h` with descriptive names.
+The lower scan adjustment was previously a narrow source-local DAT declaration.
+File I/O uses the canonical `rge_fio.h` declarations.
 
 ## Migration effects
 
@@ -68,6 +68,7 @@ function. It remained an honest `MISMATCH` of 8 bytes at `8.6957%`, with no
 relocation target mismatch and no boundary escape. Its owner symbol matched.
 The candidate reported 7 exact matches out of 7 exact owners.
 
-`DAT_00575078` remains only the source-local `extern float` used by the two
-map-coordinate expressions. No foreign layout carrier, raw vptr, or explicit
-padding field is present in `tact_dar.cpp` or `tact_dar.h`.
+The lower and upper scan adjustments remain separate constants because their
+signs differ in the two map-coordinate expressions. No foreign layout carrier,
+raw vptr, or explicit padding field is present in `tact_dar.cpp` or
+`tact_dar.h`.

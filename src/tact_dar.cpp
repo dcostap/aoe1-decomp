@@ -11,8 +11,6 @@
 #include "../include/game_globals.h"
 #include <stdlib.h>
 
-extern float DAT_00575078;
-
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
@@ -76,7 +74,7 @@ unsigned char TRIBE_Action_Discovery_Artifact::update() {
     case 10:
         float timer =
             this->timer - this->obj->owner->world->world_time_delta_seconds;
-        if (timer <= DAT_00575070) {
+        if (timer <= g_discovery_artifact_timer_threshold) {
             this->timer = timer;
             this->set_state(6);
         } else {
@@ -92,10 +90,10 @@ void TRIBE_Action_Discovery_Artifact::check_objects() {
     RGE_Action_Object* obj = this->obj;
     RGE_Master_Static_Object* master = obj->master_obj;
 
-    short x1 = (short)(obj->world_x - DAT_00575078 - master->radius_x);
-    short map_y = (short)(obj->world_y - DAT_00575078 - master->radius_y);
-    short x0 = (short)(master->radius_x + obj->world_x - DAT_0057507c);
-    short y0 = (short)(master->radius_y + obj->world_y - DAT_0057507c);
+    short x1 = (short)(obj->world_x - g_discovery_artifact_scan_lower_adjustment - master->radius_x);
+    short map_y = (short)(obj->world_y - g_discovery_artifact_scan_lower_adjustment - master->radius_y);
+    short x0 = (short)(master->radius_x + obj->world_x - g_discovery_artifact_scan_upper_adjustment);
+    short y0 = (short)(master->radius_y + obj->world_y - g_discovery_artifact_scan_upper_adjustment);
 
     RGE_Map* map = obj->owner->world->map;
 

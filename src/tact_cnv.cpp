@@ -301,13 +301,13 @@ uchar TRIBE_Action_Convert::update() {
             float chance = (float)r * DAT_00574ffc;
             RGE_Player* tplayer = this->target_obj->owner;
             if (tplayer->master_player_id == 0x10) {
-                chance = chance * DAT_00575000;
+                chance = chance * g_conversion_special_player_factor;
             } else {
                 short type = this->target_obj->master_obj->object_group;
                 if (type == 0x15 || type == 2 || type == 0x14 || type == 0x16 || type == 0x12) {
                     chance = chance + chance;
                 } else if (type == 0x23 || type == 0x17) {
-                    chance = chance * DAT_00575004;
+                    chance = chance * g_conversion_special_group_factor;
                 }
             }
             // Direct field ownership preserves the original x87 order.

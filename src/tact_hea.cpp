@@ -115,8 +115,8 @@ void TRIBE_Action_Heal::set_state(unsigned char new_state) {
     }
 }
 
-extern float DAT_005750e0;
-extern double DAT_005750e8;
+extern float g_heal_attribute_threshold;
+extern double g_heal_distance_threshold;
 
 unsigned char TRIBE_Action_Heal::update() {
     float work;
@@ -197,7 +197,7 @@ unsigned char TRIBE_Action_Heal::update() {
 
         if (this->target_obj->world_x != this->target_x || this->target_y != this->target_obj->world_y) {
             float distance = this->obj->distance_to_object(this->target_obj);
-            if (this->task->work_range < distance && DAT_005750e8 < distance) {
+            if (this->task->work_range < distance && g_heal_distance_threshold < distance) {
                 this->set_state(3);
                 return 0;
             }
@@ -210,7 +210,7 @@ unsigned char TRIBE_Action_Heal::update() {
         work = this->task->work_val1 *
                ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate;
         work *= this->obj->owner->world->world_time_delta_seconds;
-        if (this->obj->owner->attributes[0x38] > DAT_005750e0) {
+        if (this->obj->owner->attributes[0x38] > g_heal_attribute_threshold) {
             work *= this->obj->owner->attributes[0x38];
         }
 
