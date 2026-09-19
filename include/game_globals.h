@@ -465,8 +465,6 @@ extern unsigned char DAT_0057f729;
 extern unsigned char DAT_0057f731;
 extern unsigned char DAT_0057f739;
 extern const char s_tionary_0057f73b[8];
-extern const char s_lient_00582911[6];
-extern const char s_ptional_Information_00582981[20];
 extern unsigned char DAT_00584351;
 extern const char s_ignDialog_00584353[10];
 extern unsigned char DAT_00584371;
