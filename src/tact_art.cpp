@@ -95,7 +95,7 @@ unsigned char TRIBE_Action_Artifact::update() {
     case 10: {
         RGE_Action_Object* obj = this->obj;
         float speed = this->timer - obj->owner->world->world_time_delta_seconds;
-        if (speed > DAT_00574f08) {
+        if (speed > g_artifact_timer_threshold) {
             this->timer = speed;
             return 0;
         }
@@ -132,10 +132,10 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     RGE_Action_Object* obj = this->obj;
     RGE_Master_Static_Object* master = obj->master_obj;
 
-    short map_x = (short)(obj->world_x - DAT_00574f10 - master->radius_x);
-    short map_y = (short)(obj->world_y - DAT_00574f10 - master->radius_y);
-    short x0 = (short)(master->radius_x + obj->world_x - DAT_00574f14);
-    short y0 = (short)(master->radius_y + obj->world_y - DAT_00574f14);
+    short map_x = (short)(obj->world_x - g_artifact_scan_lower_adjustment - master->radius_x);
+    short map_y = (short)(obj->world_y - g_artifact_scan_lower_adjustment - master->radius_y);
+    short x0 = (short)(master->radius_x + obj->world_x - g_artifact_scan_upper_adjustment);
+    short y0 = (short)(master->radius_y + obj->world_y - g_artifact_scan_upper_adjustment);
 
     RGE_Map* map = obj->owner->world->map;
     short player_num = obj->owner->world->player_num;

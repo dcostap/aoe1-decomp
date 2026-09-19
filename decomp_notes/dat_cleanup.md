@@ -74,6 +74,18 @@ original storage as a reviewed symbol.
 | `DAT_00574a0c` | removed | The original read-only `100.0f` has no source reference. The progress calculation uses the direct literal. |
 | `DAT_00574a10` | named | This read-only `0.1` double detects very small damage for selected building groups. |
 | `DAT_00574a18` | named | This read-only `0.1f` is applied as minimum damage for those groups. |
+| `DAT_00574c78` | named | This read-only `1.0f` is the combat object's one-point attribute and damage threshold. |
+| `DAT_00574c7c` | named | This read-only `-1.0f` adjusts combat-object player attributes during setup. |
+| `DAT_00574c88` | named | This read-only `1.0` double gates combat damage handling and one-point HP checks. |
+| `DAT_00574c98` | named | This read-only zero controls combat-object step and distance comparisons. |
+| `DAT_00574ca0` | named | This read-only `-0.5f` adjusts combat-object tile-center coordinates. |
+| `DAT_00574ca4` | named | This read-only negative two-pi value normalizes negative angles in cliff checks. |
+| `DAT_00574ca8` | named | This read-only zero double gates area attacks with no effect range. |
+| `DAT_00574f08` | named | This read-only zero double is the artifact action timer threshold. |
+| `DAT_00574f10` | named | This read-only `1.0f` adjusts the lower artifact ownership scan bounds. |
+| `DAT_00574f14` | named | This read-only `-1.0f` adjusts the upper artifact ownership scan bounds. |
+| `DAT_00574ffc` | named | This read-only random scale converts conversion chance values to fractions. |
+| `DAT_00574c80`, `DAT_00574c90`, `DAT_00574c94`, `DAT_00574c9c`, `DAT_00574f78`, `DAT_00574ff0`, and `DAT_00574ff8` | removed | These read-only constants have no source references or PDB symbols. Their owners use direct literals or do not need the separate storage. |
 
 ## Related duplicate storage
 
