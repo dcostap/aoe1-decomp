@@ -566,7 +566,6 @@ float DAT_00575748 = 6.98000002f;
 float DAT_0057574c = 6.99300003f;
 float DAT_00575750 = 7.03999996f;
 float DAT_00575754 = 7.1500001f;
-float DAT_00575758 = -1.0f;
 float DAT_005758b0 = 3.0f;
 float DAT_005758b4 = 0.75f;
 float DAT_005758b8 = 0.5f;

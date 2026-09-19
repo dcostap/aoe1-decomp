@@ -7242,7 +7242,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                                 float distance =
                                                     object->distance_to_position(bestGroup->gatherLocation().x,
                                                                                  bestGroup->gatherLocation().y, bestGroup->gatherLocation().z);
-                                                if (bestDistance == DAT_00575758 || distance < bestDistance) {
+                                                if (bestDistance == -1.0f || distance < bestDistance) {
                                                     bestUnitID =
                                                         this->workingArea[i];
                                                     bestDistance = distance;
@@ -7298,7 +7298,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                                     float distance =
                                                         object->distance_to_position(bestGroup->gatherLocation().x,
                                                                                      bestGroup->gatherLocation().y, bestGroup->gatherLocation().z);
-                                                    if (bestDistance == DAT_00575758 || distance < bestDistance) {
+                                                    if (bestDistance == -1.0f || distance < bestDistance) {
                                                         bestUnitID =
                                                             this->workingArea[i];
                                                         bestDistance = distance;
@@ -7851,7 +7851,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                                 float distance =
                                                     object->distance_to_position(bestGroup->gatherLocation().x,
                                                                                  bestGroup->gatherLocation().y, bestGroup->gatherLocation().z);
-                                                if (bestDistance == DAT_00575758 || distance < bestDistance) {
+                                                if (bestDistance == -1.0f || distance < bestDistance) {
                                                     bestUnitID = this->workingArea[i];
                                                     bestDistance = distance;
                                                 }
@@ -7892,7 +7892,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                                     float distance =
                                                         object->distance_to_position(bestGroup->gatherLocation().x,
                                                                                      bestGroup->gatherLocation().y, bestGroup->gatherLocation().z);
-                                                    if (bestDistance == DAT_00575758 || distance < bestDistance) {
+                                                    if (bestDistance == -1.0f || distance < bestDistance) {
                                                         bestUnitID = this->workingArea[i];
                                                         bestDistance = distance;
                                                     }
@@ -9731,7 +9731,7 @@ void TribeTacticalAIModule::taskElephantGatherers(
                     object = this->md->object(gatherer->id);
                     if (object != 0 && object->unitAI() != 0 && gatherer->data1 == 0) {
                         float distance = object->distance_to_object(targetObject);
-                        if (bestDistance == DAT_00575758 || bestDistance > distance) {
+                        if (bestDistance == -1.0f || bestDistance > distance) {
                             bestValueID = gatherer->id;
                             bestDistance = distance;
                         }
