@@ -580,7 +580,7 @@ char* RGE_Scenario::Get_CityPlan(int which_player, int WithExtension) {
 }
 
 float RGE_Scenario::Get_Version() {
-    return DAT_00572178;
+    return 1.15f;
 }
 
 char* RGE_Scenario::Get_player_AI(int which_player, int WithExtension) {

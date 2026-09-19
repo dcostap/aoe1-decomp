@@ -87,6 +87,12 @@ original storage as a reviewed symbol.
 | `DAT_00574ffc` | named | This read-only random scale converts conversion chance values to fractions. |
 | `DAT_00574c80`, `DAT_00574c90`, `DAT_00574c94`, `DAT_00574c9c`, `DAT_00574f78`, `DAT_00574ff0`, and `DAT_00574ff8` | removed | These read-only constants have no source references or PDB symbols. Their owners use direct literals or do not need the separate storage. |
 | `DAT_00573ae8`, `DAT_00573aec`, `DAT_00573af0`, and `DAT_00573af8` | removed | These read-only action and scenario constants have no source references or PDB symbols. Their owners use direct literals. |
+| `DAT_00572138` through `DAT_0057217c` | removed | These ten read-only scenario-version constants have no source references or PDB symbols. `RGE_Scenario` uses source literals, including `1.15f` in `Get_Version`. |
+| `DAT_00572968` | named | This read-only `0.001f` scales elapsed time for scroll-panel movement. The new `g_scroll_time_scale` name states that role. |
+| `DAT_00572970`, `DAT_00572978` | removed | These read-only zero constants have no source references or PDB symbols. The fade step code uses direct zero comparisons. |
+| `DAT_0057297c` | named | This read-only `100.0f` scales fade progress. The new `g_fade_progress_scale` name states that role. |
+| `DAT_00572ce0`, `DAT_00572ce8` through `DAT_00572cf8` | removed | These read-only game-speed constants have no source references or PDB symbols. Their owners use direct literals or separate state values. |
+| `DAT_00572ce4` | named | This read-only zero is the no-area-effect range check in script game updates. The new `g_no_area_effect_range` name states that role. |
 
 ## Related duplicate storage
 

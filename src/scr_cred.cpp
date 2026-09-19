@@ -15,8 +15,8 @@ extern char s_scr_cred_draw_005862e0[];
 
 // Keep the module's original declaration order while the shared header owns
 // the storage types and definitions.
-extern float DAT_00572968;
-extern float DAT_0057297c;
+extern float g_scroll_time_scale;
+extern float g_fade_progress_scale;
 extern float DAT_0086b290;
 extern unsigned int DAT_0086b294;
 extern int DAT_0086b298;
@@ -311,7 +311,7 @@ long TScrollTextPanel::handle_idle() {
     } else {
         unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 479);
         __int64 elapsed = (unsigned long)(now - this->last_time);
-        int amount = (long)(((double)elapsed * DAT_00572968) * this->speed);
+        int amount = (long)(((double)elapsed * g_scroll_time_scale) * this->speed);
         if (amount > 0) {
             this->scroll += amount;
             this->set_redraw(TPanel::RedrawNormal);
@@ -507,7 +507,7 @@ int RGE_fade_palette_step() {
         if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 || delta_time < 0.0f) {
             amount = 100;
         } else {
-            float v = delta_time * delta_time / DAT_0086b2ac * DAT_0057297c;
+            float v = delta_time * delta_time / DAT_0086b2ac * g_fade_progress_scale;
             amount = (long)v;
         }
         DAT_0086b2a0 = amount;
@@ -523,7 +523,7 @@ int RGE_fade_palette_step() {
         if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 || delta_time < 0.0f) {
             amount = 0;
         } else {
-            float v = delta_time * delta_time / DAT_0086b2ac * DAT_0057297c;
+            float v = delta_time * delta_time / DAT_0086b2ac * g_fade_progress_scale;
             amount = (long)v;
         }
         DAT_0086b2a0 = amount;

@@ -2524,7 +2524,7 @@ void TRIBE_Screen_Game::setup_buttons() {
                     if (object != 0) {
                         RGE_Master_Combat_Object* master =
                             static_cast<RGE_Master_Combat_Object*>(object->master_obj);
-                        if ((master->missile_id == -1) || (master->area_effect_range == DAT_00572ce4)) {
+                        if ((master->missile_id == -1) || (master->area_effect_range == g_no_area_effect_range)) {
                             movable = 0;
                             break;
                         }
