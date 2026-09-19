@@ -2226,8 +2226,6 @@ int TribeTacticalAIModule::save(int outfile) {
 
 void __cdecl TribeTacticalAIModule::logGroupDebug(int gID, char* textIn, ...) {}
 
-static const char s_build_file_format[] = "%s.bld";
-
 int TribeTacticalAIModule::doSomething() {
     unsigned long availableTime =
         this->md->player->world->availableComputerPlayerUpdateTime;
@@ -2335,7 +2333,7 @@ int TribeTacticalAIModule::doSomething() {
                     BuildItem* item = this->md->buildAI.nextBuildableItem(3);
                     if (item != 0) {
                         char tempName[256];
-                        sprintf(tempName, s_build_file_format, item->name());
+                        sprintf(tempName, "%s.bld", item->name());
                         this->md->buildAI.loadBuildList(tempName, this->md->aiPlayer);
                         this->md->updateBuildAIWithObjects();
                         this->updateNeededResources();

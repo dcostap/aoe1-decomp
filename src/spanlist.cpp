@@ -1054,8 +1054,6 @@ int TSpan_List_Manager::DecodeLine(unsigned char* LineBuf, int Line, unsigned ch
     return count;
 }
 
-static const char s_default_snapshot_name[] = "C:\\AOE_%03d.BMP";
-
 void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
                                         TDrawArea* render_area, int scolor,
                                         TSpan_List_Manager** SpanArray,
@@ -1114,7 +1112,7 @@ void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
     int tries = 0;
     if (index_no < 0) index_no = 0;
     while (1) {
-        if (filespec == 0) sprintf(BMPFile, s_default_snapshot_name, index_no);
+        if (filespec == 0) sprintf(BMPFile, "C:\\AOE_%03d.BMP", index_no);
         else sprintf(BMPFile, filespec, index_no);
         tries++;
         int fd = open(BMPFile, 0);
