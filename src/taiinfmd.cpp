@@ -179,7 +179,7 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
       saveLearnInformationValue(0),
       numberFoundForestTilesValue(0) {
     int tempInt;
-    int tempInt_ffffffe8;
+    int loaded_value;
     int resource_type_id;
     int resourceIndex;
     int i3;
@@ -252,8 +252,8 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 pID = 0;
                 if (tempInt > 0) {
                     do {
-                        rge_read(infile, &tempInt_ffffffe8, 4);
-                        this->importantObjects.add(tempInt_ffffffe8);
+                        rge_read(infile, &loaded_value, 4);
+                        this->importantObjects.add(loaded_value);
                         pID++;
                     } while (pID < tempInt);
                 }
@@ -262,8 +262,8 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 pID = 0;
                 if (tempInt > 0) {
                     do {
-                        rge_read(infile, &tempInt_ffffffe8, 4);
-                        this->importantUnits.add(tempInt_ffffffe8);
+                        rge_read(infile, &loaded_value, 4);
+                        this->importantUnits.add(loaded_value);
                         pID++;
                     } while (pID < tempInt);
                 }
@@ -272,8 +272,8 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 pID = 0;
                 if (tempInt > 0) {
                     do {
-                        rge_read(infile, &tempInt_ffffffe8, 4);
-                        this->importantMiscs.add(tempInt_ffffffe8);
+                        rge_read(infile, &loaded_value, 4);
+                        this->importantMiscs.add(loaded_value);
                         pID++;
                     } while (pID < tempInt);
                 }
@@ -282,8 +282,8 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 pID = 0;
                 if (tempInt > 0) {
                     do {
-                        rge_read(infile, &tempInt_ffffffe8, 4);
-                        this->itemsToDefend.add(tempInt_ffffffe8);
+                        rge_read(infile, &loaded_value, 4);
+                        this->itemsToDefend.add(loaded_value);
                         pID++;
                     } while (pID < tempInt);
                 }
@@ -292,8 +292,8 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 pID = 0;
                 if (tempInt > 0) {
                     do {
-                        rge_read(infile, &tempInt_ffffffe8, 4);
-                        this->playerBuildings.add(tempInt_ffffffe8);
+                        rge_read(infile, &loaded_value, 4);
+                        this->playerBuildings.add(loaded_value);
                         pID++;
                     } while (pID < tempInt);
                 }
@@ -302,8 +302,8 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 pID = 0;
                 if (tempInt > 0) {
                     do {
-                        rge_read(infile, &tempInt_ffffffe8, 4);
-                        this->playerObjects.add(tempInt_ffffffe8);
+                        rge_read(infile, &loaded_value, 4);
+                        this->playerObjects.add(loaded_value);
                         pID++;
                     } while (pID < tempInt);
                 }
@@ -325,9 +325,9 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
 
                 rge_read(infile, &this->saveLearnInformationValue, 4);
                 if (!(save_game_version < g_information_ai_save_version_1_6)) {
-                    rge_read(infile, &tempInt_ffffffe8, 4);
-                    rge_read(infile, this->learnFileName, tempInt_ffffffe8);
-                    this->learnFileName[tempInt_ffffffe8] = '\0';
+                    rge_read(infile, &loaded_value, 4);
+                    rge_read(infile, this->learnFileName, loaded_value);
+                    this->learnFileName[loaded_value] = '\0';
                 } else {
                     strcpy(this->learnFileName, "");
                 }
