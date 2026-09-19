@@ -290,16 +290,16 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
         if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile > -1) {
             short x1 = (short)(world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x);
             short y1 = (short)(world_y - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y);
-            short x2 = (short)(world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x - DAT_005749e8);
-            short y2 = (short)(world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y - DAT_005749e8);
+            short x2 = (short)(world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x - g_build_tile_coordinate_epsilon);
+            short y2 = (short)(world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y - g_build_tile_coordinate_epsilon);
             owner->world->map->set_terrain(owner->world->players[0], owner->world, x1, y1, x2, y2,
                                            (unsigned char)static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile,
                                            1, 0);
             owner->world->map->request_redraw(
                 (short)(world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x) - 1,
                 (short)(world_y - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y) - 1,
-                (short)(world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x - DAT_005749e8) + 1,
-                (short)(world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y - DAT_005749e8) + 1,
+                (short)(world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x - g_build_tile_coordinate_epsilon) + 1,
+                (short)(world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y - g_build_tile_coordinate_epsilon) + 1,
                 0);
         }
 
@@ -677,13 +677,13 @@ void TRIBE_Building_Object::cancel_build() {
     }
 
     float percent;
-    if (object_state >= 2 || hp <= DAT_005749f4) {
+    if (object_state >= 2 || hp <= g_building_zero_hp) {
         percent = 0.0f;
     } else {
         percent = ((float)(int)static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required - build_pts) /
-                  (float)(int)static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required * DAT_005749f8;
+                  (float)(int)static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required * g_build_cancel_refund_factor;
     }
-    if (percent > DAT_00574a00) {
+    if (percent > g_building_one_threshold) {
         percent = 1.0f;
     }
 
@@ -777,7 +777,7 @@ void TRIBE_Building_Object::damage(int weapon_num,
                                    float attack_modifier, RGE_Player* attacking_player,
                                    RGE_Static_Object* attacking_object) {
     float temp_hp = hp;
-    if (hp <= DAT_005749f4) {
+    if (hp <= g_building_zero_hp) {
         return;
     }
 
@@ -788,14 +788,14 @@ void TRIBE_Building_Object::damage(int weapon_num,
 
     if (group == 0 || group == 0x17 || group == 0x24 || group == 0x1A ||
         master->id == 0x4F || master->id == 0x45 || master->id == 0xC7 || master->id == 0x17F || master->id == 0x17C) {
-        if (temp_hp - hp < DAT_00574a10) {
-            hp = temp_hp - DAT_00574a18;
+        if (temp_hp - hp < g_building_small_damage_threshold) {
+            hp = temp_hp - g_building_small_damage_amount;
         }
-    } else if (temp_hp - hp < DAT_00574a00) {
-        hp = temp_hp - DAT_00574a08;
+    } else if (temp_hp - hp < g_building_one_threshold) {
+        hp = temp_hp - g_building_minimum_damage;
     }
 
-    if (owner->id > 0 && hp < DAT_00574a00) {
+    if (owner->id > 0 && hp < g_building_one_threshold) {
         attacking_player->add_attribute_num(0x2B, 1.0f, 0);
     }
 }
@@ -998,7 +998,7 @@ void TRIBE_Building_Object::update_production_queue() {
                 return;
             }
 
-            if (attributes[0x10 / 4] > DAT_005749f4) {
+            if (attributes[0x10 / 4] > g_building_zero_hp) {
                 if (production_queue_need_attr == 4) {
                     int id = owner->id;
                     long* value =

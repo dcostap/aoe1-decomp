@@ -64,6 +64,16 @@ original storage as a reviewed symbol.
 | `DAT_00574748` | named | This read-only `3.0f` sets the lower object-bounds adjustment. |
 | `DAT_0057474c` | named | This read-only `-3.0f` sets the upper object-bounds adjustment. |
 | `DAT_00574718`, `DAT_00574724` through `DAT_00574738`, `DAT_00574744`, `DAT_00574750`, `DAT_00574758`, and `DAT_00574764` through `DAT_00574774` | removed | These read-only constants have no source references or PDB symbols. Their owners now use compiler literals or unrelated reviewed constants. |
+| `DAT_005749e0` | removed | The original read-only `7.21f` has no source reference. Building-object loading already uses the literal save-version threshold. |
+| `DAT_005749e8` | named | This read-only `0.001` double is subtracted from the upper tile coordinate before map writes. The new `g_build_tile_coordinate_epsilon` name states that role. |
+| `DAT_005749f0` | removed | The original read-only `0.01f` has no source reference. |
+| `DAT_005749f4` | named | This read-only zero is used for building HP and attribute checks. The new `g_building_zero_hp` name states its main role. |
+| `DAT_005749f8` | named | This read-only `0.5` double scales the refund percentage in `cancel_build`. |
+| `DAT_00574a00` | named | This read-only `1.0` double clamps the refund percentage and supplies the building one-point HP threshold. |
+| `DAT_00574a08` | named | This read-only `1.0f` supplies the normal building minimum damage amount. |
+| `DAT_00574a0c` | removed | The original read-only `100.0f` has no source reference. The progress calculation uses the direct literal. |
+| `DAT_00574a10` | named | This read-only `0.1` double detects very small damage for selected building groups. |
+| `DAT_00574a18` | named | This read-only `0.1f` is applied as minimum damage for those groups. |
 
 ## Related duplicate storage
 
