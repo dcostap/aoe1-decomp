@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern float save_game_version;
 
 // m_co_obj.cpp lines 27-30.
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(

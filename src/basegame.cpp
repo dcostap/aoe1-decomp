@@ -3969,7 +3969,6 @@ void debug_random_write(void) {
     wrote_debug_random_log = 1;
 }
 
-extern int debug_random_on;
 
 int __cdecl debug_rand(char* source_name, int source_line) {
     int rv = rand();
@@ -4023,8 +4022,6 @@ void __cdecl debug_srand(char* source_name, int source_line,
     }
     srand(seed);
 }
-extern int debug_timeGetTime_cnt;
-extern int debug_timeGetTime_time;
 
 unsigned long __cdecl debug_timeGetTime(char* source_name, int source_line) {
     if (do_debug_timeGetTime != 0 && debug_timeGetTime_on != 0) {

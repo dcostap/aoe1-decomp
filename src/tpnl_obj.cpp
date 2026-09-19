@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern TCommunications_Handler* comm;
 
 extern "C" {
 __declspec(dllimport) int __stdcall SetBkMode(HDC, int);

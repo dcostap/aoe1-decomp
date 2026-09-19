@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include <mbstring.h>
-extern int MouseCursorInChildContol;
 extern int imc_retval;
 
 static long __stdcall pnl_sub_wnd_proc(HWND wnd, unsigned int msg,

@@ -10,9 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern float g_visible_resource_save_version;
-extern double g_visible_resource_diagonal_factor;
-extern double g_visible_resource_diagonal_adjustment;
 extern void rge_read(int handle, void* buffer, int size);
 extern void rge_write(int handle, void* buffer, int size);
 

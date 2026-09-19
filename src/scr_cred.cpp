@@ -14,11 +14,6 @@ extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
 
 extern char scr_cred_draw_context_name[];
 
-// Keep the module's original declaration order while the shared header owns
-// the storage types and definitions.
-extern float g_scroll_time_scale;
-extern float g_fade_progress_scale;
-
 void RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*,
                            tagPALETTEENTRY, long, int, int);
 void RGE_fade_palette_start(TDrawArea* surface_in, tagPALETTEENTRY color_in,

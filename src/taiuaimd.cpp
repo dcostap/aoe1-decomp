@@ -275,7 +275,6 @@ TribeLionUnitAIModule::TribeLionUnitAIModule(RGE_Static_Object* o, int iQS)
 int TribeLionUnitAIModule::canAttackUnitAtNeutrality(int oType) { return 1; }
 
 
-extern FILE* actionFile;
 extern const char str_taiuaimd_path[];
 extern const char str_fmt_stopObject[];
 
@@ -424,8 +423,6 @@ TribeRangedUnitAIModule2::TribeRangedUnitAIModule2(RGE_Static_Object* o, int iQS
     : UnitAIModule(o, iQS) {}
 
 
-extern float g_ai_evasive_distance_scale;
-extern float g_ranged_ai_zero_distance;
 extern "C" double __cdecl sqrt(double);
 
 
@@ -1675,7 +1672,6 @@ after_add:
 
 
 
-extern float g_fishing_ship_evasive_distance_scale;
 
 
 int TribeFishingShipUnitAIModule::processIdle(int doSearch) {
@@ -1754,11 +1750,6 @@ int TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int oType) {
 
 
 
-extern float g_soldier_evasive_distance_threshold;
-extern float g_soldier_evasive_coordinate_offset;
-extern float g_soldier_random_evasive_offset;
-extern float g_soldier_evasive_coordinate_threshold;
-extern float g_soldier_evasive_fallback_adjustment;
 
 int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     NotifyEvent* event = nEvent;

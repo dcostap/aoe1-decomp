@@ -18,7 +18,6 @@
 #include "../include/player.h"
 #include "../include/task.h"
 
-extern float save_game_version;
 
 // The constructor keeps the period base initialization and conditional setup.
 TRIBE_Action_Repair::TRIBE_Action_Repair(int infile, RGE_Action_Object* obj_in,

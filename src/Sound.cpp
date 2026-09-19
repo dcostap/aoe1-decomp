@@ -13,7 +13,6 @@ extern void __cdecl write_draw_log2(char* message);
 
 extern int do_draw_log;
 extern int safe_draw_log;
-extern int debug_timeGetTime_on;
 
 #include "../include/game_globals.h"
 #include <string.h>

@@ -12,7 +12,6 @@
 #include "../include/rge_fio.h"
 #include <string.h>
 
-extern float save_game_version;
 
 
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int infile, RGE_Action_Object* obj_in)

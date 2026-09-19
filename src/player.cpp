@@ -30,7 +30,6 @@
 #include <memory.h>
 
 extern int pathingCapValue;
-extern TCommunications_Handler* comm;
 void rge_read(int file, void* buffer, int size);
 void rge_write(int file, void* buffer, int size);
 

@@ -3278,7 +3278,6 @@ int TRIBE_Game::processCheatCode(int playerID, char* text) {
 extern void __cdecl run_log(char* str, int show_time);
 extern "C" __declspec(dllimport) int __stdcall IsIconic(void* window);
 
-extern TChat* chat;
 
 void TRIBE_Game::let_game_begin() {
     int i;

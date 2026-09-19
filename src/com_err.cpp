@@ -5,7 +5,6 @@
 #include "../include/debuglog.h"
 #include "../include/game_globals.h"
 
-extern TDebuggingLog* L;
 
 RGE_Comm_Error::RGE_Comm_Error(void* Host) {
     HostHWND = Host;

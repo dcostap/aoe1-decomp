@@ -329,7 +329,6 @@ int RGE_Diamond_Map::create_surfaces() {
   return 1;
 }
 
-extern RGE_Base_Game *rge_base_game;
 
 void RGE_Diamond_Map::draw() {
   if (this->render_area == 0 || this->save_area == 0 || this->visible == 0 || this->active == 0) {
