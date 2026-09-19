@@ -1718,8 +1718,8 @@ void RGE_Map::create_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworl
                                 (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 2068) *
                                     -3.051851e-05f;
                         } else if (obj_flag == 1) {
-                            x = (float)(int)col - -0.5f;
-                            y = (float)(int)row - -0.5f;
+                            x = (float)(int)col + 0.5f;
+                            y = (float)(int)row + 0.5f;
                         }
 
                         int place_it;
@@ -1822,8 +1822,8 @@ void RGE_Map::place_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworld
                         int density_left = obj_density;
                         do {
                             if (obj_flag != 0) {
-                                x = (float)(int)col - -0.5f;
-                                y = (float)(int)row - -0.5f;
+                                x = (float)(int)col + 0.5f;
+                                y = (float)(int)row + 0.5f;
                             } else {
                                 x = (float)(int)col -
                                     (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 2196) *
@@ -1852,8 +1852,8 @@ void RGE_Map::place_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworld
                     }
                 } else if (FillFlag == 1) {
                     if (obj_flag != 0) {
-                        x = (float)(int)col - -0.5f;
-                        y = (float)(int)row - -0.5f;
+                        x = (float)(int)col + 0.5f;
+                        y = (float)(int)row + 0.5f;
                     } else {
                         x = (float)(int)col -
                             (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 2223) *

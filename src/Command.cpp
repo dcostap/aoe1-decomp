@@ -545,23 +545,23 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* fCommand) {
                         switch (fCommand->formationID) {
                         case 0:
                             tempCount += adjustedYLocation;
-                            adjustedYLocation = adjustedYLocation - -1.0f;
+                            adjustedYLocation = adjustedYLocation + 1.0f;
                             adjustedXLocation = adjustedXLocation + tempX;
-                            tempX = tempX - -1.0f;
+                            tempX = tempX + 1.0f;
                             break;
                         case 1:
                             tempCount = tempCount + adjustedYLocation;
-                            adjustedYLocation = adjustedYLocation - -1.5f;
+                            adjustedYLocation = adjustedYLocation + 1.5f;
                             adjustedXLocation = adjustedXLocation - tempX;
-                            tempX = tempX - -1.5f;
+                            tempX = tempX + 1.5f;
                             break;
                         case 2:
                             tempCount += adjustedYLocation;
-                            adjustedYLocation = adjustedYLocation - -2.0f;
+                            adjustedYLocation = adjustedYLocation + 2.0f;
                             break;
                         case 3:
                             adjustedXLocation += tempX;
-                            tempX = tempX - -2.0f;
+                            tempX = tempX + 2.0f;
                             break;
                         case 5:
                             tempCount -= adjustedYLocation;
@@ -570,8 +570,8 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* fCommand) {
                                 alternate = 1;
                             } else {
                                 adjustedXLocation += tempX;
-                                tempX = tempX - -1.5f;
-                                adjustedYLocation = adjustedYLocation - -1.5f;
+                                tempX = tempX + 1.5f;
+                                adjustedYLocation = adjustedYLocation + 1.5f;
                                 alternate = 0;
                             }
                             break;
@@ -582,8 +582,8 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* fCommand) {
                                 alternate = 1;
                             } else {
                                 adjustedXLocation += tempX;
-                                tempX = tempX - -1.5f;
-                                adjustedYLocation = adjustedYLocation - -1.5f;
+                                tempX = tempX + 1.5f;
+                                adjustedYLocation = adjustedYLocation + 1.5f;
                                 alternate = 0;
                             }
                             break;

@@ -2647,7 +2647,7 @@ int RGE_Static_Object::boundToFacet(float tX, float tY, int numberBindingFacets)
     float smallestFacetDifference = 0.0f;
     float angle = (float)atan2(this->world_y - tY, this->world_x - tX);
     if (angle < 0.0f) {
-        angle = angle - -6.2831855f;
+        angle = angle + 6.2831855f;
     }
     float cur = 0.0f;
     if (numberBindingFacets == -1) {

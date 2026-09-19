@@ -874,7 +874,7 @@ int RGE_Combat_Object::inAttackRange(RGE_Static_Object* target) {
     range_y = master_obj->radius_y;
     radiusDistance = range_x * range_x + range_y * range_y;
     radiusDistance = (float)sqrt((double)radiusDistance);
-    rangeDistance = weaponRange() + radiusDistance - -0.3f;
+    rangeDistance = weaponRange() + radiusDistance + 0.3f;
     if (distance_to_object(target) <= rangeDistance) {
         return 1;
     }

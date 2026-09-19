@@ -1096,20 +1096,20 @@ void TRIBE_Player::random_start() {
         float h;
         w1 = ((debug_rand(tplayerSourceName, 1585) *
                (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
-              - -0.5f;
+              + 0.5f;
         h = ((debug_rand(tplayerSourceName, 1586) *
               (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
-             - -0.5f;
+             + 0.5f;
         int tries = 1;
         while (tries < 5000) {
-            if (this->master_objects[0x6d]->check_placement(this, h - -0.5f, w1 - -0.5f, 0, 0, 1, 1, 1, 1, 1) == 0)
+            if (this->master_objects[0x6d]->check_placement(this, h + 0.5f, w1 + 0.5f, 0, 0, 1, 1, 1, 1, 1) == 0)
                 break;
             w1 = ((debug_rand(tplayerSourceName, 1585) *
                    (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
-                         - -0.5f;
+                         + 0.5f;
             h = ((debug_rand(tplayerSourceName, 1586) *
                   (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
-                - -0.5f;
+                + 0.5f;
             ++tries;
         }
 

@@ -829,12 +829,12 @@ caller_recorded:
                 if (object->world_x > 5.0f)
                     x = object->world_x - 2.5f;
                 else
-                    x = object->world_x - -2.5f;
+                    x = object->world_x + 2.5f;
                 float y;
                 if (object->world_y > 5.0f)
                     y = object->world_y - 2.5f;
                 else
-                    y = object->world_y - -2.5f;
+                    y = object->world_y + 2.5f;
                 this->evasiveMoveTo(x, y, object->world_z, 1);
             }
         } else if (action == 0x25a) {

@@ -284,11 +284,11 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
         master = player->master_objects[info_line.obj_id];
         radius = (short)(int)master->radius_x;
         if (master->radius_x - (float)radius > 0.0f) {
-            tile_x = tile_x - -0.5f;
+            tile_x = tile_x + 0.5f;
         }
         radius = (short)(int)master->radius_y;
         if (master->radius_y - (float)radius > 0.0f) {
-            tile_y = tile_y - -0.5f;
+            tile_y = tile_y + 0.5f;
         }
 
         if (!master->check_placement(player, tile_x, tile_y, 0, 0, 1, 1, 1, 0, 1)) {
@@ -344,11 +344,11 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info_line) {
         master = player->master_objects[info_line.obj_id];
         radius = (short)(int)master->radius_x;
         if (master->radius_x - (float)radius > 0.0f) {
-            tile_x = tile_x - -0.5f;
+            tile_x = tile_x + 0.5f;
         }
         radius = (short)(int)master->radius_y;
         if (master->radius_y - (float)radius > 0.0f) {
-            tile_y = tile_y - -0.5f;
+            tile_y = tile_y + 0.5f;
         }
 
         if (!master->check_placement(player, tile_x, tile_y, 0, 0, 1, 1, 1, 0, 1)) {
@@ -498,11 +498,11 @@ void RGE_RMM_Object_Generator::place_group(
                 player->master_objects[info_line.obj_id];
             zone = (short)(int)master->radius_x;
             if (0.0f < master->radius_x - (float)zone) {
-                fx = fx - -0.5f;
+                fx = fx + 0.5f;
             }
             zone = (short)(int)master->radius_y;
             if (0.0f < master->radius_y - (float)zone) {
-                fy = fy - -0.5f;
+                fy = fy + 0.5f;
             }
             if (!master->check_placement(player, fx, fy, 0, 0, 1, 1, 1, 0, 1)) {
                 player->make_new_object(info_line.obj_id, fx, fy, 0, 1);
@@ -558,11 +558,11 @@ void RGE_RMM_Object_Generator::place_cluster(
 
         short radius = (short)(int)master->radius_x;
         if (master->radius_x - (float)radius > 0.0f) {
-            tile_x = tile_x - -0.5f;
+            tile_x = tile_x + 0.5f;
         }
         radius = (short)(int)master->radius_y;
         if (master->radius_y - (float)radius > 0.0f) {
-            tile_y = tile_y - -0.5f;
+            tile_y = tile_y + 0.5f;
         }
 
         master->alignment(tile_x, tile_y, this->world, 1);

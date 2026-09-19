@@ -701,7 +701,7 @@ int TribeBuildAIModule::cancelBuildItem(int reason, int blockerID, int blockerTy
                 this->md->tacticalAI.clearArea(blockerID, lot->x() - lot->xSize() * 0.5f, lot->y() - lot->ySize() * 0.5f,
                                                lot->x() - lot->xSize() * -0.5f, lot->y() - lot->ySize() * -0.5f);
             } else {
-                this->md->tacticalAI.clearArea(blockerID, x - 2.0f, y - 2.0f, x - -2.0f, y - -2.0f);
+                this->md->tacticalAI.clearArea(blockerID, x - 2.0f, y - 2.0f, x + 2.0f, y + 2.0f);
             }
         } else {
             this->md->constructionAI.incrementBuildAttempts(x, y, 10);
