@@ -804,7 +804,7 @@ int TribeInformationAIModule::closestUnexploredTile(
                         cPoint.y = y;
                         cPoint.z = (int)obj->world_z;
 
-                        if (obj->canPath(cPoint, obj->master_obj->los - DAT_00575564, -1, &pathDistance, 1, -1, -1) == 0) {
+                        if (obj->canPath(cPoint, obj->master_obj->los - 1.0f, -1, &pathDistance, 1, -1, -1) == 0) {
                             this->pathMap.setValue(x, y, 1);
 
                             int bestValue = -1;
@@ -997,7 +997,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                     goto next_resource;
 
                                 if ((object->master_obj->object_group == 9 || object->master_obj->object_group == 10) &&
-                                    object->object_state > 2 && object->attribute_amount_held > DAT_00575568) {
+                                    object->object_state > 2 && object->attribute_amount_held > 25.0f) {
                                     value += 0x19;
                                 }
 
@@ -1239,8 +1239,8 @@ ConstructionItem* TribeInformationAIModule::placeDock(
                                     this->md->tacticalAI.strategicNumber(0x70);
                                 if (numberTiles >= minimumTiles && this->hasAdjacentTileType(x, y, edgeType)) {
                                     ConstructionItem* lot =
-                                        this->md->constructionAI.randomLot((float)x - DAT_00575570,
-                                                                           (float)y - DAT_00575570);
+                                        this->md->constructionAI.randomLot((float)x - (-0.5f),
+                                                                           (float)y - (-0.5f));
                                     if (lot == 0) {
                                         float cD = ((float)x - cX) *
                                                       ((float)x - cX) +
@@ -1287,7 +1287,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(
 
     if (bXTile != -1) {
         ConstructionItem* result =
-            new ConstructionItem((float)bXTile - DAT_00575570, (float)bYTile - DAT_00575570, 0.0f, bi->xSize(), bi->ySize(),
+            new ConstructionItem((float)bXTile - (-0.5f), (float)bYTile - (-0.5f), 0.0f, bi->xSize(), bi->ySize(),
                                  bi->zSize(), bi->typeID(), bi->name());
         return result;
     }
@@ -1436,7 +1436,7 @@ void TribeInformationAIModule::addEnemyInfluences(int ownerID, int targetID) {
             }
         }
 
-        if (this->importantObjectMemory[i].range > DAT_00575564) {
+        if (this->importantObjectMemory[i].range > 1.0f) {
             minRange.x = (int)(object->world_x - this->importantObjectMemory[i].range);
             minRange.y = (int)(object->world_y - this->importantObjectMemory[i].range);
             this->mapBound(minRange);
@@ -2026,11 +2026,11 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             }
 
             ConstructionItem* result;
-            if (buildingSize == DAT_00575574) {
+            if (buildingSize == 2.0f) {
                 result = new ConstructionItem((float)lot->x, (float)lot->y, 1.0f, buildingSize,
                                               buildingSize, 1.0f, buildingType, buildingName);
             } else {
-                result = new ConstructionItem((float)lot->x - DAT_00575570, (float)lot->y - DAT_00575570, 1.0f,
+                result = new ConstructionItem((float)lot->x - (-0.5f), (float)lot->y - (-0.5f), 1.0f,
                                               buildingSize, buildingSize, 1.0f, buildingType, buildingName);
             }
             lot->status = 1;
@@ -2121,12 +2121,12 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
 
             XYPoint minClear;
             XYPoint maxClear;
-            if (buildingSize == DAT_00575578) {
+            if (buildingSize == 5.0f) {
                 minClear.x = x - 2;
                 minClear.y = y - 2;
                 maxClear.x = x + 2;
                 maxClear.y = y + 2;
-            } else if (buildingSize == DAT_0057557c) {
+            } else if (buildingSize == 3.0f) {
                 if (placementType == 6 || placementType == 3 || placementType == 4 || placementType == 1 ||
                     placementType == 2 || placementType == 8) {
                     minClear.x = x - 1;
@@ -2139,7 +2139,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                     maxClear.x = x + 2;
                     maxClear.y = y + 2;
                 }
-            } else if (buildingSize == DAT_00575574) {
+            } else if (buildingSize == 2.0f) {
                 if (placementType == 6 || placementType == 3 || placementType == 4) {
                     minClear.x = x - 1;
                     minClear.y = y - 1;
@@ -2151,7 +2151,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                     maxClear.x = x + 1;
                     maxClear.y = y + 1;
                 }
-            } else if (buildingSize == DAT_00575564) {
+            } else if (buildingSize == 1.0f) {
                 if (placementType == 6 || placementType == 3 || placementType == 4) {
                     minClear.x = x;
                     minClear.y = y;
@@ -2174,8 +2174,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             }
 
             int blockingObject = -1;
-            if (masterObj->check_placement(this->md->player, (float)x - DAT_00575570,
-                                           (float)y - DAT_00575570, &blockingObject, 1, 1, 1, 1, 1, 1) != 0) {
+            if (masterObj->check_placement(this->md->player, (float)x - (-0.5f),
+                                           (float)y - (-0.5f), &blockingObject, 1, 1, 1, 1, 1, 1) != 0) {
                 continue;
             }
 
@@ -2281,11 +2281,11 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         }
 
         ConstructionItem* result;
-        if (buildingSize == DAT_00575574) {
+        if (buildingSize == 2.0f) {
             result = new ConstructionItem((float)bestPoint.x, (float)bestPoint.y, 1.0f,
                                           buildingSize, buildingSize, 1.0f, buildingType, buildingName);
         } else {
-            result = new ConstructionItem((float)bestPoint.x - DAT_00575570, (float)bestPoint.y - DAT_00575570, 1.0f,
+            result = new ConstructionItem((float)bestPoint.x - (-0.5f), (float)bestPoint.y - (-0.5f), 1.0f,
                                           buildingSize, buildingSize, 1.0f, buildingType, buildingName);
         }
         this->storeLot(buildingType, (unsigned char)bestPoint.x, (unsigned char)bestPoint.y, 1);
@@ -2724,7 +2724,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
                     attack_value +=
                         this->md->tacticalAI.strategicNumber(0x6D) * specialRating1;
 
-                    if ((timeToKill > timeToBeKilled && timeToBeKilled != DAT_0057556c) || timeToKill == DAT_0057556c) {
+                    if ((timeToKill > timeToBeKilled && timeToBeKilled != -1.0f) || timeToKill == -1.0f) {
                         attack_value = 1;
                     }
 
@@ -2894,7 +2894,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                          (int)this->importantObjectMemory[i].y -
                                          (int)commanderObj->world_y;
                                     float targetDistance = (float)sqrt((float)(dx * dx + dy * dy));
-                                    if (targetDistance < DAT_00575564)
+                                    if (targetDistance < 1.0f)
                                         targetDistance = 1.0f;
 
                                     float killsByTarget = (float)
@@ -2952,7 +2952,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                         dy = (int)this->importantObjectMemory[
                                                  i].y - (int)nonWall->y;
                                         float distance = (float)sqrt((float)(dx * dx + dy * dy));
-                                        if (distance < DAT_00575564)
+                                        if (distance < 1.0f)
                                             miscFactor = 1000.0f;
                                         else
                                             miscFactor = DAT_0057558c / distance;
@@ -3117,7 +3117,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(
                                     (int)memory->y - (int)commanderObj->world_y;
                                 float targetDistance = (float)sqrt((double)(commanderX * commanderX +
                                                                             commanderY * commanderY));
-                                if (targetDistance < DAT_00575564) {
+                                if (targetDistance < 1.0f) {
                                     targetDistance = 1.0f;
                                 }
 
@@ -3601,11 +3601,11 @@ void TribeInformationAIModule::setupInfluenceMap(
                 XYPoint position;
                 float resYRadius = master->radius_y;
 
-                rMin.x = (int)(object->world_x - master->radius_x - DAT_00575564);
-                rMin.y = (int)(object->world_y - resYRadius - DAT_00575564);
+                rMin.x = (int)(object->world_x - master->radius_x - 1.0f);
+                rMin.y = (int)(object->world_y - resYRadius - 1.0f);
                 this->mapBound(rMin);
-                rMax.x = (int)(resYRadius + object->world_x - DAT_0057556c);
-                rMax.y = (int)(resYRadius + object->world_y - DAT_0057556c);
+                rMax.x = (int)(resYRadius + object->world_x - (-1.0f));
+                rMax.y = (int)(resYRadius + object->world_y - (-1.0f));
                 this->mapBound(rMax);
                 position.x = (int)object->world_x;
                 position.y = (int)object->world_y;
@@ -3716,7 +3716,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                     bMax.x = (int)building->world_x + 2;
                     bMax.y = (int)building->world_y + 2;
                 }
-            } else if (bXRadius == DAT_00575564) {
+            } else if (bXRadius == 1.0f) {
                 if (buildingCode == 6 || buildingCode == 3) {
                     bMin.x = (int)building->world_x - 1;
                     bMin.y = (int)building->world_y - 1;
@@ -3781,7 +3781,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                 if (buildingCode == 0x6d)
                     influence_radius *= DAT_005755b4;
                 else if (buildingCode == 0x44 || buildingCode == 0x67)
-                    influence_radius = DAT_00575578;
+                    influence_radius = 5.0f;
                 int radius = (int)influence_radius;
 
                 XYPoint bMinLOS;
