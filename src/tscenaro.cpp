@@ -671,7 +671,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
                                               condition->y1, condition->x2, condition->y2);
                     }
                 } else if (type == 2) {
-                    if (condition->x2 > DAT_00577330) {
+                    if (condition->x2 > g_scenario_victory_zero_coordinate) {
                         conditions->add_create(1, condition->ObjType, condition->Amount, this->sp_victory[j][i].x1,
                                                condition->y1, condition->x2, condition->y2, 0);
                     } else {

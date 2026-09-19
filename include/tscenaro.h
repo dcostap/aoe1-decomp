@@ -6,7 +6,7 @@
 
 typedef unsigned char uchar;
 
-extern double DAT_00577330;
+extern double g_scenario_victory_zero_coordinate;
 
 class TRIBE_Player;
 

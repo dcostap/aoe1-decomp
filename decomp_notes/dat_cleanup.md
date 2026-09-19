@@ -202,6 +202,8 @@ original storage as a reviewed symbol.
 | `DAT_00576db0` | named | This read-only zero double gates positive panel resource amounts. |
 | `DAT_00576db8` | named | This read-only `99.0f` controls panel redraw for near-complete building progress. |
 | `DAT_00576ea0`, `DAT_005770b0`, `DAT_005770b4`, `DAT_005770b8`, `DAT_005770c0`, `DAT_005772f0`, and `DAT_005772f8` | removed | These read-only values have no source references or PDB symbols. |
+| `DAT_00577330` | named | This read-only zero double selects coordinate-based scenario victory conditions. |
+| `DAT_00577338`, `DAT_0057733c`, `DAT_00577450`, `DAT_00577558`, `DAT_00577560`, `DAT_00577564`, `DAT_00577568`, `DAT_0057756c`, `DAT_00577570`, `DAT_00577574`, `DAT_00577578`, `DAT_00577580`, `DAT_00577588`, `DAT_00577590`, `DAT_0057759c`, and `DAT_005775a0` | removed | These read-only values have no source references or PDB symbols. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |
