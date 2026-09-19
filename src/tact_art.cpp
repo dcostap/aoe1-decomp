@@ -46,13 +46,8 @@ void TRIBE_Action_Artifact::first_in_stack(unsigned char first_time) {
         this->set_state(5);
         return;
     }
-    // The executable compares raw four-byte field representations.
-    int field_20_bits;
-    memcpy(&field_20_bits, &this->target_x, sizeof(field_20_bits));
-    if (field_20_bits != 0xBF800000) {
-        int field_24_bits;
-        memcpy(&field_24_bits, &this->target_y, sizeof(field_24_bits));
-        if (field_24_bits != 0xBF800000) {
+    if (this->target_x != -1.0f) {
+        if (this->target_y != -1.0f) {
             this->set_state(4);
             return;
         }

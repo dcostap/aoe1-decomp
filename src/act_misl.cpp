@@ -38,7 +38,7 @@ RGE_Action_Missile::RGE_Action_Missile(RGE_Action_Object* obj_in, RGE_Static_Obj
 
 void RGE_Action_Missile::first_in_stack(unsigned char first_time) {
     if (first_time != 0) {
-        if (this->target_obj == 0 && (*(int*)&this->target_x == 0xBF800000 || *(int*)&this->target_y == 0xBF800000)) {
+        if (this->target_obj == 0 && (this->target_x == -1.0f || this->target_y == -1.0f)) {
             this->set_state(1);
         } else {
             this->set_state(3);

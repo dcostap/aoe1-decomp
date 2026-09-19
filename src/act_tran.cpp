@@ -214,7 +214,7 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
     }
 
     int target_zone = this->targetZone();
-    if (*(int*)&this->target_x != 0xBF800000) {
+    if (this->target_x != -1.0f) {
         target_zone = (int)this->obj->lookupZone((int)this->target_x, (int)this->target_y);
     }
 
@@ -232,7 +232,7 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
 }
 
 int RGE_Action_Transport::targetZone(void) {
-    if (*(int*)&this->target_x != 0xBF800000) {
+    if (this->target_x != -1.0f) {
         return (int)this->obj->lookupZone((int)this->target_x, (int)this->target_y) & 0xFF;
     }
     return -1;

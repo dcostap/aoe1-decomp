@@ -621,15 +621,15 @@ void RGE_Command::do_command_group_ai_order(
             RGE_Static_Object* object = this->get_obj(*recipients);
             if (object != 0) {
                 float targetX = aiOrder->targetX;
-                if (*(int*)&targetX == 0xBF800000)
+                if (targetX == -1.0f)
                     targetX = object->world_x;
 
                 float targetY = aiOrder->targetY;
-                if (*(int*)&targetY == 0xBF800000)
+                if (targetY == -1.0f)
                     targetY = object->world_y;
 
                 float targetZ = aiOrder->targetZ;
-                if (*(int*)&targetZ == 0xBF800000)
+                if (targetZ == -1.0f)
                     targetZ = object->world_z;
 
                 object->removeAllFromPathingGroup();

@@ -22,7 +22,7 @@ RGE_Action_Explore::RGE_Action_Explore(RGE_Action_Object* obj_in, RGE_Task* task
 }
 
 void RGE_Action_Explore::first_in_stack(unsigned char first_time) {
-    if (*(int*)&this->target_x == 0xBF800000) {
+    if (this->target_x == -1.0f) {
         set_state(3);
         return;
     }

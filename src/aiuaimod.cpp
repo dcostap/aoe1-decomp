@@ -2667,7 +2667,7 @@ int UnitAIModule::processOrder(OrderEvent* oEvent, int orderNumber) {
 
         this->playStatus->playNumberValue = oEvent->targetOwner;
         this->playStatus->targetValue = oEvent->target;
-        if (*(unsigned int*)&oEvent->targetX != 0xbf800000u) {
+        if (oEvent->targetX != -1.0f) {
             int z;
             int y;
             int x;

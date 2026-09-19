@@ -99,11 +99,11 @@ No resource lookup occurs in this module. No resource ID mapping or header
 request is needed.
 
 No new constant was introduced. Existing state values, terrain values,
-notification values, `0xBF800000` sentinel tests, and typed notify casts were
-left unchanged. Their use is covered by the existing module recovery note and
-function packets. No new source comment was added. The existing comment before
-`first_in_stack` was retained; it records the observed callee cleanup and FPU
-constant detail.
+notification values, and typed notify casts remain unchanged. The source now
+expresses the original `0xBF800000` coordinate sentinel as `-1.0f`. Their use
+is covered by the existing module recovery note and function packets. No new
+source comment was added. The existing comment before `first_in_stack` was
+retained; it records the observed callee cleanup and FPU constant detail.
 
 ## Header request
 

@@ -55,16 +55,17 @@ uses and types also agree with the six function packets under
 No constants or resource IDs were added. The source preserves the original
 numeric state values, notification codes, and sentinel:
 
-- `00402BE0` compares `target_x` with bit pattern `0xBF800000`.
+- `00402BE0` compares `target_x` with the `-1.0f` sentinel. The original bit
+  pattern is `0xBF800000`.
 - `00402C00` stores the requested state and retains states `1`, `2`, `3`,
   `11`, `13`, and `14`.
 - `00402C42` emits notification values `0x202` and `0x25D`.
 - `00402DC2` emits notification values `0x1F9` and `0x25D`.
 
 These facts come from the original assembly in the function packets. No
-established shared symbols prove these values in this module, so the literals
-remain unchanged. The module has no resource lookup. No source comments were
-added.
+established shared symbols prove these values in this module. The source uses
+the typed `-1.0f` form for the coordinate sentinel. The module has no resource
+lookup. No source comments were added.
 
 ## Type, layout, and symbol review
 

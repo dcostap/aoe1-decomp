@@ -146,15 +146,17 @@ unchanged. The PDB does not prove original names for these locals.
 - No shared resource mapping request is needed.
 - No new constant or macro was added.
 - Existing command tags, `DAT_0056f4d8`, `DAT_0056f4e0`, `DAT_0056f4e8`,
-  `0xBF800000`, `0x2c6`, `0x262`, and `0x20A` remain unchanged.
+  `0x2c6`, `0x262`, and `0x20A` remain unchanged. The coordinate sentinel is
+  now written as `-1.0f`; its original bit pattern is `0xBF800000`.
 - No comments were added.
 
 ## Type and code-generation risks
 
-The source edits change identifier spelling, whitespace, line wrapping, and brace
-placement only. The normalized token review found equal token streams after
-identifier normalization. I did not change types, casts, layouts, scopes,
-storage, calls, literals, evaluation order, or control-flow tokens.
+The source edits change identifier spelling, whitespace, line wrapping, brace
+placement, and the spelling of the coordinate sentinel. The normalized token
+review found equal token streams after identifier normalization. The sentinel
+value, types, layouts, scopes, storage, calls, evaluation order, and control
+flow remain unchanged.
 The parameter names in the unedited header remain unchanged.
 
 The original source uses reused stack slots. The cleanup keeps separate source
