@@ -207,7 +207,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
         }
         int diameter = edge + edge;
         int area = (this->map_width - diameter) * (this->map_height - diameter);
-        int each = (long)((double)area * DAT_00571f20);
+        int each = (long)((double)area * g_rmm_terrain_land_area_factor);
         for (int i = 0; i < this->land_info.land_num; ++i)
             this->land_info.land[i].land_size = each / this->land_info.land_num;
     }
@@ -222,10 +222,10 @@ void TRIBE_RMM_Database_Controller::add_terrain_module() {
 
     this->RGE_RMM_Database_Controller::add_terrain_module();
 
-    float tile_ratio = (float)land_tile_num * DAT_00571f28;
+    float tile_ratio = (float)land_tile_num * g_rmm_terrain_tile_ratio_scale;
     for (int i = 0; i < this->terrain_info.terrain_num; ++i) {
         if (this->terrain_info.terrain[i].terrain_type != 6) {
-            if (tile_ratio > DAT_00571f30)
+            if (tile_ratio > g_rmm_terrain_tile_ratio_threshold)
                 this->terrain_info.terrain[i].clumps = (long)
                     ((float)this->terrain_info.terrain[i].clumps * tile_ratio);
         }
@@ -294,7 +294,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
         this->land_info.land[0].terrain_type = 1;
         this->land_info.land[0].area = 7;
         this->land_info.land[0].base_size = 2;
-        this->land_info.land[0].land_size = (long)((double) ((height - edge * 2) * (width - edge * 2)) * DAT_00571f38);
+        this->land_info.land[0].land_size = (long)((double) ((height - edge * 2) * (width - edge * 2)) * g_rmm_object_land_area_factor);
         this->land_info.land[0].clumpiness_factor = 10;
         this->land_info.land[0].x = this->map->map_width / 2;
         this->land_info.land[0].y = this->map->map_height / 2;
@@ -325,7 +325,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
             this->land_info.land[index + this->land_info.land_num].zone =
                 (uchar)(index + this->land_info.land_num);
             this->land_info.land[index + this->land_info.land_num].land_size =
-                (long)((double)(this->map_width + this->map_height) * DAT_00571f40);
+                (long)((double)(this->map_width + this->map_height) * g_rmm_object_perimeter_factor);
             this->land_info.land[index + this->land_info.land_num].
                 clumpiness_factor = 10;
             this->land_info.land[index + this->land_info.land_num].
@@ -439,8 +439,8 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
 void TRIBE_RMM_Database_Controller::add_elevation_module() {
     this->RGE_RMM_Database_Controller::add_elevation_module();
     int random = debug_rand(s_rmm_tdbc_path, 579);
-    float scale = (DAT_00571f4c - (float)random * DAT_00571f48) * DAT_00571f50;
-    if (this->map_type == 7) scale *= DAT_00571f54;
+    float scale = (g_rmm_elevation_random_base - (float)random * g_rmm_elevation_random_offset) * g_rmm_elevation_random_scale;
+    if (this->map_type == 7) scale *= g_rmm_elevation_map_type_factor;
     for (int i = 0; i < this->elevation_info.elevation_num; ++i)
         this->elevation_info.elevation[i].elevation_size =
             (long)((float)this->elevation_info.elevation[i].elevation_size * scale);

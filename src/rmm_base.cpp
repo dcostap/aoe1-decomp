@@ -541,10 +541,10 @@ uchar RGE_Random_Map_Module::find_path(
                         this->search_map_rows[next_y][next_x] = 1;
                     } else if (up && side) {
                         calc_cost = path_cost -
-                            terrain[tile_type] * DAT_00571e50;
+                            terrain[tile_type] * g_rmm_path_terrain_cost_adjustment;
                         this->search_map_rows[next_y][next_x] = 8;
                         this->push_stack(path_stack, next_x, next_y, calc_cost, calc_cost + (hcost -
-                             ((end_y < y) ? DAT_00571e54 : DAT_00571e58)));
+                             ((end_y < y) ? g_rmm_path_vertical_adjustment_positive : g_rmm_path_vertical_adjustment_negative)));
                     }
                 } else if (state == 2) {
                     this->search_map_rows[next_y][next_x] = 8;
@@ -564,10 +564,10 @@ uchar RGE_Random_Map_Module::find_path(
                         this->search_map_rows[next_y][next_x] = 1;
                     } else if (down && side) {
                         calc_cost = path_cost -
-                            terrain[tile_type] * DAT_00571e50;
+                            terrain[tile_type] * g_rmm_path_terrain_cost_adjustment;
                         this->search_map_rows[next_y][next_x] = 9;
                         this->push_stack(path_stack, next_x, next_y, calc_cost, calc_cost + (hcost -
-                             ((y < end_y) ? DAT_00571e54 : DAT_00571e58)));
+                             ((y < end_y) ? g_rmm_path_vertical_adjustment_positive : g_rmm_path_vertical_adjustment_negative)));
                     }
                 } else if (state == 2) {
                     this->search_map_rows[next_y][next_x] = 9;
@@ -613,10 +613,10 @@ uchar RGE_Random_Map_Module::find_path(
                         this->search_map_rows[next_y][next_x] = 1;
                     } else if (up && side) {
                         calc_cost = path_cost -
-                            terrain[tile_type] * DAT_00571e50;
+                            terrain[tile_type] * g_rmm_path_terrain_cost_adjustment;
                         this->search_map_rows[next_y][next_x] = 10;
                         this->push_stack(path_stack, next_x, next_y, calc_cost, calc_cost + (hcost -
-                             ((end_y < y) ? DAT_00571e5c : DAT_00571e60)));
+                             ((end_y < y) ? g_rmm_path_vertical_adjustment_small_positive : g_rmm_path_vertical_adjustment_small_negative)));
                     }
                 } else if (state == 2) {
                     this->search_map_rows[next_y][next_x] = 10;
@@ -636,10 +636,10 @@ uchar RGE_Random_Map_Module::find_path(
                         this->search_map_rows[next_y][next_x] = 1;
                     } else if (down && side) {
                         calc_cost = path_cost -
-                            terrain[tile_type] * DAT_00571e50;
+                            terrain[tile_type] * g_rmm_path_terrain_cost_adjustment;
                         this->search_map_rows[next_y][next_x] = 11;
                         this->push_stack(path_stack, next_x, next_y, calc_cost, calc_cost + (hcost -
-                             ((y < end_y) ? DAT_00571e5c : DAT_00571e60)));
+                             ((y < end_y) ? g_rmm_path_vertical_adjustment_small_positive : g_rmm_path_vertical_adjustment_small_negative)));
                     }
                 } else if (state == 2) {
                     this->search_map_rows[next_y][next_x] = 11;

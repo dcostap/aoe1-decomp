@@ -129,6 +129,11 @@ original storage as a reviewed symbol.
 | `DAT_00570bc0`, `DAT_00570be0`, `DAT_00570bf0`, `DAT_00570bfc`, and `DAT_00570c00` | named | These read-only speed-offset, facet-angle, and angle-tolerance values control movement speed and facet selection. |
 | `DAT_00570c20` | named | This read-only `-10000.0f` value scales music fade volume. The new `g_music_fade_volume_scale` name states that role. |
 | `DAT_00570c24`, `DAT_00570c28`, and `DAT_00570c30` | removed | These read-only values have no source references or PDB symbols. Music code uses its own constants. |
+| `DAT_00571e50`, `DAT_00571e54`, `DAT_00571e58`, `DAT_00571e5c`, and `DAT_00571e60` | named | These read-only random-map path cost and vertical heuristic adjustments now use `g_rmm_path_*` names. |
+| `DAT_00571ed0` | named | This read-only two-thirds value scales random-map octagon area. |
+| `DAT_00571f20`, `DAT_00571f28`, `DAT_00571f30`, `DAT_00571f38`, and `DAT_00571f40` | named | These read-only random-map area and tile-ratio factors now use `g_rmm_*` names. |
+| `DAT_00571f48`, `DAT_00571f4c`, `DAT_00571f50`, and `DAT_00571f54` | named | These read-only elevation-module random scale values now use `g_rmm_elevation_*` names. |
+| `DAT_00571ce8`, `DAT_00571e4c`, `DAT_00571e70`, `DAT_00571e78`, `DAT_00571e80`, `DAT_00571ea8`, `DAT_00571eac`, `DAT_00571eb0`, `DAT_00571eb8`, `DAT_00571ec0`, and `DAT_00571edc` | removed | These read-only values have no source references or PDB symbols. Random-map owners use direct literals or do not need separate storage. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |

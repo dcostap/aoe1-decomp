@@ -35,7 +35,7 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     long x1 = x + area;
     long y1 = y + area;
     // The converted radius remains separate from the fixed +/-2 scan bounds.
-    volatile long octogon = (long)(area * DAT_00571ed0);
+    volatile long octogon = (long)(area * g_rmm_land_octagon_scale);
     long cx0 = x - 2;
     long cy0 = y - 2;
     long cx1 = x + 2;
