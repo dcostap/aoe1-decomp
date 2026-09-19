@@ -486,12 +486,11 @@ void RGE_Map::scenario_save(int outfile) {
 }
 
 void RGE_Map::scenario_load(int infile, unsigned char* zone_terrain) {
-    int file_handle = infile;
     long map_height;
     long w;
 
-    rge_read(file_handle, &map_height, 4);
-    rge_read(file_handle, &w, 4);
+    rge_read(infile, &map_height, 4);
+    rge_read(infile, &w, 4);
     this->new_map(map_height, w);
 
     long height_count = this->map_height;
@@ -507,9 +506,9 @@ void RGE_Map::scenario_load(int infile, unsigned char* zone_terrain) {
                     unsigned char height_info;
                     unsigned char overlay_info;
 
-                    rge_read(file_handle, &terrain_info, 1);
-                    rge_read(file_handle, &height_info, 1);
-                    rge_read(file_handle, &overlay_info, 1);
+                    rge_read(infile, &terrain_info, 1);
+                    rge_read(infile, &height_info, 1);
+                    rge_read(infile, &overlay_info, 1);
 
                     this->map_row_offset[x][i].terrain_type = terrain_info;
                     this->map_row_offset[x][i].height = height_info;

@@ -63,7 +63,6 @@ public:
     unsigned char stopAfterTargetKilledValue;           // +0x130
 
 
-    // Method declarations (auto-generated)
     int actionRequiresLiveTarget(int actionId);
     int addToNotifyQueue(NotifyEvent* event);
     void addToNotifyQueue(int a1, int a2, int a3);
