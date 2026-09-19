@@ -1537,29 +1537,29 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     int* value_ptr;
     TacticalAIGroup* loaded_group;
     int remaining;
-    int tempInt;
+    int list_index;
     int loaded_value;
 
     TacticalAIGroup* group = &this->groups;
     this->groups.next = group;
     this->groups.prev = group;
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->civilians.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->civilianExplorers.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     rge_read(infile, &this->numberGatherersValue, 4);
     rge_read(infile, &this->desiredNumberGatherersValue, 4);
@@ -1599,79 +1599,79 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
         }
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->soldiers.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     if (!(save_game_version < 2.3f)) {
         rge_read(infile, &pID, 4);
-        tempInt = 0;
+        list_index = 0;
         if (0 < pID) {
             do {
                 rge_read(infile, &loaded_value, 4);
                 this->ungroupedSoldiers.add(loaded_value);
-                tempInt = tempInt + 1;
-            } while (tempInt < pID);
+                list_index = list_index + 1;
+            } while (list_index < pID);
         }
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->boats.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->warBoats.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->fishingBoats.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->tradeBoats.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->transportBoats.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     if (!(save_game_version < 1.4f)) {
         rge_read(infile, &pID, 4);
-        tempInt = 0;
+        list_index = 0;
         if (0 < pID) {
             do {
                 rge_read(infile, &loaded_value, 4);
                 this->artifacts.add(loaded_value);
-                tempInt = tempInt + 1;
-            } while (tempInt < pID);
+                list_index = list_index + 1;
+            } while (list_index < pID);
         }
     }
     rge_read(infile, &pID, 4);
@@ -1685,40 +1685,40 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
         } while (index < pID);
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->playersToAttack.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->playersToDefend.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->workingArea.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     rge_read(infile, &pID, 4);
-    tempInt = 0;
+    list_index = 0;
     if (0 < pID) {
         do {
             rge_read(infile, &loaded_value, 4);
             this->unitsTaskedThisUpdate.add(loaded_value);
-            tempInt = tempInt + 1;
-        } while (tempInt < pID);
+            list_index = list_index + 1;
+        } while (list_index < pID);
     }
     value_ptr = this->actualGathererDistribution;
     index = 4;
