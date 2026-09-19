@@ -1110,7 +1110,7 @@ void RGE_Command::command_move(int playerID, int* unitID, int numUnits,
             packet->location_x = xLoc;
             packet->location_y = yLoc;
             RGE_Static_Object* obj = this->world->object(unitID[0]);
-            const char* name; if (obj != 0) name = obj->master_obj->name; else name = "X";
+            const char* name = obj != 0 ? obj->master_obj->name : "X";
             L->Log("      >SEND CMD MOVE2 (CNT=%d,OWN=%d,UNIT=%s)", numUnits, playerID, name);
             this->submit(packet, size);
         }
@@ -1443,8 +1443,7 @@ void RGE_Command::command_add_waypoint(int playerID, int recipient,
     packet->waypoint[0].y = y;
     packet->waypoint[0].z = z;
     RGE_Static_Object* obj = this->world->object(recipient);
-    char* name;
-    if (obj != 0) name = obj->master_obj->name; else name = "X";
+    char* name = obj != 0 ? obj->master_obj->name : "X";
     L->Log("      >SEND CMD ADD WAY2 (PLR=%d,REC=%s)", playerID, name);
     this->submit(packet, sizeof(RGE_Command_Add_Waypoint));
 }
