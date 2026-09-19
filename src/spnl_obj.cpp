@@ -160,7 +160,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
                     int attr_index = 0;
                     float* attr_amount = master->attribute_amount_held;
                     while (attr_index < 3) {
-                        if (*attr_amount > DAT_00574524) {
+                        if (*attr_amount > g_spawn_panel_empty_attribute_amount) {
                             attr_type = master->attribute_type_held[attr_index];
                             break;
                         }

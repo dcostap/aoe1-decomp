@@ -57,6 +57,8 @@ original storage as a reviewed symbol.
 | `DAT_0057507c` | named | This read-only `-1.0f` adjusts the upper discovery-artifact scan bounds. The new `g_discovery_artifact_scan_upper_adjustment` name states that role. |
 | `DAT_005750e0` | named | This read-only `0.1f` is the healing attribute threshold before work is scaled. The new `g_heal_attribute_threshold` name states that role. |
 | `DAT_005750e8` | named | This read-only `0.5` double is the minimum healing distance threshold. The new `g_heal_distance_threshold` name states that role. |
+| `DAT_00574524` | named | This read-only zero is used by the spawn panel when it checks for a held attribute. The new `g_spawn_panel_empty_attribute_amount` name states that role. |
+| `DAT_00574528` | named | This read-only zero double is compared with a sprite's accumulated delta time. The new `g_sprite_zero_delta_time` name states that role. |
 
 ## Related duplicate storage
 
