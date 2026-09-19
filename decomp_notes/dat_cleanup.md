@@ -210,6 +210,9 @@ original storage as a reviewed symbol.
 | `DAT_005776c8` | named | This read-only save-version threshold gates visible-resource list loading. |
 | `DAT_005776d0`, `DAT_005776d8` | named | These read-only constants calculate the visible-resource diagonal distance. |
 | `DAT_005776b8`, `DAT_005776bc`, and `DAT_005776e0` | removed | These read-only values have no source references or PDB symbols. |
+| `DAT_00577900` | named | This read-only `1.0f` starts mouse and keyboard view scrolling. |
+| `DAT_00577904` | named | This read-only `0.5f` quantizes the scroll-distance fraction. |
+| `DAT_00577908` | named | This read-only zero float gates view movement. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |

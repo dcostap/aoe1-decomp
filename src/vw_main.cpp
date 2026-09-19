@@ -83,23 +83,23 @@ int RGE_Main_View::do_auto_scroll() {
                 now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 170);
                 elapsed = now - this->last_mouse_scroll_time;
                 if (this->mouse_scrolling == 0) {
-                    scroll_dist2 = DAT_00577900;
+                    scroll_dist2 = g_main_view_initial_scroll_distance;
                     this->mouse_scrolling = 1;
                 } else {
                     scroll_dist2 = (float)elapsed / info->key_scroll_interval;
                     long whole = (long)scroll_dist2;
                     scroll_dist2 -= (float)whole;
-                    if (scroll_dist2 < DAT_00577904)
-                        scroll_dist2 = DAT_00577908;
+                    if (scroll_dist2 < g_main_view_scroll_fraction_threshold)
+                        scroll_dist2 = g_main_view_zero_scroll_distance;
                     else
-                        scroll_dist2 = DAT_00577904;
+                        scroll_dist2 = g_main_view_scroll_fraction_threshold;
                     scroll_dist2 += (float)whole;
                 }
 
                 if (scroll_dist2 > info->mouse_scroll_max_dist)
                     scroll_dist2 = info->mouse_scroll_max_dist;
 
-                if (scroll_dist2 > DAT_00577908) {
+                if (scroll_dist2 > g_main_view_zero_scroll_distance) {
                     float scroll_dist = scroll_dist2 + scroll_dist2;
                     if (vert_scroll == -1)
                         this->player->set_view_loc(this->player->view_x - scroll_dist2,
@@ -185,22 +185,22 @@ int RGE_Main_View::handle_keys() {
                 now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 339);
                 elapsed = now - this->last_key_scroll_time;
                 if (this->key_scrolling == 0) {
-                    scroll_dist2 = DAT_00577900;
+                    scroll_dist2 = g_main_view_initial_scroll_distance;
                     this->key_scrolling = 1;
                 } else {
                     scroll_dist2 = (float)elapsed / info->key_scroll_interval;
                     long whole = (long)scroll_dist2;
                     scroll_dist2 -= (float)whole;
-                    if (scroll_dist2 < DAT_00577904) {
+                    if (scroll_dist2 < g_main_view_scroll_fraction_threshold) {
                         scroll_dist2 = 0.0f;
                     } else {
-                        scroll_dist2 = DAT_00577904;
+                        scroll_dist2 = g_main_view_scroll_fraction_threshold;
                     }
                     scroll_dist2 += (float)whole;
                 }
                 if (scroll_dist2 > info->key_scroll_max_dist)
                     scroll_dist2 = info->key_scroll_max_dist;
-                if (scroll_dist2 > DAT_00577908) {
+                if (scroll_dist2 > g_main_view_zero_scroll_distance) {
                     float scroll_dist = scroll_dist2 + scroll_dist2;
                     if (horz_scroll == -1) {
                         this->player->set_view_loc(this->player->view_x - scroll_dist2,
