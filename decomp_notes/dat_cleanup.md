@@ -93,6 +93,14 @@ original storage as a reviewed symbol.
 | `DAT_0057297c` | named | This read-only `100.0f` scales fade progress. The new `g_fade_progress_scale` name states that role. |
 | `DAT_00572ce0`, `DAT_00572ce8` through `DAT_00572cf8` | removed | These read-only game-speed constants have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00572ce4` | named | This read-only zero is the no-area-effect range check in script game updates. The new `g_no_area_effect_range` name states that role. |
+| `DAT_00570418` | named | This read-only `7.06f` value gates the doppleganger `CantSeeBits` save field. |
+| `DAT_00570440` | removed | The original read-only `-1.0f` has no source reference. The fractal circle code uses the direct literal. |
+| `DAT_00570484` | named | This read-only `6.92f` value gates the master action move-sound save field. |
+| `DAT_00570500` | named | This read-only `7.01f` value gates the master combat save fields. |
+| `DAT_00570504` | named | This read-only zero initializes the base damage ability total. |
+| `DAT_00570508` | named | This read-only zero double is the positive damage-difference threshold. |
+| `DAT_00570510` | named | This read-only `1.0` double is the minimum total threshold for base damage ability. |
+| `DAT_00570518` | named | This read-only `1.0f` is the fallback base damage ability total. |
 
 ## Related duplicate storage
 

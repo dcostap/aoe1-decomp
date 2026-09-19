@@ -17,7 +17,6 @@
 
 #pragma intrinsic(memcpy)
 
-extern float DAT_00570418;
 extern FILE* DDlogf;
 
 RGE_Doppleganger_Object::RGE_Doppleganger_Object(
@@ -281,7 +280,7 @@ void RGE_Doppleganger_Object::save(int file) {
     rge_write(handle, &file, 4);
     rge_write(handle, &this->doppled_player, 4);
 
-    if (save_game_version >= DAT_00570418) {
+    if (save_game_version >= g_doppleganger_save_version_7_06) {
         rge_write(handle, &this->CantSeeBits, 4);
     }
 }

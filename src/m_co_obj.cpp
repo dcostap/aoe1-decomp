@@ -133,7 +133,7 @@ int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
         selected_sprite = (RGE_Sprite*)0;
     fight_sprite = selected_sprite;
 
-    if (save_game_version >= DAT_00570500) {
+    if (save_game_version >= g_master_combat_save_version_7_01) {
         rge_read(infile, &orig_armor, 2);
         rge_read(infile, &orig_weapon, 2);
         rge_read(infile, &orig_weapon_range, 4);
@@ -526,7 +526,7 @@ void RGE_Master_Combat_Object::save(int outfile) {
 // m_co_obj.cpp lines 549-577.
 long RGE_Master_Combat_Object::calc_base_damage_ability(
     RGE_Master_Combat_Object* attacker) {
-    float total = DAT_00570504;
+    float total = g_damage_ability_initial_total;
     int count = attacker->weapon_num;
     RGE_Armor_Weapon_Info* weapon = attacker->weapon;
 
@@ -552,7 +552,7 @@ long RGE_Master_Combat_Object::calc_base_damage_ability(
 
             int attack = weapon->value;
             float diff = (float)attack - (float)value;
-            if ((double)diff > DAT_00570508) {
+            if ((double)diff > g_damage_ability_positive_difference_threshold) {
                 total += diff;
             }
             ++weapon;
@@ -560,8 +560,8 @@ long RGE_Master_Combat_Object::calc_base_damage_ability(
         } while (remaining != 0);
     }
 
-    if ((double)total < DAT_00570510) {
-        total = DAT_00570518;
+    if ((double)total < g_damage_ability_minimum_total_threshold) {
+        total = g_damage_ability_minimum_total;
     }
     return (long)total;
 }

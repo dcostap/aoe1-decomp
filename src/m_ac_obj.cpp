@@ -68,7 +68,7 @@ int RGE_Master_Action_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     rge_read(infile, &command_sound_num, 2);
     // save version 6.92 added a separate move sound. Older
     // saves reuse the command sound index for both sounds.
-    if (save_game_version >= DAT_00570484) {
+    if (save_game_version >= g_master_action_save_version_6_92) {
         rge_read(infile, &move_sound_num, 2);
     } else {
         move_sound_num = command_sound_num;
