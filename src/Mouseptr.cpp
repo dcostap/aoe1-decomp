@@ -431,8 +431,8 @@ void TMousePointer::draw(int dMode) {
                 }
             }
             if (this->MouseOnScreen != 0) {
-                RECT* ptVar1 = &this->mouse_rect;
-                long err = this->save_area->DrawSurface->Blt(&this->new_save_rect, this->renderSurface, ptVar1,
+                RECT* mouse_rect_ptr = &this->mouse_rect;
+                long err = this->save_area->DrawSurface->Blt(&this->new_save_rect, this->renderSurface, mouse_rect_ptr,
                                                              DDBLT_WAIT, 0);
                 if (err != 0) {
                     this->LastddError = err;
@@ -465,14 +465,14 @@ void TMousePointer::draw(int dMode) {
                     if (p != 0) {
                         long f = this->next_facet;
                         Shape_Info* si = this->Cursor_Shape->shape_info;
-                        this->Cursor_Shape->shape_draw(this->render_area, si[f].Hotspot_X + ptVar1->left,
+                        this->Cursor_Shape->shape_draw(this->render_area, si[f].Hotspot_X + mouse_rect_ptr->left,
                                                        si[f].Hotspot_Y + this->mouse_rect.top, f, 0, 0);
                         this->render_area->Unlock("mouseptr::draw");
                     }
                 }
                 if (this->Mouse_Mode == 0) {
                     this->cursors[this->next_facet]->SetTrans(1, 0);
-                    err = this->renderSurface->BltFast(ptVar1->left, this->mouse_rect.top,
+                    err = this->renderSurface->BltFast(mouse_rect_ptr->left, this->mouse_rect.top,
                                                        this->cursors[this->next_facet]->DrawSurface, &this->cursor_rect,
                                                        DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
                     if (err != 0) {
@@ -642,8 +642,8 @@ void TMousePointer::Poll() {
                     }
                 }
                 if (this->MouseOnScreen != 0) {
-                    RECT* ptVar1 = &this->mouse_rect;
-                    long err = this->save_area->DrawSurface->Blt(&this->new_save_rect, this->PrimarySurface, ptVar1,
+                    RECT* mouse_rect_ptr = &this->mouse_rect;
+                    long err = this->save_area->DrawSurface->Blt(&this->new_save_rect, this->PrimarySurface, mouse_rect_ptr,
                                                                  DDBLT_WAIT, 0);
                     if (err != 0) {
                         this->LastddError = err;
@@ -651,12 +651,12 @@ void TMousePointer::Poll() {
                         return;
                     }
                     this->restoreSurface = this->PrimarySurface;
-                    this->restore_rect = *ptVar1;
+                    this->restore_rect = *mouse_rect_ptr;
                     this->save_rect = this->new_save_rect;
                     this->save_area_valid = 1;
                     if (this->Mouse_Mode == 0) {
                         this->cursors[this->next_facet]->SetTrans(1, 0);
-                        err = this->PrimarySurface->BltFast(ptVar1->left, this->mouse_rect.top,
+                        err = this->PrimarySurface->BltFast(mouse_rect_ptr->left, this->mouse_rect.top,
                                                             this->cursors[this->next_facet]->DrawSurface, &this->cursor_rect,
                                                             DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
                         if (err != 0) {
@@ -670,7 +670,7 @@ void TMousePointer::Poll() {
                             Shape_Info* si =
                                 this->Cursor_Shape->shape_info +
                                 this->next_facet;
-                            this->Cursor_Shape->shape_draw(this->primary_area, si->Hotspot_X + ptVar1->left,
+                            this->Cursor_Shape->shape_draw(this->primary_area, si->Hotspot_X + mouse_rect_ptr->left,
                                                            this->mouse_rect.top + si->Hotspot_Y, this->next_facet, 0, 0);
                             this->primary_area->Unlock("mouseptr::poll");
                         }

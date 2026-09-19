@@ -420,54 +420,54 @@ int TInputPanel::insert_character(long c) {
 
 int TInputPanel::delete_character() {
     short deleted_len;
-    unsigned char* pcVar2;
-    unsigned char* pcVar3;
-    unsigned char* pcVar4;
+    unsigned char* delete_position;
+    unsigned char* next_position;
+    unsigned char* source_position;
     int move_back_one;
     unsigned char* cur_dest;
     if (this->input_pos >= this->input_len) return 0;
-    pcVar3 = (unsigned char*)this->input_buffer1;
+    next_position = (unsigned char*)this->input_buffer1;
     move_back_one = 0;
-    if (this->input_buffer == (char*)pcVar3) {
-        pcVar4 = pcVar3;
-        pcVar3 = (unsigned char*)this->input_buffer2;
+    if (this->input_buffer == (char*)next_position) {
+        source_position = next_position;
+        next_position = (unsigned char*)this->input_buffer2;
     } else {
-        pcVar4 = (unsigned char*)this->input_buffer2;
+        source_position = (unsigned char*)this->input_buffer2;
     }
-    this->input_buffer = (char*)pcVar3;
-    *pcVar3 = 0;
-    pcVar2 = pcVar4;
-    cur_dest = pcVar3;
+    this->input_buffer = (char*)next_position;
+    *next_position = 0;
+    delete_position = source_position;
+    cur_dest = next_position;
     if (this->input_pos > 0) {
-        _mbsncpy(pcVar3, pcVar4, (int)this->input_pos);
-        pcVar2 = (unsigned char*)_mbsninc(pcVar4, (int)this->input_pos);
-        cur_dest = (unsigned char*)_mbsninc(pcVar3, (int)this->input_pos);
+        _mbsncpy(next_position, source_position, (int)this->input_pos);
+        delete_position = (unsigned char*)_mbsninc(source_position, (int)this->input_pos);
+        cur_dest = (unsigned char*)_mbsninc(next_position, (int)this->input_pos);
     }
-    if (*pcVar2 == '\r') {
-        pcVar3 = (unsigned char*)_mbsinc(pcVar2);
+    if (*delete_position == '\r') {
+        next_position = (unsigned char*)_mbsinc(delete_position);
         deleted_len = 1;
-        if (*pcVar3 == '\n') {
-            pcVar3 = (unsigned char*)_mbsinc(pcVar3);
+        if (*next_position == '\n') {
+            next_position = (unsigned char*)_mbsinc(next_position);
             deleted_len = 2;
         }
     } else {
-        if ((*pcVar2 == '\n') && (pcVar2 > pcVar4)) {
-            pcVar4 = (unsigned char*)_mbsdec(pcVar4, pcVar2);
-            if (*pcVar4 == '\r') {
-                cur_dest = (unsigned char*)_mbsdec(pcVar3, cur_dest);
-                pcVar3 = (unsigned char*)_mbsninc(pcVar4, 2);
+        if ((*delete_position == '\n') && (delete_position > source_position)) {
+            source_position = (unsigned char*)_mbsdec(source_position, delete_position);
+            if (*source_position == '\r') {
+                cur_dest = (unsigned char*)_mbsdec(next_position, cur_dest);
+                next_position = (unsigned char*)_mbsninc(source_position, 2);
                 deleted_len = 2;
                 move_back_one = 1;
                 goto do_copy;
             }
-            pcVar3 = (unsigned char*)_mbsninc(pcVar4, 2);
+            next_position = (unsigned char*)_mbsninc(source_position, 2);
         } else {
-            pcVar3 = (unsigned char*)_mbsinc(pcVar2);
+            next_position = (unsigned char*)_mbsinc(delete_position);
         }
         deleted_len = 1;
     }
 do_copy:
-    _mbsncpy(cur_dest, pcVar3, ((int)this->input_len - (int)this->input_pos) + 1);
+    _mbsncpy(cur_dest, next_position, ((int)this->input_len - (int)this->input_pos) + 1);
     if (move_back_one) --this->input_pos;
     this->input_len -= deleted_len;
     this->reformat();
