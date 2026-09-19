@@ -829,7 +829,7 @@ unsigned char RGE_Game_World::load_world(int infile1) {
     this->map->unified_vis_map->suppress_updates(0);
     this->scenario_init(f, this);
 
-    if (save_game_version >= DAT_00577a10) {
+    if (save_game_version >= g_world_difficulty_save_version) {
         rge_read(f, &this->difficultyLevelValue, 4);
     } else {
         this->difficultyLevelValue = -1;
@@ -1259,7 +1259,7 @@ unsigned char RGE_Game_World::update() {
     if (this->world_time_delta != 0 || first_update) {
         this->commands->do_commands();
         this->scenario->update();
-        this->world_time_delta_seconds = this->world_time_delta * DAT_00577a14;
+        this->world_time_delta_seconds = this->world_time_delta * g_world_milliseconds_to_seconds;
         world_update_counter = world_update_counter + 1;
         for (i = 0; i < this->player_num; ++i) {
             if (this->players[i] != 0) {

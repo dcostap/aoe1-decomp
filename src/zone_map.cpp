@@ -163,7 +163,7 @@ uchar RGE_Zone_Map::do_zone_map() {
     return 1;
 }
 
-extern double DAT_00577a20;
+extern double g_zone_passability_zero_threshold;
 
 void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigned char zone) {
     Zone_Queue* zone_end = 0;
@@ -175,7 +175,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigne
             RGE_Tile* tile = this->map->map_row_offset[y] + x - 1;
             unsigned char* cell = this->zone_map_rows[y] + x - 1;
             if (*cell == 0xff) {
-                if (((this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] > g_zone_passability_zero_threshold) ? 1 : 0) == (group & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x - 1, y);
                 }
@@ -184,7 +184,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigne
         if (y > 0) {
             RGE_Tile* tile = this->map->map_row_offset[y - 1] + x;
             if (this->zone_map_rows[y - 1][x] == 0xff) {
-                if (((this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] > g_zone_passability_zero_threshold) ? 1 : 0) == (group & 0xff)) {
                     this->zone_map_rows[y - 1][x] = zone;
                     zone_push(&zone_end, &zone_queue, x, y - 1);
                 }
@@ -194,7 +194,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigne
             RGE_Tile* tile = this->map->map_row_offset[y] + x + 1;
             unsigned char* cell = this->zone_map_rows[y] + x + 1;
             if (*cell == 0xff) {
-                if (((this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] > g_zone_passability_zero_threshold) ? 1 : 0) == (group & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x + 1, y);
                 }
@@ -203,7 +203,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigne
         if (y < max_y) {
             RGE_Tile* tile = this->map->map_row_offset[y + 1] + x;
             if (this->zone_map_rows[y + 1][x] == 0xff) {
-                if (((this->terrain_passability_rules[tile->terrain_type] > DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
+                if (((this->terrain_passability_rules[tile->terrain_type] > g_zone_passability_zero_threshold) ? 1 : 0) == (group & 0xff)) {
                     this->zone_map_rows[y + 1][x] = zone;
                     zone_push(&zone_end, &zone_queue, x, y + 1);
                 }
@@ -218,11 +218,11 @@ RGE_Zone_Map* RGE_Zone_Map::check_info(float* new_terrain_rules, long new_terrai
         int i = 0;
         if (n > 0) {
             do {
-                if (new_terrain_rules[i] <= DAT_00577a20) {
-                    if (this->terrain_passability_rules[i] > DAT_00577a20)
+                if (new_terrain_rules[i] <= g_zone_passability_zero_threshold) {
+                    if (this->terrain_passability_rules[i] > g_zone_passability_zero_threshold)
                         return 0;
                 } else {
-                    if (this->terrain_passability_rules[i] <= DAT_00577a20)
+                    if (this->terrain_passability_rules[i] <= g_zone_passability_zero_threshold)
                         return 0;
                 }
                 ++i;
