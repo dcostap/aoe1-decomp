@@ -180,7 +180,7 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
       numberFoundForestTilesValue(0) {
     int tempInt;
     int tempInt_ffffffe8;
-    int local_14;
+    int resource_type_id;
     int resourceIndex;
     int i3;
 
@@ -216,8 +216,8 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
         i3 = 0;
         if (pID > 0) {
             do {
-                rge_read(infile, &local_14, 4);
-                this->addResourceType(resourceIndex, local_14);
+                rge_read(infile, &resource_type_id, 4);
+                this->addResourceType(resourceIndex, resource_type_id);
                 i3++;
             } while (i3 < pID);
         }
@@ -379,7 +379,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
     int count;
     int tempInt;
     int outFile;
-    int local_14;
+    int unit_history_file;
     int i;
     int index;
     int offset;
@@ -392,7 +392,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
 
     if (this->saveLearnInformationValue == 1) {
         int file = rge_open(this->learnFileName, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
-        local_14 = file;
+        unit_history_file = file;
         if (file != -1) {
             rge_write(file, &this->mapXSizeValue, 4);
             rge_write(file, &this->mapYSizeValue, 4);
@@ -472,10 +472,11 @@ TribeInformationAIModule::~TribeInformationAIModule() {
 
     unsigned char currentPlayer = this->md->player->world->player_turn;
     if ((currentPlayer == this->md->player->id || currentPlayer == 0xff) &&
-        (local_14 = rge_open(this->unitHistoryFilename, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE),
-         local_14 != -1)) {
-        rge_write(local_14, this->unitHistory, 44);
-        rge_close(local_14);
+        (unit_history_file = rge_open(this->unitHistoryFilename, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
+                                      _S_IREAD | _S_IWRITE),
+         unit_history_file != -1)) {
+        rge_write(unit_history_file, this->unitHistory, 44);
+        rge_close(unit_history_file);
     }
 
     if (this->importantObjectMemory != 0)
@@ -4728,7 +4729,7 @@ AttackMemory* TribeInformationAIModule::attackMemory(int id) {
 void TribeInformationAIModule::loadLearnInfo(char* name) {
     int numToLoad;
     int tempInt;
-    int local_2c;
+    int object_id;
     char* learnFileName = this->learnFileName;
 
     if (name == 0) {
@@ -4780,8 +4781,8 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
         name = 0;
         if (tempInt > 0) {
             do {
-                rge_read(file, &local_2c, 4);
-                this->importantMiscs.add(local_2c);
+                rge_read(file, &object_id, 4);
+                this->importantMiscs.add(object_id);
                 name = name + 1;
             } while ((int)name < tempInt);
         }
@@ -4790,8 +4791,8 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
         name = 0;
         if (tempInt > 0) {
             do {
-                rge_read(file, &local_2c, 4);
-                this->itemsToDefend.add(local_2c);
+                rge_read(file, &object_id, 4);
+                this->itemsToDefend.add(object_id);
                 name = name + 1;
             } while ((int)name < tempInt);
         }
