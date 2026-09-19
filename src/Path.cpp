@@ -1,8 +1,7 @@
 #include "../include/path.h"
+#include "../include/game_globals.h"
 #include <iostream.h>
 #include <math.h>
-
-extern float g_path_zero_length;
 
 
 Path::Path(int v) {

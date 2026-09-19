@@ -1,5 +1,6 @@
 
 #include "../include/act_gath.h"
+#include "../include/game_globals.h"
 #include "../include/act_list.h"
 #include "../include/act_obj.h"
 #include "../include/act_move.h"
@@ -16,8 +17,6 @@
 #include "../include/world.h"
 #include "../include/rge_base_game_global.h"
 
-extern float g_gather_positive_amount_threshold;
-extern double g_gather_dropoff_distance_threshold;
 
 RGE_Action_Gather::RGE_Action_Gather(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {

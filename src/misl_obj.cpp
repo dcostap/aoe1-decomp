@@ -1,5 +1,6 @@
 
 #include "../include/misl_obj.h"
+#include "../include/game_globals.h"
 #include "../include/act_list.h"
 #include "../include/act_misl.h"
 #include "../include/m_co_obj.h"
@@ -10,11 +11,6 @@
 
 #include <stdlib.h>
 
-extern float save_game_version;
-extern float g_missile_zero_float;
-extern float g_missile_bounds_min_adjustment;
-extern float g_missile_bounds_max_adjustment;
-extern float g_missile_vertical_adjustment;
 
 RGE_Missile_Object::RGE_Missile_Object(
     RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner,

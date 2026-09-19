@@ -18,6 +18,7 @@
 #include "../include/vis_unit.h"
 #include "../include/rmm_dbct.h"
 #include "../include/debuglog.h"
+#include "../include/game_globals.h"
 #include "../include/rge_base_game_global.h"
 
 void __cdecl rge_read(int file, void* data, int size);
@@ -26,14 +27,6 @@ extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern void __cdecl convert_us(char* text);
 int __cdecl debug_rand(char* file, int line);
 void __cdecl debug_srand(char* file, int line, unsigned int seed);
-extern float save_game_version;
-extern float g_map_save_version_7_0;
-extern float g_map_zero_interval;
-extern double g_tile_map_half;
-extern double g_tile_map_negative_half;
-extern double g_tile_map_one;
-extern float g_map_time_scale;
-extern TDebuggingLog* L;
 
 RGE_Map::RGE_Map(int infile, RGE_Sound** sounds, unsigned char setup) {
     this->map_zones = 0;

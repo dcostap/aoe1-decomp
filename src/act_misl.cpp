@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "../include/act_misl.h"
+#include "../include/game_globals.h"
 #include "../include/act_obj.h"
 #include "../include/m_mi_obj.h"
 #include "../include/misl_obj.h"
@@ -9,10 +10,6 @@
 #include "../include/stat_obj.h"
 #include "../include/world.h"
 
-extern float g_missile_half_time_factor;
-extern double g_missile_positive_value_threshold;
-extern float g_missile_target_speed_normalization_limit;
-extern float g_missile_minimum_speed;
 
 
 

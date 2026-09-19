@@ -1,4 +1,5 @@
 #include "../include/act_tran.h"
+#include "../include/game_globals.h"
 #include "../include/act_obj.h"
 #include "../include/act_list.h"
 #include "../include/map.h"
@@ -7,8 +8,6 @@
 #include "../include/world.h"
 
 
-extern float g_transport_lower_coordinate_adjustment;
-extern float g_transport_upper_coordinate_adjustment;
 
 RGE_Action_Transport::RGE_Action_Transport(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {

@@ -1,5 +1,6 @@
 
 #include "../include/m_s_obj.h"
+#include "../include/game_globals.h"
 #include "../include/basegame.h"
 #include "../include/player.h"
 #include "../include/world.h"
@@ -16,14 +17,6 @@
 #include <string.h>
 
 #include "../include/rge_fio.h"
-extern float save_game_version;
-extern float g_static_object_save_version_7_04;
-extern float g_static_object_save_version_7_12;
-extern float g_static_object_zero_float;
-extern float g_static_object_coordinate_epsilon;
-extern double g_static_object_zero;
-extern float g_static_object_bounds_min_adjustment;
-extern float g_static_object_bounds_max_adjustment;
 
 RGE_Master_Static_Object::RGE_Master_Static_Object(
     RGE_Master_Static_Object* other_object, int do_setup) {

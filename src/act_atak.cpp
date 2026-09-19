@@ -18,10 +18,9 @@
 #include "../include/map.h"
 #include "../include/task.h"
 #include "../include/sprite.h"
+#include "../include/game_globals.h"
 
 #include <math.h>
-
-extern float g_attack_radius_distance_adjustment;
 
 RGE_Action_Attack::RGE_Action_Attack(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
