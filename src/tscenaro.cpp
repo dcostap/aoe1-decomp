@@ -64,7 +64,7 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
     ClearDisabledTechnologies();
 
     int old_version;
-    if (Version <= DAT_00577318) {
+    if (Version <= g_scenario_file_version_1_13) {
         mp_victory_type = 0;
         victory_score = 900;
         victory_time = 9000;
@@ -85,7 +85,7 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
         for (i = 0; i < 16; ++i) rge_read(infile, player_name[i], 256);
     }
 
-    if (Version > DAT_00577318) {
+    if (Version > g_scenario_file_version_1_13) {
         int i;
         for (i = 0; i < 16; ++i) rge_read(infile, &player_info[i], 16);
     } else {
@@ -99,14 +99,14 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
         }
     }
 
-    if (Version > DAT_0057731c) {
+    if (Version > g_scenario_file_version_1_02) {
         rge_read(infile, &checksum, 4);
     }
 
     rge_read(infile, &victory, 24);
     rge_read(infile, &victory_all_flag, 4);
 
-    if (Version >= DAT_00577318) {
+    if (Version >= g_scenario_file_version_1_13) {
         rge_read(infile, &mp_victory_type, 4);
         rge_read(infile, &victory_score, 4);
         rge_read(infile, &victory_time, 4);
@@ -119,16 +119,16 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
     rge_read(infile, Opponent, 1024);
     for (int p = 0; p < 16; ++p) rge_read(infile, sp_victory[p], sizeof(sp_victory[p]));
 
-    if (Version > DAT_0057731c) rge_read(infile, &checksum, 4);
+    if (Version > g_scenario_file_version_1_02) rge_read(infile, &checksum, 4);
 
-    if (*(int*)&Version == 0x3f8147ae) {
+    if (Version == 1.01f) {
         for (int j = 0; j < 16; ++j) rge_read(infile, AlliedVictory, 64);
     }
-    if (Version >= DAT_0057731c) rge_read(infile, AlliedVictory, 64);
-    if (Version > DAT_00577320) rge_read(infile, DisabledTechnology, 1280);
+    if (Version >= g_scenario_file_version_1_02) rge_read(infile, AlliedVictory, 64);
+    if (Version > g_scenario_file_version_1_03) rge_read(infile, DisabledTechnology, 1280);
 
-    if (Version > DAT_00577324) {
-        if (Version < DAT_00577328) {
+    if (Version > g_scenario_file_version_1_04) {
+        if (Version < g_scenario_file_version_1_12) {
             rge_read(infile, ScenarioOptions, 4);
             ScenarioOptions[1] = 0;
             ScenarioOptions[2] = 0;
@@ -136,8 +136,8 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
             rge_read(infile, ScenarioOptions, 12);
         }
     }
-    if (Version > DAT_0057732c) rge_read(infile, PlayerAge, 64);
-    if (Version > DAT_0057731c) rge_read(infile, &checksum, 4);
+    if (Version > g_scenario_file_version_1_05) rge_read(infile, PlayerAge, 64);
+    if (Version > g_scenario_file_version_1_02) rge_read(infile, &checksum, 4);
 
     victory.MP_Conquest = victory_conquest;
 }
