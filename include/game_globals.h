@@ -12,7 +12,6 @@ struct LOSTBL;
 class VC_LOG;
 struct VISIBLE_UNIT_REC;
 struct IDirectPlay3;
-class ResFileHdr;
 class TDebuggingLog;
 class DriveInformation;
 class TChat;
@@ -462,17 +461,6 @@ extern IDirectPlay3* direct_play_interface;
 extern unsigned long local_player_dpid;
 extern unsigned int DAT_0086b240;
 extern unsigned int DAT_0086b244;
-extern ResFileHdr* DAT_0086b254;
-extern unsigned int DAT_0086b25c;
-extern unsigned int DAT_0086b260;
-extern unsigned char DAT_0086b264;
-extern unsigned int DAT_0086b268;
-extern unsigned int DAT_0086b26c;
-extern unsigned int DAT_0086b270;
-extern unsigned int DAT_0086b274;
-extern unsigned int DAT_0086b278;
-extern unsigned int DAT_0086b27c;
-extern unsigned int DAT_0086b280;
 // Credits-screen palette state. The binary uses two contiguous 256-entry
 // PALETTEENTRY tables and stores the active draw area as a pointer.
 extern float DAT_0086b290;
