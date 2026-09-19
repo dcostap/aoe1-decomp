@@ -738,7 +738,7 @@ char s_pnl_lst__draw[] = "pnl_lst::draw";
 char s_pnl_lst__draw_highlight_bar[] = "pnl_lst::draw_highlight_bar";
 char s_pnl_txt__get_text_rect[] = "pnl_txt::get_text_rect";
 char s_scr4[] = "scr4";
-char s_scr_cred_draw_005862e0[] = "scr_cred::draw";
+char scr_cred_draw_context_name[] = "scr_cred::draw";
 char s_setResource_n_v[] = "setResource: n=%d, v=%d.";
 char s_setResource_r_v[] = "  setResource: r[%d]=%d.";
 char s_space[] = " ";

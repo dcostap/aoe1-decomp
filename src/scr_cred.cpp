@@ -12,7 +12,7 @@
 extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
     void* hpal, unsigned int start, unsigned int count, tagPALETTEENTRY* entries);
 
-extern char s_scr_cred_draw_005862e0[];
+extern char scr_cred_draw_context_name[];
 
 // Keep the module's original declaration order while the shared header owns
 // the storage types and definitions.
@@ -321,7 +321,7 @@ void TScrollTextPanel::draw() {
     if (this->render_area != 0 && this->visible != 0 && this->active != 0) {
         this->draw_background();
         this->draw_setup(0);
-        void* dc = this->render_area->GetDc(s_scr_cred_draw_005862e0);
+        void* dc = this->render_area->GetDc(scr_cred_draw_context_name);
         if (dc != 0) {
             SelectClipRgn(dc, this->clip_rgn);
             void* old_font = SelectObject(dc, this->font);
@@ -331,7 +331,7 @@ void TScrollTextPanel::draw() {
             }
             SelectObject(dc, old_font);
             SelectClipRgn(dc, 0);
-            this->render_area->ReleaseDc(s_scr_cred_draw_005862e0);
+            this->render_area->ReleaseDc(scr_cred_draw_context_name);
         }
         this->draw_border();
         this->draw_finish();
