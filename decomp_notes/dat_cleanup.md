@@ -277,4 +277,15 @@ original storage as a reviewed symbol.
 
 ## Validation
 
-No build or test ran for this milestone. The active cleanup workflow defers them to final validation.
+Final validation ran after the cleanup.
+
+- Build: 226 of 226 source units compiled and linked with zero errors.
+- Function sweep: 225 groups compiled; 5,426 functions reviewed; 4,965 exact targets matched; 24 recorded exact-claim findings remained. The finding set matched the prior cleanup report.
+- Header emissions: 133 of 133 matched.
+- Linked references: 7,428 passed, 5,346 remained unknown, and 2 known `setup_help` target-order findings remained.
+- Image dependencies: 11,359 passed, 47,373 remained unknown, and 20 known findings remained. No new failure appeared.
+- Global initializers: 124 matched; 107 need type or startup review; 59 are unmapped. The known `header_message` byte difference and `_except_list` section result remained.
+- Automated tests: 954 passed with 31 subtests.
+- Menu captures: all cases passed.
+- Gameplay parity: passed.
+- `git diff --check`: passed.
