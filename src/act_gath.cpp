@@ -16,8 +16,8 @@
 #include "../include/world.h"
 #include "../include/rge_base_game_global.h"
 
-extern float DAT_0056e278;
-extern double DAT_0056e290;
+extern float g_gather_positive_amount_threshold;
+extern double g_gather_dropoff_distance_threshold;
 
 RGE_Action_Gather::RGE_Action_Gather(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
@@ -73,7 +73,7 @@ void RGE_Action_Gather::first_in_stack(unsigned char first_time) {
                 short id = target_master->id;
 
                 if ((id == object_master->drop_site || id == object_master->backup_drop_site) &&
-                    this->obj->attribute_amount_held > DAT_0056e278) {
+                    this->obj->attribute_amount_held > g_gather_positive_amount_threshold) {
                     this->set_target_obj2(target);
                     this->set_target_obj(0);
                     this->target_x = -1.0f;
@@ -167,7 +167,7 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
         return;
 
     case 8:
-        if (this->obj->attribute_amount_held > DAT_0056e278) {
+        if (this->obj->attribute_amount_held > g_gather_positive_amount_threshold) {
             if (this->target_obj2 == 0) {
                 if (((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site != -1) {
                     if (this->obj->useSameZoneDropsite() == 1) {
@@ -203,7 +203,7 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
             return;
         }
 
-        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= DAT_0056e278 &&
+        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= g_gather_positive_amount_threshold &&
             this->obj->keepGatheringWhenObjectIsOut((short)this->target_obj->master_obj->id) == 0) {
             this->set_target_obj(0);
         }
@@ -315,7 +315,7 @@ unsigned char RGE_Action_Gather::update() {
             return 0;
         }
         if (this->obj->turn_towards(this->target_obj, 0, 0) != 0) {
-            if (this->target_obj->attribute_amount_held > DAT_0056e278 ||
+            if (this->target_obj->attribute_amount_held > g_gather_positive_amount_threshold ||
                 this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) != 0) {
                 this->set_state(7);
                 return 0;
@@ -332,7 +332,7 @@ unsigned char RGE_Action_Gather::update() {
         float max_hold;
 
         if (this->target_obj == 0) {
-            if (this->obj->attribute_amount_held > DAT_0056e278) {
+            if (this->obj->attribute_amount_held > g_gather_positive_amount_threshold) {
                 this->set_state(8);
             } else {
                 this->set_state(3);
@@ -371,7 +371,7 @@ unsigned char RGE_Action_Gather::update() {
         this->target_obj->set_attribute_amount(-give_amount, 1, 1);
         this->obj->set_attribute_amount(adjusted_amount, 1, 0);
 
-        if (this->obj->attribute_amount_held < max_hold && (this->target_obj->attribute_amount_held > DAT_0056e278 ||
+        if (this->obj->attribute_amount_held < max_hold && (this->target_obj->attribute_amount_held > g_gather_positive_amount_threshold ||
              this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) != 0)) {
             return 0;
         }
@@ -402,7 +402,7 @@ unsigned char RGE_Action_Gather::update() {
                     this->set_state(8);
                     return 0;
                 }
-                if (this->obj->distance_to_object(this->target_obj2) > DAT_0056e290) {
+                if (this->obj->distance_to_object(this->target_obj2) > g_gather_dropoff_distance_threshold) {
                     this->timer = -3.0f;
                     this->obj->stop_moving();
                     return 0;

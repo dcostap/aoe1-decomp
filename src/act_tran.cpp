@@ -7,8 +7,8 @@
 #include "../include/world.h"
 
 
-extern float DAT_0056e6c8;
-extern float DAT_0056e6cc;
+extern float g_transport_lower_coordinate_adjustment;
+extern float g_transport_upper_coordinate_adjustment;
 
 RGE_Action_Transport::RGE_Action_Transport(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
@@ -193,10 +193,10 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
         return 1;
     }
 
-    int x1 = (int)(this->obj->world_x - this->obj->master_obj->radius_x - DAT_0056e6c8);
-    int y1 = (int)(this->obj->world_y - this->obj->master_obj->radius_y - DAT_0056e6c8);
-    int x2 = (int)(this->obj->master_obj->radius_x + this->obj->world_x - DAT_0056e6cc);
-    int y2 = (int)(this->obj->master_obj->radius_y + this->obj->world_y - DAT_0056e6cc);
+    int x1 = (int)(this->obj->world_x - this->obj->master_obj->radius_x - g_transport_lower_coordinate_adjustment);
+    int y1 = (int)(this->obj->world_y - this->obj->master_obj->radius_y - g_transport_lower_coordinate_adjustment);
+    int x2 = (int)(this->obj->master_obj->radius_x + this->obj->world_x - g_transport_upper_coordinate_adjustment);
+    int y2 = (int)(this->obj->master_obj->radius_y + this->obj->world_y - g_transport_upper_coordinate_adjustment);
 
     RGE_Map* map = this->obj->owner->world->map;
 

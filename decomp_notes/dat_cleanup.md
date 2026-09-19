@@ -143,6 +143,15 @@ original storage as a reviewed symbol.
 | `DAT_0056f4e8` | named | This read-only `1.0f` adjusts command map upper bounds. |
 | `DAT_0056f880` | named | This read-only `100.0f` scales the diplomacy attribute for display. |
 | `DAT_0056f014`, `DAT_0056f018`, `DAT_0056f020`, `DAT_0056f028`, `DAT_0056f030`, `DAT_0056f034`, `DAT_0056f210`, `DAT_0056f218`, `DAT_0056f498`, `DAT_0056f4b0`, `DAT_0056f4b8`, `DAT_0056f4bc`, `DAT_0056f4f4`, `DAT_0056f4f8`, `DAT_0056f4fc`, `DAT_0056f500`, `DAT_0056f5fc`, `DAT_0056f604`, `DAT_0056f608`, `DAT_0056f740`, `DAT_0056f744`, `DAT_0056f748`, `DAT_0056f74c`, `DAT_0056f884`, `DAT_0056f888`, `DAT_0056f890`, and `DAT_0056f894` | removed | These read-only values have no source references or PDB symbols. Their owners use direct literals or do not need separate storage. |
+| `DAT_0056e0cc` | named | This read-only `-0.3f` adjusts the attack radius distance. |
+| `DAT_0056e278` | named | This read-only zero float is the gatherer's positive carried-amount threshold. |
+| `DAT_0056e290` | named | This read-only `1.0` double limits the gather drop-off distance. |
+| `DAT_0056e380` | named | This read-only `0.5f` supplies the missile half-time and average-velocity factors. |
+| `DAT_0056e388` | named | This read-only zero double gates positive missile speed and ballistic ratio. |
+| `DAT_0056e390` | named | This read-only `1.0f` limits special missile target-speed normalization. |
+| `DAT_0056e394` | named | This read-only zero float is the missile minimum-speed fallback. |
+| `DAT_0056e6c8`, `DAT_0056e6cc` | named | These read-only coordinate adjustments bound transport terrain checks. |
+| `DAT_0056e0b8`, `DAT_0056e0d0`, `DAT_0056e138`, `DAT_0056e1a0`, `DAT_0056e1a4`, `DAT_0056e1a8`, `DAT_0056e210`, `DAT_0056e318`, `DAT_0056e400`, `DAT_0056e418`, `DAT_0056e63c`, `DAT_0056e640`, `DAT_0056e644`, `DAT_0056e648`, `DAT_0056e6c0`, `DAT_0056e784`, `DAT_0056e788`, `DAT_0056e80c`, `DAT_0056e810`, `DAT_0056ebb8`, and `DAT_0056ebbc` | removed | These read-only values have no source references or PDB symbols. Their owners use direct literals or do not need separate storage. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |

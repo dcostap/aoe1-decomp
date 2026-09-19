@@ -9,10 +9,10 @@
 #include "../include/stat_obj.h"
 #include "../include/world.h"
 
-extern float DAT_0056e380;
-extern double DAT_0056e388;
-extern float DAT_0056e390;
-extern float DAT_0056e394;
+extern float g_missile_half_time_factor;
+extern double g_missile_positive_value_threshold;
+extern float g_missile_target_speed_normalization_limit;
+extern float g_missile_minimum_speed;
 
 
 
@@ -81,12 +81,12 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
         d = (float)sqrt(dx * dx + dy * dy + dz * dz);
 
         if (((RGE_Master_Missile_Object*)this->obj->master_obj) ->targetting_type == 1 && this->target_obj != 0 &&
-            this->target_obj->getSpeed() > DAT_0056e388) {
+            this->target_obj->getSpeed() > g_missile_positive_value_threshold) {
             float target_speed = this->target_obj->getSpeed();
 
             if (this->target_obj2 != 0 && (this->target_obj2->master_obj->id == 0x23 ||
                  this->target_obj2->master_obj->id == 0x24 || this->target_obj2->master_obj->id == 0x118) &&
-                target_speed > DAT_0056e390) {
+                target_speed > g_missile_target_speed_normalization_limit) {
                 target_speed = 1.0f;
             }
 
@@ -99,7 +99,7 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
                 (float)sqrt((dx + target_vx) * (dx + target_vx) + (dy + target_vy) * (dy + target_vy) + dz * dz) +
                 ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed;
 
-            if (target_speed > ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed * DAT_0056e380) {
+            if (target_speed > ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed * g_missile_half_time_factor) {
                 float adjustment = d / target_speed;
                 dx += target_vx * adjustment;
                 dy += target_vy * adjustment;
@@ -132,17 +132,17 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
             break;
         }
 
-        if (((RGE_Master_Missile_Object*)this->obj->master_obj) ->ballistics_ratio > DAT_0056e388) {
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj) ->ballistics_ratio > g_missile_positive_value_threshold) {
             float time;
-            if (((RGE_Master_Animated_Object*)this->obj->master_obj)->speed > DAT_0056e394) {
+            if (((RGE_Master_Animated_Object*)this->obj->master_obj)->speed > g_missile_minimum_speed) {
                 time = d /
                        ((RGE_Master_Animated_Object*)this->obj->master_obj)
                            ->speed;
             } else {
-                time = DAT_0056e394;
+                time = g_missile_minimum_speed;
             }
 
-            time *= DAT_0056e380;
+            time *= g_missile_half_time_factor;
             float acceleration =
                 -(d *
                   ((RGE_Master_Missile_Object*)this->obj->master_obj)
@@ -205,11 +205,11 @@ unsigned char RGE_Action_Missile::update() {
             vz = this->velocity_z;
         }
 
-        if (((RGE_Master_Missile_Object*)this->obj->master_obj) ->ballistics_ratio > DAT_0056e388) {
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj) ->ballistics_ratio > g_missile_positive_value_threshold) {
             float change = this->ballistic_acceleration * t;
             float new_velocity = this->ballistic_velocity + change;
             float average_velocity =
-                this->ballistic_velocity + change * DAT_0056e380;
+                this->ballistic_velocity + change * g_missile_half_time_factor;
             this->ballistic_velocity = new_velocity;
             vz += average_velocity * t;
         }

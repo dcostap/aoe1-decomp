@@ -21,7 +21,7 @@
 
 #include <math.h>
 
-extern float DAT_0056e0cc;
+extern float g_attack_radius_distance_adjustment;
 
 RGE_Action_Attack::RGE_Action_Attack(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
@@ -464,7 +464,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
         radius_distance =
             (float)sqrt(radius_x * radius_x + radius_y * radius_y);
         radius_distance =
-            radius_distance + this->range - DAT_0056e0cc;
+            radius_distance + this->range - g_attack_radius_distance_adjustment;
         if (rangeDistance <= radius_distance) {
             goto ready;
         }
@@ -507,7 +507,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
     radius_distance =
         (float)sqrt(radius_x * radius_x + radius_y * radius_y);
     radius_distance =
-        radius_distance + this->range - DAT_0056e0cc;
+        radius_distance + this->range - g_attack_radius_distance_adjustment;
 
     if (rangeDistance < this->min_range) {
         rangeState = 0;
