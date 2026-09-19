@@ -378,9 +378,6 @@ int BuildAIModule::haveBuildList() const {
     return 0;
 }
 
-static const char s_SetGatherPercentage[] = "SetGatherPercentage";
-static const char s_AddedBuildListItem[] = "AddedBuildListItem";
-
 int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap, int insertAfterItemNumber) {
     if (insertAfterItemNumber > this->buildListLengthValue) {
         return 0;
@@ -403,12 +400,12 @@ int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int 
             xSize = master->radius_x + master->radius_x;
             ySize = master->radius_y + master->radius_y;
         } else {
-            strncpy(name, s_AddedBuildListItem, 63);
+            strncpy(name, "AddedBuildListItem", 63);
             xSize = 3.0f;
             ySize = 3.0f;
         }
     } else {
-        strncpy(name, s_SetGatherPercentage, 63);
+        strncpy(name, "SetGatherPercentage", 63);
         xSize = 3.0f;
         ySize = 3.0f;
     }

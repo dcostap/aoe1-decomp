@@ -8,7 +8,6 @@
 static const char MUSIC_WAV_FORMAT[] = "%smusic%d.wav";
 static const char MUSIC_MID_FORMAT[] = "%smusic%d.mid";
 static const char MUSIC_NAME_FORMAT[] = "%s%s";
-static const char MUSIC_MID_SUFFIX[] = ".mid";
 static const char MUSIC_ERROR[] = "Unknow Error";
 static const char READ_MODE[] = "r";
 static const int MUSIC_MIN_VOLUME = -10000;
@@ -456,7 +455,7 @@ int TMusic_System::play(int start_track_in, int end_track_in, char* file_name_in
         } else {
             sprintf(track_name, MUSIC_NAME_FORMAT, this->path, file_name_in);
             if (strchr(track_name, '.') == 0) {
-                strcat(track_name, MUSIC_MID_SUFFIX);
+                strcat(track_name, ".mid");
             }
         }
 
