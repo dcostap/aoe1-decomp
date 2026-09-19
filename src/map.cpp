@@ -462,7 +462,7 @@ void RGE_Map::scenario_save(int outfile) {
     short y = 0;
     unsigned char terrain_info;
     unsigned char height_info;
-    unsigned char local_bytes[2];
+    unsigned char height_and_overlay[2];
 
     if (height_count > 0) {
         do {
@@ -471,11 +471,11 @@ void RGE_Map::scenario_save(int outfile) {
                 do {
                     terrain_info = map->map_row_offset[y][x].terrain_type & 0x1f;
                     height_info = map->map_row_offset[y][x].height;
-                    local_bytes[0] = height_info;
-                    local_bytes[1] = 0;
+                    height_and_overlay[0] = height_info;
+                    height_and_overlay[1] = 0;
                     rge_write(outfile, &terrain_info, 1);
-                    rge_write(outfile, local_bytes, 1);
-                    rge_write(outfile, local_bytes + 1, 1);
+                    rge_write(outfile, height_and_overlay, 1);
+                    rge_write(outfile, height_and_overlay + 1, 1);
                     ++x;
                 } while (x < *height);
             }
@@ -486,12 +486,12 @@ void RGE_Map::scenario_save(int outfile) {
 }
 
 void RGE_Map::scenario_load(int infile, unsigned char* zone_terrain) {
-    int iVar3 = infile;
+    int file_handle = infile;
     long map_height;
     long w;
 
-    rge_read(iVar3, &map_height, 4);
-    rge_read(iVar3, &w, 4);
+    rge_read(file_handle, &map_height, 4);
+    rge_read(file_handle, &w, 4);
     this->new_map(map_height, w);
 
     long height_count = this->map_height;
@@ -507,9 +507,9 @@ void RGE_Map::scenario_load(int infile, unsigned char* zone_terrain) {
                     unsigned char height_info;
                     unsigned char overlay_info;
 
-                    rge_read(iVar3, &terrain_info, 1);
-                    rge_read(iVar3, &height_info, 1);
-                    rge_read(iVar3, &overlay_info, 1);
+                    rge_read(file_handle, &terrain_info, 1);
+                    rge_read(file_handle, &height_info, 1);
+                    rge_read(file_handle, &overlay_info, 1);
 
                     this->map_row_offset[x][i].terrain_type = terrain_info;
                     this->map_row_offset[x][i].height = height_info;

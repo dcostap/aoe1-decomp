@@ -177,7 +177,7 @@ void UnitAIModule::load(int infile) {
     int queue_index;
     int numberUnits;
     int unit_count;
-    int local_3c;
+    int attacking_unit_id;
     int tempInt;
     int j;
     union LoadEvent {
@@ -245,11 +245,11 @@ void UnitAIModule::load(int infile) {
     numberUnits = 0;
     if (unit_count > 0) {
         do {
-            rge_read(infile, &local_3c, 4);
-            tempInt = local_3c;
+            rge_read(infile, &attacking_unit_id, 4);
+            tempInt = attacking_unit_id;
             for (j = 0; j < attackingUnitsValue.numberValue; j++) {
                 if (j >= attackingUnitsValue.maximumSizeValue) break;
-                if (attackingUnitsValue.value[j] == local_3c)
+                if (attackingUnitsValue.value[j] == attacking_unit_id)
                     goto attacking_unit_already_present;
             }
 

@@ -53,39 +53,39 @@ int __cdecl rge_fake_open(int file_handle, int fake_size) {
 }
 
 int __cdecl rge_open(char* filename, int flag) {
-    int iVar1 = open(filename, flag);
-    if (iVar1 >= 0) {
+    int file_handle = open(filename, flag);
+    if (file_handle >= 0) {
         flags = 2;
         point = 0;
         buffers = (unsigned char*)calloc(65536, 1);
         current = buffers;
         file_buffers = 0;
         compression_buffers = 0;
-        current_handle = iVar1;
-        lseek(iVar1, 0, 2);
-        file_size = tell(iVar1);
+        current_handle = file_handle;
+        lseek(file_handle, 0, 2);
+        file_size = tell(file_handle);
         bl = 0;
-        lseek(iVar1, 0, 0);
+        lseek(file_handle, 0, 0);
     }
-    return iVar1;
+    return file_handle;
 }
 
 int __cdecl rge_open(char* filename, int flag, int pmode) {
-    int iVar1 = open(filename, flag, pmode);
-    if (iVar1 >= 0) {
+    int file_handle = open(filename, flag, pmode);
+    if (file_handle >= 0) {
         flags = 2;
         point = 0;
         buffers = (unsigned char*)calloc(65536, 1);
         current = buffers;
         file_buffers = 0;
         compression_buffers = 0;
-        current_handle = iVar1;
-        lseek(iVar1, 0, 2);
-        file_size = tell(iVar1);
+        current_handle = file_handle;
+        lseek(file_handle, 0, 2);
+        file_size = tell(file_handle);
         bl = 0;
-        lseek(iVar1, 0, 0);
+        lseek(file_handle, 0, 0);
     }
-    return iVar1;
+    return file_handle;
 }
 
 int __cdecl rge_fake_close(int handle) {

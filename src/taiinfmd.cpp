@@ -1500,21 +1500,21 @@ void TribeInformationAIModule::addPriorAttackInfluences(int ownerID, int targetI
 }
 
 ObjectMemory* TribeInformationAIModule::objectMemory(int id) {
-    int iVar1;
-    ObjectMemory* pOVar2;
+    int index;
+    ObjectMemory* memory;
     ObjectMemory* base;
 
     if (id != -1) {
-        iVar1 = 0;
+        index = 0;
         if (0 < this->maxImportantObjectMemory) {
             base = this->importantObjectMemory;
-            pOVar2 = base;
-            while (iVar1 < this->maxImportantObjectMemory) {
-                if (pOVar2->id == id) {
-                    return base + iVar1;
+            memory = base;
+            while (index < this->maxImportantObjectMemory) {
+                if (memory->id == id) {
+                    return base + index;
                 }
-                iVar1 = iVar1 + 1;
-                pOVar2 = pOVar2 + 1;
+                index = index + 1;
+                memory = memory + 1;
             }
             return 0;
         }
