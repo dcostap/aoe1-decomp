@@ -562,7 +562,7 @@ int UnitAIModule::update(unsigned long uTime) {
 
             if (this->objectValue->owner->computerPlayer() == 1 && this->currentOrderPriorityValue != -1 &&
                 this->currentOrderPriorityValue < 100) {
-                int priority = (int)(DAT_0056ebc0 / this->objectValue->distance_to_object(target));
+                int priority = (int)(g_unit_ai_distance_priority_scale / this->objectValue->distance_to_object(target));
                 if (priority > 99) {
                     priority = 99;
                 }
@@ -1283,7 +1283,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
         } else {
             maxReactDistance = difficulty == 3 ? 75 : 50;
         }
-        modifier = (int)((float)maxReactDistance * this->objectValue->master_obj->los * DAT_0056ebc4);
+        modifier = (int)((float)maxReactDistance * this->objectValue->master_obj->los * g_unit_ai_reaction_distance_scale);
         if (modifier < 1) {
             modifier = 1;
         }
@@ -1321,7 +1321,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
                 if (target != 0 && target->object_state <= 2 && this->objectValue->owner->isAlly(target->owner->id) != 1 &&
                     target->inside_obj == 0 && ((allowWallAttacks != 0 && numberObjectsInRange != 0) ||
                      target->master_obj->object_group != 0x1B) && ((target->master_obj->object_group != 3 ||
-                      target->hp > DAT_0056ebd0 || (this->objectValue->master_obj->id != 0x23 &&
+                      target->hp > g_unit_ai_map_boundary_adjustment || (this->objectValue->master_obj->id != 0x23 &&
                        this->objectValue->master_obj->id != 0x24))) && this->canAttackUnit(target) != 0 && (i != 3 ||
                      this->canAttackUnitAtNeutrality(target->master_obj->object_group) != 0)) {
                     float distance =
@@ -1333,11 +1333,11 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
                         if (target->master_obj->object_group != 3) {
                             ++numberDamagingUnits;
                         }
-                        if (target->damageCapability() > DAT_0056ebc8) {
+                        if (target->damageCapability() > g_unit_ai_zero_float) {
                             ++largestThreatIsBuilding;
                         }
                         if (target->master_obj->object_group != 3) {
-                            if (distance < this->objectValue->weaponRange() - DAT_0056ebd4) {
+                            if (distance < this->objectValue->weaponRange() - g_unit_ai_weapon_range_adjustment) {
                                 ++closestEnemyDistance;
                             }
                             if (distance < enemyDistance) {
@@ -1374,23 +1374,23 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
                     return target->id;
                 }
                 numberNonCurrentTargets = this->currentTargetValue;
-                numberMovingTargets = target->damageCapability() * DAT_0056ebd8;
+                numberMovingTargets = target->damageCapability() * g_unit_ai_damage_capability_scale;
                 baseDamage =
                     target->master_obj->calc_base_damage_ability((RGE_Master_Combat_Object*)this->objectValue->master_obj);
                 numberMovingTargets =
-                    (float)baseDamage * DAT_0056ebc0 + numberMovingTargets;
+                    (float)baseDamage * g_unit_ai_distance_priority_scale + numberMovingTargets;
                 float hitPoints = target->hp;
-                if (hitPoints > DAT_0056ebc8) {
+                if (hitPoints > g_unit_ai_zero_float) {
                     numberMovingTargets /= hitPoints;
                 }
                 float distance = target->distance_to_object(this->objectValue);
                 if (numberDamagingUnits < 2) {
-                    if (distance != DAT_0056ebc8) {
+                    if (distance != g_unit_ai_zero_float) {
                         numberMovingTargets /= distance;
                     }
-                } else if (distance != DAT_0056ebc8) {
+                } else if (distance != g_unit_ai_zero_float) {
                     numberMovingTargets /=
-                        (float)numberDamagingUnits * distance * DAT_0056ebdc;
+                        (float)numberDamagingUnits * distance * g_unit_ai_multi_attacker_distance_scale;
                 }
                 if (target->master_obj->object_group != 3) {
                     ++numberDamagingUnits;
@@ -1398,7 +1398,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
                 } else {
                     currentTargetIsBuilding = 1;
                 }
-                if (target->damageCapability() > DAT_0056ebc8) {
+                if (target->damageCapability() > g_unit_ai_zero_float) {
                     ++largestThreatIsBuilding;
                 }
             }
@@ -1427,7 +1427,7 @@ skipCurrentTarget:
                 if (target != 0 && target->object_state <= 2 && this->objectValue->owner->isAlly(target->owner->id) != 1 &&
                     target->inside_obj == 0 && ((allowWallAttacks != 0 && numberObjectsInRange != 0) ||
                      target->master_obj->object_group != 0x1B) && ((target->master_obj->object_group != 3 ||
-                      target->hp > DAT_0056ebd0 || (this->objectValue->master_obj->id != 0x23 &&
+                      target->hp > g_unit_ai_map_boundary_adjustment || (this->objectValue->master_obj->id != 0x23 &&
                        this->objectValue->master_obj->id != 0x24))) && this->canAttackUnit(target) != 0 && (i != 3 ||
                      this->canAttackUnitAtNeutrality(target->master_obj->object_group) != 0)) {
                     float distance = this->objectValue->distance_to_object(target);
@@ -1438,14 +1438,14 @@ skipCurrentTarget:
                                                        this->objectValue->weaponRange(), 0, 0, -1, -1) == 0) {
                             goto skipTarget;
                         }
-                        float threat = target->damageCapability() * DAT_0056ebd8;
-                        if (largestThreatIsBuilding <= 0 || threat != DAT_0056ebc8) {
+                        float threat = target->damageCapability() * g_unit_ai_damage_capability_scale;
+                        if (largestThreatIsBuilding <= 0 || threat != g_unit_ai_zero_float) {
                             float score =
                                 (float)target->master_obj->calc_base_damage_ability(
-                                    (RGE_Master_Combat_Object*)this->objectValue->master_obj) * DAT_0056ebc0 +
+                                    (RGE_Master_Combat_Object*)this->objectValue->master_obj) * g_unit_ai_distance_priority_scale +
                                 threat;
                             float hitPoints = target->hp;
-                            if (hitPoints > DAT_0056ebc8) {
+                            if (hitPoints > g_unit_ai_zero_float) {
                                 score /= hitPoints;
                             }
                             if (VisibleUnitList[i][j].distance != 0) {
@@ -1640,7 +1640,7 @@ int UnitAIModule::closestResourceObject(int resourceType, int* dSlot) {
             return -1;
         }
 
-        if ((float)resource->distance > this->objectValue->master_obj->los - DAT_0056ebe0) {
+        if ((float)resource->distance > this->objectValue->master_obj->los - g_unit_ai_resource_los_adjustment) {
             return -1;
         }
 
@@ -2137,19 +2137,19 @@ int UnitAIModule::moveTo(float targetX, float targetY, float targetZ,
 int UnitAIModule::evasiveMoveTo(float targetX, float targetY, float targetZ,
                                 int unconditional) {
     if (unconditional != 0 || this->currentActionValue == -1) {
-        if (targetX < DAT_0056ebc8) {
+        if (targetX < g_unit_ai_zero_float) {
             targetX = 0.0f;
         } else {
             if (targetX >= (float)this->objectValue->owner->world->map->map_width) {
-                targetX = (float)this->objectValue->owner->world->map->map_width - DAT_0056ebd0;
+                targetX = (float)this->objectValue->owner->world->map->map_width - g_unit_ai_map_boundary_adjustment;
             }
         }
 
-        if (targetY < DAT_0056ebc8) {
+        if (targetY < g_unit_ai_zero_float) {
             targetY = 0.0f;
         } else {
             if (targetY >= (float)this->objectValue->owner->world->map->map_height) {
-                targetY = (float)this->objectValue->owner->world->map->map_height - DAT_0056ebd0;
+                targetY = (float)this->objectValue->owner->world->map->map_height - g_unit_ai_map_boundary_adjustment;
             }
         }
 
@@ -2171,19 +2171,19 @@ int UnitAIModule::evasiveMoveTo(float targetX, float targetY, float targetZ,
                 targetY -= (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 3494) % 4);
             }
 
-            if (targetX < DAT_0056ebc8) {
+            if (targetX < g_unit_ai_zero_float) {
                 targetX = 0.0f;
             } else {
                 if (targetX >= (float)this->objectValue->owner->world->map->map_width) {
-                    targetX = (float)this->objectValue->owner->world->map->map_width - DAT_0056ebd0;
+                    targetX = (float)this->objectValue->owner->world->map->map_width - g_unit_ai_map_boundary_adjustment;
                 }
             }
 
-            if (targetY < DAT_0056ebc8) {
+            if (targetY < g_unit_ai_zero_float) {
                 targetY = 0.0f;
             } else {
                 if (targetY >= (float)this->objectValue->owner->world->map->map_height) {
-                    targetY = (float)this->objectValue->owner->world->map->map_height - DAT_0056ebd0;
+                    targetY = (float)this->objectValue->owner->world->map->map_height - g_unit_ai_map_boundary_adjustment;
                 }
             }
             ++i;
@@ -2204,16 +2204,16 @@ int UnitAIModule::intelligentEvasiveMoveTo(
         return 0;
     }
 
-    if (targetX < DAT_0056ebc8) {
+    if (targetX < g_unit_ai_zero_float) {
         targetX = 0.0f;
     } else if (targetX >= (float)this->objectValue->owner->world->map->map_width) {
-        targetX = (float)this->objectValue->owner->world->map->map_width - DAT_0056ebd0;
+        targetX = (float)this->objectValue->owner->world->map->map_width - g_unit_ai_map_boundary_adjustment;
     }
 
-    if (targetY < DAT_0056ebc8) {
+    if (targetY < g_unit_ai_zero_float) {
         targetY = 0.0f;
     } else if (targetY >= (float)this->objectValue->owner->world->map->map_height) {
-        targetY = (float)this->objectValue->owner->world->map->map_height - DAT_0056ebd0;
+        targetY = (float)this->objectValue->owner->world->map->map_height - g_unit_ai_map_boundary_adjustment;
     }
 
     XYZPoint point;
@@ -2265,7 +2265,7 @@ int UnitAIModule::intelligentEvasiveMoveTo(
             }
 
             if (goCloser == 0 &&
-                this->objectValue->distance_to_position((float)point.x - DAT_0056ebe4, (float)point.y - DAT_0056ebe4,
+                this->objectValue->distance_to_position((float)point.x - g_unit_ai_half_coordinate_adjustment, (float)point.y - g_unit_ai_half_coordinate_adjustment,
                                                         this->objectValue->world_z) < baseDistance) {
                 ++facet;
                 continue;
@@ -2277,7 +2277,7 @@ int UnitAIModule::intelligentEvasiveMoveTo(
         }
     }
 
-    if (this->objectValue->moveTo((float)point.x - DAT_0056ebe4, (float)point.y - DAT_0056ebe4,
+    if (this->objectValue->moveTo((float)point.x - g_unit_ai_half_coordinate_adjustment, (float)point.y - g_unit_ai_half_coordinate_adjustment,
                                   targetZ, 0.5f, unconditional) == 1) {
         this->setCurrentAction(0x262);
         this->setCurrentTarget(-1, targetX, targetY, targetZ);
@@ -2986,11 +2986,11 @@ attacker_recorded:
 
                 float currentTargetDC = target->damageCapability();
                 float ownDamage = 0.0f;
-                if (currentTargetDC != DAT_0056ebc8) {
+                if (currentTargetDC != g_unit_ai_zero_float) {
                     ownDamage = this->objectValue->damageCapability(target);
                 }
 
-                if (this->canAttackUnit(attacker) == 1 && ownDamage == DAT_0056ebc8) {
+                if (this->canAttackUnit(attacker) == 1 && ownDamage == g_unit_ai_zero_float) {
                     if (this->objectValue->inAttackRange(attacker) != 1 &&
                         this->objectValue->canPath(nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
                         goto compare_attacker;
@@ -3001,7 +3001,7 @@ attacker_recorded:
 compare_attacker:
                 float killTimeTarget =
                     target->damageCapability(this->objectValue);
-                if (killTimeTarget > DAT_0056ebc8) {
+                if (killTimeTarget > g_unit_ai_zero_float) {
                     killTimeTarget = target->hp / killTimeTarget;
                 } else {
                     killTimeTarget = 25000.0f;
@@ -3009,7 +3009,7 @@ compare_attacker:
 
                 float killTimeAttacker =
                     attacker->damageCapability(this->objectValue);
-                if (killTimeAttacker > DAT_0056ebc8) {
+                if (killTimeAttacker > g_unit_ai_zero_float) {
                     killTimeAttacker = attacker->hp / killTimeAttacker;
                 } else {
                     killTimeAttacker = 25000.0f;
@@ -3065,7 +3065,7 @@ no_target_fallback:
             }
 
             if (this->moveTo(this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue,
-                             this->desiredTargetDistanceValue - DAT_0056ebf4, 1) != 0) {
+                             this->desiredTargetDistanceValue - g_unit_ai_desired_distance_adjustment, 1) != 0) {
                 int oldOrder = this->currentOrderValue;
                 this->currentOrderValue = -1;
                 this->currentOrderPriorityValue = -1;
@@ -3142,7 +3142,7 @@ no_target_fallback:
             }
 
             if (this->moveTo(this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue,
-                             this->desiredTargetDistanceValue - DAT_0056ebf4, 1) != 0) {
+                             this->desiredTargetDistanceValue - g_unit_ai_desired_distance_adjustment, 1) != 0) {
                 int oldOrder = this->currentOrderValue;
                 this->currentOrderValue = -1;
                 this->currentOrderPriorityValue = -1;
@@ -3221,7 +3221,7 @@ no_target_fallback:
             }
 
             if (this->moveTo(this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue,
-                             this->desiredTargetDistanceValue - DAT_0056ebf4, 1) != 0) {
+                             this->desiredTargetDistanceValue - g_unit_ai_desired_distance_adjustment, 1) != 0) {
                 int oldOrder = this->currentOrderValue;
                 this->currentOrderValue = -1;
                 this->currentOrderPriorityValue = -1;
@@ -3763,7 +3763,7 @@ int UnitAIModule::processMisc() {
             yDiff = -10.0f;
         }
 
-        if (xDiff < DAT_0056ec00 || xDiff > DAT_0056ec08 || yDiff < DAT_0056ec00 || yDiff > DAT_0056ec08) {
+        if (xDiff < g_unit_ai_coordinate_lower_bound || xDiff > g_unit_ai_coordinate_upper_bound || yDiff < g_unit_ai_coordinate_lower_bound || yDiff > g_unit_ai_coordinate_upper_bound) {
             float distance;
             if (this->currentTargetValue != invalidValue) {
                 this->currentTargetXValue = target->world_x;

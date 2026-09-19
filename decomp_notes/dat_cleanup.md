@@ -152,6 +152,20 @@ original storage as a reviewed symbol.
 | `DAT_0056e394` | named | This read-only zero float is the missile minimum-speed fallback. |
 | `DAT_0056e6c8`, `DAT_0056e6cc` | named | These read-only coordinate adjustments bound transport terrain checks. |
 | `DAT_0056e0b8`, `DAT_0056e0d0`, `DAT_0056e138`, `DAT_0056e1a0`, `DAT_0056e1a4`, `DAT_0056e1a8`, `DAT_0056e210`, `DAT_0056e318`, `DAT_0056e400`, `DAT_0056e418`, `DAT_0056e63c`, `DAT_0056e640`, `DAT_0056e644`, `DAT_0056e648`, `DAT_0056e6c0`, `DAT_0056e784`, `DAT_0056e788`, `DAT_0056e80c`, `DAT_0056e810`, `DAT_0056ebb8`, and `DAT_0056ebbc` | removed | These read-only values have no source references or PDB symbols. Their owners use direct literals or do not need separate storage. |
+| `DAT_0056ebc0` | named | This read-only `100.0f` scales distance-based unit-AI priority and base damage. |
+| `DAT_0056ebc4` | named | This read-only `0.01f` scales the high-difficulty reaction distance. |
+| `DAT_0056ebc8` | named | This read-only zero float gates unit-AI damage, distance, and coordinate checks. |
+| `DAT_0056ebd0` | named | This read-only `1.0f` adjusts unit-AI map upper bounds and the minimum target hit-point test. |
+| `DAT_0056ebd4` | named | This read-only `-1.0f` adjusts the unit-AI weapon-range test. |
+| `DAT_0056ebd8` | named | This read-only `50.0f` scales target damage capability in unit-AI threat estimates. |
+| `DAT_0056ebdc` | named | This read-only `0.5f` scales distance for multi-attacker threat estimates. |
+| `DAT_0056ebe0` | named | This read-only `-5.0f` adjusts the unit-AI resource line-of-sight limit. |
+| `DAT_0056ebe4` | named | This read-only `-0.5f` adjusts unit-AI coordinate samples. |
+| `DAT_0056ebf4` | named | This read-only `-2.0f` adjusts unit-AI desired target distance. |
+| `DAT_0056ec00`, `DAT_0056ec08` | named | These read-only `-1.0` and `1.0` doubles bound unit-AI target-coordinate changes. |
+| `DAT_0056ee78` | named | This read-only `0.001` double is the minimum sprite animation interval. |
+| `DAT_0056ee80` | named | This read-only scale converts random values to sprite frame time. |
+| `DAT_0056ebec`, `DAT_0056ebf8`, `DAT_0056ebe8`, `DAT_0056ee00`, and `DAT_0056ee88` | removed | These read-only values have no source references or PDB symbols. Their owners use direct literals or do not need separate storage. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |

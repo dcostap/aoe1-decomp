@@ -123,7 +123,7 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* new_sprite)
     last_frame = 0;
     animate_interval = sprite->duration;
 
-    if (animate_interval < DAT_0056ee78) {
+    if (animate_interval < g_sprite_minimum_animation_interval) {
         animate_interval = 0.001f;
     }
 
@@ -131,7 +131,7 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* new_sprite)
         count = (int)sprite->frame_num;
         tot_time = (float)count * sprite->duration + sprite->pause_between_loops;
         rnd = debug_rand("C:\\msdev\\work\\age1_x1\\asprite.cpp", 183);
-        frame_time = (float)rnd * tot_time * DAT_0056ee80;
+        frame_time = (float)rnd * tot_time * g_sprite_random_frame_scale;
         frame = (short)(frame_time / sprite->duration);
 
         if (frame >= sprite->frame_num) {
@@ -205,7 +205,7 @@ void RGE_Active_Animated_Sprite::update(float time, float speed) {
                 else
                     animate_interval = sprite->duration * sprite->base_speed / speed;
 
-                if (animate_interval < DAT_0056ee78)
+                if (animate_interval < g_sprite_minimum_animation_interval)
                     animate_interval = 0.001f;
 
                 if (frame_looped != 0) {
