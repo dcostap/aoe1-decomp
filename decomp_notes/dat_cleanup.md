@@ -174,6 +174,15 @@ original storage as a reviewed symbol.
 | `DAT_00575368` | named | This read-only `0.35` double is the trade modifier threshold. |
 | `DAT_00575370` | named | This read-only `75.0f` caps a trade transfer amount. |
 | `DAT_005753d8` | removed | This read-only value has no source references or PDB symbols. |
+| `DAT_005758b0` | named | This read-only `3.0f` scales generic AI evasive movement and ranged rate-of-fire movement. |
+| `DAT_005758bc` | named | This read-only `1.0f` is the soldier AI range and evasive-distance threshold. |
+| `DAT_005758c0` | named | This read-only `2.0f` is the soldier AI fallback coordinate offset. |
+| `DAT_005758c4` | named | This read-only zero float gates ranged and priest AI retreat movement. |
+| `DAT_005758d8` | named | This read-only `7.0f` scales fishing-ship evasive movement. |
+| `DAT_005758dc` | named | This read-only `4.0f` offsets soldier AI random evasive coordinates. |
+| `DAT_005758e0` | named | This read-only `10.0f` selects the soldier AI coordinate fallback. |
+| `DAT_005758e4` | named | This read-only `-2.0f` adjusts soldier AI fallback coordinates. |
+| `DAT_005758b4`, `DAT_005758b8`, `DAT_005758c8`, `DAT_005758cc`, `DAT_005758d0`, and `DAT_005758d4` | removed | These read-only values have no source references or PDB symbols. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |

@@ -100,7 +100,7 @@ int TribeHuntedAnimalUnitAIModule::processIdle(int doSearch) {
     if (targetID != -1) {
         target = objectValue->owner->world->object(targetID);
         if (target != 0) {
-            evasiveMoveDistance = objectValue->maximumSpeed() * DAT_005758b0;
+            evasiveMoveDistance = objectValue->maximumSpeed() * g_ai_evasive_distance_scale;
             xDiff = target->world_x - objectValue->world_x;
             yDiff = target->world_y - objectValue->world_y;
             distanceDiff = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
@@ -425,8 +425,8 @@ TribeRangedUnitAIModule2::TribeRangedUnitAIModule2(RGE_Static_Object* o, int iQS
     : UnitAIModule(o, iQS) {}
 
 
-extern float DAT_005758b0;
-extern float DAT_005758c4;
+extern float g_ai_evasive_distance_scale;
+extern float g_ranged_ai_zero_distance;
 extern "C" double __cdecl sqrt(double);
 
 
@@ -442,7 +442,7 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* nEvent, unsigned long u
     target = 0;
     if (this->currentActionValue != 0x258 ||
         (target = this->objectValue->owner->world->object(this->currentTargetValue)) == 0 ||
-        target->getSpeed() == DAT_005758c4)
+        target->getSpeed() == g_ranged_ai_zero_distance)
         return 2;
 
     this->order(this->objectValue->id, 0x2bc, this->currentTargetValue, -1,
@@ -450,7 +450,7 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* nEvent, unsigned long u
                 this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
 
     evasiveMoveDistance = this->objectValue->maximumSpeed() *
-                          this->objectValue->rateOfFire() * DAT_005758b0;
+                          this->objectValue->rateOfFire() * g_ai_evasive_distance_scale;
     xDiff = target->world_x - this->objectValue->world_x;
     yDiff = target->world_y - this->objectValue->world_y;
 
@@ -1208,7 +1208,7 @@ int TribePriestUnitAIModule::processIdle(int doSearch) {
         float dist = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
         float distanceDiff = this->objectValue->weaponRange() - dist;
 
-        if (distanceDiff <= DAT_005758c4) {
+        if (distanceDiff <= g_ranged_ai_zero_distance) {
             return 5;
         }
 
@@ -1681,7 +1681,7 @@ after_add:
 
 
 
-extern float DAT_005758d8; // 7.0f
+extern float g_fishing_ship_evasive_distance_scale;
 
 
 int TribeFishingShipUnitAIModule::processIdle(int doSearch) {
@@ -1692,7 +1692,7 @@ int TribeFishingShipUnitAIModule::processIdle(int doSearch) {
             RGE_Static_Object* target = objectValue->owner->world->object(targetID);
 
             if (target != 0) {
-                float evasiveMoveDistance = objectValue->maximumSpeed() * DAT_005758d8;
+                float evasiveMoveDistance = objectValue->maximumSpeed() * g_fishing_ship_evasive_distance_scale;
                 float xDiff = target->world_x - objectValue->world_x;
                 float yDiff = target->world_y - objectValue->world_y;
                 float distanceDiff = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
@@ -1760,11 +1760,11 @@ int TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int oType) {
 
 
 
-extern float DAT_005758bc;
-extern float DAT_005758c0;
-extern float DAT_005758dc;
-extern float DAT_005758e0;
-extern float DAT_005758e4;
+extern float g_soldier_evasive_distance_threshold;
+extern float g_soldier_evasive_coordinate_offset;
+extern float g_soldier_random_evasive_offset;
+extern float g_soldier_evasive_coordinate_threshold;
+extern float g_soldier_evasive_fallback_adjustment;
 
 int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     NotifyEvent* event = nEvent;
@@ -1800,22 +1800,22 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
 
         newX =
             (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 2428) % 8) +
-            (this->objectValue->world_x - DAT_005758dc);
+            (this->objectValue->world_x - g_soldier_random_evasive_offset);
         if (newX == this->objectValue->world_x) {
-            if (newX > DAT_005758e0)
-                newX -= DAT_005758c0;
+            if (newX > g_soldier_evasive_coordinate_threshold)
+                newX -= g_soldier_evasive_coordinate_offset;
             else
-                newX -= DAT_005758e4;
+                newX -= g_soldier_evasive_fallback_adjustment;
         }
 
         newY =
             (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 2435) % 8) +
-            (this->objectValue->world_y - DAT_005758dc);
+            (this->objectValue->world_y - g_soldier_random_evasive_offset);
         if (newY == this->objectValue->world_y) {
-            if (newY > DAT_005758e0)
-                newY -= DAT_005758c0;
+            if (newY > g_soldier_evasive_coordinate_threshold)
+                newY -= g_soldier_evasive_coordinate_offset;
             else
-                newY -= DAT_005758e4;
+                newY -= g_soldier_evasive_fallback_adjustment;
         }
 
         if (this->intelligentEvasiveMoveTo(newX, newY, this->objectValue->world_z, 1, 1) != 1)
@@ -1825,7 +1825,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     }
 
     case 0x200: {
-        if (this->objectValue->owner->computerPlayer() != 0 && this->objectValue->weaponRange() >= DAT_005758bc &&
+        if (this->objectValue->owner->computerPlayer() != 0 && this->objectValue->weaponRange() >= g_soldier_evasive_distance_threshold &&
             this->objectValue->master_obj->object_group != 0x1A) {
             if (this->currentActionValue == 600) {
 
@@ -1835,7 +1835,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
 
                 evasiveMoveDistance = this->objectValue->weaponRange() -
                     this->objectValue->distance_to_object(target);
-                if (evasiveMoveDistance >= DAT_005758bc) {
+                if (evasiveMoveDistance >= g_soldier_evasive_distance_threshold) {
 
                     xDiff = target->world_x - this->objectValue->world_x;
                     yDiff = target->world_y - this->objectValue->world_y;
@@ -1958,7 +1958,7 @@ int TribeSoldierUnitAIModule::processIdle(int doSearch) {
                             this->objectValue->owner->world->object(targetID2);
                         if (target != 0) {
                             float evasiveMoveDistance =
-                                this->objectValue->maximumSpeed() * DAT_005758b0;
+                                this->objectValue->maximumSpeed() * g_ai_evasive_distance_scale;
                             float xDiff = target->world_x - this->objectValue->world_x;
                             float yDiff = target->world_y - this->objectValue->world_y;
                             float distanceDiff =
