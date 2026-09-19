@@ -151,7 +151,7 @@ RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Obje
     }
 
     // A negative-one coordinate skips terrain lookup.
-    if (target_x != DAT_00576540 && target_y != DAT_00576540) {
+    if (target_x != g_task_invalid_coordinate && target_y != g_task_invalid_coordinate) {
         short tile_x = (short)(int)target_x;
         short tile_y = (short)(int)target_y;
         RGE_Map* map = obj->owner->world->map;
@@ -176,7 +176,7 @@ int RGE_Task_List::is_attack_task(RGE_Task* task) {
 int RGE_Task_List::check_task(RGE_Task* task, RGE_Action_Object* obj, RGE_Static_Object* target_obj) {
     // Reject a missing held attribute or a non-positive amount.
     if (task->holding_attr == 1) {
-        if (target_obj->attribute_type_held == -1 || target_obj->attribute_amount_held <= DAT_00576544)
+        if (target_obj->attribute_type_held == -1 || target_obj->attribute_amount_held <= g_task_nonpositive_amount_threshold)
             return 0;
     }
 

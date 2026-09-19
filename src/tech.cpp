@@ -11,7 +11,7 @@
 #pragma warning(disable: 4035 4805)
 
 extern float save_game_version;
-extern double DAT_005766d8;
+extern double g_tech_zero_attribute;
 
 void __cdecl getstring(char** destination, char* source);
 void __cdecl rge_read(int file, void* data, int size);
@@ -518,7 +518,7 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech() {
             }
         }
     } while (changed);
-    if (active_count == 0 && this->owner->attributes[0x27] == DAT_005766d8) {
+    if (active_count == 0 && this->owner->attributes[0x27] == g_tech_zero_attribute) {
         this->owner->attributes[0x27] = 1.0f;
     }
     return 1;

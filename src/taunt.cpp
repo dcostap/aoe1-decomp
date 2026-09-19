@@ -8,8 +8,8 @@
 
 extern "C" int __cdecl _strnicmp(const char*, const char*, unsigned int);
 // These anonymous literals are the !MUTE and !NOMUTE command strings.
-extern const char DAT_00576548[];
-extern const char DAT_00576550[];
+extern const char s_taunt_mute_command[];
+extern const char s_taunt_nomute_command[];
 
 void __cdecl operator delete(void* ptr);
 
@@ -26,11 +26,11 @@ TTaunt::~TTaunt() {
 int TTaunt::PlayTauntStr(char* Msg, unsigned char Local) {
     int taunt_no;
 
-    if (_strnicmp(Msg, DAT_00576548, strlen(DAT_00576548)) == 0 && Local) {
+    if (_strnicmp(Msg, s_taunt_mute_command, strlen(s_taunt_mute_command)) == 0 && Local) {
         this->Mute = 1;
     }
 
-    if (_strnicmp(Msg, DAT_00576550, strlen(DAT_00576550)) == 0 && Local) {
+    if (_strnicmp(Msg, s_taunt_nomute_command, strlen(s_taunt_nomute_command)) == 0 && Local) {
         this->Mute = 0;
     }
 

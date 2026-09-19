@@ -7,7 +7,7 @@
 #include "../include/rge_fio.h"
 
 extern float save_game_version;
-extern float DAT_0057677c;
+extern float g_master_combat_pierce_armor_save_version;
 
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
     TRIBE_Master_Combat_Object* other_object, int do_setup)
@@ -71,7 +71,7 @@ int TRIBE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites,
     rge_read(infile, &id_of_building_obj, 2);
     rge_read(infile, &button_location, 1);
 
-    if (save_game_version >= DAT_0057677c) {
+    if (save_game_version >= g_master_combat_pierce_armor_save_version) {
         rge_read(infile, &orig_pierce_armor, 2);
         return 1;
     }

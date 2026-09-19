@@ -387,19 +387,11 @@ float g_fishing_ship_evasive_distance_scale = 7.0f;
 float g_soldier_random_evasive_offset = 4.0f;
 float g_soldier_evasive_coordinate_threshold = 10.0f;
 float g_soldier_evasive_fallback_adjustment = -2.0f;
-float DAT_00576540 = -1.0f;
-float DAT_00576544 = 0.0f;
+float g_task_invalid_coordinate = -1.0f;
+float g_task_nonpositive_amount_threshold = 0.0f;
 const char s_NOMUTE_00576551[7] = { 0x4E, 0x4F, 0x4D, 0x55, 0x54, 0x45, 0x00 };
-float DAT_00576570 = -0.5f;
-float DAT_00576574 = 0.0f;
-double DAT_00576578 = 0.0;
-float DAT_005766c0 = 7.03000021f;
-double DAT_005766c8 = 1.0;
-float DAT_005766d0 = 0.0f;
-double DAT_005766d8 = 0.0;
-float DAT_005766e0 = 100.0f;
-float DAT_005766f8 = 0.00100000005f;
-float DAT_0057677c = 7.01000023f;
+double g_tech_zero_attribute = 0.0;
+float g_master_combat_pierce_armor_save_version = 7.01000023f;
 float DAT_00576818 = 5.0f;
 float DAT_0057681c = 5.30000019f;
 float DAT_00576820 = 7.03000021f;
@@ -955,8 +947,8 @@ int useComputerPlayers = 1;
 
 // Original string storage. All current references have exact function evidence.
 // See decomp_notes/executable_build_evidence/string_definitions.json.
-extern const char DAT_00576548[] = "!MUTE";
-extern const char DAT_00576550[] = "!NOMUTE";
+extern const char s_taunt_mute_command[] = "!MUTE";
+extern const char s_taunt_nomute_command[] = "!NOMUTE";
 char STR_STAT_OBJ[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 char _s_Release[] = "Release";
 char close_confirmation_text[] = "CloseProgramDialog";

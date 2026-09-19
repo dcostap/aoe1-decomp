@@ -183,6 +183,12 @@ original storage as a reviewed symbol.
 | `DAT_005758e0` | named | This read-only `10.0f` selects the soldier AI coordinate fallback. |
 | `DAT_005758e4` | named | This read-only `-2.0f` adjusts soldier AI fallback coordinates. |
 | `DAT_005758b4`, `DAT_005758b8`, `DAT_005758c8`, `DAT_005758cc`, `DAT_005758d0`, and `DAT_005758d4` | removed | These read-only values have no source references or PDB symbols. |
+| `DAT_00576540` | named | This read-only `-1.0f` marks an invalid task coordinate. |
+| `DAT_00576544` | named | This read-only zero float rejects non-positive task amounts. |
+| `DAT_00576548`, `DAT_00576550` | named | These read-only strings are the `!MUTE` and `!NOMUTE` taunt commands. |
+| `DAT_005766d8` | named | This read-only zero double checks the technology attribute total. |
+| `DAT_0057677c` | named | This read-only save-version threshold gates loading the original pierce-armor field. |
+| `DAT_00576570`, `DAT_00576574`, `DAT_00576578`, `DAT_005766c0`, `DAT_005766c8`, `DAT_005766d0`, `DAT_005766e0`, and `DAT_005766f8` | removed | These read-only values have no source references or PDB symbols. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |
