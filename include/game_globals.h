@@ -595,8 +595,6 @@ extern unsigned char DAT_0058c209;
 extern unsigned char DAT_0058c26d;
 extern const char s_tandard_0058c335[8];
 extern unsigned char DAT_0058c3b5;
-extern unsigned char DAT_0058ec21;
-extern unsigned char DAT_0058ec29;
 extern unsigned char DAT_0058ef30;
 extern unsigned char DAT_0058ef42;
 extern unsigned short DAT_0058ef48;
