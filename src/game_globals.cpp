@@ -556,12 +556,6 @@ TRIBE_Cliff_Higher_Check_Record TRIBE_Cliff_Higher_Check_Table[25] = {
     { 4.71999979f, 6.28000021f, 0.0f, 1.55999994f, 1.0f, -1.5f, 0.0f, 1.5f },
     { 1.57000005f, 3.1400001f, -1.0f, -1.0f, -1.5f, -1.5f, 1.5f, 1.5f }
 };
-unsigned char DAT_00587a55 = 0x65;
-unsigned char DAT_00587a5d = 0x61;
-unsigned char DAT_00587a65 = 0x69;
-unsigned char DAT_00587a6d = 0x72;
-unsigned char DAT_00587a75 = 0x61;
-unsigned char DAT_00587a7d = 0x61;
 unsigned char DAT_0058af79 = 0x61;
 const char s_domGameSpecialized_0058af7b[19] = { 0x64, 0x6F, 0x6D, 0x47, 0x61, 0x6D, 0x65, 0x53, 0x70, 0x65, 0x63, 0x69, 0x61, 0x6C, 0x69, 0x7A, 0x65, 0x64, 0x00 };
 unsigned char DAT_0058bbdd = 0x74;
