@@ -59,6 +59,11 @@ original storage as a reviewed symbol.
 | `DAT_005750e8` | named | This read-only `0.5` double is the minimum healing distance threshold. The new `g_heal_distance_threshold` name states that role. |
 | `DAT_00574524` | named | This read-only zero is used by the spawn panel when it checks for a held attribute. The new `g_spawn_panel_empty_attribute_amount` name states that role. |
 | `DAT_00574528` | named | This read-only zero double is compared with a sprite's accumulated delta time. The new `g_sprite_zero_delta_time` name states that role. |
+| `DAT_0057473c` | named | This read-only `100.0f` scales health to a percentage in `RGE_Static_Object::check_damage_sprites`. |
+| `DAT_00574740` | named | This read-only random scale converts damage-sprite placement values to fractions. |
+| `DAT_00574748` | named | This read-only `3.0f` sets the lower object-bounds adjustment. |
+| `DAT_0057474c` | named | This read-only `-3.0f` sets the upper object-bounds adjustment. |
+| `DAT_00574718`, `DAT_00574724` through `DAT_00574738`, `DAT_00574744`, `DAT_00574750`, `DAT_00574758`, and `DAT_00574764` through `DAT_00574774` | removed | These read-only constants have no source references or PDB symbols. Their owners now use compiler literals or unrelated reviewed constants. |
 
 ## Related duplicate storage
 

@@ -1240,7 +1240,7 @@ void RGE_Static_Object::check_damage_sprites() {
         return;
     }
 
-    long health_percent = (long)(this->hp * DAT_0057473c / master->hp);
+    long health_percent = (long)(this->hp * g_damage_health_percent_scale / master->hp);
     unsigned char new_damage_percent = (unsigned char)(100 - health_percent);
     if (new_damage_percent == this->curr_damage_percent) {
         return;
@@ -1277,14 +1277,14 @@ void RGE_Static_Object::check_damage_sprites() {
             RGE_Master_Static_Object* random_master = this->master_obj;
             int random_value = debug_rand(s_stat_obj_cpp, 1908);
             float rand_x = (float)random_value * random_master->radius_x;
-            rand_x = rand_x * DAT_00574740 - random_master->radius_x;
+            rand_x = rand_x * g_damage_sprite_random_scale - random_master->radius_x;
             short x_part = (short)this->world_x;
             rand_x += this->world_x - (float)x_part;
 
             random_master = this->master_obj;
             random_value = debug_rand(s_stat_obj_cpp, 1909);
             float rand_y = (float)random_value * random_master->radius_y;
-            rand_y = rand_y * DAT_00574740 - random_master->radius_y;
+            rand_y = rand_y * g_damage_sprite_random_scale - random_master->radius_y;
             short y_part = (short)this->world_y;
             rand_y += this->world_y - (float)y_part;
 
@@ -2555,10 +2555,10 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float delta) {
         return 0;
     }
 
-    short min_x = (short)(this->world_x - DAT_00574748);
-    short min_y = (short)(this->world_y - DAT_00574748);
-    short max_x = (short)(this->world_x - DAT_0057474c);
-    short max_y = (short)(this->world_y - DAT_0057474c);
+    short min_x = (short)(this->world_x - g_object_bounds_min_adjustment);
+    short min_y = (short)(this->world_y - g_object_bounds_min_adjustment);
+    short max_x = (short)(this->world_x - g_object_bounds_max_adjustment);
+    short max_y = (short)(this->world_y - g_object_bounds_max_adjustment);
     RGE_Map* map = this->owner->world->map;
 
     RGE_Check_List* check_list = new RGE_Check_List;
