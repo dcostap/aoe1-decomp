@@ -69,7 +69,7 @@ public:
     void addToNotifyQueue(int a1, int a2, int a3);
     int addToOrderQueue(OrderEvent* order, int param2);
     int addToOrderQueue(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j);
-    int addToWaypointQueue(int param_1, int param_2);
+    int addToWaypointQueue(int x, int y);
     void askForHelp();
     int attackRoundupObject(int obj);
     int bestUnitToAttack();
@@ -80,7 +80,7 @@ public:
     int closestAttacker();
     int closestObject(int objType);
     int closestResourceObject(int resourceType);
-    int closestUndiscoveredTile(int* param_1, int* param_2, int param_3);
+    int closestUndiscoveredTile(int* tX, int* tY, int checkWaypointQueue);
     int convertObject(int targetId, int flag);
     int convertToLOSResourceType(int);
     int currentAction() const;
@@ -95,12 +95,12 @@ public:
     int defendPosition(float x, float y, float distance, int flag);
     float defenseBuffer();
     float desiredTargetDistance();
-    int enterObject(int param_1, int param_2);
-    int explore(int param_1, int param_2, int param_3);
-    int exploreAndDestroy(int param_1, int param_2, int param_3);
-    int followObject(int param_1, float param_2, int param_3);
+    int enterObject(int targetID, int unconditional);
+    int explore(int tX, int tY, int unconditional);
+    int exploreAndDestroy(int tX, int tY, int unconditional);
+    int followObject(int targetID, float desiredDistance, int unconditional);
     int gatherObject(int targetId, int flag);
-    int hasOrderOnQueue(int param_1);
+    int hasOrderOnQueue(int orderNumber);
     int huntObject(int obj);
     unsigned long idleTimeout();
     unsigned long idleTimer();
@@ -113,11 +113,11 @@ public:
     int lastTarget();
     int lastTargetType();
     unsigned long lastUpdateTime();
-    void logDebug(char* param_1, ...);
+    void logDebug(char* textIn, ...);
     void lookAround();
     int mood();
     virtual int mostDangerousEnemy(float*);
-    int moveTo(float param_1, float param_2, float param_3, float param_4, int param_5);
+    int moveTo(float targetX, float targetY, float targetZ, float minimumRange, int unconditional);
     int notifyCommander(NotifyEvent* event);
     int notifyCommander(int a1, int a2, int a3);
     int numberAttackingUnits();
@@ -135,8 +135,7 @@ public:
     void runAwayFromAttackers();
     void search();
     unsigned long secondaryTimer();
-    virtual int seekAndDestroy(int param_1, int param_2, int param_3,
-                               int param_4);
+    virtual int seekAndDestroy(int targetID, int tX, int tY, int unconditional);
     void setAdjustedIdleTimeout(void);
     void setCurrentAction(int value);
     void setCurrentOrder(int value);
@@ -147,15 +146,15 @@ public:
     void setDefenseBuffer(float v);
     void setPlayStatus(AIPlayStatus* status);
     int stopObject(int param);
-    int transportObject(float param_1, float param_2, float param_3, int param_4);
+    int transportObject(float tX, float tY, float tZ, int unconditional);
     void unload(int a1);
     void updateGroup(int groupIndex);
-    unsigned char visibleStatus(RGE_Visible_Map* param_1, int param_2, int param_3);
+    unsigned char visibleStatus(RGE_Visible_Map* vMap, int x, int y);
     int waypoint(int);
     int waypointQueueSize();
     int evasiveMoveTo(float x, float y, float z, int flag);
     int intelligentEvasiveMoveTo(float x, float y, float z, int targetId, int flag);
-    int update(unsigned long param_1);
+    int update(unsigned long uTime);
     int selectNewPlayPhase(int playNumber, int param2);
     int processNotify(void* notifyEvent);
     void processMisc();
