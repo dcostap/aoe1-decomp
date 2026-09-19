@@ -101,6 +101,13 @@ original storage as a reviewed symbol.
 | `DAT_00570508` | named | This read-only zero double is the positive damage-difference threshold. |
 | `DAT_00570510` | named | This read-only `1.0` double is the minimum total threshold for base damage ability. |
 | `DAT_00570518` | named | This read-only `1.0f` is the fallback base damage ability total. |
+| `DAT_00570610` | named | This read-only `7.04f` value gates static-object outline fields during loading. |
+| `DAT_00570614` | named | This read-only `7.12f` value gates the static-object copy ID during loading. |
+| `DAT_00570618` | named | This read-only zero float is used by static-object radius, terrain, and distance checks. |
+| `DAT_0057061c` | named | This read-only coordinate epsilon trims static-object placement bounds. |
+| `DAT_00570620` | named | This read-only zero double is used by static-object map and radius checks. |
+| `DAT_00570628` | named | This read-only `3.0f` sets the lower static-object placement bounds. |
+| `DAT_0057062c` | named | This read-only `-3.0f` sets the upper static-object placement bounds. |
 
 ## Related duplicate storage
 

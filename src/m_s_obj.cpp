@@ -17,13 +17,13 @@
 
 #include "../include/rge_fio.h"
 extern float save_game_version;
-extern float DAT_00570610;
-extern float DAT_00570614;
-extern float DAT_00570618;
-extern float DAT_0057061c;
-extern double DAT_00570620;
-extern float DAT_00570628;
-extern float DAT_0057062c;
+extern float g_static_object_save_version_7_04;
+extern float g_static_object_save_version_7_12;
+extern float g_static_object_zero_float;
+extern float g_static_object_coordinate_epsilon;
+extern double g_static_object_zero;
+extern float g_static_object_bounds_min_adjustment;
+extern float g_static_object_bounds_max_adjustment;
 
 RGE_Master_Static_Object::RGE_Master_Static_Object(
     RGE_Master_Static_Object* other_object, int do_setup) {
@@ -205,7 +205,7 @@ int RGE_Master_Static_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     rge_read(file_handle, &this->create_doppleganger_on_death, 1);
     rge_read(file_handle, &this->resource_group, 1);
 
-    if (!(save_game_version < DAT_00570610)) {
+    if (!(save_game_version < g_static_object_save_version_7_04)) {
         rge_read(file_handle, &this->draw_flag, 1);
         rge_read(file_handle, &this->draw_color, 1);
         rge_read(file_handle, &this->outline_radius_x, 4);
@@ -268,7 +268,7 @@ int RGE_Master_Static_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
         this->name = 0;
     }
 
-    if (!(save_game_version < DAT_00570614)) {
+    if (!(save_game_version < g_static_object_save_version_7_12)) {
         rge_read(file_handle, &this->copy_id, 2);
     }
 
@@ -455,13 +455,13 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     this->resource_group = static_cast<unsigned char>(temp_draw_flag);
     this->draw_color = static_cast<unsigned char>(temp_elevation_flag);
 
-    if (this->outline_radius_x == DAT_00570618 || this->outline_radius_x != this->outline_radius_x) {
+    if (this->outline_radius_x == g_static_object_zero_float || this->outline_radius_x != this->outline_radius_x) {
         this->outline_radius_x = this->radius_x;
     }
-    if (this->outline_radius_y == DAT_00570618 || this->outline_radius_y != this->outline_radius_y) {
+    if (this->outline_radius_y == g_static_object_zero_float || this->outline_radius_y != this->outline_radius_y) {
         this->outline_radius_y = this->radius_y;
     }
-    if (this->outline_radius_z == DAT_00570618 || this->outline_radius_z != this->outline_radius_z) {
+    if (this->outline_radius_z == g_static_object_zero_float || this->outline_radius_z != this->outline_radius_z) {
         this->outline_radius_z = this->radius_z;
     }
 
@@ -844,11 +844,11 @@ unsigned char RGE_Master_Static_Object::check_placement(
     }
 
     float min_x_value = col - radius_x;
-    float max_x_value = col + radius_x - DAT_0057061c;
+    float max_x_value = col + radius_x - g_static_object_coordinate_epsilon;
     float min_y_value = row - radius_y;
-    float max_y_value = row + radius_y - DAT_0057061c;
+    float max_y_value = row + radius_y - g_static_object_coordinate_epsilon;
 
-    if (!(min_x_value >= DAT_00570620) || !(max_x_value < (float)map->map_width) || !(min_y_value >= DAT_00570620) ||
+    if (!(min_x_value >= g_static_object_zero) || !(max_x_value < (float)map->map_width) || !(min_y_value >= g_static_object_zero) ||
         !(max_y_value < (float)map->map_height)) {
         return 7;
     }
@@ -940,7 +940,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
     for (short x_index = x1; x_index <= x2; x_index++) {
         for (short y_index = y1; y_index <= y2; y_index++) {
             RGE_Tile* tile = &map->map_row_offset[y_index][x_index];
-            if (!(terrain_table[tile->terrain_type] > DAT_00570618)) {
+            if (!(terrain_table[tile->terrain_type] > g_static_object_zero_float)) {
                 return 2;
             }
 
@@ -965,14 +965,14 @@ unsigned char RGE_Master_Static_Object::check_placement(
         return 5;
     }
 
-    if (!(radius_x > DAT_00570618) && !(radius_y > DAT_00570618)) {
+    if (!(radius_x > g_static_object_zero_float) && !(radius_y > g_static_object_zero_float)) {
         return 0;
     }
 
-    short object_min_x = (short)(long)(col - DAT_00570628);
-    short object_min_y = (short)(long)(row - DAT_00570628);
-    short object_max_x = (short)(long)(col - DAT_0057062c);
-    short object_max_y = (short)(long)(row - DAT_0057062c);
+    short object_min_x = (short)(long)(col - g_static_object_bounds_min_adjustment);
+    short object_min_y = (short)(long)(row - g_static_object_bounds_min_adjustment);
+    short object_max_x = (short)(long)(col - g_static_object_bounds_max_adjustment);
+    short object_max_y = (short)(long)(row - g_static_object_bounds_max_adjustment);
 
     if (object_min_x < 0) object_min_x = 0;
     if (object_max_x >= map->map_width) {
@@ -983,7 +983,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
         object_max_y = (short)map->map_height - 1;
     }
 
-    if (check_objects != 0 && (can_be_built_on_flag != 0 || this->radius_z > DAT_00570620) &&
+    if (check_objects != 0 && (can_be_built_on_flag != 0 || this->radius_z > g_static_object_zero) &&
         object_min_y <= object_max_y) {
         for (short y_index = object_min_y; y_index <= object_max_y; y_index++) {
             RGE_Tile* tile =
@@ -998,15 +998,15 @@ unsigned char RGE_Master_Static_Object::check_placement(
                         float object_radius_x = master->radius_x;
                         float object_radius_y = master->radius_y;
                         float object_radius_z = master->radius_z;
-                        if (object_radius_x > DAT_00570620 && object_radius_y > DAT_00570620 &&
-                            ((object_radius_z > DAT_00570620 && this->radius_z > DAT_00570620) ||
-                             (!(object_radius_z > DAT_00570620) && !(this->radius_z > DAT_00570620)))) {
+                        if (object_radius_x > g_static_object_zero && object_radius_y > g_static_object_zero &&
+                            ((object_radius_z > g_static_object_zero && this->radius_z > g_static_object_zero) ||
+                             (!(object_radius_z > g_static_object_zero) && !(this->radius_z > g_static_object_zero)))) {
                             float distance_y = object->world_y - row;
                             float distance_x = object->world_x - col;
-                            if (distance_y < DAT_00570618) {
+                            if (distance_y < g_static_object_zero_float) {
                                 distance_y = -distance_y;
                             }
-                            if (distance_x < DAT_00570618) {
+                            if (distance_x < g_static_object_zero_float) {
                                 distance_x = -distance_x;
                             }
                             if (!(distance_x >= object_radius_x + radius_x) &&
