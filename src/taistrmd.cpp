@@ -871,7 +871,7 @@ TribeStrategyAIModule::TribeStrategyAIModule(void* pW, int playerID)
 
 
 extern float save_game_version;
-extern float DAT_00575690;
+extern float g_strategy_ai_save_version_1_5;
 
 
 TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
@@ -891,7 +891,7 @@ TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
     rge_read(infile, &this->targetAttributeValue, 4);
     rge_read(infile, &this->targetNumberValue, 4);
     rge_read(infile, &this->victoryConditionChangeTimeout, 4);
-    if (save_game_version >= DAT_00575690) {
+    if (save_game_version >= g_strategy_ai_save_version_1_5) {
         rge_read(infile, &this->difficultyLevel, 4);
     }
 

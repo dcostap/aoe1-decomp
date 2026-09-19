@@ -21,8 +21,8 @@ typedef unsigned char uchar;
 
 extern int startLoggingAI;
 extern float save_game_version;
-extern float DAT_00575618;
-extern float DAT_0057561c;
+extern float g_main_decision_save_version_1_2;
+extern float g_main_decision_save_version_7_08;
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     void* pW, int playerID, char* playerName, TRIBE_Player* aiP, char* buildListName, char* cityPlanName,
@@ -150,7 +150,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     rge_read(infile, &this->lastDiplomacyUpdateTime, 4);
     rge_read(infile, &this->lastTacticalUpdateTime, 4);
 
-    if (save_game_version >= DAT_00575618) {
+    if (save_game_version >= g_main_decision_save_version_1_2) {
         rge_read(infile, &this->lastTributeChatTime, 4);
         rge_read(infile, &this->tributeChatTimeout, 4);
         rge_read(infile, &this->waitingOnTribute, 4);
@@ -158,7 +158,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
         rge_read(infile, &this->tributeAddressed, 4);
         rge_read(infile, &this->tributeAmount, 4);
     }
-    if (save_game_version >= DAT_0057561c) {
+    if (save_game_version >= g_main_decision_save_version_7_08) {
         rge_read(infile, &this->decidedInitialDiplomacy, 4);
         rge_read(infile, &this->requiredDiplomacyTributeAmount, 4);
         rge_read(infile, this->tributeGiven, 36);

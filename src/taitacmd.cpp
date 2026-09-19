@@ -124,24 +124,24 @@ int TacticalAIGroup::load(int infile) {
 
     // Version detection: conditional field reads based on float version comparison
     // Asm pattern: fld [58EBCCh]; fcomp [5756E0h]; test ah,1; jne â†’ if (ver < threshold)
-    if (save_game_version >= DAT_005756e0) {
+    if (save_game_version >= g_tactical_group_save_version_6_94) {
         rge_read(infile, &this->consecutiveGatherAttemptsValue, 1);
     } else {
         this->consecutiveGatherAttemptsValue = 0;
     }
 
-    if (save_game_version >= DAT_005756e4) {
+    if (save_game_version >= g_tactical_group_save_version_7_13) {
         rge_read(infile, &this->numberObjectsToDestroyValue, 4);
         rge_read(infile, &this->objectsToDestroyValue, 80);
         rge_read(infile, &this->objectsToDestroyOwnerValue, 4);
         rge_read(infile, &this->objectsToDestroyCommanderZoneValue, 4);
     }
 
-    if (save_game_version >= DAT_005756e8) {
+    if (save_game_version >= g_tactical_group_save_version_7_14) {
         rge_read(infile, &this->lastAttackRoundupTime, 4);
     }
 
-    if (save_game_version >= DAT_005756ec) {
+    if (save_game_version >= g_tactical_group_save_version_7_20) {
         rge_read(infile, &this->lastAddedUnitTimeValue, 4);
     }
 
@@ -745,8 +745,8 @@ int TacticalAIGroup::task(TribeTacticalAIModule* t,
                 }
                 distance = object->distance_to_position(gatherLocationValue.x, gatherLocationValue.y,
                                                         gatherLocationValue.z) -
-                           DAT_005756f4;
-                if (distance < DAT_005756f0) {
+                           g_tactical_ai_distance_offset;
+                if (distance < g_tactical_ai_minimum_distance) {
                     distance = 0.0f;
                 }
                 if (!(distance >= gatherRange)) {
@@ -781,11 +781,11 @@ int TacticalAIGroup::task(TribeTacticalAIModule* t,
             {
                 float distance = object->distance_to_position(retreatLocationValue.x, retreatLocationValue.y,
                                                               retreatLocationValue.z) -
-                                 DAT_005756f4;
-                if (distance < DAT_005756f0) {
-                    distance = DAT_005756f0;
+                                 g_tactical_ai_distance_offset;
+                if (distance < g_tactical_ai_minimum_distance) {
+                    distance = g_tactical_ai_minimum_distance;
                 }
-                if (!(distance >= object->master_obj->los * DAT_005756f8)) {
+                if (!(distance >= object->master_obj->los * g_tactical_ai_retreat_los_factor)) {
                     t->logGroupDebug(idValue, s_log_23, *unit);
                 } else {
                     t->logGroupDebug(idValue, s_log_22, *unit);
@@ -826,7 +826,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* t,
                 t->taskExplorer(*unit, 0);
             } else if (randomRoll < t->strategicNumber(200)) {
                 t->logGroupDebug(idValue, s_log_36, *unit);
-                t->taskDefender(*unit, commanderValue, object->master_obj->los * DAT_005756fc, 99);
+                t->taskDefender(*unit, commanderValue, object->master_obj->los * g_tactical_ai_defender_los_factor, 99);
             } else {
                 t->logGroupDebug(idValue, s_log_37, *unit);
                 t->taskExplorer(*unit, 0);
@@ -1134,7 +1134,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* t,
                 t->taskWaterFisher(*unit, targetValue, targetLocationValue.x, targetLocationValue.y);
             } else {
                 t->logGroupDebug(idValue, s_log_47, *unit);
-                t->taskDefender(*unit, commanderValue, object->master_obj->los * DAT_005756fc, 99);
+                t->taskDefender(*unit, commanderValue, object->master_obj->los * g_tactical_ai_defender_los_factor, 99);
             }
         }
         inUseValue = 1;
@@ -1170,7 +1170,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* t,
                 t->taskWaterTrader(*unit, targetValue);
             } else {
                 t->logGroupDebug(idValue, s_log_53, *unit);
-                t->taskDefender(*unit, commanderValue, object->master_obj->los * DAT_005756fc, 99);
+                t->taskDefender(*unit, commanderValue, object->master_obj->los * g_tactical_ai_defender_los_factor, 99);
             }
         }
         inUseValue = 1;
