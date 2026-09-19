@@ -729,7 +729,7 @@ void TRIBE_Screen_Sed::init_module_variables() {
     this->bottom_panel = (TPanel*)0;
     this->set_player_first_flag = 0;
     button_cursor = this->scenario_mode_button;
-    for (index = 10; index != 0; index = index + -1) {
+    for (index = 10; index != 0; index = index - 1) {
         *button_cursor = (TButtonPanel*)0;
         button_cursor = button_cursor + 1;
     }
@@ -799,7 +799,7 @@ void TRIBE_Screen_Sed::init_module_variables() {
     this->object_panel = (TRIBE_Scenario_Editor_Panel_Object*)0;
     this->unit_list_size = 0;
     button_cursor = this->victory_cond_on;
-    for (index = 6; index != 0; index = index + -1) {
+    for (index = 6; index != 0; index = index - 1) {
         *button_cursor = (TButtonPanel*)0;
         button_cursor = button_cursor + 1;
     }
@@ -831,7 +831,7 @@ void TRIBE_Screen_Sed::init_module_variables() {
     this->victory_time_label = (TTextPanel*)0;
     this->victory_time = (TDropDownPanel*)0;
     button_cursor = this->victory_button;
-    for (index = 12; index != 0; index = index + -1) {
+    for (index = 12; index != 0; index = index - 1) {
         *button_cursor = (TButtonPanel*)0;
         button_cursor = button_cursor + 1;
     }

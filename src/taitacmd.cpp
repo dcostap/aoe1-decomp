@@ -1573,28 +1573,28 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
 
             do {
                 rge_read(infile, &tempUD, 20);
-                ((UnitData*)(value_ptr + -1))->id = tempUD.id;
+                ((UnitData*)(value_ptr - 1))->id = tempUD.id;
                 *value_ptr = tempUD.data1;
                 value_ptr[1] = tempUD.data2;
                 value_ptr[2] = tempUD.data3;
                 value_ptr[3] = tempUD.target;
                 value_ptr[4] = 0;
                 value_ptr = value_ptr + 6;
-                remaining = remaining + -1;
+                remaining = remaining - 1;
             } while (remaining != 0);
         } else {
             OldUnitData tempUD;
 
             do {
                 rge_read(infile, &tempUD, 16);
-                ((UnitData*)(value_ptr + -1))->id = tempUD.id;
+                ((UnitData*)(value_ptr - 1))->id = tempUD.id;
                 *value_ptr = tempUD.data1;
                 value_ptr[1] = tempUD.data2;
                 value_ptr[2] = tempUD.data3;
                 value_ptr[3] = -1;
                 value_ptr[4] = 0;
                 value_ptr = value_ptr + 6;
-                remaining = remaining + -1;
+                remaining = remaining - 1;
             } while (remaining != 0);
         }
     }
@@ -1725,42 +1725,42 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     do {
         rge_read(infile, value_ptr, 4);
         value_ptr = value_ptr + 1;
-        index = index + -1;
+        index = index - 1;
     } while (index != 0);
     value_ptr = this->desiredGathererDistribution;
     index = 4;
     do {
         rge_read(infile, value_ptr, 4);
         value_ptr = value_ptr + 1;
-        index = index + -1;
+        index = index - 1;
     } while (index != 0);
     value_ptr = this->neededResourceValue;
     index = 4;
     do {
         rge_read(infile, value_ptr, 4);
         value_ptr = value_ptr + 1;
-        index = index + -1;
+        index = index - 1;
     } while (index != 0);
     value_ptr = this->resourceDifferenceValue;
     index = 4;
     do {
         rge_read(infile, value_ptr, 4);
         value_ptr = value_ptr + 1;
-        index = index + -1;
+        index = index - 1;
     } while (index != 0);
     value_ptr = this->numberStoragePitsBuilt;
     index = 4;
     do {
         rge_read(infile, value_ptr, 4);
         value_ptr = value_ptr + 1;
-        index = index + -1;
+        index = index - 1;
     } while (index != 0);
     value_ptr = this->numberGranariesBuilt;
     index = 4;
     do {
         rge_read(infile, value_ptr, 4);
         value_ptr = value_ptr + 1;
-        index = index + -1;
+        index = index - 1;
     } while (index != 0);
     index = 0;
     do {
@@ -1842,7 +1842,7 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
         rge_read(infile, this->hitsByPlayer, 36);
     } else {
         value_ptr = this->hitsByPlayer;
-        for (remaining = 9; remaining != 0; remaining = remaining + -1) {
+        for (remaining = 9; remaining != 0; remaining = remaining - 1) {
             *value_ptr = 0;
             value_ptr = value_ptr + 1;
         }
@@ -9016,7 +9016,7 @@ int TribeTacticalAIModule::removeGatherer(int id) {
             this->gatherers[index].data2 = -1;
             this->gatherers[index].data3 = -1;
             this->gatherers[index].target = -1;
-            this->numberGatherersValue = this->numberGatherersValue + -1;
+            this->numberGatherersValue = this->numberGatherersValue - 1;
             for (; index < 0x31 && gatherer_data[5] != -1; gatherer_data = gatherer_data + 6) {
                 ((UnitData*)(gatherer_data - 1))->id = gatherer_data[5];
                 *gatherer_data = gatherer_data[6];
