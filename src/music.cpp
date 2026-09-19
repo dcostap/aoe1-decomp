@@ -662,7 +662,7 @@ void TMusic_System::do_fade() {
             this->stop_playing();
         }
 
-        this->fade_volume = this->fade_volume + (long)(time / (float)this->fade_time * DAT_00570c20);
+        this->fade_volume = this->fade_volume + (long)(time / (float)this->fade_time * g_music_fade_volume_scale);
         if (this->fade_volume <= -10000 - (long)(250.0f / (float)this->fade_time * 10000.0f)) {
             if (this->playing_track != 0) {
                 this->stop_playing();

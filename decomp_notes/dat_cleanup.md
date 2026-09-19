@@ -127,6 +127,8 @@ original storage as a reviewed symbol.
 | `DAT_00570b98`, `DAT_00570ba0`, `DAT_00570ba8`, and `DAT_00570bd8` | named | These read-only zero, waypoint-distance, radius-adjustment, and close-waypoint values control movement range checks. |
 | `DAT_00570bb0`, `DAT_00570bb8`, `DAT_00570bc8`, and `DAT_00570bd0` | named | These read-only turn-delta bounds control trivial movement and facet correction. |
 | `DAT_00570bc0`, `DAT_00570be0`, `DAT_00570bf0`, `DAT_00570bfc`, and `DAT_00570c00` | named | These read-only speed-offset, facet-angle, and angle-tolerance values control movement speed and facet selection. |
+| `DAT_00570c20` | named | This read-only `-10000.0f` value scales music fade volume. The new `g_music_fade_volume_scale` name states that role. |
+| `DAT_00570c24`, `DAT_00570c28`, and `DAT_00570c30` | removed | These read-only values have no source references or PDB symbols. Music code uses its own constants. |
 
 ## Related duplicate storage
 
