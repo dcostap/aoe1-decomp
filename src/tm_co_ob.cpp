@@ -7,7 +7,6 @@
 
 #include "../include/rge_fio.h"
 
-extern float save_game_version;
 
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
     TRIBE_Master_Combat_Object* other_object, int do_setup)

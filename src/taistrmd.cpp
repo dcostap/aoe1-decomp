@@ -871,7 +871,6 @@ TribeStrategyAIModule::TribeStrategyAIModule(void* pW, int playerID)
 }
 
 
-extern float save_game_version;
 
 
 TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)

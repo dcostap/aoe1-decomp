@@ -11,7 +11,6 @@
 
 #pragma warning(disable: 4035 4805)
 
-extern float save_game_version;
 
 void __cdecl getstring(char** destination, char* source);
 void __cdecl rge_read(int file, void* data, int size);

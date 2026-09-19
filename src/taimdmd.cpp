@@ -21,7 +21,6 @@
 typedef unsigned char uchar;
 
 extern int startLoggingAI;
-extern float save_game_version;
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     void* pW, int playerID, char* playerName, TRIBE_Player* aiP, char* buildListName, char* cityPlanName,
