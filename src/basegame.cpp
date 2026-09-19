@@ -242,6 +242,8 @@ enum {
     RGE_REQUIRED_DIRECTX_VERSION = 0x501
 };
 
+#define RGE_MB(value) ((unsigned long)(value) * 1024UL * 1024UL)
+
 int RGE_Base_Game::setup() {
     int temp_val;
     MEMORYSTATUS ms;
@@ -316,9 +318,9 @@ int RGE_Base_Game::setup() {
                 this->error_code = RGE_ERROR_SETUP;
             } else {
                 GlobalMemoryStatus(&ms);
-                if ((ms.dwTotalPageFile >= 20971520UL && ms.dwTotalVirtual >= 10485760UL)
-                    || (ms.dwTotalPageFile >= 10485760UL && ms.dwTotalVirtual >= 20971520UL)
-                    || ms.dwTotalVirtual >= 31457280UL) {
+                if ((ms.dwTotalPageFile >= RGE_MB(20) && ms.dwTotalVirtual >= RGE_MB(10))
+                    || (ms.dwTotalPageFile >= RGE_MB(10) && ms.dwTotalVirtual >= RGE_MB(20))
+                    || ms.dwTotalVirtual >= RGE_MB(30)) {
                     this->set_interface_messages();
 
                     if (debugActions == 1)
