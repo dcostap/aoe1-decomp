@@ -217,6 +217,7 @@ original storage as a reviewed symbol.
 | `DAT_00577a14` | named | This read-only `0.001f` converts world milliseconds to seconds. |
 | `DAT_00577a20` | named | This read-only zero double classifies zone-map passability rules. |
 | `DAT_00577a1c`, `DAT_00577a30`, `DAT_00577a88`, and `DAT_00577a90` | removed | These read-only values have no source references or PDB symbols. |
+| `DAT_005777e8`, `DAT_00577b20`, and `DAT_00577cd8` | removed | These read-only values have no source references or PDB symbols. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |
