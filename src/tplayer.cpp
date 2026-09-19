@@ -3425,10 +3425,10 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
                 if ((this->sel_object_properties & 0x80) == 0) {
                     goto finish;
                 }
-                if (ObjPlayer == 0x12 && this->attributes[27] == DAT_00576828) {
+                if (ObjPlayer == 0x12 && this->attributes[27] == g_player_selection_zero_attribute) {
                     goto finish;
                 }
-                if (ObjPlayer == 3 && this->attributes[28] == DAT_00576828) {
+                if (ObjPlayer == 3 && this->attributes[28] == g_player_selection_zero_attribute) {
                     goto finish;
                 }
                 if (ObjPlayer == 3 && (MstrObjId == 0x6D || MstrObjId == 0x114)) {

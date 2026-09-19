@@ -189,6 +189,8 @@ original storage as a reviewed symbol.
 | `DAT_005766d8` | named | This read-only zero double checks the technology attribute total. |
 | `DAT_0057677c` | named | This read-only save-version threshold gates loading the original pierce-armor field. |
 | `DAT_00576570`, `DAT_00576574`, `DAT_00576578`, `DAT_005766c0`, `DAT_005766c8`, `DAT_005766d0`, `DAT_005766e0`, and `DAT_005766f8` | removed | These read-only values have no source references or PDB symbols. |
+| `DAT_00576828` | named | This read-only zero float gates two player-selection attribute checks. |
+| `DAT_00576818`, `DAT_0057681c`, `DAT_00576820`, `DAT_00576824`, `DAT_0057682c`, `DAT_00576830`, `DAT_00576838`, `DAT_00576840`, `DAT_00576848`, `DAT_00576850`, `DAT_00576858`, `DAT_00576860`, `DAT_00576868`, and `DAT_0057686c` | removed | These read-only values have no source references or PDB symbols. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |
