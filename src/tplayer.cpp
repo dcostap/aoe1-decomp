@@ -87,7 +87,7 @@ TRIBE_Player::TRIBE_Player(int infile, TRIBE_World* gworld, unsigned char this_i
         this->history = new TRIBE_History_Info(-1);
     }
 
-    if (save_game_version >= 5.30000019f) {
+    if (save_game_version >= 5.3f) {
         rge_read(infile, &this->ruin_held_time, 4);
         rge_read(infile, &this->artifact_held_time, 4);
     } else {
@@ -97,7 +97,7 @@ TRIBE_Player::TRIBE_Player(int infile, TRIBE_World* gworld, unsigned char this_i
 
     if (this->type == 3) {
         int create_ai = 1;
-        if (save_game_version >= 7.03000021f) {
+        if (save_game_version >= 7.03f) {
             rge_read(infile, &create_ai, 4);
         }
         if (comm->IsHost() == 1 && create_ai == 1) {
@@ -399,7 +399,7 @@ void TRIBE_Player::load(int infile) {
     this->sleeping_objects->load_list(infile, this->world);
     this->doppleganger_objects = new RGE_Object_List;
 
-    if (save_game_version >= 7.09000015f) {
+    if (save_game_version >= 7.09f) {
         this->doppleganger_objects->load_list(infile, this->world);
     }
 }
