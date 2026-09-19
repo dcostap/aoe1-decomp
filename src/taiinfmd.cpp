@@ -312,7 +312,7 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 rge_read(infile, &this->lastWallPosition, 8);
                 rge_read(infile, &this->lastWallPosition2, 8);
 
-                if (!(save_game_version < DAT_00575550)) {
+                if (!(save_game_version < g_information_ai_save_version_1_6)) {
                     rge_read(infile, &this->numberGatesValue, 4);
                 } else {
                     rge_read(infile, &this->numberGatesValue, 8);
@@ -324,7 +324,7 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 }
 
                 rge_read(infile, &this->saveLearnInformationValue, 4);
-                if (!(save_game_version < DAT_00575550)) {
+                if (!(save_game_version < g_information_ai_save_version_1_6)) {
                     rge_read(infile, &tempInt_ffffffe8, 4);
                     rge_read(infile, this->learnFileName, tempInt_ffffffe8);
                     this->learnFileName[tempInt_ffffffe8] = '\0';
@@ -333,7 +333,7 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 }
 
                 rge_read(infile, this->fullyExploredZoneValue, 255);
-                if (!(save_game_version < DAT_00575554)) {
+                if (!(save_game_version < g_information_ai_save_version_2_5)) {
                     rge_read(infile, this->quadrantLog, 192);
                 } else {
                     for (int i8 = 0; i8 < 4; i8++) {
@@ -357,17 +357,17 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                     }
                 }
 
-                if (!(save_game_version < DAT_00575558)) {
+                if (!(save_game_version < g_information_ai_save_version_6_8)) {
                     rge_read(infile, this->dropsitesByAge, 64);
                 }
-                if (!(save_game_version < DAT_00575558)) {
+                if (!(save_game_version < g_information_ai_save_version_6_8)) {
                     rge_read(infile, this->closestDropsiteValue, 16);
                     rge_read(infile, this->closestDropsiteResourceID, 16);
                 }
-                if (!(save_game_version < DAT_0057555c)) {
+                if (!(save_game_version < g_information_ai_save_version_6_91)) {
                     rge_read(infile, &this->numberFoundForestTilesValue, 4);
                 }
-                if (!(save_game_version < DAT_00575560)) {
+                if (!(save_game_version < g_information_ai_save_version_6_99)) {
                     rge_read(infile, this->playHistory, 64000);
                 }
             }

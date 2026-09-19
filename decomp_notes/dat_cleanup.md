@@ -34,6 +34,7 @@ original storage as a reviewed symbol.
 | `DAT_00575690` | named | This `1.5f` value gates the strategy AI difficulty field during save-file loading. |
 | `DAT_005756e0` through `DAT_005756ec` | named | These four values gate fields in `TacticalAIGroup::load`. Their names state the owning type and version threshold. |
 | `DAT_005756f0` through `DAT_005756fc` | named | These four values control tactical distance clamping, offsets, and line-of-sight factors. Their names describe each use without claiming PDB provenance. |
+| `DAT_00575550` through `DAT_00575560` | named | These five values gate conditional fields in `TribeInformationAIModule` save-file loading. Their names state the owning module and version threshold. |
 
 ## Related duplicate storage
 
