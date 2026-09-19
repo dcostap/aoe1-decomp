@@ -3685,14 +3685,46 @@ char* TCommunications_Handler::GetCommInfo(unsigned char LineNum) {
 
     unsigned long now = debug_timeGetTime(com_hand_source_path, 5224);
     unsigned long t8, t7, t6, t5, t4, t3, t2, t1;
-    if (this->IsPlayerHuman(8) && this->Me != 8) t8 = now - this->LastPlayerCommunication[8]; else t8 = 0;
-    if (this->IsPlayerHuman(7) && this->Me != 7) t7 = now - this->LastPlayerCommunication[7]; else t7 = 0;
-    if (this->IsPlayerHuman(6) && this->Me != 6) t6 = now - this->LastPlayerCommunication[6]; else t6 = 0;
-    if (this->IsPlayerHuman(5) && this->Me != 5) t5 = now - this->LastPlayerCommunication[5]; else t5 = 0;
-    if (this->IsPlayerHuman(4) && this->Me != 4) t4 = now - this->LastPlayerCommunication[4]; else t4 = 0;
-    if (this->IsPlayerHuman(3) && this->Me != 3) t3 = now - this->LastPlayerCommunication[3]; else t3 = 0;
-    if (this->IsPlayerHuman(2) && this->Me != 2) t2 = now - this->LastPlayerCommunication[2]; else t2 = 0;
-    if (this->IsPlayerHuman(1) && this->Me != 1) t1 = now - this->LastPlayerCommunication[1]; else t1 = 0;
+    if (this->IsPlayerHuman(8) && this->Me != 8) {
+        t8 = now - this->LastPlayerCommunication[8];
+    } else {
+        t8 = 0;
+    }
+    if (this->IsPlayerHuman(7) && this->Me != 7) {
+        t7 = now - this->LastPlayerCommunication[7];
+    } else {
+        t7 = 0;
+    }
+    if (this->IsPlayerHuman(6) && this->Me != 6) {
+        t6 = now - this->LastPlayerCommunication[6];
+    } else {
+        t6 = 0;
+    }
+    if (this->IsPlayerHuman(5) && this->Me != 5) {
+        t5 = now - this->LastPlayerCommunication[5];
+    } else {
+        t5 = 0;
+    }
+    if (this->IsPlayerHuman(4) && this->Me != 4) {
+        t4 = now - this->LastPlayerCommunication[4];
+    } else {
+        t4 = 0;
+    }
+    if (this->IsPlayerHuman(3) && this->Me != 3) {
+        t3 = now - this->LastPlayerCommunication[3];
+    } else {
+        t3 = 0;
+    }
+    if (this->IsPlayerHuman(2) && this->Me != 2) {
+        t2 = now - this->LastPlayerCommunication[2];
+    } else {
+        t2 = 0;
+    }
+    if (this->IsPlayerHuman(1) && this->Me != 1) {
+        t1 = now - this->LastPlayerCommunication[1];
+    } else {
+        t1 = 0;
+    }
     sprintf(comm_info_buffers + 0x500, "LastComm: P1=%-5d  P2=%-5d  P3=%-5d  P4=%-5d P5=%-5d P6=%-5d P7=%-5d P8=%-5d", t1, t2, t3, t4, t5, t6, t7, t8);
 
     return comm_info_buffers + (static_cast<unsigned int>(LineNum) << 8);
