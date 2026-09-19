@@ -3380,7 +3380,8 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
                 if ((this->sel_object_properties & 0x10) == 0) {
                     goto finish;
                 }
-                if (DAT_0086bc8c == 1 && Obj_id == DAT_0086bc88) {
+                if (tplayer_globals::selectedObjectCount == 1 &&
+                    Obj_id == tplayer_globals::selectedObjectId) {
                     goto finish;
                 }
                 {
