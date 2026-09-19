@@ -96,7 +96,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
     }
 
     sprintf(temp_str, this->get_string(STRING_ID_DIPLOMACY_PAY_TRIBUTE_FORMAT),
-            static_cast<long>(rge_base_game->get_player()->attributes[46] * DAT_0056f880));
+            static_cast<long>(rge_base_game->get_player()->attributes[46] * g_diplomacy_attribute_percent_scale));
     if (!this->create_text(this, &this->title[6], temp_str, 440, 50, 180, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }

@@ -121,7 +121,7 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
     short maxx = (short)(map->map_width - 1);
     short maxy = (short)(map->map_height - 1);
     float r2 = radius * radius;
-    if (!(radius > DAT_0056f4a0)) return 0;
+    if (!(radius > g_combat_area_zero_range)) return 0;
 
     short x0;
     x0 = (short)((long)(x - radius));
@@ -151,14 +151,14 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
                     obj != static_cast<RGE_Combat_Object*>(ignore_object)) {
                     float dx = obj->world_x - x;
                     float dy = obj->world_y - y;
-                    if (dx < DAT_0056f4a8) dx = -dx;
-                    if (dy < DAT_0056f4a8) dy = -dy;
+                    if (dx < g_combat_area_zero_float) dx = -dx;
+                    if (dy < g_combat_area_zero_float) dy = -dy;
                     float radius_x = obj->master_obj->radius_x;
                     float radius_y = obj->master_obj->radius_y;
                     if (dx > radius_x) dx -= radius_x;
-                    else dx = DAT_0056f4a8;
+                    else dx = g_combat_area_zero_float;
                     if (dy > radius_y) dy -= radius_y;
-                    else dy = DAT_0056f4a8;
+                    else dy = g_combat_area_zero_float;
                     if (r2 > dx * dx + dy * dy) {
                         int rnd = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 250) * 100;
                         int chance = rnd / 0x7fff;
@@ -195,7 +195,7 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target,
         float radius_x = combat_master->radius_x;
         rangeDistance =
             (float)sqrt(radius_x * radius_x + radius_y * radius_y) +
-            combat_master->weapon_range - DAT_0056f4ac;
+            combat_master->weapon_range - g_combat_missile_range_adjustment;
         float angle1 = this->angle;
         float angle2 = this->angle;
         c = (float)cos(angle1);
@@ -210,7 +210,7 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target,
         missile->init_missile(attacker, target, rangeDistance);
         this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
 
-        if (static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->weapon_range > DAT_0056f49c &&
+        if (static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->weapon_range > g_combat_attack_modifier_one &&
             target->owner->computerPlayer() == 1) {
             target->notify(this->id, target->id, 0x20F, this->id, (long)target->hp, target->master_obj->hp);
         }
@@ -235,7 +235,7 @@ unsigned char RGE_Combat_Object::attack(float target_x, float target_y, float ta
         float radius_x = combat_master->radius_x;
         rangeDistance =
             (float)sqrt(radius_x * radius_x + radius_y * radius_y) +
-            combat_master->weapon_range - DAT_0056f4ac;
+            combat_master->weapon_range - g_combat_missile_range_adjustment;
         float angle1 = this->angle;
         float angle2 = this->angle;
         c = (float)cos(angle1);
@@ -290,7 +290,7 @@ float RGE_Combat_Object::calculateDamage(int weapon_num, RGE_Armor_Weapon_Info* 
                                          float attack_modifier, RGE_Player* attacking_player, RGE_Static_Object* attackingObject) {
     RGE_Master_Combat_Object* obj =
         static_cast<RGE_Master_Combat_Object*>(this->master_obj);
-    float mult = DAT_0056f49c;
+    float mult = g_combat_attack_modifier_one;
     short weaponKind = obj->defense_terrain_bonus;
     RGE_Armor_Weapon_Info* armorTbl = obj->armor;
     int nArmor = obj->armor_num;
@@ -302,7 +302,7 @@ float RGE_Combat_Object::calculateDamage(int weapon_num, RGE_Armor_Weapon_Info* 
         mult = tbl[weaponKind][cls];
     }
 
-    float total = DAT_0056f4a8;
+    float total = g_combat_area_zero_float;
 
     if (weapon_num > 0) {
         RGE_Armor_Weapon_Info* weapon = damage;
@@ -327,7 +327,7 @@ float RGE_Combat_Object::calculateDamage(int weapon_num, RGE_Armor_Weapon_Info* 
             float d = (float)weapon->value - (float)attack;
             float dmg = d * mult * attack_modifier;
 
-            if (dmg > DAT_0056f4a0) {
+            if (dmg > g_combat_area_zero_range) {
                 total += dmg;
             }
 

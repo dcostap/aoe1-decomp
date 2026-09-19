@@ -153,7 +153,7 @@ void RGE_Command::do_command_order(RGE_Command_Order* order) {
             } while (i != 0);
         }
 
-        if (maxX - minX <= DAT_0056f4d8 && maxY - minY <= DAT_0056f4d8) {
+        if (maxX - minX <= g_command_group_extent_limit && maxY - minY <= g_command_group_extent_limit) {
             totalX /= (float)unit_num;
             totalY /= (float)unit_num;
 
@@ -181,28 +181,28 @@ void RGE_Command::do_command_order(RGE_Command_Order* order) {
                         float adjustedYLocation =
                             (object->world_y - totalY) + order->location_y;
 
-                        if (adjustedXLocation < DAT_0056f4e0) {
+                        if (adjustedXLocation < g_command_zero_coordinate) {
                             adjustedXLocation = 1.0f;
                         } else {
                             float width =
                                 (float)object->owner->world->map->map_width;
                             if (adjustedXLocation >= width) {
-                                adjustedXLocation = width - DAT_0056f4e8;
+                                adjustedXLocation = width - g_command_map_boundary_adjustment;
                             }
                         }
 
-                        if (adjustedYLocation < DAT_0056f4e0) {
+                        if (adjustedYLocation < g_command_zero_coordinate) {
                             adjustedYLocation = 1.0f;
                         } else {
                             float height =
                                 (float)object->owner->world->map->map_height;
                             if (adjustedYLocation >= height) {
-                                adjustedYLocation = height - DAT_0056f4e8;
+                                adjustedYLocation = height - g_command_map_boundary_adjustment;
                             }
                         }
 
-                        if (target != 0 && (target->master_obj->radius_x > DAT_0056f4e0 ||
-                             target->master_obj->radius_y > DAT_0056f4e0)) {
+                        if (target != 0 && (target->master_obj->radius_x > g_command_zero_coordinate ||
+                             target->master_obj->radius_y > g_command_zero_coordinate)) {
                             object->do_command(target, adjustedXLocation, adjustedYLocation, 0.0f);
                         } else {
                             object->do_command(0, adjustedXLocation, adjustedYLocation, 0.0f);
@@ -339,7 +339,7 @@ void RGE_Command::do_command_move(RGE_Command_Order* order) {
                 ++unit;
             } while (--i);
         }
-        if (maxX - minX > DAT_0056f4d8 || maxY - minY > DAT_0056f4d8)
+        if (maxX - minX > g_command_group_extent_limit || maxY - minY > g_command_group_extent_limit)
             goto simple;
 
         totalX /= (float)unit_num;
@@ -366,26 +366,26 @@ void RGE_Command::do_command_move(RGE_Command_Order* order) {
                         (object->world_x - totalX) + order->location_x;
                     float adjustedYLocation =
                         (object->world_y - totalY) + order->location_y;
-                    if (adjustedXLocation < DAT_0056f4e0)
+                    if (adjustedXLocation < g_command_zero_coordinate)
                         adjustedXLocation = 1.0f;
                     else {
                         float width =
                             (float)object->owner->world->map->map_width;
                         if (adjustedXLocation >= width)
-                            adjustedXLocation = width - DAT_0056f4e8;
+                            adjustedXLocation = width - g_command_map_boundary_adjustment;
                     }
 
-                    if (adjustedYLocation < DAT_0056f4e0)
+                    if (adjustedYLocation < g_command_zero_coordinate)
                         adjustedYLocation = 1.0f;
                     else {
                         float height =
                             (float)object->owner->world->map->map_height;
                         if (adjustedYLocation >= height)
-                            adjustedYLocation = height - DAT_0056f4e8;
+                            adjustedYLocation = height - g_command_map_boundary_adjustment;
                     }
 
-                    if (target != 0 && (target->master_obj->radius_x > DAT_0056f4e0 ||
-                         target->master_obj->radius_y > DAT_0056f4e0))
+                    if (target != 0 && (target->master_obj->radius_x > g_command_zero_coordinate ||
+                         target->master_obj->radius_y > g_command_zero_coordinate))
                         object->move_to(target, adjustedXLocation, adjustedYLocation, 0);
                     else
                         object->move_to(0, adjustedXLocation, adjustedYLocation, 0);
@@ -394,8 +394,8 @@ void RGE_Command::do_command_move(RGE_Command_Order* order) {
                     if (ai) {
                         object->unitAI()->setCurrentOrder(0x2c6);
                         object->unitAI()->setCurrentAction(0x262);
-                        if (target != 0 && (target->master_obj->radius_x > DAT_0056f4e0 ||
-                             target->master_obj->radius_y > DAT_0056f4e0))
+                        if (target != 0 && (target->master_obj->radius_x > g_command_zero_coordinate ||
+                             target->master_obj->radius_y > g_command_zero_coordinate))
                             object->unitAI()->setCurrentTarget(target->id, target->master_obj->object_group,
                                                                adjustedXLocation, adjustedYLocation, 0.0f);
                         else
@@ -432,8 +432,8 @@ simple:
                 if (ai) {
                     object->unitAI()->setCurrentOrder(0x2c6);
                     object->unitAI()->setCurrentAction(0x262);
-                    if (target != 0 && (target->master_obj->radius_x > DAT_0056f4e0 ||
-                         target->master_obj->radius_y > DAT_0056f4e0))
+                    if (target != 0 && (target->master_obj->radius_x > g_command_zero_coordinate ||
+                         target->master_obj->radius_y > g_command_zero_coordinate))
                         object->unitAI()->setCurrentTarget(target->id, target->master_obj->object_group,
                                                            order->location_x, order->location_y, 0.0f);
                     else
