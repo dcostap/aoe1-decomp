@@ -129,6 +129,11 @@ original storage as a reviewed symbol.
 | `DAT_00570bc0`, `DAT_00570be0`, `DAT_00570bf0`, `DAT_00570bfc`, and `DAT_00570c00` | named | These read-only speed-offset, facet-angle, and angle-tolerance values control movement speed and facet selection. |
 | `DAT_00570c20` | named | This read-only `-10000.0f` value scales music fade volume. The new `g_music_fade_volume_scale` name states that role. |
 | `DAT_00570c24`, `DAT_00570c28`, and `DAT_00570c30` | removed | These read-only values have no source references or PDB symbols. Music code uses its own constants. |
+| `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
+| `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |
+| `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |
+| `DAT_00570ec0` | named | This read-only `7.09f` value gates the player doppleganger-list save field. |
+| `DAT_00570ec4` | named | This read-only zero rejects empty player attribute commands. |
 
 ## Related duplicate storage
 

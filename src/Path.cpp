@@ -2,7 +2,7 @@
 #include <iostream.h>
 #include <math.h>
 
-extern float DAT_00570e40;
+extern float g_path_zero_length;
 
 
 Path::Path(int v) {
@@ -307,7 +307,7 @@ int Path::moveToLastWaypoint() {
 }
 
 float Path::distanceToNextWaypoint() const {
-    float result = DAT_00570e40;
+    float result = g_path_zero_length;
     Waypoint* path = pathValue;
 
     if (path != 0) {

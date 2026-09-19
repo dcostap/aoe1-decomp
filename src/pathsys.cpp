@@ -60,7 +60,7 @@ PathingSystem::PathingSystem(int x, int y, int aiPS, RGE_Map* map, RGE_Game_Worl
     aiPS = 0;
     int* distance = DiagionalDistance;
     do {
-        *distance = (int)(DAT_00570e50 - (float)aiPS * DAT_00570e48 * DAT_00570e4c);
+        *distance = (int)(g_path_diagonal_base - (float)aiPS * g_path_diagonal_scale * g_path_diagonal_sign);
         ++aiPS;
         ++distance;
     } while ((int)distance < (int)(DiagionalDistance + 256));
@@ -293,9 +293,9 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         return 0;
     }
 
-    if (actionRange > DAT_00570e54) {
+    if (actionRange > g_path_min_action_range) {
         dist = estimateDistanceOrdered(goalX, goalY, startX, startY);
-        if ((float)dist < actionRange * DAT_00570e58) {
+        if ((float)dist < actionRange * g_path_goal_tolerance_scale) {
             if (pathLength != 0) *pathLength = 0;
             if (copyPathWhenDone == 1) {
                 path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
@@ -303,7 +303,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             }
             return 1;
         }
-        if (unit->maximumSpeed() == DAT_00570e5c) {
+        if (unit->maximumSpeed() == g_path_zero_speed) {
             if (pathLength != 0) *pathLength = 0;
             if (copyPathWhenDone == 1) {
                 path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
@@ -351,10 +351,10 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         if (target == 0) {
             this->currentTargetID = -1;
         } else {
-            this->minTarget.x = (int)((target->world_x - target->master_obj->radius_x) * DAT_00570e60);
-            this->minTarget.y = (int)((target->world_y - target->master_obj->radius_y) * DAT_00570e60);
-            this->maxTarget.x = (int)((target->master_obj->radius_x + target->world_x) * DAT_00570e60);
-            this->maxTarget.y = (int)((target->master_obj->radius_y + target->world_y) * DAT_00570e60);
+            this->minTarget.x = (int)((target->world_x - target->master_obj->radius_x) * g_path_coordinate_scale);
+            this->minTarget.y = (int)((target->world_y - target->master_obj->radius_y) * g_path_coordinate_scale);
+            this->maxTarget.x = (int)((target->master_obj->radius_x + target->world_x) * g_path_coordinate_scale);
+            this->maxTarget.y = (int)((target->master_obj->radius_y + target->world_y) * g_path_coordinate_scale);
         }
     }
 
@@ -363,8 +363,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     this->currentObjectInObMap = this->currentObject->removeFromObstructionMap(this->aiPS);
 
     // VC5 evaluates the Y floor argument before X.
-    if (this->passable(this->currentObject, (float)(floor((double)this->currentObject->world_x) - DAT_00570e64),
-                       (float)(floor((double)this->currentObject->world_y) - DAT_00570e64), 1)) {
+    if (this->passable(this->currentObject, (float)(floor((double)this->currentObject->world_x) - g_path_tile_center_adjustment),
+                       (float)(floor((double)this->currentObject->world_y) - g_path_tile_center_adjustment), 1)) {
         // The original stores positive half-tile offsets here.
         this->currentXOffset = 0.5f;
         this->currentYOffset = 0.5f;
@@ -383,7 +383,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 float cap = other->getSpeed();
                 RGE_Moving_Object* movingOther = (RGE_Moving_Object*)other;
                 float avoidanceDistance = movingOther->collisionAvoidanceDistance;
-                if (canShare != 0 || cap != DAT_00570e5c || avoidanceDistance > DAT_00570e5c) {
+                if (canShare != 0 || cap != g_path_zero_speed || avoidanceDistance > g_path_zero_speed) {
                     other->removeFromObstructionMap(this->aiPS);
                 }
             }
@@ -393,14 +393,14 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     }
 
     curObj = this->currentObject;
-    this->minInitialPosition.x = (int)((curObj->world_x - curObj->master_obj->radius_x) * DAT_00570e60);
+    this->minInitialPosition.x = (int)((curObj->world_x - curObj->master_obj->radius_x) * g_path_coordinate_scale);
     if (this->minInitialPosition.x < 0) this->minInitialPosition.x = 0;
-    this->minInitialPosition.y = (int)((curObj->world_y - curObj->master_obj->radius_y) * DAT_00570e60);
+    this->minInitialPosition.y = (int)((curObj->world_y - curObj->master_obj->radius_y) * g_path_coordinate_scale);
     if (this->minInitialPosition.y < 0) this->minInitialPosition.y = 0;
-    this->maxInitialPosition.x = (int)((curObj->master_obj->radius_x + curObj->world_x) * DAT_00570e60);
+    this->maxInitialPosition.x = (int)((curObj->master_obj->radius_x + curObj->world_x) * g_path_coordinate_scale);
     tmp = this->xSizeValue * 4;
     if (this->maxInitialPosition.x > tmp) this->maxInitialPosition.x = tmp;
-    this->maxInitialPosition.y = (int)((curObj->master_obj->radius_y + curObj->world_y) * DAT_00570e60);
+    this->maxInitialPosition.y = (int)((curObj->master_obj->radius_y + curObj->world_y) * g_path_coordinate_scale);
     tmp = this->ySizeValue * 4;
     if (this->maxInitialPosition.y > tmp) this->maxInitialPosition.y = tmp;
 
@@ -428,28 +428,28 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     this->MGP_bestTraversedPath.x = (unsigned char)startX;
     this->MGP_bestTraversedPath.y = (unsigned char)startY;
 
-    if ((float)stepSize <= actionRange) MGP_goalTolerance = (int)(actionRange * DAT_00570e58);
+    if ((float)stepSize <= actionRange) MGP_goalTolerance = (int)(actionRange * g_path_goal_tolerance_scale);
     else MGP_goalTolerance = stepSize << 4;
 
     float xRadius = this->currentObject->master_obj->radius_x;
     float yRadius = this->currentObject->master_obj->radius_y;
-    fx = (this->currentXOffset - DAT_00570e68) - xRadius;
-    xDeltaLeft = (int)(fx - DAT_00570e6c) - 100;
+    fx = (this->currentXOffset - g_path_bounds_offset) - xRadius;
+    xDeltaLeft = (int)(fx - g_path_rounding_adjustment) - 100;
     xRadius += this->currentXOffset;
-    xDeltaRight = (int)(xRadius - DAT_00570e70) - 100;
-    fy = (this->currentYOffset - DAT_00570e68) - yRadius;
-    yDeltaUp = (int)(fy - DAT_00570e6c) - 100;
+    xDeltaRight = (int)(xRadius - g_path_bounds_offset_large) - 100;
+    fy = (this->currentYOffset - g_path_bounds_offset) - yRadius;
+    yDeltaUp = (int)(fy - g_path_rounding_adjustment) - 100;
     yRadius += this->currentYOffset;
-    yDeltaDown = (int)(yRadius - DAT_00570e70) - 100;
-    xDeltaLeft4 = -400 - (int)(fx * DAT_00570e74);
-    xDeltaRight4 = -400 - (int)((xRadius - DAT_00570e68) * DAT_00570e74);
-    yDeltaUp4 = -400 - (int)(fy * DAT_00570e74);
-    yDeltaDown4 = -400 - (int)((yRadius - DAT_00570e68) * DAT_00570e74);
+    yDeltaDown = (int)(yRadius - g_path_bounds_offset_large) - 100;
+    xDeltaLeft4 = -400 - (int)(fx * g_path_coordinate_scale_negative);
+    xDeltaRight4 = -400 - (int)((xRadius - g_path_bounds_offset) * g_path_coordinate_scale_negative);
+    yDeltaUp4 = -400 - (int)(fy * g_path_coordinate_scale_negative);
+    yDeltaDown4 = -400 - (int)((yRadius - g_path_bounds_offset) * g_path_coordinate_scale_negative);
 
     iterations = 0;
     tmp = goalX - startX;
     tmp2 = goalY - startY;
-    dist = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * DAT_00570e78);
+    dist = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * g_path_distance_scale);
     dist /= 16;
     numberIterationCap = dist * numberPathingIterations;
     if (dist <= 10) numberIterationCap /= 10;
@@ -471,7 +471,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 
         tmp = goalX - this->MGP_openPaths[1].x;
         tmp2 = goalY - this->MGP_openPaths[1].y;
-        currentEstimate = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * DAT_00570e78);
+        currentEstimate = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * g_path_distance_scale);
         if (this->MGP_closestTargetDistance == -1 || currentEstimate < this->MGP_closestTargetDistance) {
             this->MGP_closestTargetDistance = currentEstimate;
         }
@@ -567,7 +567,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 
             tmp = temp.x - bestPathPoint.x;
             tmp2 = temp.y - bestPathPoint.y;
-            newCost = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * DAT_00570e78);
+            newCost = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * g_path_distance_scale);
             parentCost = this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
             oldHeuristic = estimateDistanceOrdered(goalX, goalY, bestPathPoint.x, bestPathPoint.y);
             newHeuristic = estimateDistanceOrdered(goalX, goalY, temp.x, temp.y);
@@ -693,9 +693,9 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                                 // The original loads cost even for a terrain exception.
                                 float terrainValue = terrainTable[terrain];
                                 if (terrain != this->currentTerrainException1 &&
-                                    terrain != this->currentTerrainException2 && terrainValue <= DAT_00570e80) {
+                                    terrain != this->currentTerrainException2 && terrainValue <= g_path_zero_terrain_value) {
                                     tmp = tile->border_type & 0x0f;
-                                    if (tmp == 0 || terrainTable[map->border_types[tmp].underlay_terrain] <= DAT_00570e80) {
+                                    if (tmp == 0 || terrainTable[map->border_types[tmp].underlay_terrain] <= g_path_zero_terrain_value) {
                                         terrainStatus = 0xfe;
                                         break;
                                     }
@@ -981,13 +981,13 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
     float yRadius = obj->master_obj->radius_y;
 
     int minX = (int)newX * 4 -
-        (int)(((currentXOffset - DAT_00570e68) - xRadius) * DAT_00570e74) - 400;
+        (int)(((currentXOffset - g_path_bounds_offset) - xRadius) * g_path_coordinate_scale_negative) - 400;
     int minY = (int)newY * 4 -
-        (int)(((currentYOffset - DAT_00570e68) - yRadius) * DAT_00570e74) - 400;
+        (int)(((currentYOffset - g_path_bounds_offset) - yRadius) * g_path_coordinate_scale_negative) - 400;
     int maxX = (int)newX * 4 -
-        (int)((xRadius + currentXOffset - DAT_00570e68) * DAT_00570e74) - 400;
+        (int)((xRadius + currentXOffset - g_path_bounds_offset) * g_path_coordinate_scale_negative) - 400;
     int maxY = (int)newY * 4 -
-        (int)((yRadius + currentYOffset - DAT_00570e68) * DAT_00570e74) - 400;
+        (int)((yRadius + currentYOffset - g_path_bounds_offset) * g_path_coordinate_scale_negative) - 400;
 
     if (minX < 0) {
         ++minX;
@@ -1017,14 +1017,14 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
                             int terrain = tile->terrain_type & 0x1f;
                             float terrainPassability = this->currentTerrainTable[terrain];
                             if (terrain != this->currentTerrainException1 && terrain != this->currentTerrainException2 &&
-                                !(terrainPassability > DAT_00570e80)) {
+                                !(terrainPassability > g_path_zero_terrain_value)) {
                                 int border = tile->border_type & 0x0f;
                                 if (border == 0) {
                                     return 0;
                                 }
                                 int underlay =
                                     this->mapValue->border_types[border].underlay_terrain;
-                                if (!(this->currentTerrainTable[underlay] > DAT_00570e80)) {
+                                if (!(this->currentTerrainTable[underlay] > g_path_zero_terrain_value)) {
                                     return 0;
                                 }
                             }

@@ -58,7 +58,7 @@ RGE_Player::RGE_Player(int infile, RGE_Game_World* gworld,
     rge_read(infile, this->relations, (int)this->world->player_num);
     rge_read(infile, this->unitDiplomacy, 36);
 
-    if (save_game_version >= DAT_00570e90) {
+    if (save_game_version >= g_player_save_version_4_01) {
         rge_read(infile, &this->allied_LOS_Enable, 4);
     } else {
         this->allied_LOS_Enable = 0;
@@ -744,7 +744,7 @@ void RGE_Player::load(int infile) {
     this->doppleganger_objects = new RGE_Object_List;
     this->sleeping_objects->load_list(infile, this->world);
 
-    if (!(save_game_version < DAT_00570ec0)) {
+    if (!(save_game_version < g_player_save_version_7_09)) {
         this->doppleganger_objects->load_list(infile, this->world);
     }
 }
@@ -1858,7 +1858,7 @@ unsigned char RGE_Player::command_add_attribute(int attr_id, float attr_amount) 
 unsigned char RGE_Player::command_give_attribute(int to_player_id, int attr_id,
                                                  float attr_amount) {
     if (attr_id == -1) return 0;
-    if (attr_amount == DAT_00570ec4) return 0;
+    if (attr_amount == g_player_zero_attribute_amount) return 0;
     if (attr_amount <= this->attributes[attr_id]) {
         this->world->commands->command_give_attribute(this->id, to_player_id, attr_id, attr_amount);
         return 1;
