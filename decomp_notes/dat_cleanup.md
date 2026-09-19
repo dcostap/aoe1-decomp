@@ -86,6 +86,7 @@ original storage as a reviewed symbol.
 | `DAT_00574f14` | named | This read-only `-1.0f` adjusts the upper artifact ownership scan bounds. |
 | `DAT_00574ffc` | named | This read-only random scale converts conversion chance values to fractions. |
 | `DAT_00574c80`, `DAT_00574c90`, `DAT_00574c94`, `DAT_00574c9c`, `DAT_00574f78`, `DAT_00574ff0`, and `DAT_00574ff8` | removed | These read-only constants have no source references or PDB symbols. Their owners use direct literals or do not need the separate storage. |
+| `DAT_00573ae8`, `DAT_00573aec`, `DAT_00573af0`, and `DAT_00573af8` | removed | These read-only action and scenario constants have no source references or PDB symbols. Their owners use direct literals. |
 
 ## Related duplicate storage
 
