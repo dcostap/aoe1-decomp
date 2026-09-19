@@ -5020,8 +5020,12 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
             if (useTransport == 1) {
                 XYPoint passableMin;
                 XYPoint passableMax;
-                passableMin.x = x - 2; passableMin.y = y - 2; this->mapBound(passableMin);
-                passableMax.x = x + 2; passableMax.y = y + 2; this->mapBound(passableMax);
+                passableMin.x = x - 2;
+                passableMin.y = y - 2;
+                this->mapBound(passableMin);
+                passableMax.x = x + 2;
+                passableMax.y = y + 2;
+                this->mapBound(passableMax);
                 int good = 1;
                 for (int a = passableMin.x; a <= passableMax.x && good; ++a) {
                     for (int b = passableMin.y; b <= passableMax.y && good; ++b) {
@@ -5038,7 +5042,8 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
             int randomization = debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 6975) % (stageDistance * 3);
             XYPoint temp;
             XYPoint temp2;
-            temp.x = x; temp.y = y;
+            temp.x = x;
+            temp.y = y;
             // A successful line path adds stageDistance to the score.
             int path_penalty = unit->canLinePath(temp, targetPoint, 1.0f, temp2, 1) == 1 ? stageDistance : 0;
             int los_penalty;
@@ -5052,7 +5057,11 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
             else
                 attack_penalty = 0;
             int v = attack_penalty + los_penalty + path_penalty + randomization + dist;
-            if (bestValue == -1 || bestValue < v) { bestValue = v; rPoint.x = x; rPoint.y = y; }
+            if (bestValue == -1 || bestValue < v) {
+                bestValue = v;
+                rPoint.x = x;
+                rPoint.y = y;
+            }
         }
     }
     return bestValue != -1;
