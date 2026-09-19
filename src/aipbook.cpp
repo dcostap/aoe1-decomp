@@ -865,7 +865,7 @@ void AIPlayStatus::resetHitPoints(int gID, RGE_Game_World* world) {
 }
 
 AIPlayBook::AIPlayBook()
-    : numberPlaysValue(0),
+   : numberPlaysValue(0),
       plays(0) {
 }
 
@@ -961,8 +961,7 @@ int AIPlayBook::loadPlays(char* filename) {
                 this->plays[currentPlay].setName(temp2);
             } else if (strcmp(temp2, s_PlayType) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_string, temp2);
-                this->plays[currentPlay].typeValue =
-                    this->plays[currentPlay].convertToIntType(temp2);
+                this->plays[currentPlay].typeValue = this->plays[currentPlay].convertToIntType(temp2);
             } else if (strcmp(temp2, s_MinUnits) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].minimumNumberUnitsValue = temp4;
@@ -1012,8 +1011,7 @@ int AIPlayBook::loadPlays(char* filename) {
                 if (temp4 >= 0 && temp4 < 5) {
                     int type = this->convertUnitNameToIntType(temp6);
                     if (type != -1) {
-                        AIPlayGroup* group =
-                            this->plays[currentPlay].group(temp4);
+                        AIPlayGroup* group = this->plays[currentPlay].group(temp4);
                         if (i < 0)
                             group->setMinimum(type, 0);
                         else
@@ -1031,27 +1029,19 @@ int AIPlayBook::loadPlays(char* filename) {
             } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3, &i, &temp5);
                 if (temp4 >= 0 && temp4 < 5) {
-                    AIPlayPhase* phase =
-                        this->plays[currentPlay].phase(currentPhase);
-                    AIPlayPhaseCommand command((unsigned char)temp4, temp6,
-                                               temp3, i, temp5);
+                    AIPlayPhase* phase = this->plays[currentPlay].phase(currentPhase);
+                    AIPlayPhaseCommand command((unsigned char)temp4, temp6, temp3, i, temp5);
                     phase->addCommand(command);
                 }
             } else if (strcmp(temp2, s_Trigger) == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, s_format_trigger, &temp4, temp6, &temp3, &temp7);
-                AIPlayPhase* phase =
-                    this->plays[currentPlay].phase(currentPhase);
-                AIPlayPhaseTrigger trigger(temp6, temp3, temp7,
-                                           (unsigned char)currentPhase,
-                                           (unsigned char)temp4, 0);
+                AIPlayPhase* phase = this->plays[currentPlay].phase(currentPhase);
+                AIPlayPhaseTrigger trigger(temp6, temp3, temp7, (unsigned char)currentPhase, (unsigned char)temp4, 0);
                 phase->addTrigger(trigger);
             } else if (strcmp(temp2, s_RTrigger) == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3, &temp7, &temp5);
-                AIPlayPhase* phase =
-                    this->plays[currentPlay].phase(currentPhase);
-                AIPlayPhaseTrigger trigger(temp6, temp3, temp7,
-                                           (unsigned char)currentPhase,
-                                           (unsigned char)temp4, temp5);
+                AIPlayPhase* phase = this->plays[currentPlay].phase(currentPhase);
+                AIPlayPhaseTrigger trigger(temp6, temp3, temp7, (unsigned char)currentPhase, (unsigned char)temp4, temp5);
                 phase->addTrigger(trigger);
             } else if (strcmp(temp2, s_EndPlay) == 0 && currentPlay != -1) {
                 currentPhase = -1;
@@ -1068,23 +1058,18 @@ int AIPlayBook::loadPlays(char* filename) {
                         sprintf(temp2, s_format_play_variant, source->nameValue, temp8);
                         destination->setName(temp2);
                         destination->typeValue = source->typeValue;
-                        destination->minimumNumberUnitsValue =
-                            source->minimumNumberUnitsValue;
-                        destination->maximumNumberUnitsValue =
-                            source->maximumNumberUnitsValue;
+                        destination->minimumNumberUnitsValue = source->minimumNumberUnitsValue;
+                        destination->maximumNumberUnitsValue = source->maximumNumberUnitsValue;
                         destination->powerValue = source->powerValue;
                         destination->overflowValue = source->overflowValue;
-                        destination->deathPercentageValue =
-                            source->deathPercentageValue;
-                        destination->intelligenceValue =
-                            source->intelligenceValue;
+                        destination->deathPercentageValue = source->deathPercentageValue;
+                        destination->intelligenceValue = source->intelligenceValue;
 
                         for (i = 0; i < 5; i++) {
                             destination->addTargetType(source->targetType(i));
                             destination->addTargetCharacteristic(source->targetCharacteristic(i));
                         }
-                        destination->numberGroupsValue =
-                            source->numberGroupsValue;
+                        destination->numberGroupsValue = source->numberGroupsValue;
 
                         for (int iGroups = 0; iGroups < 5; iGroups++) {
                             AIPlayGroup* refGroup = source->group(iGroups);
@@ -1099,20 +1084,18 @@ int AIPlayBook::loadPlays(char* filename) {
                             AIPlayPhase* refPhase = source->phase(iPhases);
                             AIPlayPhase* curPhase = destination->phase(iPhases);
                             for (int a = 0; a < AIPlayPhase::MaxCommands; a++) {
-                                AIPlayPhaseCommand* command =
-                                    refPhase->command(a);
+                                AIPlayPhaseCommand* command =refPhase->command(a);
                                 if (command->type() == AIPlayPhaseCommand::MoveCommand) {
                                     XYZ origin(0, 0, 0);
                                     XYZ rotatedPoint;
-                                    XYZ originalPoint(command->value1(),
-                                                      command->value2(),
-                                                      command->value3());
+                                    XYZ originalPoint(command->value1(), command->value2(), command->value3());
                                     originalPoint.rotateXYByFacet(origin, rotatedPoint, (unsigned char)temp8);
                                     AIPlayPhaseCommand newCommand(
                                         command->group(), command->type(),
                                         rotatedPoint.xValue,
                                         rotatedPoint.yValue,
-                                        rotatedPoint.zValue);
+                                        rotatedPoint.zValue
+                                    );
                                     curPhase->addCommand(newCommand);
                                 } else {
                                     curPhase->addCommand(*command);
@@ -1120,8 +1103,7 @@ int AIPlayBook::loadPlays(char* filename) {
                             }
 
                             for (i = 0; i < AIPlayPhase::MaxTriggers; i++) {
-                                AIPlayPhaseTrigger* trigger =
-                                    refPhase->trigger(i);
+                                AIPlayPhaseTrigger* trigger = refPhase->trigger(i);
                                 curPhase->addTrigger(*trigger);
                             }
                         }
