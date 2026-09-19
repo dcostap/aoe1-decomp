@@ -1,5 +1,6 @@
 
 #include "../include/scr_cred.h"
+#include "../include/game_globals.h"
 #include "../include/music.h"
 #include "../include/scr_main.h"
 #include <fcntl.h>
@@ -17,17 +18,6 @@ extern char s_scr_cred_draw_005862e0[];
 // the storage types and definitions.
 extern float g_scroll_time_scale;
 extern float g_fade_progress_scale;
-extern float DAT_0086b290;
-extern unsigned int DAT_0086b294;
-extern int DAT_0086b298;
-extern int DAT_0086b29c;
-extern int DAT_0086b2a0;
-extern unsigned char DAT_0086b2a4;
-extern tagPALETTEENTRY DAT_0086b2a8;
-extern float DAT_0086b2ac;
-extern tagPALETTEENTRY DAT_0086b2b0[];
-extern tagPALETTEENTRY DAT_0086b6b0[256];
-extern TDrawArea* DAT_0086bab0;
 
 void RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*,
                            tagPALETTEENTRY, long, int, int);
@@ -451,28 +441,28 @@ void RGE_fade_palette_start(TDrawArea* surface_in, tagPALETTEENTRY color_in,
                             float fade_time_in, unsigned char direction_in,
                             tagPALETTEENTRY* new_palette,
                             int ignore_color1_in, int ignore_color2_in) {
-    DAT_0086bab0 = surface_in;
-    DAT_0086b2a8 = color_in;
-    DAT_0086b290 = fade_time_in;
-    DAT_0086b2a4 = direction_in;
-    DAT_0086b298 = ignore_color1_in;
-    DAT_0086b29c = ignore_color2_in;
+    palette_fade_surface = surface_in;
+    palette_fade_color = color_in;
+    palette_fade_duration = fade_time_in;
+    palette_fade_direction = direction_in;
+    palette_fade_ignore_color1 = ignore_color1_in;
+    palette_fade_ignore_color2 = ignore_color2_in;
 
     for (int i = 0; i < 256; i++) {
-        DAT_0086b2b0[i].peRed = 0;
-        DAT_0086b6b0[i].peRed = 0;
-        DAT_0086b2b0[i].peBlue = 0;
-        DAT_0086b6b0[i].peBlue = 0;
-        DAT_0086b2b0[i].peGreen = 0;
-        DAT_0086b6b0[i].peGreen = 0;
-        DAT_0086b2b0[i].peFlags = 0;
-        DAT_0086b6b0[i].peFlags = 0;
+        palette_fade_source[i].peRed = 0;
+        palette_fade_result[i].peRed = 0;
+        palette_fade_source[i].peBlue = 0;
+        palette_fade_result[i].peBlue = 0;
+        palette_fade_source[i].peGreen = 0;
+        palette_fade_result[i].peGreen = 0;
+        palette_fade_source[i].peFlags = 0;
+        palette_fade_result[i].peFlags = 0;
     }
 
     if (new_palette == 0) {
-        surface_in->GetPalette(DAT_0086b2b0);
+        surface_in->GetPalette(palette_fade_source);
     } else {
-        tagPALETTEENTRY* target = DAT_0086b2b0;
+        tagPALETTEENTRY* target = palette_fade_source;
         tagPALETTEENTRY* source = new_palette;
         do {
             target->peRed = source->peRed;
@@ -481,16 +471,16 @@ void RGE_fade_palette_start(TDrawArea* surface_in, tagPALETTEENTRY color_in,
             target->peFlags = source->peFlags;
             ++target;
             ++source;
-        } while ((int)target < (int)DAT_0086b6b0);
+        } while ((int)target < (int)palette_fade_result);
     }
 
-    DAT_0086b294 = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 693);
-    DAT_0086b2ac = DAT_0086b290 * DAT_0086b290;
+    palette_fade_start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 693);
+    palette_fade_duration_squared = palette_fade_duration * palette_fade_duration;
 
-    if (DAT_0086b2a4 == 1) {
-        DAT_0086b2a0 = 0;
+    if (palette_fade_direction == 1) {
+        palette_fade_amount = 0;
     } else {
-        DAT_0086b2a0 = 100;
+        palette_fade_amount = 100;
     }
 }
 
@@ -499,42 +489,43 @@ int RGE_fade_palette_step() {
     int amount;
     unsigned char done = 0;
 
-    if (DAT_0086b2a4 == 1) {
+    if (palette_fade_direction == 1) {
         unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 712);
-        int ticks = cur - DAT_0086b294;
+        int ticks = cur - palette_fade_start_time;
         delta_time = (float)ticks * 0.001f;
 
-        if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 || delta_time < 0.0f) {
+        if (palette_fade_duration <= 0.0 || delta_time > palette_fade_duration || delta_time < 0.0f) {
             amount = 100;
         } else {
-            float v = delta_time * delta_time / DAT_0086b2ac * g_fade_progress_scale;
+            float v = delta_time * delta_time / palette_fade_duration_squared * g_fade_progress_scale;
             amount = (long)v;
         }
-        DAT_0086b2a0 = amount;
+        palette_fade_amount = amount;
         if (amount >= 100) {
-            DAT_0086b2a0 = 100;
+            palette_fade_amount = 100;
             done = 1;
         }
     } else {
         unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 732);
-        int ticks = cur - DAT_0086b294;
-        delta_time = DAT_0086b290 - (float)ticks * 0.001f;
+        int ticks = cur - palette_fade_start_time;
+        delta_time = palette_fade_duration - (float)ticks * 0.001f;
 
-        if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 || delta_time < 0.0f) {
+        if (palette_fade_duration <= 0.0 || delta_time > palette_fade_duration || delta_time < 0.0f) {
             amount = 0;
         } else {
-            float v = delta_time * delta_time / DAT_0086b2ac * g_fade_progress_scale;
+            float v = delta_time * delta_time / palette_fade_duration_squared * g_fade_progress_scale;
             amount = (long)v;
         }
-        DAT_0086b2a0 = amount;
+        palette_fade_amount = amount;
         if (amount <= 0) {
-            DAT_0086b2a0 = 0;
+            palette_fade_amount = 0;
             done = 1;
         }
     }
 
-    RGE_translate_palette(DAT_0086b2b0, DAT_0086b6b0, DAT_0086b2a8, DAT_0086b2a0, DAT_0086b298, DAT_0086b29c);
-    DAT_0086bab0->SetPalette(DAT_0086b6b0);
+    RGE_translate_palette(palette_fade_source, palette_fade_result, palette_fade_color, palette_fade_amount,
+                          palette_fade_ignore_color1, palette_fade_ignore_color2);
+    palette_fade_surface->SetPalette(palette_fade_result);
 
     return done;
 }

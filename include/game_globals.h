@@ -459,22 +459,24 @@ extern unsigned int basegame_palette_restore_pending;
 extern IDirectPlay3* direct_play_interface;
 // Shared DirectPlay player identifier.
 extern unsigned long local_player_dpid;
-extern unsigned int DAT_0086b240;
-extern unsigned int DAT_0086b244;
+extern unsigned int panel_edit_change_active;
+extern unsigned int panel_edit_pending_change;
+extern long visible_map_checksums[9];
+extern unsigned long unified_visible_map_checksum;
 // Credits-screen palette state. The binary uses two contiguous 256-entry
 // PALETTEENTRY tables and stores the active draw area as a pointer.
-extern float DAT_0086b290;
-extern unsigned int DAT_0086b294;
-extern int DAT_0086b298;
-extern int DAT_0086b29c;
-extern int DAT_0086b2a0;
-extern unsigned char DAT_0086b2a4;
-extern tagPALETTEENTRY DAT_0086b2a8;
-extern float DAT_0086b2ac;
-extern tagPALETTEENTRY DAT_0086b2b0[];
-extern tagPALETTEENTRY DAT_0086b6b0[256];
-extern TDrawArea* DAT_0086bab0;
-extern float DAT_0086bc08;
+extern float palette_fade_duration;
+extern unsigned int palette_fade_start_time;
+extern int palette_fade_ignore_color1;
+extern int palette_fade_ignore_color2;
+extern int palette_fade_amount;
+extern unsigned char palette_fade_direction;
+extern tagPALETTEENTRY palette_fade_color;
+extern float palette_fade_duration_squared;
+extern tagPALETTEENTRY palette_fade_source[256];
+extern tagPALETTEENTRY palette_fade_result[256];
+extern TDrawArea* palette_fade_surface;
+extern float repair_target_distance;
 extern unsigned int DAT_0086bc8c;
 extern unsigned int DAT_0086be00;
 

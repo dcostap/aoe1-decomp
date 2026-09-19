@@ -224,8 +224,8 @@ unsigned char TRIBE_Action_Repair::update() {
 
     case 13:
         target = this->target_obj;
-        DAT_0086bc08 = this->obj->distance_to_object(target) - g_repair_distance_offset;
-        if (DAT_0086bc08 <= g_repair_distance_threshold) {
+        repair_target_distance = this->obj->distance_to_object(target) - g_repair_distance_offset;
+        if (repair_target_distance <= g_repair_distance_threshold) {
             this->set_state(6);
             return 0;
         }
@@ -249,9 +249,9 @@ unsigned char TRIBE_Action_Repair::update() {
             return 0;
         }
         if (this->target_obj->world_x != this->target_x || this->target_y != this->target_obj->world_y) {
-            DAT_0086bc08 =
+            repair_target_distance =
                 this->obj->distance_to_object(this->target_obj) - g_repair_distance_offset;
-            if (DAT_0086bc08 > g_repair_distance_threshold) {
+            if (repair_target_distance > g_repair_distance_threshold) {
                 this->set_state(3);
                 return 0;
             }
@@ -283,9 +283,9 @@ unsigned char TRIBE_Action_Repair::update() {
         }
         this->timer -= this->obj->owner->world->world_time_delta_seconds;
         if (this->timer <= 0.0f) {
-            DAT_0086bc08 =
+            repair_target_distance =
                 this->obj->distance_to_object(this->target_obj) - g_repair_distance_offset;
-            if (DAT_0086bc08 <= g_repair_distance_threshold) {
+            if (repair_target_distance <= g_repair_distance_threshold) {
                 this->set_state(6);
                 return 0;
             }

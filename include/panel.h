@@ -10,7 +10,7 @@
 struct PanelNode;
 class TPanel;
 class THelpDialog;
-extern char DAT_0062E670[0x200];
+extern char panel_string_buffer[0x200];
 void* __cdecl ReadPalette(char*, long, int);
 
 class TPanelSystem {

@@ -236,12 +236,12 @@ void TEditPanel::set_focus(int have_focus_in) {
     if (this->edit_wnd != 0 && this->have_focus != 0 && old_focus == 0 && this->auto_sel != 0) {
         SendMessageA(this->edit_wnd, EM_SETSEL, 0, -1);
     }
-    if (DAT_0086b240 == 0 && this->edit_wnd != 0 && this->have_focus == 0 && this->hidden == 0) {
+    if (panel_edit_change_active == 0 && this->edit_wnd != 0 && this->have_focus == 0 && this->hidden == 0) {
         ShowWindow(this->edit_wnd, SW_HIDE);
         this->hidden = 1;
     }
     if (this->have_focus != 0) {
-        DAT_0086b244 = 0;
+        panel_edit_pending_change = 0;
     }
 }
 
@@ -397,9 +397,9 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
                     int alt_down = GetKeyState(VK_MENU) < 0;
                     int control_down = GetKeyState(VK_CONTROL) < 0;
                     int shift_down = GetKeyState(VK_SHIFT) < 0;
-                    DAT_0086b240 = 1;
+                    panel_edit_change_active = 1;
                     this->handle_key_down(9, (short)lParam, alt_down, control_down, shift_down);
-                    DAT_0086b240 = 0;
+                    panel_edit_change_active = 0;
                     return 0;
                 }
                 if (wParam == 0x0d) {
@@ -483,8 +483,8 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
 
 // pnl_edit.cpp lines 760-853.
 int TEditPanel::verify_char(int key) {
-    if (DAT_0086b244 != 0) {
-        DAT_0086b244 = 0;
+    if (panel_edit_pending_change != 0) {
+        panel_edit_pending_change = 0;
         return 0;
     }
     if (key == 9) return 0;
@@ -499,7 +499,7 @@ int TEditPanel::verify_char(int key) {
     }
     if (this->sel_len == 0) {
         if (this->text_len >= this->fixed_len - 2 && IsDBCSLeadByte(key) != 0) {
-            DAT_0086b244 = 1;
+            panel_edit_pending_change = 1;
             MessageBeep((UINT)-1);
             return 0;
         }

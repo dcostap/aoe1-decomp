@@ -14,12 +14,6 @@
 
 extern TDebuggingLog* L;
 
-// dwords at 0062D208: DoChecksum writes player slots 1 through 8, and
-// LogChecksums reads the base slot plus those eight player slots. The
-// checksumVisible result is a long. 0062D230 is one unsigned long result.
-extern long DAT_0062D208[9];
-extern unsigned long DAT_0062D230;
-
 RGE_Communications_Synchronize::RGE_Communications_Synchronize(
     TCommunications_Handler* c) {
     Comm = c;
@@ -167,19 +161,19 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(
         this->Comm->SendChatMsgAll(tmp);
     }
 
-    DAT_0062D230 = rge_base_game->world->players[0]->visible->checksumUnifiedVisible();
+    unified_visible_map_checksum = rge_base_game->world->players[0]->visible->checksumUnifiedVisible();
 
     int i = 1;
     RGE_Game_World* world = rge_base_game->world;
     if (i < world->player_num) {
         do {
-            DAT_0062D208[i] = world->players[i]->visible->checksumVisible();
+            visible_map_checksums[i] = world->players[i]->visible->checksumVisible();
             ++i;
             world = rge_base_game->world;
         } while (i < world->player_num);
     }
 
-    unsigned long unifiedChecksum = DAT_0062D230;
+    unsigned long unifiedChecksum = unified_visible_map_checksum;
     long pathChecksum = pathSystem.checksum();
 
     this->Add(this->Comm->WhoAmI(), worldTime, turn, this->LastWorldRandom, unifiedChecksum, cs4, cs2, cs3, pathChecksum);
@@ -302,7 +296,7 @@ void RGE_Communications_Synchronize::LogChecksums(
     }
 
     unsigned int player_index = 0;
-    long* visible = DAT_0062D208;
+    long* visible = visible_map_checksums;
     do {
         if (this->Comm->IsPlayerHuman(player_index) || this->Comm->IsPlayerComputer(player_index)) {
             strcpy(TBuff, " \n");
@@ -336,7 +330,7 @@ void RGE_Communications_Synchronize::LogChecksums(
 
         ++player_index;
         ++visible;
-    } while (visible < DAT_0062D208 + 9);
+    } while (visible < visible_map_checksums + 9);
 
     strcpy(TBuff, "...end of log");
     L->Log(TBuff);

@@ -1879,8 +1879,8 @@ int TPanel::get_string(int text_id, char* str, int size) {
 }
 
 char* TPanel::get_string(int text_id) {
-    get_string(text_id, DAT_0062E670, 512);
-    return DAT_0062E670;
+    get_string(text_id, panel_string_buffer, 512);
+    return panel_string_buffer;
 }
 
 long TPanel::get_help_message() {
