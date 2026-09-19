@@ -927,8 +927,6 @@ void TButtonPanel::do_action(void) {
 // 00473AA0_do_right_action.cpp
 // Pnl_btn.cpp
 
-    void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
-
 void TButtonPanel::do_right_action(int shift_key) {
     if (this->buttonTypeValue == TButtonPanel::State) {
         if ((int)this->cur_state == this->num_states - 1) {

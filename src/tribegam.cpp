@@ -482,6 +482,7 @@ int TRIBE_Game::setup() {
 
 #include <string.h>
 
+extern "C" {
 __declspec(dllimport) char* __stdcall CharUpperA(char* string);
 char* __cdecl strncpy(char* destination, const char* source, unsigned int count);
 long __cdecl atol(const char* string);
