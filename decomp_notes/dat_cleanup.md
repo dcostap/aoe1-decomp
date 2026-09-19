@@ -186,6 +186,8 @@ original storage as a reviewed symbol.
 | `DAT_00576540` | named | This read-only `-1.0f` marks an invalid task coordinate. |
 | `DAT_00576544` | named | This read-only zero float rejects non-positive task amounts. |
 | `DAT_00576548`, `DAT_00576550` | named | These read-only strings are the `!MUTE` and `!NOMUTE` taunt commands. |
+| `u_0123456789ABCDEF_0056f230` | removed | The two-byte declaration is an unused duplicate fragment. `StringFromGUID` uses the reviewed `guid_hex_digits` table, and no source references this declaration. |
+| `s_NOMUTE_00576551` | removed | This suffix array duplicates the complete `!NOMUTE` literal owned by `s_taunt_nomute_command`. The separate definition has no source references. |
 | `DAT_005766d8` | named | This read-only zero double checks the technology attribute total. |
 | `DAT_0057677c` | named | This read-only save-version threshold gates loading the original pierce-armor field. |
 | `DAT_00576570`, `DAT_00576574`, `DAT_00576578`, `DAT_005766c0`, `DAT_005766c8`, `DAT_005766d0`, `DAT_005766e0`, and `DAT_005766f8` | removed | These read-only values have no source references or PDB symbols. |
