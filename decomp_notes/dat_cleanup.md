@@ -119,6 +119,14 @@ original storage as a reviewed symbol.
 | `DAT_0057093c` | named | This read-only `-3.0f` sets the upper missile collision bounds. |
 | `DAT_00570940` | named | This read-only negative tenth adjusts missile vertical collision bounds. |
 | `DAT_00570630`, `DAT_00570634`, `DAT_00570638`, `DAT_00570648`, `DAT_00570654`, `DAT_0057065c`, `DAT_00570664`, `DAT_0057066c`, `DAT_005706b0`, `DAT_005706b4`, `DAT_005706ec`, and `DAT_00570930` | removed | These read-only values have no source references or PDB symbols. Their owners use direct literals or do not need separate storage. |
+| `DAT_00570b40`, `DAT_00570b68`, `DAT_00570b70`, and `DAT_00570b78` | named | These read-only full-circle, pi, and inverse-full-circle values support moving-object angle conversion. Their new names state the numeric role and type. |
+| `DAT_00570b48`, `DAT_00570b4c`, and `DAT_00570b50` | named | These read-only zero and two-pi values bound moving-object angles. |
+| `DAT_00570b54`, `DAT_00570b58`, and `DAT_00570b5c` | named | These read-only values gate moving-object save fields at versions `1.3`, `7.22`, and `7.23`. |
+| `DAT_00570b60` and `DAT_00570b64` | named | These read-only one and negative-one values adjust moving-object facet deltas. |
+| `DAT_00570b7c`, `DAT_00570b80`, `DAT_00570b84`, `DAT_00570b88`, and `DAT_00570b90` | named | These read-only half, time, quarter-pi, and tile-center values support movement and facet calculations. |
+| `DAT_00570b98`, `DAT_00570ba0`, `DAT_00570ba8`, and `DAT_00570bd8` | named | These read-only zero, waypoint-distance, radius-adjustment, and close-waypoint values control movement range checks. |
+| `DAT_00570bb0`, `DAT_00570bb8`, `DAT_00570bc8`, and `DAT_00570bd0` | named | These read-only turn-delta bounds control trivial movement and facet correction. |
+| `DAT_00570bc0`, `DAT_00570be0`, `DAT_00570bf0`, `DAT_00570bfc`, and `DAT_00570c00` | named | These read-only speed-offset, facet-angle, and angle-tolerance values control movement speed and facet selection. |
 
 ## Related duplicate storage
 

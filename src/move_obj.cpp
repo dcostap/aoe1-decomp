@@ -141,14 +141,14 @@ void RGE_Moving_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj,
         if ((this->sprite->flags & 2) != 0) {
             if (this->sprite->facet_num > 1) {
                 this->angle =
-                    (DAT_00570b40 / (float)this->sprite->facet_num) *
+                    (g_move_full_circle_double / (float)this->sprite->facet_num) *
                     (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 197) *
                              this->sprite->facet_num) / 0x7FFF);
 
-                if (this->angle < DAT_00570b48) {
-                    this->angle = this->angle - DAT_00570b4c;
-                } else if (this->angle > DAT_00570b50) {
-                    this->angle = this->angle - DAT_00570b50;
+                if (this->angle < g_move_zero_angle) {
+                    this->angle = this->angle - g_move_negative_two_pi;
+                } else if (this->angle > g_move_two_pi) {
+                    this->angle = this->angle - g_move_two_pi;
                 }
             }
 
@@ -174,18 +174,18 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* tobj,
         if ((this->sprite->flags & 2) != 0) {
             if (1 < this->sprite->facet_num) {
                 float random_angle =
-                    DAT_00570b40 / (float)(int)this->sprite->facet_num *
+                    g_move_full_circle_double / (float)(int)this->sprite->facet_num *
                     (float)((debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 222) *
                              (int)this->sprite->facet_num) / 0x7FFF);
                 this->angle = random_angle;
 
-                if (this->angle < DAT_00570b48) {
-                    this->angle = random_angle - DAT_00570b4c;
+                if (this->angle < g_move_zero_angle) {
+                    this->angle = random_angle - g_move_negative_two_pi;
                     this->set_angle();
                     return 1;
                 }
-                if (this->angle > DAT_00570b50) {
-                    this->angle = random_angle - DAT_00570b50;
+                if (this->angle > g_move_two_pi) {
+                    this->angle = random_angle - g_move_two_pi;
                     this->set_angle();
                     return 1;
                 }
@@ -246,7 +246,7 @@ int RGE_Moving_Object::setup(int infile, RGE_Game_World* gworld) {
 
     rge_read(infile, &this->finalUserDefinedWaypoint, 1);
 
-    if (!(save_game_version < DAT_00570b54)) {
+    if (!(save_game_version < g_move_save_version_1_3)) {
         rge_read(infile, &this->minInitialPointValue.x, 8);
         rge_read(infile, &this->maxInitialPointValue.x, 8);
     } else {
@@ -256,7 +256,7 @@ int RGE_Moving_Object::setup(int infile, RGE_Game_World* gworld) {
         this->maxInitialPointValue.y = -1;
     }
 
-    if (!(save_game_version < DAT_00570b58)) {
+    if (!(save_game_version < g_move_save_version_7_22)) {
         rge_read(infile, &this->closestDistanceToWaypoint, 4);
         rge_read(infile, &this->lastFacet, 1);
     } else {
@@ -264,7 +264,7 @@ int RGE_Moving_Object::setup(int infile, RGE_Game_World* gworld) {
         this->lastFacet = 0xff;
     }
 
-    if (!(save_game_version < DAT_00570b5c)) {
+    if (!(save_game_version < g_move_save_version_7_23)) {
         rge_read(infile, &this->lastFacet2, 1);
         return 1;
     }
@@ -376,17 +376,17 @@ float RGE_Moving_Object::angle_to_object(RGE_Static_Object* to_object,
 
         float x_delta = ax - world_x;
         float a = atan2(ay - world_y, x_delta);
-        if (a < DAT_00570b48)
-            a -= DAT_00570b4c;
+        if (a < g_move_zero_angle)
+            a -= g_move_negative_two_pi;
         a -= angle;
-        if (a > DAT_00570b68)
-            a -= DAT_00570b50;
-        if (a < DAT_00570b70)
-            a -= DAT_00570b4c;
+        if (a > g_move_pi_double)
+            a -= g_move_two_pi;
+        if (a < g_move_negative_pi_double)
+            a -= g_move_negative_two_pi;
 
-        return ((float)g->facet_num * DAT_00570b78) * a;
+        return ((float)g->facet_num * g_move_inverse_full_circle) * a;
     }
-    return DAT_00570b48;
+    return g_move_zero_angle;
 }
 
 unsigned char RGE_Moving_Object::turn_towards(RGE_Static_Object* obj,
@@ -399,23 +399,23 @@ unsigned char RGE_Moving_Object::turn_towards(RGE_Static_Object* obj,
         }
     }
 
-    world_time = (float)this->owner->world->world_time * DAT_00570b84;
+    world_time = (float)this->owner->world->world_time * g_move_time_scale;
     if (world_time - this->turn_towards_time < ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed) {
         return 0;
     }
 
     if (angle_delta < 0.0f) {
         this->angle -=
-            (float)(DAT_00570b40 / (float)(int)this->sprite->facet_num);
+            (float)(g_move_full_circle_double / (float)(int)this->sprite->facet_num);
     } else {
         this->angle +=
-            (float)(DAT_00570b40 / (float)(int)this->sprite->facet_num);
+            (float)(g_move_full_circle_double / (float)(int)this->sprite->facet_num);
     }
 
     if (this->angle < 0.0f) {
-        this->angle = this->angle - DAT_00570b4c;
-    } else if (this->angle > DAT_00570b50) {
-        this->angle = this->angle - DAT_00570b50;
+        this->angle = this->angle - g_move_negative_two_pi;
+    } else if (this->angle > g_move_two_pi) {
+        this->angle = this->angle - g_move_two_pi;
     }
 
     this->set_angle();
@@ -437,12 +437,12 @@ void RGE_Moving_Object::set_angle() {
         return;
     }
 
-    float temp = this->angle - DAT_00570b88;
+    float temp = this->angle - g_move_quarter_pi;
     int facet_num = sprite->facet_num;
     temp = temp * (float)facet_num;
-    temp = temp * DAT_00570b78;
-    temp = temp - DAT_00570b80;
-    if (temp < DAT_00570b48) {
+    temp = temp * g_move_inverse_full_circle;
+    temp = temp - g_move_negative_half_float;
+    if (temp < g_move_zero_angle) {
         temp = temp + (float)facet_num;
     }
     this->facet = (unsigned char)((int)temp);
@@ -650,12 +650,12 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
 
     // Cast each floor result before subtracting the float tile bias.
     if (!found && this->pathValue.numberOfWaypoints() == 1) {
-        if (pathSystem.passable(this, (float)floor((double)this->world_x) - DAT_00570b80,
-                                (float)floor((double)this->world_y) - DAT_00570b80, 1)) {
+        if (pathSystem.passable(this, (float)floor((double)this->world_x) - g_move_negative_half_float,
+                                (float)floor((double)this->world_y) - g_move_negative_half_float, 1)) {
             if ((this->world_x - floor((double)this->world_x)) != 0.5 ||
                 (this->world_y - floor((double)this->world_y)) != 0.5) {
-                this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
-                               (float)floor((double)this->world_y) - DAT_00570b80, this->world_z);
+                this->teleport((float)floor((double)this->world_x) - g_move_negative_half_float,
+                               (float)floor((double)this->world_y) - g_move_negative_half_float, this->world_z);
                 return WaitingOnPathingCap;
             }
         }
@@ -683,24 +683,24 @@ int RGE_Moving_Object::doMove() {
 
     dX = this->goalValue.x - this->world_x;
     dY = this->goalValue.y - this->world_y;
-    if (dX < DAT_00570b48) {
+    if (dX < g_move_zero_angle) {
         dX = -dX;
     }
-    if (dY < DAT_00570b48) {
+    if (dY < g_move_zero_angle) {
         dY = -dY;
     }
 
     dX = dX - (this->targetRadiusX + this->master_obj->radius_x);
     dY = dY - (this->targetRadiusY + this->master_obj->radius_y);
-    if (dX < DAT_00570b48) {
+    if (dX < g_move_zero_angle) {
         dX = 0.0f;
     }
-    if (dY < DAT_00570b48) {
-        dY = DAT_00570b48;
+    if (dY < g_move_zero_angle) {
+        dY = g_move_zero_angle;
     }
 
     distanceToGoal = (float)sqrt(dY * dY + dX * dX);
-    if (this->actionRange > DAT_00570b98 && distanceToGoal <= this->actionRange) {
+    if (this->actionRange > g_move_zero_double && distanceToGoal <= this->actionRange) {
         this->speed = 0.0f;
         this->rangeStatusValue = 1;
         this->removeAllUserDefinedWaypoints(0);
@@ -708,7 +708,7 @@ int RGE_Moving_Object::doMove() {
         return 2;
     }
 
-    if (distanceToGoal < DAT_00570b90) {
+    if (distanceToGoal < g_move_half_double) {
         float trivialDistance = distanceToGoal;
         Waypoint* waypoint = this->pathValue.currentWaypoint();
         if (waypoint != 0) {
@@ -719,7 +719,7 @@ int RGE_Moving_Object::doMove() {
             trivialDistance = (float)sqrt(dY * dY + dX * dX);
         }
 
-        if (trivialDistance == DAT_00570b48) {
+        if (trivialDistance == g_move_zero_angle) {
             this->pathingGroupMembers.zeroNumber();
             return 2;
         }
@@ -761,7 +761,7 @@ int RGE_Moving_Object::doMove() {
         dX = waypoint->x - this->world_x;
         waypoint = this->pathValue.currentWaypoint();
         dY = waypoint->y - this->world_y;
-        if ((float)sqrt(dY * dY + dX * dX) == DAT_00570b48) {
+        if ((float)sqrt(dY * dY + dX * dX) == g_move_zero_angle) {
             waypointStatus = 1;
             waypoint = this->pathValue.currentWaypoint();
             dY = waypoint->y;
@@ -781,7 +781,7 @@ int RGE_Moving_Object::doMove() {
     }
 
     newDY = 0.0f;
-    if (this->numberUserDefinedWaypointsValue > 1 && distanceToGoal > DAT_00570ba0) {
+    if (this->numberUserDefinedWaypointsValue > 1 && distanceToGoal > g_move_waypoint_distance_threshold) {
         unsigned char firstZone = this->lookupZone((int)this->userDefinedWaypoints[0].x,
                                                    (int)this->userDefinedWaypoints[0].y);
         unsigned char secondZone = this->lookupZone((int)this->userDefinedWaypoints[1].x,
@@ -808,7 +808,7 @@ int RGE_Moving_Object::doMove() {
             }
             dX = (float)this->userDefinedWaypoints->x - this->world_x;
             dY = (float)this->userDefinedWaypoints->y - this->world_y;
-            if (radiusDistance + this->actionRange - DAT_00570ba8 < (float)sqrt(dY * dY + dX * dX)) {
+            if (radiusDistance + this->actionRange - g_move_radius_distance_adjustment < (float)sqrt(dY * dY + dX * dX)) {
                 reachedWaypoint = 1;
             }
         } while (reachedWaypoint == 0);
@@ -867,8 +867,8 @@ int RGE_Moving_Object::doMove() {
         }
 
         if (found == 0 && this->pathValue.numberOfWaypoints() == 1) {
-            if (pathSystem.passable(this, (float)floor((double)this->world_x) - DAT_00570b80,
-                                    (float)floor((double)this->world_y) - DAT_00570b80, 1) == 0) {
+            if (pathSystem.passable(this, (float)floor((double)this->world_x) - g_move_negative_half_float,
+                                    (float)floor((double)this->world_y) - g_move_negative_half_float, 1) == 0) {
                 this->speed = 0.0f;
                 this->rangeStatusValue = 2;
                 if (this->numberUserDefinedWaypointsValue < 2) {
@@ -877,8 +877,8 @@ int RGE_Moving_Object::doMove() {
                 this->continueCounter += 5;
                 return 1;
             }
-            if (this->world_x - floor((double)this->world_x) == DAT_00570b90 &&
-                this->world_y - floor((double)this->world_y) == DAT_00570b90) {
+            if (this->world_x - floor((double)this->world_x) == g_move_half_double &&
+                this->world_y - floor((double)this->world_y) == g_move_half_double) {
                 this->speed = 0.0f;
                 this->rangeStatusValue = 2;
                 if (this->numberUserDefinedWaypointsValue < 2) {
@@ -887,8 +887,8 @@ int RGE_Moving_Object::doMove() {
                 this->continueCounter += 5;
                 return 1;
             }
-            this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
-                           (float)floor((double)this->world_y) - DAT_00570b80, this->world_z);
+            this->teleport((float)floor((double)this->world_x) - g_move_negative_half_float,
+                           (float)floor((double)this->world_y) - g_move_negative_half_float, this->world_z);
         }
 
         displayObjectID = displayPathObjectID;
@@ -964,7 +964,7 @@ int RGE_Moving_Object::doMove() {
             }
             dX = (float)this->userDefinedWaypoints->x - this->world_x;
             dY = (float)this->userDefinedWaypoints->y - this->world_y;
-            if (radiusDistance + this->actionRange - DAT_00570ba8 < (float)sqrt(dY * dY + dX * dX)) {
+            if (radiusDistance + this->actionRange - g_move_radius_distance_adjustment < (float)sqrt(dY * dY + dX * dX)) {
                 reachedWaypoint = 1;
             }
         } while (reachedWaypoint == 0);
@@ -1011,12 +1011,12 @@ int RGE_Moving_Object::doMove() {
         }
 
         if (found == 0 && this->pathValue.numberOfWaypoints() == 1) {
-            if (pathSystem.passable(this, (float)floor((double)this->world_x) - DAT_00570b80,
-                                    (float)floor((double)this->world_y) - DAT_00570b80, 1) != 0) {
-                if (this->world_x - floor((double)this->world_x) != DAT_00570b90 ||
-                    this->world_y - floor((double)this->world_y) != DAT_00570b90) {
-                    this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
-                                   (float)floor((double)this->world_y) - DAT_00570b80, this->world_z);
+            if (pathSystem.passable(this, (float)floor((double)this->world_x) - g_move_negative_half_float,
+                                    (float)floor((double)this->world_y) - g_move_negative_half_float, 1) != 0) {
+                if (this->world_x - floor((double)this->world_x) != g_move_half_double ||
+                    this->world_y - floor((double)this->world_y) != g_move_half_double) {
+                    this->teleport((float)floor((double)this->world_x) - g_move_negative_half_float,
+                                   (float)floor((double)this->world_y) - g_move_negative_half_float, this->world_z);
                 } else {
                     this->speed = 0.0f;
                     this->rangeStatusValue = 2;
@@ -1070,9 +1070,9 @@ int RGE_Moving_Object::doMove() {
 
 int RGE_Moving_Object::doTrivialMove(float x, float y) {
     int alreadyMoving = 1;
-    if (this->speed == DAT_00570b98) {
+    if (this->speed == g_move_zero_double) {
         alreadyMoving = 0;
-        if (this->sprite != 0 && this->sprite->base_speed > DAT_00570b98) {
+        if (this->sprite != 0 && this->sprite->base_speed > g_move_zero_double) {
             this->speed =
                 ((RGE_Master_Moving_Object*)this->master_obj)->speed *
                 this->sprite->base_speed;
@@ -1085,17 +1085,17 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
     float distanceToCover =
         this->owner->world->world_time_delta_seconds * this->speed;
 
-    if (this->collisionAvoidanceDistance > DAT_00570b98) {
+    if (this->collisionAvoidanceDistance > g_move_zero_double) {
         this->collisionAvoidanceDistance -= distanceToCover;
-        if (this->collisionAvoidanceDistance > DAT_00570b98) {
+        if (this->collisionAvoidanceDistance > g_move_zero_double) {
             this->speed = 0.0f;
             return 0;
         }
         this->collisionAvoidanceDistance = -1.0f;
     }
 
-    if (((RGE_Master_Moving_Object*)this->master_obj)->turn_speed > DAT_00570b98) {
-        if (this->turnTimer >= DAT_00570b98) {
+    if (((RGE_Master_Moving_Object*)this->master_obj)->turn_speed > g_move_zero_double) {
+        if (this->turnTimer >= g_move_zero_double) {
             this->turnTimer -= this->owner->world->world_time_delta_seconds;
         } else {
             this->turnTimer = 0.0f;
@@ -1115,32 +1115,32 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
         targetDX = x - this->world_x;
         targetDY = y - this->world_y;
     } else {
-        targetDX = x - ((float)floor((double)this->world_x) - DAT_00570b80);
-        targetDY = y - ((float)floor((double)this->world_y) - DAT_00570b80);
+        targetDX = x - ((float)floor((double)this->world_x) - g_move_negative_half_float);
+        targetDY = y - ((float)floor((double)this->world_y) - g_move_negative_half_float);
     }
 
     float newAngle = (float)atan2((double)targetDY, (double)targetDX);
     this->boundAngle(&newAngle, -1);
     float angleDelta = newAngle - this->angle;
-    while (angleDelta < DAT_00570b70) {
-        angleDelta -= DAT_00570b4c;
+    while (angleDelta < g_move_negative_pi_double) {
+        angleDelta -= g_move_negative_two_pi;
     }
-    while (angleDelta > DAT_00570b68) {
-        angleDelta -= DAT_00570b50;
+    while (angleDelta > g_move_pi_double) {
+        angleDelta -= g_move_two_pi;
     }
 
     float facetDelta =
-        angleDelta * (float)numberFacets * DAT_00570b78;
+        angleDelta * (float)numberFacets * g_move_inverse_full_circle;
     this->boundAngle(&this->angle, numberFacets);
-    while (this->turnTimer <= DAT_00570b48 && (facetDelta > DAT_00570bb0 || facetDelta < DAT_00570bb8)) {
+    while (this->turnTimer <= g_move_zero_angle && (facetDelta > g_move_turn_delta_upper || facetDelta < g_move_turn_delta_lower)) {
         this->turnTimer +=
             ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed;
-        if (angleDelta >= DAT_00570b48) {
-            facetDelta -= DAT_00570b60;
-            this->angle += (float)(DAT_00570b40 / (float)numberFacets);
+        if (angleDelta >= g_move_zero_angle) {
+            facetDelta -= g_move_positive_one;
+            this->angle += (float)(g_move_full_circle_double / (float)numberFacets);
         } else {
-            facetDelta -= DAT_00570b64;
-            this->angle -= (float)(DAT_00570b40 / (float)numberFacets);
+            facetDelta -= g_move_negative_one;
+            this->angle -= (float)(g_move_full_circle_double / (float)numberFacets);
         }
     }
 
@@ -1153,30 +1153,30 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
     float newY = this->world_y + this->velocity_y;
 
     int result = 1;
-    if (((RGE_Master_Moving_Object*)this->master_obj)->radius_z > DAT_00570b48) {
+    if (((RGE_Master_Moving_Object*)this->master_obj)->radius_z > g_move_zero_angle) {
         result = pathSystem.passable(this, newX, newY, 1);
     }
 
     if (result == 0) {
-        if (this->collisionAvoidanceDistance == DAT_00570b48) {
-            if (this->speed > DAT_00570b48) {
+        if (this->collisionAvoidanceDistance == g_move_zero_angle) {
+            if (this->speed > g_move_zero_angle) {
                 this->collisionAvoidanceDistance =
                     (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 1743) % 6) *
-                        DAT_00570bc0 - DAT_00570b80 / this->speed;
+                        g_move_speed_offset_base - g_move_negative_half_float / this->speed;
             } else {
                 this->collisionAvoidanceDistance =
                     (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 1745) % 6) *
-                        DAT_00570bc0 - DAT_00570b80;
+                        g_move_speed_offset_base - g_move_negative_half_float;
             }
             this->speed = 0.0f;
             return 0;
         }
 
         this->collisionAvoidanceDistance = 0.0f;
-        if (pathSystem.passable(this, (float)floor((double)this->world_x) - DAT_00570b80,
-                                (float)floor((double)this->world_y) - DAT_00570b80, 1) != 0) {
-            this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
-                           (float)floor((double)this->world_y) - DAT_00570b80, this->world_z);
+        if (pathSystem.passable(this, (float)floor((double)this->world_x) - g_move_negative_half_float,
+                                (float)floor((double)this->world_y) - g_move_negative_half_float, 1) != 0) {
+            this->teleport((float)floor((double)this->world_x) - g_move_negative_half_float,
+                           (float)floor((double)this->world_y) - g_move_negative_half_float, this->world_z);
         }
 
         if (this->targetIDValue != -1) {
@@ -1188,7 +1188,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
                 if ((float)sqrt((target->world_x - this->world_x) * (target->world_x - this->world_x) +
                                 (target->world_y - this->world_y) * (target->world_y - this->world_y)) <
                     (float)sqrt(currentMaster->radius_x * currentMaster->radius_x +
-                                currentMaster->radius_y * currentMaster->radius_y) + this->actionRange - DAT_00570ba8) {
+                                currentMaster->radius_y * currentMaster->radius_y) + this->actionRange - g_move_radius_distance_adjustment) {
                     return 5;
                 }
             }
@@ -1243,14 +1243,14 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
         }
 
         if (result == 0 && this->pathValue.numberOfWaypoints() == 1) {
-            if (pathSystem.passable(this, (float)floor((double)this->world_x) - DAT_00570b80,
-                                    (float)floor((double)this->world_y) - DAT_00570b80, 1) != 0) {
-                if (this->world_x - floor((double)this->world_x) == DAT_00570b90 &&
-                    this->world_y - floor((double)this->world_y) == DAT_00570b90) {
+            if (pathSystem.passable(this, (float)floor((double)this->world_x) - g_move_negative_half_float,
+                                    (float)floor((double)this->world_y) - g_move_negative_half_float, 1) != 0) {
+                if (this->world_x - floor((double)this->world_x) == g_move_half_double &&
+                    this->world_y - floor((double)this->world_y) == g_move_half_double) {
                     return 4;
                 }
-                this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
-                               (float)floor((double)this->world_y) - DAT_00570b80, this->world_z);
+                this->teleport((float)floor((double)this->world_x) - g_move_negative_half_float,
+                               (float)floor((double)this->world_y) - g_move_negative_half_float, this->world_z);
             }
         }
 
@@ -1283,33 +1283,33 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
         } else {
             waypoint = this->pathValue.currentWaypoint();
             targetDX = waypoint->x -
-                ((float)floor((double)this->world_x) - DAT_00570b80);
+                ((float)floor((double)this->world_x) - g_move_negative_half_float);
             waypoint = this->pathValue.currentWaypoint();
             targetDY = waypoint->y -
-                ((float)floor((double)this->world_y) - DAT_00570b80);
+                ((float)floor((double)this->world_y) - g_move_negative_half_float);
         }
 
         newAngle = (float)atan2((double)targetDY, (double)targetDX);
         this->boundAngle(&newAngle, -1);
         angleDelta = newAngle - this->angle;
-        facetDelta = angleDelta * (float)numberFacets * DAT_00570b78;
+        facetDelta = angleDelta * (float)numberFacets * g_move_inverse_full_circle;
 
-        if (this->turnTimer > DAT_00570b48) {
+        if (this->turnTimer > g_move_zero_angle) {
             this->speed = 0.0f;
             return 0;
         }
 
-        while (facetDelta > DAT_00570bc8 || facetDelta < DAT_00570bd0) {
+        while (facetDelta > g_move_turn_delta_upper_wide || facetDelta < g_move_turn_delta_lower_wide) {
             this->turnTimer +=
                 ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed;
-            if (angleDelta >= DAT_00570b48) {
-                facetDelta -= DAT_00570b60;
-                this->angle += (float)(DAT_00570b40 / (float)numberFacets);
+            if (angleDelta >= g_move_zero_angle) {
+                facetDelta -= g_move_positive_one;
+                this->angle += (float)(g_move_full_circle_double / (float)numberFacets);
             } else {
-                facetDelta -= DAT_00570b64;
-                this->angle -= (float)(DAT_00570b40 / (float)numberFacets);
+                facetDelta -= g_move_negative_one;
+                this->angle -= (float)(g_move_full_circle_double / (float)numberFacets);
             }
-            if (this->turnTimer > DAT_00570b48) {
+            if (this->turnTimer > g_move_zero_angle) {
                 break;
             }
         }
@@ -1327,14 +1327,14 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
             if (this->owner->computerPlayer() == 1) {
                 return 4;
             }
-            if (this->speed > DAT_00570b48) {
+            if (this->speed > g_move_zero_angle) {
                 this->collisionAvoidanceDistance =
                     (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 2003) % 6) *
-                        DAT_00570bc0 - DAT_00570b80 / this->speed;
+                        g_move_speed_offset_base - g_move_negative_half_float / this->speed;
             } else {
                 this->collisionAvoidanceDistance =
                     (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 2005) % 6) *
-                        DAT_00570bc0 - DAT_00570b80;
+                        g_move_speed_offset_base - g_move_negative_half_float;
             }
             this->speed = 0.0f;
             return 0;
@@ -1357,8 +1357,8 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
         dY = waypoint->y - (this->world_y + this->velocity_y);
         float newDistance = (float)sqrt(dX * dX + dY * dY);
 
-        if ((this->closestDistanceToWaypoint < newDistance && curDistance < DAT_00570bd8) ||
-            (this->lastFacet2 == this->facet && this->lastFacet2 != this->lastFacet && curDistance < DAT_00570b7c)) {
+        if ((this->closestDistanceToWaypoint < newDistance && curDistance < g_move_waypoint_distance_threshold_close) ||
+            (this->lastFacet2 == this->facet && this->lastFacet2 != this->lastFacet && curDistance < g_move_half_float)) {
             if (pathSystem.passable(this, this->pathValue.currentWaypoint()->x,
                                     this->pathValue.currentWaypoint()->y, 1) == 0) {
                 return 2;
@@ -1382,11 +1382,11 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
     this->lastFacet2 = oldFacet;
     this->closestDistanceToWaypoint = curDistance;
 
-    if (speedOffset < DAT_00570be0) {
+    if (speedOffset < g_move_speed_offset_lower) {
         speedMultiplier = 0.9f;
-    } else if (speedOffset > DAT_00570bf0) {
+    } else if (speedOffset > g_move_speed_offset_upper) {
         speedMultiplier = 1.03f;
-    } else if (this->sprite != 0 && this->sprite->base_speed > DAT_00570b98) {
+    } else if (this->sprite != 0 && this->sprite->base_speed > g_move_zero_double) {
         this->speed =
             ((RGE_Master_Moving_Object*)this->master_obj)->speed *
             this->sprite->base_speed;
@@ -1398,7 +1398,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
     if (this->tile != 0) {
         speedMultiplier *= this->get_terrain_speed(this->tile->terrain_type & 0x1f);
     }
-    if (speedMultiplier > DAT_00570b48) {
+    if (speedMultiplier > g_move_zero_angle) {
         this->speed *= speedMultiplier;
     }
     return 0;
@@ -1704,7 +1704,7 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
     while (i < path->numberOfWaypoints()) {
         if (this->firstTileAlongLine((const XYPoint&)p1, (const XYPoint&)p2, rVal, eTerrain, eTerrain, 1) == 1) {
             //! @bug The original writes the x result to both output pointers.
-            float result = (float)rVal.x - DAT_00570b80;
+            float result = (float)rVal.x - g_move_negative_half_float;
             *rX = result;
             *rY = result;
             return 1;
@@ -1742,7 +1742,7 @@ int RGE_Moving_Object::canLinePath(const XYPoint& s, const XYPoint& d,
     xDistance = (float)(endX - startX);
     yDistance = (float)(endY - startY);
 
-    if ((xDistance == DAT_00570b48) && (yDistance == DAT_00570b48)) {
+    if ((xDistance == g_move_zero_angle) && (yDistance == g_move_zero_angle)) {
         return 0;
     }
 
@@ -1800,7 +1800,7 @@ int RGE_Moving_Object::canLinePath(int sX, int sY, int dX, int dY,
     float xDistance = (float)(dX - sX);
     float yDistance = (float)(dY - sY);
 
-    if ((xDistance == DAT_00570b48) && (yDistance == DAT_00570b48)) {
+    if ((xDistance == g_move_zero_angle) && (yDistance == g_move_zero_angle)) {
         return 0;
     }
 
@@ -1860,7 +1860,7 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& s,
     float xDistance = (float)(d.x - s.x);
     float yDistance = (float)(d.y - s.y);
 
-    if ((xDistance == DAT_00570b48) && (yDistance == DAT_00570b48)) {
+    if ((xDistance == g_move_zero_angle) && (yDistance == g_move_zero_angle)) {
         return 0;
     }
 
@@ -2085,10 +2085,10 @@ void RGE_Moving_Object::copy_obj(RGE_Master_Static_Object* source2) {
 void RGE_Moving_Object::boundAngle(float* x, int numFacets) {
     float wrappedAngle = *x;
 
-    if (*x < DAT_00570b48) {
+    if (*x < g_move_zero_angle) {
         do {
-            wrappedAngle -= DAT_00570b4c;
-        } while (wrappedAngle < DAT_00570b48);
+            wrappedAngle -= g_move_negative_two_pi;
+        } while (wrappedAngle < g_move_zero_angle);
         *x = wrappedAngle;
     } else {
         while (wrappedAngle > 6.2831855f) {
@@ -2109,14 +2109,14 @@ void RGE_Moving_Object::boundAngle(float* x, int numFacets) {
         if (numFacets >= 0) {
             do {
                 float difference = *x - (float)i * bestDifference;
-                if (difference < DAT_00570b98) {
+                if (difference < g_move_zero_double) {
                     difference = -difference;
                 }
                 if (difference < bestDifference) {
                     bestDifference = difference;
                     bestFacet = i;
                 }
-                if (bestDifference < DAT_00570c00) {
+                if (bestDifference < g_move_angle_tolerance) {
                     break;
                 }
                 ++i;
@@ -2124,9 +2124,9 @@ void RGE_Moving_Object::boundAngle(float* x, int numFacets) {
         }
 
         if (numFacets == 8) {
-            *x = (float)bestFacet * DAT_00570b88;
+            *x = (float)bestFacet * g_move_quarter_pi;
         } else {
-            *x = (float)bestFacet * DAT_00570bfc;
+            *x = (float)bestFacet * g_move_facet_angle;
         }
     }
 }
