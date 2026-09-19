@@ -120,7 +120,7 @@ also contributes parent-owned blocks at `0047F00C` and `0047F076` inside the
   - `extension` at `+0x00`, `char[4]`.
   - `rType` at `+0x04`, `unsigned long`.
 - Binary evidence: the table base is `0x00585520`; its first type word is at
-  `0x00585524`, recorded as `DAT_00585524 = 0x766F6320`. The original loop
+  `0x00585524`, which is the `rType` field of the first table record. The original loop
   reads the sentinel/type word at `0047FCD9`, compares the four-byte extension
   at `0047FCEF-0047FCF1`, reads the result at `+0x04` at `0047FD14`, and
   advances each entry by eight bytes at `0047FD00`.
