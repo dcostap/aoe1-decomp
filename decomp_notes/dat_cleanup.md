@@ -108,6 +108,17 @@ original storage as a reviewed symbol.
 | `DAT_00570620` | named | This read-only zero double is used by static-object map and radius checks. |
 | `DAT_00570628` | named | This read-only `3.0f` sets the lower static-object placement bounds. |
 | `DAT_0057062c` | named | This read-only `-3.0f` sets the upper static-object placement bounds. |
+| `DAT_005706a8` | named | This read-only `7.0f` value gates the modern map save format. |
+| `DAT_005706ac` | named | This read-only zero marks a terrain animation interval with no pause frames. |
+| `DAT_005706c0` | named | This read-only `0.5` double is the tile-map half-unit. |
+| `DAT_005706d0` | named | This read-only `-0.5` double supplies the tile-map diagonal sign. |
+| `DAT_005706d8` | named | This read-only `1.0` double supplies the tile-map unit span. |
+| `DAT_005706e8` | named | This read-only `0.001f` scales map world time. |
+| `DAT_00570934` | named | This read-only zero is used by missile map and collision checks. |
+| `DAT_00570938` | named | This read-only `3.0f` sets the lower missile collision bounds. |
+| `DAT_0057093c` | named | This read-only `-3.0f` sets the upper missile collision bounds. |
+| `DAT_00570940` | named | This read-only negative tenth adjusts missile vertical collision bounds. |
+| `DAT_00570630`, `DAT_00570634`, `DAT_00570638`, `DAT_00570648`, `DAT_00570654`, `DAT_0057065c`, `DAT_00570664`, `DAT_0057066c`, `DAT_005706b0`, `DAT_005706b4`, `DAT_005706ec`, and `DAT_00570930` | removed | These read-only values have no source references or PDB symbols. Their owners use direct literals or do not need separate storage. |
 
 ## Related duplicate storage
 

@@ -11,10 +11,10 @@
 #include <stdlib.h>
 
 extern float save_game_version;
-extern float DAT_00570934;
-extern float DAT_00570938;
-extern float DAT_0057093c;
-extern float DAT_00570940;
+extern float g_missile_zero_float;
+extern float g_missile_bounds_min_adjustment;
+extern float g_missile_bounds_max_adjustment;
+extern float g_missile_vertical_adjustment;
 
 RGE_Missile_Object::RGE_Missile_Object(
     RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner,
@@ -95,7 +95,7 @@ unsigned char RGE_Missile_Object::missile_move() {
     new_y = this->world_y + this->velocity_y;
     new_z = this->world_z + this->velocity_z;
 
-    if (new_x < DAT_00570934 || new_x >= (float)this->owner->world->map->map_width || new_y < DAT_00570934 ||
+    if (new_x < g_missile_zero_float || new_x >= (float)this->owner->world->map->map_width || new_y < g_missile_zero_float ||
         new_y >= (float)this->owner->world->map->map_height) {
         this->die_die_die();
     }
@@ -119,14 +119,14 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float delta) {
 
     rx = this->master_obj->radius_x;
     ry = this->master_obj->radius_y;
-    if (rx <= DAT_00570934 || ry <= DAT_00570934) {
+    if (rx <= g_missile_zero_float || ry <= g_missile_zero_float) {
         return 0;
     }
 
-    min_x = (short)(int)(this->world_x - DAT_00570938);
-    min_y = (short)(int)(this->world_y - DAT_00570938);
-    x1 = (short)(int)(this->world_x - DAT_0057093c);
-    max_y = (short)(int)(this->world_y - DAT_0057093c);
+    min_x = (short)(int)(this->world_x - g_missile_bounds_min_adjustment);
+    min_y = (short)(int)(this->world_y - g_missile_bounds_min_adjustment);
+    x1 = (short)(int)(this->world_x - g_missile_bounds_max_adjustment);
+    max_y = (short)(int)(this->world_y - g_missile_bounds_max_adjustment);
 
     map = this->owner->world->map;
     check_list = new RGE_Check_List;
@@ -157,19 +157,19 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float delta) {
                     rx2 = object_master->radius_x;
                     if (ry2 > 0.0f && rx2 > 0.0f) {
                         float dz = object->world_z - this->world_z;
-                        if (dz >= -(object_master->radius_z - DAT_00570940) &&
-                            dz <= this->master_obj->radius_z - DAT_00570940) {
+                        if (dz >= -(object_master->radius_z - g_missile_vertical_adjustment) &&
+                            dz <= this->master_obj->radius_z - g_missile_vertical_adjustment) {
                             dx = object->world_x - this->world_x;
                             dy = object->world_y - this->world_y;
-                            if (dx < DAT_00570934) {
+                            if (dx < g_missile_zero_float) {
                                 dx = -dx;
                             }
-                            if (dy < DAT_00570934) {
+                            if (dy < g_missile_zero_float) {
                                 dy = -dy;
                             }
                             dx = dx - (rx2 + rx + delta);
                             dy = dy - (ry2 + ry + delta);
-                            if (dx <= DAT_00570934 && dy <= DAT_00570934) {
+                            if (dx <= g_missile_zero_float && dy <= g_missile_zero_float) {
                                 check_list->add_node(object, dx, dy, 0);
                             }
                         }

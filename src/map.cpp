@@ -27,12 +27,12 @@ extern void __cdecl convert_us(char* text);
 int __cdecl debug_rand(char* file, int line);
 void __cdecl debug_srand(char* file, int line, unsigned int seed);
 extern float save_game_version;
-extern float DAT_005706a8;
-extern float DAT_005706ac;
-extern double DAT_005706c0;
-extern double DAT_005706d0;
-extern double DAT_005706d8;
-extern float DAT_005706e8;
+extern float g_map_save_version_7_0;
+extern float g_map_zero_interval;
+extern double g_tile_map_half;
+extern double g_tile_map_negative_half;
+extern double g_tile_map_one;
+extern float g_map_time_scale;
 extern TDebuggingLog* L;
 
 RGE_Map::RGE_Map(int infile, RGE_Sound** sounds, unsigned char setup) {
@@ -1221,7 +1221,7 @@ void RGE_Map::load_map(int infile) {
     rge_read(infile, &this->map_visible_flag, 1);
     rge_read(infile, &this->fog_flag, 1);
 
-    if (!(save_game_version < DAT_005706a8)) {
+    if (!(save_game_version < g_map_save_version_7_0)) {
         long h = 0;
         if (this->map_height > 0) {
             do {
@@ -1289,7 +1289,7 @@ void RGE_Map::save_map(int outfile) {
     rge_write(handle, &map->map_visible_flag, 1);
     rge_write(handle, &map->fog_flag, 1);
 
-    if (!(save_game_version < DAT_005706a8)) {
+    if (!(save_game_version < g_map_save_version_7_0)) {
         int y = 0;
         if (*height > 0) {
             do {
@@ -1461,7 +1461,7 @@ void RGE_Map::load_terrain_types(char* terrain_table, RGE_Sound** sounds) {
                     terrain->cols = col;
                     terrain->is_animated = (unsigned char)is_animated;
                     terrain->animation_frames = animation_frames;
-                    if (interval == DAT_005706ac)
+                    if (interval == g_map_zero_interval)
                         terrain->pause_frames = 0;
                     else
                         terrain->pause_frames = (short)(long)(pause_between_loops / interval);
@@ -1913,36 +1913,36 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* offset_x,
     case 9:
         goto case_zero;
     case 1:
-        if (x_ratio <= DAT_005706c0) {
-            offset = (y_ratio + y_ratio) - ((DAT_005706c0 - x_ratio) + (DAT_005706c0 - x_ratio));
+        if (x_ratio <= g_tile_map_half) {
+            offset = (y_ratio + y_ratio) - ((g_tile_map_half - x_ratio) + (g_tile_map_half - x_ratio));
         } else {
-            offset = (y_ratio + y_ratio) - ((x_ratio - DAT_005706c0) + (x_ratio - DAT_005706c0));
+            offset = (y_ratio + y_ratio) - ((x_ratio - g_tile_map_half) + (x_ratio - g_tile_map_half));
         }
         break;
     case 2:
-        if (DAT_005706c0 < x_ratio) {
-            offset = x_ratio * DAT_005706d0 - (y_ratio - DAT_005706c0);
+        if (g_tile_map_half < x_ratio) {
+            offset = x_ratio * g_tile_map_negative_half - (y_ratio - g_tile_map_half);
             break;
         }
         goto case_eight;
     case 3:
-        offset = DAT_005706d8 - x_ratio;
-        if (x_ratio * DAT_005706c0 < y_value) {
-            offset = offset * DAT_005706c0 - (y_ratio - DAT_005706c0);
+        offset = g_tile_map_one - x_ratio;
+        if (x_ratio * g_tile_map_half < y_value) {
+            offset = offset * g_tile_map_half - (y_ratio - g_tile_map_half);
             break;
         }
         y_value = y_ratio + y_ratio;
-        offset = (offset + offset) - DAT_005706d8;
+        offset = (offset + offset) - g_tile_map_one;
         goto add_vertical;
     case 4:
-        if ((DAT_005706d8 - x_ratio) * DAT_005706c0 < y_value) {
-            offset = x_ratio * DAT_005706c0 - (y_ratio - DAT_005706c0);
+        if ((g_tile_map_one - x_ratio) * g_tile_map_half < y_value) {
+            offset = x_ratio * g_tile_map_half - (y_ratio - g_tile_map_half);
             break;
         }
     case 7:
     case_seven:
         y_value = y_ratio + y_ratio;
-        offset = (x_ratio + x_ratio) - DAT_005706d8;
+        offset = (x_ratio + x_ratio) - g_tile_map_one;
     add_vertical:
         offset = offset + y_value;
         break;
@@ -1953,59 +1953,59 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile, float* offset_x,
     case 8:
         goto case_eight;
     case 14:
-        if (x_ratio <= DAT_005706c0)
+        if (x_ratio <= g_tile_map_half)
             goto case_six;
         goto case_eight;
     case_eight:
-        offset = (DAT_005706d8 - x_ratio) * DAT_005706d0 - (y_ratio - DAT_005706c0);
+        offset = (g_tile_map_one - x_ratio) * g_tile_map_negative_half - (y_ratio - g_tile_map_half);
         break;
     case_six:
-        offset = x_ratio * DAT_005706d0 - (y_ratio - DAT_005706c0);
+        offset = x_ratio * g_tile_map_negative_half - (y_ratio - g_tile_map_half);
         break;
     case 10:
-        if (DAT_005706d8 <= y_ratio) {
-            offset = -DAT_005706d8;
+        if (g_tile_map_one <= y_ratio) {
+            offset = -g_tile_map_one;
         } else {
             offset = -y_ratio;
         }
         break;
     case 11:
-        if (x_ratio <= DAT_005706c0) {
-            offset = (DAT_005706c0 - x_ratio) + (DAT_005706c0 - x_ratio);
+        if (x_ratio <= g_tile_map_half) {
+            offset = (g_tile_map_half - x_ratio) + (g_tile_map_half - x_ratio);
             break;
         }
         goto case_zero;
     case 12:
-        if (DAT_005706c0 < x_ratio) {
-            offset = (x_ratio - DAT_005706c0) + (x_ratio - DAT_005706c0);
+        if (g_tile_map_half < x_ratio) {
+            offset = (x_ratio - g_tile_map_half) + (x_ratio - g_tile_map_half);
             break;
         }
     case_zero:
         offset = 0.0f;
         break;
     case 13:
-        if (x_ratio <= DAT_005706c0) {
-            offset = (DAT_005706c0 - x_ratio) + y_ratio;
+        if (x_ratio <= g_tile_map_half) {
+            offset = (g_tile_map_half - x_ratio) + y_ratio;
             offset = offset + offset;
         } else {
-            offset = (x_ratio - DAT_005706c0) + y_ratio;
+            offset = (x_ratio - g_tile_map_half) + y_ratio;
             offset = offset + offset;
         }
         break;
     case 15:
-        if (y_value <= DAT_005706d8 - x_ratio * DAT_005706c0)
+        if (y_value <= g_tile_map_one - x_ratio * g_tile_map_half)
             goto case_seven;
         goto case_eight;
     case 16:
-        if (DAT_005706d8 - (DAT_005706d8 - x_ratio) * DAT_005706c0 < y_value)
+        if (g_tile_map_one - (g_tile_map_one - x_ratio) * g_tile_map_half < y_value)
             goto case_six;
     case_five:
         offset = y_ratio + y_ratio;
-        y_value = DAT_005706d8 - (x_ratio + x_ratio);
+        y_value = g_tile_map_one - (x_ratio + x_ratio);
         goto add_vertical;
     }
 
-    offset = (((x_ratio + x_ratio) - (DAT_005706d8 - (y_ratio + y_ratio))) + offset) * DAT_005706c0;
+    offset = (((x_ratio + x_ratio) - (g_tile_map_one - (y_ratio + y_ratio))) + offset) * g_tile_map_half;
     *offset_y = offset;
     *offset_x = (x_ratio + x_ratio) - offset;
 }
@@ -2546,7 +2546,7 @@ void RGE_Map::update(unsigned long world_time) {
     if (world_time - last_world_time < 100)
         return;
 
-    float cur_time = (float)world_time * DAT_005706e8;
+    float cur_time = (float)world_time * g_map_time_scale;
     short i;
 
     for (i = 0; i < this->num_terrain; ++i) {
