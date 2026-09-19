@@ -18,8 +18,8 @@
 #include "../include/rge_base_game_global.h"
 #include "../include/rge_fio.h"
 
-extern float DAT_00575150;
-extern double DAT_00575168;
+extern float g_hunt_empty_amount;
+extern double g_hunt_drop_distance_threshold;
 
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
@@ -195,7 +195,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
         return;
 
     case 8:
-        if (this->obj->attribute_amount_held > DAT_00575150) {
+        if (this->obj->attribute_amount_held > g_hunt_empty_amount) {
             if (this->target_obj2 == 0) {
                 if (static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site != -1) {
                     this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
@@ -228,7 +228,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
         // The shipped check reads target_obj (+0x10), not
         // target_obj2 (+0x14), before clearing target_obj.
         // LIKELY INTENT: Clear the current target before state 3.
-        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= DAT_00575150) {
+        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= g_hunt_empty_amount) {
             this->set_target_obj(0);
         }
         this->set_state(3);
@@ -354,7 +354,7 @@ unsigned char TRIBE_Action_Hunt::update() {
             return 0;
         }
         if (this->obj->turn_towards(this->target_obj, 0, 0) != 0) {
-            if (this->target_obj->attribute_amount_held <= DAT_00575150) {
+            if (this->target_obj->attribute_amount_held <= g_hunt_empty_amount) {
                 this->set_target_obj(0);
                 this->set_state(3);
                 return 0;
@@ -372,7 +372,7 @@ unsigned char TRIBE_Action_Hunt::update() {
         float max_hold;
 
         if (this->target_obj == 0) {
-            if (this->obj->attribute_amount_held > DAT_00575150) {
+            if (this->obj->attribute_amount_held > g_hunt_empty_amount) {
                 this->set_state(8);
             } else {
                 this->set_state(3);
@@ -411,7 +411,7 @@ unsigned char TRIBE_Action_Hunt::update() {
         this->target_obj->set_attribute_amount(-give_amount, 1, 1);
         this->obj->set_attribute_amount(adjusted_amount, 1, 0);
 
-        if (this->obj->attribute_amount_held < max_hold && this->target_obj->attribute_amount_held > DAT_00575150) {
+        if (this->obj->attribute_amount_held < max_hold && this->target_obj->attribute_amount_held > g_hunt_empty_amount) {
             return 0;
         }
         this->set_state(8);
@@ -442,7 +442,7 @@ unsigned char TRIBE_Action_Hunt::update() {
                     this->set_state(8);
                     return 0;
                 }
-                if (this->obj->distance_to_object(this->target_obj2) > DAT_00575168) {
+                if (this->obj->distance_to_object(this->target_obj2) > g_hunt_drop_distance_threshold) {
                     this->timer = -3.0f;
                     this->obj->stop_moving();
                     return 0;
@@ -532,7 +532,7 @@ int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, floa
             static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
         short id = obj_in->master_obj->id;
         if ((id == master->drop_site || id == master->backup_drop_site) &&
-            this->obj->attribute_amount_held > DAT_00575150) {
+            this->obj->attribute_amount_held > g_hunt_empty_amount) {
             if (obj_in == this->target_obj2 && this->state == 8) {
                 return 1;
             }
@@ -560,7 +560,7 @@ int TRIBE_Action_Hunt::work(RGE_Static_Object* obj_in, float x, float y, float z
                 static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
             short obj_id = obj_in->master_obj->id;
             if ((obj_id == master->drop_site || obj_id == master->backup_drop_site) &&
-                this->obj->attribute_amount_held > DAT_00575150) {
+                this->obj->attribute_amount_held > g_hunt_empty_amount) {
                 this->set_target_obj(0);
                 this->timer = 0.0f;
                 this->target_x = -1.0f;

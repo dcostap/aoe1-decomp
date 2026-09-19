@@ -148,9 +148,9 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** rObj) {
     float radius_y;
     float radius_2x;
     float radius_2y;
-    radius_x = master->radius_x + proto->radius_x - DAT_00575190;
+    radius_x = master->radius_x + proto->radius_x - g_make_obj_radius_adjustment;
     radius_2x = radius_x + radius_x;
-    radius_y = master->radius_y + proto->radius_y - DAT_00575190;
+    radius_y = master->radius_y + proto->radius_y - g_make_obj_radius_adjustment;
     radius_2y = radius_y + radius_y;
     short tries;
     while (index < 3) {
@@ -166,22 +166,22 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** rObj) {
             case 0:
                 this->target_y = this->obj->world_y + radius_y;
                 this->target_x = this->obj->world_x +
-                    ((float)debug_rand(s_tact_mob_cpp, 199) * radius_2x * DAT_00575198 - radius_x);
+                    ((float)debug_rand(s_tact_mob_cpp, 199) * radius_2x * g_make_obj_random_scale - radius_x);
                 break;
             case 1:
                 this->target_x = this->obj->world_x - radius_x;
                 this->target_y = this->obj->world_y +
-                    ((float)debug_rand(s_tact_mob_cpp, 203) * radius_2y * DAT_00575198 - radius_y);
+                    ((float)debug_rand(s_tact_mob_cpp, 203) * radius_2y * g_make_obj_random_scale - radius_y);
                 break;
             case 2:
                 this->target_x = this->obj->world_x + radius_x;
                 this->target_y = this->obj->world_y +
-                    ((float)debug_rand(s_tact_mob_cpp, 207) * radius_2y * DAT_00575198 - radius_y);
+                    ((float)debug_rand(s_tact_mob_cpp, 207) * radius_2y * g_make_obj_random_scale - radius_y);
                 break;
             case 3:
                 this->target_y = this->obj->world_y - radius_y;
                 this->target_x = this->obj->world_x +
-                    ((float)debug_rand(s_tact_mob_cpp, 211) * radius_2x * DAT_00575198 - radius_x);
+                    ((float)debug_rand(s_tact_mob_cpp, 211) * radius_2x * g_make_obj_random_scale - radius_x);
                 break;
             }
             if (proto->check_placement(this->obj->owner, this->target_x, this->target_y, 0, 1, 1, 1, 0, 0, 1)) {
@@ -229,7 +229,7 @@ void TRIBE_Action_Make_Obj::get_info(short& id, short& progress, char* name, sho
     } else {
         short divisor = static_cast<TRIBE_Master_Combat_Object*>(this->obj->owner->master_objects[this->obj_id])
                             ->build_pts_required;
-        int pc = (int)((this->work_done * DAT_005751a0) / (float)divisor);
+        int pc = (int)((this->work_done * g_make_obj_progress_percent) / (float)divisor);
         progress = (short)pc;
     }
 

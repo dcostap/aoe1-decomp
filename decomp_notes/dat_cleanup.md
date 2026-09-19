@@ -43,6 +43,13 @@ original storage as a reviewed symbol.
 | `DAT_00575270` | named | The original read-only `0.4` double is the repair distance threshold. The new `g_repair_distance_threshold` name describes that role. |
 | `DAT_00575278` | removed | The original read-only `0.0f` has no source reference. The repair update path uses the literal zero threshold. |
 | `DAT_0057527c` | removed | The original read-only `-0.5f` has no source reference. `meet_target` uses the corresponding literal coordinate offset. |
+| `DAT_00575150` | named | This read-only zero is used by hunt actions to test whether a unit carries any amount. The new `g_hunt_empty_amount` name states that role. |
+| `DAT_00575168` | named | This read-only `1.0` double is the hunt action's distance threshold for a drop target. The new `g_hunt_drop_distance_threshold` name states that role. |
+| `DAT_0057518c` | removed | The original read-only `7.23f` has no source reference. `TRIBE_Action_Make_Obj` already uses the literal save-version threshold. |
+| `DAT_00575190` | named | This read-only negative epsilon adjusts make-object placement radii. The new `g_make_obj_radius_adjustment` name describes its use without changing its sign. |
+| `DAT_00575198` | named | This read-only scale converts the random integer to a placement fraction in `TRIBE_Action_Make_Obj::place_obj`. |
+| `DAT_0057519c` | removed | The original read-only `4.0f` has no source reference. `place_obj` already uses the corresponding literal expansion factor. |
+| `DAT_005751a0` | named | This read-only `100.0f` converts make-object work into a percentage in `get_info`. The new `g_make_obj_progress_percent` name states that role. |
 
 ## Related duplicate storage
 
