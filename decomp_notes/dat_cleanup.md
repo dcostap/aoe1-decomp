@@ -253,6 +253,15 @@ original storage as a reviewed symbol.
 | `DAT_00570e90` | named | This read-only `4.01f` value gates the player allied-LOS save field. |
 | `DAT_00570ec0` | named | This read-only `7.09f` value gates the player doppleganger-list save field. |
 | `DAT_00570ec4` | named | This read-only zero rejects empty player attribute commands. |
+| `DAT_0062c49c` | removed | The original listing marks this byte as the `gameSummary` function's static `temp`. The recovered `basegame.cpp` owner already defines that static, so the unused header alias is generated scaffolding. |
+| `DAT_0062cf68` | removed | The original listing shows this slot as the communications-session handler storage. The recovered `com_sess.cpp` owner uses `g_com_handler`; the separate header declaration has no source reference. |
+| `DAT_0062d208`, `DAT_0062d20c`, and `DAT_0062d230` | removed | These labels are the visible-checksum array entries and unified-checksum value owned by `DAT_0062D208[9]` and `DAT_0062D230` in `game_globals.cpp`. The lower-case header declarations are unused aliases. |
+| `DAT_0062e658` | removed | The original listing identifies this slot as the `ds_stream_time_func` static `bInTimer`. The recovered `Dsutil.c` owner already defines that function static, so the unused header alias is generated scaffolding. |
+| `DAT_0087d4a6`, `DAT_0087d4a8`, `DAT_0087d4aa`, and `DAT_0087d4b0` | removed | These labels point into `Picked_Objects` records. The reviewed `Picked_Objects[64]` table owns the storage. |
+| `DAT_0087d7cc`, `DAT_0087d7d0`, `DAT_0087d7d4`, and `DAT_0087d7d8` | removed | These labels point into `VisibleUnitList_Size[5]`, which starts at `0x0087D7C8`. The reviewed array owns the entries. |
+| `DAT_0087d7e4`, `DAT_0087d7e8`, and `DAT_0087d7f0` | removed | These labels point into `VisibleUnitList[5]`, which starts at `0x0087D7E0`. The reviewed array owns the entries. |
+| `DAT_0087d80c` through `DAT_0087d828` | removed | These labels point into the first `VCALL_LOG` record, whose reviewed `VCALL_LOG[1024]` table starts at `0x0087D808`. |
+| `DAT_0088680c` | removed | This label points to the second pointer in `unified_map_offsets[1024]`, which starts at `0x00886808`. The reviewed table owns the entry. |
 
 ## Related duplicate storage
 
