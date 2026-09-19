@@ -649,9 +649,19 @@ void RGE_Command::do_command_resign(RGE_Command_Resign* order) {
     if (rge_base_game->multiplayerGame()) {
         RGE_Base_Game* game = rge_base_game;
         int comm = order->comm_player_id;
-        int total = 0; int resigned_count = 0; int i = 1;
+        int total = 0;
+        int resigned_count = 0;
+        int i = 1;
         game->resigned[comm] = 1;
-        do { if (rge_base_game->playerID(i) == order->player_id) { total++; if (rge_base_game->resigned[i]) resigned_count++; } i++; } while (i < 9);
+        do {
+            if (rge_base_game->playerID(i) == order->player_id) {
+                total++;
+                if (rge_base_game->resigned[i]) {
+                    resigned_count++;
+                }
+            }
+            i++;
+        } while (i < 9);
         if (total != resigned_count) return;
         this->world->players[order->player_id]->do_resign(order->dropped);
         return;
