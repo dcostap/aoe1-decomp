@@ -19,6 +19,9 @@
 #include "../include/drawarea.h"
 #include "../include/sounddrv.h"
 #include "../include/music.h"
+#include "../include/sprite.h"
+#include "../include/pathsys.h"
+#include "../include/colorlog.h"
 #include "../include/chat.h"
 #include "../include/com_hand.h"
 #include "../include/debuglog.h"
@@ -38,8 +41,6 @@
 
 extern FILE* draw_log;
 extern char draw_log_name[260];
-extern int do_draw_log;
-extern int safe_draw_log;
 
 void __cdecl write_draw_log(char* s) {
     if (draw_log != 0) {
@@ -935,7 +936,6 @@ extern int chatCheatCodes;
 extern int logUpdateChanges;
 extern int useInfluencePlacement;
 extern int all_grassland_on;
-extern int numberPathingIterations;
 extern int useNewPathing;
 extern int pathingCapValue;
 extern int force_cd;
@@ -948,7 +948,6 @@ extern int speed_val1;
 extern int speed_val2;
 extern int log_output;
 extern int DDSys_CanColorFill;
-extern unsigned char do_color_log;
 
 int RGE_Base_Game::setup_cmd_options() {
     char cmd_line[256];

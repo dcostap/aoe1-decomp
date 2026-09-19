@@ -1,6 +1,8 @@
 
 #include "../include/dlg_conf.h"
 #include "../include/game_globals.h"
+#include "../include/pathsys.h"
+#include "../include/colorlog.h"
 #include "../include/resource_ids.h"
 #include "../include/panel.h"
 #include "../include/Pnl_txt.h"
@@ -21,8 +23,6 @@
 #include <string.h>
 #include <stdio.h>
 
-extern unsigned char do_color_log;
-extern int numberPathingIterations;
 
 TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
     : TDialogPanel("Config Dialog"), modeValue(m) {

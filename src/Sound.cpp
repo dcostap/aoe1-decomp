@@ -1,4 +1,5 @@
 #include "../include/sound.h"
+#include "../include/sprite.h"
 #include "../include/rge_fio.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,9 +11,6 @@ extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern void __cdecl write_draw_log(char* message);
 extern void __cdecl write_draw_log2(char* message);
-
-extern int do_draw_log;
-extern int safe_draw_log;
 
 #include "../include/game_globals.h"
 #include <string.h>

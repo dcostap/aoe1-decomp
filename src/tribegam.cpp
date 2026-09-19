@@ -126,9 +126,7 @@ static long __stdcall video_sub_wnd_proc(void* wnd, unsigned int msg, unsigned i
 }
 
 extern void* StringTableX;
-extern int disable_terrain_sounds;
 extern int out_of_sync;
-extern int out_of_sync2;
 extern int player_dropped[9];
 extern int video_codec_available;
 extern void __cdecl debug_srand(char* file, int line, unsigned int seed);
@@ -1608,7 +1606,6 @@ int TRIBE_Game::save_scenario(char* fileName) {
 }
 
 
-extern int show_timing_max;
 
 void TRIBE_Game::calc_timing_text() {
     static unsigned long last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 2004);
@@ -2284,7 +2281,6 @@ int TRIBE_Game::start_scenario(char* scenario_file) {
 #include <stdio.h>
 #include <string.h>
 
-extern int numberPathingIterations;
 extern int ENABLE_COMPRESSION;
 
 int TRIBE_Game::load_game(char* fileName) {
