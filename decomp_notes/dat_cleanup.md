@@ -10,6 +10,9 @@ Use one of these results:
 
 Do not replace uncertainty with an invented name.
 
+The audit also removes duplicate non-`DAT_` scaffolding when it owns the same
+original storage as a reviewed symbol.
+
 ## Reviewed symbols
 
 | Symbol | Result | Evidence |
@@ -26,6 +29,12 @@ Do not replace uncertainty with an invented name.
 | `DAT_00575758` | removed | The original read-only `-1.0f` has five comparison references in `taitacmd.cpp`. The PDB has no global symbol at this address. Source now uses the literal sentinel, which lets VC5 own the translation unit's constant-pool entry. |
 | `DAT_00575700` through `DAT_00575754` | removed | These 20 read-only values form an earlier part of the `taitacmd.cpp` constant pool. The PDB has no global symbol for any entry. Recovered source already uses literals, and no source references the separate definitions. |
 | `DAT_00577318` through `DAT_0057732c` | named | These six read-only values gate fields in `T_Scenario` file loading. Their comparison sites and values establish scenario file versions `1.13`, `1.02`, `1.03`, `1.04`, `1.12`, and `1.05`. The new `g_scenario_file_version_*` names are descriptive cleanup names, not recovered PDB names. |
+
+## Related duplicate storage
+
+| Symbol | Result | Evidence |
+| --- | --- | --- |
+| `g_time` | removed | `g_time` and `save_game_version` both modeled original address `0x0058EBCC` with initial value `7.23f`. `TribeMainDecisionAIModule` uses the value for conditional save-file reads. Source now uses the canonical `save_game_version` owner. |
 
 ## Validation
 

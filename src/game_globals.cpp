@@ -23,7 +23,6 @@ int do_fps_log = 0;
 FILE* fps_log = 0;
 int debugActions = 0;
 long fog_next_shape = 0;
-float g_time = 7.23f;
 int shape_version_110 = 0x30312E31;
 int version_marker = 0x30302E31;
 int startLoggingAI = 0;

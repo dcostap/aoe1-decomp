@@ -20,7 +20,7 @@
 typedef unsigned char uchar;
 
 extern int startLoggingAI;
-extern float g_time;
+extern float save_game_version;
 extern float DAT_00575618;
 extern float DAT_0057561c;
 
@@ -150,7 +150,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     rge_read(infile, &this->lastDiplomacyUpdateTime, 4);
     rge_read(infile, &this->lastTacticalUpdateTime, 4);
 
-    if (g_time >= DAT_00575618) {
+    if (save_game_version >= DAT_00575618) {
         rge_read(infile, &this->lastTributeChatTime, 4);
         rge_read(infile, &this->tributeChatTimeout, 4);
         rge_read(infile, &this->waitingOnTribute, 4);
@@ -158,7 +158,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
         rge_read(infile, &this->tributeAddressed, 4);
         rge_read(infile, &this->tributeAmount, 4);
     }
-    if (g_time >= DAT_0057561c) {
+    if (save_game_version >= DAT_0057561c) {
         rge_read(infile, &this->decidedInitialDiplomacy, 4);
         rge_read(infile, &this->requiredDiplomacyTributeAmount, 4);
         rge_read(infile, this->tributeGiven, 36);
