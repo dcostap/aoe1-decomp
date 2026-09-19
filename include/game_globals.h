@@ -556,7 +556,6 @@ extern unsigned char DAT_00587a75;
 extern unsigned char DAT_00587a7d;
 extern unsigned char DAT_0058af79;
 extern const char s_domGameSpecialized_0058af7b[19];
-extern unsigned int DAT_0058ba3c;
 extern unsigned char DAT_0058bbdd;
 extern unsigned char DAT_0058bfb1;
 extern unsigned char DAT_0058bfcd;
