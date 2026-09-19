@@ -1,5 +1,6 @@
 
 #include "../include/m_co_obj.h"
+#include "../include/game_globals.h"
 #include "../include/tact_hnt.h"
 #include "../include/act_atak.h"
 #include "../include/act_move.h"
@@ -18,8 +19,6 @@
 #include "../include/rge_base_game_global.h"
 #include "../include/rge_fio.h"
 
-extern float g_hunt_empty_amount;
-extern double g_hunt_drop_distance_threshold;
 
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {

@@ -1,4 +1,5 @@
 #include "../include/tech.h"
+#include "../include/game_globals.h"
 #include "../include/effects.h"
 #include "../include/t_histry.h"
 #include "../include/tplayer.h"
@@ -11,7 +12,6 @@
 #pragma warning(disable: 4035 4805)
 
 extern float save_game_version;
-extern double g_tech_zero_attribute;
 
 void __cdecl getstring(char** destination, char* source);
 void __cdecl rge_read(int file, void* data, int size);

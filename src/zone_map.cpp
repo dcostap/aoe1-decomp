@@ -1,5 +1,6 @@
 
 #include "../include/zone_map.h"
+#include "../include/game_globals.h"
 
 void rge_read(int handle, void* buffer, int count);
 void rge_write(int file, void* data, int size);
@@ -162,7 +163,6 @@ uchar RGE_Zone_Map::do_zone_map() {
     return 1;
 }
 
-extern double g_zone_passability_zero_threshold;
 
 void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group, unsigned char zone) {
     Zone_Queue* zone_end = 0;

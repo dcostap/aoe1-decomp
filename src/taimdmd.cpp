@@ -1,5 +1,6 @@
 
 #include "../include/taimdmd.h"
+#include "../include/game_globals.h"
 #include "../include/m_s_obj.h"
 #include "../include/map.h"
 #include "../include/obj_list.h"
@@ -21,8 +22,6 @@ typedef unsigned char uchar;
 
 extern int startLoggingAI;
 extern float save_game_version;
-extern float g_main_decision_save_version_1_2;
-extern float g_main_decision_save_version_7_08;
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     void* pW, int playerID, char* playerName, TRIBE_Player* aiP, char* buildListName, char* cityPlanName,

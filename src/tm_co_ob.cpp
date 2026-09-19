@@ -1,5 +1,6 @@
 
 #include "../include/tm_co_ob.h"
+#include "../include/game_globals.h"
 #include "../include/t_c_obj.h"
 #include "../include/ttsk_lst.h"
 #include <new.h>
@@ -7,7 +8,6 @@
 #include "../include/rge_fio.h"
 
 extern float save_game_version;
-extern float g_master_combat_pierce_armor_save_version;
 
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
     TRIBE_Master_Combat_Object* other_object, int do_setup)

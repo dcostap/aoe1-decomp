@@ -1,4 +1,5 @@
 #include "../include/sprite.h"
+#include "../include/game_globals.h"
 #include "../include/asm_draw.h"
 #include "../include/sprite_records.h"
 #include "../include/sound.h"
@@ -19,7 +20,6 @@ extern void __cdecl write_draw_log(char* text);
 extern void __cdecl write_draw_log2(char* text);
 extern int do_draw_log;
 extern int safe_draw_log;
-extern double g_sprite_zero_delta_time;
 
 static const char sprite_format[] =
     " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %hd %hd";

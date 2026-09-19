@@ -1,5 +1,6 @@
 
 #include "../include/tact_hea.h"
+#include "../include/game_globals.h"
 
 // The owner header stays small. These canonical class surfaces belong to this
 // translation unit because the bodies dereference their members and call them.
@@ -115,8 +116,6 @@ void TRIBE_Action_Heal::set_state(unsigned char new_state) {
     }
 }
 
-extern float g_heal_attribute_threshold;
-extern double g_heal_distance_threshold;
 
 unsigned char TRIBE_Action_Heal::update() {
     float work;

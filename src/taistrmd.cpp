@@ -1,5 +1,6 @@
 
 #include "../include/taistrmd.h"
+#include "../include/game_globals.h"
 #include "../include/taimdmd.h"
 #include "../include/basegame.h"
 #include "../include/player.h"
@@ -871,7 +872,6 @@ TribeStrategyAIModule::TribeStrategyAIModule(void* pW, int playerID)
 
 
 extern float save_game_version;
-extern float g_strategy_ai_save_version_1_5;
 
 
 TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)

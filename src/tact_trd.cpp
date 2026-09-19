@@ -181,7 +181,6 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
 }
 
 // The original frame is eight bytes plus ESI and EDI.
-extern double g_trade_zero_value;
 
 unsigned char TRIBE_Action_Trade::update() {
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {

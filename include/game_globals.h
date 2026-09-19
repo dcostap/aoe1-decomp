@@ -293,6 +293,7 @@ extern float g_heal_attribute_threshold;
 extern double g_heal_distance_threshold;
 extern float g_hunt_empty_amount;
 extern double g_hunt_drop_distance_threshold;
+extern double g_trade_zero_value;
 extern float g_make_obj_radius_adjustment;
 extern float g_make_obj_random_scale;
 extern float g_make_obj_progress_percent;
