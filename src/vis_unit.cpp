@@ -10,9 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern float DAT_005776c8;
-extern double DAT_005776d0;
-extern double DAT_005776d8;
+extern float g_visible_resource_save_version;
+extern double g_visible_resource_diagonal_factor;
+extern double g_visible_resource_diagonal_adjustment;
 extern void rge_read(int handle, void* buffer, int size);
 extern void rge_write(int handle, void* buffer, int size);
 
@@ -328,7 +328,7 @@ Visible_Resource_Manager::Visible_Resource_Manager(RGE_Player* list_owner, int n
 }
 
 Visible_Resource_Manager::Visible_Resource_Manager(int infile, RGE_Player* list_owner) {
-    if (save_game_version >= DAT_005776c8) {
+    if (save_game_version >= g_visible_resource_save_version) {
         rge_read(infile, &this->num_visible_resource_lists, 4);
     } else {
         this->num_visible_resource_lists = 5;
@@ -529,10 +529,10 @@ VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(int Xpos, i
                 int distance;
                 if (xd > yd) {
                     distance =
-                        (xd - (int)(DAT_005776d8 - yd * DAT_005776d0)) - yd;
+                        (xd - (int)(g_visible_resource_diagonal_adjustment - yd * g_visible_resource_diagonal_factor)) - yd;
                 } else {
                     distance =
-                        (yd - (int)(DAT_005776d8 - xd * DAT_005776d0)) - xd;
+                        (yd - (int)(g_visible_resource_diagonal_adjustment - xd * g_visible_resource_diagonal_factor)) - xd;
                 }
 
                 if (distance < bestdist) {

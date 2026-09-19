@@ -1048,11 +1048,11 @@ void RGE_View::update() {
     this->center_scr_col = (short)(this->render_rect.left + this->pnl_wid / 2 - this->tile_half_wid);
     this->center_scr_row = (short)(this->render_rect.top + this->pnl_hgt / 2 - this->tile_half_hgt);
 
-    int screen_col_adjust = (int)((view_x_fraction * DAT_005776b4) * this->tile_wid + (view_y_fraction * DAT_005776b4) *
+    int screen_col_adjust = (int)((view_x_fraction * g_view_tile_fraction_scale) * this->tile_wid + (view_y_fraction * g_view_tile_fraction_scale) *
                                   this->tile_wid);
     screen_col_adjust = -screen_col_adjust;
 
-    int screen_row_adjust = (int)((view_y_fraction * DAT_005776b4) * this->tile_hgt - (view_x_fraction * DAT_005776b4) *
+    int screen_row_adjust = (int)((view_y_fraction * g_view_tile_fraction_scale) * this->tile_hgt - (view_x_fraction * g_view_tile_fraction_scale) *
                                   this->tile_hgt);
     screen_row_adjust = -screen_row_adjust - this->tile_half_hgt;
 
@@ -3772,7 +3772,7 @@ int RGE_View::start_scroll_view(unsigned char scroll_action_in, long x, long y, 
 
     if (this->scroll_action == 6 || this->scroll_action == 8) {
         if (this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
-            this->player->set_view_loc(pick_info.x - DAT_005776c0, pick_info.y - DAT_005776c0);
+            this->player->set_view_loc(pick_info.x - g_view_pick_coordinate_offset, pick_info.y - g_view_pick_coordinate_offset);
             this->set_redraw((TPanel::RedrawMode)1);
             result = 1;
         }
@@ -3808,7 +3808,7 @@ int RGE_View::handle_scroll_view(long x, long y) {
 
     case 6:
         if (this->is_inside(x, y) && this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
-            this->player->set_view_loc(pick_info.x - DAT_005776c0, pick_info.y - DAT_005776c0);
+            this->player->set_view_loc(pick_info.x - g_view_pick_coordinate_offset, pick_info.y - g_view_pick_coordinate_offset);
         }
         this->mouse_last_x = x;
         this->mouse_last_y = y;
@@ -3821,14 +3821,14 @@ int RGE_View::handle_scroll_view(long x, long y) {
     case 7:
         delta = y - this->mouse_last_y;
         if (delta != 0 && delta < 100 && delta > -100) {
-            short amount = (short)((float)delta * DAT_005776b4);
+            short amount = (short)((float)delta * g_view_tile_fraction_scale);
             this->player->map_y += amount;
             this->player->map_x -= amount;
         }
 
         delta = x - this->mouse_last_x;
         if (delta != 0 && delta < 100 && delta > -100) {
-            short amount = (short)((float)delta * DAT_005776b4);
+            short amount = (short)((float)delta * g_view_tile_fraction_scale);
             this->player->map_y += amount;
             this->player->map_x += amount;
         }
@@ -3850,13 +3850,13 @@ int RGE_View::handle_scroll_view(long x, long y) {
     case 8:
         delta = y - this->mouse_last_y;
         if (delta != 0 && delta < 100 && delta > -100) {
-            long amount = (long)((float)delta * DAT_005776b4);
+            long amount = (long)((float)delta * g_view_tile_fraction_scale);
             this->player->set_view_loc(this->player->view_x - amount, this->player->view_y + amount);
         }
 
         delta = x - this->mouse_last_x;
         if (delta != 0 && delta < 100 && delta > -100) {
-            long amount = (long)((float)delta * DAT_005776b4);
+            long amount = (long)((float)delta * g_view_tile_fraction_scale);
             this->player->set_view_loc(this->player->view_x + amount, this->player->view_y + amount);
         }
 
@@ -3891,14 +3891,14 @@ int RGE_View::handle_scroll_view(long x, long y) {
 
     delta = y - this->mouse_last_y;
     if (delta != 0 && delta < 200 && delta > -200 && move_view) {
-        this->player->set_view_loc(this->player->view_x - (float)delta * DAT_005776c4,
-                                   this->player->view_y + (float)delta * DAT_005776c4);
+        this->player->set_view_loc(this->player->view_x - (float)delta * g_view_scroll_fraction_scale,
+                                   this->player->view_y + (float)delta * g_view_scroll_fraction_scale);
     }
 
     delta = x - this->mouse_last_x;
     if (delta != 0 && delta < 200 && delta > -200 && move_view) {
-        this->player->set_view_loc(this->player->view_x + (float)delta * DAT_005776c4,
-                                   this->player->view_y + (float)delta * DAT_005776c4);
+        this->player->set_view_loc(this->player->view_x + (float)delta * g_view_scroll_fraction_scale,
+                                   this->player->view_y + (float)delta * g_view_scroll_fraction_scale);
     }
 
     save_mouse_last_x = this->mouse_last_x;
