@@ -2099,9 +2099,9 @@ void RGE_Moving_Object::boundAngle(float* x, int numFacets) {
     if (numFacets != -1) {
         float bestDifference;
         if (numFacets == 8) {
-            bestDifference = 0.785398185f;
+            bestDifference = 0.7853982f;
         } else {
-            bestDifference = 0.392699093f;
+            bestDifference = 0.3926991f;
         }
 
         int bestFacet = -1;

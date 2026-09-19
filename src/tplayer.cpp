@@ -291,7 +291,7 @@ void TRIBE_Player::update() {
     }
     RGE_Player::update();
     this->attributes[0] -= this->world->world_time_delta_seconds *
-        this->attributes[33] * this->attributes[11] * 0.0166666675f;
+        this->attributes[33] * this->attributes[11] * 0.016666667f;
     if (this->attributes[0] < 0.0) this->attributes[0] = 0.0f;
     int seed = debug_rand(tplayerSourceName, 607);
     int old = debug_random_on;
@@ -1133,9 +1133,9 @@ void TRIBE_Player::random_start() {
                     h2 = (debug_rand(tplayerSourceName, 1607) * 6) /
                               0x7fff - 3;
                     w = w2 -
-                        debug_rand(tplayerSourceName, 1608) * -3.05185094e-05f + w1;
+                        debug_rand(tplayerSourceName, 1608) * -3.051851e-05f + w1;
                     h1 = h2 -
-                        debug_rand(tplayerSourceName, 1609) * -3.05185094e-05f + h;
+                        debug_rand(tplayerSourceName, 1609) * -3.051851e-05f + h;
 
                     if (w >= 0.0f && w < static_cast<float>(this->world->map->map_height) &&
                         h1 >= 0.0f && h1 < static_cast<float>(this->world->map->map_width) &&
