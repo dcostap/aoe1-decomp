@@ -226,7 +226,7 @@ unsigned char RGE_Action_Enter::update() {
         return 1;
 
     case 0x0D:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, (long)0x269, (long)0, (long)0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x269, 0, 0);
         return 3;
 
     default:
@@ -235,7 +235,7 @@ unsigned char RGE_Action_Enter::update() {
 
 entered:
     if (this->subActionValue == 0) {
-        this->obj->notify(this->obj->id, this->obj->id, 0x1FA, (long)0x269, (long)0, (long)0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x269, 0, 0);
     }
     this->set_state(1);
     return 2;
@@ -243,6 +243,6 @@ entered:
 target_lost:
     this->set_state(1);
     this->set_target_obj(0);
-    this->obj->notify(this->obj->id, this->obj->id, 0x1FB, (long)0x269, (long)0, (long)0);
+    this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x269, 0, 0);
     return 4;
 }

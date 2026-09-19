@@ -37,7 +37,7 @@ void RGE_Action_Explore::set_state(unsigned char new_state) {
     case 3:
         {
             int obj_id = this->obj->id;
-            this->obj->notify(obj_id, obj_id, 0x202, (long)0x25D, (long)0, (long)0);
+            this->obj->notify(obj_id, obj_id, 0x202, 0x25D, 0, 0);
         }
         goto new_sprite;
 
@@ -88,7 +88,7 @@ unsigned char RGE_Action_Explore::update(void) {
     switch (this->state) {
     case 13: {
         int obj_id = this->obj->id;
-        this->obj->notify(obj_id, obj_id, 0x1F9, (long)0x25D, (long)0, (long)0);
+        this->obj->notify(obj_id, obj_id, 0x1F9, 0x25D, 0, 0);
         this->set_state(2);
         return 3;
     }

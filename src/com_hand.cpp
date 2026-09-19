@@ -4385,7 +4385,7 @@ int TCommunications_Handler::ComputerPlayerGameStart(void) {
     if (!this->Multiplayer)
         return 1;
 
-    return static_cast<unsigned int>(6) < static_cast<unsigned int>(this->current_turn);
+    return 6U < this->current_turn;
 }
 
 int TCommunications_Handler::MultiplayerGameStart(void) {

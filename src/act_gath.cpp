@@ -98,7 +98,7 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 3:
-        this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)0x202, 0x261L, (long)this->targetType, 0L);
+        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x261, this->targetType, 0);
         this->timer = -10.0f;
         this->obj->new_sprite(this->get_wait_sprite());
         return;
@@ -197,7 +197,7 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
                 return;
             }
 
-            this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)0x203, 0x261L, 0L, 0L);
+            this->obj->notify(this->obj->id, this->obj->id, 0x203, 0x261, 0, 0);
             this->set_state(13);
             return;
         }

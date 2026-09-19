@@ -132,7 +132,7 @@ unsigned char RGE_Action_Transport::update(void) {
 
     case 0x0D:
         // Typed casts select the virtual notify overload here.
-        this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1F9, (long)0x266, (long)0, (long)0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x266, 0, 0);
         this->set_state(2);
         return 3;
 
