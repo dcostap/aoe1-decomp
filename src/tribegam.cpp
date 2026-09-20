@@ -2757,7 +2757,7 @@ int TRIBE_Game::create_game(int not_used) {
     }
     out_of_sync = 0;
     out_of_sync2 = 0;
-    DAT_0086be00 = 0;
+    g_unresolved_game_state_0086be00 = 0;
 
     if (this->quickStartGame()) {
         MapType map_type;
