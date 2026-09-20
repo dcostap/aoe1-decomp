@@ -206,7 +206,8 @@ void RGE_Visible_Map::set_all(unsigned char vis_flag) {
             } while (y < this->heightValue);
         }
     } else {
-        unsigned long mask = this->PlayerExploredMaskValue;
+        unsigned long mask =
+            *(volatile unsigned long*)&this->PlayerExploredMaskValue;
         mask = mask | this->PlayerVisibleMaskValue;
         y = 0;
         if (0 < this->heightValue) {
