@@ -17,7 +17,8 @@ import threading
 
 TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
-from game import ROOT, stage, stamp, run_worker
+from game import (ROOT, SERIAL_HARNESS_ERROR, require_serial_jobs, run_worker,
+                  stage, stamp)
 from capture import hook_config, save_frame
 from prepare_runtime import digest, ORIGINAL_SHA256
 import registry_state
@@ -399,7 +400,8 @@ def test_all(output, runs=3, turns=800, jobs=None):
     cases = {}
     if jobs is not None and jobs < 1:
         raise ValueError('The feature-lab worker count must be positive.')
-    worker_count = min(len(FIXTURES), jobs if jobs is not None else len(FIXTURES))
+    require_serial_jobs(jobs)
+    worker_count = 1
 
     def one(name, fixture):
         destination = output / name
@@ -450,7 +452,8 @@ def main():
             p.add_argument('--target', choices=('original', 'rebuilt'), default='original')
         if name == 'test':
             p.add_argument('--runs', type=int, choices=(2, 3), default=3)
-            p.add_argument('--jobs', type=int, help='Maximum feature-lab captures to start at once; default is all captures')
+            p.add_argument('--jobs', type=int, default=1,
+                           help='Must be 1; parallel feature captures are disabled')
     p = sub.add_parser('open', help='Stage a private game. Load feature_lab from its Load Game menu.')
     p.add_argument('--fixture', type=Path, default=DEFAULT_FIXTURE)
     p.add_argument('--target', choices=('original', 'rebuilt'), default='original')
@@ -459,7 +462,8 @@ def main():
     p.add_argument('--output', type=Path, default=ROOT / 'build/feature-lab' / stamp())
     p.add_argument('--runs', type=int, choices=(2,3), default=3)
     p.add_argument('--turns', type=int, default=800)
-    p.add_argument('--jobs', type=int, help='Maximum feature-lab workers to start at once; default is all workers')
+    p.add_argument('--jobs', type=int, default=1,
+                   help='Must be 1; parallel feature workers are disabled')
     p = sub.add_parser('worker', help='Internal private-desktop worker.')
     p.add_argument('--runtime', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
@@ -492,6 +496,8 @@ def main():
     if args.command == 'test-all':
         if args.jobs is not None and args.jobs < 1:
             parser.error('--jobs must be positive.')
+        if args.jobs is not None and args.jobs > 1:
+            parser.error(SERIAL_HARNESS_ERROR)
         return 0 if test_all(output, args.runs, args.turns, args.jobs)['passed'] else 1
     if args.command == 'generate':
         return run_one(output, 'generate', civilization_offset=args.civilization_offset, layout=args.layout)
@@ -499,11 +505,14 @@ def main():
     validate_fixture(fixture)
     if args.command == 'replay':
         return run_one(output, 'replay', args.target, fixture, args.turns)
-    output.mkdir(parents=True, exist_ok=False)
-    captures, codes, targets = [], [], ['original'] * args.runs + ['rebuilt'] * args.runs
     if args.jobs is not None and args.jobs < 1:
         parser.error('--jobs must be positive.')
-    worker_count = min(len(targets), args.jobs if args.jobs is not None else len(targets))
+    if args.jobs is not None and args.jobs > 1:
+        parser.error(SERIAL_HARNESS_ERROR)
+    require_serial_jobs(args.jobs)
+    output.mkdir(parents=True, exist_ok=False)
+    captures, codes, targets = [], [], ['original'] * args.runs + ['rebuilt'] * args.runs
+    worker_count = 1
     completed = [None] * len(targets)
 
     def one(index, target):
@@ -515,7 +524,7 @@ def main():
             code, error = 1, str(failure)
         return index, path, code, error
 
-    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+    with ThreadPoolExecutor(max_workers=1) as executor:
         futures = [executor.submit(one, index, target) for index, target in enumerate(targets)]
         for future in as_completed(futures):
             index, path, code, error = future.result()

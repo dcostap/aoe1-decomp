@@ -8,9 +8,9 @@ This experimental mode compares game behavior beyond pixels. It does not replace
 game.cmd test-parity
 ```
 
-Independent parity workers run in parallel by default. Use `--jobs N` to set
-the limit. The replay and human workers also run their independent captures in
-parallel. Set `--jobs` to one for a serial diagnostic run.
+Parity workers run one at a time. Replay and human captures also run one at a
+time. `--jobs` set to one is allowed. Values above one fail before a game starts
+because parallel runs showed drift.
 
 Use this command for gameplay parity checks. It runs the short script and three controlled human-input cases.
 Each case runs three fresh originals and three fresh rebuilt games: 24 executions in total.
@@ -66,9 +66,9 @@ differences instead of hiding them. The permanent input is
 game.cmd replay
 ```
 
-The six replay captures run in parallel by default. Use `--jobs N` to limit
-them. Each capture uses a private runtime, desktop, registry namespace, and
-process job.
+The six replay captures run one at a time. `--jobs` set to one is allowed. Values above
+one fail before a game starts. Each capture uses a private runtime, desktop,
+registry namespace, and process job.
 
 The default script opens Single Player, selects Random Map, and starts the game.
 It moves the cursor to the right edge after five world-update calls, then moves it back after fifteen.
@@ -86,19 +86,19 @@ It returns zero only when both repeatability groups and the cross-build comparis
 Requested capture checks must pass too.
 A known rebuilt difference returns one. An incomplete or non-repeatable run also returns one, with a separate report classification.
 
-## Stress repeatability in parallel
+## Repeatability runs
 
 ```cmd
 game.cmd replay-repeat --target original --runs 10
 game.cmd replay-repeat --target rebuilt --runs 10
 ```
 
-Each worker owns a separate runtime, private desktop, registry copy, and process job.
-The driver prepares all runtimes before launching workers. It compares every capture with the first capture.
+Each run owns a separate runtime, private desktop, registry copy, and process job.
+The driver runs one capture at a time and compares every capture with the first capture.
 It checks typed observations, actual input delivery, and complete RNG recordings.
-Use `--fixture` to supply a script or saved recording. Use `--jobs` to limit concurrent workers.
-The current bounds are thirty runs and ten concurrent workers per command.
-Starting and ending times in the report show worker overlap.
+Use `--fixture` to supply a script or saved recording. `--jobs` set to one is allowed;
+higher values are rejected while parallel drift is under review.
+The current bound is thirty runs per command.
 These batches test repeatability within one executable. The focused `replay` command checks both executables.
 Use `test-parity` for the full gameplay suite, including the accepted human recording.
 

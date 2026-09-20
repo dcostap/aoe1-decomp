@@ -10,7 +10,7 @@ import sys
 
 TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
-from game import ROOT, stage, stamp, run_worker
+from game import ROOT, SERIAL_HARNESS_ERROR, require_serial_jobs, stage, stamp, run_worker
 from prepare_runtime import ORIGINAL_SHA256
 
 MESSAGES = {*range(0x100,0x108),*range(0x200,0x20b)}
@@ -369,7 +369,8 @@ def main():
     parser.add_argument('--no-time-limit', action='store_true',
                         help='Record until F10 or window close; the worker keeps a 24-hour safety deadline')
     parser.add_argument('--runs', type=int, default=3)
-    parser.add_argument('--jobs', type=int, help='Maximum replay runs to start at once; default is all runs')
+    parser.add_argument('--jobs', type=int, default=1,
+                        help='Must be 1; parallel replay runs are disabled')
     parser.add_argument('--target',choices=('original','rebuilt'),default='original')
     parser.add_argument('--observe',action='store_true',help='Add full RNG and focused read-only diagnostics during replay')
     parser.add_argument('--rng-only',action='store_true',help='Keep only full RNG diagnostics; requires --observe')
@@ -390,6 +391,8 @@ def main():
     parser.add_argument('--cursor-check',action='store_true',help='Private stationary-cursor and normal-close check; requires smoke')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
+    if args.jobs is not None and args.jobs > 1:
+        parser.error(SERIAL_HARNESS_ERROR)
     if args.no_time_limit and not args.record:
         parser.error('--no-time-limit requires --record')
     if args.message_noise and args.record:
@@ -398,10 +401,11 @@ def main():
         parser.error('Select one replay upgrade; v3/v4 do not record new inputs yet.')
     if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.jobs is not None and not 1 <= args.jobs <= args.runs) or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.observe or args.upgrade_v1_to_v2)) or (args.rng_only and not args.observe) or (args.combat and (not args.observe or args.rng_only)):
         parser.error('Use 1..180 seconds, 1..3 runs, and smoke only with record.')
+    require_serial_jobs(args.jobs)
     output = args.output or ROOT/'build/runtime'/('human-'+stamp())
     output.mkdir(parents=True, exist_ok=False)
     result = {'schema':1,'original_only':args.target == 'original','target':args.target,
-              'jobs':1 if args.record else min(args.runs, args.jobs if args.jobs is not None else args.runs),
+              'jobs':1,
               'runs':[], 'complete':False}
     try:
         if args.record:
@@ -460,7 +464,7 @@ def main():
             completed = [None] * args.runs
             received_runs = [None] * args.runs
             failures = []
-            with ThreadPoolExecutor(max_workers=min(args.runs, args.jobs or args.runs)) as executor:
+            with ThreadPoolExecutor(max_workers=1) as executor:
                 futures = [executor.submit(one, index) for index in range(args.runs)]
                 for future in as_completed(futures):
                     index, row, received, error = future.result()

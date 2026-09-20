@@ -124,17 +124,18 @@ def run(output, patterns=(), original_runs=2, visible=False, jobs=None, resoluti
     definition, cases = load_suite(patterns=patterns)
     selected_resolution = normalize_resolution(
         resolution if resolution is not None else definition.get('resolution'))
-    output.mkdir(parents=True, exist_ok=False)
-    (output / 'suite.json').write_text(json.dumps(definition, indent=2) + '\n')
     if jobs is not None and jobs < 1:
         raise ValueError('The UI worker count must be positive.')
+    game.require_serial_jobs(jobs)
+    output.mkdir(parents=True, exist_ok=False)
+    (output / 'suite.json').write_text(json.dumps(definition, indent=2) + '\n')
     result = {'group': definition['name'], 'resolution': selected_resolution,
               'scope': 'Named menu checkpoints: pixels, palette, RNG, and selected control state',
-              'original_runs': original_runs, 'jobs': 1 if visible else (jobs or len(cases)),
+              'original_runs': original_runs, 'jobs': 1,
               'cases': [None] * len(cases), 'passed': False}
     report = output / 'report.json'
-    # Visible workers share the interactive desktop. Keep that mode serial.
-    worker_count = 1 if visible else min(len(cases), jobs if jobs is not None else len(cases))
+    # Runtime harnesses stay serial until the parallel drift is understood.
+    worker_count = 1
 
     def one(index, case):
         folder = output / case['id']
@@ -190,7 +191,8 @@ def guard_passed(path, expected):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--jobs', type=int, help='Maximum UI cases to run at once; default is all cases')
+    parser.add_argument('--jobs', type=int, default=1,
+                        help='Must be 1; parallel UI cases are disabled')
     parser.add_argument('--case-file', type=Path, help=argparse.SUPPRESS)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--case', action='append', default=[])
@@ -200,6 +202,8 @@ def main():
     args = parser.parse_args()
     if args.jobs is not None and args.jobs < 1:
         parser.error('--jobs must be positive.')
+    if args.jobs is not None and args.jobs > 1:
+        parser.error(game.SERIAL_HARNESS_ERROR)
     if args.case_file:
         return run_case_file(args.case_file, args.output, args.original_runs, args.visible)
     return run(args.output, args.case, args.original_runs, args.visible, args.jobs, args.resolution)

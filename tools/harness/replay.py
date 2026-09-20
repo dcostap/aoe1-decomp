@@ -10,7 +10,7 @@ import sys
 
 TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
-from game import ROOT, run_worker, stage
+from game import ROOT, require_serial_jobs, run_worker, stage, SERIAL_HARNESS_ERROR
 from behavior import first_difference, observations, validate_replay
 from linker_map import parse_symbols
 from replay_capture import compare_captures
@@ -191,7 +191,8 @@ def run(fixture, output, seconds, runs=3, jobs=None, resolution=None):
     targets = ['original'] * runs + ['rebuilt'] * runs
     if jobs is not None and jobs < 1:
         raise ValueError('The replay worker count must be positive.')
-    worker_count = min(len(targets), jobs if jobs is not None else len(targets))
+    require_serial_jobs(jobs)
+    worker_count = 1
 
     def one(index, target):
         try:
@@ -253,11 +254,14 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--seconds', type=float, default=90)
     parser.add_argument('--runs', type=int, default=3, help='Runs per executable')
-    parser.add_argument('--jobs', type=int, help='Maximum replay captures to start at once; default is all captures')
+    parser.add_argument('--jobs', type=int, default=1,
+                        help='Must be 1; parallel replay captures are disabled')
     parser.add_argument('--resolution', help='Game resolution, for example 800x600')
     args = parser.parse_args()
     if not 1 <= args.seconds <= 300 or (args.jobs is not None and args.jobs < 1):
         parser.error('Use a 1..300 second deadline and a positive worker count.')
+    if args.jobs is not None and args.jobs > 1:
+        parser.error(SERIAL_HARNESS_ERROR)
     if not 3 <= args.runs <= 30:
         parser.error('Use 3..30 runs per executable.')
     return run(args.fixture, args.output, args.seconds, args.runs, args.jobs, args.resolution)

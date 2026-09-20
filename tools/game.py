@@ -21,6 +21,17 @@ ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "build/game"
 ORIGINAL = ROOT / "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe"
 DEFAULT_ARGUMENTS = ["NOSTARTUP", "GAMECD"]
+SERIAL_HARNESS_ERROR = (
+    "Parallel harness workers are disabled for now because parallel runs showed "
+    "drift; use --jobs 1."
+)
+
+
+def require_serial_jobs(jobs):
+    """Reject concurrent runtime harness workers until the drift is understood."""
+    if jobs is not None and jobs > 1:
+        raise ValueError(SERIAL_HARNESS_ERROR)
+    return 1
 
 
 def stamp():
@@ -189,7 +200,7 @@ def main():
     p = subs.add_parser('replay-original', help='Replay a human recording on fresh originals with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
-    p.add_argument('--jobs',type=int,help='Maximum replay runs to start at once; default is all runs')
+    p.add_argument('--jobs',type=int,default=1,help='Must be 1; parallel replay runs are disabled')
     p.add_argument('--upgrade-v1-to-v2',action='store_true',
                    help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
     p.add_argument('--upgrade-v1-to-v3',action='store_true',
@@ -198,7 +209,7 @@ def main():
     p = subs.add_parser('replay-rebuilt', help='Replay a human recording on fresh rebuilt games with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
-    p.add_argument('--jobs',type=int,help='Maximum replay runs to start at once; default is all runs')
+    p.add_argument('--jobs',type=int,default=1,help='Must be 1; parallel replay runs are disabled')
     p.add_argument('--upgrade-v1-to-v2',action='store_true',
                    help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
     p.add_argument('--upgrade-v1-to-v3',action='store_true',
@@ -208,7 +219,7 @@ def main():
     p.add_argument('--check-fixtures', action='store_true', help='Validate all permanent recordings and required saves without running games')
     p.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite with its known repeatability limits')
     p.add_argument('--editor', action='store_true', help='Also run the V7 editor input, camera, and RGB case')
-    p.add_argument('--jobs', type=int, help='Maximum independent harness workers to run at once; default is all workers')
+    p.add_argument('--jobs', type=int, default=1, help='Must be 1; parallel parity workers are disabled')
     p = subs.add_parser('feature-lab', help='Generate, open, or compare a native feature map')
     p.add_argument('operation', choices=('generate', 'replay', 'test', 'test-all', 'open'))
     p.add_argument('options', nargs=argparse.REMAINDER, help='Options for the feature-map operation')
@@ -216,13 +227,13 @@ def main():
     p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
     p.add_argument('--seconds', type=float, default=90, help='Per-run wall-clock deadline, not simulated duration')
     p.add_argument('--runs', type=int, default=3, help='Runs per executable; at least three')
-    p.add_argument('--jobs', type=int, help='Maximum replay captures to start at once; default is all captures')
+    p.add_argument('--jobs', type=int, default=1, help='Must be 1; parallel replay captures are disabled')
     p.add_argument('--resolution', help='Game resolution, for example 800x600')
-    p = subs.add_parser('replay-repeat', help='Check one executable in parallel private processes')
+    p = subs.add_parser('replay-repeat', help='Check one executable in serial private processes')
     p.add_argument('--target', choices=('original', 'rebuilt'), default='original')
     p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
     p.add_argument('--runs', type=int, default=10)
-    p.add_argument('--jobs', type=int, default=10)
+    p.add_argument('--jobs', type=int, default=1, help='Must be 1; parallel repeat runs are disabled')
     p.add_argument('--seconds', type=float, default=120)
     p.add_argument('--resolution', help='Game resolution, for example 800x600')
     p = subs.add_parser('test-captures', help='Run the game UI main menu tests on private desktops')
@@ -230,7 +241,7 @@ def main():
     p.add_argument('--case', action='append', default=[], help='Test ID or wildcard; may be repeated')
     p.add_argument('--original-runs', type=int, choices=(1, 2, 3), default=2)
     p.add_argument('--resolution', help='Game resolution, for example 800x600')
-    p.add_argument('--jobs', type=int, help='Maximum UI cases to run at once; default is all cases')
+    p.add_argument('--jobs', type=int, default=1, help='Must be 1; parallel UI cases are disabled')
     p = subs.add_parser('override', help='Replace an asset without writing through its shared hard link')
     p.add_argument('runtime', type=Path)
     p.add_argument('relative', type=Path)
@@ -266,6 +277,9 @@ def main():
         p.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
     try:
+        if args.command in ('replay-original', 'replay-rebuilt', 'test-parity',
+                            'replay', 'replay-repeat', 'test-captures'):
+            require_serial_jobs(args.jobs)
         if args.command == 'feature-lab':
             return subprocess.run([str(ROOT/'build/harness-env/Scripts/python.exe'),
                 str(ROOT/'tools/harness/feature_lab.py'), args.operation, *args.options], cwd=ROOT).returncode

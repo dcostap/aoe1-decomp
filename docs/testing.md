@@ -110,10 +110,13 @@ game.cmd test-captures
 game.cmd test-parity
 ```
 
-The independent workers in both suites run in parallel by default. Use
-`--jobs N` to limit the worker count. Set `--jobs` to one for a serial diagnostic.
+The runtime suites run with one worker. Parallel workers are disabled because
+parallel runs showed drift. `--jobs` set to one is allowed. Any value above one fails
+with a clear error before a game starts.
+
 Each hidden worker owns its private desktop and output folder.
-The parity suite limits nested native-feature captures to three workers.
+The parity suite also keeps nested replay, human, and native-feature captures
+serial.
 
 `test-captures` runs the menu/UI suite. `--list` only lists cases; `--case` selects a subset.
 Automated runs use a fixed registry profile and default to 640x480.

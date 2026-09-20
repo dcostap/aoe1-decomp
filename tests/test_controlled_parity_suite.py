@@ -23,15 +23,16 @@ def test_controlled_suite_runs_all_cases_after_script_failure(tmp_path,monkeypat
         (output/'report.json').write_text(json.dumps({'complete':True,'passed':False}))
         return 1 if len(calls)==1 else 0
     monkeypatch.setattr(suite,'controlled_result',lambda *args:{'complete':True,'passed':True})
+    monkeypatch.setattr(suite,'responsive_editor_result',lambda *args:{'complete':True,'passed':True})
     result = suite.run_suite(tmp_path/'suite',runner)
     assert result['complete'] and not result['passed']
-    assert len(calls)==8
+    assert len(calls)==10
     assert set(result['human']) == {'accepted','candidate','late-game-match'}
     for command in calls[1:7]:
         assert '--observe' in command and '--combat' in command and '--controlled' in command
         assert '--rng-only' not in command and '--upgrade-v1-to-v4' not in command
         assert command[command.index('--runs')+1] == '3'
-    assert calls[7][1].endswith('feature_lab.py') and calls[7][2] == 'test-all'
+    assert calls[9][1].endswith('feature_lab.py') and calls[9][2] == 'test-all'
 
 
 def mock_captures(recording):

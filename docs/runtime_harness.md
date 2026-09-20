@@ -187,9 +187,9 @@ game.cmd test-captures --case campaign-name-mouse --original-runs 2
 game.cmd test-captures --case main-buttons --resolution 800x600
 ```
 
-Independent cases run in parallel by default. Each hidden UI case uses its own
-desktop, process job, registry namespace, and output folder. Limit concurrency
-with `--jobs N`. Set `--jobs` to one for a serial diagnostic run. Visible mode stays
+Cases run one at a time. Each hidden UI case uses its own desktop, process job,
+registry namespace, and output folder. `--jobs` set to one is allowed. Values above one
+fail before a game starts because parallel runs showed drift. Visible mode stays
 serial because all visible cases share the interactive desktop.
 
 The permanent group lives in `config/harness/game-ui-main-menu.json`.
@@ -270,7 +270,7 @@ It does not remove gameplay guards from the menu test group.
 
 - No full input recorder or general replay format exists yet. The UI group uses bounded input scripts.
 - Private desktops hide windows without skipping rendering. A renderer with no Windows desktop dependency does not exist yet.
-- No process restore exists yet. Large concurrent batches still need resource measurements.
+- No process restore exists yet. Parallel process batches stay disabled while runtime drift is under review.
 
 ## Current validation
 

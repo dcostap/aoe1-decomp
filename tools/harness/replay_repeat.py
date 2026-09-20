@@ -1,4 +1,4 @@
-"""Stress one executable's replay repeatability with bounded parallel private processes."""
+"""Stress one executable's replay repeatability with serial private processes."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
@@ -7,7 +7,7 @@ import sys
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from game import ROOT, run_worker, stage
+from game import ROOT, require_serial_jobs, run_worker, SERIAL_HARNESS_ERROR, stage
 from behavior import validate_replay
 from replay import compare_pair, input_receipts, recording_contract
 from ui_fixture import normalize_resolution
@@ -23,7 +23,8 @@ def run(fixture, output, runs, jobs, seconds, target='original', resolution=None
     output.mkdir(parents=True, exist_ok=False)
     frozen = output / 'scenario.json'
     frozen.write_text(json.dumps(scenario, indent=2) + '\n')
-    # Prepare first, so filesystem staging does not serialize the requested parallel launches.
+    require_serial_jobs(jobs)
+    # Prepare first, so every serial launch uses its own runtime.
     runtimes = [stage(target, select=False) for _ in range(runs)]
     started = time.monotonic()
 
@@ -42,7 +43,7 @@ def run(fixture, output, runs, jobs, seconds, target='original', resolution=None
                 'report':str(runtimes[index]/'capture/report.json')}
 
     rows = []
-    with ThreadPoolExecutor(max_workers=jobs) as executor:
+    with ThreadPoolExecutor(max_workers=1) as executor:
         futures = [executor.submit(one, index) for index in range(runs)]
         for future in as_completed(futures):
             row = future.result()
@@ -78,11 +79,14 @@ def main():
     parser.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--runs', type=int, default=10)
-    parser.add_argument('--jobs', type=int, default=10)
+    parser.add_argument('--jobs', type=int, default=1,
+                        help='Must be 1; parallel repeat runs are disabled')
     parser.add_argument('--seconds', type=float, default=120)
     parser.add_argument('--target', choices=('original', 'rebuilt'), default='original')
     parser.add_argument('--resolution', help='Game resolution, for example 800x600')
     args = parser.parse_args()
+    if args.jobs > 1:
+        parser.error(SERIAL_HARNESS_ERROR)
     if not 2 <= args.runs <= 30 or not 1 <= args.jobs <= min(10, args.runs) or not 1 <= args.seconds <= 300:
         parser.error('Use 2..30 runs, 1..10 jobs no greater than runs, and 1..300 seconds.')
     return run(args.fixture, args.output, args.runs, args.jobs, args.seconds, args.target, args.resolution)

@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from game import ROOT, run_worker, stamp
+from game import ROOT, require_serial_jobs, run_worker, SERIAL_HARNESS_ERROR, stamp
 from human_session import load_recording, compare_inputs, inputs
 from human_compare import load_batch, compare_captures
 from human_session import (V1_TO_V4_UPGRADE, V5_POLICY, V5_TO_V6_UPGRADE,
@@ -42,12 +42,13 @@ RESPONSIVE_EDITOR_EVENT_COUNT = 91284
 
 
 def run_commands(commands, output, runner, jobs=None):
-    """Run independent suite workers together and keep report order stable."""
+    """Run suite workers serially and keep report order stable."""
     if not commands:
         return []
     if jobs is not None and jobs < 1:
         raise ValueError('The suite worker count must be positive.')
-    worker_count = min(len(commands), jobs if jobs is not None else len(commands))
+    require_serial_jobs(jobs)
+    worker_count = 1
 
     def one(index, name, command, timeout):
         row = {'name': name, 'command': command, 'returncode': None}
@@ -140,6 +141,7 @@ def human_result(original_path, rebuilt_path, recording):
 
 
 def run_legacy_suite(output, runner=run_worker, jobs=None):
+    require_serial_jobs(jobs)
     output.mkdir(parents=True, exist_ok=False)
     result = {'schema': 1, 'complete': False, 'passed': False, 'scope': SCOPE,
               'recording': str(RECORDING), 'recording_sha256': RECORDING_SHA256, 'workers': []}
@@ -158,7 +160,7 @@ def run_legacy_suite(output, runner=run_worker, jobs=None):
                              '--recording', str(RECORDING), '--target', target, '--runs', '3',
                              '--observe', '--rng-only', '--output', str(destination)], deadline))
         # Run both cases even when the scripted case finds differences.
-        result['jobs'] = min(len(commands), jobs if jobs is not None else len(commands))
+        result['jobs'] = 1
         result['workers'] = run_commands(commands, output, runner, jobs)
         try:
             result['scripted'] = json.loads((scripted / 'report.json').read_text())
@@ -350,6 +352,7 @@ def controlled_result(original_path, rebuilt_path, recording, recording_sha):
 
 
 def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
+    require_serial_jobs(jobs)
     output.mkdir(parents=True, exist_ok=False)
     result = {'schema':2, 'complete':False, 'passed':False, 'scope':CONTROLLED_SCOPE, 'workers':[], 'human':{}}
     try:
@@ -379,10 +382,10 @@ def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
                 commands.append((label, [python, str(ROOT / 'tools/harness/human_session.py'),
                     '--recording', str(EDITOR_RECORDING), '--target', target, '--runs', '3',
                     '--output', str(output / label)], 1170))
-        # Bound nested feature captures so private desktops do not starve each other.
+        # Keep nested feature captures serial until parallel drift is understood.
         commands.append(('native-features', [python, str(ROOT / 'tools/harness/feature_lab.py'),
-            'test-all', '--runs', '3', '--jobs', '3', '--output', str(output / 'native-features')], 3600))
-        result['jobs'] = min(len(commands), jobs if jobs is not None else len(commands))
+            'test-all', '--runs', '3', '--jobs', '1', '--output', str(output / 'native-features')], 3600))
+        result['jobs'] = 1
         result['workers'] = run_commands(commands, output, runner, jobs)
         try:
             result['scripted'] = json.loads((scripted / 'report.json').read_text())
@@ -424,10 +427,13 @@ def main():
     parser.add_argument('--check-fixtures', action='store_true', help='Check all permanent recordings and required saves without running games')
     parser.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite instead of controlled cases')
     parser.add_argument('--editor', action='store_true', help='Also run the V7 editor input, camera, and RGB case')
-    parser.add_argument('--jobs', type=int, help='Maximum independent workers to run at once; default is all workers')
+    parser.add_argument('--jobs', type=int, default=1,
+                        help='Must be 1; parallel parity workers are disabled')
     args = parser.parse_args()
     if args.jobs is not None and args.jobs < 1:
         parser.error('--jobs must be positive.')
+    if args.jobs is not None and args.jobs > 1:
+        parser.error(SERIAL_HARNESS_ERROR)
     if args.check_fixtures:
         accepted_recording() if args.legacy else controlled_recordings()
         if not args.legacy:

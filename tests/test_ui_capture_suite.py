@@ -2,7 +2,6 @@ import hashlib
 import json
 from pathlib import Path
 import sys
-import threading
 
 import pytest
 
@@ -66,38 +65,13 @@ def test_unsupported_resolution_is_rejected(value):
         normalize_resolution(value)
 
 
-def test_independent_ui_cases_run_in_parallel(tmp_path, monkeypatch):
+def test_parallel_ui_cases_are_rejected(tmp_path, monkeypatch):
     import suite
     definition = {'name': 'test', 'routes': {'main': [{'name': 'main'}]}}
     cases = [{'id': f'case-{index}', 'route': 'main', 'steps': []} for index in range(3)]
     monkeypatch.setattr(suite, 'load_suite', lambda **kwargs: (definition, cases))
-    barrier = threading.Barrier(3)
-    lock = threading.Lock()
-    active = 0
-    peak = 0
-
-    def worker(command, log, timeout, visible):
-        nonlocal active, peak
-        with lock:
-            active += 1
-            peak = max(peak, active)
-        barrier.wait(timeout=2)
-        output = Path(command[command.index('--output') + 1])
-        case = json.loads((output / 'case.json').read_text())['case']
-        (output / 'case-report.json').write_text(json.dumps({
-            'id': case['id'], 'captures': [], 'comparisons': [], 'passed': True}))
-        with lock:
-            active -= 1
-        return 0
-
-    monkeypatch.setattr(suite.game, 'run_worker', worker)
-    assert suite.run(tmp_path / 'suite', original_runs=1, jobs=3, resolution='800x600') == 0
-    assert peak == 3
-    report = json.loads((tmp_path / 'suite' / 'report.json').read_text())
-    assert [row['id'] for row in report['cases']] == ['case-0', 'case-1', 'case-2']
-    for case in cases:
-        assert json.loads((tmp_path / 'suite' / case['id'] / 'case.json').read_text())['resolution'] == {
-            'width': 800, 'height': 600}
+    with pytest.raises(ValueError, match='Parallel harness workers are disabled'):
+        suite.run(tmp_path / 'suite', original_runs=1, jobs=3, resolution='800x600')
 
 
 def test_unknown_case_rejected():

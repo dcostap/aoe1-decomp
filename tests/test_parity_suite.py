@@ -2,8 +2,6 @@ import json
 import copy
 from pathlib import Path
 import sys
-import threading
-import time
 
 import pytest
 
@@ -11,28 +9,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools/harness'))
 import parity_suite as suite
 
 
-def test_independent_suite_workers_run_in_parallel(tmp_path):
+def test_parallel_suite_workers_are_rejected(tmp_path):
     commands = [(f'worker-{index}', [f'worker-{index}'], 10) for index in range(3)]
-    barrier = threading.Barrier(3)
-    lock = threading.Lock()
-    active = 0
-    peak = 0
-
-    def runner(command, log, timeout, visible):
-        nonlocal active, peak
-        with lock:
-            active += 1
-            peak = max(peak, active)
-        barrier.wait(timeout=2)
-        time.sleep(0.03)
-        with lock:
-            active -= 1
-        return 0
-
-    rows = suite.run_commands(commands, tmp_path, runner, jobs=3)
-    assert peak == 3
-    assert [row['name'] for row in rows] == ['worker-0', 'worker-1', 'worker-2']
-    assert all(row['returncode'] == 0 for row in rows)
+    with pytest.raises(ValueError, match='Parallel harness workers are disabled'):
+        suite.run_commands(commands, tmp_path, lambda *args: 0, jobs=3)
 
 
 def test_permanent_recording_is_the_unchanged_accepted_input():
@@ -226,7 +206,7 @@ def test_default_suite_runs_every_case_and_keeps_failures(tmp_path, monkeypatch,
         assert '--controlled' in command and '--observe' not in command
     assert commands[-1][1].endswith('feature_lab.py') and commands[-1][2] == 'test-all'
     assert commands[-1][commands[-1].index('--runs') + 1] == '3'
-    assert commands[-1][commands[-1].index('--jobs') + 1] == '3'
+    assert commands[-1][commands[-1].index('--jobs') + 1] == '1'
     assert result['complete'] is True
     assert result['passed'] is (failure is None)
 
