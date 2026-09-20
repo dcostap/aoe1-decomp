@@ -6,6 +6,9 @@
 // 00471EC0_TButtonPanel.cpp
 #include <string.h>
 
+static char s_pnl_btn_draw[] = "pnl_btn::draw";
+static char s_pnl_btn_draw2[] = "pnl_btn::draw2";
+
 TButtonPanel::TButtonPanel()
     : buttonTypeValue(Normal),
       drawTypeValue(DrawClear),
@@ -402,8 +405,6 @@ void TButtonPanel::get_text_color(short state_in, unsigned long* color1, unsigne
 
 #include <string.h>
 
-extern char s_pnl_btn_draw[];    // "pnl_btn::draw" @ 0x5852F8
-extern char s_pnl_btn_draw2[];   // "pnl_btn::draw2" @ 0x5852E8
 
 extern "C" {
 __declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* object);

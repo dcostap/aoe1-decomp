@@ -7,8 +7,9 @@
 #include <stdio.h>
 #include <string.h>
 
-extern char s_tpnl_inv_draw[];
-extern const char s_fmt_ld[];
+static const char s_fmt_ld[] = "%ld";
+static char s_tpnl_inv_draw[] = "tpnl_inv::draw";
+
 // No current canonical owner header declares this C helper.
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 

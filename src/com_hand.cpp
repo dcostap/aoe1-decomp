@@ -20,6 +20,8 @@
 #include "../include/tworld.h"
 #include "../include/resource_ids.h"
 
+static char com_hand_source_path[] = "C:\\msdev\\work\\age1_x1\\Com_hand.cpp";
+
 void TCommunications_Handler::GameOver(void) {
     this->current_turn = 0;
     if (this->InQ)

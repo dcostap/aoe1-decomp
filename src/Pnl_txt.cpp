@@ -7,9 +7,10 @@
 #include <string.h>
 #include <mbstring.h>
 
-extern char s_pnl_txt__draw[];
-extern char s_pnl_txt__word_wrap_append[];
-extern char s_pnl_txt__get_text_rect[];
+static char s_pnl_txt__draw[] = "pnl_txt::draw";
+static char s_pnl_txt__get_text_rect[] = "pnl_txt::get_text_rect";
+static char s_pnl_txt__word_wrap_append[] = "pnl_txt::word_wrap_append";
+
 extern "C" __declspec(dllimport) int __stdcall CompareStringA(
     unsigned long locale, unsigned long flags, const char* string1, int length1, const char* string2, int length2);
 

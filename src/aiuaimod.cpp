@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+static const char str_aiuaimod_path[] = "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp";
+extern const char str_fmt_stopObject[] = "#%d call stopObject %s %d\n";
+
 // aiuaimod.cpp
 
 // The shipped constructor uses a real polymorphic UnitAIModule surface.
