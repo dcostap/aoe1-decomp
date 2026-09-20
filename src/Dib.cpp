@@ -11,10 +11,7 @@
 #include <string.h>
 #include <io.h>
 
-// Keep the large global declaration surface out of DibFromBitmap's compiler
-// context. The earlier functions need only these two declarations.
-extern RGE_Base_Game* rge_base_game;
-extern PAL_TABLE System_color_Table[21];
+#include "../include/rge_base_game_global.h"
 
 // The target reserves 0x1400 bytes from SrcXTbl to the next global.
 static long SrcXTbl[0x500];
@@ -1023,7 +1020,7 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     hdc = CreateCompatibleDC(NULL);
     hpal = (HPALETTE)SelectPalette(hdc, palette, FALSE);
     RealizePalette(hdc);
-    SetStretchBltMode(hdc, 4);
+    SetStretchBltMode(hdc, STRETCH_HALFTONE);
 
     GetDIBits(hdc, hbm, 0, lpbi->biHeight, NULL, (LPBITMAPINFO)lpbi, wUsage);
 
@@ -1078,8 +1075,6 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     DeleteDC(hdc);
     return lpbiNew;
 }
-
-#include "../include/rge_base_game_global.h"
 
 #define DibUsageNumColors(lpbi) \
     ((lpbi)->biClrUsed == 0 && (lpbi)->biBitCount <= 8 ? \
