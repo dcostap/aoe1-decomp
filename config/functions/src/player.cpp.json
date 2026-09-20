@@ -80,7 +80,7 @@
     "00470E30": {"status": "matching", "symbol": "?unselect_object@RGE_Player@@QAEXXZ"},
     "00470E80": {"status": "matching", "symbol": "?unselect_one_object@RGE_Player@@QAEXPAVRGE_Static_Object@@@Z"},
     "00470ED0": {"status": "matching", "symbol": "?unselect_one_object@RGE_Player@@QAEXF@Z"},
-    "00470F80": {"status": "matching", "symbol": "?group_objects@RGE_Player@@QAEHH@Z"},
+    "00470F80": {"status": "accepted_drift", "symbol": "?group_objects@RGE_Player@@QAEHH@Z"},
     "004710C0": {"status": "matching", "symbol": "?select_group@RGE_Player@@QAEHH@Z"},
     "00471120": {"status": "matching", "symbol": "?own_selected@RGE_Player@@QAEHXZ"},
     "00471170": {"status": "matching", "symbol": "?is_category_selected@RGE_Player@@QAEHF@Z"},
