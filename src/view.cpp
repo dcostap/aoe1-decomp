@@ -3539,6 +3539,8 @@ int RGE_View::pick_touched_object(DClipInfo_List* obj_list, int Xpos, int Ypos, 
 
 
 short RGE_View::get_tile_picture(unsigned char terrain_type, unsigned char tile_type, short map_col, short map_row) {
+    unsigned char rows;
+    unsigned char cols;
     RGE_Map* map = this->map;
     RGE_Tile_Set* ts = &map->terrain_types[terrain_type];
     if (ts->shape == 0) return -1;
@@ -3548,8 +3550,8 @@ short RGE_View::get_tile_picture(unsigned char terrain_type, unsigned char tile_
 
     short result = 0;
     if (tile->count > 1) {
-        unsigned char rows = (unsigned char)ts->rows;
-        unsigned char cols = (unsigned char)ts->cols;
+        rows = (unsigned char)ts->rows;
+        cols = (unsigned char)ts->cols;
         if (rows > 1 || cols > 1) {
             terrain_type = rows > 0 ? (unsigned char)(map_row % rows) : 0;
             tile_type = cols > 0 ? (unsigned char)(map_col % cols) : 0;
