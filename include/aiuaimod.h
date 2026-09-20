@@ -20,6 +20,7 @@
 #include "world.h"
 
 extern const char str_fmt_stopObject[];
+extern const char str_aiuaimod_path[];
 
 typedef unsigned char uchar;
 

@@ -6,6 +6,8 @@
 #include "drawarea.h"
 #include "Shape.h"
 
+extern char s_pnl_lst__draw[];
+extern char s_pnl_lst__draw_highlight_bar[];
 
 class TScrollBarPanel;
 

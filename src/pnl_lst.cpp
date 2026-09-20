@@ -1,8 +1,5 @@
 #include "../include/pnl_lst.h"
 
-static char s_pnl_lst__draw[] = "pnl_lst::draw";
-static char s_pnl_lst__draw_highlight_bar[] = "pnl_lst::draw_highlight_bar";
-
 extern "C" int __cdecl toupper(int c);
 extern unsigned long __cdecl debug_timeGetTime(char*, int);
 

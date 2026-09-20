@@ -151,6 +151,7 @@ protected:
     virtual int processIdle(int doSearch);
 };
 
+extern const char str_taiuaimd_path[];
 extern const char str_fmt_stopObject[];
 extern RGE_Base_Game* rge_base_game;
 

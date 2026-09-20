@@ -7,8 +7,6 @@
 #include "../include/world.h"
 #include "../include/zone_map.h"
 
-static char s_rmm_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp";
-
 
 RGE_RMM_Object_Generator::RGE_RMM_Object_Generator(
     RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
@@ -99,6 +97,7 @@ void RGE_RMM_Object_Generator::generate_objects(RGE_Object_Info_Line& info_line)
 
 // tables, and the source's clipped rectangular scan.
 extern int __cdecl debug_rand(char* file, int line);
+extern char s_rmm_obj_cpp[];
 
 void RGE_RMM_Object_Generator::make_placement_stack(
     Map_Stack& stack, long x, long y, long inner_radius, long outer_radius) {

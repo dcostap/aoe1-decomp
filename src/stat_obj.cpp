@@ -32,11 +32,10 @@
 #include <stdarg.h>
 #include <string.h>
 
-static char STR_STAT_OBJ[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
-
 extern int startLoggingAI;
 extern int logDebugID;
 extern FILE* debugOut;
+extern char STR_STAT_OBJ[];
 
 RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z,
                                      int do_setup)

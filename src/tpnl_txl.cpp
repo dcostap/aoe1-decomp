@@ -2,8 +2,6 @@
 #include "../include/tpnl_txl.h"
 #include <string.h>
 
-static char s_tpnl_txl_draw[] = "tpnl_txl::draw";
-
 TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in) : TPanel() {
     this->font = font_in;
     this->text_type = 0;
@@ -32,6 +30,7 @@ __declspec(dllimport) COLORREF __stdcall SetTextColor(HDC, COLORREF);
 __declspec(dllimport) BOOL __stdcall TextOutA(HDC, int, int, LPCSTR, int);
 }
 
+extern char s_tpnl_txl_draw[];
 
 void TRIBE_Panel_Text_Line::draw() {
     if (this->render_area == 0 || this->visible == 0 || this->active == 0)

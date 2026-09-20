@@ -4,39 +4,38 @@
 #include <stdio.h>
 #include <string.h>
 
-static char s_Any[] = "Any";
-static char s_Attack[] = "Attack";
-static char s_AttackSavedTarget[] = "AttackSavedTarget";
-static char s_DamageToAnyGroup[] = "DamageToAnyGroup";
-static char s_DamageToGroup[] = "DamageToGroup";
-static char s_Death[] = "Death";
-static char s_DeathOfGroup[] = "DeathOfGroup";
-static char s_Gather[] = "Gather";
-static char s_Group[] = "Group";
-static char s_Heal[] = "Heal";
-static char s_HealOfGroup[] = "HealOfGroup";
-static char s_HealthLost[] = "HealthLost";
-static char s_Immediate[] = "Immediate";
-static char s_Invalid[] = "Invalid";
-static char s_Level1EnemySighted[] = "Level1EnemySighted";
-static char s_Level2EnemySighted[] = "Level2EnemySighted";
-static char s_Move[] = "Move";
-static char s_NONE[] = "NONE";
-static char s_Play[] = "Play";
-static char s_ResetAliveCount[] = "ResetAliveCount";
-static char s_ResetHitPoints[] = "ResetHitPoints";
-static char s_Retreat[] = "Retreat";
-static char s_Time[] = "Time";
-static char s_Wait[] = "Wait";
-static char s_format_command[] = "%*s %d %s %d %d %d ";
-static char s_format_percent_s_space[] = "%s ";
-static char s_format_skip_string_int[] = "%*s %d ";
-static char s_format_skip_string_string[] = "%*s %s ";
-
 extern void rge_read(int file, void* data, int size);
 extern void rge_write(int file, void* data, int size);
 
+extern char s_Move[];
+extern char s_Attack[];
+extern char s_AttackSavedTarget[];
+extern char s_Retreat[];
+extern char s_Heal[];
+extern char s_ResetHitPoints[];
+extern char s_ResetAliveCount[];
+extern char s_Wait[];
+extern char s_Invalid[];
+extern char s_Gather[];
+extern char s_Death[];
+extern char s_HealthLost[];
+extern char s_DamageToGroup[];
+extern char s_DamageToAnyGroup[];
+extern char s_Level1EnemySighted[];
+extern char s_Level2EnemySighted[];
+extern char s_DeathOfGroup[];
+extern char s_HealOfGroup[];
+extern char s_Immediate[];
+extern char s_Time[];
+extern char s_Any[];
+extern char s_NONE[];
 extern char s_592A40[];
+extern char s_format_percent_s_space[];
+extern char s_Play[];
+extern char s_Group[];
+extern char s_format_skip_string_int[];
+extern char s_format_skip_string_string[];
+extern char s_format_command[];
 
 AIPlayPhaseCommand::AIPlayPhaseCommand() {
     this->groupValue = 0;

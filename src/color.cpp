@@ -4,13 +4,12 @@
 #include <stdio.h>
 #include <string.h>
 
-static char s_C__msdev_work_age1_x1_color_cpp[] = "C:\\msdev\\work\\age1_x1\\color.cpp";
-
 extern void __cdecl rge_read(int fd, void* buf, int size);
 extern void __cdecl rge_write(int fd, void* data, int size);
 extern void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" void __cdecl free(void* ptr);
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern char s_C__msdev_work_age1_x1_color_cpp[];
 extern "C" long __cdecl _ftol();
 
 void __cdecl RGE_translate_palette(tagPALETTEENTRY* palette1, tagPALETTEENTRY* palette2, tagPALETTEENTRY color, long amount, int ignore_color1, int ignore_color2) {

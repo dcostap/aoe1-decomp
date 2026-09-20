@@ -8,14 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-static char s_Game_Screen[] = "Game Screen";
-static char s_Help_Dialog[] = "Help Dialog";
-static char s_Send_Quick_Message_Dialog[] = "Send Quick Message Dialog";
-static char s_scr_game_cpp[] = "C:\\msdev\\work\\age1_x1\\scr_game.cpp";
-char s_Save_Game_Screen[] = "Save Game Screen";
-char s_btnbldg_d_shp[] = "btnbldg%d.shp";
-char s_btnunit_shp[] = "btnunit.shp";
-
 static char s_scr_game_draw[] = "scr_game::draw";
 static char s_scr_game_draw2[] = "scr_game::draw2";
 static char s_scr_game_draw3[] = "scr_game::draw3";

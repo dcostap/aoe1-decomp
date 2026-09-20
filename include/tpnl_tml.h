@@ -127,5 +127,6 @@ public:
 typedef char time_line_panel_size_check[
     (sizeof(Time_Line_Panel) == 0x52C) ? 1 : -1];
 
+extern char s_tpnl_tml_draw_axis[];
 
 #endif

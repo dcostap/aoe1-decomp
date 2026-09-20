@@ -27,8 +27,6 @@
 #include "../include/asm_draw.h"
 #include "../include/world.h"
 
-static const char s_C__msdev_work_age1_x1_view_cpp[] = "C:\\msdev\\work\\age1_x1\\view.cpp";
-
 class Tile_FogEdge_Table {
 public:
     VSpanMiniList* normal_draw;
@@ -1862,6 +1860,7 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
 }
 
 
+extern const char s_C__msdev_work_age1_x1_view_cpp[];
 
 long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT save_render_rect) {
     int start_map_x;

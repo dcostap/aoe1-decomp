@@ -6,8 +6,6 @@
 #include <stdio.h>
 #include "../include/game_globals.h"
 
-static const char str_taiuaimd_path[] = "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp";
-
 
 
 TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule(RGE_Static_Object* o, int iQS)
@@ -151,6 +149,7 @@ extern FILE* actionFile;  // FILE* at 0x62C4CC
 extern int fprintf(void*, const char*, ...);
 
 // String constants at fixed RVAs in .rdata
+extern const char str_taiuaimd_path[];    // at 0x588AE8
 extern const char str_fmt_stopObject[];   // at 0x57F964
 
 int TribePreditorUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uTime) {
@@ -276,6 +275,7 @@ TribeLionUnitAIModule::TribeLionUnitAIModule(RGE_Static_Object* o, int iQS)
 int TribeLionUnitAIModule::canAttackUnitAtNeutrality(int oType) { return 1; }
 
 
+extern const char str_taiuaimd_path[];
 extern const char str_fmt_stopObject[];
 
 
