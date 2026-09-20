@@ -143,6 +143,24 @@ def save_frame(output: Path, meta: dict, data: bytes):
                 rgb_sha256=hashlib.sha256(image.convert('RGB').tobytes()).hexdigest(), file=name+'.png')
 
 
+def savegame_outputs(runtime: Path, manifest: dict) -> dict:
+    """Report changed game-save files without treating them as input fixtures."""
+    baseline = {row['path'].replace('\\', '/'): row['sha256']
+                for row in manifest.get('copied_files_before_exe_replacement', [])
+                if row['path'].replace('\\', '/').lower().startswith('savegame/')}
+    current = {}
+    folder = runtime / 'savegame'
+    if folder.is_dir():
+        for path in sorted(folder.iterdir()):
+            if path.is_file() and path.suffix.lower() in ('.gmx', '.gam'):
+                relative = 'savegame/' + path.name
+                current[relative] = {'path': relative, 'size': path.stat().st_size,
+                                     'sha256': digest(path)}
+    changed = [row for name, row in current.items() if baseline.get(name) != row['sha256']]
+    removed = sorted(name for name in baseline if name not in current)
+    return {'changed': changed, 'removed': removed}
+
+
 def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='real', visible=False,
             resolution=None):
     runtime = runtime.resolve()
@@ -486,6 +504,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                           digest(Path(manifest['source_directory']) / row['path']) != row['sha256']]
         if changed_assets:
             errors.append({'error': 'Shared source assets changed.', 'paths': changed_assets})
+        save_outputs = savegame_outputs(runtime, manifest)
         with lock:
             if ui and status:
                 from PIL import Image
@@ -513,6 +532,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                       'arguments': arguments, 'fixture': scenario, 'clock': clock, 'duration': time.monotonic()-started,
                       'frida_version': frida.__version__, 'status': status,
                       'frames': frames, 'events': events, 'errors': errors,
+                      'save_outputs': save_outputs,
                       'video': video_report,
                       'video_origin_time_ms': video_origin,
                       'rng_recording': ({'file':'rng.bin', 'records':rng_records, 'sites':rng_sites,

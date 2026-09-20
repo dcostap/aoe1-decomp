@@ -55,7 +55,8 @@ def matching_comparison():
            ('camera_values', 'camera_receipts', 'terminal_world', 'rng_prefix', 'full_rng', 'video_samples')}
     row.update(inputs={'same_messages': True, 'same_game_boundaries': True, 'exact_boundaries': True},
                terminal_boundaries=[{'updates': 331}, {'updates': 331}], rng_trace_complete=[True, True],
-               rng_total_counts=[100, 100], observer_sha256=['same', 'same'])
+               rng_total_counts=[100, 100], observer_sha256=['same', 'same'],
+               save_outputs={'equal': True})
     return row
 
 
@@ -187,7 +188,7 @@ def test_editor_comparison_checks_only_its_declared_outputs():
     row = matching_comparison()
     checks = suite.editor_comparison_checks(row)
     assert set(checks) == {'input_messages', 'game_input_boundaries', 'camera_values',
-                           'camera_receipts', 'video_rgb'}
+                           'camera_receipts', 'video_rgb', 'save_outputs'}
     assert all(checks.values())
     row['terminal_world']['equal'] = False
     row['rng_prefix']['equal'] = False

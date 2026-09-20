@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import sys
 
 import pytest
@@ -91,6 +92,26 @@ def test_explicit_upgrade_identity_is_visible_and_strict(monkeypatch):
     right['report']['human_control']['upgrade_rule']='unknown'
     with pytest.raises(ValueError,match='control identity'):
         human_compare.compare_captures(left,right)
+
+
+def test_save_output_hashes_are_compared(monkeypatch):
+    import human_compare
+    monkeypatch.setattr(human_compare,'session_contract',lambda report:{'assets':{}})
+    scenario={'mode':'replay','schema':1,'duration_ms':1000,'events':[],
+              'contract':{'original_sha256':ORIGINAL_SHA256,'policy':V2_POLICY,
+                          'script_sha256':V2_TEMPLATE_SHA256}}
+    report={'fixture':{'human':scenario},'script_sha256':V2_TEMPLATE_SHA256,
+            'human_control':execution_plan(scenario),'video':{'fps':20},
+            'video_origin_time_ms':0,'events':[],
+            'status':{'rngTrace':[],'rngCount':0,
+                      'human':{'turn':0,'updates':0,'time_ms':0,'world':{}}},
+            'save_outputs':{'changed':[{'path':'savegame/checkpoint.gmx','size':3,'sha256':'a'*64}],
+                            'removed':[]}}
+    left={'path':'left','report':report,'grid':[]}
+    right={'path':'right','report':json.loads(json.dumps(report)),'grid':[]}
+    assert human_compare.compare_captures(left,right)['save_outputs']['equal']
+    right['report']['save_outputs']['changed'][0]['sha256']='b'*64
+    assert not human_compare.compare_captures(left,right)['save_outputs']['equal']
 
 
 @pytest.mark.parametrize('classification', ['same-policy','explicit-v1-to-v2-upgrade',

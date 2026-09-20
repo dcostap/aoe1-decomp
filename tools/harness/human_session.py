@@ -262,6 +262,8 @@ def session_contract(report, policy=None):
     if policy is None:
         policy = (((report.get('fixture') or {}).get('human') or {}).get('contract') or {}).get('policy', POLICY)
     contract = dict(recording_contract(report), policy=policy, original_sha256=ORIGINAL_SHA256)
+    if report['manifest'].get('savegame_bundle') is not None:
+        contract['save_bundle'] = report['manifest']['savegame_bundle']
     if policy in (V5_POLICY, V6_POLICY, V7_POLICY, V8_POLICY, V9_POLICY, V10_POLICY, V11_POLICY):
         if report['manifest'].get('savegame_source') != 'repository-fixtures':
             raise ValueError('Saved-game input requires repository save fixtures.')
@@ -332,7 +334,8 @@ class GameJob:
 def run_session(output, session, visible):
     validate_session(session)
     plan = execution_plan(session)
-    runtime = stage(session.get('target','original'), select=False)
+    runtime = stage(session.get('target','original'), select=False,
+                    save_bundle=session.get('save_bundle'))
     fixture = runtime / 'human-fixture.json'
     fixture.write_text(json.dumps({'name':'human-original-v1','human':session}, indent=2)+'\n')
     seconds = (UNTIMED_RECORDING_MS // 1000 if session.get('no_time_limit') else
@@ -350,7 +353,8 @@ def run_session(output, session, visible):
         raise ValueError(f'No capture report. Inspect {runtime}.')
     report = json.loads(path.read_text())
     output.append({'capture':str(path), 'video':report.get('video'), 'returncode':code,
-                   'human_control':report.get('human_control')})
+                   'human_control':report.get('human_control'),
+                   'save_outputs':report.get('save_outputs', {'changed': [], 'removed': []})})
     if code or report['errors'] or not (report.get('status') or {}).get('human', {}).get('stopped'):
         raise ValueError(f'Session is incomplete. Inspect {path}.')
     return report
@@ -381,6 +385,8 @@ def main():
     parser.add_argument('--smoke', action='store_true', help='Private automated plumbing test, not human qualification')
     parser.add_argument('--editor', action='store_true',
                         help='Record or replay the scenario editor profile; the editor and scenarios may open')
+    parser.add_argument('--save-bundle', type=Path,
+                        help='Repository save bundle for a new recording')
     parser.add_argument('--cursor-check',action='store_true',help='Private stationary-cursor and normal-close check; requires smoke')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
@@ -403,7 +409,8 @@ def main():
             session = {'schema':1,'mode':'record',
                        'duration_ms':UNTIMED_RECORDING_MS if args.no_time_limit else args.seconds*1000,
                        'no_time_limit':args.no_time_limit,'smoke':args.smoke,
-                       'cursor_check':args.cursor_check,'editor':args.editor}
+                       'cursor_check':args.cursor_check,'editor':args.editor,
+                       'save_bundle':str(args.save_bundle) if args.save_bundle else None}
             report = run_session(result['runs'],session,not args.smoke)
             if args.cursor_check:
                 camera_changes = [row for row in report['events'] if row.get('kind') == 'human-camera' and row['updates'] > 0]
@@ -419,6 +426,7 @@ def main():
                               'contract':recording['contract'],'events':recording['events']})
             (output/'recording.json').write_text(json.dumps(recording,indent=2)+'\n')
             print(f'Recording: {output / "recording.json"}')
+            print(f'Capture report: {result["runs"][0]["capture"]}')
         else:
             recording, recording_sha256 = load_recording_with_sha256(args.recording)
             upgrade_rule = V1_TO_V3_UPGRADE if args.upgrade_v1_to_v3 else (V1_TO_V2_UPGRADE if args.upgrade_v1_to_v2 else None)
@@ -433,7 +441,8 @@ def main():
                        'observe':args.observe,'rng_only':args.rng_only,'combat':args.combat,
                        'message_noise':args.message_noise,
                        'recording_sha256':recording_sha256,
-                       'upgrade_rule':upgrade_rule}
+                       'upgrade_rule':upgrade_rule,
+                       'save_bundle':recording['contract'].get('save_bundle')}
             result['human_control'] = execution_plan(session)
 
             def one(index):

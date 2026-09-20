@@ -132,7 +132,7 @@ def build():
 
 
 def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets="hardlink",
-          harness_saves=True, select=True):
+          harness_saves=True, save_bundle=None, select=True):
     if target == "original":
         exe = ORIGINAL
         if digest(exe) != ORIGINAL_SHA256:
@@ -148,7 +148,8 @@ def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets=
         if not wrapper_path().exists() or digest(wrapper_path()) != dependencies()["dll_sha256"]:
             raise ValueError("Pinned graphics DLL is missing. Run game.cmd setup.")
     output = ROOT / "build/runtime" / f"{target}-{stamp()}"
-    report = prepare(DEFAULT_SOURCE, exe, output, assets=assets, harness_saves=harness_saves)
+    report = prepare(DEFAULT_SOURCE, exe, output, assets=assets, harness_saves=harness_saves,
+                     save_bundle=save_bundle)
     if graphics == "cnc-ddraw":
         shutil.copy2(wrapper_path(), output / "ddraw.dll")
         shutil.copy2(ROOT / "config/harness/ddraw.ini", output / "ddraw.ini")
@@ -183,6 +184,8 @@ def main():
     p.add_argument('--no-time-limit',action='store_true',help='Record until F10 or window close')
     p.add_argument('--editor',action='store_true',
                    help='Allow the scenario editor and scenarios; records with the v7 editor profile')
+    p.add_argument('--save-bundle', type=Path,
+                   help='Repository save bundle to stage for this recording')
     p = subs.add_parser('replay-original', help='Replay a human recording on fresh originals with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
@@ -232,6 +235,9 @@ def main():
     p.add_argument('runtime', type=Path)
     p.add_argument('relative', type=Path)
     p.add_argument('source', type=Path)
+    p = subs.add_parser('save-bundle', help='Create a save bundle from an original human capture')
+    p.add_argument('report', type=Path, help='Original capture report.json')
+    p.add_argument('output', type=Path, help='New directory under config/harness/save-bundles')
     p = subs.add_parser("compare", help="Compare the final surfaces in two capture reports")
     p.add_argument("left", type=Path)
     p.add_argument("right", type=Path)
@@ -278,7 +284,8 @@ def main():
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'),str(ROOT/'tools/harness/human_session.py')]
             command += (['--record','--seconds',str(args.seconds)] +
                         (['--no-time-limit'] if args.no_time_limit else []) +
-                        (['--editor'] if args.editor else []) if args.command == 'record-original' else
+                        (['--editor'] if args.editor else []) +
+                        (['--save-bundle',str(args.save_bundle)] if args.save_bundle else []) if args.command == 'record-original' else
                         ['--recording',str(args.recording.resolve()),'--runs',str(args.runs),
                          '--target','rebuilt' if args.command == 'replay-rebuilt' else 'original'])
             if args.command != 'record-original' and args.upgrade_v1_to_v2:
@@ -364,6 +371,10 @@ def main():
             return 0
         if args.command == 'override':
             override_asset(args.runtime, args.relative, args.source)
+            return 0
+        if args.command == 'save-bundle':
+            from save_bundle import create_bundle
+            print(f'Save bundle: {create_bundle(args.report, args.output)}')
             return 0
         if args.command == "compare":
             python = ROOT / "build/harness-env/Scripts/python.exe"

@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = ROOT / "runtime"
+SAVE_BUNDLE_ROOT = ROOT / "config/harness/save-bundles"
 ORIGINAL_SHA256 = "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90"
 COMPAT_LAYER = "DWM8And16BitMitigation"
 # Large input-only formats. Profiles, saves, scenarios, EXEs, and DLLs stay private.
@@ -20,10 +21,35 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def save_fixtures():
-    """Verify the complete repository save set before staging a harness runtime."""
-    folder = ROOT / 'config/harness/savegames'
-    manifest = json.loads((folder.with_suffix('.json')).read_text())
+def resolve_save_bundle(bundle=None):
+    """Return the save folder, manifest, and stable bundle identity."""
+    if bundle is None:
+        folder = ROOT / 'config/harness/savegames'
+        return folder, json.loads((folder.with_suffix('.json')).read_text()), None
+    candidate = Path(bundle)
+    if not candidate.is_absolute():
+        direct = (ROOT / candidate).resolve()
+        named = (SAVE_BUNDLE_ROOT / candidate).resolve()
+        candidate = direct if direct.exists() else named
+    candidate = candidate.resolve()
+    root = SAVE_BUNDLE_ROOT.resolve()
+    if candidate.is_file() and candidate.name.lower() == 'manifest.json':
+        folder = candidate.parent
+    elif candidate.is_dir():
+        folder = candidate
+    else:
+        raise ValueError(f'Save bundle does not exist: {bundle}')
+    if not folder.is_relative_to(root):
+        raise ValueError('Save bundles must stay under config/harness/save-bundles.')
+    manifest_path = folder / 'manifest.json'
+    if not manifest_path.is_file():
+        raise ValueError(f'Save bundle is missing manifest.json: {folder}')
+    return folder, json.loads(manifest_path.read_text()), folder.relative_to(root).as_posix()
+
+
+def save_fixtures(bundle=None):
+    """Verify one immutable repository save bundle before staging a runtime."""
+    folder, manifest, _ = resolve_save_bundle(bundle)
     if manifest.get('schema') != 1 or not isinstance(manifest.get('files'), list):
         raise ValueError('Invalid save fixture manifest.')
     names = set()
@@ -45,7 +71,7 @@ def verify_harness_saves(runtime, manifest):
     """Reject private saves and changed fixtures before starting the game."""
     if manifest.get('savegame_source') != 'repository-fixtures':
         raise ValueError('Saved-game input requires repository save fixtures.')
-    expected = {row['name']: row['sha256'] for _, row in save_fixtures()}
+    expected = {row['name']: row['sha256'] for _, row in save_fixtures(manifest.get('savegame_bundle'))}
     folder = runtime / 'savegame'
     if {path.name for path in folder.iterdir()} != set(expected):
         raise ValueError('Runtime save set differs from repository fixtures.')
@@ -59,7 +85,8 @@ def verify_harness_saves(runtime, manifest):
         raise ValueError('Runtime save manifest differs from repository fixtures.')
 
 
-def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harness_saves=False) -> dict:
+def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harness_saves=False,
+            save_bundle=None) -> dict:
     if assets not in ("copy", "hardlink"):
         raise ValueError("Asset mode must be copy or hardlink.")
     source, exe, output = source.resolve(), exe.resolve(), output.resolve()
@@ -78,7 +105,8 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harn
     for name in ("data", "data2", "avi", "sound", "EMPIRES.EXE", "language.dll", "languagex.dll"):
         if not (source / name).exists():
             raise ValueError(f"Missing installed runtime input: {name}")
-    fixtures = save_fixtures() if harness_saves else []
+    fixtures = save_fixtures(save_bundle) if harness_saves else []
+    _, _, save_bundle_id = resolve_save_bundle(save_bundle) if harness_saves else (None, None, None)
     exe_hash = digest(exe)
     files = []
 
@@ -139,6 +167,8 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harn
         "savegame_source": "repository-fixtures" if harness_saves else "local-runtime",
         "shared_bytes": sum(row["size"] for row in files if row["method"] == "hardlink"),
     }
+    if harness_saves and save_bundle_id is not None:
+        report['savegame_bundle'] = save_bundle_id
     (output / "runtime_manifest.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return report
 

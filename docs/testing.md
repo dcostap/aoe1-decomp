@@ -128,6 +128,8 @@ It compares inputs, clocks, all captured state observations, terminal observatio
 Missing world entry/exit observations or complete RNG evidence fail the check.
 The editor case instead checks exact input boundaries, camera receipts, RNG prefix and count, and raw RGB hashes.
 It has no world observer or complete RNG trace.
+Human capture reports also list changed save files. Chain cases compare their exact
+file hashes between repeated originals and the rebuilt executable.
 Reports and videos remain under `build/runtime/`.
 
 `game.cmd test-parity --check-fixtures` checks all three recording hashes and required save hashes without running games.

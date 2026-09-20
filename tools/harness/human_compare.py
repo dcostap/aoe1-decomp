@@ -18,6 +18,12 @@ def compare_rows(left, right):
                 'right':right[first] if first < len(right) else None}}
 
 
+def save_output_rows(report):
+    outputs = report.get('save_outputs') or {}
+    return [*outputs.get('changed', []),
+            *({'path': path, 'removed': True} for path in outputs.get('removed', []))]
+
+
 def video_grid(rows, fps):
     """Reproduce GameVideo's integer frame grid from its pre-encode RGB hashes."""
     result = []
@@ -136,6 +142,7 @@ def compare_captures(left,right):
             'full_rng':full_rng,
             'observer_sha256':[r.get('observer_sha256') for r in (a,b)],
             'rng_total_counts':[r['status']['rngCount'] for r in (a,b)],
+            'save_outputs':compare_rows(save_output_rows(a), save_output_rows(b)),
             'video_samples':video}
 
 

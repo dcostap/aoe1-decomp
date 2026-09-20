@@ -69,10 +69,27 @@ Keep that first session short. More gameplay coverage comes after input replay q
 The command prints paths for `recording.json`, `report.json`, and `video.mp4`.
 Keep the whole recording directory and its referenced runtime capture directory.
 
+### Chain a long game through save checkpoints
+
+Each human recording starts in a fresh runtime. Use a save bundle to continue from
+an earlier original capture:
+
+```cmd
+game.cmd save-bundle build/runtime/original-EXAMPLE/capture/report.json config/harness/save-bundles/chain-01/checkpoint-01
+game.cmd record-original --no-time-limit --save-bundle config/harness/save-bundles/chain-01/checkpoint-01
+```
+
+The first command copies the original runtime save files and writes their hashes.
+The second recording carries that bundle in its starting contract.
+Each capture report lists changed `.gmx` and `.gam` files under `save_outputs`.
+Original and rebuilt replay comparisons check those output hashes and sizes.
+Create the next bundle from the original capture, not the rebuilt capture.
+
 ## Repository save inputs
 
 Harness runs exclude the local runtime's entire `savegame` directory.
-They copy only the files pinned by `config/harness/savegames.json` into each new runtime.
+They copy only the files pinned by the selected save bundle into each new runtime.
+Without `--save-bundle`, the selected bundle is `config/harness/savegames.json`.
 Each run gets private copies. The harness checks their hashes before recording or replay.
 Missing, changed, or extra runtime saves stop the new profile before game startup.
 Normal `game.cmd original` and `game.cmd rebuilt` launches still copy local saves.

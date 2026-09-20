@@ -182,3 +182,19 @@ def test_repository_save_fixture_identity():
     fixtures = prepare_runtime.save_fixtures()
     assert [row['name'] for _, row in fixtures] == ['late_game_match.gmx']
     assert fixtures[0][1]['sha256'] == 'fccd0ca0ccd98a6658a1eeb3b306c89afee3af9caf58ab518ee04eae434687f4'
+
+
+def test_named_save_bundle_is_staged_and_pinned(harness_inputs, monkeypatch, tmp_path):
+    source, exe, output, _ = harness_inputs
+    bundle_root = tmp_path / 'bundles'
+    bundle = bundle_root / 'chain-01/checkpoint-01'
+    bundle.mkdir(parents=True)
+    save = bundle / 'checkpoint.gmx'
+    save.write_bytes(b'checkpoint')
+    (bundle / 'manifest.json').write_text(json.dumps({'schema': 1, 'files': [
+        {'name': save.name, 'size': save.stat().st_size, 'sha256': prepare_runtime.digest(save)}]}))
+    monkeypatch.setattr(prepare_runtime, 'SAVE_BUNDLE_ROOT', bundle_root)
+    report = prepare_runtime.prepare(source, exe, output, harness_saves=True, save_bundle=bundle)
+    assert report['savegame_bundle'] == 'chain-01/checkpoint-01'
+    assert (output / 'savegame/checkpoint.gmx').read_bytes() == b'checkpoint'
+    prepare_runtime.verify_harness_saves(output, report)

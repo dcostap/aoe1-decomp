@@ -20,10 +20,11 @@ import itertools
 RECORDING = ROOT / 'config/harness/human-accepted-20260914.json'
 RECORDING_SHA256 = 'a320c5d68b8b6f2e49d5d9963e60bc3455c177deac2909d5795ab19e02510e4d'
 SCOPE = ('Exact observed comparisons, including clock differences. No pixel masks or timing tolerances. '
-         'Full RNG capture uses the read-only observer. Observer neutrality and full hidden-state equivalence remain unproved.')
+         'Changed save files are compared by exact size and SHA-256. Full RNG capture uses the read-only observer. '
+         'Observer neutrality and full hidden-state equivalence remain unproved.')
 CONTROLLED_SCOPE = ('Each human case uses the same controlled profile on both executables: v4 for v1 inputs, v6 for v5 saved-game inputs. '
     'Unchanged recordings supply messages, routes, and turn/panel schedules, not expected controlled clocks or world-update counts. '
-    'Historical recording fidelity stays visible. All cross-run clock, state, RNG, and RGB checks remain exact. '
+    'Historical recording fidelity stays visible. All cross-run clock, state, RNG, RGB, and changed-save checks remain exact. '
     'This does not reproduce the missing v1 timer history or prove complete hidden-state equivalence.')
 CONTROLLED_CASES = (
     ('accepted', RECORDING, RECORDING_SHA256, 324),
@@ -36,7 +37,7 @@ EDITOR_RECORDING = ROOT / 'config/harness/human-editor-20260916.json'
 EDITOR_RECORDING_SHA256 = '4cac2eb68eb4ef6202eecbf3dacf23fb7c4bc9c48d08fc34618f8976779ed953'
 EDITOR_EVENT_COUNT = 3729
 RESPONSIVE_EDITOR_RECORDING = ROOT / 'config/harness/human-editor-responsive-20260920.json'
-RESPONSIVE_EDITOR_SHA256 = '6743ed2df1c39dd0b0a49fc197bb082738ec4d77d83aab52944210cc77e29036'
+RESPONSIVE_EDITOR_SHA256 = '28a14bf69b902fe0c575dcaa4559f147fd9443e6a1ee3f332d3348de211173d5'
 RESPONSIVE_EDITOR_EVENT_COUNT = 91284
 
 
@@ -89,6 +90,7 @@ def comparison_checks(row):
         'full_rng': all(row['rng_trace_complete']) and (row['full_rng'] or {}).get('equal') is True,
         'rng_counts': row['rng_total_counts'][0] == row['rng_total_counts'][1],
         'video_rgb': row['video_samples']['equal'],
+        'save_outputs': row['save_outputs']['equal'],
         'observer_identity': bool(row['observer_sha256'][0]) and row['observer_sha256'][0] == row['observer_sha256'][1],
     }
 
@@ -220,12 +222,13 @@ def editor_comparison_checks(row):
         'camera_values': row['camera_values']['equal'],
         'camera_receipts': row['camera_receipts']['equal'],
         'video_rgb': row['video_samples']['equal'],
+        'save_outputs': row['save_outputs']['equal'],
     }
 
 
 def editor_result(original_path, rebuilt_path, recording, recording_sha):
     result = {'complete': False, 'passed': False,
-              'scope': 'Delivered inputs, camera values and receipts, and exact pre-encode RGB hashes. No world or RNG observers.',
+              'scope': 'Delivered inputs, camera values and receipts, exact pre-encode RGB hashes, and changed-save hashes. No world or RNG observers.',
               'recording_sha256': recording_sha, 'recording_fidelity': []}
     try:
         captures = load_batch(original_path, True) + load_batch(rebuilt_path, False)
@@ -268,7 +271,7 @@ def editor_result(original_path, rebuilt_path, recording, recording_sha):
 
 def responsive_editor_result(original_path, rebuilt_path, recording, recording_sha):
     result = {'complete':False, 'passed':False,
-              'scope':'Controlled delivered inputs, clocks, camera receipts, RNG prefix and count, and RGB hashes. No world observer or complete RNG trace.',
+              'scope':'Controlled delivered inputs, clocks, camera receipts, RNG prefix and count, RGB hashes, and changed-save hashes. No world observer or complete RNG trace.',
               'recording_sha256':recording_sha, 'recording_fidelity':[]}
     try:
         expected_control = execution_plan({'schema':1, 'mode':'replay',
@@ -297,6 +300,7 @@ def responsive_editor_result(original_path, rebuilt_path, recording, recording_s
                 'rng_prefix':row['rng_prefix']['equal'],
                 'rng_counts':row['rng_total_counts'][0] == row['rng_total_counts'][1],
                 'video_rgb':row['video_samples']['equal'],
+                'save_outputs':row['save_outputs']['equal'],
             }
             row['checks'] = checks
             row['passed'] = all(value is True for value in checks.values())

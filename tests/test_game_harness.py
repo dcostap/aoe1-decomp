@@ -9,7 +9,7 @@ TOOLS = Path(__file__).resolve().parents[1] / "tools"
 sys.path.insert(0, str(TOOLS))
 sys.path.insert(0, str(TOOLS / "harness"))
 import game
-from capture import save_frame, hook_config
+from capture import save_frame, hook_config, savegame_outputs
 from compare import compare
 import registry_state
 
@@ -68,6 +68,21 @@ def test_palette_changes_detected_even_when_indices_match(tmp_path):
 def test_invalid_frame_length_rejected(tmp_path):
     with pytest.raises(ValueError, match='payload size'):
         save_frame(tmp_path, {'width': 1, 'height': 1, 'pitch': 1, 'count': 1}, b'')
+
+
+def test_save_outputs_report_changed_and_removed_files(tmp_path):
+    runtime = tmp_path / 'runtime'
+    folder = runtime / 'savegame'
+    folder.mkdir(parents=True)
+    changed = folder / 'checkpoint.gmx'
+    changed.write_bytes(b'changed')
+    (folder / 'new.gam').write_bytes(b'new')
+    manifest = {'copied_files_before_exe_replacement': [
+        {'path': 'savegame/checkpoint.gmx', 'sha256': hashlib.sha256(b'old').hexdigest()},
+        {'path': 'savegame/removed.gmx', 'sha256': hashlib.sha256(b'gone').hexdigest()}]}
+    result = savegame_outputs(runtime, manifest)
+    assert {row['path'] for row in result['changed']} == {'savegame/checkpoint.gmx', 'savegame/new.gam'}
+    assert result['removed'] == ['savegame/removed.gmx']
 
 
 def test_override_breaks_link_without_changing_source(tmp_path, monkeypatch):
