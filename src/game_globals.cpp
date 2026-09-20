@@ -631,7 +631,6 @@ char comm_enum_buffer[0x100] = {0};
 char comm_info_buffers[0x700] = {0};
 char g_status_buffer[0x20] = {0};
 char ready_player_buffer[64] = {0};
-char com_hand_source_path[] = "C:\\msdev\\work\\age1_x1\\Com_hand.cpp";
 
 // Preserved shared mutable state for the approved drawing assembly engine.
 unsigned int PRESERVED_drawing_engine_0088c000 = 0x00000000u;
@@ -681,76 +680,12 @@ int useComputerPlayers = 1;
 
 // Original string storage. All current references have exact function evidence.
 // See decomp_notes/executable_build_evidence/string_definitions.json.
-char STR_STAT_OBJ[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
-char pnl_inp_draw[] = "pnl_inp::draw";
 char s_0[] = "0";
-char s_Any[] = "Any";
-char s_Attack[] = "Attack";
-char s_AttackSavedTarget[] = "AttackSavedTarget";
-char s_DamageToAnyGroup[] = "DamageToAnyGroup";
-char s_DamageToGroup[] = "DamageToGroup";
-char s_Death[] = "Death";
-char s_DeathOfGroup[] = "DeathOfGroup";
-char s_Gather[] = "Gather";
-char s_Heal[] = "Heal";
-char s_HealOfGroup[] = "HealOfGroup";
-char s_HealthLost[] = "HealthLost";
-char s_Immediate[] = "Immediate";
-char s_Invalid[] = "Invalid";
-char s_Level1EnemySighted[] = "Level1EnemySighted";
-char s_Level2EnemySighted[] = "Level2EnemySighted";
-char s_Move[] = "Move";
-char s_ResetAliveCount[] = "ResetAliveCount";
-char s_ResetHitPoints[] = "ResetHitPoints";
-char s_Retreat[] = "Retreat";
-char s_Scenario_Editor_Menu[] = "Scenario Editor Menu";
-char s_Scenario_Menu_Dialog[] = "Scenario Menu Dialog";
-char s_Time[] = "Time";
-char s_Wait[] = "Wait";
-extern const char s_fmt_ld[] = "%ld";
 char s_percent_d[] = "%d";
-char s_pnl_lst__draw[] = "pnl_lst::draw";
-char s_pnl_lst__draw_highlight_bar[] = "pnl_lst::draw_highlight_bar";
-char s_pnl_txt__get_text_rect[] = "pnl_txt::get_text_rect";
-char scr_cred_draw_context_name[] = "scr_cred::draw";
 char s_space[] = " ";
-char s_tpnl_inv_draw[] = "tpnl_inv::draw";
-char s_tpnl_tml_draw_axis[] = "tpnl_tml::draw_axis";
-char s_tpnl_txl_draw[] = "tpnl_txl::draw";
-extern const char str_taiuaimd_path[] = "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp";
-extern const char str_aiuaimod_path[] = "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp";
-extern const char str_fmt_stopObject[] = "#%d call stopObject %s %d\n";
 
 // Original AI play-file tokens and formats used by 00410220.
-char s_NONE[] = "NONE";
 char s_592A40[] = "";
-char s_format_percent_s_space[] = "%s ";
-char s_Play[] = "Play";
-char s_Group[] = "Group";
-char s_format_skip_string_int[] = "%*s %d ";
-char s_format_skip_string_string[] = "%*s %s ";
-char s_format_command[] = "%*s %d %s %d %d %d ";
-char s_Save_Game_Screen[] = "Save Game Screen";
-char s_C__msdev_work_age1_x1_color_cpp[] = "C:\\msdev\\work\\age1_x1\\color.cpp";
-char s_pnl_btn_draw2[] = "pnl_btn::draw2";
-char s_pnl_btn_draw[] = "pnl_btn::draw";
-char s_pnl_txt__word_wrap_append[] = "pnl_txt::word_wrap_append";
-char s_pnl_txt__draw[] = "pnl_txt::draw";
-char s_rmm_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp";
-char s_btnbldg_d_shp[] = "btnbldg%d.shp";
-char s_btnunit_shp[] = "btnunit.shp";
-char s_Game_Screen[] = "Game Screen";
-char s_Help_Dialog[] = "Help Dialog";
-char s_Send_Quick_Message_Dialog[] = "Send Quick Message Dialog";
-char s_scr_game_cpp[] = "C:\\msdev\\work\\age1_x1\\scr_game.cpp";
-char s_NewSaveDialog[] = "NewSaveDialog";
-char s_OpenSaveDialog[] = "OpenSaveDialog";
-char s_QuitSaveDialog[] = "QuitSaveDialog";
-char s_C__msdev_work_age1_x1_scr_sed_cp[] = "C:\\msdev\\work\\age1_x1\\scr_sed.cpp";
-char s_Scenario_Editor_Open[] = "Scenario Editor Open";
-char s_Scenario_Editor_Screen[] = "Scenario Editor Screen";
-char s_OKDialog[] = "OKDialog";
-extern const char s_C__msdev_work_age1_x1_view_cpp[] = "C:\\msdev\\work\\age1_x1\\view.cpp";
 
 PAL_TABLE System_color_Table[21] = {
     {0, 0, 0, 0, 0},

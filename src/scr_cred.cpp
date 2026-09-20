@@ -9,10 +9,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+static char scr_cred_draw_context_name[] = "scr_cred::draw";
+
 extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
     void* hpal, unsigned int start, unsigned int count, tagPALETTEENTRY* entries);
 
-extern char scr_cred_draw_context_name[];
 
 void RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*,
                            tagPALETTEENTRY, long, int, int);

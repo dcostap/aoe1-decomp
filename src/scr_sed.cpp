@@ -45,6 +45,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+static char s_C__msdev_work_age1_x1_scr_sed_cp[] = "C:\\msdev\\work\\age1_x1\\scr_sed.cpp";
+static char s_NewSaveDialog[] = "NewSaveDialog";
+static char s_OKDialog[] = "OKDialog";
+static char s_OpenSaveDialog[] = "OpenSaveDialog";
+static char s_QuitSaveDialog[] = "QuitSaveDialog";
+static char s_Scenario_Editor_Screen[] = "Scenario Editor Screen";
+char s_Scenario_Editor_Open[] = "Scenario Editor Open";
+static char s_Scenario_Menu_Dialog[] = "Scenario Menu Dialog";
+
 char scenario_default_file_name[260];
 
 extern char s_space[];
@@ -54,15 +63,8 @@ extern char s_btnunit_shp[];
 extern char s_0[];
 extern char s_empty[];
 extern char s_592A40[];
-extern char s_OKDialog[];
-extern char s_QuitSaveDialog[];
-extern char s_OpenSaveDialog[];
-extern char s_NewSaveDialog[];
 extern char s_Save_Game_Screen[];
-extern char s_Scenario_Menu_Dialog[];
-extern char s_Scenario_Editor_Screen[];
 extern char s_Scenario_Editor_Open[];
-extern char s_C__msdev_work_age1_x1_scr_sed_cp[];
 
 extern int View_Grid_Mode;
 extern "C" __declspec(dllimport) int __stdcall CompareStringA(

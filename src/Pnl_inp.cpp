@@ -1,8 +1,9 @@
 #include "../include/Pnl_inp.h"
 
 #include <mbstring.h>
+
+static char pnl_inp_draw[] = "pnl_inp::draw";
 extern void operator delete(void*);
-extern char pnl_inp_draw[];
 
 TInputPanel::TInputPanel() : TTextPanel(), caret_color(0),
                              caret_interval(GetCaretBlinkTime()),

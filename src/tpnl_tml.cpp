@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <string.h>
 
+static char s_tpnl_tml_draw_axis[] = "tpnl_tml::draw_axis";
+
 extern "C" int __cdecl stricmp(const char*, const char*);
 
 Time_Line_Panel::Time_Line_Panel()
@@ -657,7 +659,6 @@ void Time_Line_Panel::draw(void) {
     }
 }
 
-extern char s_tpnl_tml_draw_axis[];
 
 void Time_Line_Panel::draw_axis() {
     HGDIOBJ old_font;

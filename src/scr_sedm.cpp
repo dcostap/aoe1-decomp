@@ -11,7 +11,8 @@
 #include "../include/rge_base_game_global.h"
 #include "../include/resource_ids.h"
 
-extern char s_Scenario_Editor_Menu[];
+static char s_Scenario_Editor_Menu[] = "Scenario Editor Menu";
+
 extern char s_Scenario_Editor_Open[];
 extern TPanelSystem panel_system;
 
