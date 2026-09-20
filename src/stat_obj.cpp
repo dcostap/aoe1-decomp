@@ -2766,25 +2766,30 @@ extern "C" double __cdecl floor(double);
 extern "C" double __cdecl ceil(double);
 
 void RGE_Static_Object::changeInfluenceMap(InfluenceMap* iMap, int increment, int usePercentCoverage, int useLOS) {
-    int minXTile;
     int minYTile;
-    int maxXTile;
+    int minXTile;
     int maxYTile;
+    int maxXTile;
     float objectMaxY;
     float objectMinY;
     float objectMaxX;
     float objectMinX;
 
+    int minY;
+    int maxY;
+    int minX;
+    int maxX;
+
     if (useLOS == 0) {
-        minXTile = (int)floor(this->world_x - this->master_obj->radius_x);
-        maxXTile = (int)ceil(this->master_obj->radius_x + this->world_x);
-        minYTile = (int)floor(this->world_y - this->master_obj->radius_y);
-        maxYTile = (int)ceil(this->master_obj->radius_y + this->world_y);
+        minY = (int)floor(this->world_x - this->master_obj->radius_x);
+        maxY = (int)ceil(this->master_obj->radius_x + this->world_x);
+        minX = (int)floor(this->world_y - this->master_obj->radius_y);
+        maxX = (int)ceil(this->master_obj->radius_y + this->world_y);
     } else {
-        minXTile = (int)floor(this->world_x - this->master_obj->radius_x - this->master_obj->los);
-        maxXTile = (int)ceil(this->master_obj->radius_x + this->master_obj->los + this->world_x);
-        minYTile = (int)floor(this->world_y - this->master_obj->radius_y - this->master_obj->los);
-        maxYTile = (int)ceil(this->master_obj->radius_y + this->master_obj->los + this->world_y);
+        minY = (int)floor(this->world_x - this->master_obj->radius_x - this->master_obj->los);
+        maxY = (int)ceil(this->master_obj->radius_x + this->master_obj->los + this->world_x);
+        minX = (int)floor(this->world_y - this->master_obj->radius_y - this->master_obj->los);
+        maxX = (int)ceil(this->master_obj->radius_y + this->master_obj->los + this->world_y);
     }
 
     if (useLOS == 0) {
@@ -2799,32 +2804,30 @@ void RGE_Static_Object::changeInfluenceMap(InfluenceMap* iMap, int increment, in
         objectMaxY = this->master_obj->radius_y + this->master_obj->los + this->world_y;
     }
 
-    for (int y = minYTile; y < maxYTile; y++) {
-        for (int x = minXTile; x < maxXTile; x++) {
+    for (int x = minX; x < maxX; x++) {
+        for (int y = minY; y < maxY; y++) {
             if (usePercentCoverage) {
-                float left = (float)x;
-                if (objectMinX > (float)x)
-                    left = objectMinX;
-                float right = (float)(x + 1);
+                float left = (float)y;
+                if (objectMinX > (float)y) left = objectMinX;
+                float right = (float)(y + 1);
                 if (objectMaxX < right)
                     right = objectMaxX;
-                float top = (float)y;
-                if (objectMinY > (float)y)
-                    top = objectMinY;
-                float bottom = (float)(y + 1);
+                float top = (float)x;
+                if (objectMinY > (float)x) top = objectMinY;
+                float bottom = (float)(x + 1);
                 if (objectMaxY < bottom)
                     bottom = objectMaxY;
                 int value = (int)((right - left) * (bottom - top) * 255.0f);
                 if (increment == 1) {
-                    iMap->incrementValue(x, y, value);
+                    iMap->incrementValue(y, x, value);
                 } else {
-                    iMap->decrementValue(x, y, value);
+                    iMap->decrementValue(y, x, value);
                 }
             } else {
                 if (increment == 1) {
-                    iMap->incrementValue(x, y, 255);
+                    iMap->incrementValue(y, x, 255);
                 } else {
-                    iMap->decrementValue(x, y, 255);
+                    iMap->decrementValue(y, x, 255);
                 }
             }
         }
