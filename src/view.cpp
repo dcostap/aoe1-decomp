@@ -1861,6 +1861,7 @@ long RGE_View::view_function(unsigned char function_mode_in, unsigned char funct
 
 
 extern const char s_C__msdev_work_age1_x1_view_cpp[];
+extern char s_view__view_function_terrain[];
 
 long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT save_render_rect) {
     int start_map_x;
@@ -2643,7 +2644,7 @@ no_mouse_process:
         } while (y < 0x120);
     }
 
-    this->render_area->Unlock("view::view_function_terrain");
+    this->render_area->Unlock(s_view__view_function_terrain);
     this->render_area->CurSpanList = this->render_area->SpanList;
 
     {

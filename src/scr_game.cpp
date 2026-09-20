@@ -129,7 +129,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->last_game_speed_change = 0;
     this->last_pause_change = 0;
 
-    if (!this->setup(rge_base_game->draw_area, "scr6", 0xc388, 1)) {
+    if (!this->setup(rge_base_game->draw_area, s_scr6, 0xc388, 1)) {
         this->error_code = 1;
         return;
     }
@@ -142,13 +142,13 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         return;
     }
 
-    this->button_tech_pic = new TShape("btntech.shp", 0xc629);
+    this->button_tech_pic = new TShape(s_btntech_shp, 0xc629);
     if (this->button_tech_pic == 0 || !this->button_tech_pic->is_loaded()) {
         this->error_code = 1;
         return;
     }
 
-    this->button_cmd_pic = new TShape("btncmd.shp", 0xc621);
+    this->button_cmd_pic = new TShape(s_btncmd_shp, 0xc621);
     if (this->button_cmd_pic == 0 || !this->button_cmd_pic->is_loaded()) {
         this->error_code = 1;
         return;
@@ -174,7 +174,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         this->error_code = 1;
         return;
     }
-    if (!this->main_view->setup(this->render_area, this, 0, 0, 0, 0, 0, 1, "bordline")) {
+    if (!this->main_view->setup(this->render_area, this, 0, 0, 0, 0, 0, 1, s_bordline)) {
         this->error_code = 1;
         return;
     }
@@ -192,7 +192,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
     this->map_view->set_help_info(STRING_ID_HELP_DIAMOND_MAP, -1);
     this->map_view->set_world(this->world);
-    this->map_view->set_bitmap("map.bmp", 0xc4e1);
+    this->map_view->set_bitmap(s_map_bmp, 0xc4e1);
     this->map_view->set_player(rge_base_game->get_player());
     TRIBE_Main_View* main_view_for_map = this->main_view;
     this->map_view->main_view = main_view_for_map;
@@ -498,7 +498,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->command_score(static_cast<unsigned int>(this->world->score_displayed));
 
     confirmed_close = 0;
-    if (rge_base_game->check_prog_argument("PAUSE")) {
+    if (rge_base_game->check_prog_argument(s_PAUSE)) {
         start_paused = 1;
         rge_base_game->set_prog_mode(6);
         rge_base_game->world->temp_pause = 1;
@@ -507,7 +507,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
 
 
 TRIBE_Screen_Game::~TRIBE_Screen_Game() {
-    panel_system.destroyPanel("Config Dialog");
+    panel_system.destroyPanel(s_Config_Dialog);
 
     if (this->game_over_sound != 0) {
         if (this->game_over_sound->is_playing() != 0) {
@@ -1215,9 +1215,9 @@ void TRIBE_Screen_Game::handle_game_update() {
                         }
 
                         if (rge_base_game->get_player()->game_status == 1) {
-                            this->game_over_sound = new TDigital(rge_base_game->sound_system, "won.wav", 0xc490);
+                            this->game_over_sound = new TDigital(rge_base_game->sound_system, s_won_wav, 0xc490);
                         } else {
-                            this->game_over_sound = new TDigital(rge_base_game->sound_system, "lost.wav", 0xc491);
+                            this->game_over_sound = new TDigital(rge_base_game->sound_system, s_lost_wav, 0xc491);
                         }
 
                         if (this->game_over_sound != 0) {
@@ -1341,7 +1341,7 @@ long TRIBE_Screen_Game::wnd_proc(void* hwnd, unsigned int msg, unsigned int wPar
             int mode = rge_base_game->prog_mode;
             if (mode == 5 || mode == 4 || mode == 6 || mode == 7) {
                 if (IsIconic(this->render_area->Wnd) == 0) {
-                    this->popupYesNoDialog(STRING_ID_CONFIRM_QUIT_GAME, "CloseProgramDialog", TEASY_POPUP_WIDTH, 100);
+                    this->popupYesNoDialog(STRING_ID_CONFIRM_QUIT_GAME, close_confirmation_text, TEASY_POPUP_WIDTH, 100);
                     return 1;
                 }
             }
@@ -1672,10 +1672,10 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
             comm->TXDebugPing();
             break;
         case 0x4D: {
-            sprintf(str, "Writing out memory info (%d)...", ++memory_dump_sequence);
+            sprintf(str, s_Writing_out_memory_info, ++memory_dump_sequence);
             TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
             game->show_status_message(str, 0, -1);
-            sprintf(str, "c:\\mem%d.txt", memory_dump_sequence);
+            sprintf(str, s_memory_filename, memory_dump_sequence);
             rge_base_game->dump_memory_usage(str);
             static_cast<TRIBE_Game*>(rge_base_game)->close_status_message();
             break;
@@ -1717,8 +1717,8 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
             this->command_tool_box();
             break;
         case 0x55:
-            if (rge_base_game->gameDeveloperMode() != 0 && rge_base_game->check_prog_argument("ALLOWCTRLU") != 0) {
-                L->Log("*** !!! %%% USER PRESSED CTRL-U TO FORCE OUT OF SYNC %%% !!! ***");
+            if (rge_base_game->gameDeveloperMode() != 0 && rge_base_game->check_prog_argument(s_ALLOWCTRLU) != 0) {
+                L->Log(s_force_ctrl_u);
                 displayPathingFlags = (displayPathingFlags == 0);
             }
             break;

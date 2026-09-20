@@ -2,6 +2,8 @@
 #include "../include/airesmod.h"
 #include <stdlib.h>
 
+extern char s_setResource_n_v[];
+extern char s_setResource_r_v[];
 void* operator new(size_t size);
 void operator delete(void* ptr);
 
@@ -127,10 +129,10 @@ int ResourceAIModule::maxValueOfResource(int n) const {
 }
 
 void ResourceAIModule::setResource(int n, int v) {
-    this->logCommonHistory("setResource: n=%d, v=%d.", n, v);
+    this->logCommonHistory(s_setResource_n_v, n, v);
     if (n >= 0 && n < numberResourcesValue) {
         resourceValue[n] = v;
-        this->logCommonHistory("  setResource: r[%d]=%d.", n, resourceValue[n]);
+        this->logCommonHistory(s_setResource_r_v, n, resourceValue[n]);
     }
 }
 
