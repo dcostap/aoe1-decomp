@@ -39,10 +39,10 @@ V2_TO_V4_UPGRADE = 'v2-to-v4-controlled-paint-turn-stop-20260915'
 V5_TEMPLATE_SHA256 = 'c4a88062d17a54ae852ec6acc709530691f021dc22eeefe9a3a608862768f5c3'
 V6_TEMPLATE_SHA256 = 'f8a9fa538f78495bef80dd9579573e688d4ee7433ea18dbd5123c27357f67687'
 V7_TEMPLATE_SHA256 = '9b3d3f53d79e54fd66161b33736bec203ec90622883463d2cadd201bb4bb9031'
-V8_TEMPLATE_SHA256 = '6a7e871f33cdff25221a21fde80bcb96b1e46e58a33f42fee457ea19d8186d7c'
-V9_TEMPLATE_SHA256 = '1add52d89a44f0bda5a7978e0578033f06d57115804b4e198718c359d0269cd7'
-V10_TEMPLATE_SHA256 = 'c7efd04aabde4e95f60f87f79959cee16ab6fbc3665758bbdd9aa3e44a4a855e'
-V11_TEMPLATE_SHA256 = '2946b4076d80e365e7bec0be900d57011f14f27af440a29b22247ebdaf8bc9bf'
+V8_TEMPLATE_SHA256 = 'e4dde5def905c831fa5587791c11c64547dfc8bb67a7055fb6d7f495a872aa15'
+V9_TEMPLATE_SHA256 = '2151d34e2a62a313cc1b82b4bf728a5a0d83004fe1ddd051186d5027693af26e'
+V10_TEMPLATE_SHA256 = '0af89f39e1b293e82a1ad510f793a861aa2aa9418ac049629ffc6a8e65330f6d'
+V11_TEMPLATE_SHA256 = '60bebfaa676cb1774296148287d9e391d0e41f62fce622da28a37b530df3fe61'
 V5_TO_V6_UPGRADE = 'v5-to-v6-controlled-paint-save-fixtures'
 V8_TO_V9_UPGRADE = 'v8-to-v9-controlled-paint-responsive-inputs'
 V10_TO_V11_UPGRADE = 'v10-to-v11-controlled-paint-editor-inputs'
@@ -50,7 +50,6 @@ UPGRADES = {V1_TO_V2_UPGRADE:(V1_POLICY,V2_POLICY), V1_TO_V3_UPGRADE:(V1_POLICY,
             V2_TO_V3_UPGRADE:(V2_POLICY,V3_POLICY), V1_TO_V4_UPGRADE:(V1_POLICY,V4_POLICY),
             V2_TO_V4_UPGRADE:(V2_POLICY,V4_POLICY), V5_TO_V6_UPGRADE:(V5_POLICY,V6_POLICY),
             V8_TO_V9_UPGRADE:(V8_POLICY,V9_POLICY), V10_TO_V11_UPGRADE:(V10_POLICY,V11_POLICY)}
-MAX_RECORDING_BYTES = 32*1024*1024
 UNTIMED_RECORDING_MS = 24*60*60*1000
 
 
@@ -96,8 +95,10 @@ def control_template(policy):
     template_sha256(policy)  # Reject unknown profiles.
     if policy == V1_POLICY:
         return (folder / 'human-v1-template.js').read_text()
-    if policy in (V5_POLICY, V6_POLICY, V8_POLICY, V9_POLICY):
+    if policy in (V5_POLICY, V6_POLICY):
         core = 'human-v5-core.js'
+    elif policy in (V8_POLICY, V9_POLICY):
+        core = 'human-v8-core.js'
     elif policy == V7_POLICY:
         core = 'human.js'
     elif policy == V10_POLICY:
@@ -174,7 +175,7 @@ def validate_session(session):
             raise ValueError('The scheduler upgrade requires the unchanged recording SHA256.')
     events = session.get('events', [])
     event_policy = (session.get('contract') or {}).get('policy')
-    if not isinstance(events, list) or len(events) > 100000:
+    if not isinstance(events, list):
         raise ValueError('Invalid input event count.')
     if session['mode'] == 'record' and events:
         raise ValueError('A human recording cannot contain replay inputs.')
@@ -219,12 +220,8 @@ def validate_session(session):
 
 
 def load_recording_with_sha256(path):
-    if path.stat().st_size > MAX_RECORDING_BYTES:
-        raise ValueError('Recording exceeds the size limit.')
     with path.open('rb') as stream:
-        data = stream.read(MAX_RECORDING_BYTES + 1)
-    if len(data) > MAX_RECORDING_BYTES:
-        raise ValueError('Recording exceeds the size limit.')
+        data = stream.read()
     recording = json.loads(data)
     if not isinstance(recording,dict) or type(recording.get('schema')) is not int or recording.get('schema') != 1 or recording.get('policy') not in (V1_POLICY,V2_POLICY,V5_POLICY,V7_POLICY,V8_POLICY,V10_POLICY):
         raise ValueError('Unsupported original recording contract.')

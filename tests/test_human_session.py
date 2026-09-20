@@ -221,22 +221,23 @@ def test_bad_recording_header(tmp_path,data):
     with pytest.raises(ValueError): load_recording(path)
 
 
-def test_recording_read_stays_bounded_if_file_grows(monkeypatch):
+def test_recording_reader_has_no_artificial_event_or_read_limit():
+    data = session()
+    data['policy'] = POLICY
+    data['events'] = [event() for _ in range(100001)]
+    payload = json.dumps(data).encode()
     requested=[]
     class Stream(io.BytesIO):
         def read(self,size=-1):
             requested.append(size)
             return super().read(size)
     class GrowingPath:
-        def stat(self):
-            return type('Stat',(),{'st_size':1})()
         def open(self,mode):
             assert mode == 'rb'
-            return Stream(b'x'*9)
-    monkeypatch.setattr(human_session_module,'MAX_RECORDING_BYTES',8)
-    with pytest.raises(ValueError,match='size limit'):
-        human_session_module.load_recording_with_sha256(GrowingPath())
-    assert requested == [9]
+            return Stream(payload)
+    loaded, _ = human_session_module.load_recording_with_sha256(GrowingPath())
+    assert len(loaded['events']) == 100001
+    assert requested == [-1]
 
 
 def test_new_profile_keeps_existing_menu_guard():

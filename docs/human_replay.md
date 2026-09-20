@@ -21,7 +21,7 @@ The responsive recording limit uses elapsed wall time. Loading and capture overh
 The default limit is 60 seconds. The maximum requested limit is 180 seconds.
 An independent process deadline stops a stalled worker and its game and encoder processes.
 Use `--no-time-limit` to stop only with F10 or window close. A 24-hour worker deadline remains.
-The 100,000-input and 32 MiB recording limits still apply.
+Recordings have no artificial input-count or file-size limit. Available memory and disk space still apply.
 
 Do not resize or move the game window. Do not switch applications during recording.
 Saved Game shows only the repository fixtures, currently `late_game_match`.

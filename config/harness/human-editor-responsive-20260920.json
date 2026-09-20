@@ -3,7 +3,7 @@
   "policy": "human-real-clock-v10-responsive-editor-recording",
   "contract": {
     "clock": "calls",
-    "script_sha256": "c7efd04aabde4e95f60f87f79959cee16ab6fbc3665758bbdd9aa3e44a4a855e",
+    "script_sha256": "0af89f39e1b293e82a1ad510f793a861aa2aa9418ac049629ffc6a8e65330f6d",
     "registry_inputs": {
       "user": [
         {

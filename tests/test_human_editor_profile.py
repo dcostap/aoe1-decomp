@@ -58,6 +58,11 @@ def test_record_capable_profiles_hold_no_replay_only_layer(policy):
     assert 'requires replay inputs' not in hs.control_template(policy)
 
 
+@pytest.mark.parametrize('policy', [hs.V8_POLICY, hs.V9_POLICY, hs.V10_POLICY, hs.V11_POLICY])
+def test_current_profiles_have_no_input_recording_cap(policy):
+    assert 'Input recording limit reached' not in hs.control_template(policy)
+
+
 def test_editor_input_target_identity_includes_visibility():
     # The editor keeps hidden edit panels beside the visible one. One class and one
     # control id repeat, so visibility must separate them.

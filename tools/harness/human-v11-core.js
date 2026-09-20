@@ -200,7 +200,6 @@ for (const name of ['DispatchMessageA','DispatchMessageW']) {
                 if (isReplay) row.expected_time_ms = expected.event.time_ms;
                 syncInput(hwnd, message, value, parameter);
                 send(row); human.input++; if (isReplay) this.delivered = expected;
-                if (human.input > 100000) throw new Error('Input recording limit reached');
             } catch (error) { humanStop(String(error)); }
         },
         onLeave() {
