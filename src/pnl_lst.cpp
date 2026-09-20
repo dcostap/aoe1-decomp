@@ -387,8 +387,11 @@ void TListPanel::draw_highlight_bar() {
         this->render_area->ReleaseDc(s_pnl_lst__draw_highlight_bar);
 
         if (this->render_area->Lock(s_pnl_lst__draw_highlight_bar, 1) != 0) {
-            long left = this->pnl_x + this->border_size;
-            long right = this->pnl_x + this->pnl_wid - this->border_size - 1;
+            long x = this->pnl_x;
+            long wid = this->pnl_wid;
+            long border = this->border_size;
+            long left = x + border;
+            long right = x + wid - border - 1;
             long top = r.top - this->spacer_size;
             long bottom = r.bottom + this->spacer_size;
 
