@@ -388,7 +388,7 @@ extern int palette_fade_amount;
 extern unsigned char palette_fade_direction;
 extern tagPALETTEENTRY palette_fade_color;
 extern float palette_fade_duration_squared;
-extern tagPALETTEENTRY palette_fade_source[256];
+extern tagPALETTEENTRY palette_fade_source[];
 extern tagPALETTEENTRY palette_fade_result[256];
 extern TDrawArea* palette_fade_surface;
 extern float repair_target_distance;
