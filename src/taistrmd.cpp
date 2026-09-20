@@ -10,9 +10,6 @@
 #include "../include/m_s_obj.h"
 #include "../include/victory.h"
 
-// Canonical context: the compiler now owns the proved virtual-table store.
-
-
 VictoryConditionRuleSystem::VictoryConditionRuleSystem() {
     int* p = this->sn;
     p[0] = 34;
@@ -355,10 +352,6 @@ int VictoryConditionRuleSystem::evaluateAsNonInProgress(TRIBE_Player* p, int rul
             return 0;
     }
 }
-
-//   strategic-number storage, and the player -> main-decision -> tactical-AI ownership chain.
-
-
 
 int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleNumber) {
     if (vcNumber < 0 || vcNumber >= 0xD) {
@@ -1015,11 +1008,6 @@ void TribeStrategyAIModule::setMainDecisionAI(TribeMainDecisionAIModule* m) {
     this->md = m;
 }
 
-// and three grow-while-saving integer arrays mirroring UnitAIModule::save pattern.
-// the first ten writes begin at +0xF4 and skip targetType at
-// +0x200; the canonical class layout also places md at +0xF0.
-// The standalone declaration mirrors that inherited layout for source checks.
-
 #include <string.h>
 
 void __cdecl rge_write(int fd, void* data, int size);
@@ -1189,8 +1177,6 @@ class TRIBE_Player;
     } \
 } while (0)
 
-// this add-heavy body uses the out-of-line ManagedArray::operator[]
-// calls shown at 004EA6EF, 004EA71A, and 004EA72A.
 #pragma inline_depth(0)
 
 void TribeStrategyAIModule::setVictoryCondition(int vcNumber) {
