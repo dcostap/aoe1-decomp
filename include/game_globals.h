@@ -394,7 +394,7 @@ extern tagPALETTEENTRY palette_fade_source[256];
 extern tagPALETTEENTRY palette_fade_result[256];
 extern TDrawArea* palette_fade_surface;
 extern float repair_target_distance;
-extern unsigned int g_unresolved_game_state_0086be00;
+extern unsigned int UNRESOLVED_game_state_0086be00;
 
 struct PAL_TABLE;
 extern PAL_TABLE System_color_Table[21];

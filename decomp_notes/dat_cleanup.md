@@ -19,7 +19,7 @@ original storage as a reviewed symbol.
 
 | Symbol | Result | Evidence |
 | --- | --- | --- |
-| `DAT_0086be00` | categorized | Renamed `g_unresolved_game_state_0086be00`. `TRIBE_Game::setup_game` resets it beside both out-of-sync flags, but evidence does not prove a narrower meaning. |
+| `DAT_0086be00` | categorized | Renamed `UNRESOLVED_game_state_0086be00`. `TRIBE_Game::setup_game` resets it beside both out-of-sync flags, but evidence does not prove a narrower meaning. |
 | `DAT_00575780` | removed | The original read-only `5.0f` has one reference from `stuffAvoidancePath`. The PDB has no global symbol at this address. The rebuilt function reads VC5's literal pool at `0x005562F0`. The separate `game_globals.obj` definition links at `0x00564324` and has no source reference. |
 | `DAT_00575778` | removed | The original read-only `0.2f` has one reference from `stuffAvoidancePath`. The PDB has no global symbol at this address. The rebuilt function reads VC5's literal pool at `0x005562E8`. The separate definition has no source reference. |
 | `DAT_0057577c` | removed | The original read-only `10.0f` has one reference from `stuffAvoidancePath`. The PDB has no global symbol at this address. The rebuilt function reads VC5's literal pool at `0x005562EC`. The separate definition has no source reference. |
@@ -245,16 +245,16 @@ original storage as a reviewed symbol.
 | `DAT_00584351`, `s_ignDialog_00584353`, `DAT_00584371`, `s_tartDialog_00584373`, `DAT_00584395`, `s_tGameDialog_00584397`, `DAT_005843a5`, `s_tAndLoadDialog_005843a7`, `DAT_005843e5`, `s_Dialog_005843e7`, `DAT_005843f1`, and `s_n_Dialog_005843f3` | removed | These are suffix fragments of the `ResignDialog`, `RestartDialog`, `QuitGameDialog`, `QuitAndLoadDialog`, `New Dialog`, and `Open Dialog` literals. The recovered owners in `scr_game.cpp`, `dlg_menu.cpp`, and `dlg_sedm.cpp` use complete literals. `DAT_00584612` remains VC5 stream-runtime storage. |
 | `DAT_0058bbdd`, `DAT_0058bfb1`, `DAT_0058bfcd`, `DAT_0058bfd5`, `s_ECTOBJ_0058bfd7`, `DAT_0058bfe1`, and `DAT_0058bfed` | removed | These are interior labels inside the complete `stopped`, encrypted cheat-code, and `SELECTOBJ` literals used by `TRIBE_Game::processCheatCode`, `start_video`, `stop_video`, and `handle_idle`. The recovered source owns the complete literals. |
 | `DAT_0058c001` through `DAT_0058c26d`, `s_tandard_0058c335`, and `DAT_0058c3b5` | removed | These are interior labels inside the encrypted cheat-code literals, `Standard`, and `paused` literals used by `TRIBE_Game::processCheatCode`, `TRIBE_Game::let_game_begin`, and `TRIBE_Game::handle_idle`. The recovered source owns the complete literals. |
-| `DAT_0058af79` and `s_domGameSpecialized_0058af7b` | categorized | Renamed with the `g_preserved_random_game_token_*` pattern. These bytes remain unresolved original token storage. |
-| `DAT_00584612` | categorized | Renamed `g_preserved_vc5_ostream_data_00584612`. The name identifies the owner without claiming an unknown field meaning. |
-| `DAT_0058ef30` through `DAT_0058fa48` | categorized | Renamed with the `g_preserved_unrecovered_lookup_*` pattern. Unrecovered functions use this lookup storage. |
-| `DAT_0058fb54` through `DAT_0058fc08` | categorized | Renamed with the `g_preserved_vc5_runtime_*` pattern. VC5 exception and small-block heap code owns the state. |
-| `DAT_00591bf8` through `DAT_00592824` | categorized | Renamed with the `g_preserved_vc5_crt_*` pattern. The address suffix distinguishes fields whose exact meaning remains unknown. |
-| `DAT_0057a808` | categorized | Renamed `g_preserved_vc5_exception_magic_0057a808`. VC5 exception-handler references prove the owner and magic value. |
+| `DAT_0058af79` and `s_domGameSpecialized_0058af7b` | categorized | Renamed with the `PRESERVED_random_game_token_*` pattern. These bytes remain unresolved original token storage. |
+| `DAT_00584612` | categorized | Renamed `PRESERVED_vc5_ostream_data_00584612`. The name identifies the owner without claiming an unknown field meaning. |
+| `DAT_0058ef30` through `DAT_0058fa48` | categorized | Renamed with the `PRESERVED_unrecovered_lookup_*` pattern. Unrecovered functions use this lookup storage. |
+| `DAT_0058fb54` through `DAT_0058fc08` | categorized | Renamed with the `PRESERVED_vc5_runtime_*` pattern. VC5 exception and small-block heap code owns the state. |
+| `DAT_00591bf8` through `DAT_00592824` | categorized | Renamed with the `PRESERVED_vc5_crt_*` pattern. The address suffix distinguishes fields whose exact meaning remains unknown. |
+| `DAT_0057a808` | categorized | Renamed `PRESERVED_vc5_exception_magic_0057a808`. VC5 exception-handler references prove the owner and magic value. |
 | `DAT_0062c558` | retained | The original `wnd_proc` reads and writes this slot as `sound_deactivated`. `basegame_is_active` is a semantic candidate in recovered source, but no same-address ownership proof permits merging the names. |
 | `DAT_00886c60` through `DAT_00887fa8` | retained | These slots belong to the approved, hash-checked compression binary. Its configuration records source regions at `0x00886C60` and `0x0088D000`; the original compression routines reference this state directly. |
 | `DAT_00887fe2` through `DAT_008884e4` | retained | These slots are referenced by VC5 CRT routines such as `time`, `strtok`, floating-point conversion, locale setup, and CRT message helpers. No game source owner is available. |
-| `DAT_0088c000` through `DAT_0088c08c` | categorized | Renamed with the `g_preserved_drawing_engine_*` pattern. The approved drawing engine owns this shared mutable state. |
+| `DAT_0088c000` through `DAT_0088c08c` | categorized | Renamed with the `PRESERVED_drawing_engine_*` pattern. The approved drawing engine owns this shared mutable state. |
 | `s_gA640_00586305`, `DAT_005863b5`, and `s_seProgramDialog_005863b7` | removed | These declarations are suffix fragments of the `bgA640` and `CloseProgramDialog` strings. The recovered end-screen owners and the shared `close_confirmation_text` object own the complete strings. |
 | `DAT_00570e40` through `DAT_00570e80` | named | These read-only path constants control zero values, diagonal distance, action range, coordinate scaling, bounds, rounding, and terrain passability. The new `g_path_*` names state those roles. |
 | `DAT_00570e88`, `DAT_00570e98`, `DAT_00570ea0`, `DAT_00570ea8`, `DAT_00570eb0`, `DAT_00570eb8`, and `DAT_00570ec8` | removed | These read-only path and player values have no source references or PDB symbols. Their owners use direct literals or separate state values. |

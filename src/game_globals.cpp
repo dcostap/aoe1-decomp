@@ -122,7 +122,7 @@ int rge_write_error = 0;
 int ENABLE_COMPRESSION = 1;
 float repair_target_distance = 0.0f;
 // Unresolved game state reset with the two out-of-sync flags.
-unsigned int g_unresolved_game_state_0086be00 = 0;
+unsigned int UNRESOLVED_game_state_0086be00 = 0;
 int start_paused = 0;
 int multi_updates = 1;
 int Shape_Loads = 0;
@@ -435,8 +435,8 @@ const char s_D_00578024[2] = { 0x44, 0x00 };
 const char s_AN_00578028[7] = { 0x31, 0x23, 0x53, 0x4E, 0x41, 0x4E, 0x00 };
 const char s_AN_0057802c[3] = { 0x41, 0x4E, 0x00 };
 // Preserved compiler and stream-runtime data. No game source owns this storage.
-unsigned int g_preserved_vc5_exception_magic_0057a808 = 0x19930520u;
-unsigned char g_preserved_vc5_ostream_data_00584612 = 0x00;
+unsigned int PRESERVED_vc5_exception_magic_0057a808 = 0x19930520u;
+unsigned char PRESERVED_vc5_ostream_data_00584612 = 0x00;
 TRIBE_Cliff_Higher_Check_Record TRIBE_Cliff_Higher_Check_Table[25] = {
     { 3.14f, 4.71f, -1.0f, -1.0f, 1.5f, -1.0f, 1.0f, 1.0f },
     { 1.58f, 4.7f, -1.0f, -1.0f, 1.5f, -1.5f, 1.5f, 1.5f },
@@ -465,73 +465,73 @@ TRIBE_Cliff_Higher_Check_Record TRIBE_Cliff_Higher_Check_Table[25] = {
     { 1.57f, 3.14f, -1.0f, -1.0f, -1.5f, -1.5f, 1.5f, 1.5f }
 };
 // Unresolved original "RandomGameSpecialized" token storage.
-unsigned char g_preserved_random_game_token_0058af79 = 0x61;
-const char g_preserved_random_game_token_suffix_0058af7b[19] = { 0x64, 0x6F, 0x6D, 0x47, 0x61, 0x6D, 0x65, 0x53, 0x70, 0x65, 0x63, 0x69, 0x61, 0x6C, 0x69, 0x7A, 0x65, 0x64, 0x00 };
+unsigned char PRESERVED_random_game_token_0058af79 = 0x61;
+const char PRESERVED_random_game_token_suffix_0058af7b[19] = { 0x64, 0x6F, 0x6D, 0x47, 0x61, 0x6D, 0x65, 0x53, 0x70, 0x65, 0x63, 0x69, 0x61, 0x6C, 0x69, 0x7A, 0x65, 0x64, 0x00 };
 
 // Preserved lookup storage used by unrecovered functions.
-unsigned char g_preserved_unrecovered_lookup_0058ef30 = 0x10;
-unsigned char g_preserved_unrecovered_lookup_0058ef42 = 0x0F;
-unsigned short g_preserved_unrecovered_lookup_0058ef48 = 0x0101;
-unsigned char g_preserved_unrecovered_lookup_0058f148 = 0x00;
-unsigned char g_preserved_unrecovered_lookup_0058f248 = 0x00;
-unsigned char g_preserved_unrecovered_lookup_0058f347 = 0x00;
-unsigned char g_preserved_unrecovered_lookup_0058f547 = 0x11;
-unsigned char g_preserved_unrecovered_lookup_0058f747 = 0x07;
-unsigned char g_preserved_unrecovered_lookup_0058f948 = 0x00;
-unsigned char g_preserved_unrecovered_lookup_0058f9c8 = 0x00;
-unsigned short g_preserved_unrecovered_lookup_0058fa48 = 0x0000;
+unsigned char PRESERVED_unrecovered_lookup_0058ef30 = 0x10;
+unsigned char PRESERVED_unrecovered_lookup_0058ef42 = 0x0F;
+unsigned short PRESERVED_unrecovered_lookup_0058ef48 = 0x0101;
+unsigned char PRESERVED_unrecovered_lookup_0058f148 = 0x00;
+unsigned char PRESERVED_unrecovered_lookup_0058f248 = 0x00;
+unsigned char PRESERVED_unrecovered_lookup_0058f347 = 0x00;
+unsigned char PRESERVED_unrecovered_lookup_0058f547 = 0x11;
+unsigned char PRESERVED_unrecovered_lookup_0058f747 = 0x07;
+unsigned char PRESERVED_unrecovered_lookup_0058f948 = 0x00;
+unsigned char PRESERVED_unrecovered_lookup_0058f9c8 = 0x00;
+unsigned short PRESERVED_unrecovered_lookup_0058fa48 = 0x0000;
 
 // Preserved VC5 exception and small-block heap state.
-unsigned int g_preserved_vc5_runtime_0058fb54 = 0x00000000u;
-unsigned int g_preserved_vc5_runtime_0058fb58 = 0x00000000u;
-unsigned int g_preserved_vc5_runtime_0058fb5c = 0x00000000u;
-unsigned int g_preserved_vc5_runtime_0058fbf8 = 0xFFFFFFFFu;
-unsigned int g_preserved_vc5_runtime_0058fbfc = 0xFFFFFFFFu;
-unsigned int g_preserved_vc5_runtime_0058fc00 = 0x000000F0u;
-unsigned int g_preserved_vc5_runtime_0058fc04 = 0x000000F1u;
-unsigned int g_preserved_vc5_runtime_0058fc08 = 0x00000000u;
+unsigned int PRESERVED_vc5_runtime_0058fb54 = 0x00000000u;
+unsigned int PRESERVED_vc5_runtime_0058fb58 = 0x00000000u;
+unsigned int PRESERVED_vc5_runtime_0058fb5c = 0x00000000u;
+unsigned int PRESERVED_vc5_runtime_0058fbf8 = 0xFFFFFFFFu;
+unsigned int PRESERVED_vc5_runtime_0058fbfc = 0xFFFFFFFFu;
+unsigned int PRESERVED_vc5_runtime_0058fc00 = 0x000000F0u;
+unsigned int PRESERVED_vc5_runtime_0058fc04 = 0x000000F1u;
+unsigned int PRESERVED_vc5_runtime_0058fc08 = 0x00000000u;
 
 // Preserved VC5 CRT state. The address suffix identifies unknown fields.
-unsigned int g_preserved_vc5_crt_00591bf8 = 0x00000000u;
-unsigned int g_preserved_vc5_crt_00591c18 = 0x00000001u;
-unsigned int g_preserved_vc5_crt_00591c24 = 0x00000002u;
-unsigned char g_preserved_vc5_crt_00591da3 = 0x00;
-unsigned char g_preserved_vc5_crt_00591ddf = 0x00;
-unsigned char g_preserved_vc5_crt_00591de0 = 0x50;
-unsigned char g_preserved_vc5_crt_00591de3 = 0x00;
-unsigned char g_preserved_vc5_crt_00591e1f = 0x00;
-unsigned int g_preserved_vc5_crt_00591e28 = 0xFFFFFFFFu;
-unsigned int g_preserved_vc5_crt_00591e2c = 0x00000000u;
-unsigned int g_preserved_vc5_crt_00591e30 = 0x00000000u;
-unsigned int g_preserved_vc5_crt_00591e38 = 0xFFFFFFFFu;
-unsigned int g_preserved_vc5_crt_00591e3c = 0x00000000u;
-unsigned int g_preserved_vc5_crt_00591e40 = 0x00000000u;
-unsigned int g_preserved_vc5_crt_00591e58 = 0x00000000u;
-unsigned char g_preserved_vc5_crt_005920cc = 0x00;
-unsigned char g_preserved_vc5_crt_005920db = 0x00;
-unsigned char g_preserved_vc5_crt_005922f0 = 0x01;
-unsigned int g_preserved_vc5_crt_005922f8 = 0x000003A4u;
-unsigned int g_preserved_vc5_crt_0059232c = 0xA3DAA3C1u;
-unsigned int g_preserved_vc5_crt_00592330 = 0x00000020u;
-unsigned int g_preserved_vc5_crt_00592334 = 0x00000000u;
-unsigned char g_preserved_vc5_crt_00592338 = 0x00;
-unsigned char g_preserved_vc5_crt_00592339 = 0x00;
-unsigned char g_preserved_vc5_crt_0059233a = 0x00;
-unsigned int g_preserved_vc5_crt_005923e4 = 0x00000000u;
-unsigned int g_preserved_vc5_crt_0059241c = 0x00000000u;
-unsigned int g_preserved_vc5_crt_00592424 = 0x0000001Eu;
-unsigned int g_preserved_vc5_crt_00592428 = 0x0000003Au;
-unsigned int g_preserved_vc5_crt_00592458 = 0x00000014u;
-double g_preserved_vc5_crt_00592558 = -0.0;
-double g_preserved_vc5_crt_00592568 = -4.9406564584124654e-324;
-unsigned int g_preserved_vc5_crt_0059257c = 0x0000000Bu;
-unsigned int g_preserved_vc5_crt_00592584 = 0xC000001Du;
-unsigned int g_preserved_vc5_crt_00592588 = 0x00000004u;
-unsigned int g_preserved_vc5_crt_005925a4 = 0x00000000u;
-unsigned int g_preserved_vc5_crt_00592600 = 0x00000002u;
-unsigned int g_preserved_vc5_crt_00592610 = 0x00000009u;
-unsigned int g_preserved_vc5_crt_00592820 = 0x7525C460u;
-unsigned int g_preserved_vc5_crt_00592824 = 0x00000000u;
+unsigned int PRESERVED_vc5_crt_00591bf8 = 0x00000000u;
+unsigned int PRESERVED_vc5_crt_00591c18 = 0x00000001u;
+unsigned int PRESERVED_vc5_crt_00591c24 = 0x00000002u;
+unsigned char PRESERVED_vc5_crt_00591da3 = 0x00;
+unsigned char PRESERVED_vc5_crt_00591ddf = 0x00;
+unsigned char PRESERVED_vc5_crt_00591de0 = 0x50;
+unsigned char PRESERVED_vc5_crt_00591de3 = 0x00;
+unsigned char PRESERVED_vc5_crt_00591e1f = 0x00;
+unsigned int PRESERVED_vc5_crt_00591e28 = 0xFFFFFFFFu;
+unsigned int PRESERVED_vc5_crt_00591e2c = 0x00000000u;
+unsigned int PRESERVED_vc5_crt_00591e30 = 0x00000000u;
+unsigned int PRESERVED_vc5_crt_00591e38 = 0xFFFFFFFFu;
+unsigned int PRESERVED_vc5_crt_00591e3c = 0x00000000u;
+unsigned int PRESERVED_vc5_crt_00591e40 = 0x00000000u;
+unsigned int PRESERVED_vc5_crt_00591e58 = 0x00000000u;
+unsigned char PRESERVED_vc5_crt_005920cc = 0x00;
+unsigned char PRESERVED_vc5_crt_005920db = 0x00;
+unsigned char PRESERVED_vc5_crt_005922f0 = 0x01;
+unsigned int PRESERVED_vc5_crt_005922f8 = 0x000003A4u;
+unsigned int PRESERVED_vc5_crt_0059232c = 0xA3DAA3C1u;
+unsigned int PRESERVED_vc5_crt_00592330 = 0x00000020u;
+unsigned int PRESERVED_vc5_crt_00592334 = 0x00000000u;
+unsigned char PRESERVED_vc5_crt_00592338 = 0x00;
+unsigned char PRESERVED_vc5_crt_00592339 = 0x00;
+unsigned char PRESERVED_vc5_crt_0059233a = 0x00;
+unsigned int PRESERVED_vc5_crt_005923e4 = 0x00000000u;
+unsigned int PRESERVED_vc5_crt_0059241c = 0x00000000u;
+unsigned int PRESERVED_vc5_crt_00592424 = 0x0000001Eu;
+unsigned int PRESERVED_vc5_crt_00592428 = 0x0000003Au;
+unsigned int PRESERVED_vc5_crt_00592458 = 0x00000014u;
+double PRESERVED_vc5_crt_00592558 = -0.0;
+double PRESERVED_vc5_crt_00592568 = -4.9406564584124654e-324;
+unsigned int PRESERVED_vc5_crt_0059257c = 0x0000000Bu;
+unsigned int PRESERVED_vc5_crt_00592584 = 0xC000001Du;
+unsigned int PRESERVED_vc5_crt_00592588 = 0x00000004u;
+unsigned int PRESERVED_vc5_crt_005925a4 = 0x00000000u;
+unsigned int PRESERVED_vc5_crt_00592600 = 0x00000002u;
+unsigned int PRESERVED_vc5_crt_00592610 = 0x00000009u;
+unsigned int PRESERVED_vc5_crt_00592820 = 0x7525C460u;
+unsigned int PRESERVED_vc5_crt_00592824 = 0x00000000u;
 
 // Dsutil process globals. The names and types follow the period SDK surface
 // and the direct uses in the stream helpers.
@@ -635,28 +635,28 @@ char ready_player_template[64] = "Ready=                         ";
 char com_hand_source_path[] = "C:\\msdev\\work\\age1_x1\\Com_hand.cpp";
 
 // Preserved shared mutable state for the approved drawing assembly engine.
-unsigned int g_preserved_drawing_engine_0088c000 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c004 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c008 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c00c = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c010 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c014 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c018 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c01c = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c020 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c024 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c028 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c02c = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c038 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c03c = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c040 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c044 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c054 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c058 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c080 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c084 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c088 = 0x00000000u;
-unsigned int g_preserved_drawing_engine_0088c08c = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c000 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c004 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c008 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c00c = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c010 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c014 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c018 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c01c = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c020 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c024 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c028 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c02c = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c038 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c03c = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c040 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c044 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c054 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c058 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c080 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c084 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c088 = 0x00000000u;
+unsigned int PRESERVED_drawing_engine_0088c08c = 0x00000000u;
 
 long world_update_counter = 0;
 int computerPlayerSetup[13] = {0};
