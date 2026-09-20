@@ -91,7 +91,7 @@ def test_game_destructor_uses_configuration_dialog():
     ("RGE_Pick_Obj_Info Picked_Objects[64] = {0};", 0x87D4A0, bytes(64 * 12)),
     ("int DiagionalDistance[256] = {0};", 0x74D040, bytes(256 * 4)),
     ("int player_dropped[9] = {0};", 0x86BCA8, bytes(9 * 4)),
-    ("char DAT_0062E670[0x200] = {0};", 0x62E670, bytes(512)),
+    ("char panel_string_buffer[0x200] = {0};", 0x62E670, bytes(512)),
     ("unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};", 0x584EF4, bytes([0, 2, 4, 6])),
     ("unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};", 0x584EF0, bytes.fromhex("fcf3cf3f")),
 ])
