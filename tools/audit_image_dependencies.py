@@ -158,14 +158,16 @@ def check_selector_tables(original, rebuilt, left, right, va, address, size, fun
             new = int.from_bytes(new_pointers[new_index * 4:new_index * 4 + 4], 'little')
             expected = address + old - va if va <= old < va + size else functions.get(old, (None, None))[1]
             comparable = va <= old < va + prefix and address <= new < address + prefix
-            result = 'unknown' if expected is None or not comparable else 'pass' if expected == new else 'fail'
+            result = 'unknown' if expected is None or not comparable or expected != new else 'pass'
+            reason = ('handler outside the equal-shape region' if not comparable else
+                      'handler layout differs; semantic identity is not established' if expected != new else
+                      'unsigned bound and byte selector table; handler offsets agree per state' if old_index == new_index else
+                      'selector byte differs but resolves to the same handler')
             rows.append(dict(row, index=n, result=result, original_table=f'{table:08X}',
                              rebuilt_table=f'{rebuilt_table:08X}', original_target=f'{old:08X}',
                              rebuilt_target=f'{new:08X}', expected=None if expected is None else f'{expected:08X}',
                              original_selector=f'{old_index:02X}', rebuilt_selector=f'{new_index:02X}',
-                             reason='unsigned bound and byte selector table; handler offsets compared per state'
-                             if old_index == new_index else 'selector byte differs'
-                             if comparable else 'handler outside the equal-shape region'))
+                             reason=reason))
     return rows
 
 

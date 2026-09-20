@@ -57,6 +57,8 @@ The switch check supports adjacent `cmp index, maximum`, unsigned `ja`, and inde
 It compares every target in the guarded table slice.
 Targets must identify aligned instruction starts or independently named functions.
 Other switch forms remain unknown. This does not prove every table entry or every route into the dispatch.
+Sparse selector tables pass only when their resolved handler offsets agree.
+A different handler layout remains unknown unless independent evidence identifies the handler semantics.
 Unreviewed linked virtual tables receive explicit unknown results. Their sizes are not guessed.
 
 Equal operand bytes do not prove shared storage identity or later runtime values.

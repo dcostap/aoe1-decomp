@@ -103,4 +103,7 @@ Reports rank unknown target addresses by reference count and list their callers.
 Use that list to choose the next shared ownership investigation.
 
 Run `audit_global_initializers.py` separately for its broader named primitive-data checks.
+For character arrays, the audit compares bytes through the first zero terminator.
+It reports later bytes as tail-layout drift, not a value failure.
+It excludes named VC5 runtime state that has no standalone game-data owner.
 Constructed objects, unreviewed layouts, startup effects, and computed addresses still need more evidence.

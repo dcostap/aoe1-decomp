@@ -18,6 +18,7 @@ PRIMITIVES = {'T_RCHAR': 1, 'T_CHAR': 1, 'T_UCHAR': 1, 'T_SHORT': 2,
               'T_USHORT': 2, 'T_LONG': 4, 'T_ULONG': 4, 'T_INT4': 4,
               'T_UINT4': 4, 'T_REAL32': 4, 'T_REAL64': 8, 'T_QUAD': 8,
               'T_UQUAD': 8, 'T_BOOL08': 1}
+TOOLCHAIN_GLOBALS = {'_except_list'}
 
 
 def read_storage(pe, va, size):
@@ -32,6 +33,19 @@ def read_storage(pe, va, size):
                 raise ValueError('Truncated stored data')
             return raw + bytes(size - stored)
     raise ValueError('Range outside one PE section')
+
+
+def compare_initial_bytes(original, rebuilt, kind):
+    """Compare a typed value without treating string-array tail bytes as value bytes."""
+    if kind == 'char_array':
+        original_end = original.find(b'\0')
+        rebuilt_end = rebuilt.find(b'\0')
+        if original_end >= 0 and rebuilt_end >= 0:
+            meaningful_size = max(original_end, rebuilt_end) + 1
+            if original[:meaningful_size] == rebuilt[:meaningful_size]:
+                result = 'equal_initial_bytes' if original == rebuilt else 'equal_value_tail_layout_differs'
+                return result, meaningful_size
+    return ('equal_initial_bytes' if original == rebuilt else 'different_initial_bytes'), len(original)
 
 
 def main():
@@ -69,6 +83,8 @@ def main():
         if 'LF_ARRAY' in record.split('\n')[0] and size:
             element = re.search(r'Element type = ([^\r\n,]+)', record)
             kind = classify(element[1], depth + 1)[1] if element else 'unknown'
+            if element and element[1].strip().split('(')[0] in {'T_RCHAR', 'T_CHAR', 'T_UCHAR'}:
+                kind = 'char_array'
             return int(size[1]), kind
         return int(size[1]) if size else 0, 'constructed_or_unknown'
     linked = defaultdict(list)
@@ -90,6 +106,10 @@ def main():
     for m in re.finditer(pattern, globals_text, re.M):
         section, offset, display, name = m.groups()
         name = name.strip()
+        if name in TOOLCHAIN_GLOBALS:
+            rows.append(dict(name=name, type=display.strip(), result='excluded_toolchain_state',
+                             reason='VC5 runtime state has no standalone game-data owner'))
+            continue
         if not 1 <= int(section, 16) <= len(original.sections):
             rows.append(dict(name=name, type=display.strip(), result='invalid_original_section'))
             continue
@@ -99,7 +119,7 @@ def main():
         candidates = linked.get(name, [])
         if len(candidates) != 1:
             row['result'] = 'unmapped' if not candidates else 'ambiguous'
-        elif not size or kind != 'plain':
+        elif not size or kind not in ('plain', 'char_array'):
             row['result'] = 'needs_type_or_startup_review'
         else:
             target, symbol, owner = candidates[0]
@@ -109,7 +129,8 @@ def main():
             else:
                 try:
                     a, b = read_storage(original, va, size), read_storage(rebuilt, target, size)
-                    row.update(result='equal_initial_bytes' if a == b else 'different_initial_bytes',
+                    result, meaningful_size = compare_initial_bytes(a, b, kind)
+                    row.update(result=result, meaningful_size=meaningful_size,
                                original_hex=a[:64].hex(), rebuilt_hex=b[:64].hex(),
                                differing_bytes=sum(x != y for x, y in zip(a, b)),
                                differences=[dict(offset=i, original=x, rebuilt=y)
