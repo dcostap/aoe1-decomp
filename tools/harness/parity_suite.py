@@ -10,7 +10,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from game import ROOT, run_worker, stamp
 from human_session import load_recording, compare_inputs, inputs
 from human_compare import load_batch, compare_captures
-from human_session import V1_TO_V4_UPGRADE, V5_POLICY, V5_TO_V6_UPGRADE, V7_POLICY, V7_TEMPLATE_SHA256, execution_plan
+from human_session import (V1_TO_V4_UPGRADE, V5_POLICY, V5_TO_V6_UPGRADE,
+                           V7_POLICY, V7_TEMPLATE_SHA256, V10_POLICY,
+                           V10_TEMPLATE_SHA256, V10_TO_V11_UPGRADE, execution_plan)
 from human_repeatability import compare as compare_repeatability
 from prepare_runtime import save_fixtures
 import itertools
@@ -33,6 +35,9 @@ CONTROLLED_CASES = (
 EDITOR_RECORDING = ROOT / 'config/harness/human-editor-20260916.json'
 EDITOR_RECORDING_SHA256 = '4cac2eb68eb4ef6202eecbf3dacf23fb7c4bc9c48d08fc34618f8976779ed953'
 EDITOR_EVENT_COUNT = 3729
+RESPONSIVE_EDITOR_RECORDING = ROOT / 'config/harness/human-editor-responsive-20260920.json'
+RESPONSIVE_EDITOR_SHA256 = '36c09dbab2d0fadeefcebca2853f49e06d94fbc474579d3f439ba766524963bd'
+RESPONSIVE_EDITOR_EVENT_COUNT = 91284
 
 
 def run_commands(commands, output, runner, jobs=None):
@@ -197,6 +202,17 @@ def editor_recording():
     return recording
 
 
+def responsive_editor_recording():
+    if hashlib.sha256(RESPONSIVE_EDITOR_RECORDING.read_bytes()).hexdigest() != RESPONSIVE_EDITOR_SHA256:
+        raise ValueError('The responsive editor input recording changed.')
+    recording = load_recording(RESPONSIVE_EDITOR_RECORDING)
+    if recording.get('automated_smoke') is not False or recording.get('policy') != V10_POLICY or \
+            recording.get('contract', {}).get('script_sha256') != V10_TEMPLATE_SHA256 or \
+            len(recording.get('events', [])) != RESPONSIVE_EDITOR_EVENT_COUNT:
+        raise ValueError('Invalid responsive editor input recording.')
+    return recording
+
+
 def editor_comparison_checks(row):
     return {
         'input_messages': row['inputs']['same_messages'],
@@ -250,6 +266,50 @@ def editor_result(original_path, rebuilt_path, recording, recording_sha):
     return result
 
 
+def responsive_editor_result(original_path, rebuilt_path, recording, recording_sha):
+    result = {'complete':False, 'passed':False,
+              'scope':'Controlled delivered inputs, clocks, camera receipts, RNG prefix and count, and RGB hashes. No world observer or complete RNG trace.',
+              'recording_sha256':recording_sha, 'recording_fidelity':[]}
+    try:
+        expected_control = execution_plan({'schema':1, 'mode':'replay',
+            **{key:recording[key] for key in ('duration_ms','events','contract')},
+            'recording_sha256':recording_sha, 'upgrade_rule':V10_TO_V11_UPGRADE})
+        captures = load_batch(original_path, True) + load_batch(rebuilt_path, False)
+        for capture in captures:
+            report = capture['report']
+            session = report['fixture']['human']
+            if (session.get('observe') or session.get('rng_only') or session.get('combat') or
+                    session.get('message_noise') or report.get('observer_sha256') is not None or
+                    report.get('rng_recording') is not None or report.get('human_control') != expected_control or
+                    report.get('script_sha256') != expected_control['executed_script_sha256'] or
+                    any(session[key] != recording[key] for key in ('duration_ms','events','contract'))):
+                raise ValueError('Capture does not use the controlled responsive editor case.')
+            result['recording_fidelity'].append(compare_inputs(recording['events'],inputs(report)))
+        result['pairs'] = []
+        for left,right in itertools.combinations(captures,2):
+            row = compare_captures(left,right)
+            checks = {
+                'input_messages':row['inputs']['same_messages'],
+                'input_boundaries':row['inputs']['exact_boundaries'],
+                'camera_values':row['camera_values']['equal'],
+                'camera_receipts':row['camera_receipts']['equal'],
+                'terminal_boundaries':row['terminal_boundaries'][0] == row['terminal_boundaries'][1],
+                'rng_prefix':row['rng_prefix']['equal'],
+                'rng_counts':row['rng_total_counts'][0] == row['rng_total_counts'][1],
+                'video_rgb':row['video_samples']['equal'],
+            }
+            row['checks'] = checks
+            row['passed'] = all(value is True for value in checks.values())
+            result['pairs'].append(row)
+        result['complete'] = True
+        result['passed'] = (all(row['same_messages'] for row in result['recording_fidelity']) and
+                            all(row['passed'] for row in result['pairs']))
+        result['classification'] = 'controlled-visual-match' if result['passed'] else 'controlled-visual-differences'
+    except (OSError,ValueError,KeyError,TypeError,IndexError) as error:
+        result['error'] = str(error)
+    return result
+
+
 def feature_fixtures():
     from feature_lab import FIXTURES, validate_fixture
     return {name: validate_fixture(path) for name, path in FIXTURES}
@@ -291,6 +351,7 @@ def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
     try:
         recordings = controlled_recordings()
         editor = editor_recording() if include_editor else None
+        responsive_editor = responsive_editor_recording()
         feature_fixtures()
         python = str(ROOT / 'build/harness-env/Scripts/python.exe')
         scripted = output / 'scripted'
@@ -303,6 +364,11 @@ def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
                 commands.append((label, [python, str(ROOT / 'tools/harness/human_session.py'),
                     '--recording',str(path),'--target',target,'--runs','3','--observe','--combat',
                     '--controlled','--output',str(output / label)], 1170))
+        for target in ('original','rebuilt'):
+            label = 'responsive-editor-' + target
+            commands.append((label, [python,str(ROOT / 'tools/harness/human_session.py'),
+                '--recording',str(RESPONSIVE_EDITOR_RECORDING),'--target',target,'--runs','3',
+                '--controlled','--output',str(output / label)], 1170))
         if include_editor:
             for target in ('original', 'rebuilt'):
                 label = 'editor-' + target
@@ -321,6 +387,9 @@ def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
         for name, path, sha, count in CONTROLLED_CASES:
             result['human'][name] = controlled_result(output / (name + '-original/report.json'),
                 output / (name + '-rebuilt/report.json'), recordings[name], sha)
+        result['responsive_editor'] = responsive_editor_result(
+            output / 'responsive-editor-original/report.json',
+            output / 'responsive-editor-rebuilt/report.json',responsive_editor,RESPONSIVE_EDITOR_SHA256)
         if include_editor:
             result['editor'] = editor_result(output / 'editor-original/report.json',
                 output / 'editor-rebuilt/report.json', editor, EDITOR_RECORDING_SHA256)
@@ -329,11 +398,13 @@ def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
         except (OSError,ValueError) as error:
             result['features'] = {'complete':False, 'passed':False, 'error':str(error)}
         result['complete'] = ('error' not in result['scripted'] and all(case['complete'] for case in result['human'].values()) and
+                              result['responsive_editor']['complete'] and
                               (not include_editor or result['editor']['complete']) and
                               result['features'].get('complete') is True and
                               all(row['returncode'] is not None for row in result['workers']))
         result['passed'] = (result['complete'] and result['scripted'].get('passed') is True and
                             all(case['passed'] for case in result['human'].values()) and
+                            result['responsive_editor']['passed'] and
                             (not include_editor or result['editor']['passed']) and
                             result['features'].get('passed') is True and
                             all(row['returncode'] == 0 for row in result['workers']))
@@ -358,6 +429,7 @@ def main():
         if not args.legacy:
             feature_fixtures()
             editor_recording()
+            responsive_editor_recording()
         print('Pinned input fixtures checked; no games started.')
         return 0
     output = args.output or ROOT / 'build/runtime' / ('parity-' + stamp())

@@ -175,6 +175,14 @@ def test_editor_fixture_is_pinned_and_observer_free():
     assert recording['automated_smoke'] is False
 
 
+def test_responsive_editor_fixture_is_pinned():
+    recording = suite.responsive_editor_recording()
+    assert len(recording['events']) == 91284
+    assert recording['policy'] == suite.V10_POLICY
+    assert recording['contract']['script_sha256'] == suite.V10_TEMPLATE_SHA256
+    assert recording['automated_smoke'] is False
+
+
 def test_editor_comparison_checks_only_its_declared_outputs():
     row = matching_comparison()
     checks = suite.editor_comparison_checks(row)
@@ -199,16 +207,22 @@ def test_default_suite_runs_every_case_and_keeps_failures(tmp_path, monkeypatch,
         assert timeout > 0 and visible is False
         return 0 if passed else 1
     monkeypatch.setattr(suite, 'controlled_result', lambda *args: {'complete': True, 'passed': True})
+    monkeypatch.setattr(suite, 'responsive_editor_result', lambda *args: {'complete': True, 'passed': True})
     result = suite.run_suite(tmp_path / 'run', runner)
-    assert len(commands) == 8
+    assert len(commands) == 10
     assert set(result['human']) == {'accepted', 'candidate', 'late-game-match'}
     expected = [(path, target) for _,path,_,_ in suite.CONTROLLED_CASES for target in ('original', 'rebuilt')]
-    for command, (path, target) in zip(commands[1:-1], expected):
+    for command, (path, target) in zip(commands[1:7], expected):
         assert command[command.index('--recording') + 1] == str(path)
         assert command[command.index('--target') + 1] == target
         assert command[command.index('--runs') + 1] == '3'
         assert all(flag in command for flag in ('--controlled', '--observe', '--combat'))
         assert '--upgrade-v1-to-v4' not in command and '--rng-only' not in command
+    for command,target in zip(commands[7:9],('original','rebuilt')):
+        assert command[command.index('--recording') + 1] == str(suite.RESPONSIVE_EDITOR_RECORDING)
+        assert command[command.index('--target') + 1] == target
+        assert command[command.index('--runs') + 1] == '3'
+        assert '--controlled' in command and '--observe' not in command
     assert commands[-1][1].endswith('feature_lab.py') and commands[-1][2] == 'test-all'
     assert commands[-1][commands[-1].index('--runs') + 1] == '3'
     assert commands[-1][commands[-1].index('--jobs') + 1] == '3'
@@ -225,9 +239,10 @@ def test_editor_option_adds_two_unobserved_workers(tmp_path, monkeypatch):
         (output / 'report.json').write_text(json.dumps({'complete': True, 'passed': True}))
         return 0
     monkeypatch.setattr(suite, 'controlled_result', lambda *args: {'complete': True, 'passed': True})
+    monkeypatch.setattr(suite, 'responsive_editor_result', lambda *args: {'complete': True, 'passed': True})
     monkeypatch.setattr(suite, 'editor_result', lambda *args: {'complete': True, 'passed': True})
     result = suite.run_suite(tmp_path / 'run', runner, include_editor=True)
-    assert len(commands) == 10
+    assert len(commands) == 12
     assert [command[command.index('--output') + 1] for command in commands[-3:-1]] == [
         str(tmp_path / 'run/editor-original'), str(tmp_path / 'run/editor-rebuilt')]
     assert all('--observe' not in command and '--combat' not in command

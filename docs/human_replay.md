@@ -17,9 +17,11 @@ Select Single Player, then Random Map or Saved Game. Play in the game window.
 Press **F10** to stop. The recorder reserves this key; the game does not receive it.
 The normal window close button also saves the recording before the worker closes the game.
 
-The time limit uses controlled time, not wall time. Loading and capture overhead can extend the wall duration.
-The default limit is 60 controlled seconds. The maximum requested limit is 180 seconds.
+The responsive recording limit uses elapsed wall time. Loading and capture overhead remain part of the session.
+The default limit is 60 seconds. The maximum requested limit is 180 seconds.
 An independent process deadline stops a stalled worker and its game and encoder processes.
+Use `--no-time-limit` to stop only with F10 or window close. A 24-hour worker deadline remains.
+The 100,000-input and 32 MiB recording limits still apply.
 
 Do not resize or move the game window. Do not switch applications during recording.
 Saved Game shows only the repository fixtures, currently `late_game_match`.
@@ -36,6 +38,18 @@ game.cmd record-original --editor --seconds 120
 The scenario editor and scenarios open normally. F10 stops, and the mouse wheel is supported.
 The frozen permanent editor recording keeps its v7 profile.
 The recording carries its profile, so replay uses the editor profile without another flag.
+
+The responsive editor recording is `config/harness/human-editor-responsive-20260920.json`.
+It contains 91,284 inputs, including six mouse-wheel messages. Its SHA-256 is
+`36c09dbab2d0fadeefcebca2853f49e06d94fbc474579d3f439ba766524963bd`.
+Controlled replay upgrades v10 input to v11. V11 controls timers and paints.
+It also samples the game surface during dense input sequences. This keeps review video near 20 FPS.
+The default parity suite runs three original and three rebuilt V11 replays.
+It compares all 15 pairs for exact inputs, clocks, camera receipts, RNG prefix and count, and RGB samples.
+It does not capture complete RNG or world observations for this editor case.
+The first V11 qualification passed all 15 pairs. Its batch reports are
+`build/runtime/responsive-editor-suite-original/report.json` and
+`build/runtime/responsive-editor-suite-rebuilt/report.json`.
 A v7 recording compares delivered inputs and video frames. It does not claim world or RNG observation.
 
 The permanent V7 recording is `config/harness/human-editor-20260916.json`.
@@ -294,7 +308,9 @@ Controlled replay advances 20 milliseconds at each main-loop idle return and one
 The harness paces the controlled replay clock against wall time. Slow execution does not skip controlled time.
 Idle advancement prevents the controlled clock from stopping in static menus.
 New recordings use the v8 save-fixture policy with the serialized scheduler.
-An editor recording uses the v7 editor-screens policy. Its core installs no startup block, so the editor may open.
+A frozen editor recording uses v7. A new editor recording uses responsive v10.
+Controlled editor parity replay uses deterministic v11.
+A new editor recording uses responsive v10. Controlled parity replay uses deterministic v11.
 A normal replay uses its recorded policy. Neither replaces RNG values or restores original game state.
 
 Recording captures queued mouse movement, button transitions, double-clicks, keyboard transitions, and character messages.

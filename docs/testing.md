@@ -120,12 +120,14 @@ Automated runs use a fixed registry profile and default to 640x480.
 Use `--resolution WIDTHxHEIGHT` to run the same fixture at another supported resolution.
 See [the runtime harness](runtime_harness.md) for its setup, reports, and coverage.
 
-`test-parity` runs the short new-game script and three permanent human-input cases.
+`test-parity` runs the short new-game script, three gameplay cases, and the responsive editor case.
 The new-game recordings contain 324 and 1,361 messages. The `late-game-match` saved-game recording contains 559 messages.
 Each case runs three originals and three rebuilt games.
 Each human case checks all 15 pairs, including within-executable and cross-executable comparisons.
 It compares inputs, clocks, all captured state observations, terminal observations, complete RNG records, and raw RGB hashes.
 Missing world entry/exit observations or complete RNG evidence fail the check.
+The editor case instead checks exact input boundaries, camera receipts, RNG prefix and count, and raw RGB hashes.
+It has no world observer or complete RNG trace.
 Reports and videos remain under `build/runtime/`.
 
 `game.cmd test-parity --check-fixtures` checks all three recording hashes and required save hashes without running games.
