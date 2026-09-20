@@ -38,7 +38,8 @@ Do not reuse old reports after validation rules or original identity evidence ch
 
 Direct-target diagnostics compare instructions at the same byte offset.
 A shifted function can put unrelated calls at that offset.
-Such a disagreement blocks positional exactness. It does not alone prove that source calls the wrong helper.
+The checker reports such a disagreement as unknown when other instruction bytes also differ.
+It reports a wrong target only when masking that target leaves all other instruction bytes equal.
 Inspect call context and control flow before changing a call.
 Equal call counts or target sets do not prove equal behavior.
 

@@ -114,6 +114,24 @@ def compare_object_function(
         va,
         original_meta.get("ranges") or [],
     )
+    if relocation_validation["target_mismatches"]:
+        without_targets_original = bytearray(masked_original)
+        without_targets_rebuilt = bytearray(masked_rebuilt)
+        for mismatch in relocation_validation["target_mismatches"]:
+            offset = int(mismatch["relocation_offset"])
+            width = int(mismatch["relocation_width"])
+            for index in range(offset, min(offset + width, len(without_targets_original), len(without_targets_rebuilt))):
+                without_targets_original[index] = 0
+                without_targets_rebuilt[index] = 0
+        if byte_diff_metrics(bytes(without_targets_original), bytes(without_targets_rebuilt))["result"] != "MATCH":
+            candidates = relocation_validation["target_mismatches"]
+            relocation_validation["target_mismatches"] = []
+            for candidate in candidates:
+                candidate = dict(candidate)
+                candidate["identity_evidence"] = candidate.pop("identity")
+                candidate["result"] = "unknown"
+                candidate["reason"] = "instruction bytes also differ; same-offset calls are not proved equivalent"
+                relocation_validation["target_unknowns"].append(candidate)
     metrics = byte_diff_metrics(masked_original, masked_rebuilt)
     if not expected_pdb_symbol:
         expected_pdb_symbol = str(

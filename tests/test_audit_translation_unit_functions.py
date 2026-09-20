@@ -61,7 +61,7 @@ def test_new_verified_logic_does_not_enter_byte_matching_work() -> None:
         assert action == "hold_new_verified_logic"
 
 
-def test_new_verified_logic_still_reports_structural_errors() -> None:
+def test_new_verified_logic_still_reports_proved_structural_errors() -> None:
     for compared, expected in (
         (comparison(relocations=1), "repair_relocation_targets"),
         (comparison(owner="unverified"), "investigate_ownership"),
@@ -69,6 +69,14 @@ def test_new_verified_logic_still_reports_structural_errors() -> None:
     ):
         _, action, _ = classify(status("new_verified_logic"), compared, False, False, [])
         assert action == expected
+
+
+def test_new_verified_logic_holds_unproved_relocation_candidates() -> None:
+    compared = comparison()
+    compared["relocation_target_unknowns"] = 1
+    category, action, _ = classify(status("new_verified_logic"), compared, False, False, [])
+    assert category == "new_verified_logic_observed"
+    assert action == "hold_new_verified_logic"
 
 
 def test_new_verified_logic_does_not_require_original_body_size() -> None:

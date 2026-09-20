@@ -1193,6 +1193,8 @@ def compatible_relocation_masks(
                 destination.append(
                     {
                         "offset": rebuilt_instruction.offset,
+                        "relocation_offset": offset,
+                        "relocation_width": width,
                         "comparison_basis": "same_instruction_offset",
                         "kind": (
                             "call"

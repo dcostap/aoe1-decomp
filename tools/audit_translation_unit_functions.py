@@ -168,10 +168,6 @@ def classify(
             category = 'matching_regression' if matching_here else 'dependency_difference'
             action = 'review_referenced_numeric_values'
             reason = 'Referenced numeric bytes differ, even if the instruction bytes agree.'
-        elif relocation_unknowns:
-            category = "reference_evidence_gap"
-            action = "establish_original_target_identity"
-            reason = "Direct target evidence is incomplete; exactness is not proved. Other byte differences can also remain."
         elif matching_here:
             category = "matching_regression"
             action = "repair_before_integration"
@@ -200,6 +196,10 @@ def classify(
             category = "accepted_drift_observed"
             action = "hold_accepted_drift"
             reason = "Accepted drift stays closed without specific new evidence."
+        elif relocation_unknowns:
+            category = "reference_evidence_gap"
+            action = "establish_original_target_identity"
+            reason = "Direct target evidence is incomplete; exactness is not proved. Other byte differences can also remain."
         else:
             category = "grouped_mismatch"
             action = "assign_matching_worker"
