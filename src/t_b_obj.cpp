@@ -635,9 +635,9 @@ void TRIBE_Building_Object::lay_down_passable_terrain() {
     }
 
     short tx1 = (short)(world_x - object_master->radius_x);
-    short tx2 = (short)(world_x + object_master->radius_x - 10.0f);
+    short tx2 = (short)(world_x + object_master->radius_x - 0.01f);
     short y1 = (short)(world_y - object_master->radius_y);
-    short y2 = (short)(world_y + object_master->radius_y - 10.0f);
+    short y2 = (short)(world_y + object_master->radius_y - 0.01f);
     if (tx1 < 0) tx1 = 0;
     if (y1 < 0) y1 = 0;
     if (tx2 >= map->map_width) tx2 = (short)map->map_width - 1;
