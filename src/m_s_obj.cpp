@@ -17,6 +17,11 @@
 #include <string.h>
 
 #include "../include/rge_fio.h"
+extern float DAT_00570610;
+extern float DAT_00570614;
+extern float DAT_00570618;
+extern float DAT_00570630;
+extern float DAT_00570634;
 
 RGE_Master_Static_Object::RGE_Master_Static_Object(
     RGE_Master_Static_Object* other_object, int do_setup) {
