@@ -26,7 +26,7 @@
     "0053FA10": {"status": "matching", "symbol": "?command_make_do@RGE_Main_View@@UAEHJJHF@Z"},
     "0053FBD0": {"status": "new_verified_logic", "symbol": "?pick1@RGE_Main_View@@QAEEEEJJPAURGE_Pick_Info@@PAVRGE_Static_Object@@H@Z", "behavior_review": "logic_matching/0053FBD0/review-coord-04-0053FBD0-20260913T000001Z/attempt-01"},
     "0053FFB0": {"status": "matching", "symbol": "?pick_objects1@RGE_Main_View@@QAEHJJPAPAVRGE_Static_Object@@H@Z"},
-    "00540010": {"status": "accepted_drift", "symbol": "?pick_best_target@RGE_Main_View@@QAEPAVRGE_Static_Object@@JJPAHF@Z"},
+    "00540010": {"status": "matching", "symbol": "?pick_best_target@RGE_Main_View@@QAEPAVRGE_Static_Object@@JJPAHF@Z"},
     "00540350": {"status": "matching", "symbol": "?command_make_move@RGE_Main_View@@UAEHJJ@Z"},
     "00540420": {"status": "matching", "symbol": "?command_make_work@RGE_Main_View@@UAEHJJ@Z"},
     "005405C0": {"status": "matching", "symbol": "?command_place_multi_object@RGE_Main_View@@UAEHJJJJH@Z"},
