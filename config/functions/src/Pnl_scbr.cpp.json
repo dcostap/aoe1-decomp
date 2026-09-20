@@ -11,7 +11,7 @@
     "0047A8B0": {"status": "matching", "symbol": "?setup@TScrollBarPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD222JJ1JW4Orientation@1@@Z"},
     "0047A910": {"status": "matching", "symbol": "?set_rect@TScrollBarPanel@@UAEXJJJJ@Z"},
     "0047AA80": {"status": "accepted_drift", "symbol": "?calc_item_rects@TScrollBarPanel@@IAEXXZ"},
-    "0047AB20": {"status": "matching", "symbol": "?set_tab_pos@TScrollBarPanel@@QAEXJ@Z"},
+    "0047AB20": {"status": "accepted_drift", "symbol": "?set_tab_pos@TScrollBarPanel@@QAEXJ@Z"},
     "0047AC10": {"status": "matching", "symbol": "?set_list_len@TScrollBarPanel@@QAEXJJ@Z"},
     "0047AC30": {"status": "matching", "symbol": "?set_buttons@TScrollBarPanel@@QAEXPAVTShape@@HHHH@Z"},
     "0047AC70": {"status": "matching", "symbol": "?set_bevel_info@TScrollBarPanel@@QAEXHHHHHHH@Z"},
