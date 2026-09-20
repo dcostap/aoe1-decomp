@@ -346,7 +346,9 @@ int TRIBE_Game::setup() {
     CharUpperA(cmd_line);
 
     option = reinterpret_cast<char*>(
-        _mbsstr(reinterpret_cast<unsigned char*>(cmd_line), reinterpret_cast<const unsigned char*>("STRING=")));
+        _mbsstr(reinterpret_cast<unsigned char*>(cmd_line), reinterpret_cast<const unsigned char*>("STRING="))
+    );
+
     char new_string_dll_name[100] = "languagex.dll";
     if (option != 0) {
         while (*option != '=') {
@@ -355,8 +357,7 @@ int TRIBE_Game::setup() {
         option = reinterpret_cast<char*>(_mbsninc(reinterpret_cast<const unsigned char*>(option), 1));
         new_string_dll_name[0] = 0;
         while (_ismbcspace(static_cast<unsigned char>(*option)) == 0 && *option != 0) {
-            _mbsncat(reinterpret_cast<unsigned char*>(new_string_dll_name),
-                     reinterpret_cast<const unsigned char*>(option), 1);
+            _mbsncat(reinterpret_cast<unsigned char*>(new_string_dll_name), reinterpret_cast<const unsigned char*>(option), 1);
             option = reinterpret_cast<char*>(_mbsninc(reinterpret_cast<const unsigned char*>(option), 1));
         }
     }
@@ -370,6 +371,7 @@ int TRIBE_Game::setup() {
     PALETTEENTRY pal_entries[7] = {{0x17, 0x27, 0x7C, 0x00}, {0x27, 0x3F, 0x90, 0x00}, {0x3F, 0x5F, 0x9F, 0x00},
                                    {0x57, 0x7B, 0xB4, 0x00}, {0x3F, 0x5F, 0xA0, 0x00}, {0x27, 0x3F, 0x91, 0x00},
                                    {0x17, 0x27, 0x7B, 0x00}};
+
     SetPaletteEntries(this->prog_palette, 248, 7, pal_entries);
 
     this->input_disabled_window =
