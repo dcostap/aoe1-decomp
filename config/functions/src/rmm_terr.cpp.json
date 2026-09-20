@@ -13,7 +13,7 @@
     "00488B90": {"status": "accepted_drift", "symbol": "?check_terrain@RGE_RMM_Terrain_Generator@@IAEEEJJJE@Z"},
     "00488D50": {"status": "matching", "symbol": "?generate_modifiers@RGE_RMM_Terrain_Generator@@IAEXXZ"},
     "00488E40": {"status": "matching", "symbol": "?fig_chance@RGE_RMM_Terrain_Generator@@IAEMJJJJ@Z"},
-    "00488E60": {"status": "matching", "symbol": "?count_map_tiles@RGE_RMM_Terrain_Generator@@IAEJE@Z"},
+    "00488E60": {"status": "accepted_drift", "symbol": "?count_map_tiles@RGE_RMM_Terrain_Generator@@IAEJE@Z"},
     "00488EA0": {"status": "matching", "symbol": "?link_stack_randomly@RGE_RMM_Terrain_Generator@@IAEXPAUMap_Stack@@E@Z"},
     "00488F90": {"status": "accepted_drift", "symbol": "?remove_area_from_lists@RGE_RMM_Terrain_Generator@@IAEXJJJ@Z"},
     "00489030": {"status": "matching", "symbol": "?base_terrain_generate@RGE_RMM_Terrain_Generator@@IAEEURGE_Terrain_Info_Line@@@Z"}
