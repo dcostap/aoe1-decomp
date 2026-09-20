@@ -4,12 +4,11 @@
 #include "../include/player.h"
 #include "../include/rge_fio.h"
 
-extern const char s_Resource_AI[];
 
 TribeResourceAIModule::TribeResourceAIModule(void* pW, int playerID,
                                              int n, int iV,
                                              int minV, int maxV)
-    : AIModule((char*)s_Resource_AI, 0x3EF, playerID, pW),
+    : AIModule((char*)"Resource AI", 0x3EF, playerID, pW),
       md(0),
       numberResourcesValue(n) {
 }
