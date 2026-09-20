@@ -195,7 +195,7 @@ int TMusic_System::open_mixer() {
                     MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC;
             } else {
                 this->mixer_line_info.dwComponentType =
-                    MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT;
+                    MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER;
             }
 
             if (mixerGetLineInfoA(this->mixer_handle, &this->mixer_line_info, MIXER_GETLINEINFOF_COMPONENTTYPE) == 0) {
