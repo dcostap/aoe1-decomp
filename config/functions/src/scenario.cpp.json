@@ -12,7 +12,7 @@
     "0048ACA0": {"status": "matching", "symbol": "?get_size@RGE_Scenario_Header@@UAEJXZ"},
     "0048ACC0": {"status": "matching", "symbol": "?save@RGE_Scenario_Header@@UAEXH@Z"},
     "0048AD60": {"status": "accepted_drift", "symbol": "??0RGE_Scenario@@QAE@PAVRGE_Game_World@@@Z"},
-    "0048AE10": {"status": "accepted_drift", "symbol": "??0RGE_Scenario@@QAE@HPAVRGE_Game_World@@@Z"},
+    "0048AE10": {"status": "matching", "symbol": "??0RGE_Scenario@@QAE@HPAVRGE_Game_World@@@Z"},
     "0048B5A0": {"status": "matching", "symbol": "??1RGE_Scenario@@UAE@XZ"},
     "0048B6C0": {"status": "matching", "symbol": "?InitializeTextValues@RGE_Scenario@@QAEXXZ"},
     "0048B910": {"status": "matching", "symbol": "?Set_scenario_name@RGE_Scenario@@QAEXPAD@Z"},

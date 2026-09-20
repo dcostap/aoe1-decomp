@@ -58,7 +58,7 @@
     "004704C0": {"status": "matching", "symbol": "?set_view_loc@RGE_Player@@QAEXMM@Z"},
     "00470570": {"status": "matching", "symbol": "?random_start@RGE_Player@@UAEXXZ"},
     "00470580": {"status": "matching", "symbol": "?destroy_objects@RGE_Player@@QAEXXZ"},
-    "004705A0": {"status": "accepted_drift", "symbol": "?set_color_table@RGE_Player@@QAEXE@Z"},
+    "004705A0": {"status": "matching", "symbol": "?set_color_table@RGE_Player@@QAEXE@Z"},
     "004705C0": {"status": "matching", "symbol": "?victory_if_game_on@RGE_Player@@QAEXXZ"},
     "004705E0": {"status": "matching", "symbol": "?loss_if_game_on@RGE_Player@@QAEXXZ"},
     "00470600": {"status": "matching", "symbol": "?win_game_now@RGE_Player@@QAEXXZ"},

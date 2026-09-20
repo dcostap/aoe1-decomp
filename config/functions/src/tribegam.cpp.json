@@ -44,7 +44,7 @@
     "005245D0": {"status": "matching", "symbol": "?load_game_data@TRIBE_Game@@QAEHXZ"},
     "00524640": {"status": "matching", "symbol": "?save_game@TRIBE_Game@@QAEHPAD@Z"},
     "00524790": {"status": "matching", "symbol": "?save_scenario@TRIBE_Game@@QAEHPAD@Z"},
-    "00524880": {"status": "accepted_drift", "symbol": "?calc_timing_text@TRIBE_Game@@UAEXXZ"},
+    "00524880": {"status": "matching", "symbol": "?calc_timing_text@TRIBE_Game@@UAEXXZ"},
     "00524A60": {"status": "matching", "symbol": "?show_timings@TRIBE_Game@@UAEXXZ"},
     "00524A80": {"status": "matching", "symbol": "?show_comm@TRIBE_Game@@UAEXXZ"},
     "00524AF0": {"status": "matching", "symbol": "?show_ai@TRIBE_Game@@UAEXXZ"},
