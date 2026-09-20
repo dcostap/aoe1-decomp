@@ -12,10 +12,7 @@
 #include "../include/resource_ids.h"
 
 extern char s_Scenario_Editor_Menu[];
-extern char s_scr4[];
 extern char s_Scenario_Editor_Open[];
-extern char s_Campaign_Editor_Screen[];
-extern char s_Main_Menu[];
 extern TPanelSystem panel_system;
 
 TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
@@ -25,7 +22,7 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
         button[j] = 0;
     close_button = 0;
 
-    if (!setup(rge_base_game->draw_area, s_scr4, 0xC386, 1)) {
+    if (!setup(rge_base_game->draw_area, "scr4", 0xC386, 1)) {
         error_code = 1;
         return;
     }
@@ -88,7 +85,7 @@ long TRIBE_Screen_Sed_Menu::action(TPanel* fromPanel, long actionIn, unsigned lo
 
         if (fromPanel == button[2]) {
             new TRIBE_Campaign_Editor_Screen();
-            panel_system.setCurrentPanel(s_Campaign_Editor_Screen, 0);
+            panel_system.setCurrentPanel("Campaign Editor Screen", 0);
             panel_system.destroyPanel(s_Scenario_Editor_Menu);
             return 1;
         }
@@ -96,7 +93,7 @@ long TRIBE_Screen_Sed_Menu::action(TPanel* fromPanel, long actionIn, unsigned lo
         if (fromPanel == button[3]) {
             rge_base_game->disable_input();
             new TRIBE_Screen_Main_Menu();
-            panel_system.setCurrentPanel(s_Main_Menu, 0);
+            panel_system.setCurrentPanel("Main Menu", 0);
             panel_system.destroyPanel(s_Scenario_Editor_Menu);
             return 1;
         }

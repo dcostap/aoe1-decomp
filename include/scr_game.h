@@ -317,26 +317,12 @@ extern unsigned char production_queues_is_use;
 extern int memory_dump_sequence;
 extern char s_Save_Game_Screen[];
 extern char s_Game_Screen[];
-extern char s_Config_Dialog[];
-extern char s_scr6[];
 extern char s_scr_game_cpp[];
 extern char s_Send_Quick_Message_Dialog[];
 extern char s_Help_Dialog[];
-extern char s_won_wav[];
-extern char s_lost_wav[];
 extern char s_btnunit_shp[];
-extern char s_btntech_shp[];
-extern char s_btncmd_shp[];
 extern char s_btnbldg_d_shp[];
-extern char s_bordline[];
-extern char s_map_bmp[];
 extern char s_592A40[];
-extern char s_PAUSE[];
-extern const char s_Writing_out_memory_info[];
-extern const char s_memory_filename[];
-extern char s_ALLOWCTRLU[];
-extern char s_force_ctrl_u[];
 
-extern char close_confirmation_text[];
 
 #endif

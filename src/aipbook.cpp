@@ -27,45 +27,15 @@ extern char s_DeathOfGroup[];
 extern char s_HealOfGroup[];
 extern char s_Immediate[];
 extern char s_Time[];
-extern char s_Annoy[];
-extern char s_Flank[];
-extern char s_Recon[];
 extern char s_Any[];
-extern char s_Stationary[];
-extern char s_Moving[];
-extern char s_Slow[];
-extern char s_Fast[];
-extern char s_NULL[];
 extern char s_NONE[];
 extern char s_592A40[];
-extern char s_format_percent_s[];
-extern char s_mode_r[];
 extern char s_format_percent_s_space[];
-extern char s_format_comment[];
 extern char s_Play[];
-extern char s_PlayType[];
-extern char s_MinUnits[];
-extern char s_MaxUnits[];
-extern char s_Power[];
-extern char s_Overflow[];
-extern char s_Balance[];
-extern char s_FirstGroup[];
-extern char s_DeathPercentage[];
-extern char s_Intelligence[];
-extern char s_TargetChar[];
-extern char s_TargetType[];
-extern char s_NumberGroups[];
 extern char s_Group[];
-extern char s_Phase[];
-extern char s_Trigger[];
-extern char s_RTrigger[];
-extern char s_EndPlay[];
 extern char s_format_skip_string_int[];
 extern char s_format_skip_string_string[];
-extern char s_format_group_range[];
 extern char s_format_command[];
-extern char s_format_trigger[];
-extern char s_format_play_variant[];
 
 AIPlayPhaseCommand::AIPlayPhaseCommand() {
     this->groupValue = 0;
@@ -582,18 +552,18 @@ unsigned char AIPlay::convertToIntType(char* t) const {
     int r;
     r = strcmp(t, s_Attack);
     if (r == 0) return 1;
-    r = strcmp(t, s_Annoy);
+    r = strcmp(t, "Annoy");
     if (r == 0) return 2;
-    r = strcmp(t, s_Flank);
+    r = strcmp(t, "Flank");
     if (r == 0) return 3;
-    r = strcmp(t, s_Recon);
+    r = strcmp(t, "Recon");
     if (r == 0) return 4;
     return 0;
 }
 
 char* AIPlay::convertToNameType(unsigned char t) const {
     switch (t) {
-    case 1: return "Attack";
+    case 1: return s_Attack;
     case 2: return "Annoy";
     case 3: return "Flank";
     case 4: return "Recon";
@@ -880,7 +850,7 @@ AIPlayBook::~AIPlayBook() {
 int AIPlayBook::loadPlays(char* filename) {
     if (filename == 0 || strcmp(filename, s_NONE) == 0) {
         if (filename == 0)
-            strcpy(this->nameValue, s_NULL);
+            strcpy(this->nameValue, "NULL");
         else
             strcpy(this->nameValue, s_NONE);
         return 0;
@@ -891,8 +861,8 @@ int AIPlayBook::loadPlays(char* filename) {
     char temp[256];
     char temp2[256];
     char temp6[256];
-    sprintf(temp, s_format_percent_s, this->nameValue);
-    FILE* fileIn = fopen(temp, s_mode_r);
+    sprintf(temp, "%s", this->nameValue);
+    FILE* fileIn = fopen(temp, "r");
     if (fileIn == 0)
         return 0;
 
@@ -936,7 +906,7 @@ int AIPlayBook::loadPlays(char* filename) {
         char commentTemp1;
         char commentTemp2;
 
-        if (sscanf(temp, s_format_comment, &commentTemp1, &commentTemp2) != -1 &&
+        if (sscanf(temp, " %c%c", &commentTemp1, &commentTemp2) != -1 &&
             (commentTemp1 != '/' || commentTemp2 != '/')) {
             sscanf(temp, s_format_percent_s_space, temp2);
 
@@ -959,25 +929,25 @@ int AIPlayBook::loadPlays(char* filename) {
                 if (currentPlay >= 16000)
                     break;
                 this->plays[currentPlay].setName(temp2);
-            } else if (strcmp(temp2, s_PlayType) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "PlayType") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_string, temp2);
                 this->plays[currentPlay].typeValue = this->plays[currentPlay].convertToIntType(temp2);
-            } else if (strcmp(temp2, s_MinUnits) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "MinUnits") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].minimumNumberUnitsValue = temp4;
-            } else if (strcmp(temp2, s_MaxUnits) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "MaxUnits") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].maximumNumberUnitsValue = temp4;
-            } else if (strcmp(temp2, s_Power) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "Power") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].powerValue = temp4;
-            } else if (strcmp(temp2, s_Overflow) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "Overflow") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_string, temp2);
-                if (strcmp(temp2, s_Balance) == 0)
+                if (strcmp(temp2, "Balance") == 0)
                     this->plays[currentPlay].overflowValue = 1;
-                else if (strcmp(temp2, s_FirstGroup) == 0)
+                else if (strcmp(temp2, "FirstGroup") == 0)
                     this->plays[currentPlay].overflowValue = 2;
-            } else if (strcmp(temp2, s_DeathPercentage) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "DeathPercentage") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 if (temp4 < 0)
                     this->plays[currentPlay].deathPercentageValue = 0;
@@ -985,7 +955,7 @@ int AIPlayBook::loadPlays(char* filename) {
                     this->plays[currentPlay].deathPercentageValue = 100;
                 else
                     this->plays[currentPlay].deathPercentageValue = temp4;
-            } else if (strcmp(temp2, s_Intelligence) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "Intelligence") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 if (temp4 < 0)
                     this->plays[currentPlay].intelligenceValue = 0;
@@ -993,21 +963,21 @@ int AIPlayBook::loadPlays(char* filename) {
                     this->plays[currentPlay].intelligenceValue = 100;
                 else
                     this->plays[currentPlay].intelligenceValue = temp4;
-            } else if (strcmp(temp2, s_TargetChar) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "TargetChar") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_string, temp6);
                 int type = this->convertTargetCharacteristicNameToIntType(temp6);
                 if (type != 0)
                     this->plays[currentPlay].addTargetCharacteristic(type);
-            } else if (strcmp(temp2, s_TargetType) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "TargetType") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_string, temp6);
                 int type = this->convertTargetNameToIntType(temp6);
                 if (type != 0)
                     this->plays[currentPlay].addTargetType(type);
-            } else if (strcmp(temp2, s_NumberGroups) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "NumberGroups") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].numberGroupsValue = temp4;
             } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 && currentPhase == -1) {
-                sscanf(temp, s_format_group_range, &temp4, temp6, &temp3, &i);
+                sscanf(temp, "%*s %d %s %d - %d ", &temp4, temp6, &temp3, &i);
                 if (temp4 >= 0 && temp4 < 5) {
                     int type = this->convertUnitNameToIntType(temp6);
                     if (type != -1) {
@@ -1023,7 +993,7 @@ int AIPlayBook::loadPlays(char* filename) {
                             group->setMaximum(type, i);
                     }
                 }
-            } else if (strcmp(temp2, s_Phase) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "Phase") == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 currentPhase = temp4;
             } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 && currentPhase != -1) {
@@ -1033,17 +1003,17 @@ int AIPlayBook::loadPlays(char* filename) {
                     AIPlayPhaseCommand command((unsigned char)temp4, temp6, temp3, i, temp5);
                     phase->addCommand(command);
                 }
-            } else if (strcmp(temp2, s_Trigger) == 0 && currentPlay != -1 && currentPhase != -1) {
-                sscanf(temp, s_format_trigger, &temp4, temp6, &temp3, &temp7);
+            } else if (strcmp(temp2, "Trigger") == 0 && currentPlay != -1 && currentPhase != -1) {
+                sscanf(temp, "%*s %d %s %d %d ", &temp4, temp6, &temp3, &temp7);
                 AIPlayPhase* phase = this->plays[currentPlay].phase(currentPhase);
                 AIPlayPhaseTrigger trigger(temp6, temp3, temp7, (unsigned char)currentPhase, (unsigned char)temp4, 0);
                 phase->addTrigger(trigger);
-            } else if (strcmp(temp2, s_RTrigger) == 0 && currentPlay != -1 && currentPhase != -1) {
+            } else if (strcmp(temp2, "RTrigger") == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3, &temp7, &temp5);
                 AIPlayPhase* phase = this->plays[currentPlay].phase(currentPhase);
                 AIPlayPhaseTrigger trigger(temp6, temp3, temp7, (unsigned char)currentPhase, (unsigned char)temp4, temp5);
                 phase->addTrigger(trigger);
-            } else if (strcmp(temp2, s_EndPlay) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, "EndPlay") == 0 && currentPlay != -1) {
                 currentPhase = -1;
                 strcpy(temp2, this->plays[currentPlay].nameValue);
                 if (temp2[0] == 'H' && temp2[1] == 'P') {
@@ -1055,7 +1025,7 @@ int AIPlayBook::loadPlays(char* filename) {
                         AIPlay* source = &this->plays[sourcePlay];
                         AIPlay* destination = &this->plays[sourcePlay + temp8];
 
-                        sprintf(temp2, s_format_play_variant, source->nameValue, temp8);
+                        sprintf(temp2, "%sF%d", source->nameValue, temp8);
                         destination->setName(temp2);
                         destination->typeValue = source->typeValue;
                         destination->minimumNumberUnitsValue = source->minimumNumberUnitsValue;
@@ -1160,13 +1130,13 @@ int AIPlayBook::convertTargetNameToIntType(char* t) const {
 
 int AIPlayBook::convertTargetCharacteristicNameToIntType(char* t) const {
     int r;
-    r = strcmp(t, s_Stationary);
+    r = strcmp(t, "Stationary");
     if (r == 0) return 1;
-    r = strcmp(t, s_Moving);
+    r = strcmp(t, "Moving");
     if (r == 0) return 2;
-    r = strcmp(t, s_Slow);
+    r = strcmp(t, "Slow");
     if (r == 0) return 3;
-    r = strcmp(t, s_Fast);
+    r = strcmp(t, "Fast");
     if (r == 0) return 4;
     r = strcmp(t, s_Any);
     if (r == 0) return 5;

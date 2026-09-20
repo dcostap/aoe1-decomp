@@ -3564,7 +3564,7 @@ int TCommunications_Handler::IsHost(void) {
 char* TCommunications_Handler::GetCommStateStr() { return 0; }
 
 char* TCommunications_Handler::GetReadyPlayerStr() {
-    strcpy(ready_player_buffer, ready_player_template);
+    strcpy(ready_player_buffer, "Ready=                         ");
 
     unsigned int i = 1;
     if (i <= this->MaxGamePlayers) {

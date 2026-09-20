@@ -75,7 +75,6 @@ extern char comm_enum_buffer[0x100];
 extern char comm_info_buffers[0x700];
 extern char g_status_buffer[0x20];
 extern char ready_player_buffer[64];
-extern char ready_player_template[64];
 extern char com_hand_source_path[];
 
 struct TRIBE_Cliff_Higher_Check_Record {

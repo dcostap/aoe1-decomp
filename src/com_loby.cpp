@@ -3,7 +3,6 @@
 #include "../include/debuglog.h"
 #include <string.h>
 
-extern char _s_Release[];
 
 int __stdcall EnumPlayersCallbackLobby(
     DPID pidID, DWORD dwPlayerType, DPNAME* lpName, DWORD dwFlags,
@@ -56,7 +55,7 @@ void RGE_Lobby::ClearLobbyInfo(void) {
     if (this->glpDPL2 != 0) {
         IDirectPlayLobby2* pLobby = this->glpDPL2;
         long result = pLobby->Release();
-        this->Err->ShowReturn(result, _s_Release);
+        this->Err->ShowReturn(result, "Release");
         this->glpDPL2 = 0;
     }
     this->lobby_game = 0;
