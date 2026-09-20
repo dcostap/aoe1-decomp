@@ -214,8 +214,9 @@ void RGE_Active_Animated_Sprite::update(float time, float speed) {
                         while (frame >= sprite->frame_num)
                             frame -= sprite->frame_num;
                     } else {
+                        short frame_value = frame;
                         animate_interval = sprite->pause_between_loops
-                            - (float)(frame - sprite->frame_num) * sprite->duration;
+                            - (float)(frame_value - sprite->frame_num) * sprite->duration;
                         frame = sprite->frame_num - 1;
                         animate_flag = 2;
                         frame_looped = 0;
