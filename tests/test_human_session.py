@@ -13,7 +13,8 @@ import human_session as human_session_module
 from human_session import (validate_session, compare_inputs, execution_plan, load_recording,
                            load_recording_with_sha256, verify_starting_contract,
                            template_sha256, ORIGINAL_SHA256, POLICY, V1_POLICY, V2_POLICY,
-                           V1_TEMPLATE_SHA256, V2_TEMPLATE_SHA256, V1_TO_V2_UPGRADE)
+                           V1_TEMPLATE_SHA256, V2_TEMPLATE_SHA256, V1_TO_V2_UPGRADE,
+                           V8_POLICY, V9_POLICY, V8_TO_V9_UPGRADE)
 
 
 def event():
@@ -30,6 +31,18 @@ def session():
 def test_valid_record_and_replay():
     validate_session(session())
     validate_session({'schema':1,'mode':'record','duration_ms':1000})
+
+
+def test_responsive_recording_has_a_controlled_replay_upgrade():
+    data = session()
+    assert POLICY == V8_POLICY
+    data.update(recording_sha256='1'*64, upgrade_rule=V8_TO_V9_UPGRADE)
+    plan = execution_plan(data)
+    assert plan['recorded_policy'] == V8_POLICY
+    assert plan['executed_policy'] == V9_POLICY
+    responsive = (ROOT/'tools/harness/human-v8.js').read_text()
+    assert 'Sleep' not in responsive
+    assert 'Math.floor((ticks - 1000) / 20)' in responsive
 
 
 def test_frozen_v1_and_current_v2_template_hashes():
@@ -145,7 +158,8 @@ def test_dead_character_messages_are_preserved(message):
 
 
 @pytest.mark.parametrize('key,value', [('schema',True),('mode','rebuilt'),('duration_ms',True),
-    ('duration_ms',190001),('duration_ms',0),('events',{}),('events',[None]),('smoke',True),('contract',None)])
+    ('duration_ms',human_session_module.UNTIMED_RECORDING_MS+1),('duration_ms',0),('events',{}),
+    ('events',[None]),('smoke',True),('contract',None)])
 def test_invalid_session(key,value):
     data=session(); data[key]=value
     with pytest.raises(ValueError): validate_session(data)

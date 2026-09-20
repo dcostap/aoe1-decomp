@@ -11,7 +11,8 @@ import human_session as human
 
 
 @pytest.mark.parametrize('policy', [human.V1_POLICY, human.V2_POLICY, human.V3_POLICY,
-                                    human.V4_POLICY, human.V5_POLICY, human.V6_POLICY])
+                                    human.V4_POLICY, human.V5_POLICY, human.V6_POLICY,
+                                    human.V8_POLICY, human.V9_POLICY])
 def test_selected_template_matches_pinned_hash(policy):
     assert hashlib.sha256(human.control_template(policy).encode()).hexdigest() == human.template_sha256(policy)
 
@@ -33,8 +34,8 @@ def session():
 
 def test_new_recordings_use_save_profile():
     plan = human.execution_plan({'schema':1, 'mode':'record', 'duration_ms':1000})
-    assert plan['executed_policy'] == human.V5_POLICY
-    assert plan['executed_script_sha256'] == human.V5_TEMPLATE_SHA256
+    assert plan['executed_policy'] == human.V8_POLICY
+    assert plan['executed_script_sha256'] == human.V8_TEMPLATE_SHA256
 
 
 @pytest.mark.parametrize('change', ['replace', 'remove', 'add', 'rename'])

@@ -32,8 +32,9 @@ The profile blocks game network sockets and disables sound and music.
 game.cmd record-original --editor --seconds 120
 ```
 
-`--editor` selects the v7 editor profile. The scenario editor and scenarios open normally.
-Everything else matches the command above: F10 stops, the limit is 180 controlled seconds, and the mouse wheel is unsupported.
+`--editor` selects the responsive v10 editor profile for new recordings.
+The scenario editor and scenarios open normally. F10 stops, and the mouse wheel is supported.
+The frozen permanent editor recording keeps its v7 profile.
 The recording carries its profile, so replay uses the editor profile without another flag.
 A v7 recording compares delivered inputs and video frames. It does not claim world or RNG observation.
 
@@ -66,10 +67,11 @@ The supplied save is `config/harness/savegames/late_game_match.gmx`.
 See its [fixture notes](../config/harness/savegames/README.md) for identity and clone setup.
 The save file alone is not an input sequence or proof of equal behavior.
 
-New recordings use v5. It keeps v2 input scheduling and permits saved-game loading.
+New recordings use v8. V8 uses the real elapsed clock and does not sleep the game thread.
+It maps delivered input to a 20-millisecond replay schedule without limiting recording input.
 Their starting contracts include all saves. Save changes no longer pass as unused inputs.
-`--controlled` upgrades v5 recordings to v6, which applies the existing controlled-paint timing rules.
-V6 keeps the strict save contract. Neither profile establishes saved-game repeatability by itself.
+`--controlled` upgrades v8 recordings to v9. V9 uses the existing controlled timer and paint rules.
+The frozen v5 and v6 profiles remain available for their existing recordings.
 
 The frozen v1 through v4 profiles retain their exact script hashes and loading blocks.
 The permanent new-game recordings remain unchanged.
@@ -182,7 +184,7 @@ game.cmd replay-rebuilt build/runtime/human-EXAMPLE/recording.json --controlled
 ```
 
 This accepts unchanged v1 or v2 recordings as input scenarios under explicit v4 control.
-New user recordings use v5; their controlled replays use v6.
+New user recordings use v8; their controlled replays use v9.
 V4 still handles the preserved v1/v2 recordings. Controlled profiles support replay, not recording.
 The lower-level session tool also accepts the v1-only `--upgrade-v1-to-v4` flag.
 The `--upgrade-v1-to-v3` flag preserves the rejected timer-only experiment for reproduction.
@@ -286,11 +288,12 @@ The videos provide an independent visible check. This profile does not yet compa
 
 ## Clock and input policy
 
-The clock starts at 1000 milliseconds.
-It advances 20 milliseconds at each main-loop idle return and one millisecond per debug-clock call.
-The harness paces that clock against wall time. Slow execution does not skip controlled time.
-Idle advancement prevents the clock from stopping in static menus.
-New recordings use the v5 save-fixture policy with the serialized v2 scheduler.
+The responsive v8 recording clock starts at 1000 milliseconds and follows wall time.
+It does not sleep the game thread. It maps input times to 20-millisecond replay turns.
+Controlled replay advances 20 milliseconds at each main-loop idle return and one millisecond per debug-clock call.
+The harness paces the controlled replay clock against wall time. Slow execution does not skip controlled time.
+Idle advancement prevents the controlled clock from stopping in static menus.
+New recordings use the v8 save-fixture policy with the serialized scheduler.
 An editor recording uses the v7 editor-screens policy. Its core installs no startup block, so the editor may open.
 A normal replay uses its recorded policy. Neither replaces RNG values or restores original game state.
 
@@ -331,7 +334,7 @@ Input records have explicit size, count, route, and time limits. Limit failures 
 
 The starting contract checks assets, graphics configuration, registry inputs, instrumentation, and the original executable.
 Legacy new-game replay checks exclude `.gmx` and `.gam` files beneath `savegame`.
-The v5/v6 profiles instead check all save inputs exactly.
+The v5/v6 and v8/v9 profiles instead check all save inputs exactly.
 Adding, removing, or changing these unused saves does not block replay. All other asset checks remain.
 Recording files and full asset manifests remain unchanged for reference.
 An incompatible contract stops replay before the game resumes. The harness does not silently update the contract.

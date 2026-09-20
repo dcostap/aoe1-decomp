@@ -166,10 +166,13 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     human = scenario.get('human')
     human_control = None
     if human:
-        from human_session import V1_POLICY, V5_POLICY, V6_POLICY, execution_plan, validate_session, control_template
+        from human_session import (V1_POLICY, V5_POLICY, V6_POLICY, V8_POLICY, V9_POLICY,
+                                   V10_POLICY, V11_POLICY,
+                                   execution_plan, validate_session, control_template)
         validate_session(human)
         human_control = execution_plan(human)
-        if human_control['executed_policy'] in (V5_POLICY, V6_POLICY):
+        if human_control['executed_policy'] in (V5_POLICY, V6_POLICY, V8_POLICY, V9_POLICY,
+                                                V10_POLICY, V11_POLICY):
             from prepare_runtime import verify_harness_saves
             verify_harness_saves(runtime, manifest)
         original_target = human.get('target','original') == 'original'
@@ -204,7 +207,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     config['humanControl'] = human_control
     supplied = ((human or {}).get('contract') or {}).get('registry_inputs')
     if human:
-        if selected_resolution is None:
+        if selected_resolution is None and supplied is not None:
             selected_resolution = resolution_from_registry(supplied)
     else:
         if supplied is None:
@@ -253,6 +256,10 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     if human:
         from game_video import GameVideo
         video = GameVideo(output, fps=20)
+        if human.get('no_time_limit'):
+            video.MAX_SECONDS = human['duration_ms'] // 1000
+        elif human_control['executed_policy'] == V11_POLICY:
+            video.MAX_SECONDS = 900
     events, frames, errors = [], [], []
     rng_digest, rng_records, rng_sites = hashlib.sha256(), 0, {}
     rng_file = (output / 'rng.bin').open('wb') if replay or observe else None
@@ -527,8 +534,16 @@ def main():
     parser.add_argument('--resolution', help='Game resolution, for example 800x600')
     parser.add_argument('--visible', action='store_true', help='Explicitly permit the normal interactive desktop')
     args = parser.parse_args()
-    if not 0 < args.seconds <= 300:
-        parser.error('Seconds must be greater than zero and at most 300.')
+    untimed = False
+    controlled_editor = False
+    if args.fixture and args.fixture.is_file():
+        fixture = json.loads(args.fixture.read_text())
+        human_fixture = fixture.get('human') or {}
+        untimed = bool(human_fixture.get('no_time_limit'))
+        controlled_editor = human_fixture.get('upgrade_rule') == 'v10-to-v11-controlled-paint-editor-inputs'
+    maximum = 24*60*60 if untimed else (900 if controlled_editor else 300)
+    if not 0 < args.seconds <= maximum:
+        parser.error(f'Seconds must be greater than zero and at most {maximum}.')
     return capture(args.runtime, args.seconds, args.fixture, args.clock, args.visible, args.resolution)
 
 

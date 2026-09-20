@@ -179,7 +179,8 @@ def main():
     subs = parser.add_subparsers(dest="command", required=True)
     subs.add_parser("setup", help="Install pinned graphics and isolated instrumentation dependencies")
     p = subs.add_parser('record-original', help='Record original gameplay with video; F10 or window close saves')
-    p.add_argument('--seconds',type=int,default=60,help='Maximum controlled recording duration, at most 180 seconds')
+    p.add_argument('--seconds',type=int,default=60,help='Maximum recording duration, at most 180 seconds')
+    p.add_argument('--no-time-limit',action='store_true',help='Record until F10 or window close')
     p.add_argument('--editor',action='store_true',
                    help='Allow the scenario editor and scenarios; records with the v7 editor profile')
     p = subs.add_parser('replay-original', help='Replay a human recording on fresh originals with video')
@@ -275,7 +276,9 @@ def main():
             return subprocess.run(command, cwd=ROOT).returncode
         if args.command in ('record-original','replay-original','replay-rebuilt'):
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'),str(ROOT/'tools/harness/human_session.py')]
-            command += (['--record','--seconds',str(args.seconds)] + (['--editor'] if args.editor else []) if args.command == 'record-original' else
+            command += (['--record','--seconds',str(args.seconds)] +
+                        (['--no-time-limit'] if args.no_time_limit else []) +
+                        (['--editor'] if args.editor else []) if args.command == 'record-original' else
                         ['--recording',str(args.recording.resolve()),'--runs',str(args.runs),
                          '--target','rebuilt' if args.command == 'replay-rebuilt' else 'original'])
             if args.command != 'record-original' and args.upgrade_v1_to_v2:

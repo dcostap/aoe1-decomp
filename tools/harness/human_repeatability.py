@@ -5,7 +5,10 @@ import json
 from pathlib import Path
 
 from human_compare import compare_captures, compare_rows, load_capture
-from human_session import V1_TO_V3_UPGRADE, V2_TO_V3_UPGRADE, V1_TO_V4_UPGRADE, V2_TO_V4_UPGRADE, V5_TO_V6_UPGRADE, compare_inputs, inputs
+from human_session import (V1_TO_V3_UPGRADE, V2_TO_V3_UPGRADE, V1_TO_V4_UPGRADE,
+                           V2_TO_V4_UPGRADE, V5_TO_V6_UPGRADE, V8_TO_V9_UPGRADE,
+                           V10_TO_V11_UPGRADE,
+                           compare_inputs, inputs)
 
 STATE_KINDS = ('observer-world','observer-object','observer-pick','observer-camera',
                'observer-combat','observer-attack-update','observer-sprite','observer-villager')
@@ -35,9 +38,9 @@ def evidence_errors(report):
                 summaries[0].get('period_ms') != 37 or summaries[0].get('batches',0) <= 0 or
                 any(summaries[0].get('suppressed_dispatches',{}).get(kind,0) <= 0 for kind in ('timer','paint'))):
             errors.append('Requested queue-noise evidence is incomplete.')
-    if session.get('upgrade_rule') in (V1_TO_V3_UPGRADE,V2_TO_V3_UPGRADE,V1_TO_V4_UPGRADE,V2_TO_V4_UPGRADE,V5_TO_V6_UPGRADE):
+    if session.get('upgrade_rule') in (V1_TO_V3_UPGRADE,V2_TO_V3_UPGRADE,V1_TO_V4_UPGRADE,V2_TO_V4_UPGRADE,V5_TO_V6_UPGRADE,V8_TO_V9_UPGRADE,V10_TO_V11_UPGRADE):
         terminal_turn = (session['events'][-1]['turn'] if session['events'] else 0) + 8
-        profile = 'v4-controlled-paint' if session['upgrade_rule'] in (V1_TO_V4_UPGRADE,V2_TO_V4_UPGRADE,V5_TO_V6_UPGRADE) else 'v3-no-native-timers'
+        profile = 'v4-controlled-paint' if session['upgrade_rule'] in (V1_TO_V4_UPGRADE,V2_TO_V4_UPGRADE,V5_TO_V6_UPGRADE,V8_TO_V9_UPGRADE,V10_TO_V11_UPGRADE) else 'v3-no-native-timers'
         if (human.get('terminal_turn') != terminal_turn or human.get('turn') != terminal_turn or
                 human.get('historical_duration_ms') != session['duration_ms'] or
                 human.get('control_profile') != profile):
