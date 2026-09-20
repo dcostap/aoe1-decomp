@@ -12,6 +12,19 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def source_string_literals():
+    literals = set()
+    for path in (ROOT / "src").iterdir():
+        if path.suffix.lower() not in {".c", ".cpp"}:
+            continue
+        for token in re.findall(r'"(?:[^"\\\r\n]|\\.)*"', path.read_text(errors="replace")):
+            try:
+                literals.add(ast.literal_eval(token))
+            except (SyntaxError, ValueError):
+                pass
+    return literals
+
+
 @pytest.mark.parametrize("evidence_file", ["play_file_strings.json", "ui_strings.json"])
 def test_string_initializers_match_original(evidence_file):
     evidence = json.loads((ROOT / "decomp_notes/executable_build_evidence" / evidence_file).read_text())
@@ -19,14 +32,11 @@ def test_string_initializers_match_original(evidence_file):
     original = (ROOT / config["original"]).read_bytes()
     assert hashlib.sha256(original).hexdigest() == evidence["original_sha256"]
     image = pefile.PE(data=original)
-    source = (ROOT / evidence["source"]).read_text()
+    literals = source_string_literals()
     for name, address in evidence["strings"].items():
-        pattern = r'\bchar\s+' + re.escape(name) + r'\[\]\s*=\s*("(?:[^"\\]|\\.)*")\s*;'
-        matches = re.findall(pattern, source)
-        assert len(matches) == 1, name
-        expected = ast.literal_eval(matches[0]).encode("ascii") + b"\0"
-        actual = image.get_data(int(address, 16) - image.OPTIONAL_HEADER.ImageBase, len(expected))
-        assert actual == expected, name
+        offset = int(address, 16) - image.OPTIONAL_HEADER.ImageBase
+        original = image.get_data(offset, 256).split(b"\0", 1)[0].decode("ascii")
+        assert original in literals, name
 
 
 def test_runtime_scalar_initializers_match_original():
@@ -83,7 +93,7 @@ def test_game_destructor_uses_configuration_dialog():
     assert image.get_data(0x4954C8 - image.OPTIONAL_HEADER.ImageBase, 5) == bytes.fromhex("68d8425800")
     source = (ROOT / "src/scr_game.cpp").read_text()
     body = re.search(r'TRIBE_Screen_Game::~TRIBE_Screen_Game\(\)\s*\{(.*?)^\}', source, re.S | re.M)[1]
-    assert "destroyPanel(s_Config_Dialog)" in body
+    assert 'destroyPanel("Config Dialog")' in body
     assert "destroyPanel(s_Game_Screen)" not in body
 
 

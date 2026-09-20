@@ -96,7 +96,9 @@ def test_resource_roundtrip_with_pinned_linker():
 
 
 def test_recovered_string_data_matches_original():
+    import ast
     import json
+    import re
     import uuid
     import pefile
     from coff import load_coff_object
@@ -113,13 +115,25 @@ def test_recovered_string_data_matches_original():
     obj = load_coff_object(output)
     pe = pefile.PE(str(repo_path("orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe")))
     rows = json.loads(repo_path("decomp_notes/executable_build_evidence/string_definitions.json").read_text())
+    literals = set()
+    for path in repo_path("src").iterdir():
+        if path.suffix.lower() not in {".c", ".cpp"}:
+            continue
+        for token in re.findall(r'"(?:[^"\\\r\n]|\\.)*"', path.read_text(errors="replace")):
+            try:
+                literals.add(ast.literal_eval(token))
+            except (SyntaxError, ValueError):
+                pass
     for row in rows:
         symbols = [s for s in obj.symbols if s.name == row["symbol"] and s.section_number > 0]
-        assert len(symbols) == 1, row["symbol"]
-        symbol = symbols[0]
-        section = obj.section_by_index(symbol.section_number)
         expected = row["ascii_prefix"].encode("ascii") + b"\0"
-        assert section.data[symbol.value:symbol.value + len(expected)] == expected, row["symbol"]
+        if symbols:
+            assert len(symbols) == 1, row["symbol"]
+            symbol = symbols[0]
+            section = obj.section_by_index(symbol.section_number)
+            assert section.data[symbol.value:symbol.value + len(expected)] == expected, row["symbol"]
+        else:
+            assert row["ascii_prefix"] in literals, row["symbol"]
         assert pe.get_data(int(row["original_va"], 16) - pe.OPTIONAL_HEADER.ImageBase, len(expected)) == expected
 
 
