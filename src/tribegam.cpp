@@ -2348,6 +2348,9 @@ int TRIBE_Game::load_game(char* fileName) {
     this->setFullVisibility(this->world->map->map_visible_flag);
     this->setFogOfWar(this->world->map->fog_flag);
     this->setAllowCheatCodes(1);
+    //! @bug The save file stores no scenario flag, and this path restores none.
+    //! scenarioGame() keeps the value from the previous screen or game.
+    //! RGE_Game_World::save() writes no game options.
     this->setSavedGame(1);
     this->setNumberPlayers(this->world->player_num - 1);
 
@@ -3002,6 +3005,9 @@ int TRIBE_Game::create_game(int not_used) {
 
     this->set_map_visible(0);
     if (this->fullVisibility()) {
+        //! @bug Reveal map runs once, and only for non-computer players with index 1 or higher.
+        //! Gaia and computer-flagged seats stay unrevealed when a human takes control later.
+        //! set_player() never reveals the new player.
         for (i = 1; i < this->world->player_num; ++i) {
             if (!this->world->players[i]->computerPlayer()) {
                 this->world->players[i]->visible->explore_all();

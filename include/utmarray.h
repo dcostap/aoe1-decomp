@@ -32,6 +32,9 @@ public:
 
     T& operator[](int index)
     {
+        //! @bug This read never checks numberValue.
+        //! Past the count it returns uninitialized memory from resize().
+        //! Callers use that stale value as a game-object id. Preserve this read.
         if (index > this->maximumSizeValue - 1)
             this->resize(index + 1);
         return this->value[index];

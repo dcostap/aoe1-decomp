@@ -6970,6 +6970,8 @@ void TribeTacticalAIModule::setupSoldierGroups() {
         ++i;
     }
 
+    //! @bug soldiers[0] is unguarded, and the list is empty at game start.
+    //! The stale id selects a zone map, so save bytes vary between runs.
     if (this->md->informationAI.fullyExploredZone(this->soldiers[0]) == 0) {
         this->removeAllGroups(102);
         this->setStrategicNumber(0x2a, 0);

@@ -1252,6 +1252,9 @@ unsigned char RGE_Game_World::update() {
         }
         this->temp_pause = 0;
     } else {
+        //! @bug The cast drops the fraction of a millisecond, and no remainder carries to the next frame.
+        //! handle_game_update allows 1 ms frames, so a speed below 1.0 yields 0 game time.
+        //! world_time_delta stays 0, the update block is skipped, and the game clock stops.
         this->world_time = this->old_world_time + (unsigned long)(elapsed * this->game_speed);
     }
     this->world_time_delta = this->world_time - this->old_world_time;

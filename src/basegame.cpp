@@ -2284,6 +2284,8 @@ void RGE_Base_Game::set_game_mode(int new_mode, int new_sub_mode) {
 }
 
 void RGE_Base_Game::set_player(short new_player_id) {
+    //! @bug This switches control but never applies the reveal map option to the new player.
+    //! create_game() reveals players once, so a later switch shows an unrevealed map.
     RGE_Game_World* w = this->world;
     if (w == 0)
         return;
