@@ -5,6 +5,7 @@ let observationEventBuffer = [];
 const observationBuffer = new ArrayBuffer(4096*8);
 const observationView = new DataView(observationBuffer);
 let observationUsed = 0, observationEvents = 0, observationRecords = 0;
+let observationClockRuns = [], observationClockCalls = 0;
 const observationClockCounts = {calls:0,idle:0};
 if (cfg.human.combat) {
     const controlAdvance = humanAdvance;
@@ -39,6 +40,17 @@ rng = function(row) {
     observationView.setUint32(observationUsed*8+4,row.kind === 'srand' ? row.seed : row.value,true);
     if (++observationUsed === 4096) flushObservations();
 };
+if (cfg.human.rng_only && typeof humanClock !== 'undefined') {
+    const observedHumanClock = humanClock;
+    humanClock = function() {
+        const value = observedHumanClock() >>> 0;
+        const last = observationClockRuns[observationClockRuns.length - 1];
+        if (last && last[0] === value) last[1]++;
+        else observationClockRuns.push([value,1]);
+        observationClockCalls++;
+        return value;
+    };
+}
 const controlStop = humanStop;
 function flushObservationEvents() {
     if (!observationEventBuffer.length) return;
@@ -48,6 +60,9 @@ function flushObservationEvents() {
 humanStop = function(error) {
     flushObservations();
     flushObservationEvents();
+    for (let index = 0; index < observationClockRuns.length; index += 4096)
+        send({kind:'observer-clock-batch',start:index,runs:observationClockRuns.slice(index,index+4096)});
+    send({kind:'observer-clock-summary',calls:observationClockCalls,runs:observationClockRuns.length});
     send({kind:'observer-summary',records:observationRecords,events:observationEvents,error:error || null});
     controlStop(error);
 };
@@ -59,6 +74,36 @@ function observed(kind,data) {
 }
 function guardObservation(fn) {
     try { fn(); } catch (error) { humanStop('Diagnostic read failed: ' + error); }
+}
+if (cfg.human.rng_only && typeof humanClock !== 'undefined') {
+    let tracedUpdate = null;
+    const tracedHumanClock = humanClock;
+    humanClock = function() {
+        const value = tracedHumanClock();
+        if (tracedUpdate !== null) {
+            const last = tracedUpdate.clocks[tracedUpdate.clocks.length - 1];
+            if (last && last[0] === value) last[1]++;
+            else tracedUpdate.clocks.push([value,1]);
+        }
+        return value;
+    };
+    Interceptor.attach(target('probe_human_world'), {
+        onEnter() {
+            this.world = this.context.ecx;
+            tracedUpdate = {entry_clock:ticks, clocks:[], input:human.input,
+                time:this.world.add(4).readU32(), delta:this.world.add(12).readU32()};
+        },
+        onLeave() {
+            const trace = tracedUpdate;
+            tracedUpdate = null;
+            guardObservation(() => observed('observer-update',{
+                entry_clock:trace.entry_clock, exit_clock:ticks, clocks:trace.clocks,
+                entry_time:trace.time, entry_delta:trace.delta,
+                exit_time:this.world.add(4).readU32(), exit_delta:this.world.add(12).readU32(),
+                entry_input:trace.input, exit_input:human.input
+            }));
+        }
+    });
 }
 function floatValue(pointer) {
     return {value:pointer.readFloat(),bytes:Array.from(new Uint8Array(pointer.readByteArray(4)))};

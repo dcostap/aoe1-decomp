@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "name": "full_game_0.gmx",
+      "size": 547146,
+      "sha256": "ff5d8dfc470851573c21240b0ef4e36c505671ee817d580ae48b19d62994ab13"
+    },
+    {
+      "name": "late_game_match.gmx",
+      "size": 875400,
+      "sha256": "fccd0ca0ccd98a6658a1eeb3b306c89afee3af9caf58ab518ee04eae434687f4"
+    }
+  ]
+}

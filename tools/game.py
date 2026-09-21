@@ -197,6 +197,8 @@ def main():
                    help='Allow the scenario editor and scenarios; records with the v7 editor profile')
     p.add_argument('--save-bundle', type=Path,
                    help='Repository save bundle to stage for this recording')
+    p.add_argument('--deterministic-trace', action='store_true',
+                   help='Record the complete RNG sequence for replay diagnosis')
     p = subs.add_parser('replay-original', help='Replay a human recording on fresh originals with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
@@ -308,6 +310,8 @@ def main():
                 command.append('--upgrade-v1-to-v3')
             if args.command != 'record-original' and args.controlled:
                 command.append('--controlled')
+            if args.command == 'record-original' and args.deterministic_trace:
+                command += ['--observe', '--rng-only']
             if getattr(args, 'jobs', None) is not None:
                 command += ['--jobs', str(args.jobs)]
             return subprocess.run(command,cwd=ROOT).returncode

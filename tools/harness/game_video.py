@@ -114,8 +114,9 @@ class GameVideo:
                 raise ValueError('The first frame time must be zero.')
             if time_ms < 0 or (self.last_time is not None and time_ms < self.last_time):
                 raise ValueError('Frame time decreased.')
-            if (time_ms * self.fps + 999) // 1000 + 1 > self.MAX_SECONDS * self.fps:
-                raise ValueError('Video duration exceeds 300 seconds.')
+            if (self.MAX_SECONDS is not None and
+                    (time_ms * self.fps + 999) // 1000 + 1 > self.MAX_SECONDS * self.fps):
+                raise ValueError('Video duration exceeds the configured maximum.')
             pixels = b''.join(data[y * pitch:y * pitch + width] for y in range(height))
             palette = data[pitch * height:]
             image = Image.frombytes('P', (width, height), pixels)

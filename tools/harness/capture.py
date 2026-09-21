@@ -265,7 +265,23 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     if human and template_sha256 != human_control['executed_script_sha256']:
         raise ValueError('Selected human control template differs from its policy hash.')
     observer = Path(__file__).with_name('human_observe.js').read_text() if observe else ''
+    message_observer = (Path(__file__).with_name('human_message_observe.js').read_text()
+                        if observe and human and human.get('rng_only') else '')
     noise = Path(__file__).with_name('human_noise.js').read_text() if human and human.get('message_noise') else ''
+    rng_seed_replay = (Path(__file__).with_name('human_rng_seed_replay.js').read_text()
+                       if human and human.get('replay_rng_seeds') else '')
+    boundary_replay = (Path(__file__).with_name('human_boundary_replay.js').read_text()
+                       if human and human.get('replay_exact_boundaries') else '')
+    update_replay = (Path(__file__).with_name('human_update_replay.js').read_text()
+                     if human and human.get('replay_update_trace') and not human.get('replay_clock_trace') else '')
+    clock_replay = (Path(__file__).with_name('human_clock_replay.js').read_text()
+                    if human and human.get('replay_clock_trace') else '')
+    message_replay = (Path(__file__).with_name('human_message_replay.js').read_text()
+                      if human and human.get('message_replay_path') else '')
+    zone_probe = (Path(__file__).with_name('human_zone_probe.js').read_text()
+                  if human and human.get('zone_probe') else '')
+    alloc_fill = (Path(__file__).with_name('human_alloc_fill.js').read_text()
+                  if human and human.get('alloc_fill') else '')
     video = None
     video_report = None
     video_origin = None
@@ -274,13 +290,13 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     if human:
         from game_video import GameVideo
         video = GameVideo(output, fps=20)
-        if human.get('no_time_limit'):
-            video.MAX_SECONDS = human['duration_ms'] // 1000
-        elif human_control['executed_policy'] == V11_POLICY:
-            video.MAX_SECONDS = 900
+        video.MAX_SECONDS = None
     events, frames, errors = [], [], []
     rng_digest, rng_records, rng_sites = hashlib.sha256(), 0, {}
     rng_file = (output / 'rng.bin').open('wb') if replay or observe else None
+    message_records = 0
+    message_windows = {0:{'role':'thread','route':None}, 1:{'role':'main','route':[]}}
+    message_file = (output / 'messages.bin').open('wb') if message_observer else None
     lock = threading.Lock()
     stopped = threading.Event()
     finished = threading.Event()
@@ -306,8 +322,24 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         source = template.replace('__CONFIG__', json.dumps(config))
         if observer:
             source += '\n' + observer
+        if message_observer:
+            source += '\n' + message_observer
         if noise:
             source += '\n' + noise
+        if rng_seed_replay:
+            source += '\n' + rng_seed_replay
+        if boundary_replay:
+            source += '\n' + boundary_replay
+        if update_replay:
+            source += '\n' + update_replay
+        if clock_replay:
+            source += '\n' + clock_replay
+        if message_replay:
+            source += '\n' + message_replay
+        if zone_probe:
+            source += '\n' + zone_probe
+        if alloc_fill:
+            source += '\n' + alloc_fill
         (output / 'instrumentation.js').write_text(source)
         (output / 'capture-tool.py').write_bytes(Path(__file__).read_bytes())
         pid = device.spawn([str(runtime / 'empiresx.exe'), *arguments], cwd=str(runtime),
@@ -325,7 +357,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             raise ValueError('Game did not inherit the private desktop. Refusing to resume it.')
         script = session.create_script(source)
         def message(msg, data):
-            nonlocal rng_records, video_origin
+            nonlocal rng_records, message_records, video_origin
             with lock:
                 if human and video_finalized:
                     return
@@ -353,6 +385,16 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                                 rng_digest.update(b'R' + data[index:index+8])
                             rng_records += row['records']
                             row['through_record'] = rng_records
+                        if row.get('kind') == 'message-pump-batch':
+                            if row.get('record_size') != 80 or len(data) != row['records'] * 80:
+                                raise ValueError('Invalid message-pump batch length.')
+                            message_file.write(data)
+                            message_records += row['records']
+                            row['through_record'] = message_records
+                        if row.get('kind') == 'message-window-site':
+                            if row.get('id') in message_windows:
+                                raise ValueError('Duplicate message window ID.')
+                            message_windows[row['id']] = {'role':row['role'], 'route':row['route']}
                         if row.get('kind') == 'behavior-state':
                             row['rng_sha256'] = rng_digest.hexdigest()
                             row['rng_count'] = rng_records
@@ -405,6 +447,16 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                         finished.set()
         script.on('message', message)
         script.load()
+        if message_replay:
+            trace_data = Path(human['message_replay_path']).read_bytes()
+            expected_size = human['message_recording']['records'] * human['message_recording']['record_size']
+            if len(trace_data) != expected_size or digest(Path(human['message_replay_path'])) != human['message_recording']['sha256']:
+                raise ValueError('Message replay sidecar differs from its metadata.')
+            chunk_size = 1024 * 1024
+            for offset in range(0, len(trace_data), chunk_size):
+                chunk = trace_data[offset:offset+chunk_size]
+                script.post({'type':'message-trace','offset':offset,
+                             'done':offset+len(chunk)==len(trace_data)}, chunk)
         if not any(row.get('kind') == 'ready' for row in events):
             # load() completes script evaluation; let the message callback drain.
             for _ in range(100):
@@ -470,11 +522,15 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                 summaries = [row for row in events if row.get('kind') == 'observer-summary']
                 if len(summaries) != 1 or summaries[0]['records'] != rng_records or status['rngCount'] != rng_records:
                     errors.append({'error':'Full human RNG trace is incomplete.'})
-                observed = [row for row in events if row.get('kind') in ('observer-world','observer-object','observer-pick','observer-camera','observer-combat','observer-attack-update','observer-sprite','observer-villager')]
+                observed = [row for row in events if row.get('kind') in ('observer-update','observer-world','observer-object','observer-pick','observer-camera','observer-combat','observer-attack-update','observer-sprite','observer-villager')]
                 if len(summaries) != 1 or summaries[0]['events'] != len(observed) or any(
                         row.get('sequence') != index+1 or not 0 <= row.get('rng_count',-1) <= rng_records
                         for index,row in enumerate(observed)):
                     errors.append({'error':'Human diagnostic event trace is incomplete.'})
+                if message_observer:
+                    message_summaries = [row for row in events if row.get('kind') == 'message-pump-summary']
+                    if len(message_summaries) != 1 or message_summaries[0].get('records') != message_records:
+                        errors.append({'error':'Message-pump trace is incomplete.'})
     finally:
         if game_job:
             game_job.close()
@@ -492,6 +548,8 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             registry_state.cleanup(registry_base)
         if rng_file:
             rng_file.close()
+        if message_file:
+            message_file.close()
         if video:
             with lock:
                 video_finalized = True
@@ -537,6 +595,12 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                       'video_origin_time_ms': video_origin,
                       'rng_recording': ({'file':'rng.bin', 'records':rng_records, 'sites':rng_sites,
                                          'sha256':digest(output / 'rng.bin')} if replay or observe else None),
+                      'message_recording': ({'file':'messages.bin', 'records':message_records,
+                                             'format':'aoe-message-pump-v7-le', 'record_size':80,
+                                             'windows':message_windows,
+                                             'sha256':digest(output / 'messages.bin')}
+                                            if message_observer else None),
+                      'alloc_fill': bool(human and human.get('alloc_fill')),
                       'scope': ('Selected typed state at function boundaries; not full process determinism' if replay else
                                 'Menu surface and RNG observations; not full process determinism')}
             (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
@@ -554,16 +618,8 @@ def main():
     parser.add_argument('--resolution', help='Game resolution, for example 800x600')
     parser.add_argument('--visible', action='store_true', help='Explicitly permit the normal interactive desktop')
     args = parser.parse_args()
-    untimed = False
-    controlled_editor = False
-    if args.fixture and args.fixture.is_file():
-        fixture = json.loads(args.fixture.read_text())
-        human_fixture = fixture.get('human') or {}
-        untimed = bool(human_fixture.get('no_time_limit'))
-        controlled_editor = human_fixture.get('upgrade_rule') == 'v10-to-v11-controlled-paint-editor-inputs'
-    maximum = 24*60*60 if untimed else (900 if controlled_editor else 300)
-    if not 0 < args.seconds <= maximum:
-        parser.error(f'Seconds must be greater than zero and at most {maximum}.')
+    if args.seconds <= 0:
+        parser.error('Seconds must be greater than zero.')
     return capture(args.runtime, args.seconds, args.fixture, args.clock, args.visible, args.resolution)
 
 

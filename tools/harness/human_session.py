@@ -6,6 +6,7 @@ from ctypes import wintypes as W
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import sys
 
 TOOLS = Path(__file__).resolve().parents[1]
@@ -137,8 +138,10 @@ def validate_session(session):
     target = session.get('target','original')
     if target not in ('original','rebuilt') or (session['mode'] == 'record' and target != 'original'):
         raise ValueError('Record on the original. Replay only an explicitly selected supported target.')
-    if type(session.get('observe',False)) is not bool or (session.get('observe') and session['mode'] != 'replay'):
-        raise ValueError('Additional read-only observers require replay mode.')
+    if type(session.get('observe',False)) is not bool:
+        raise ValueError('The observer flag must be boolean.')
+    if session['mode'] == 'record' and session.get('observe') and not session.get('rng_only'):
+        raise ValueError('Recording permits only the complete RNG trace observer.')
     if type(session.get('rng_only',False)) is not bool or (session.get('rng_only') and not session.get('observe')):
         raise ValueError('RNG-only diagnostics require observers.')
     if type(session.get('combat',False)) is not bool or (session.get('combat') and
@@ -173,6 +176,12 @@ def validate_session(session):
             raise ValueError('Invalid source recording SHA256.')
         if upgrade is not None and recording_sha is None:
             raise ValueError('The scheduler upgrade requires the unchanged recording SHA256.')
+        replay_rng_seeds = session.get('replay_rng_seeds')
+        if replay_rng_seeds is not None and (not isinstance(replay_rng_seeds, list) or
+                not replay_rng_seeds or not all(integer(seed, 0, 0xffffffff) for seed in replay_rng_seeds)):
+            raise ValueError('Replay RNG seeds must be unsigned 32-bit integers.')
+        if type(session.get('replay_exact_boundaries',False)) is not bool:
+            raise ValueError('Exact-boundary replay must be boolean.')
     events = session.get('events', [])
     event_policy = (session.get('contract') or {}).get('policy')
     if not isinstance(events, list):
@@ -339,8 +348,7 @@ def run_session(output, session, visible):
     fixture = runtime / 'human-fixture.json'
     fixture.write_text(json.dumps({'name':'human-original-v1','human':session}, indent=2)+'\n')
     seconds = (UNTIMED_RECORDING_MS // 1000 if session.get('no_time_limit') else
-               min(900, session['duration_ms']/1000*3+90) if plan['executed_policy'] == V11_POLICY else
-               min(300, session['duration_ms']/1000*2+90))
+               session['duration_ms']/1000*3+90)
     command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(TOOLS/'harness/capture.py'),
                '--runtime',str(runtime),'--fixture',str(fixture),'--clock','calls','--seconds',str(seconds)]
     if visible:
@@ -372,7 +380,7 @@ def main():
     parser.add_argument('--jobs', type=int, default=1,
                         help='Must be 1; parallel replay runs are disabled')
     parser.add_argument('--target',choices=('original','rebuilt'),default='original')
-    parser.add_argument('--observe',action='store_true',help='Add full RNG and focused read-only diagnostics during replay')
+    parser.add_argument('--observe',action='store_true',help='Add full RNG and focused read-only diagnostics')
     parser.add_argument('--rng-only',action='store_true',help='Keep only full RNG diagnostics; requires --observe')
     parser.add_argument('--combat',action='store_true',help='Use focused combat diagnostics instead of broad state hooks; requires --observe')
     parser.add_argument('--upgrade-v1-to-v2',action='store_true',
@@ -383,6 +391,7 @@ def main():
                         help='Use controlled paint timing; preserve the recording save policy')
     parser.add_argument('--upgrade-v1-to-v4',action='store_true',help='Experiment with controlled queued paints as well as timers')
     parser.add_argument('--message-noise',action='store_true',help='Diagnostic: add queued timer/paint messages during controlled replay')
+    parser.add_argument('--zone-probe',action='store_true',help='Diagnostic: log zone-map cache creation sites during replay')
     parser.add_argument('--smoke', action='store_true', help='Private automated plumbing test, not human qualification')
     parser.add_argument('--editor', action='store_true',
                         help='Record or replay the scenario editor profile; the editor and scenarios may open')
@@ -397,9 +406,11 @@ def main():
         parser.error('--no-time-limit requires --record')
     if args.message_noise and args.record:
         parser.error('--message-noise requires controlled replay')
+    if args.zone_probe and args.record:
+        parser.error('--zone-probe requires replay')
     if ((args.controlled or args.upgrade_v1_to_v3 or args.upgrade_v1_to_v4) and args.record) or sum((args.controlled,args.upgrade_v1_to_v2,args.upgrade_v1_to_v3,args.upgrade_v1_to_v4)) > 1:
         parser.error('Select one replay upgrade; v3/v4 do not record new inputs yet.')
-    if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.jobs is not None and not 1 <= args.jobs <= args.runs) or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.observe or args.upgrade_v1_to_v2)) or (args.rng_only and not args.observe) or (args.combat and (not args.observe or args.rng_only)):
+    if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.jobs is not None and not 1 <= args.jobs <= args.runs) or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.upgrade_v1_to_v2 or args.observe != args.rng_only)) or (args.rng_only and not args.observe) or (args.combat and (not args.observe or args.rng_only)):
         parser.error('Use 1..180 seconds, 1..3 runs, and smoke only with record.')
     require_serial_jobs(args.jobs)
     output = args.output or ROOT/'build/runtime'/('human-'+stamp())
@@ -414,6 +425,8 @@ def main():
                        'duration_ms':UNTIMED_RECORDING_MS if args.no_time_limit else args.seconds*1000,
                        'no_time_limit':args.no_time_limit,'smoke':args.smoke,
                        'cursor_check':args.cursor_check,'editor':args.editor,
+                       'observe':args.observe,'rng_only':args.rng_only,
+                       'alloc_fill':bool(args.observe and args.rng_only),
                        'save_bundle':str(args.save_bundle) if args.save_bundle else None}
             report = run_session(result['runs'],session,not args.smoke)
             if args.cursor_check:
@@ -426,6 +439,19 @@ def main():
             recording = {'schema':1,'policy':policy,'contract':session_contract(report, policy=policy),
                          'duration_ms':report['status']['human']['time_ms'], 'events':inputs(report),
                          'source_report':result['runs'][0]['capture'], 'automated_smoke':args.smoke}
+            if args.observe:
+                recording['rng_recording'] = report['rng_recording']
+                recording['update_trace'] = [row for row in report['events']
+                                             if row.get('kind') == 'observer-update']
+                clock_batches = [row for row in report['events'] if row.get('kind') == 'observer-clock-batch']
+                recording['clock_trace'] = [run for batch in clock_batches for run in batch['runs']]
+                recording['clock_calls'] = sum(run[1] for run in recording['clock_trace'])
+                capture_report = Path(result['runs'][0]['capture'])
+                shutil.copy2(capture_report.parent / report['rng_recording']['file'], output / 'rng.bin')
+                recording['alloc_fill'] = bool(report.get('alloc_fill'))
+                if report.get('message_recording'):
+                    recording['message_recording'] = report['message_recording']
+                    shutil.copy2(capture_report.parent / report['message_recording']['file'], output / 'messages.bin')
             validate_session({'schema':1,'mode':'replay','duration_ms':recording['duration_ms'],
                               'contract':recording['contract'],'events':recording['events']})
             (output/'recording.json').write_text(json.dumps(recording,indent=2)+'\n')
@@ -447,6 +473,24 @@ def main():
                        'recording_sha256':recording_sha256,
                        'upgrade_rule':upgrade_rule,
                        'save_bundle':recording['contract'].get('save_bundle')}
+            if 'replay_rng_seeds' in recording:
+                session['replay_rng_seeds'] = recording['replay_rng_seeds']
+            if recording.get('replay_exact_boundaries'):
+                session['replay_exact_boundaries'] = True
+            if 'update_trace' in recording:
+                session['replay_update_trace'] = recording['update_trace']
+            if 'clock_trace' in recording:
+                session['replay_clock_trace'] = recording['clock_trace']
+            if recording.get('message_recording',{}).get('format') in ('aoe-message-pump-v3-le','aoe-message-pump-v7-le'):
+                session['message_recording'] = recording['message_recording']
+                message_path = args.recording.parent / recording['message_recording']['file']
+                if not message_path.exists():
+                    message_path = Path(recording['source_report']).parent / recording['message_recording']['file']
+                session['message_replay_path'] = str(message_path.resolve())
+            if args.zone_probe:
+                session['zone_probe'] = True
+            if recording.get('alloc_fill'):
+                session['alloc_fill'] = True
             result['human_control'] = execution_plan(session)
 
             def one(index):
