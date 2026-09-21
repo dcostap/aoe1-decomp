@@ -412,7 +412,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     int num_game_players = 0;
     if (rge_base_game->multiplayerGame()) {
         for (i = 1; i < 9; i++) {
-            if (comm->GetPlayerHumanity(i) == 2 || comm->GetPlayerHumanity(i) == 4) {
+            if (comm->GetPlayerHumanity(i) == ME_HUMAN || comm->GetPlayerHumanity(i) == ME_COMPUTER) {
                 num_game_players++;
             }
         }
@@ -3240,7 +3240,7 @@ void TRIBE_Screen_Game::reset_score_display() {
         unsigned int best_speed = 0x0B;
         for (int score_index = 0; score_index < 8; ++score_index) {
             if (player_score[score_index].player_id != 0 &&
-                comm->GetPlayerHumanity(player_score[score_index].comm_id) == 2) {
+                comm->GetPlayerHumanity(player_score[score_index].comm_id) == ME_HUMAN) {
                 unsigned long speed = comm->Speed->PlayerAvgFramesMsec[
                     player_score[score_index].comm_id];
                 if (speed < 1000) {
@@ -3321,7 +3321,7 @@ void TRIBE_Screen_Game::reset_score_display() {
             special_font = 1;
         } else if (rge_base_game->multiplayerGame() != 0) {
             int humanity = comm->GetPlayerHumanity(score->comm_id);
-            if (humanity != 2 && humanity != 4) {
+            if (humanity != ME_HUMAN && humanity != ME_COMPUTER) {
                 special_font = 1;
             }
         }
@@ -3331,7 +3331,7 @@ void TRIBE_Screen_Game::reset_score_display() {
         int icon_frame1 = 0;
         icon2 = 0;
         int icon_frame2 = 0;
-        if (rge_base_game->multiplayerGame() != 0 && comm->GetPlayerHumanity(score->comm_id) == 2) {
+        if (rge_base_game->multiplayerGame() != 0 && comm->GetPlayerHumanity(score->comm_id) == ME_HUMAN) {
             unsigned long latency =
                 comm->Speed->GetPlayerLatency(score->comm_id);
             if (score->comm_id == low_fps_player) {

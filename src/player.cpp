@@ -542,8 +542,8 @@ void RGE_Player::scenario_load(int infile, long* player_id_hash, float version) 
         has_team = 0;
         if (rge_base_game->prog_mode != 7) {
             for (int player = 1; player < 9; player++) {
-                if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == 2 ||
-                     comm->GetPlayerHumanity(player) == 4)) {
+                if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == ME_HUMAN ||
+                     comm->GetPlayerHumanity(player) == ME_COMPUTER)) {
                     if (rge_base_game->playerTeam(player - 1) > 1) {
                         has_team = 1;
                     }
@@ -648,8 +648,8 @@ void RGE_Player::scenario_postload(int infile, long* player_id_hash,
     has_team = 0;
     if (rge_base_game->prog_mode != 7) {
         for (int player = 1; player < 9; ++player) {
-            if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == 2 ||
-                 comm->GetPlayerHumanity(player) == 4)) {
+            if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == ME_HUMAN ||
+                 comm->GetPlayerHumanity(player) == ME_COMPUTER)) {
                 if (rge_base_game->playerTeam(player - 1) > 1) {
                     has_team = 1;
                 }

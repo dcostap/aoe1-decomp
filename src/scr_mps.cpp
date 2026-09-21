@@ -853,7 +853,7 @@ int TribeMPSetupScreen::startGame() {
             int i3;
             long* pl;
             for (i3 = 0, u12 = 1, pl = this->scenarioCheckSum; u12 < 9; i3++, pl++, u12++) {
-                if (u12 != comm->WhoAmI() && comm->GetPlayerHumanity(u12) == 2) {
+                if (u12 != comm->WhoAmI() && comm->GetPlayerHumanity(u12) == ME_HUMAN) {
                     if (*pl != this->myScenarioChecksum) {
                         sprintf(msg, this->get_string(STRING_ID_SCENARIO_VERSION_ERROR), comm->GetPlayerName(i3 + 1));
                         this->popupOKDialog(msg, 0, TEASY_POPUP_WIDTH, 100);
@@ -865,7 +865,7 @@ int TribeMPSetupScreen::startGame() {
         int u4;
         for (u12 = 0; u12 < 8; u12 = u4) {
             u4 = u12 + 1;
-            if (u4 != comm->WhoAmI() && comm->GetPlayerHumanity(u4) == 2) {
+            if (u4 != comm->WhoAmI() && comm->GetPlayerHumanity(u4) == ME_HUMAN) {
                 if (rge_base_game->playerVersion(u12) != 1) {
                     sprintf(msg, this->get_string(STRING_ID_PLAYER_VERSION_ERROR), comm->GetPlayerName(u12 + 1));
                     this->popupOKDialog(msg, 0, TEASY_POPUP_WIDTH, 100);
@@ -887,7 +887,7 @@ int TribeMPSetupScreen::startGame() {
         do {
             u4b = u12 + 1;
             int hum = comm->GetPlayerHumanity(u4b);
-            if (hum == 2 || hum == 4) {
+            if (hum == ME_HUMAN || hum == ME_COMPUTER) {
                 long id = this->scenarioPlayerDrop[0]->get_id(i3);
                 static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(u12, id);
                 i3++;
@@ -911,8 +911,8 @@ int TribeMPSetupScreen::startGame() {
             do {
                 u4c = u12 + 1;
                 int hum = comm->GetPlayerHumanity(u4c);
-                if (hum == 2 || hum == 4) {
-                    if (hum == 2) {
+                if (hum == ME_HUMAN || hum == ME_COMPUTER) {
+                    if (hum == ME_HUMAN) {
                         int c = static_cast<TRIBE_Game*>(rge_base_game)->playerColor(u12);
                         if (playerColorUsed[c - 1] == 0) {
                             i5++;
@@ -947,7 +947,7 @@ int TribeMPSetupScreen::startGame() {
         if (nump > 0) {
             do {
                 u12c++;
-                if (comm->GetPlayerHumanity(u12c) == 2) {
+                if (comm->GetPlayerHumanity(u12c) == ME_HUMAN) {
                     i5h++;
                 }
             } while (u12c < rge_base_game->numberPlayers());
@@ -1018,7 +1018,7 @@ int TribeMPSetupScreen::startGame() {
         int cnt = 0;
         for (int u12 = 1; u12 < 9; u12++) {
             int hum = comm->GetPlayerHumanity(u12);
-            if (hum == 2 || hum == 4) {
+            if (hum == ME_HUMAN || hum == ME_COMPUTER) {
                 int p = u12 - 1;
                 temp_color[cnt] = static_cast<TRIBE_Game*>(rge_base_game)->playerColor(p);
                 temp_civ[cnt] = static_cast<TRIBE_Game*>(rge_base_game)->civilization(p);
@@ -1069,7 +1069,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
         do {
             ++i;
             int humanity = comm->GetPlayerHumanity(i);
-            if (humanity == 2 || humanity == 4) {
+            if (humanity == ME_HUMAN || humanity == ME_COMPUTER) {
                 ++human_players;
             }
             players = rge_base_game->numberPlayers();
@@ -1094,7 +1094,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
         for (; player < rge_base_game->numberPlayers(); player = position_used[0]) {
                 position_used[0] = player + 1;
                 int humanity = comm->GetPlayerHumanity(position_used[0]);
-                if (humanity == 2 || humanity == 4) {
+                if (humanity == ME_HUMAN || humanity == ME_COMPUTER) {
                     int j = 0;
                     int count = this->scenarioPlayerCount;
                     if (count > 0) {
@@ -1541,14 +1541,14 @@ void TribeMPSetupScreen::fillPlayers() {
                 humanity = comm->GetPlayerHumanity(player);
                 is_me = comm->WhoAmI() == player;
             } else if (i == 0) {
-                humanity = 2;
+                humanity = ME_HUMAN;
                 is_me = 1;
             } else {
                 humanity = this->playerNameDrop[i]->get_id();
                 is_me = 0;
             }
 
-            if (!rge_base_game->multiplayerGame() || humanity != 2) {
+            if (!rge_base_game->multiplayerGame() || humanity != ME_HUMAN) {
                 this->playerCDText[i]->set_active(0);
                 this->playerVersionText[i]->set_active(0);
             } else {
@@ -1591,7 +1591,7 @@ void TribeMPSetupScreen::fillPlayers() {
                 (rge_base_game->singlePlayerGame() && is_me && this->numberAnyPlayers > 1)) {
                 this->playerColor[i]->set_active(1);
                 this->playerColor[i]->set_disabled(0);
-            } else if (humanity == 2) {
+            } else if (humanity == ME_HUMAN) {
                 this->playerColorText[i]->set_active(1);
             }
 
@@ -1612,17 +1612,17 @@ void TribeMPSetupScreen::fillPlayers() {
             this->playerTeamText[i]->set_active(0);
 
             if ((rge_base_game->multiplayerGame() && ((is_me && this->i_am_ready == 0) ||
-                  (comm->IsHost() && humanity == 4 && this->i_am_ready == 0))) ||
-                (rge_base_game->singlePlayerGame() && (is_me || humanity == 4))) {
+                  (comm->IsHost() && humanity == ME_COMPUTER && this->i_am_ready == 0))) ||
+                (rge_base_game->singlePlayerGame() && (is_me || humanity == ME_COMPUTER))) {
                 this->playerTeam[i]->set_active(1);
                 this->playerTeam[i]->set_disabled(0);
-            } else if (humanity == 2 || humanity == 4) {
+            } else if (humanity == ME_HUMAN || humanity == ME_COMPUTER) {
                 this->playerTeamText[i]->set_active(1);
             }
 
             if (rge_base_game->multiplayerGame()) {
                 int name_color;
-                if (humanity == 2 && !comm->IsPlayerReady(i + 1)) {
+                if (humanity == ME_HUMAN && !comm->IsPlayerReady(i + 1)) {
                     name_color = 0xFF;
                 } else {
                     name_color = 0xFF00;
@@ -1635,7 +1635,7 @@ void TribeMPSetupScreen::fillPlayers() {
                 if (this->playerNameDrop[i]->get_id(0) == 2) {
                     this->playerNameDrop[i]->delete_line(0);
                 }
-                if (humanity == 2) {
+                if (humanity == ME_HUMAN) {
                     this->playerNameDrop[i]->insert_line(0, comm->GetPlayerName(i + 1), humanity);
                 }
                 this->playerNameDrop[i]->set_line(this->playerNameDrop[i]->get_line(humanity));
@@ -1682,10 +1682,10 @@ void TribeMPSetupScreen::fillPlayers() {
             this->playerCivText[i]->set_active(0);
 
             if ((rge_base_game->multiplayerGame() && ((is_me && this->i_am_ready == 0) ||
-                  (comm->IsHost() && humanity == 4 && this->i_am_ready == 0))) ||
-                (rge_base_game->singlePlayerGame() && (is_me || humanity == 4))) {
+                  (comm->IsHost() && humanity == ME_COMPUTER && this->i_am_ready == 0))) ||
+                (rge_base_game->singlePlayerGame() && (is_me || humanity == ME_COMPUTER))) {
                 this->playerCivDrop[i]->set_active(1);
-            } else if (humanity == 2 || humanity == 4) {
+            } else if (humanity == ME_HUMAN || humanity == ME_COMPUTER) {
                 this->playerCivText[i]->set_active(1);
             }
             this->scenarioPlayerDrop[i]->set_active(0);

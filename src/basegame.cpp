@@ -2125,7 +2125,7 @@ int RGE_Base_Game::check_for_cd(int num_players) {
         int cd_count = 0;
         int i = 0;
         do {
-            if (this->comm_handler->GetPlayerHumanity(i + 1) == 2 && this->playerHasCD(i) != 0) {
+            if (this->comm_handler->GetPlayerHumanity(i + 1) == ME_HUMAN && this->playerHasCD(i) != 0) {
                 ++cd_count;
             }
             ++i;

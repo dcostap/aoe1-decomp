@@ -210,7 +210,7 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* prog_info_in, int do_setup)
     }
 
     for (i = 0; i < 9; ++i) {
-        this->save_humanity[i] = 0;
+        this->save_humanity[i] = ME_ABSENT;
     }
     this->setNumberPlayers(4);
     this->resetRandomComputerName();

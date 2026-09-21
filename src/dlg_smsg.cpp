@@ -67,21 +67,21 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
                 if (world->players[id]->game_status == 2) {
                     special = 1;
                 } else if (rge_base_game->multiplayerGame()) {
-                    world_humanity = 0;
+                    world_humanity = ME_ABSENT;
                     int j = 1;
                     int count = rge_base_game->numberPlayers();
                     if (j <= count) {
                         do {
                             if (rge_base_game->playerID(j) == id) {
                                 int h = comm->GetPlayerHumanity(j);
-                                if (h == 2 || h == 4)
+                                if (h == ME_HUMAN || h == ME_COMPUTER)
                                     world_humanity = h;
                             }
                             ++j;
                             count = rge_base_game->numberPlayers();
                         } while (j <= count);
                     }
-                    if (world_humanity != 2 && world_humanity != 4)
+                    if (world_humanity != ME_HUMAN && world_humanity != ME_COMPUTER)
                         special = 1;
                 }
 
@@ -96,7 +96,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
 
                 if (humanity != comm->WhoAmI()) {
                     int h = comm->GetPlayerHumanity(humanity);
-                    if (h == 2 || comm->GetPlayerHumanity(humanity) == 4) {
+                    if (h == ME_HUMAN || comm->GetPlayerHumanity(humanity) == ME_COMPUTER) {
                         if (!create_check_box(this, &checkButton[row], 10, y, 30, 30, 0, 0))
                             return;
                         checkButton[row]->set_help_info(STRING_ID_HELP_CHAT_PLAYER, -1);

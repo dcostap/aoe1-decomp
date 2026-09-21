@@ -1448,7 +1448,7 @@ void TCommunications_Handler::CheckPlayerStopTurn(unsigned long Turn) {
             if (this->PlayerStopTurn[i] == Turn) {
                 L->Log("CheckPlayerStopTurn: Drop player %d on turn %d", i, Turn);
                 this->InitPlayerInformation(i, 0, "Resigned", " ");
-                this->SetPlayerHumanity(i, static_cast<PLAYERHUMANITY>(3));
+                this->SetPlayerHumanity(i, ME_ELIMINATED);
                 this->NotifyWindowParam(COMM_PLAYER_RESIGNED, i);
                 this->PlayerStopTurn[i] = 0;
             }
@@ -1616,14 +1616,14 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int PlayerNo, unsigned lon
         sprintf(this->TBuff, msg_str, PlayerNo, this->FriendlyName[PlayerNo].Text);
         L->Log(this->TBuff);
         this->InitPlayerInformation(PlayerNo, 0, "Dropped", " ");
-        this->SetPlayerHumanity(PlayerNo, static_cast<PLAYERHUMANITY>(0));
+        this->SetPlayerHumanity(PlayerNo, ME_ABSENT);
         this->UpdatePlayers();
         this->CalculatePlayerRange();
         if (this->PlayerStopTurn[PlayerNo] != 0) return;
     } else {
         L->Log("Player dropped before game start");
         this->InitPlayerInformation(PlayerNo, 0, "Dropped", "No Other Information");
-        this->SetPlayerHumanity(PlayerNo, static_cast<PLAYERHUMANITY>(0));
+        this->SetPlayerHumanity(PlayerNo, ME_ABSENT);
         this->UpdatePlayers();
         this->CalculatePlayerRange();
     }
@@ -1710,7 +1710,7 @@ found_destroy_player:
             return;
         i = 1;
         for (; i <= this->MaxGamePlayers; i++) {
-            if (this->PlayerOptions.Humanity[i] == 0)
+            if (this->PlayerOptions.Humanity[i] == ME_ABSENT)
                 goto found_create_player;
         }
         i = 0;
@@ -3577,11 +3577,11 @@ char* TCommunications_Handler::GetReadyPlayerStr() {
                 ready_player_buffer[i + 6] = 'A';
             } else {
                 switch (this->PlayerOptions.Humanity[i]) {
-                case 2: ready_player_buffer[i + 6] = 'W'; break;
-                case 4: ready_player_buffer[i + 6] = 'C'; break;
-                case 0: ready_player_buffer[i + 6] = '-'; break;
-                case 6: ready_player_buffer[i + 6] = 'V'; break;
-                case 5: ready_player_buffer[i + 6] = 'X'; break;
+                case ME_HUMAN: ready_player_buffer[i + 6] = 'W'; break;
+                case ME_COMPUTER: ready_player_buffer[i + 6] = 'C'; break;
+                case ME_ABSENT: ready_player_buffer[i + 6] = '-'; break;
+                case ME_VIEWONLY: ready_player_buffer[i + 6] = 'V'; break;
+                case ME_CYBORG: ready_player_buffer[i + 6] = 'X'; break;
                 default: ready_player_buffer[i + 6] = defc; break;
                 }
             }
@@ -3594,7 +3594,7 @@ char* TCommunications_Handler::GetReadyPlayerStr() {
 int TCommunications_Handler::GetPlayerHumanity(unsigned int PlayerNo) {
     if (PlayerNo >= 1u && PlayerNo <= this->MaxGamePlayers)
         return this->PlayerOptions.Humanity[PlayerNo];
-    return 0;
+    return ME_ABSENT;
 }
 
 void TCommunications_Handler::SetPlayerHumanity(unsigned int PlayerNo, PLAYERHUMANITY Type) {
@@ -3633,7 +3633,7 @@ int TCommunications_Handler::IsPlayerHuman(unsigned int PlayerNo) {
 
     if (PlayerNo >= 1 && PlayerNo <= this->MaxGamePlayers) {
         humanity = this->PlayerOptions.Humanity[PlayerNo];
-        if (humanity == 2 || humanity == 5) {
+        if (humanity == ME_HUMAN || humanity == ME_CYBORG) {
             return 1;
         }
     }
@@ -3645,7 +3645,7 @@ int TCommunications_Handler::IsPlayerComputer(unsigned int PlayerNo) {
 
     if (PlayerNo >= 1u && PlayerNo <= this->MaxGamePlayers) {
         humanity = this->PlayerOptions.Humanity[PlayerNo];
-        return humanity == 4;
+        return humanity == ME_COMPUTER;
     }
     return 0;
 }

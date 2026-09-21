@@ -129,17 +129,17 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
         if (world->players[player_id]->game_status == 2) {
             computer_font = 1;
         } else if (rge_base_game->multiplayerGame()) {
-            int humanity = 0;
+            int humanity = ME_ABSENT;
             int player_number;
             for (player_number = 1; player_number <= rge_base_game->numberPlayers(); ++player_number) {
                 if (rge_base_game->playerID(player_number) == player_id) {
                     int value = comm->GetPlayerHumanity(player_number);
-                    if (value == 2 || value == 4) {
+                    if (value == ME_HUMAN || value == ME_COMPUTER) {
                         humanity = value;
                     }
                 }
             }
-            if (humanity != 2 && humanity != 4) {
+            if (humanity != ME_HUMAN && humanity != ME_COMPUTER) {
                 computer_font = 1;
             }
         }

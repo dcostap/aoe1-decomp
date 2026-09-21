@@ -1003,12 +1003,12 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info &info, int myPlayerNum) {
 
     for (i = 1; i < 9; i++) {
         int h = this->commands->com_hand->GetPlayerHumanity(i);
-        if (h == 2 || h == 4) {
+        if (h == ME_HUMAN || h == ME_COMPUTER) {
             int team = rge_base_game->playerTeam(i - 1);
             if (team > 1) {
                 for (j = 1; j < 9; j++) {
                     int h2 = this->commands->com_hand->GetPlayerHumanity(j);
-                    if ((h2 == 2 || h2 == 4) && rge_base_game->playerTeam(j - 1) == team) {
+                    if ((h2 == ME_HUMAN || h2 == ME_COMPUTER) && rge_base_game->playerTeam(j - 1) == team) {
                         id1 = rge_base_game->playerID(i);
                         id2 = rge_base_game->playerID(j);
                         if (id1 != id2) {
@@ -1024,11 +1024,11 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info &info, int myPlayerNum) {
     if (rge_base_game->randomGame() && !rge_base_game->campaignGame()) {
         for (i = 1; i < 9; i++) {
             int h = this->commands->com_hand->GetPlayerHumanity(i);
-            if (h == 4 || all_cp == 1 || (all_cp == 2 && i > 1)) {
+            if (h == ME_COMPUTER || all_cp == 1 || (all_cp == 2 && i > 1)) {
                 if (rge_base_game->playerTeam(i - 1) == 1) {
                     for (j = 1; j < 9; j++) {
                         int h2 = this->commands->com_hand->GetPlayerHumanity(j);
-                        if (h2 == 4 || h2 == 2) {
+                        if (h2 == ME_COMPUTER || h2 == ME_HUMAN) {
                             id1 = rge_base_game->playerID(i);
                             id2 = rge_base_game->playerID(j);
                             if (id1 != id2) {
