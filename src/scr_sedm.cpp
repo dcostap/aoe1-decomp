@@ -34,7 +34,7 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
         return;
 
     for (int i = 0; i < 4; i++) {
-        if (!create_button(this, &button[i], s_592A40, 0, 170, 170 + i * 50, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
+        if (!create_button(this, &button[i], s_empty_string, 0, 170, 170 + i * 50, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
             return;
     }
 

@@ -98,7 +98,7 @@ extern int global_save_debug_random_on1;
 extern int global_save_debug_random_on2;
 extern int allowAIToCheat;
 void __cdecl debug_srand(char*, int, unsigned int);
-extern char s_592A40[];
+extern char s_empty_string[];
 extern int debug_timeGetTime_on;
 extern int debug_timeGetTime_cnt;
 extern int debug_timeGetTime_time;

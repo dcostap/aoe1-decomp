@@ -283,7 +283,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                            this->missionTextX, this->missionTextY - 20, 300, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0))
         return;
 
-    if (!this->create_text(this, &this->missionText, s_592A40, this->missionTextX, this->missionTextY,
+    if (!this->create_text(this, &this->missionText, s_empty_string, this->missionTextX, this->missionTextY,
                            this->missionTextWidth, this->missionTextHeight, RGE_FONT_STANDARD, 0, 0, 1))
         return;
     this->missionText->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,

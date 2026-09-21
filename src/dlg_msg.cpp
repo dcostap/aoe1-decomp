@@ -69,7 +69,7 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
     long y = pnl_hgt - btn_hgt_in - 7;
     button_x = space;
     for (index = 0; index < button_num; ++index) {
-        if (!create_button(this, &button[index], s_592A40, s_592A40, button_x, y, btn_wid_in, btn_hgt_in,
+        if (!create_button(this, &button[index], s_empty_string, s_empty_string, button_x, y, btn_wid_in, btn_hgt_in,
                            RGE_FONT_STANDARD, 0, 0))
             return 0;
         button_x += space + btn_wid_in;

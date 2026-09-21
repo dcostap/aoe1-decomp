@@ -431,7 +431,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
 
     {
-    if (!this->create_text(this, &this->log_text, s_592A40, 10, 300, 400, 96, RGE_FONT_ARIAL_10_NORMAL, 0, 0, 0)) {
+    if (!this->create_text(this, &this->log_text, s_empty_string, 10, 300, 400, 96, RGE_FONT_ARIAL_10_NORMAL, 0, 0, 0)) {
         this->error_code = 1;
         return;
     }

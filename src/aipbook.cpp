@@ -36,7 +36,7 @@ static char s_format_skip_string_string[] = "%*s %s ";
 extern void rge_read(int file, void* data, int size);
 extern void rge_write(int file, void* data, int size);
 
-extern char s_592A40[];
+extern char s_empty_string[];
 
 AIPlayPhaseCommand::AIPlayPhaseCommand() {
     this->groupValue = 0;
@@ -896,8 +896,8 @@ int AIPlayBook::loadPlays(char* filename) {
         if (strlen(temp) == 0)
             continue;
 
-        strcpy(temp2, s_592A40);
-        strcpy(temp6, s_592A40);
+        strcpy(temp2, s_empty_string);
+        strcpy(temp6, s_empty_string);
 
         int temp4 = 0;
         int temp3 = 0;

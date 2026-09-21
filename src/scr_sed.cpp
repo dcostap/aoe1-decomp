@@ -62,7 +62,7 @@ extern char s_btnbldg_d_shp[];
 extern char s_btnunit_shp[];
 extern char s_0[];
 extern char s_empty[];
-extern char s_592A40[];
+extern char s_empty_string[];
 extern char s_Save_Game_Screen[];
 extern char s_Scenario_Editor_Open[];
 
@@ -510,7 +510,7 @@ create:
                                                                 goto done;
                                                             } else {
                                                                 if (drop_panel == this->cinematic_input + 3) {
-                                                                    this->MakeFileList(*drop_panel, s_592A40,
+                                                                    this->MakeFileList(*drop_panel, s_empty_string,
                                                                                        (char *)".bmp", 1, 0);
                                                                     (*drop_panel)->set_line(0);
                                                                     goto done;

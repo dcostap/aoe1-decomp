@@ -318,7 +318,7 @@ extern int memory_dump_sequence;
 extern char s_Save_Game_Screen[];
 extern char s_btnunit_shp[];
 extern char s_btnbldg_d_shp[];
-extern char s_592A40[];
+extern char s_empty_string[];
 
 
 #endif

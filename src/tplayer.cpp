@@ -1562,8 +1562,8 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
         rge_base_game->get_string(STRING_ID_FILE_NONE, noneString, 256);
         rge_base_game->get_string(STRING_ID_AI_FILE_RANDOM, randomString, 256);
 
-        strcpy(buildListName, s_592A40);
-        strcpy(ruleSetName, s_592A40);
+        strcpy(buildListName, s_empty_string);
+        strcpy(ruleSetName, s_empty_string);
 
         if (bL) {
             if (strcmp(bL, randomString) == 0) {

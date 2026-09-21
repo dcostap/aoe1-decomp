@@ -4,7 +4,7 @@
 
 TechnologyItem::TechnologyItem()
     : next(0), prev(0), idValue(0), resourceCostValue(0) {
-    strcpy(this->nameValue, s_592A40);
+    strcpy(this->nameValue, s_empty_string);
 }
 
 TechnologyItem::TechnologyItem(int i, char* n, ResourceItem r)

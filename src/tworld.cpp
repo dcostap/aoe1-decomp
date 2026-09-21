@@ -420,7 +420,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
 
     if (!((static_cast<TRIBE_Game*>(rge_base_game)->campaignGame() || !static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) && static_cast<TRIBE_Game*>(rge_base_game)->victoryType() == TRIBE_Game::VictoryDefault)) {
         if (!static_cast<TRIBE_Game*>(rge_base_game)->campaignGame() && static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
-        static_cast<T_Scenario*>(this->scenario)->Set_scenario_name(s_592A40);
+        static_cast<T_Scenario*>(this->scenario)->Set_scenario_name(s_empty_string);
         }
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {

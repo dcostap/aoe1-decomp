@@ -1509,7 +1509,7 @@ int RGE_Base_Game::setup_class() {
     WNDCLASSA cls;
     cls.hCursor = 0;
     char menu_name_first = *prog_info->menu_name;
-    cls.lpszMenuName = s_592A40;
+    cls.lpszMenuName = s_empty_string;
     if (menu_name_first != 0) {
         cls.lpszMenuName = prog_info->menu_name;
     }

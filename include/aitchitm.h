@@ -3,7 +3,7 @@
 
 #include "airesitm.h"
 
-extern char s_592A40[];
+extern char s_empty_string[];
 
 class TechnologyItem {
 public:

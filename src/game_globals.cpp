@@ -685,7 +685,7 @@ char s_percent_d[] = "%d";
 char s_space[] = " ";
 
 // Original AI play-file tokens and formats used by 00410220.
-char s_592A40[] = "";
+char s_empty_string[] = "";
 
 PAL_TABLE System_color_Table[21] = {
     {0, 0, 0, 0, 0},
