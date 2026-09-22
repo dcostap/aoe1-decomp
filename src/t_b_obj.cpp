@@ -402,6 +402,10 @@ void TRIBE_Building_Object::save(int outfile) {
     production_queue_actions->save(outfile);
 }
 
+//! @bug This change never updates the per-player building check lists.
+//! The old owner keeps a stale entry, and the new owner gets no entry.
+//! A later building death leaves a dangling entry that other code still reads.
+//! No fog ghost spawns for the ex-owner, so the converted building vanishes in its fog.
 void TRIBE_Building_Object::change_ownership(RGE_Player* new_owner) {
     if (object_state == 2) {
         for (int i = 0; i < 3; ++i) {

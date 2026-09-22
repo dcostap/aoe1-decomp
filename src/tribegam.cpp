@@ -4321,6 +4321,9 @@ void TRIBE_Game::add_notification_loc(long x, long y) {
     this->current_notification_recalled = this->current_notification_loc;
 }
 
+//! @bug The notification ring never resets on load_game, so entries survive from other games.
+//! HOME then clamps those old coordinates into the current map and shows a random place.
+//! The recall also walks back through all 5 slots with no time limit.
 void TRIBE_Game::goto_notification_loc() {
     if (this->current_notification_recalled == -1)
         return;

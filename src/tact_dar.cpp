@@ -114,6 +114,9 @@ void TRIBE_Action_Discovery_Artifact::check_objects() {
         for (short x = x1; x <= x0; ++x) {
             RGE_Object_Node* node = map->map_row_offset[y][x].objects.list;
             while (node != 0) {
+                //! @bug This award loop filters no object state and no object group.
+                //! Ghost copies in the tile lists therefore count as real finds.
+                //! The flags reset when the action rebuilds, so one find can award twice.
                 if (node->node->owner != this->obj->owner && this->flags[node->node->owner->id] == 0) {
                     this->flags[node->node->owner->id] = 1;
                     node->node->owner->master_objects[162]->make_new_obj(node->node->owner, node->node->world_x,

@@ -754,6 +754,9 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
         }
     }
 
+    //! @bug This applies the civ tech-tree effect with no lower-bound guard on tribe_effect.
+    //! A civ without a tech tree sends a negative id, and TRIBE_Effects::do_effect reads effects[-1].
+    //! RGE_Player and TRIBE_Player check tribe_effect >= 0 before use.
     if (!static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() && !static_cast<T_Scenario*>(this->scenario)->GetScenarioOption(2)) {
         for (i = 1; i < this->player_num; ++i) {
             this->effects->do_effect(static_cast<short>(this->players[i]->tribe_effect),

@@ -809,6 +809,9 @@ void T_Scenario::set_player_tech(TRIBE_Player* player) {
     }
 
     if (rge_base_game->prog_mode != 7) {
+        //! @bug Iron and post-iron starts run every research here, before civ stat bonuses exist.
+        //! Unit upgrades copy source stats now, so upgraded units never receive the civ bonus.
+        //! The cascade also completes researches the civ can never use (yamato armored elephants).
         switch (this->PlayerAge[i]) {
         case 1:
             player->rev_tech(0x19);

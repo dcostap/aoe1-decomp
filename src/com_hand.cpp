@@ -990,6 +990,9 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
         L->Log("  >TX KP ACK #%d %d (%d)", player, *serial, 8);
         this->TXAcknowledgeMessage(*serial, player);
 
+        //! @bug The message supplies this player number with no bounds check.
+        //! PlayerHighSerialNumber has 10 entries, so index 10 or more corrupts memory.
+        //! DropDeadPlayer() also writes WasKicked and InvalidPlayer before its guard.
         unsigned int killed_player =
             *reinterpret_cast<unsigned int*>(CommBuff + 12);
         this->PlayerHighSerialNumber[killed_player] = killed_player * 2000;

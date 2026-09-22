@@ -170,6 +170,9 @@ void TribeBuildAIModule::initialize() {
             this->insertResearch(5, triremeUpgrade + 5);
         }
         if (!warshipUpgrade && transportUpgrade != -1) {
+            //! @bug This anchor is the Iron Age entry's load-time index, but earlier inserts shift the list.
+            //! Six or more splices then place Trireme before the Iron Age entry and break the dependency order.
+            //! The same stale-anchor defect affects the Heavy Transport and Medium War Ship inserts above.
             this->insertResearch(7, transportUpgrade + 5);
         }
     }
@@ -574,6 +577,9 @@ int TribeBuildAIModule::addItem(RGE_Static_Object* newItem, int gameStarted) {
         this->md->constructionAI.setBuilt(newItem, 1);
     }
 
+    //! @bug The gameStarted guard skips the only setGameID write during play.
+    //! An unfinished building's row keeps gameID -1 (the strategy "unitId") until completion.
+    //! removeBuiltItem() can then never match the row if the site dies unfinished.
     if (gameStarted == 0) {
         BuildItem* item = this->buildList.next;
         BuildItem* sentinel = &this->buildList;
@@ -632,12 +638,18 @@ int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* newItem, int buildID) {
     return 1;
 }
 
+//! @bug Destruction releases only the build list here; lot history stays claimed.
+//! cancelBuildItem() releases lots, but only build-command placement failures reach it.
+//! canPlace() then returns 0 for the type and the AI never constructs it again.
 int TribeBuildAIModule::removeBuiltItem(int id) {
     BuildItem* item = this->buildList.next;
     int found = 0;
     BuildItem* sentinel = &this->buildList;
 
     while (item != sentinel && item != 0 && found == 0) {
+        //! @bug This match requires built == 1, so a destroyed unfinished site never resets the row.
+        //! The row keeps inProgress = 1 and the AI never builds that item again.
+        //! A dead wonder site also leaves wonderInProgressValue set, which blocks all construction.
         if (item->gameID() == id && item->built() == 1) {
             item->setInProgress(found);
             item->setBuilt(found);

@@ -224,6 +224,7 @@ void TRIBE_Combat_Object::damage(int weapon_num, RGE_Armor_Weapon_Info* damage,
         RGE_Combat_Object::damage(weapon_num, damage, attack_modifier,
                                    attacking_player, attackingObject);
 
+        //! See produceWhenKilledBy(): a non-villager kill zeroes the carcass food.
         if (this->hp < g_combat_one_threshold && this->produceWhenKilledBy(attackingObject->master_obj->object_group) == 0) {
             this->set_attribute_amount(0.0f, 0, 1);
         }
@@ -238,6 +239,11 @@ void TRIBE_Combat_Object::damage(int weapon_num, RGE_Armor_Weapon_Info* damage,
     }
 }
 
+//! @bug This transfer never adjusts the per-unit counts in resources 37 and 40.
+//! setup() adds 1 at creation, and the destructor removes 1 at deletion.
+//! A converted unit leaves +1 on the old owner and adds 0 to the new one.
+//! This skews the civilian high and largest army score values.
+//! addObject() also runs before the owner switch, so AI memory records the old owner.
 void TRIBE_Combat_Object::change_ownership(RGE_Player* new_owner) {
     if (this->id >= 0) {
         for (int i = 0; i < 9; ++i) {
@@ -322,6 +328,9 @@ unsigned char TRIBE_Combat_Object::do_attack(RGE_Static_Object* target,
         return 1;
     }
 
+//! @bug The blast branch tests blast radius == 0, but blast level is the correct criterion.
+//! A unit with blast level > 0 and radius 0 never splashes in melee, missile, or ground hits.
+//! The devs used radius because the dat ships wrong blast levels, then the test spread everywhere.
     if (static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->area_effect_range > 0.0f &&
         static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->weapon_range < 0.99f) {
         this->area_attack(x, y, z, attacker, target);
@@ -649,12 +658,16 @@ int TRIBE_Combat_Object::trade(int targetID, int unconditional) {
 }
 
 unsigned char TRIBE_Combat_Object::keepGatheringWhenObjectIsOut(int oType) const {
+    //! Trade keep-working accepts only farm and dock; the dock id is hard-coded here too.
     if (oType != 0x32 && oType != 0x2D) {
         return 0;
     }
     return 1;
 }
 
+//! @bug This keeps the held food only for killer group 4 (villagers).
+//! A lion kill sets the carcass food to 0, so no gatherer can use it.
+//! area_attack() clears the attribute for every kill and has no group test.
 unsigned char TRIBE_Combat_Object::produceWhenKilledBy(int oGroup) const {
     const int group = this->master_obj->object_group;
     if (group != 9 && group != 10) return 1;
@@ -876,6 +889,7 @@ unsigned char TRIBE_Combat_Object::area_attack(
     float radius_squared = r2 * r2;
     --max_x;
     --max_y;
+    //! This early-out also tests blast radius where blast level is the criterion.
     if (!(r2 > g_combat_zero_range)) return 0;
 
     short x1;

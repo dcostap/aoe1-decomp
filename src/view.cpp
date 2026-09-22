@@ -3164,6 +3164,9 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
         while (clip != 0) {
             int confidence = 0;
 
+            //! @bug This drops every negative-ID node, so recyclable temporary units can never be picked.
+            //! Class 11 and missiles get negative IDs by design, and editor picks all pass ignoreNeg = 1.
+            //! Editor Delete mode relies on this pick alone, so arrows cannot be selected or removed.
             if (clip->Node_Type == 0 && (ignoreNeg == 0 || clip->Object_ID >= 0)) {
                 int left = clip->x1;
                 int top = clip->y1;
@@ -4030,6 +4033,9 @@ int RGE_View::do_paint(long old_x, long old_y, long new_x, long new_y, int up_do
 
     mode = rge_base_game->game_mode;
     brush = rge_base_game->brush_size;
+    //! The terrain brush requests no immediate redraw here; the cliff brush does (case 0x13).
+    //! The cached terrain buffer then keeps stale pixels for tiles the redraw marks miss.
+    //! Hidden (unloaded) terrain ids hit early returns and show only after a forced rebuild.
     switch (mode) {
     case 9:
         if (up_down != 0) {

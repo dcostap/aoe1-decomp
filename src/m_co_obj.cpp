@@ -341,6 +341,9 @@ void RGE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source) {
 }
 
 // m_co_obj.cpp lines 362-402.
+//! @bug The set form uses the class number as a raw slot index and never checks entries[].type.
+//! It overwrites a different class entry, or writes nothing when the index is out of range.
+//! The add form (modify_delta) searches by type, which is the correct identity.
 void RGE_Master_Combat_Object::modify(float amount, unsigned char flag) {
     switch (flag) {
     case 8: {
@@ -390,6 +393,9 @@ void RGE_Master_Combat_Object::modify(float amount, unsigned char flag) {
 }
 
 // m_co_obj.cpp lines 406-468.
+//! @bug The add form matches an entry by class and writes nothing when the class is absent.
+//! No path appends a new armor or weapon entry, so the add is lost.
+//! The set form (modify) also fails when the class index is out of range.
 void RGE_Master_Combat_Object::modify_delta(float amount, unsigned char flag) {
     switch (flag) {
     case 8: {

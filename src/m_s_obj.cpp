@@ -279,6 +279,9 @@ int RGE_Master_Static_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     if (created_sound_num >= 0) sound_value = sounds[created_sound_num];
     else sound_value = 0;
     this->created_sound = sound_value;
+    //! @bug The shipped data resolves unit 393 to a null or empty sprite, so its trees draw nothing.
+    //! This loader keeps the bad pointer and runs no validation on the sprite slot.
+    //! RockNROR copies the sprite from unit 391 into 393 to make the trees visible.
     if (sprite_num >= 0) sprite_value = sprites[sprite_num];
     else sprite_value = 0;
     this->sprite = sprite_value;
@@ -465,6 +468,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
 
     this->recyclable = 0;
     this->copy_id = this->id;
+    //! Class 11 units are recyclable, so they take negative ids and vanish from all picks.
     if (this->object_group == 11) {
         this->recyclable = 1;
     }

@@ -58,6 +58,7 @@ void RGE_Action_Gather::save(int outfile) {
 
 void RGE_Action_Gather::first_in_stack(unsigned char first_time) {
     short attr = this->task->attribute_type;
+    //! See TRIBE_Action_Build::update(): this discards a non-food carry with no credit.
     if (this->obj->attribute_type_held != attr) {
         this->obj->set_attribute(attr, 0);
     }

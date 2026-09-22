@@ -925,6 +925,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(
         int resource_offset = 0;
         int updateResourceDist = 0;
 
+        //! See taskGatherer(): a stale or -1 rType here reads past the arrays of 4.
         if (this->numResources[rType] > 0) {
             do {
                 ResourceMemory* resource = (ResourceMemory*)
@@ -997,6 +998,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                 if (bestObject != 0 && value >= bestValue)
                                     goto next_resource;
 
+                                //! This bonus cannot fire for group 10; importantResource() never registers predators.
                                 if ((object->master_obj->object_group == 9 || object->master_obj->object_group == 10) &&
                                     object->object_state > 2 && object->attribute_amount_held > 25.0f) {
                                     value += 0x19;
@@ -1795,6 +1797,9 @@ int TribeInformationAIModule::importantUnit(int oType) {
     return 1;
 }
 
+//! @bug Group 10 is missing here, so predator corpses never enter the AI resource memory.
+//! taskGatherer reads only that memory, and the group-10 carcass bonus in gameIDOfResourceObject is unreachable.
+//! Hunting animals (group 9) register fine; RockNROR adds dead predators to the food list.
 int TribeInformationAIModule::importantResource(int oType) {
     if (oType == 0x1F || oType == 5 || oType == 0x21 || oType == 7 ||
         oType == 9 || oType == 8 || oType == 0x20 || oType == 0xF) {
@@ -3424,6 +3429,7 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int unitID) {
 
     if (this->maxImportantObjectMemory > 0) {
         do {
+            //! The AI trade-partner search also accepts only dock id 0x2D.
             if (this->importantObjectMemory[i].id != -1 && this->importantObjectMemory[i].owner != this->md->player->id &&
                 this->importantObjectMemory[i].type == 0x2D) {
                 RGE_Static_Object* dock = this->md->object(this->importantObjectMemory[i].id);

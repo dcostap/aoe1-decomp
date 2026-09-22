@@ -109,6 +109,9 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
       strategyAI(playerID, infile),
       tacticalAI(playerID, infile),
       tradeAI(playerID, infile),
+      //! @bug Load forces these flags to 0 ("init done"), but save() never stores them.
+      //! A save before the first AI update therefore skips the one-time init after load.
+      //! No dynamic build items, no learn-file path, and no AI start-resource bonus then.
       firstUpdate(0),
       veryFirstUpdate(0),
       updateDelay(playerID),
@@ -311,6 +314,9 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
         }
     }
 
+    //! With no teams set, world.cpp new_game makes every computer player all-neutral.
+    //! At 10 seconds this block turns that state into one alliance against every human.
+    //! Each neutral computer allies with all computers and declares each human enemy.
     if (this->decidedInitialDiplomacy == 0 && this->player->world->world_time > 10000) {
         this->decidedInitialDiplomacy = 1;
         TRIBE_World* world =

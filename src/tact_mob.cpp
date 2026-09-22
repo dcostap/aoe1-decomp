@@ -37,6 +37,9 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj_in, short id
     this->pre_paid = paid;
 }
 
+//! @bug The destructor never calls cancelTrain, so the AI keeps inProgress = 1.
+//! Building death deletes this action through delete_list(), with no stop() call.
+//! ~TRIBE_Action_Make_Tech cancels its research. This one leaves the item stuck.
 TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {
     TRIBE_Player* player = static_cast<TRIBE_Player*>(this->obj->owner);
     player->logMessage("WT: %ld: MkObjDestructor: obj_id=%d, obj->id=%d, unique_id=%d",

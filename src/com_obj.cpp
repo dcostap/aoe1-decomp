@@ -121,6 +121,7 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
     short maxx = (short)(map->map_width - 1);
     short maxy = (short)(map->map_height - 1);
     float r2 = radius * radius;
+    //! This early-out also tests blast radius where blast level is the criterion.
     if (!(radius > g_combat_area_zero_range)) return 0;
 
     short x0;
@@ -259,6 +260,7 @@ unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat
         return 0;
     }
 
+    //! This radius gate repeats the mistake in t_c_obj.cpp do_attack; blast level is correct.
     if (static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_range > 0.0f) {
         this->area_attack(x, y, z, attacker, 0);
         return 1;
@@ -424,6 +426,9 @@ unsigned char RGE_Combat_Object::update(void) {
         unsigned long new_value = unified_map_offsets[y][x];
         unsigned long old_value = this->Unified_Map_Value;
         this->Unified_Map_Value = new_value;
+        //! @bug This gate runs only on sight-bit change, and records store position only on add.
+        //! A unit that moves under continuous vision keeps its first-seen position in every record.
+        //! GetVisibleUnits() then filters by that stale position and drops the unit from AI scans.
         if (new_value != old_value) {
             VisibleUnitManager->Update_Unit_Info(object_id, (int)this->owner->id, x, y, (int)this->master_obj->object_group,
                                                  old_value, new_value, this->VUR_Ptrs);
@@ -445,6 +450,9 @@ unsigned char RGE_Combat_Object::update(void) {
                     } while (player < player_num);
                 }
                 if (sighted_by_player >= 0) {
+                    //! @bug First-sight capture runs only for human players (computerPlayer() == 0).
+                    //! The change needs no unit nearby and no timer, unlike TRIBE_Action_Artifact.
+                    //! An AI seer gets no capture here, so the human always wins the first sight.
                     if (world->players[sighted_by_player]->computerPlayer() == 0) {
                         this->change_ownership(this->owner->world->players[sighted_by_player]);
                         if (this->capture_flag == 1) {

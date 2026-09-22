@@ -187,6 +187,9 @@ TRIBE_Player::~TRIBE_Player() {
 
 
 
+//! @bug The saved unit status byte arrives here but is never applied to the new object.
+//! The state maps to actions only, so the object keeps its constructor default status.
+//! Dying buildings also keep the construction sprite, which breaks their display.
 RGE_Static_Object* TRIBE_Player::make_scenario_obj(float world_x, float world_y, float world_z, short master_id, unsigned char state, float new_angle) {
     RGE_Static_Object* obj = 0;
     RGE_Master_Static_Object* type = this->master_objects[master_id];
@@ -714,6 +717,7 @@ void TRIBE_Player::interface_trade_avail(Trade_Avail** list,
                 if (node != 0) {
                     RGE_Static_Object** output = dock_list + dock_count;
                     do {
+                        //! Trade targets only docks (master id 0x2D); RockNROR allows other trade-partner units.
                         if (node->node->master_obj->id == 0x2D) {
                             if (this->visible->get_visible(static_cast<short>(node->node->world_x),
                                                            static_cast<short>(node->node->world_y))) {
@@ -1664,6 +1668,9 @@ void TRIBE_Player::notify(int caller, int recipient, int mType,
                 debug_random_on = 0;
                 global_save_debug_random_on3 = saved;
                 if (this->world->curr_player == this->id) {
+                    //! @bug The alert sound index comes from attribute 26 with no validation or default.
+                    //! The gaia master row leaves attribute 26 at 0, so player 0 plays sounds[0].
+                    //! Normal players play the attack sound. This runs when player 0 is current.
                     RGE_Sound* sound = this->world->sounds[static_cast<short>(this->attributes[26])];
                     if (sound != 0) sound->play(1);
                     static_cast<TRIBE_Game*>(rge_base_game)->add_notification_loc(
@@ -3400,6 +3407,9 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
                 if (thisObj->object_state == 0) {
                     current = 50;
                 }
+                //! @bug The full-hp gate drops an intact farm here and falls back to the retry.
+                //! The retry re-reads the left-click table, so it shows "Click to select" and facet 0.
+                //! A villager selection gets no work hint or cursor, even though right-click works.
                 {
                     int hp = static_cast<int>(thisObj->hp);
                     if (hp <= 0 || hp >= MaxHp) {

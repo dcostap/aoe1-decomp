@@ -378,6 +378,9 @@ unsigned char TRIBE_Action_Trade::update() {
                     if (take_amount > g_trade_max_transfer_amount) {
                         take_amount = 75.0f;
                     }
+//! The drop-off always credits attribute 3 (gold); the configured trade attribute is ignored.
+//! The clamp above assigns literal 75.0f although the comparison uses the configured maximum.
+//! RockNROR enables other resources and other drop-site units (the dock id 0x2D is hard-coded).
                     this->obj->owner->add_attribute_num(3, take_amount, 1);
                     this->obj->set_attribute(this->obj->attribute_type_held, 0.0f);
                 }

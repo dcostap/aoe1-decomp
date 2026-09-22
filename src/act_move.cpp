@@ -156,6 +156,9 @@ unsigned char RGE_Action_Move_To::update() {
         }
 
         this->obj->setGoal(this->target_x, this->target_y, 1.0f);
+        //! @bug The cast wraps a negative target into a large byte, so -1.0 becomes 255.
+        //! pathsys rejects the wrapped goal, but doMove can pass it to lookupZone().
+        //! get_zone_info() has no bounds check, so the wrapped value can fault there.
         XYZBYTEPoint goalPoint;
         goalPoint.x = (unsigned char)this->target_x;
         goalPoint.y = (unsigned char)this->target_y;

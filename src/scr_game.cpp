@@ -2532,6 +2532,7 @@ void TRIBE_Screen_Game::setup_buttons() {
                     if (object != 0) {
                         RGE_Master_Combat_Object* master =
                             static_cast<RGE_Master_Combat_Object*>(object->master_obj);
+                        //! This UI gate also tests blast radius == 0 instead of blast level.
                         if ((master->missile_id == -1) || (master->area_effect_range == g_no_area_effect_range)) {
                             movable = 0;
                             break;
@@ -2705,6 +2706,9 @@ void TRIBE_Screen_Game::setup_buttons() {
                         if ((!queue_active) || (queued > 0)) {
                             rge_base_game->get_string(master->string_id, name + 4, 512);
                             this->calc_text_msg(msg_str + 4, &this->make_list[make_index], 0x12, master->string_id2);
+                            //! @bug Slot writes run with no collision check, and two location ranges map to one slot.
+                            //! When a player owns both fire galley and catapult trireme, one icon overwrites the other.
+                            //! The overwritten warship loses its button and cannot be trained (All techs games).
                             short button = this->calc_button_loc(master->button_location);
                             Item_Avail* item = &this->make_list[make_index];
                             this->set_button(this->button_unit_pic, button, item->pict, 0x12, item->id,
@@ -3764,6 +3768,9 @@ void TRIBE_Screen_Game::command_fps() {
     }
 }
 
+//! Game speed follows the fixed ladder 1, 1.5, 2 here; the options dialog offers the same three.
+//! Only developer mode adds 4, 8, 16. The engine accepts any float speed below this input layer.
+//! A non-ladder speed makes every ladder comparison fail, so the + and - keys then do nothing.
 void TRIBE_Screen_Game::command_game_speed(int increase_speed) {
     float new_speed;
     float cur_speed;

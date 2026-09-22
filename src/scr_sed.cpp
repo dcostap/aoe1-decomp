@@ -1434,6 +1434,9 @@ void TRIBE_Screen_Sed::set_player(short val, uchar save_player, uchar load_playe
 
         this->world->scenario->SetPlayerName(oldp, this->player_inven_input[4]->currentLine());
         this->world->scenario->Set_player_Type(oldp, this->player_setting_drop[0]->currentLineNumber());
+        //! @bug This writes only PlCivilization; the live player keeps its construction culture.
+        //! The building-set panel and new buildings therefore use the old civ's set.
+        //! No load path applies saved civs to world players either (scenario_make_player is unused).
         this->world->scenario->Set_player_Civ(oldp, this->player_setting_drop[1]->currentLineNumber() + 1);
         this->world->scenario->Set_player_AI(oldp, this->AiRules->currentLine(), 0);
         this->world->scenario->Set_BuildList(oldp, this->BuildList->currentLine(), 0);

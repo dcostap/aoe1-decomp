@@ -528,6 +528,9 @@ int UnitAIModule::update(unsigned long uTime) {
                     int currentOrder = this->currentOrderValue;
                     if (idleResult == 5) {
                         if (currentOrder != 0x2D5) {
+                            //! @bug The dead-target fallback moves to coordinates frozen when the attack order started.
+                            //! currentTargetX/Y/Z never refresh for attack orders, so the unit walks to where the target was.
+                            //! It then acts at an empty spot; the 0x1FA/0x1F9/0x1FB handlers repeat this same fallback.
                             if (this->moveTo(this->currentTargetXValue, this->currentTargetYValue,
                                              this->currentTargetZValue, this->objectValue->weaponRange(), 1) == 0) {
                                 this->removeCurrentTarget();
@@ -1010,6 +1013,7 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
                                                         target->owner->id, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
                                 break;
 
+                            //! This order also skips an owner check; act_atak aborts and the loop repeats.
                             case AIPlayPhaseCommand::AttackSavedTargetCommand: {
                                 int targetID =
                                     this->playStatus->savedAttackerValue;
@@ -2993,6 +2997,9 @@ attacker_recorded:
                     ownDamage = this->objectValue->damageCapability(target);
                 }
 
+                //! @bug A zero-damage current target makes this re-aim at every new attacker with no comparison.
+                //! Two converting priests alternate their attack events each update, so the target flips forever.
+                //! Each flip rebuilds the attack action, and the unit never closes distance. One priest cannot trip it.
                 if (this->canAttackUnit(attacker) == 1 && ownDamage == g_unit_ai_zero_float) {
                     if (this->objectValue->inAttackRange(attacker) != 1 &&
                         this->objectValue->canPath(nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
@@ -3553,6 +3560,9 @@ void UnitAIModule::processGroupNotify(NotifyEvent* nEvent) {
     if (this->playStatus != 0 &&
         (play = this->objectValue->owner->world->playbook->play(this->playStatus->playNumberValue)) != 0 &&
         (phase = play->phase(this->playStatus->currentPhaseValue)) != 0 && nEvent->mType == 500) {
+//! @bug The damage caller becomes the group's saved attacker with no owner or alliance check.
+//! Friendly splash damage makes the caller an ally, then AttackSavedTargetCommand orders it.
+//! The attack action aborts on self or ally targets, and the group re-issues the order forever.
         this->playStatus->savedAttackerValue = nEvent->caller;
         int i = 0;
         do {

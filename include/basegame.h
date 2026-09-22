@@ -282,6 +282,8 @@ public:
         char scenarioNameValue[128];
         unsigned char singlePlayerGameValue;
         unsigned char multiplayerGameValue;
+        //! Map sizes are one byte here, so dimensions wrap above 255; 256 becomes 0 and new_map returns early.
+        //! The pathing grids in pathsys.h are 255x255 with byte coordinates and cap dimensions too.
         unsigned char mapXSizeValue;
         unsigned char mapYSizeValue;
         unsigned char mapZSizeValue;

@@ -118,6 +118,9 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
         return;
     }
 
+    //! @bug Out-of-range aborts route to state 10, which creates no sub-action.
+    //! The empty list then reports done, so set_state(1) finishes the repair as success.
+    //! UnitAI stops the order and the repairman stays idle forever.
     case 10: {
         this->obj->new_sprite(this->obj->master_obj->sprite);
         this->timer = 1.0f;

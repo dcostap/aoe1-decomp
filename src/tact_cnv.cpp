@@ -219,6 +219,9 @@ uchar TRIBE_Action_Convert::update() {
         }
     }
 
+    //! @bug This guard accepts only object_state == 2, but priest selectors accept < 3.
+    //! An enemy construction site (state 0) is dropped here and then picked again at once.
+    //! The AI priest repeats that cycle forever and never moves.
     if (this->target_obj != 0 && this->target_obj->object_state != 2) {
         this->set_target_obj(0);
         this->set_state(3);
@@ -300,6 +303,9 @@ uchar TRIBE_Action_Convert::update() {
             int r = debug_rand("C:\\msdev\\work\\age1_x1\\tact_cnv.cpp", 471);
             float chance = (float)r * g_conversion_random_scale;
             RGE_Player* tplayer = this->target_obj->owner;
+//! Conversion resistance is hard-coded here: 4 for Macedonian owners, 2 for boat and priest groups.
+//! Chariot groups get 8; every other class keeps 1. The owner-civ branch preempts the class branches.
+//! RockNROR makes these factors configurable in the dat.
             if (tplayer->master_player_id == 0x10) {
                 chance = chance * g_conversion_special_player_factor;
             } else {

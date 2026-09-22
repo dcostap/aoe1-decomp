@@ -727,6 +727,9 @@ void RGE_Unified_Visible_Map::reset(void) {
     }
 }
 
+//! The original row table has 256 entries and ends at Map_Update_Suppresion.
+//! This fill has no cap, so a taller map overflows into that flag and later globals.
+//! Overflow kills all fog updates, and a later suppress_updates(0) makes row 256 crash.
 void RGE_Unified_Visible_Map::Set_Map_Offsets(void) {
     int y = 0;
     if (this->mapHeight > 0) {

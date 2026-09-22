@@ -128,6 +128,7 @@ TRIBE_Tech::~TRIBE_Tech() {
 }
 
 unsigned char TRIBE_Tech::do_tech(short tech_id, RGE_Player* player) {
+    //! A zeroed research row also passes here and runs effect 0 on the player.
     if (this->tech_tree[tech_id].effect >= 0) {
         this->world->effects->do_effect(this->tech_tree[tech_id].effect, player);
     }
@@ -494,6 +495,9 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech() {
                     short prereq_count;
                     prereq_count = 0;
                     for (j = 0; j < 4; j++) {
+//! @bug A zero pre_reqs slot counts as a requirement on research 0; the data uses 0 for "none".
+//! The sentinel here is -1, so a zeroed research opens once research 0 is done and runs its effect.
+//! For example research 29 then adds tower arrows. RockNROR stores -1 for "none" in these fields.
                         if (tech[i].pre_reqs[j] >= 0) {
                             prereq_count++;
                             if (this->tech_player_tree[tech[i].pre_reqs[j]].state == 3) {
@@ -561,6 +565,9 @@ unsigned char TRIBE_Player_Tech::get_button_location(short tech_id) {
     return this->base_tech->tech_tree[tech_id].button_location;
 }
 
+//! @bug A pre_reqs cycle recurses here forever; the state becomes 3 only after the loop.
+//! Each descent keeps the same states, so the guard never fires and the stack overflows.
+//! Scenario and world load trigger this through rev_tech when the tech tree has a cycle.
 void TRIBE_Player_Tech::do_rev_tech(short tech_id) {
     int i;
     int tech;

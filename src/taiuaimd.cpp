@@ -573,6 +573,9 @@ int TribeCivilianUnitAIModule::retryableOrder(int orderType) {
 }
 
 
+//! @bug The type map is hard-coded, and the -1 fallback switches the match key mid-way.
+//! currentTargetTypeValue stores object_group in one setter and an arbitrary id in the other.
+//! The map can then misroute, and villagers pick wrong gather targets (gold at stone age).
 int TribeCivilianUnitAIModule::convertToLOSResourceType(int oType) {
     switch (oType) {
     case 7:
@@ -792,6 +795,9 @@ caller_recorded:
                 return 2;
             }
 
+            //! @bug This farm re-task picks the closest farm with no occupancy check.
+            //! The tactical path guards one farmer per farm, but this unit-level path bypasses it.
+            //! A waiting farmer can join a worked farm, so two or more farmers share it.
             int resourceType = this->convertToLOSResourceType(targetType);
             int targetID;
             if (resourceType != -1) {
@@ -1283,6 +1289,7 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) 
 
     case 0x202:
         if (this->currentActionValue == 0x267) {
+            //! The trade ship searches only for dock id 0x2d; other drop-site units never match.
             int id = this->closestObject(-1, 0, 2, 0x2d, 0);
             if (id != -1 && this->tradeWithObject(id, 1) == 1) {
                 return 6;
@@ -1810,6 +1817,9 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     }
 
     case 0x200: {
+        //! This branch backs the unit away after every shot and never reads the target's weapon range.
+        //! Against a superior-range target the retreat gains no safety and only loses attack uptime.
+        //! RockNROR skips the back-off when the target outranges the unit.
         if (this->objectValue->owner->computerPlayer() != 0 && this->objectValue->weaponRange() >= g_soldier_evasive_distance_threshold &&
             this->objectValue->master_obj->object_group != 0x1A) {
             if (this->currentActionValue == 600) {

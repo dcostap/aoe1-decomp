@@ -492,6 +492,7 @@ void __cdecl RGE_Player::sendChatMessage(int playerID, int copySelf,
     }
 }
 
+//! Same defect as TRIBE_Player::make_scenario_obj(): the status byte is dropped here too.
 RGE_Static_Object* RGE_Player::make_scenario_obj(float world_x, float world_y,
                                                   float world_z, short master_id,
                                                   unsigned char state,

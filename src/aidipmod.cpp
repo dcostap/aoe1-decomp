@@ -240,10 +240,16 @@ int DiplomacyAIModule::mostHated(int tributeOn, int tributePlayer, int attackWin
     int highest = -1;
     int highestValue = -1;
     for (int player_index = 1; player_index < this->md->player->world->player_num; ++player_index) {
+        //! @bug This scan does not reject allied players, so an ally can become the attack target.
+        //! The engine refuses attacks on allies, so the AI then stays inactive with idle military.
         if (player_index != this->md->player->id && this->md->player->world->players[player_index]->game_status != 2
             && (tributeOn <= 0 || tributePlayer != player_index || !isAlly(player_index))) {
             int victory_points = this->md->player->world->players[player_index]->victory_conditions->get_victory_points();
             int stance_value = this->dislikeTable[player_index];
+            //! @bug This gate has no check for attackWinningPlayer == 0.
+            //! Value 0 means "ignore score", but the else branch subtracts the victory points.
+            //! So a zero SNAttackWinningPlayer lowers hate for the high-score players instead.
+//! The score term is also score / factor; the formula needs score * 100 / factor.
             if (attackWinningPlayerFactor > 1) {
                 if (attackWinningPlayer == 1) {
                     stance_value += victory_points / attackWinningPlayerFactor;

@@ -151,6 +151,9 @@ void RGE_Effects::do_effect(short current_effect, RGE_Player* player) {
         if (effect) {
             for (short command_index = 0; command_index < effect->effect_list_num; command_index++) {
                 RGE_Effect_Command* command = &effect->effect_list[command_index];
+                //! Cases 0-5 only. No case 6, so Resource Modifier (Multiply) is dropped.
+                //! The row loads from the data file, then does nothing when the tech runs.
+                //! No default case exists, so the drop is silent.
                 switch (command->command) {
                 case 4: {
                     short operation = command->change_num3;

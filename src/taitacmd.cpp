@@ -913,6 +913,9 @@ int TacticalAIGroup::task(TribeTacticalAIModule* t,
 
             t->logGroupDebug(idValue, s_log_63, *unit, subTypeValue);
             if (subTypeValue != 0 && subTypeValue != 4) {
+                //! @bug The roundup target check tests existence only, so the AI attacks targets it cannot see.
+                //! The chain (order 0x2D9 -> attackRoundupObject -> attack) has no visible-map test anywhere.
+                //! Only the engine's fire gate checks visibility; the chase moves to the hidden target position.
                 RGE_Static_Object* targetObj = md->object(targetValue);
                 if (targetObj != 0) {
                     t->logGroupDebug(idValue, s_log_66, *unit, targetValue);
@@ -1937,6 +1940,8 @@ static inline int addTacticalPlayer(ManagedArray<int>& array, int valueToAdd) {
 }
 
 int TribeTacticalAIModule::update(int timeLimit) {
+//! SNScalingFrequency multiplies by 60000 here, so its unit is minutes against the millisecond clock.
+//! RockNROR replaces the unit with seconds and clamps low values to stop scaling every few ticks.
     if ((unsigned int)(this->md->player->world->world_time - this->lastScalingUpdateValue) >
         (unsigned int)(this->sn[0x63] * 60000)) {
         this->sn[0x1A] += this->sn[0x5E];
@@ -4826,6 +4831,9 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
 
     this->hitsByPlayer[attacker->owner->id]++;
 
+//! @bug Accidental ally hits accumulate and trip this default-on flip to enemy stance.
+//! hitsByPlayer never resets during play, so three stray hits over a match suffice.
+//! RockNROR prevents it by forcing personality number SNAllowDiplomacyChangeOnAllyAttack (215) to 0.
     if (attacker->owner->computerPlayer() == 0) {
         if (this->md->player->isAlly((int)attacker->owner->id) == 1 &&
             this->hitsByPlayer[attacker->owner->id] >= this->sn[0xdd] && this->sn[0xd7] == 1) {
@@ -5410,6 +5418,7 @@ void TribeTacticalAIModule::updateNeededResources() {
         } while (i < 4);
 
         if (bestResource == -1) {
+            //! Fallback ranks by the smallest deficit only; it checks neither need nor age.
             i = 0;
             do {
                 if ((bestResource == -1 || this->resourceDifferenceValue[i] < bestDifference) && assignedResource[i] == 0) {
@@ -6060,6 +6069,9 @@ dispatch:
     return 1;
 }
 
+//! @bug The resource type here comes from cached unit data and can be -1 or stale.
+//! gameIDOfResourceObject() indexes two arrays of 4 with no bound on that value.
+//! A converted villager can carry stale data in, so the read goes out of bounds.
 int TribeTacticalAIModule::taskGatherer(int id, int resourceType,
                                         int limitedTaskLimit,
                                         ulong startTime,
@@ -9170,6 +9182,9 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                 break;
             if (this->md->buildAI.allBuilt(0, 0) == 0)
                 break;
+            //! This row budget is the game's only farm cap; it counts build-list rows, not live farms.
+            //! Deathmatch holds every other gate open, so the AI claims the full budget and replants.
+            //! RockNROR adds a deathmatch farm maximum here (SNMaxFarms); the default budget is 8.
             if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(0x32, 0) >= this->sn[0xDC])
                 break;
             this->md->buildAI.insert(0x32, number, position);
@@ -9284,6 +9299,9 @@ void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup* group, Path* pat
     }
 }
 
+//! @bug The attack-response insertion adds up to 5 fixed unit orders and a building at the strategy head.
+//! The unit list ignores the attacker types, so the orders are often irrelevant.
+//! Head items consume the scan budget, so the real strategy is never picked and the AI stalls.
 void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID) {
     long lastAttackTime = this->lastAttackResponseBuildInsertionTime;
     long currentTime = this->md->player->world->world_time;
