@@ -14,13 +14,13 @@
 - Starting main commit: `e5e8f15dd`.
 - Starting registry: 237 `accepted_drift` entries across 93 registry files.
 - Assigned:
-  - Slot 1: `00403D90`, `src/act_gath.cpp`, `../aoe1-match-slot-1`, agent `sa-42e3ab20`.
-  - Slot 2: `00412240`, `src/airesitm.cpp`, `../aoe1-match-slot-2`, agent `sa-12c5e51f`: no source change; evidence saved.
+  - Slot 1: `00403D90`, `src/act_gath.cpp`, `../aoe1-match-slot-1`, agent `sa-42e3ab20`: integrated; slot ready.
+  - Slot 2: `00410050`, `src/aipbook.cpp`, `../aoe1-match-slot-2`, agent `sa-75f0ed1d`.
   - Slot 3: `004012B0`, `src/act_atak.cpp`, `../aoe1-match-slot-3`, agent `sa-ccd95373`.
   - Slot 4: `0040E520`, `src/aimodule.cpp`, `../aoe1-match-slot-4`, agent `sa-f05f503a`.
   - Slot 5: `0040B1A0`, `src/aiconmod.cpp`, `../aoe1-match-slot-5`, agent `sa-d40aeaaf`.
-- Integrated: `00403CE0`, `00406E00` exact matches.
-- Open: 227 unassigned entries; four assignments in progress. `00401170`, `00404590`, `00405850`, and `00412240` stay accepted drift.
+- Integrated: `00403CE0`, `00403D90`, `00406E00` exact matches.
+- Open: 226 unassigned entries; four assignments in progress. `00401170`, `00404590`, `00405850`, and `00412240` stay accepted drift.
 
 ## Work log
 
@@ -32,3 +32,4 @@ Record each assignment here with its target VA, worker, worktree, result, valida
 - `00406E00`: Separate state-2 branches reproduce three virtual call sites. Main check: 70/70 bytes, 25/25 instructions, matching owner and boundary. Main `act_tran` audit: nine existing exact claims pass; owner audit: zero mismatches. Promoted to `matching`. No runtime or linked-image check ran. Note: `decomp_notes/functions/0040/00406E00.md`.
 - `00401170`: No source change. Best result remains 45 differing bytes of 311 after source probes, 64 variants, and 12 ambient samples. Worker `act_atak` audit: nine exact claims passed; owner audit: zero mismatches. Keep `accepted_drift`; linked checks and runtime remain open. Note: `decomp_notes/functions/0040/00401170.md`.
 - `00412240`: No source change. One SIB byte differs, with the same effective address. Seven source alternatives produced no exact match. Worker `airesitm` audit: 15 exact claims pass. Keep `accepted_drift`; no runtime edge tests ran. Note: `decomp_notes/functions/0041/00412240.md`.
+- `00403D90`: Direct target-ID comparison and x/y/z write order match the original. Main check: 257/257 bytes, 91/91 instructions, correct owner and eight calls. The `act_gath` audit has no exact-neighbor regressions; owner audit: zero mismatches. Promoted to `matching`. Runtime and linked-image checks remain open. Note: `decomp_notes/functions/0040/00403D90.md`.

@@ -17,6 +17,6 @@
     "00403C90": {"status": "matching", "symbol": "?get_wait_sprite@RGE_Action_Gather@@IAEPAVRGE_Sprite@@XZ"},
     "00403CD0": {"status": "matching", "symbol": "?stop@RGE_Action_Gather@@UAEHXZ"},
     "00403CE0": {"status": "matching", "symbol": "?move_to@RGE_Action_Gather@@UAEHPAVRGE_Static_Object@@MMM@Z"},
-    "00403D90": {"status": "accepted_drift", "symbol": "?work@RGE_Action_Gather@@UAEHPAVRGE_Static_Object@@MMM@Z"}
+    "00403D90": {"status": "matching", "symbol": "?work@RGE_Action_Gather@@UAEHPAVRGE_Static_Object@@MMM@Z"}
   }
 }

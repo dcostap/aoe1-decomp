@@ -528,10 +528,10 @@ int RGE_Action_Gather::work(RGE_Static_Object* obj_in, float x, float y, float z
         }
 
         if (obj_in->owner == this->obj->owner) {
-            short id = obj_in->master_obj->id;
             RGE_Master_Action_Object* object_master =
                 (RGE_Master_Action_Object*)this->obj->master_obj;
-            if ((id == object_master->drop_site || id == object_master->backup_drop_site) &&
+            if ((obj_in->master_obj->id == object_master->drop_site ||
+                 obj_in->master_obj->id == object_master->backup_drop_site) &&
                 this->obj->attribute_amount_held > 0.0f) {
                 this->timer = 0.0f;
                 this->set_target_obj(0);
@@ -551,9 +551,9 @@ int RGE_Action_Gather::work(RGE_Static_Object* obj_in, float x, float y, float z
         this->set_target_obj2(0);
         this->set_state(4);
     } else {
-        this->target_z = z;
         this->target_x = x;
         this->target_y = y;
+        this->target_z = z;
         this->set_target_obj(0);
         this->set_state(15);
     }
