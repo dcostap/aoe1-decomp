@@ -15,12 +15,12 @@
 - Starting registry: 237 `accepted_drift` entries across 93 registry files.
 - Assigned:
   - Slot 1: `00403D90`, `src/act_gath.cpp`, `../aoe1-match-slot-1`, agent `sa-42e3ab20`.
-  - Slot 2: `00412240`, `src/airesitm.cpp`, `../aoe1-match-slot-2`, agent `sa-12c5e51f`.
-  - Slot 3: `00401170`, `src/act_atak.cpp`, `../aoe1-match-slot-3`, agent `sa-c49b51f9`: no source change; evidence saved.
+  - Slot 2: `00412240`, `src/airesitm.cpp`, `../aoe1-match-slot-2`, agent `sa-12c5e51f`: no source change; evidence saved.
+  - Slot 3: `004012B0`, `src/act_atak.cpp`, `../aoe1-match-slot-3`, agent `sa-ccd95373`.
   - Slot 4: `0040E520`, `src/aimodule.cpp`, `../aoe1-match-slot-4`, agent `sa-f05f503a`.
   - Slot 5: `0040B1A0`, `src/aiconmod.cpp`, `../aoe1-match-slot-5`, agent `sa-d40aeaaf`.
 - Integrated: `00403CE0`, `00406E00` exact matches.
-- Open: 228 unassigned entries; four assignments in progress. `00401170`, `00404590`, and `00405850` stay accepted drift.
+- Open: 227 unassigned entries; four assignments in progress. `00401170`, `00404590`, `00405850`, and `00412240` stay accepted drift.
 
 ## Work log
 
@@ -31,3 +31,4 @@ Record each assignment here with its target VA, worker, worktree, result, valida
 - `00405850`: No supported source change. Two bytes differ in one vptr register load. The `PathResult` probes failed compilation or produced the same output. Worker `act_move` audit: eight exact neighbors passed. Keep `accepted_drift`; no runtime or linked-image check ran. Note: `decomp_notes/functions/0040/00405850.md`.
 - `00406E00`: Separate state-2 branches reproduce three virtual call sites. Main check: 70/70 bytes, 25/25 instructions, matching owner and boundary. Main `act_tran` audit: nine existing exact claims pass; owner audit: zero mismatches. Promoted to `matching`. No runtime or linked-image check ran. Note: `decomp_notes/functions/0040/00406E00.md`.
 - `00401170`: No source change. Best result remains 45 differing bytes of 311 after source probes, 64 variants, and 12 ambient samples. Worker `act_atak` audit: nine exact claims passed; owner audit: zero mismatches. Keep `accepted_drift`; linked checks and runtime remain open. Note: `decomp_notes/functions/0040/00401170.md`.
+- `00412240`: No source change. One SIB byte differs, with the same effective address. Seven source alternatives produced no exact match. Worker `airesitm` audit: 15 exact claims pass. Keep `accepted_drift`; no runtime edge tests ran. Note: `decomp_notes/functions/0041/00412240.md`.
