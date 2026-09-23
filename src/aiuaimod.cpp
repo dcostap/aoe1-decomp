@@ -137,27 +137,11 @@ void UnitAIModule::save(int outfile) {
         rge_write(outfile, &notifyQueueValue[i], sizeof(NotifyEvent));
     }
 
-    tempInt = attackingUnitsValue.numberValue;
+    tempInt = attackingUnitsValue.number();
     rge_write(outfile, &tempInt, 4);
-    {
-        int i_attack;
-        for (i_attack = 0; i_attack < attackingUnitsValue.numberValue; i_attack++) {
-            if (attackingUnitsValue.maximumSizeValue - 1 < i_attack) {
-                int* newArr = (int*)::operator new(i_attack * 4 + 4);
-                if (newArr) {
-                    int j;
-                    for (j = 0; j < attackingUnitsValue.maximumSizeValue; j++) {
-                        if (i_attack + 1 <= j) break;
-                        newArr[j] = attackingUnitsValue.value[j];
-                    }
-                    ::operator delete(attackingUnitsValue.value);
-                    attackingUnitsValue.value = newArr;
-                    attackingUnitsValue.maximumSizeValue = i_attack + 1;
-                }
-            }
-            tempInt = attackingUnitsValue.value[i_attack];
-            rge_write(outfile, &tempInt, 4);
-        }
+    for (i = 0; i < attackingUnitsValue.number(); i++) {
+        tempInt = attackingUnitsValue[i];
+        rge_write(outfile, &tempInt, 4);
     }
 
     if (playStatus == 0) {
