@@ -26,11 +26,15 @@ RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* obj_in, RGE_Task* 
 // member. The original uses callee cleanup with ret 4. The FPU comparisons
 // use a relocated zero constant instead of the original hardcoded address.
 void RGE_Action_Transport::first_in_stack(unsigned char first_time) {
-    if (first_time != 0 && this->target_x >= 0.0f && this->target_y >= 0.0f) {
-        this->set_state(0x0B);
-        return;
+    if (first_time != 0) {
+        if (this->target_x >= 0.0f && this->target_y >= 0.0f) {
+            this->set_state(0x0B);
+            return;
+        }
+        this->set_state(2);
+    } else {
+        this->set_state(2);
     }
-    this->set_state(2);
 }
 
 void RGE_Action_Transport::set_state(unsigned char new_state) {

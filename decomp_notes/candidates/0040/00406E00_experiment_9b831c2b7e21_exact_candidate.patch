@@ -1,0 +1,26 @@
+# Experiment 9b831c2b7e2138f39028959559f8c09ff98342bc4bbe9ea3c08f8e0c55442eac
+# Base e5e8f15dd8f5dda78fcf95477ce7cef105947622
+diff --git a/src/act_tran.cpp b/src/act_tran.cpp
+index 32d996d6b..7c21fd3f8 100644
+--- a/src/act_tran.cpp
++++ b/src/act_tran.cpp
+@@ -26,11 +26,15 @@ RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* obj_in, RGE_Task*
+ // member. The original uses callee cleanup with ret 4. The FPU comparisons
+ // use a relocated zero constant instead of the original hardcoded address.
+ void RGE_Action_Transport::first_in_stack(unsigned char first_time) {
+-    if (first_time != 0 && this->target_x >= 0.0f && this->target_y >= 0.0f) {
+-        this->set_state(0x0B);
+-        return;
++    if (first_time != 0) {
++        if (this->target_x >= 0.0f && this->target_y >= 0.0f) {
++            this->set_state(0x0B);
++            return;
++        }
++        this->set_state(2);
++    } else {
++        this->set_state(2);
+     }
+-    this->set_state(2);
+ }
+ 
+ void RGE_Action_Transport::set_state(unsigned char new_state) {

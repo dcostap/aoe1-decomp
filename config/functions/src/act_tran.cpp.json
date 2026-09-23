@@ -8,7 +8,7 @@
   "functions": {
     "00406D60": {"status": "matching", "symbol": "??0RGE_Action_Transport@@QAE@HPAVRGE_Action_Object@@@Z"},
     "00406DC0": {"status": "matching", "symbol": "??0RGE_Action_Transport@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
-    "00406E00": {"status": "accepted_drift", "symbol": "?first_in_stack@RGE_Action_Transport@@UAEXE@Z"},
+    "00406E00": {"status": "matching", "symbol": "?first_in_stack@RGE_Action_Transport@@UAEXE@Z"},
     "00406E50": {"status": "matching", "symbol": "?set_state@RGE_Action_Transport@@MAEXE@Z"},
     "00406F90": {"status": "matching", "symbol": "?update@RGE_Action_Transport@@UAEEXZ"},
     "00407160": {"status": "matching", "symbol": "?stop@RGE_Action_Transport@@UAEHXZ"},

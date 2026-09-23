@@ -118,7 +118,7 @@ The following source hypotheses were tested:
 The exact source uses this full five-cast set. A walkback to the clean baseline restored
 the mismatch. Reapplying the casts restored exact bytes. The final grouped
 validation reports 9/9 exact owners, generated destructor `MATCH`, and the
-unchanged accepted-drift result for `first_in_stack`.
+accepted-drift result for `first_in_stack` at that time.
 
 Validation commands:
 
@@ -127,3 +127,9 @@ Validation commands:
 Result: exact owners 9/9; generated owner 1/1; accepted drift unchanged at
 11 differing bytes. The standalone target check also reports `MATCH`,
 `0.0000%`, 414/414 bytes, 19/19 aligned calls, and correct owner and boundary.
+
+## `first_in_stack` matching follow-up
+
+`decomp_notes/functions/0040/00406E00.md` records the later exact source.
+The new main audit found ten exact owners, including this function, without
+neighbor regressions. The original accepted-drift result above is historical.
