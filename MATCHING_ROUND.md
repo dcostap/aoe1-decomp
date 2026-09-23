@@ -19,9 +19,9 @@
   - Slot 2: `00410050`, `src/aipbook.cpp`, `../aoe1-match-slot-2`, agent `sa-75f0ed1d`: exact match integrated; no new assignment.
   - Slot 3: `004012B0`, `src/act_atak.cpp`, `../aoe1-match-slot-3`, agent `sa-ccd95373`: no source change; no new assignment.
   - Slot 4: `0040E520`, `src/aimodule.cpp`, `../aoe1-match-slot-4`, agent `sa-f05f503a`: integrated; no new assignment.
-  - Slot 5: `0040B980`, `src/aiconmod.cpp`, `../aoe1-match-slot-5`, agent `sa-f26cba7a`.
+  - Slot 5: `0040B980`, `src/aiconmod.cpp`, `../aoe1-match-slot-5`, agent `sa-f26cba7a`: exact experiment archived; source not integrated.
 - Integrated: `00403CE0`, `00403D90`, `00406E00`, `0040E520`, `00410050`, `00413150` exact matches.
-- Open: 224 unassigned entries; one assignment in progress. `00401170`, `004012B0`, `00404590`, `00405850`, `00412240`, and `0040B1A0` stay accepted drift.
+- Open: 224 unassigned entries; zero assignments in progress. Seven attempted functions stay accepted drift: `00401170`, `004012B0`, `00404590`, `00405850`, `0040B1A0`, `0040B980`, and `00412240`.
 
 ## Work log
 
@@ -39,3 +39,4 @@ Record each assignment here with its target VA, worker, worktree, result, valida
 - `004012B0`: No source change. 65 differing bytes of 237 remain after order, type, context, and initializer probes. Worker `act_atak` audit: nine exact claims pass without regression. Keep `accepted_drift`; numeric and linked checks remain unknown. Note: `decomp_notes/functions/0040/004012B0.md`.
 - `00413150`: Replaced duplicate growth logic with `ManagedArray` accessors in `src/aiuaimod.cpp`. Main check: 758/758 bytes, 36 aligned calls, correct owner and boundary. Main `aiuaimod` audit: 107 prior matching claims pass; owner audit: zero mismatches. Promoted to `matching`. Runtime and linked checks remain open. Note: `decomp_notes/functions/0041/00413150.md`.
 - `0040E520`: Removed the unscoped file alias and read the global directly. Main check: 149/149 bytes, seven aligned calls, correct owner and boundary. Main `aimodule` audit: 65 prior matching claims pass; owner audit: zero mismatches. Promoted to `matching`. Runtime and linked checks remain open. Note: `decomp_notes/functions/0040/0040E520.md`.
+- `0040B980`: Worker found a 495-byte exact form using two scratch locals and comma-sequenced getter calls. Main did not integrate this source: its explicit scheduling and unsupported scratch homes conflict with the natural-source policy. Preserved the exact candidate and experiments. Main baseline remains 30 bytes different; `aiconmod` audit found 17 exact claims intact. Keep `accepted_drift`. Note: `decomp_notes/functions/0040/0040B980.md`.
