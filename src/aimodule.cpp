@@ -182,22 +182,17 @@ int AIModule::loggingCommonHistory() const { return this->logCommonHistoryValue;
 
 void AIModule::setLogCommonHistory(int v) {
     this->logCommonHistoryValue = v;
-    FILE* f = commonHistoryLogFile;
-    if (v != 0) {
-        if (f == 0) {
-            commonHistoryLogFile = fopen("c:\\aoeai.txt", "wa");
-            time_t clock;
-            time(&clock);
-            this->logCommonHistory("Common AI History File Started %s", asctime(localtime(&clock)));
-            this->logCommonHistory("");
-            return;
-        }
+    if (v != 0 && commonHistoryLogFile == 0) {
+        commonHistoryLogFile = fopen("c:\\aoeai.txt", "wa");
+        time_t clock;
+        time(&clock);
+        this->logCommonHistory("Common AI History File Started %s", asctime(localtime(&clock)));
+        this->logCommonHistory("");
+        return;
     }
-    if (this->logCommonHistoryValue == 0) {
-        if (f != 0) {
-            fclose(f);
-            commonHistoryLogFile = 0;
-        }
+    if (v == 0 && commonHistoryLogFile != 0) {
+        fclose(commonHistoryLogFile);
+        commonHistoryLogFile = 0;
     }
 }
 

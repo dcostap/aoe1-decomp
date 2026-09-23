@@ -1,0 +1,39 @@
+# Experiment 6a1f508a57ec5aa727dd114dfac8c697bd05c0595de01ea3e283a89a56225e33
+# Base 90d7ed919bcffc8e33db4f4563a8437d6cc4082a
+diff --git a/src/aimodule.cpp b/src/aimodule.cpp
+index a155c12a4..7723fcf96 100644
+--- a/src/aimodule.cpp
++++ b/src/aimodule.cpp
+@@ -182,22 +182,17 @@ int AIModule::loggingCommonHistory() const { return this->logCommonHistoryValue;
+ 
+ void AIModule::setLogCommonHistory(int v) {
+     this->logCommonHistoryValue = v;
+-    FILE* f = commonHistoryLogFile;
+-    if (v != 0) {
+-        if (f == 0) {
+-            commonHistoryLogFile = fopen("c:\\aoeai.txt", "wa");
+-            time_t clock;
+-            time(&clock);
+-            this->logCommonHistory("Common AI History File Started %s", asctime(localtime(&clock)));
+-            this->logCommonHistory("");
+-            return;
+-        }
++    if (v != 0 && commonHistoryLogFile == 0) {
++        commonHistoryLogFile = fopen("c:\\aoeai.txt", "wa");
++        time_t clock;
++        time(&clock);
++        this->logCommonHistory("Common AI History File Started %s", asctime(localtime(&clock)));
++        this->logCommonHistory("");
++        return;
+     }
+-    if (this->logCommonHistoryValue == 0) {
+-        if (f != 0) {
+-            fclose(f);
+-            commonHistoryLogFile = 0;
+-        }
++    if (v == 0 && commonHistoryLogFile != 0) {
++        fclose(commonHistoryLogFile);
++        commonHistoryLogFile = 0;
+     }
+ }
+ 

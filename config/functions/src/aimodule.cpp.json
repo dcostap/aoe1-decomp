@@ -35,7 +35,7 @@
     "0040E4F0": {"status": "matching", "symbol": "?setLogHistory@AIModule@@UAEXH@Z"},
     "0040E500": {"status": "matching", "symbol": "?toggleLogHistory@AIModule@@UAEXXZ"},
     "0040E510": {"status": "matching", "symbol": "?loggingCommonHistory@AIModule@@UBEHXZ"},
-    "0040E520": {"status": "accepted_drift", "symbol": "?setLogCommonHistory@AIModule@@UAEXH@Z"},
+    "0040E520": {"status": "matching", "symbol": "?setLogCommonHistory@AIModule@@UAEXH@Z"},
     "0040E5C0": {"status": "matching", "symbol": "?toggleLogCommonHistory@AIModule@@UAEXXZ"},
     "0040E5D0": {"status": "matching", "symbol": "?setHistoryFilename@AIModule@@UAEXPAD@Z"},
     "0040E5E0": {"status": "matching", "symbol": "?intelligenceLevel@AIModule@@QBEHXZ"},

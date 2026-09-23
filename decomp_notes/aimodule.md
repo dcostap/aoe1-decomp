@@ -19,10 +19,8 @@ The module has no wrapper source, `.cpp` include, or context macro.
 The prior source banks supplied 65 matching owners and one accepted-drift owner.
 The migration keeps these statuses.
 
-The accepted-drift owner is:
-
-- `0040E520` `AIModule::setLogCommonHistory`: one redundant-test branch target
-  differs. The close-file state, calls, cleanup, and memory effects are equal.
+`0040E520` `AIModule::setLogCommonHistory` now matches all 149 bytes.
+See `decomp_notes/functions/0040/0040E520.md` for the source and evidence.
 
 ## Generated entries
 
