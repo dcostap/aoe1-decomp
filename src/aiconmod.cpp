@@ -166,9 +166,9 @@ int ConstructionAIModule::save(int outfile) {
     rge_write(outfile, (void*)&this->mapXSizeValue, 4);
     rge_write(outfile, (void*)&this->mapYSizeValue, 4);
 
-    item = this->constructionLots.next;
-    while (item != &this->constructionLots) {
-        if (item == 0) break;
+    for (item = this->constructionLots.next;
+         item != &this->constructionLots && item != 0;
+         item = item->next) {
         strcpy(tempString, item->name());
         tempInt = strlen(tempString);
         rge_write(outfile, &tempInt, 4);
@@ -199,13 +199,12 @@ int ConstructionAIModule::save(int outfile) {
         rge_write(outfile, &tempBOOL, 4);
         tempBOOL = item->buildAttempts();
         rge_write(outfile, &tempBOOL, 4);
-        item = item->next;
     }
 
     rge_write(outfile, (void*)&this->numberRandomConstructionLotsValue, 4);
-    item = this->randomConstructionLots.next;
-    while (item != &this->randomConstructionLots) {
-        if (item == 0) return 1;
+    for (item = this->randomConstructionLots.next;
+         item != &this->randomConstructionLots && item != 0;
+         item = item->next) {
         strcpy(tempString, item->name());
         tempInt = strlen(tempString);
         rge_write(outfile, &tempInt, 4);
@@ -236,7 +235,6 @@ int ConstructionAIModule::save(int outfile) {
         rge_write(outfile, &tempBOOL, 4);
         tempBOOL = item->buildAttempts();
         rge_write(outfile, &tempBOOL, 4);
-        item = item->next;
     }
     return 1;
 }
