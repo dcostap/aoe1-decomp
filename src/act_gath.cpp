@@ -493,9 +493,9 @@ int RGE_Action_Gather::stop() {
 int RGE_Action_Gather::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in->owner == this->obj->owner) {
-            short id = obj_in->master_obj->id;
             RGE_Master_Action_Object* object_master =
                 (RGE_Master_Action_Object*)this->obj->master_obj;
+            short id = obj_in->master_obj->id;
             if (id == object_master->drop_site || id == object_master->backup_drop_site) {
                 if (this->obj->attribute_amount_held > 0.0f) {
                     if (obj_in == this->target_obj2 && this->state == 8) {
@@ -513,9 +513,9 @@ int RGE_Action_Gather::move_to(RGE_Static_Object* obj_in, float x, float y, floa
         }
     }
 
-    this->target_z = z;
     this->target_x = x;
     this->target_y = y;
+    this->target_z = z;
     this->set_target_obj(0);
     this->set_state(15);
     return 1;
