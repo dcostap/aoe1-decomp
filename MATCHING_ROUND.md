@@ -17,11 +17,11 @@
 - Assigned:
   - Slot 1: `00413150`, `src/aiuaimod.cpp`, `../aoe1-match-slot-1`, agent `sa-3fcd0d77`.
   - Slot 2: `00410050`, `src/aipbook.cpp`, `../aoe1-match-slot-2`, agent `sa-75f0ed1d`: exact match integrated; no new assignment.
-  - Slot 3: `004012B0`, `src/act_atak.cpp`, `../aoe1-match-slot-3`, agent `sa-ccd95373`.
+  - Slot 3: `004012B0`, `src/act_atak.cpp`, `../aoe1-match-slot-3`, agent `sa-ccd95373`: no source change; no new assignment.
   - Slot 4: `0040E520`, `src/aimodule.cpp`, `../aoe1-match-slot-4`, agent `sa-f05f503a`.
   - Slot 5: `0040B980`, `src/aiconmod.cpp`, `../aoe1-match-slot-5`, agent `sa-f26cba7a`.
 - Integrated: `00403CE0`, `00403D90`, `00406E00`, `00410050` exact matches.
-- Open: 224 unassigned entries; four assignments in progress. `00401170`, `00404590`, `00405850`, `00412240`, and `0040B1A0` stay accepted drift.
+- Open: 224 unassigned entries; three assignments in progress. `00401170`, `004012B0`, `00404590`, `00405850`, `00412240`, and `0040B1A0` stay accepted drift.
 
 ## Work log
 
@@ -36,3 +36,4 @@ Record each assignment here with its target VA, worker, worktree, result, valida
 - `00403D90`: Direct target-ID comparison and x/y/z write order match the original. Main check: 257/257 bytes, 91/91 instructions, correct owner and eight calls. The `act_gath` audit has no exact-neighbor regressions; owner audit: zero mismatches. Promoted to `matching`. Runtime and linked-image checks remain open. Note: `decomp_notes/functions/0040/00403D90.md`.
 - `0040B1A0`: Kept simpler `for` loops in `src/aiconmod.cpp`; output remains 48 bytes different in 1,263 bytes. Main `aiconmod` audit: 17 matching claims pass; owner audit: zero mismatches. Keep `accepted_drift`. No runtime or linked-image checks ran. Note: `decomp_notes/functions/0040/0040B1A0.md`.
 - `00410050`: Replaced raw pointer arithmetic with indexed field copies in `src/aipbook.cpp`. Main check: 170/170 bytes, correct owner and boundary; `aipbook` audit: 65 exact claims pass; owner audit: zero mismatches. Promoted to `matching`. No runtime or linked-image checks ran. Note: `decomp_notes/functions/0041/00410050.md`.
+- `004012B0`: No source change. 65 differing bytes of 237 remain after order, type, context, and initializer probes. Worker `act_atak` audit: nine exact claims pass without regression. Keep `accepted_drift`; numeric and linked checks remain unknown. Note: `decomp_notes/functions/0040/004012B0.md`.
