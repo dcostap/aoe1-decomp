@@ -22,6 +22,7 @@
   - Slot 5: `0040B980`, `src/aiconmod.cpp`, `../aoe1-match-slot-5`, agent `sa-f26cba7a`: exact experiment archived; source not integrated.
 - Integrated: `00403CE0`, `00403D90`, `00406E00`, `0040E520`, `00410050`, `00413150` exact matches.
 - Open: 224 unassigned entries; zero assignments in progress. Seven attempted functions stay accepted drift: `00401170`, `004012B0`, `00404590`, `00405850`, `0040B1A0`, `0040B980`, and `00412240`.
+- The five worktrees now point to main and have clean status. Do not launch more workers without new user permission.
 
 ## Work log
 
