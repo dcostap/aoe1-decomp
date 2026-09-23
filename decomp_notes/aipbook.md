@@ -49,8 +49,9 @@ differs by 64 bytes and escapes the original boundary once. The calls, bounds,
 predicates, memory effects, and return values match, but the boundary escape
 prevents an accepted-drift claim.
 
-`00410050` (`AIPlayStatus::copy`) stays accepted drift. The copy order and memory
-effects match. The remaining difference is a seven-byte setup register-order drift.
+`00410050` (`AIPlayStatus::copy`) now uses indexed copies of named fields.
+It matches all 170 original bytes without copying grouping padding.
+See `decomp_notes/functions/0041/00410050.md`.
 
 No status changed during source reunification. The old wrapper and all 68 fragment
 owners are removed. The compiler-generated destructor remains outside this module.

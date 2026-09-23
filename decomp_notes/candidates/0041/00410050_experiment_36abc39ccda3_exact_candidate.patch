@@ -1,0 +1,56 @@
+# Experiment 36abc39ccda3fbf25d41bd5bfe940f90eab1fb04f13e411cc9afc95dde4b48e8
+# Base b8e25900a4779a226aeed946ab42b66be9543379
+diff --git a/src/aipbook.cpp b/src/aipbook.cpp
+index a43e7c2ae..7d4e4a384 100644
+--- a/src/aipbook.cpp
++++ b/src/aipbook.cpp
+@@ -761,9 +761,8 @@ void AIPlayStatus::save(int outfile) {
+     rge_write(tempInt, &lastPhaseChangeTimeValue, 4);
+ }
+ 
+-// order before the grouping loop. The copy order and memory effects match.
++// Copy only the named grouping fields; the two padding bytes are not copied.
+ void AIPlayStatus::copy(AIPlayStatus* ps) {
+-    int count = 50;
+     this->playNumberValue = ps->playNumberValue;
+     this->targetValue = ps->targetValue;
+     int z = ps->originalPointValue.zValue;
+@@ -774,29 +773,17 @@ void AIPlayStatus::copy(AIPlayStatus* ps) {
+     this->originalPointValue.zValue = z;
+     this->currentPhaseValue = ps->currentPhaseValue;
+     this->savedAttackerValue = ps->savedAttackerValue;
++    this->lastPhaseChangeTimeValue = ps->lastPhaseChangeTimeValue;
+ 
+-    AIPlayStatus* p = ps;
+-    this->lastPhaseChangeTimeValue = p->lastPhaseChangeTimeValue;
+-    unsigned char* dest = (unsigned char*)this + 4;
+-    int diff = (unsigned char*)p - (unsigned char*)this;
+-    unsigned char* src = (unsigned char*)p;
+-
+-    do {
+-        *(int*)(dest - 4) = *(int*)src;
+-        src += 8;
+-        *dest = *(dest + diff);
+-        *(dest + 1) = *(src - 3);
+-        dest += 8;
+-        count--;
+-    } while (count);
++    for (int groupingIndex = 0; groupingIndex < 50; groupingIndex++) {
++        this->groupings[groupingIndex].id = ps->groupings[groupingIndex].id;
++        this->groupings[groupingIndex].groupID = ps->groupings[groupingIndex].groupID;
++        this->groupings[groupingIndex].type = ps->groupings[groupingIndex].type;
++    }
+ 
+-    int* hpDest = &this->originalHitPointsValue[0];
+-    int hpCount = 5;
+-    do {
+-        *hpDest = *(int*)((unsigned char*)hpDest + diff);
+-        hpDest++;
+-        hpCount--;
+-    } while (hpCount);
++    for (int hitPointIndex = 0; hitPointIndex < 5; hitPointIndex++) {
++        this->originalHitPointsValue[hitPointIndex] = ps->originalHitPointsValue[hitPointIndex];
++    }
+ }
+ 
+ void AIPlayStatus::removeDeadUnits(int gID, RGE_Game_World* world) {

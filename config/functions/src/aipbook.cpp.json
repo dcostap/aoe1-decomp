@@ -61,7 +61,7 @@
     "0040FE50": {"status": "matching", "symbol": "?copyUnits@AIPlayStatus@@QAEXPAHAAH@Z"},
     "0040FE90": {"status": "matching", "symbol": "?load@AIPlayStatus@@QAEXH@Z"},
     "0040FF70": {"status": "matching", "symbol": "?save@AIPlayStatus@@QAEXH@Z"},
-    "00410050": {"status": "accepted_drift", "symbol": "?copy@AIPlayStatus@@QAEXPAV1@@Z"},
+    "00410050": {"status": "matching", "symbol": "?copy@AIPlayStatus@@QAEXPAV1@@Z"},
     "00410100": {"status": "matching", "symbol": "?removeDeadUnits@AIPlayStatus@@QAEXHPAVRGE_Game_World@@@Z"},
     "00410150": {"status": "matching", "symbol": "?resetHitPoints@AIPlayStatus@@QAEXHPAVRGE_Game_World@@@Z"},
     "004101B0": {"status": "matching", "symbol": "??0AIPlayBook@@QAE@XZ"},
