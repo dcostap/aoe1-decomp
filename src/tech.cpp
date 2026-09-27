@@ -103,7 +103,7 @@ TRIBE_Tech::TRIBE_Tech(char* filename) {
                         this->tech_tree[j].attribute_used[tech_id] =
                             (unsigned char)len;
                     }
-                    fscanf(file, "%hd %hd %ld %ld %ld", &this->tech_tree[j].string_id, &this->tech_tree[j].string_id2,
+                    fscanf(file, "%hd %hd %d %d %d", &this->tech_tree[j].string_id, &this->tech_tree[j].string_id2,
                            &this->tech_tree[j].help_string_id, &this->tech_tree[j].help_page_id,
                            &this->tech_tree[j].hotkey_id);
                 }

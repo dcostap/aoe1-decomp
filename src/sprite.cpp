@@ -22,7 +22,7 @@ extern int do_draw_log;
 extern int safe_draw_log;
 
 static const char sprite_format[] =
-    " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %hd %hd";
+    " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %hd %hd";
 static const char picture_format[] = " %hd %hd %hd %hd";
 static const char sound_format[] = "%hd %hd %hd";
 

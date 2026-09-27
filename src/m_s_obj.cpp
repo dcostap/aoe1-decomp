@@ -338,7 +338,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
 
     fscanf(infile, "%s %hd %hd %hd %hd %hd %hd %hd %hd %f " "%hd %f %f %f %hd %hd %hd %hd %hd %hd "
            "%hd %hd %hd %hd %hd %f %f %hd %hd %hd " "%hd %hd %hd %f %f %hd %hd %hd %hd %hd "
-           "%hd %ld %ld %ld %hd %hd %hd %hd %hd %f %f %f", temp_name + 4, &this->string_id, &this->string_id2,
+           "%hd %d %d %d %hd %hd %hd %hd %hd %f %f %f", temp_name + 4, &this->string_id, &this->string_id2,
            &this->object_group, &temp_undead_sprite, &temp_obj_max, &temp_fog_flag, &temp_hide_in_scenario_editor, &this->hp,
            &this->los, &temp_movement_type, &this->radius_x, &this->radius_y,
            &this->radius_z, &this->death_spawn_obj_id, &temp_available,
