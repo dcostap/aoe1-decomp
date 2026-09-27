@@ -54,18 +54,8 @@ unsigned long tribe_group_properties[0x28] = {
 int tribe_group_properties_num = 0x28;
 
 static char tplayerSourceName[] = "C:\\msdev\\work\\age1_x1\\tplayer.cpp";
-static char tplayerEmptyName[] = "";
-static char tplayerRandomName[] = "Random";
-static char tplayerDefaultPlan[] = "default";
-static char tplayerMapMessages[6][32] = {
-    "Map: unknown", "Map: open", "Map: water", "Map: highland",
-    "Map: forest", "Map: random"
-};
-static char tplayerBuildMessage[] = "Build list: %s";
-static char tplayerFileMessage[] = "File: %s";
-static char tplayerDefaultMessage[] = "Default";
-static char tplayerRulesMessage[] = "Rules: %s";
-static char tplayerDifficultyMessage[] = "Difficulty: %d";
+// AI setup log messages and names, as referenced by the original executable.
+static char tplayerRandomName[] = "RandomGameSpecialized";
 
 
 
@@ -1556,12 +1546,12 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
 
     if (this->playerAI) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case 0: this->playerAI->logCommonHistory(tplayerMapMessages[0]); break;
-        case 1: this->playerAI->logCommonHistory(tplayerMapMessages[1]); break;
-        case 2: this->playerAI->logCommonHistory(tplayerMapMessages[2]); break;
-        case 3: this->playerAI->logCommonHistory(tplayerMapMessages[3]); break;
-        case 4: this->playerAI->logCommonHistory(tplayerMapMessages[4]); break;
-        default: this->playerAI->logCommonHistory(tplayerMapMessages[5]); break;
+        case 0: this->playerAI->logCommonHistory("We have an all water map."); break;
+        case 1: this->playerAI->logCommonHistory("We have a mostly water map."); break;
+        case 2: this->playerAI->logCommonHistory("We have a land and water map."); break;
+        case 3: this->playerAI->logCommonHistory("We have a mostly land map."); break;
+        case 4: this->playerAI->logCommonHistory("We have an all land map."); break;
+        default: this->playerAI->logCommonHistory("We don't have a specific map type (i.e. this is a scenario)."); break;
         }
         rge_base_game->get_string(STRING_ID_FILE_NONE, noneString, 256);
         rge_base_game->get_string(STRING_ID_AI_FILE_RANDOM, randomString, 256);
@@ -1574,49 +1564,49 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
                 do {
                     this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
                                                                 static_cast<TRIBE_Game*>(rge_base_game)->mapType(), static_cast<TRIBE_Game*>(rge_base_game)->victoryType(), static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
-                    this->playerAI->logCommonHistory(tplayerBuildMessage, buildListName);
+                    this->playerAI->logCommonHistory("Loading random game selected build list=%s.", buildListName);
                 } while (this->playerAI->buildAI.loadBuildList(buildListName, this) == 0);
             } else {
-                this->playerAI->logCommonHistory(tplayerFileMessage, bL);
+                this->playerAI->logCommonHistory("Loading build list=%s.", bL);
                 this->playerAI->buildAI.loadBuildList(bL, this);
             }
         } else {
             do {
                 this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
                                                             static_cast<TRIBE_Game*>(rge_base_game)->mapType(), static_cast<TRIBE_Game*>(rge_base_game)->victoryType(), static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
-                this->playerAI->logCommonHistory(tplayerBuildMessage, buildListName);
+                this->playerAI->logCommonHistory("Loading default build list=%s.", buildListName);
             } while (this->playerAI->buildAI.loadBuildList(buildListName, this) == 0);
         }
 
         if (cP != 0) {
             if (strcmp(cP, randomString) == 0) {
-                this->playerAI->logCommonHistory(tplayerDefaultMessage);
+                this->playerAI->logCommonHistory("Loading no city plan (influence placement will be used).");
             } else {
-                this->playerAI->logCommonHistory(tplayerFileMessage, cP);
+                this->playerAI->logCommonHistory("Loading city plan=%s.", cP);
                 this->playerAI->constructionAI.loadConstructionPlan(cP, this->world->map->map_width,
                                                                     this->world->map->map_height, 0, 0, 0);
                 goto constructionLoaded;
             }
         } else {
-            this->playerAI->logCommonHistory(tplayerDefaultMessage);
+            this->playerAI->logCommonHistory("Loading no city plan (influence placement will be used).");
         }
-        this->playerAI->constructionAI.loadConstructionPlan(tplayerDefaultPlan, this->world->map->map_width,
+        this->playerAI->constructionAI.loadConstructionPlan("NONE", this->world->map->map_width,
                                                             this->world->map->map_height, 0, 0, 0);
 
     constructionLoaded:
 
         if (rS && strcmp(rS, randomString) != 0) {
-            this->playerAI->logCommonHistory(tplayerFileMessage, rS);
+            this->playerAI->logCommonHistory("Loading rule set=%s.", rS);
             this->playerAI->strategyAI.loadRules(rS);
         } else if (strcmp(ruleSetName, tplayerRandomName) != 0) {
-            this->playerAI->logCommonHistory(tplayerRulesMessage, ruleSetName);
+            this->playerAI->logCommonHistory("Loading random game selected rule set=%s.", ruleSetName);
             this->playerAI->strategyAI.loadRules(ruleSetName);
         } else {
-            this->playerAI->logCommonHistory(tplayerDefaultMessage);
+            this->playerAI->logCommonHistory("Rule set has been initialized with code-controlled options.");
         }
 
         int r = rge_base_game->difficulty();
-        this->playerAI->logCommonHistory(tplayerDifficultyMessage, r);
+        this->playerAI->logCommonHistory("Setting difficulty level to %d.", r);
         this->playerAI->strategyAI.setDifficultyLevel(r);
         this->playerAI->updateBuildAIWithObjects();
 
@@ -2165,10 +2155,10 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
 selectedCountersDone:
     // This player-name resource range is absent from the checked DLL.
     rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27F6, tempString, 256);
-    this->playerAI->logCommonHistory(tplayerEmptyName, tempString, static_cast<int>(this->master_player_id) - 1);
-    this->playerAI->logCommonHistory(tplayerBuildMessage, b);
+    this->playerAI->logCommonHistory("I am the %s civ (culture #%d):", tempString, static_cast<int>(this->master_player_id) - 1);
+    this->playerAI->logCommonHistory("Selected a best build list of '%s'.", b);
     strcpy(r, tplayerRandomName);
-    this->playerAI->logCommonHistory(tplayerRulesMessage);
+    this->playerAI->logCommonHistory("Setting AI Personality:");
 
     int workingMapType = mapType;
     switch (gameType) {
