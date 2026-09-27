@@ -81,7 +81,8 @@ TRIBE_Tech::TRIBE_Tech(char* filename) {
                     short j;
                     short tech_id;
 
-                    fscanf(file, "%hd", &j);
+                    // The original reads a 32-bit value into this short stack slot.
+                    fscanf(file, "%d", &j);
                     fscanf(file, "%s %hd %hd %hd %hd %hd %hd %hd", name_buf, &this->tech_tree[j].pre_reqs_required,
                            &this->tech_tree[j].research, &this->tech_tree[j].effect, &this->tech_tree[j].track,
                            &this->tech_tree[j].icon, &button_temp, &this->tech_tree[j].build_obj_id);

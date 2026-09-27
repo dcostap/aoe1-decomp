@@ -25,7 +25,9 @@ Confirmed differences repaired in source:
   fewer `%hd` before the floats. Do not add a destination to compensate:
   preserve the original argument list and partial-scan behavior.
 - `src/m_s_obj.cpp`, `setup`, and `src/tech.cpp`, constructor: the original
-  formats use `%d` for the three 32-bit help fields, not `%ld`.
+  formats use `%d` for the three 32-bit help fields, not `%ld`. The tech
+  constructor also reads a tech index with `%d` into a short stack slot.
+  Assembly at `0050BC38` through `0050BC50` confirms this unusual width.
 - `src/scr_ach.cpp`, `set_mode`: the original formats the value as `%d%%`.
 
 `shape_version_110` in `src/game_globals.cpp` is a four-byte integer,
@@ -34,11 +36,19 @@ Do not add a NUL byte to this field based on the scan.
 
 The `Panel_ez.cpp` scan formats differ in spaces between conversion fields.
 `sscanf` treats each format-space run as a request to skip input spaces.
-This finding does not change the parsed fields. One extra original `%d`
-reference remains in the `TRIBE_Tech` constructor scan. Its call site needs
-review before a source change.
+This finding does not change the parsed fields.
 
 Remaining findings include debug messages, logs, diagnostics, and other
 input formats. They need call-site review. A differing printable string alone
 does not prove a game defect. A matching code result alone does not prove
 equal linked data or equal gameplay behavior.
+
+The local `save-check` trace still fails at world update 56,688. The first
+different RNG record is 4,034,042: the original next calls `tplayer.cpp:607`;
+the rebuilt next calls `asprite.cpp:183`. Both return 20,949 at that record.
+The first state difference is update 56,694. The save written at update 8,785
+matches after the AI setup repair. The first RNG call-site difference does not
+identify the function that caused the earlier state change. Keep this replay
+failure open; do not claim a whole-game parity pass.
+This replay report is under
+`build/runtime/traces-20260927T222151457247Z-00957913927f/report.json`.
