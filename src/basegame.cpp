@@ -1010,7 +1010,7 @@ int RGE_Base_Game::setup_cmd_options() {
         fixed_update_time = 20;
     }
 
-    argument = _mbsstr(cmd_line, "RESEND1");
+    argument = _mbsstr(cmd_line, "RESEND1=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1026,7 +1026,7 @@ int RGE_Base_Game::setup_cmd_options() {
         resend_adj1 = atol(temp_str);
     }
 
-    argument = _mbsstr(cmd_line, "RESEND2");
+    argument = _mbsstr(cmd_line, "RESEND2=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1042,7 +1042,7 @@ int RGE_Base_Game::setup_cmd_options() {
         resend_adj2 = atol(temp_str);
     }
 
-    if ((strstr(cmd_line, "NOMOUSE") != 0) || (strstr(cmd_line, "NO_MOUSE") != 0)) {
+    if ((strstr(cmd_line, "NOMOUSE") != 0) || (strstr(cmd_line, "NO MOUSE") != 0)) {
         this->custom_mouse = 0;
     }
 
@@ -1196,7 +1196,7 @@ int RGE_Base_Game::setup_cmd_options() {
         do_color_log = 1;
     }
 
-    argument = _mbsstr(cmd_line, "LOGAI");
+    argument = _mbsstr(cmd_line, "LOGAI=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1212,7 +1212,7 @@ int RGE_Base_Game::setup_cmd_options() {
         specificAIPlayerToLog = atol(temp_str);
     }
 
-    argument = _mbsstr(cmd_line, "LOGDEBUG");
+    argument = _mbsstr(cmd_line, "LOGDEBUG=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1284,7 +1284,7 @@ int RGE_Base_Game::setup_cmd_options() {
         RESFILE_Set_Missing_Flag(1);
     }
 
-    argument = _mbsstr(cmd_line, "SCENARIOS");
+    argument = _mbsstr(cmd_line, "SCENARIOS=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1300,7 +1300,7 @@ int RGE_Base_Game::setup_cmd_options() {
         _mbsncat(this->prog_info->scenario_dir, "\\", 1);
     }
 
-    argument = _mbsstr(cmd_line, "WORLD");
+    argument = _mbsstr(cmd_line, "WORLD=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1315,7 +1315,7 @@ int RGE_Base_Game::setup_cmd_options() {
         }
     }
 
-    argument = _mbsstr(cmd_line, "FIXEDUPDATE");
+    argument = _mbsstr(cmd_line, "FIXEDUPDATE=");
     if (argument) {
         do_debug_timeGetTime = 1;
         do_fixed_update = 1;
@@ -1333,7 +1333,7 @@ int RGE_Base_Game::setup_cmd_options() {
         fixed_update_time = atol(temp_str);
     }
 
-    argument = _mbsstr(cmd_line, "AISPEED");
+    argument = _mbsstr(cmd_line, "AISPEED=");
     if (argument) {
         do_debug_timeGetTime = 1;
         do_fixed_update = 1;
@@ -1351,7 +1351,7 @@ int RGE_Base_Game::setup_cmd_options() {
         debug_timeGetTime_interval = atol(temp_str);
     }
 
-    argument = _mbsstr(cmd_line, "RANDOMGAME");
+    argument = _mbsstr(cmd_line, "RANDOMGAME=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1367,7 +1367,7 @@ int RGE_Base_Game::setup_cmd_options() {
         this->random_game_seed = atol(temp_str);
     }
 
-    argument = _mbsstr(cmd_line, "RANDOMMAP");
+    argument = _mbsstr(cmd_line, "RANDOMMAP=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1383,7 +1383,7 @@ int RGE_Base_Game::setup_cmd_options() {
         this->random_map_seed = atol(temp_str);
     }
 
-    argument = _mbsstr(cmd_line, "DRAWLOG");
+    argument = _mbsstr(cmd_line, "DRAWLOG=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1406,7 +1406,7 @@ int RGE_Base_Game::setup_cmd_options() {
         safe_draw_log = 1;
     }
 
-    argument = _mbsstr(cmd_line, "DATA");
+    argument = _mbsstr(cmd_line, "DATA=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1453,7 +1453,7 @@ int RGE_Base_Game::setup_cmd_options() {
         this->setGameDeveloperMode(1);
     }
 
-    argument = _mbsstr(cmd_line, "SPEED1");
+    argument = _mbsstr(cmd_line, "SPEED1=");
     if (argument) {
         character = *argument;
         while (character != '=') {
@@ -1469,7 +1469,7 @@ int RGE_Base_Game::setup_cmd_options() {
         speed_val1 = atol(temp_str);
     }
 
-    argument = _mbsstr(cmd_line, "SPEED2");
+    argument = _mbsstr(cmd_line, "SPEED2=");
     if (argument) {
         character = *argument;
         while (character != '=') {
