@@ -11,6 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = ROOT / "runtime"
 SAVE_BUNDLE_ROOT = ROOT / "config/harness/save-bundles"
+# Personal saves pinned in config/harness/savegames.json but kept out of git.
+LOCAL_SAVES = ROOT / "local/harness/savegames"
 ORIGINAL_SHA256 = "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90"
 COMPAT_LAYER = "DWM8And16BitMitigation"
 # Large input-only formats. Profiles, saves, scenarios, EXEs, and DLLs stay private.
@@ -59,19 +61,58 @@ def save_fixtures(bundle=None):
         if not isinstance(name, str) or not name or '/' in name or '\\' in name or ':' in name or \
                 Path(name).suffix.lower() not in ('.gmx', '.gam') or name.lower() in names:
             raise ValueError('Invalid or duplicate save fixture name.')
-        path = folder / name
+        names.add(name.lower())
+        if row.get('local') is True and bundle is None:
+            # A local save is optional: without it the pool is smaller, and a
+            # recording that needs it fails its save contract check.
+            path = LOCAL_SAVES / name
+            if not path.exists():
+                continue
+        else:
+            path = folder / name
         if path.is_symlink() or path.stat().st_size != row.get('size') or digest(path) != row.get('sha256'):
             raise ValueError(f'Save fixture hash or size differs: {name}')
-        names.add(name.lower())
         result.append((path, row))
     return result
+
+
+def select_save_fixtures(fixtures, save_filter):
+    """Select the exact pinned subset required by one human recording."""
+    if not isinstance(save_filter, dict) or not save_filter:
+        raise ValueError('A save filter must contain at least one pinned fixture.')
+    expected = {}
+    for name, sha256 in save_filter.items():
+        if not isinstance(name, str) or not name or '/' in name or '\\' in name or ':' in name:
+            raise ValueError('Invalid save filter name.')
+        key = name.lower()
+        if key in expected or not isinstance(sha256, str):
+            raise ValueError('Invalid or duplicate save filter entry.')
+        expected[key] = sha256
+
+    selected = []
+    found = set()
+    for path, row in fixtures:
+        key = row['name'].lower()
+        if key in expected:
+            if row['sha256'] != expected[key]:
+                raise ValueError(f'Save fixture hash differs from recording contract: {row["name"]}')
+            selected.append((path, row))
+            found.add(key)
+    if found != set(expected):
+        missing = ', '.join(sorted(set(expected) - found))
+        raise ValueError(f'Save fixtures differ from the recording contract; missing {missing}. '
+                         f'Personal saves belong in {LOCAL_SAVES}.')
+    return selected
 
 
 def verify_harness_saves(runtime, manifest):
     """Reject private saves and changed fixtures before starting the game."""
     if manifest.get('savegame_source') != 'repository-fixtures':
         raise ValueError('Saved-game input requires repository save fixtures.')
-    expected = {row['name']: row['sha256'] for _, row in save_fixtures(manifest.get('savegame_bundle'))}
+    fixtures = save_fixtures(manifest.get('savegame_bundle'))
+    if manifest.get('savegame_filter') is not None:
+        fixtures = select_save_fixtures(fixtures, manifest['savegame_filter'])
+    expected = {row['name']: row['sha256'] for _, row in fixtures}
     folder = runtime / 'savegame'
     if {path.name for path in folder.iterdir()} != set(expected):
         raise ValueError('Runtime save set differs from repository fixtures.')
@@ -86,7 +127,7 @@ def verify_harness_saves(runtime, manifest):
 
 
 def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harness_saves=False,
-            save_bundle=None) -> dict:
+            save_bundle=None, save_filter=None) -> dict:
     if assets not in ("copy", "hardlink"):
         raise ValueError("Asset mode must be copy or hardlink.")
     source, exe, output = source.resolve(), exe.resolve(), output.resolve()
@@ -105,7 +146,11 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harn
     for name in ("data", "data2", "avi", "sound", "EMPIRES.EXE", "language.dll", "languagex.dll"):
         if not (source / name).exists():
             raise ValueError(f"Missing installed runtime input: {name}")
+    if save_filter is not None and (not harness_saves or save_bundle is not None):
+        raise ValueError('A save filter requires default repository fixtures, not a save bundle.')
     fixtures = save_fixtures(save_bundle) if harness_saves else []
+    if save_filter is not None:
+        fixtures = select_save_fixtures(fixtures, save_filter)
     _, _, save_bundle_id = resolve_save_bundle(save_bundle) if harness_saves else (None, None, None)
     exe_hash = digest(exe)
     files = []
@@ -169,6 +214,8 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harn
     }
     if harness_saves and save_bundle_id is not None:
         report['savegame_bundle'] = save_bundle_id
+    if save_filter is not None:
+        report['savegame_filter'] = dict(save_filter)
     (output / "runtime_manifest.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return report
 

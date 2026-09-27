@@ -27,3 +27,6 @@ vc50.idb
 .pi/extensions/*
 !.pi/extensions/function-status-widget/
 !.pi/extensions/function-status-widget/**
+
+# Personal gameplay recordings, traces, and saves used by the harness; never committed.
+/local/

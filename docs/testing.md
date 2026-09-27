@@ -108,24 +108,43 @@ Run `game.cmd setup` first if the pinned graphics and instrumentation dependenci
 ```cmd
 game.cmd test-captures
 game.cmd test-parity
+game.cmd test-traces
 ```
 
-The runtime suites run with one worker. Parallel workers are disabled because
-parallel runs showed drift. `--jobs` set to one is allowed. Any value above one fails
+The paced suites run with one worker. Parallel workers are disabled because
+parallel paced runs showed drift. `--jobs` set to one is allowed. Any value above one fails
 with a clear error before a game starts.
 
 Each hidden worker owns its private desktop and output folder.
 The parity suite also keeps nested replay, human, and native-feature captures
-serial.
+serial. The traced suite is the exception; see below.
+
+`test-traces` replays each deterministic-trace recording once on the original and
+once on the rebuilt executable, in parallel. `--jobs N` sets the process count; the
+default is half the logical CPUs. Traced replay feeds every recorded clock value and
+message-pump result back to the game, so wall time and CPU load cannot change game
+state. The recording session is the oracle. Each run must reproduce its RNG trace
+hash and count, per-update RNG checkpoints, update and input counts, world time and
+object count, and camera. Both runs must consume the same trace prefix and write the
+same files. Every file the game writes (saves, scenarios, anything else) must match
+the recording session byte for byte. A mismatch reports the first differing world update, and for RNG the
+first differing record with its source line. Heap allocations are zero-filled on
+both sides; allocation counts are reported but do not gate the result. Traced runs
+capture only the terminal frame. `test-parity` includes the traced suite as one worker.
+Traces are personal data in the gitignored `local/harness/` folder, not in git.
+Without local traces, `test-traces` prints `SKIPPED` and `test-parity` reports the
+traces worker as skipped. A skip is not a gameplay pass.
+See [traced recordings](human_replay.md#exact-fast-replay-from-a-traced-recording).
 
 `test-captures` runs the menu/UI suite. `--list` only lists cases; `--case` selects a subset.
 Automated runs use a fixed registry profile and default to 640x480.
 Use `--resolution WIDTHxHEIGHT` to run the same fixture at another supported resolution.
 See [the runtime harness](runtime_harness.md) for its setup, reports, and coverage.
 
-`test-parity` runs the short new-game script, three gameplay cases, and the responsive editor case.
-The new-game recordings contain 324 and 1,361 messages. The `late-game-match` saved-game recording contains 559 messages.
-Each case runs three originals and three rebuilt games.
+`test-parity` runs the short new-game script, three paced human gameplay cases, the responsive editor case,
+the traced suite, and native-feature captures.
+The paced human recordings contain 324, 1,361, and 559 messages.
+Each human case runs three originals and three rebuilt games.
 Each human case checks all 15 pairs, including within-executable and cross-executable comparisons.
 It compares inputs, clocks, all captured state observations, terminal observations, complete RNG records, and raw RGB hashes.
 Missing world entry/exit observations or complete RNG evidence fail the check.
@@ -135,7 +154,7 @@ Human capture reports also list changed save files. Chain cases compare their ex
 file hashes between repeated originals and the rebuilt executable.
 Reports and videos remain under `build/runtime/`.
 
-`game.cmd test-parity --check-fixtures` checks all three recording hashes and required save hashes without running games.
+`game.cmd test-parity --check-fixtures` checks all permanent recording hashes and required save hashes without running games.
 It is not a gameplay pass.
 The new-game cases use explicit v4 control. The saved-game case uses v6 control with its strict save contract.
 Both profiles suppress native timer messages and control queued paint delivery.
@@ -143,13 +162,17 @@ They use an input-relative terminal turn and preserve synchronous game-requested
 They compare new executions under the same profile, not historical v1 clocks or world-update counts.
 The recorded messages, routes, turns, and target panels remain required.
 The recordings remain unchanged. Reports keep their historical timing differences visible.
+The untraced `late-game-match-2` and `new-game-15mins-in` recordings are kept locally but are not suite cases.
+Paced replay of their dense mouse input would take hours. Re-record them with traces.
+See the [save fixture notes](../config/harness/savegames/README.md).
 Use `game.cmd test-parity --legacy` for the old same-policy v1 suite and its known repeatability failures.
 An unexpected control profile still fails validation. No state alignment, pixel masks, or timing tolerances apply.
 
-Harness runs stage only the repository saves pinned by `config/harness/savegames.json`.
+Harness runs stage only repository save fixtures pinned by `config/harness/savegames.json`.
 They exclude the local runtime's `savegame` directory. Each run uses private fixture copies.
-Legacy new-game comparisons still ignore save hashes. New v5/v6 human profiles check all save inputs.
-The supplied `late_game_match.gmx` and its 559-message recording are now part of the default parity suite.
+Strict human replays stage exactly the saves pinned by each recording contract.
+The common pool includes the committed `late_game_match.gmx` and the local-only
+`late_game_match_2.gmx` and `new_game_15mins_in.gmx` from `local/harness/savegames/`.
 Its recorded input case passed three original repeat comparisons under v6 with the required observers.
 See [the saved-game check record](../decomp_notes/saved_game_fixture_20260916.md).
 The first rebuilt replay failed on RNG, clock, state, and image differences.

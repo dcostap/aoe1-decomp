@@ -6,7 +6,7 @@
 // Scope: operator new is emitted inside empiresx.exe. DLL allocators stay
 // native. C++ constructors run after this fill and overwrite fields.
 {
-    const allocNew = base.add(0x14b6f0); // operator new(unsigned) at 0x0054B6F0
+    const allocNew = target('alloc_new'); // operator new(unsigned); original 0x0054B6F0
     const zeroChunk = new Uint8Array(65536);
     let allocBlocks = 0, allocBytes = 0;
     Interceptor.attach(allocNew, {

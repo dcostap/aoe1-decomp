@@ -13,8 +13,9 @@ time. `--jobs` set to one is allowed. Values above one fail before a game starts
 because parallel runs showed drift.
 
 Use this command for gameplay parity checks. It runs the short script and three controlled human-input cases.
-Each case runs three fresh originals and three fresh rebuilt games: 24 executions in total.
-The human cases use these unchanged recordings under `config/harness/`:
+The script and human cases launch 24 processes. The responsive editor adds six more.
+Native-feature captures run separately. Each human case runs three fresh originals and three fresh rebuilt games.
+The human cases use these recordings under `config/harness/`:
 
 - `human-accepted-20260914.json`: 324 messages, new game.
 - `human-candidate-20260915.json`: 1,361 messages, new game.
@@ -22,9 +23,12 @@ The human cases use these unchanged recordings under `config/harness/`:
 
 The suite checks all recording hashes and required save hashes before starting games.
 The historical `source_report` path records provenance. Replay does not need that old report.
-The new-game cases upgrade v1 inputs to v4 control. The saved-game case upgrades v5 inputs to v6 control.
-Both controlled profiles suppress native game-thread timer messages and control queued root-window paints at idle boundaries.
-V6 also preserves the strict repository-save contract. Personal saves cannot enter the test.
+The old new-game cases upgrade v1 inputs to v4 control. The original saved-game case upgrades v5 inputs to v6.
+The local untraced recordings `human-late-game-match-2.json` and `human-new-game-15mins-in.json`
+under `local/harness/recordings/` are not suite cases. All controlled profiles suppress native game-thread timer messages
+and control queued root-window paints at idle boundaries.
+V6 and V9 preserve strict repository-save contracts. Each replay stages only its contract's pinned saves.
+Only saves pinned by the fixture pool can enter the test.
 Synchronous game-requested paints remain intact. Replay stops eight idle turns after the final recorded input.
 The original executable supplies expected behavior under this shared control profile.
 The reports preserve historical recording fidelity, including its different clock values and world-update counts.
@@ -46,11 +50,11 @@ All human cases still run when an earlier case finds differences.
 
 Use `game.cmd test-parity --legacy` to run the former same-policy v1 suite.
 It retains its strict old timing checks and known repeatability failures. V1 recordings and templates remain unchanged.
-Recording new user input uses v5. Use `--controlled` when replaying it for controlled-input comparisons.
+New user recordings use v8. Use `--controlled` to replay them with v9 control.
 See [human replay](human_replay.md#controlled-input-replay-v4) for commands and limits.
 
 `python -m pytest -q` checks the fixture and suite routing without starting games.
-`game.cmd test-parity --check-fixtures` checks all three recordings and required saves without starting games.
+`game.cmd test-parity --check-fixtures` checks all permanent recordings and required saves without starting games.
 The commands below are focused checks, not substitutes for the standard suite.
 
 The optional editor case uses `game.cmd test-parity --editor`.

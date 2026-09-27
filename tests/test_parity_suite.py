@@ -9,6 +9,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools/harness'))
 import parity_suite as suite
 
 
+@pytest.fixture(autouse=True)
+def one_local_trace(monkeypatch):
+    # Traces are personal local data; the suite recipe must not depend on them.
+    monkeypatch.setattr(suite.trace_suite, 'check_fixtures', lambda names=None: {'case': {'duration_ms': 1000}})
+
+
 def test_parallel_suite_workers_are_rejected(tmp_path):
     commands = [(f'worker-{index}', [f'worker-{index}'], 10) for index in range(3)]
     with pytest.raises(ValueError, match='Parallel harness workers are disabled'):
@@ -176,7 +182,8 @@ def test_editor_comparison_checks_only_its_declared_outputs():
     assert all(suite.editor_comparison_checks(row).values())
 
 
-@pytest.mark.parametrize('failure', [None, 'scripted', 'late-game-match-original', 'late-game-match-rebuilt', 'native-features'])
+@pytest.mark.parametrize('failure', [None, 'scripted', 'late-game-match-original',
+                                    'late-game-match-rebuilt', 'traces', 'native-features'])
 def test_default_suite_runs_every_case_and_keeps_failures(tmp_path, monkeypatch, failure):
     commands = []
     def runner(command, log, timeout, visible):
@@ -190,7 +197,7 @@ def test_default_suite_runs_every_case_and_keeps_failures(tmp_path, monkeypatch,
     monkeypatch.setattr(suite, 'controlled_result', lambda *args: {'complete': True, 'passed': True})
     monkeypatch.setattr(suite, 'responsive_editor_result', lambda *args: {'complete': True, 'passed': True})
     result = suite.run_suite(tmp_path / 'run', runner)
-    assert len(commands) == 10
+    assert len(commands) == 11
     assert set(result['human']) == {'accepted', 'candidate', 'late-game-match'}
     expected = [(path, target) for _,path,_,_ in suite.CONTROLLED_CASES for target in ('original', 'rebuilt')]
     for command, (path, target) in zip(commands[1:7], expected):
@@ -204,6 +211,7 @@ def test_default_suite_runs_every_case_and_keeps_failures(tmp_path, monkeypatch,
         assert command[command.index('--target') + 1] == target
         assert command[command.index('--runs') + 1] == '3'
         assert '--controlled' in command and '--observe' not in command
+    assert commands[9][1].endswith('trace_suite.py') and commands[9][2] == 'run'
     assert commands[-1][1].endswith('feature_lab.py') and commands[-1][2] == 'test-all'
     assert commands[-1][commands[-1].index('--runs') + 1] == '3'
     assert commands[-1][commands[-1].index('--jobs') + 1] == '1'
@@ -223,11 +231,11 @@ def test_editor_option_adds_two_unobserved_workers(tmp_path, monkeypatch):
     monkeypatch.setattr(suite, 'responsive_editor_result', lambda *args: {'complete': True, 'passed': True})
     monkeypatch.setattr(suite, 'editor_result', lambda *args: {'complete': True, 'passed': True})
     result = suite.run_suite(tmp_path / 'run', runner, include_editor=True)
-    assert len(commands) == 12
-    assert [command[command.index('--output') + 1] for command in commands[-3:-1]] == [
+    assert len(commands) == 13
+    assert [command[command.index('--output') + 1] for command in commands[-4:-2]] == [
         str(tmp_path / 'run/editor-original'), str(tmp_path / 'run/editor-rebuilt')]
     assert all('--observe' not in command and '--combat' not in command
-               for command in commands[-3:-1])
+               for command in commands[-4:-2])
     assert result['complete'] is True and result['passed'] is True
 
 
@@ -257,7 +265,7 @@ def test_changed_saved_recording_starts_no_games(tmp_path, monkeypatch):
 
 
 def test_changed_save_set_starts_no_games(tmp_path, monkeypatch):
-    monkeypatch.setattr(suite, 'save_fixtures', lambda: [])
+    monkeypatch.setattr(suite, 'save_fixtures', lambda bundle=None: [])
     result = suite.run_suite(tmp_path / 'run', lambda *args: pytest.fail('Started a game'))
     assert result['passed'] is False and result['workers'] == []
     assert 'save fixtures differ' in result['error']
@@ -270,10 +278,18 @@ def test_controlled_case_requires_its_profile_and_all_pairs(monkeypatch, case, c
     name, path, sha, count = next(row for row in suite.CONTROLLED_CASES if row[0] == case)
     recording = suite.controlled_recordings()[name]
     session = {key: copy.deepcopy(recording[key]) for key in ('duration_ms', 'events', 'contract')}
+    expected_upgrade = {
+        suite.V5_POLICY: suite.V5_TO_V6_UPGRADE,
+        suite.V8_POLICY: suite.V8_TO_V9_UPGRADE,
+    }.get(recording['policy'], suite.V1_TO_V4_UPGRADE)
+    expected_policy = {
+        suite.V5_POLICY: 'human-idle20-clock1-paced-v6-controlled-save-fixtures',
+        suite.V8_POLICY: 'human-idle20-clock1-paced-v9-controlled-responsive-inputs',
+    }.get(recording['policy'], 'human-idle20-clock1-paced-v4-controlled-paint')
     session.update(schema=1, mode='replay', observe=True, combat=True, recording_sha256=sha,
-                   upgrade_rule=human.V5_TO_V6_UPGRADE if case == 'late-game-match' else human.V1_TO_V4_UPGRADE)
+                   upgrade_rule=expected_upgrade)
     control = human.execution_plan(session)
-    assert control['executed_policy'] == (human.V6_POLICY if case == 'late-game-match' else human.V4_POLICY)
+    assert control['executed_policy'] == expected_policy
     capture = {'report': {'fixture': {'human': session}, 'human_control': control,
         'script_sha256': control['executed_script_sha256'],
         'events': [dict(event, kind='human-input') for event in recording['events']]}}

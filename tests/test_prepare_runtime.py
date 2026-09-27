@@ -9,6 +9,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import prepare_runtime
 
 
+def local_saves_present():
+    return all((prepare_runtime.LOCAL_SAVES / name).exists() or
+               (prepare_runtime.ROOT / 'config/harness/savegames' / name).exists()
+               for name in ('late_game_match_2.gmx', 'new_game_15mins_in.gmx'))
+
+
 @pytest.fixture
 def inputs(tmp_path, monkeypatch):
     monkeypatch.setattr(prepare_runtime, "ROOT", tmp_path)
@@ -128,6 +134,24 @@ def harness_inputs(inputs):
     return source, exe, output, fixture
 
 
+def test_local_saves_are_optional_pool_members(harness_inputs, tmp_path, monkeypatch):
+    source, exe, output, fixture = harness_inputs
+    local = tmp_path / 'local-saves'
+    local.mkdir()
+    monkeypatch.setattr(prepare_runtime, 'LOCAL_SAVES', local)
+    (local / 'personal.gmx').write_bytes(b'personal')
+    manifest = json.loads(fixture.parent.with_suffix('.json').read_text())
+    manifest['files'].append({'name':'personal.gmx', 'local':True, 'size':8,
+                              'sha256':prepare_runtime.digest(local / 'personal.gmx')})
+    fixture.parent.with_suffix('.json').write_text(json.dumps(manifest))
+    rows = prepare_runtime.save_fixtures()
+    assert [path for path, _ in rows] == [fixture, local / 'personal.gmx']
+    (local / 'personal.gmx').unlink()
+    assert [path for path, _ in prepare_runtime.save_fixtures()] == [fixture]
+    with pytest.raises(ValueError, match='missing personal.gmx'):
+        prepare_runtime.select_save_fixtures(prepare_runtime.save_fixtures(), {'personal.gmx':'x'})
+
+
 def test_harness_uses_only_private_copies_of_repository_saves(harness_inputs):
     source, exe, output, fixture = harness_inputs
     report = prepare_runtime.prepare(source, exe, output, assets='hardlink', harness_saves=True)
@@ -178,10 +202,36 @@ def test_save_fixture_paths_are_bounded(harness_inputs, name):
         prepare_runtime.prepare(source, exe, output, harness_saves=True)
 
 
+@pytest.mark.skipif(not local_saves_present(), reason='Personal save fixtures are not in local/harness/savegames.')
 def test_repository_save_fixture_identity():
     fixtures = prepare_runtime.save_fixtures()
-    assert [row['name'] for _, row in fixtures] == ['late_game_match.gmx']
+    assert [row['name'] for _, row in fixtures] == [
+        'late_game_match.gmx', 'late_game_match_2.gmx', 'new_game_15mins_in.gmx']
     assert fixtures[0][1]['sha256'] == 'fccd0ca0ccd98a6658a1eeb3b306c89afee3af9caf58ab518ee04eae434687f4'
+    assert fixtures[1][1]['sha256'] == '169165e6afa68fc55e18f892f68b55817d62f2489ffec6a7ff128ccccb79d34f'
+    assert fixtures[2][1]['sha256'] == 'b54559781b0889bfea867070326e666ab6543cd317bf93c855c3c7aa1a676547'
+
+
+def test_recording_save_filter_stages_only_its_pinned_subset(harness_inputs):
+    source, exe, output, fixture = harness_inputs
+    extra = fixture.parent / 'another.gmx'
+    extra.write_bytes(b'other fixture')
+    manifest_path = fixture.parent.with_suffix('.json')
+    manifest = json.loads(manifest_path.read_text())
+    manifest['files'].append({'name':extra.name, 'size':extra.stat().st_size,
+                              'sha256':prepare_runtime.digest(extra)})
+    manifest_path.write_text(json.dumps(manifest))
+
+    selected = {fixture.name: prepare_runtime.digest(fixture)}
+    report = prepare_runtime.prepare(source, exe, output, harness_saves=True,
+                                     save_filter=selected)
+    assert [path.name for path in (output / 'savegame').iterdir()] == [fixture.name]
+    assert report['savegame_filter'] == selected
+    prepare_runtime.verify_harness_saves(output, report)
+
+    (output / 'savegame/another.gmx').write_bytes(b'unpinned')
+    with pytest.raises(ValueError, match='Runtime save set differs'):
+        prepare_runtime.verify_harness_saves(output, report)
 
 
 def test_named_save_bundle_is_staged_and_pinned(harness_inputs, monkeypatch, tmp_path):

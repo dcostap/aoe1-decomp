@@ -4,14 +4,23 @@ import json
 from pathlib import Path
 import sys
 
+import pytest
+
 sys.path.insert(0,str(Path(__file__).resolve().parents[1] / 'tools/harness'))
 import parity_suite as suite
 from human_session import V1_TO_V4_UPGRADE, execution_plan
 
 
-def test_both_permanent_recordings_are_pinned():
+@pytest.fixture(autouse=True)
+def one_local_trace(monkeypatch):
+    # Traces are personal local data; the suite recipe must not depend on them.
+    monkeypatch.setattr(suite.trace_suite, 'check_fixtures', lambda names=None: {'case': {'duration_ms': 1000}})
+
+
+def test_human_recordings_are_pinned():
     records = suite.controlled_recordings()
     assert [len(records[name]['events']) for name in ('accepted','candidate')] == [324,1361]
+    assert len(records['late-game-match']['events']) == 559
 
 
 def test_controlled_suite_runs_all_cases_after_script_failure(tmp_path,monkeypatch):
@@ -26,13 +35,14 @@ def test_controlled_suite_runs_all_cases_after_script_failure(tmp_path,monkeypat
     monkeypatch.setattr(suite,'responsive_editor_result',lambda *args:{'complete':True,'passed':True})
     result = suite.run_suite(tmp_path/'suite',runner)
     assert result['complete'] and not result['passed']
-    assert len(calls)==10
+    assert len(calls)==11
     assert set(result['human']) == {'accepted','candidate','late-game-match'}
     for command in calls[1:7]:
         assert '--observe' in command and '--combat' in command and '--controlled' in command
         assert '--rng-only' not in command and '--upgrade-v1-to-v4' not in command
         assert command[command.index('--runs')+1] == '3'
-    assert calls[9][1].endswith('feature_lab.py') and calls[9][2] == 'test-all'
+    assert calls[9][1].endswith('trace_suite.py') and calls[9][2] == 'run'
+    assert calls[10][1].endswith('feature_lab.py') and calls[10][2] == 'test-all'
 
 
 def mock_captures(recording):

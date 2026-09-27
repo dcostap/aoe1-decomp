@@ -26,7 +26,8 @@ def hook_config(exe: Path, manifest: dict, ui=False, probes=()):
     addresses = {'paint': 0x00443520, 'clock': 0x004231E0,
                  'rand': 0x004230A0, 'srand': 0x00423140,
                  'run': 0x0041CFD0, 'idle': 0x00529610,
-                 'wndproc': 0x0041E7A0, 'panelSystem': 0x0062E870}
+                 'wndproc': 0x0041E7A0, 'panelSystem': 0x0062E870,
+                 'alloc_new': 0x0054B6F0}
     ui_symbols = {}
     if ui:
         # Reviewed registry identities; the original executable remains the behavior oracle.
@@ -69,6 +70,7 @@ def hook_config(exe: Path, manifest: dict, ui=False, probes=()):
             'idle': '?handle_idle@TRIBE_Game@@UAEHXZ',
             'wndproc': '?rge_base_game_wnd_proc@@YGJPAXIIJ@Z',
             'panelSystem': '?panel_system@@3VTPanelSystem@@A',
+            'alloc_new': '??2@YAPAXI@Z',
         }.items():
             addresses[key] = symbols[symbol]
         for key, symbol in ui_symbols.items():
@@ -161,6 +163,49 @@ def savegame_outputs(runtime: Path, manifest: dict) -> dict:
     return {'changed': changed, 'removed': removed}
 
 
+# Harness files inside the runtime; everything else that changes was written by the game.
+HARNESS_RUNTIME_FILES = ('human-worker.json', 'human-worker.log')
+
+
+def runtime_snapshot(runtime: Path) -> dict:
+    """Size and modification time of every runtime file, before the game starts."""
+    rows = {}
+    for path in runtime.rglob('*'):
+        relative = path.relative_to(runtime).as_posix()
+        if path.is_file() and not relative.startswith('capture/') and relative not in HARNESS_RUNTIME_FILES:
+            stat = path.stat()
+            rows[relative] = (stat.st_size, stat.st_mtime_ns)
+    return rows
+
+
+def written_files(runtime: Path, before: dict) -> dict:
+    """Every file the game created, changed, or removed: saves, scenarios, and anything else."""
+    after = runtime_snapshot(runtime)
+    changed = [{'path': relative, 'size': after[relative][0], 'sha256': digest(runtime / relative)}
+               for relative in sorted(after) if before.get(relative) != after[relative]]
+    return {'changed': changed, 'removed': sorted(set(before) - set(after))}
+
+
+def function_names(manifest):
+    """Map an image VA to 'symbol+offset' for the original registry or a rebuilt map."""
+    import bisect
+    if manifest['selected_exe_sha256'] == ORIGINAL_SHA256:
+        rows = {}
+        for path in (TOOLS.parent / 'config/functions/src').glob('*.json'):
+            for va, row in json.loads(path.read_text()).get('functions', {}).items():
+                if isinstance(row, dict) and row.get('symbol'):
+                    rows[int(va, 16)] = row['symbol']
+    else:
+        mapping = Path(manifest['selected_exe']).with_name('empiresx.map')
+        rows = {row['address']: row['symbol'] for row in parse_symbols(mapping.read_text(errors='replace'))
+                if row['function']}
+    starts = sorted(rows)
+    def name(va):
+        index = bisect.bisect_right(starts, va) - 1
+        return f'{rows[starts[index]]}+0x{va - starts[index]:x}' if index >= 0 else hex(va)
+    return name
+
+
 def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='real', visible=False,
             resolution=None):
     runtime = runtime.resolve()
@@ -185,12 +230,12 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     human_control = None
     if human:
         from human_session import (V1_POLICY, V5_POLICY, V6_POLICY, V8_POLICY, V9_POLICY,
-                                   V10_POLICY, V11_POLICY,
+                                   V10_POLICY, V11_POLICY, TRACE_FAST_POLICY,
                                    execution_plan, validate_session, control_template)
         validate_session(human)
         human_control = execution_plan(human)
         if human_control['executed_policy'] in (V5_POLICY, V6_POLICY, V8_POLICY, V9_POLICY,
-                                                V10_POLICY, V11_POLICY):
+                                                V10_POLICY, V11_POLICY, TRACE_FAST_POLICY):
             from prepare_runtime import verify_harness_saves
             verify_harness_saves(runtime, manifest)
         original_target = human.get('target','original') == 'original'
@@ -205,6 +250,9 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         validate_replay(scenario)
     probes = replay['probes'] if replay else ([{'name':'human_world','module':'world','va':'00542ED0'},
         {'name':'human_camera','module':'player','va':'004704C0'}] if human else ())
+    if human and human.get('call_probe'):
+        probes = [*probes, *({'name':f'call{index}', 'module':row['module'], 'va':row['va']}
+                             for index, row in enumerate(human['call_probe']['functions']))]
     observe = bool(human and human.get('observe'))
     if observe and human.get('combat'):
         probes += [{'name':'observer_attack','module':'com_obj','va':'00430230'},
@@ -223,6 +271,9 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         # The current core installs only the blocks its profile refuses.
         config['blockedStartups'] = startup_blocks(human_control['executed_policy'])
     config['humanControl'] = human_control
+    trace_fast = bool(human and human.get('trace_fast'))
+    if trace_fast:
+        config['traceNative'] = Path(__file__).with_name('trace_replay.c').read_text()
     supplied = ((human or {}).get('contract') or {}).get('registry_inputs')
     if human:
         if selected_resolution is None and supplied is not None:
@@ -264,24 +315,26 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     template_sha256 = hashlib.sha256(template.encode()).hexdigest()
     if human and template_sha256 != human_control['executed_script_sha256']:
         raise ValueError('Selected human control template differs from its policy hash.')
-    observer = Path(__file__).with_name('human_observe.js').read_text() if observe else ''
+    # The native fast engine implements its own replay and RNG observation.
+    addons = human and not trace_fast
+    observer = Path(__file__).with_name('human_observe.js').read_text() if observe and addons else ''
     message_observer = (Path(__file__).with_name('human_message_observe.js').read_text()
-                        if observe and human and human.get('rng_only') else '')
-    noise = Path(__file__).with_name('human_noise.js').read_text() if human and human.get('message_noise') else ''
+                        if observe and addons and human.get('rng_only') else '')
+    noise = Path(__file__).with_name('human_noise.js').read_text() if addons and human.get('message_noise') else ''
     rng_seed_replay = (Path(__file__).with_name('human_rng_seed_replay.js').read_text()
-                       if human and human.get('replay_rng_seeds') else '')
+                       if addons and human.get('replay_rng_seeds') else '')
     boundary_replay = (Path(__file__).with_name('human_boundary_replay.js').read_text()
-                       if human and human.get('replay_exact_boundaries') else '')
+                       if addons and human.get('replay_exact_boundaries') else '')
     update_replay = (Path(__file__).with_name('human_update_replay.js').read_text()
-                     if human and human.get('replay_update_trace') and not human.get('replay_clock_trace') else '')
+                     if addons and human.get('replay_update_trace') and not human.get('replay_clock_trace') else '')
     clock_replay = (Path(__file__).with_name('human_clock_replay.js').read_text()
-                    if human and human.get('replay_clock_trace') else '')
+                    if addons and human.get('replay_clock_trace') else '')
     message_replay = (Path(__file__).with_name('human_message_replay.js').read_text()
-                      if human and human.get('message_replay_path') else '')
+                      if addons and human.get('message_replay_path') else '')
     zone_probe = (Path(__file__).with_name('human_zone_probe.js').read_text()
-                  if human and human.get('zone_probe') else '')
+                  if addons and human.get('zone_probe') else '')
     alloc_fill = (Path(__file__).with_name('human_alloc_fill.js').read_text()
-                  if human and human.get('alloc_fill') else '')
+                  if addons and human.get('alloc_fill') else '')
     video = None
     video_report = None
     video_origin = None
@@ -306,6 +359,8 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     session = None
     arguments = ['NOSTARTUP', 'GAMECD', 'NOSOUND', 'NOMUSIC']
     started = time.monotonic()
+    before_game = None
+    timing = {}
     registry_base = None
     registry_snapshot = None
     registry_machine = None
@@ -342,6 +397,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             source += '\n' + alloc_fill
         (output / 'instrumentation.js').write_text(source)
         (output / 'capture-tool.py').write_bytes(Path(__file__).read_bytes())
+        before_game = runtime_snapshot(runtime)
         pid = device.spawn([str(runtime / 'empiresx.exe'), *arguments], cwd=str(runtime),
                            env=dict(os.environ, __COMPAT_LAYER=''))
         if human:
@@ -364,6 +420,22 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                 try:
                     if msg['type'] == 'send':
                         row = msg['payload']
+                        if row.get('kind') == 'human-input-batch':
+                            if 'first_input' not in timing and row['rows']:
+                                timing['first_input'] = time.monotonic() - started
+                            events.extend(row['rows'])
+                            return
+                        if row.get('kind') == 'state-dump':
+                            events.extend({'kind':'state-object', 'updates':row['updates'], 'fields':fields}
+                                          for fields in row['rows'])
+                            return
+                        if row.get('kind') == 'call-probe-batch':
+                            events.extend(row['rows'])
+                            return
+                        if row.get('kind') == 'clock-log-batch':
+                            events.extend({'kind':'clock-read', 'updates':u, 'line':line, 'file_hash':h}
+                                          for u, line, h in row['rows'])
+                            return
                         if row.get('kind') == 'observer-events':
                             batch = row['events']
                             if not isinstance(batch,list) or not 1 <= len(batch) <= 128:
@@ -399,6 +471,8 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                             row['rng_sha256'] = rng_digest.hexdigest()
                             row['rng_count'] = rng_records
                         events.append(row)
+                        if row.get('kind') == 'human-input' and 'first_input' not in timing:
+                            timing['first_input'] = time.monotonic() - started
                         if row.get('kind') == 'human-native-frame':
                             native_frames.append({'rect':row['rect'], 'bgrx':bytes(data)})
                         if row.get('kind') == 'human-done':
@@ -447,10 +521,15 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                         finished.set()
         script.on('message', message)
         script.load()
-        if message_replay:
-            trace_data = Path(human['message_replay_path']).read_bytes()
+        timing['script_loaded'] = time.monotonic() - started
+        if message_replay or trace_fast:
+            trace_path = Path(human['message_replay_path'])
+            trace_data = trace_path.read_bytes()
+            if trace_path.suffix == '.xz':
+                import lzma
+                trace_data = lzma.decompress(trace_data)
             expected_size = human['message_recording']['records'] * human['message_recording']['record_size']
-            if len(trace_data) != expected_size or digest(Path(human['message_replay_path'])) != human['message_recording']['sha256']:
+            if len(trace_data) != expected_size or hashlib.sha256(trace_data).hexdigest() != human['message_recording']['sha256']:
                 raise ValueError('Message replay sidecar differs from its metadata.')
             chunk_size = 1024 * 1024
             for offset in range(0, len(trace_data), chunk_size):
@@ -465,8 +544,19 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                 time.sleep(.01)
         if errors or not any(row.get('kind') == 'ready' for row in events):
             raise ValueError(f'Instrumentation did not initialize: {errors}')
+        if trace_fast:
+            # Resume only after the whole pump trace sits in native memory.
+            for _ in range(3000):
+                if any(row.get('kind') == 'trace-ready' for row in events) or errors:
+                    break
+                time.sleep(.01)
+            if errors or not any(row.get('kind') == 'trace-ready' for row in events):
+                raise ValueError(f'Native trace replay did not load its message trace: {errors}')
+            timing['trace_loaded'] = time.monotonic() - started
         device.resume(pid)
+        timing['resumed'] = time.monotonic() - started
         finished.wait(seconds)
+        timing['finished'] = time.monotonic() - started
         terminal = next((row for row in events if row.get('kind') in ('replay-done', 'replay-error', 'human-done')), None)
         if terminal:
             status = terminal['status']  # The terminal boundary parks the game thread until cleanup.
@@ -563,6 +653,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         if changed_assets:
             errors.append({'error': 'Shared source assets changed.', 'paths': changed_assets})
         save_outputs = savegame_outputs(runtime, manifest)
+        game_writes = written_files(runtime, before_game) if before_game is not None else None
         with lock:
             if ui and status:
                 from PIL import Image
@@ -579,6 +670,12 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                     image.save(output / name)
                     checkpoint['composite'] = name
                     checkpoint['rgb_sha256'] = hashlib.sha256(image.tobytes()).hexdigest()
+            probe_rows = [row for row in events if row.get('kind') == 'call-probe']
+            if probe_rows:
+                name_of = function_names(manifest)
+                for row in probe_rows:
+                    row['stack_symbols'] = [name_of(int(address, 16) - int(row['base'], 16) + 0x400000)
+                                            for address in row['stack']]
             report = {'schema': 1, 'runtime': str(runtime), 'manifest': manifest, 'hook': config,
                       'script_sha256': template_sha256, 'human_control':human_control,
                       'observer_sha256':hashlib.sha256(observer.encode()).hexdigest() if observer else None,
@@ -588,9 +685,11 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                       'shared_assets_unchanged': not changed_assets,
                       'desktop': process_desktop,
                       'arguments': arguments, 'fixture': scenario, 'clock': clock, 'duration': time.monotonic()-started,
+                      'timing': timing,
                       'frida_version': frida.__version__, 'status': status,
                       'frames': frames, 'events': events, 'errors': errors,
                       'save_outputs': save_outputs,
+                      'written_files': game_writes,
                       'video': video_report,
                       'video_origin_time_ms': video_origin,
                       'rng_recording': ({'file':'rng.bin', 'records':rng_records, 'sites':rng_sites,

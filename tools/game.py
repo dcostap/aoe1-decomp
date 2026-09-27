@@ -143,7 +143,7 @@ def build():
 
 
 def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets="hardlink",
-          harness_saves=True, save_bundle=None, select=True):
+          harness_saves=True, save_bundle=None, save_filter=None, select=True):
     if target == "original":
         exe = ORIGINAL
         if digest(exe) != ORIGINAL_SHA256:
@@ -160,7 +160,7 @@ def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets=
             raise ValueError("Pinned graphics DLL is missing. Run game.cmd setup.")
     output = ROOT / "build/runtime" / f"{target}-{stamp()}"
     report = prepare(DEFAULT_SOURCE, exe, output, assets=assets, harness_saves=harness_saves,
-                     save_bundle=save_bundle)
+                     save_bundle=save_bundle, save_filter=save_filter)
     if graphics == "cnc-ddraw":
         shutil.copy2(wrapper_path(), output / "ddraw.dll")
         shutil.copy2(ROOT / "config/harness/ddraw.ini", output / "ddraw.ini")
@@ -190,6 +190,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     subs = parser.add_subparsers(dest="command", required=True)
     subs.add_parser("setup", help="Install pinned graphics and isolated instrumentation dependencies")
+    p = subs.add_parser('record', help='Record anything on the original; F10 or window close adds it as a traced test case')
+    p.add_argument('--name', help='Test case name; default rec-<date>-<time>')
     p = subs.add_parser('record-original', help='Record original gameplay with video; F10 or window close saves')
     p.add_argument('--seconds',type=int,default=60,help='Maximum recording duration, at most 180 seconds')
     p.add_argument('--no-time-limit',action='store_true',help='Record until F10 or window close')
@@ -198,7 +200,7 @@ def main():
     p.add_argument('--save-bundle', type=Path,
                    help='Repository save bundle to stage for this recording')
     p.add_argument('--deterministic-trace', action='store_true',
-                   help='Record the complete RNG sequence for replay diagnosis')
+                   help='Record clock, message-pump, and RNG traces for exact fast replay (import-trace)')
     p = subs.add_parser('replay-original', help='Replay a human recording on fresh originals with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
@@ -208,6 +210,7 @@ def main():
     p.add_argument('--upgrade-v1-to-v3',action='store_true',
                    help='Use controlled v3 timing; this does not reproduce historical v1 clock values')
     p.add_argument('--controlled',action='store_true',help='Use controlled paint timing with the recorded save policy')
+    p.add_argument('--fast',action='store_true',help='Native exact replay of a --deterministic-trace recording; terminal frame only')
     p = subs.add_parser('replay-rebuilt', help='Replay a human recording on fresh rebuilt games with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
@@ -217,6 +220,14 @@ def main():
     p.add_argument('--upgrade-v1-to-v3',action='store_true',
                    help='Use controlled v3 timing; this does not reproduce historical v1 clock values')
     p.add_argument('--controlled',action='store_true',help='Use controlled paint timing with the recorded save policy')
+    p.add_argument('--fast',action='store_true',help='Native exact replay of a --deterministic-trace recording; terminal frame only')
+    p = subs.add_parser('test-traces', help='Replay traced recordings fast on both executables, in parallel')
+    p.add_argument('--case', action='append', help='Run only this traced case; repeatable')
+    p.add_argument('--jobs', type=int, help='Parallel game processes; default half the logical CPUs')
+    p.add_argument('--check-fixtures', action='store_true', help='Check pinned trace files without starting games')
+    p = subs.add_parser('import-trace', help='Add a --deterministic-trace recording to the traced suite')
+    p.add_argument('recording_dir', type=Path, help='build/runtime/human-* folder with recording.json')
+    p.add_argument('--name', required=True, help='Case name: letters, digits, dashes, underscores')
     p = subs.add_parser('test-parity', help='Run the standard gameplay suite, including the saved-game recording')
     p.add_argument('--check-fixtures', action='store_true', help='Validate all permanent recordings and required saves without running games')
     p.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite with its known repeatability limits')
@@ -285,6 +296,34 @@ def main():
         if args.command == 'feature-lab':
             return subprocess.run([str(ROOT/'build/harness-env/Scripts/python.exe'),
                 str(ROOT/'tools/harness/feature_lab.py'), args.operation, *args.options], cwd=ROOT).returncode
+        if args.command == 'record':
+            # One step from play to test: traced, untimed, editor and scenarios allowed, imported on stop.
+            name = args.name or 'rec-' + datetime.now().strftime('%Y%m%d-%H%M%S')
+            if not name.replace('-', '').replace('_', '').isalnum():
+                parser.error('Use letters, digits, dashes, and underscores in --name.')
+            python = str(ROOT/'build/harness-env/Scripts/python.exe')
+            output = ROOT/'build/runtime'/('human-'+stamp())
+            code = subprocess.run([python, str(ROOT/'tools/harness/human_session.py'), '--record', '--no-time-limit',
+                                   '--editor', '--observe', '--rng-only', '--output', str(output)], cwd=ROOT).returncode
+            if code != 0 or not (output/'recording.json').exists():
+                print(f'Recording failed; nothing was added. Details: {output}')
+                return code or 1
+            code = subprocess.run([python, str(ROOT/'tools/harness/trace_suite.py'), 'import', str(output),
+                                   '--name', name], cwd=ROOT).returncode
+            if code == 0:
+                print(f'Added test case {name}. Run: game.cmd test-traces --case {name}')
+            return code
+        if args.command in ('test-traces', 'import-trace'):
+            command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/trace_suite.py')]
+            if args.command == 'import-trace':
+                command += ['import', str(args.recording_dir.resolve()), '--name', args.name]
+            elif args.check_fixtures:
+                command += ['check'] + [item for case in args.case or () for item in ('--case', case)]
+            else:
+                command += ['run'] + [item for case in args.case or () for item in ('--case', case)]
+                if args.jobs is not None:
+                    command += ['--jobs', str(args.jobs)]
+            return subprocess.run(command, cwd=ROOT).returncode
         if args.command == 'test-parity':
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/parity_suite.py')]
             if args.check_fixtures:
@@ -310,6 +349,8 @@ def main():
                 command.append('--upgrade-v1-to-v3')
             if args.command != 'record-original' and args.controlled:
                 command.append('--controlled')
+            if args.command != 'record-original' and args.fast:
+                command += ['--fast', '--observe', '--rng-only']
             if args.command == 'record-original' and args.deterministic_trace:
                 command += ['--observe', '--rng-only']
             if getattr(args, 'jobs', None) is not None:

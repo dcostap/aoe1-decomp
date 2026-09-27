@@ -11,10 +11,11 @@ from game import ROOT, require_serial_jobs, run_worker, SERIAL_HARNESS_ERROR, st
 from human_session import load_recording, compare_inputs, inputs
 from human_compare import load_batch, compare_captures
 from human_session import (V1_TO_V4_UPGRADE, V5_POLICY, V5_TO_V6_UPGRADE,
-                           V7_POLICY, V7_TEMPLATE_SHA256, V10_POLICY,
+                           V7_POLICY, V7_TEMPLATE_SHA256, V8_POLICY, V8_TO_V9_UPGRADE, V10_POLICY,
                            V10_TEMPLATE_SHA256, V10_TO_V11_UPGRADE, execution_plan)
 from human_repeatability import compare as compare_repeatability
 from prepare_runtime import save_fixtures
+import trace_suite
 import itertools
 
 RECORDING = ROOT / 'config/harness/human-accepted-20260914.json'
@@ -185,11 +186,16 @@ def controlled_recordings():
         recording = load_recording(path)
         if recording.get('automated_smoke') is not False or len(recording['events']) != count:
             raise ValueError(f'Invalid {name} input recording.')
-        if recording['policy'] == V5_POLICY:
-            recorded_saves = {key:value for key,value in recording['contract']['assets'].items()
+        if recording['policy'] in (V5_POLICY, V8_POLICY):
+            recorded_saves = {key.replace('\\', '/').lower():value
+                              for key,value in recording['contract']['assets'].items()
                               if key.replace('\\', '/').lower().startswith('savegame/')}
-            current_saves = {'savegame/' + row['name']:row['sha256'] for _,row in save_fixtures()}
-            if recorded_saves != current_saves:
+            fixtures = save_fixtures(recording['contract'].get('save_bundle'))
+            current_saves = {'savegame/' + row['name'].lower():row['sha256'] for _,row in fixtures}
+            if (not recorded_saves or any(current_saves.get(key) != value
+                                          for key,value in recorded_saves.items()) or
+                    (recording['policy'] == V8_POLICY or recording['contract'].get('save_bundle') is not None) and
+                    recorded_saves != current_saves):
                 raise ValueError(f'The {name} save fixtures differ from its recording contract.')
         recordings[name] = recording
     return recordings
@@ -328,7 +334,8 @@ def controlled_result(original_path, rebuilt_path, recording, recording_sha):
         expected_control = execution_plan({'schema':1, 'mode':'replay',
             **{key:recording[key] for key in ('duration_ms','events','contract')},
             'recording_sha256':recording_sha,
-            'upgrade_rule':V5_TO_V6_UPGRADE if recording['policy'] == V5_POLICY else V1_TO_V4_UPGRADE})
+            'upgrade_rule':{V5_POLICY:V5_TO_V6_UPGRADE, V8_POLICY:V8_TO_V9_UPGRADE}.get(
+                recording['policy'], V1_TO_V4_UPGRADE)})
         captures = load_batch(original_path, True) + load_batch(rebuilt_path, False)
         for capture in captures:
             report = capture['report']
@@ -382,6 +389,13 @@ def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
                 commands.append((label, [python, str(ROOT / 'tools/harness/human_session.py'),
                     '--recording', str(EDITOR_RECORDING), '--target', target, '--runs', '3',
                     '--output', str(output / label)], 1170))
+        # Traced recordings replay exactly at native speed. The traced suite runs its
+        # own parallel workers; nothing else in this suite runs concurrently.
+        traced = trace_suite.check_fixtures()
+        if traced:
+            commands.append(('traces', [python, str(ROOT / 'tools/harness/trace_suite.py'), 'run',
+                '--output', str(output / 'traces')],
+                int(sum(case['duration_ms'] / 1000 * 3 + 240 for case in traced.values())) + 300))
         # Keep nested feature captures serial until parallel drift is understood.
         commands.append(('native-features', [python, str(ROOT / 'tools/harness/feature_lab.py'),
             'test-all', '--runs', '3', '--jobs', '1', '--output', str(output / 'native-features')], 3600))
@@ -400,6 +414,13 @@ def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
         if include_editor:
             result['editor'] = editor_result(output / 'editor-original/report.json',
                 output / 'editor-rebuilt/report.json', editor, EDITOR_RECORDING_SHA256)
+        if traced:
+            try:
+                result['traces'] = json.loads((output / 'traces/report.json').read_text())
+            except (OSError,ValueError) as error:
+                result['traces'] = {'complete':False, 'passed':False, 'error':str(error)}
+        else:
+            result['traces'] = {'skipped': 'No local traced recordings.'}
         try:
             result['features'] = json.loads((output / 'native-features/report.json').read_text())
         except (OSError,ValueError) as error:
@@ -407,12 +428,14 @@ def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
         result['complete'] = ('error' not in result['scripted'] and all(case['complete'] for case in result['human'].values()) and
                               result['responsive_editor']['complete'] and
                               (not include_editor or result['editor']['complete']) and
+                              (not traced or result['traces'].get('complete') is True) and
                               result['features'].get('complete') is True and
                               all(row['returncode'] is not None for row in result['workers']))
         result['passed'] = (result['complete'] and result['scripted'].get('passed') is True and
                             all(case['passed'] for case in result['human'].values()) and
                             result['responsive_editor']['passed'] and
                             (not include_editor or result['editor']['passed']) and
+                            (not traced or result['traces'].get('passed') is True) and
                             result['features'].get('passed') is True and
                             all(row['returncode'] == 0 for row in result['workers']))
     except (OSError,ValueError) as error:
@@ -438,6 +461,7 @@ def main():
         accepted_recording() if args.legacy else controlled_recordings()
         if not args.legacy:
             feature_fixtures()
+            trace_suite.check_fixtures()
             editor_recording()
             responsive_editor_recording()
         print('Pinned input fixtures checked; no games started.')

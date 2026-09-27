@@ -25,6 +25,16 @@
         try { route(hwnd); return true; } catch (_) { return false; }
     }
     const messageHooks = [];
+    // Recording-only idle throttle. The stock loop busy-polls PeekMessage and
+    // handle_idle; each spin becomes trace records that replay must consume.
+    // A 1 ms sleep after an empty poll keeps input latency negligible. The game
+    // reads only recorded clocks, so replay needs no matching sleep.
+    const idleThrottleMs = !isReplay && cfg.human.idle_throttle_ms ? cfg.human.idle_throttle_ms : 0;
+    if (idleThrottleMs) {
+        const winmm = Module.load('winmm.dll');
+        const period = new NativeFunction(winmm.getExportByName('timeBeginPeriod'),'uint',['uint'],'stdcall');
+        if (period(1) !== 0) throw new Error('Cannot set a 1 ms timer period for the idle throttle');
+    }
     const messageApis = {
         GetMessageA:1, GetMessageW:2, PeekMessageA:3, PeekMessageW:4,
         TranslateMessage:5, DispatchMessageA:6, DispatchMessageW:7
@@ -93,6 +103,7 @@
                 try { recordMessage(api,this.threadId,result,this.msg,this.hwnd,this.min,this.max,this.flags,
                     (realTick()-this.wallStart)>>>0); }
                 catch (error) { humanStop('Message trace failed: '+error); }
+                if (idleThrottleMs && result === 0 && api === 3 && this.threadId === messageThread) hs(idleThrottleMs);
             }
         });
         messageHooks.push(hook);

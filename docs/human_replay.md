@@ -4,6 +4,24 @@ This experimental profile records received input and produces game-window videos
 Recording uses only the pinned original beta executable.
 Replay uses the original by default. A separate command explicitly selects the rebuilt game.
 
+## Record anything as a test case
+
+```cmd
+game.cmd record
+```
+
+Play whatever you like: random map, saved game, scenarios, the scenario editor.
+Press **F10** or close the game window to stop. The session is recorded with
+deterministic traces and no time limit, then imported automatically as a local
+traced case named `rec-<date>-<time>` (or `--name`). `game.cmd test-traces`
+replays it on both executables from then on. See
+[exact fast replay](#exact-fast-replay-from-a-traced-recording) for what is checked.
+
+Every file the game writes during the session, such as saves or scenarios, becomes
+part of the check. Replay must write the same files with the same bytes.
+Saved Game lists only the pinned fixture pool. A save made in one recording is not
+available when a later recording starts.
+
 ## Record a short session
 
 Run from the repository directory:
@@ -24,7 +42,8 @@ Use `--no-time-limit` to stop only with F10 or window close. A 24-hour worker de
 Recordings have no artificial input-count or file-size limit. Available memory and disk space still apply.
 
 Do not resize or move the game window. Do not switch applications during recording.
-Saved Game shows only the repository fixtures, currently `late_game_match`.
+Saved Game shows the repository fixtures: `late_game_match`,
+`late_game_match_2`, and `new_game_15mins_in`.
 Scenarios and the editor remain blocked in this profile.
 The profile blocks game network sockets and disables sound and music.
 
@@ -91,12 +110,16 @@ Harness runs exclude the local runtime's entire `savegame` directory.
 They copy only the files pinned by the selected save bundle into each new runtime.
 Without `--save-bundle`, the selected bundle is `config/harness/savegames.json`.
 Each run gets private copies. The harness checks their hashes before recording or replay.
+Strict replay uses exactly the save files pinned by that recording's contract.
+This keeps older recordings valid when the common fixture pool grows.
 Missing, changed, or extra runtime saves stop the new profile before game startup.
 Normal `game.cmd original` and `game.cmd rebuilt` launches still copy local saves.
 
-The supplied save is `config/harness/savegames/late_game_match.gmx`.
-See its [fixture notes](../config/harness/savegames/README.md) for identity and clone setup.
-The save file alone is not an input sequence or proof of equal behavior.
+The committed common fixture is `config/harness/savegames/late_game_match.gmx`.
+The pool also pins the personal saves `late_game_match_2.gmx` and `new_game_15mins_in.gmx`,
+which stay in the gitignored `local/harness/savegames/` folder. The pool omits them when absent.
+See the [fixture notes](../config/harness/savegames/README.md) for their hashes.
+A save file alone is not an input sequence or proof of equal behavior.
 
 New recordings use v8. V8 uses the real elapsed clock and does not sleep the game thread.
 It maps delivered input to a 20-millisecond replay schedule without limiting recording input.
@@ -115,6 +138,20 @@ Its SHA-256 is `07f2a4900af0f0c769224f1c9d5c9f561fce7d2aff16cdfdcaf300797f0fb5a6
 It is a default case in `game.cmd test-parity`. No recording path or extra option is required.
 The suite runs three originals and three rebuilt games with v6 control and checks all 15 pairs.
 See [the saved-game check record](../decomp_notes/saved_game_fixture_20260916.md) for results and limits.
+
+Two untraced original-play recordings are kept locally in `local/harness/recordings/`.
+They are not suite cases: paced replay of their dense mouse input would take hours.
+
+- `human-late-game-match-2.json` starts from `late_game_match_2.gmx`.
+  It records 19,101 messages over 102,516 milliseconds.
+  Its SHA-256 is `65632e5ce39e01aec67a1aa0523775264844b5e437fcd3f2a7598c41495de837`.
+- `human-new-game-15mins-in.json` starts from `new_game_15mins_in.gmx`.
+  It records 17,239 messages over 75,484 milliseconds.
+  Its SHA-256 is `bdf5af40dd40ad60d3c08a6f6ba6323b3c43959cae882bbb3cff512ddb901b82`.
+
+Both recordings use v8 capture and support v9 controlled replay.
+Neither is a standard suite case or has a parity pass.
+The first controlled replay stopped at its 397-second limit after about 2,665 of 19,101 inputs.
 
 Run the strict observation mode before checking saved-game repeatability:
 
@@ -146,6 +183,70 @@ The other rebuilt run first differed at RNG index 1,221,307: equal value 13910, 
 It ended after 329 updates; the original ended after 330.
 These observations do not establish the cause or prove a game-code defect.
 The suite returned one. It did not treat completed captures as a parity pass.
+
+## Exact fast replay from a traced recording
+
+This is the preferred way to add gameplay regression cases. Record with traces:
+
+```cmd
+game.cmd record-original --deterministic-trace --no-time-limit
+```
+
+Play as usual and press **F10** to stop. The recorder stores every value the game
+reads from its clock (`debug_timeGetTime`), every `PeekMessage` and `GetMessage`
+result with its message, and the full RNG trace. It zero-fills game heap
+allocations; `ManagedArray` reads uninitialized memory otherwise. After an empty
+message poll, the recorder sleeps about 1 ms. The stock loop busy-polls, and every
+spin would become trace data that replay must consume. The game reads only recorded
+clocks, so replay needs no matching sleep.
+
+Add the recording as a permanent case, then run it:
+
+```cmd
+game.cmd import-trace build/runtime/human-EXAMPLE --name my-case
+game.cmd test-traces --case my-case
+```
+
+Import stores `recording.json.xz` and `messages.bin.xz` under
+`local/harness/traces/<name>/` and pins both in `local/harness/traces.json`.
+Traces are personal gameplay data: `local/` is gitignored, so the repository
+ships the harness but not the recordings. Without local traces, `test-traces`
+reports a skip, and `test-parity` records the traces worker as skipped.
+The recording embeds an oracle from its own session: RNG count and hash,
+per-update RNG checkpoints, update and input counts, world, camera, and every
+file the game created, changed, or removed in its runtime folder. Import stores
+the bytes of those files under `outputs/` in the case folder and pins them.
+Each replay must write exactly the same files; a difference reports the path and
+the first differing byte, against the recording and between the executables.
+Recordings imported before write tracking compare written files only between
+the two executables.
+The RNG trace is not stored; any exact original replay regenerates it.
+
+Replay uses a native engine (`trace_replay.c`, `trace_replay.js`) instead of the
+paced V8 core. It never waits for wall time, so independent replays run in
+parallel without drift. The engine reproduces the V8 replay's game-visible effects:
+recorded clocks and pump results, no-op `TranslateMessage`, and virtual key and
+cursor state. It also keeps zero-filled allocations and the same isolation.
+Any extra or missing clock read, poll, or message stops the run at that trace
+record with the update and input counts. That boundary is the first divergence.
+
+`replay-original --fast` and `replay-rebuilt --fast` run one traced recording
+directly. Fast replay captures only the terminal frame. For video, replay the same
+recording without `--fast`; that path uses the paced JavaScript replay.
+
+Evidence, 2026-09-27: an 81-second random-map session with 13,296 inputs,
+3,308 world updates, and 1,034,079 RNG calls replayed exactly on both executables.
+Both matched the RNG hash, world, camera, and trace consumption. Six parallel
+original replays were identical. Native replay took about 16 to 30 s on a loaded
+machine. A single recorded clock value changed by 50 ms stopped the replay at
+update 1,778. Recordings made before the idle throttle still replay exactly, but
+their traces are larger.
+
+Before 2026-09-27, `human_alloc_fill.js` hooked `operator new` at the original's
+address, `0x0054B6F0`, on both executables. On the rebuilt image that address
+belongs to a different function, and its return values were zero-filled.
+Earlier traced rebuilt replays are invalid. The hook now resolves `??2@YAPAXI@Z`
+through the rebuilt map like every other hook.
 
 ## Replay the recording
 

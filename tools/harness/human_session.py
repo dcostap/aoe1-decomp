@@ -5,6 +5,7 @@ import ctypes as C
 from ctypes import wintypes as W
 import hashlib
 import json
+import lzma
 from pathlib import Path
 import shutil
 import sys
@@ -28,6 +29,9 @@ V9_POLICY = 'human-idle20-clock1-paced-v9-controlled-responsive-inputs'
 V10_POLICY = 'human-real-clock-v10-responsive-editor-recording'
 V11_POLICY = 'human-idle20-clock1-paced-v11-controlled-editor-inputs'
 POLICY = V8_POLICY
+# Native fast replay of a deterministic-trace recording. Not a recording policy.
+TRACE_FAST_POLICY = 'human-trace-native-fast-replay'
+TRACE_FAST_FILES = ('trace_replay.js', 'offline.js')
 V1_TEMPLATE_SHA256 = '6312fbd5ebb7d82dd91abe775e8c4c15c538743f276dba03ab61bbb8a1043db4'
 V2_TEMPLATE_SHA256 = '1112a4ab54fef13f766d20da7fc1815b20f43aa844bbfdde23ce14eeabc862f4'
 V1_TO_V2_UPGRADE = 'v1-to-v2-serialized-dispatch-20260915'
@@ -55,6 +59,8 @@ UNTIMED_RECORDING_MS = 24*60*60*1000
 
 
 def template_sha256(policy):
+    if policy == TRACE_FAST_POLICY:
+        return hashlib.sha256(control_template(policy).encode()).hexdigest()
     if policy == V1_POLICY:
         return V1_TEMPLATE_SHA256
     if policy == V2_POLICY:
@@ -93,6 +99,8 @@ def startup_blocks(policy):
 def control_template(policy):
     """Keep the pinned pre-save profiles unchanged."""
     folder = Path(__file__).parent
+    if policy == TRACE_FAST_POLICY:
+        return '\n'.join((folder / name).read_text() for name in TRACE_FAST_FILES)
     template_sha256(policy)  # Reject unknown profiles.
     if policy == V1_POLICY:
         return (folder / 'human-v1-template.js').read_text()
@@ -180,6 +188,27 @@ def validate_session(session):
         if replay_rng_seeds is not None and (not isinstance(replay_rng_seeds, list) or
                 not replay_rng_seeds or not all(integer(seed, 0, 0xffffffff) for seed in replay_rng_seeds)):
             raise ValueError('Replay RNG seeds must be unsigned 32-bit integers.')
+        if type(session.get('trace_fast',False)) is not bool or (session.get('trace_fast') and
+                not session.get('message_replay_path')):
+            raise ValueError('Fast replay requires a recorded message-pump trace.')
+        if session.get('trace_fast') and (not session.get('replay_clock_trace') or not session.get('alloc_fill')):
+            raise ValueError('Fast replay requires the recorded clock trace and zero-filled allocations.')
+        probe = session.get('call_probe')
+        if probe is not None and (not session.get('trace_fast') or not isinstance(probe, dict) or
+                                  not isinstance(probe.get('functions'), list) or not 1 <= len(probe['functions']) <= 16 or
+                                  not all(isinstance(row, dict) and isinstance(row.get('module'), str) and
+                                          isinstance(row.get('va'), str) for row in probe['functions']) or
+                                  not integer(probe.get('first'), 0, 10000000) or
+                                  not integer(probe.get('last'), probe.get('first', 0), 10000000)):
+            raise ValueError('A call probe needs fast replay, a registry module and VA, and an update window.')
+        clock_log = session.get('clock_log')
+        if clock_log is not None and (not session.get('trace_fast') or not isinstance(clock_log, dict) or
+                                      not integer(clock_log.get('first'), 0, 10000000) or
+                                      not integer(clock_log.get('last'), clock_log.get('first', 0), 10000000)):
+            raise ValueError('A clock log needs fast replay and an update window.')
+        dump = session.get('state_dump')
+        if dump is not None and (not session.get('trace_fast') or not integer(dump, 1, 10000000)):
+            raise ValueError('A state dump needs fast replay and a positive update count.')
         if type(session.get('replay_exact_boundaries',False)) is not bool:
             raise ValueError('Exact-boundary replay must be boolean.')
     events = session.get('events', [])
@@ -188,6 +217,10 @@ def validate_session(session):
         raise ValueError('Invalid input event count.')
     if session['mode'] == 'record' and events:
         raise ValueError('A human recording cannot contain replay inputs.')
+    throttle = session.get('idle_throttle_ms')
+    if throttle is not None and (session['mode'] != 'record' or not session.get('rng_only') or
+                                 not integer(throttle, 1, 5)):
+        raise ValueError('The idle throttle is a 1..5 ms deterministic-trace recording option.')
     if type(session.get('smoke',False)) is not bool:
         raise ValueError('The smoke flag must be boolean.')
     if type(session.get('message_noise',False)) is not bool or (session['mode'] == 'record' and session.get('message_noise')):
@@ -228,10 +261,14 @@ def validate_session(session):
                 raise ValueError('Invalid child-window identity.')
 
 
+XZ_MAGIC = bytes.fromhex('fd377a585a00')
+
+
 def load_recording_with_sha256(path):
     with path.open('rb') as stream:
         data = stream.read()
-    recording = json.loads(data)
+    # Traced fixtures store xz-compressed JSON. The pin covers the stored bytes.
+    recording = json.loads(lzma.decompress(data) if data.startswith(XZ_MAGIC) else data)
     if not isinstance(recording,dict) or type(recording.get('schema')) is not int or recording.get('schema') != 1 or recording.get('policy') not in (V1_POLICY,V2_POLICY,V5_POLICY,V7_POLICY,V8_POLICY,V10_POLICY):
         raise ValueError('Unsupported original recording contract.')
     if not all(key in recording for key in ('duration_ms','events','contract')):
@@ -256,12 +293,16 @@ def execution_plan(session):
     contract = session['contract']
     upgrade = session.get('upgrade_rule')
     executed_policy = UPGRADES[upgrade][1] if upgrade else contract['policy']
+    if session.get('trace_fast'):
+        if upgrade is not None:
+            raise ValueError('Fast trace replay does not combine with scheduler upgrades.')
+        executed_policy = TRACE_FAST_POLICY
     if session.get('message_noise') and executed_policy != V4_POLICY:
         raise ValueError('Marked message-noise diagnostics require a v4 replay upgrade.')
     return {'recorded_policy':contract['policy'], 'recorded_script_sha256':contract['script_sha256'],
             'executed_policy':executed_policy, 'executed_script_sha256':template_sha256(executed_policy),
             'upgrade_rule':upgrade, 'recording_sha256':session.get('recording_sha256'),
-            'same_policy_replay':upgrade is None}
+            'same_policy_replay':upgrade is None and not session.get('trace_fast')}
 
 
 def session_contract(report, policy=None):
@@ -293,6 +334,23 @@ def verify_starting_contract(session, report):
 def inputs(report):
     return [{key:row[key] for key in ('time_ms','turn','updates','panel','route','message','value','parameter')}
             for row in report['events'] if row.get('kind') == 'human-input']
+
+
+def replay_save_filter(session):
+    """Stage only the common saves pinned by a strict recording contract."""
+    if session.get('mode') != 'replay' or session.get('save_bundle') is not None:
+        return None
+    contract = session.get('contract') or {}
+    if contract.get('savegame_source') != 'repository-fixtures':
+        return None
+    saves = {}
+    for path, sha256 in contract.get('assets', {}).items():
+        normalized = path.replace('\\', '/').lower()
+        if normalized.startswith('savegame/'):
+            saves[path.replace('\\', '/').split('/', 1)[1]] = sha256
+    if not saves:
+        raise ValueError('Saved-game recording contract has no pinned save fixtures.')
+    return saves
 
 
 def compare_inputs(expected, actual):
@@ -344,7 +402,8 @@ def run_session(output, session, visible):
     validate_session(session)
     plan = execution_plan(session)
     runtime = stage(session.get('target','original'), select=False,
-                    save_bundle=session.get('save_bundle'))
+                    save_bundle=session.get('save_bundle'),
+                    save_filter=replay_save_filter(session))
     fixture = runtime / 'human-fixture.json'
     fixture.write_text(json.dumps({'name':'human-original-v1','human':session}, indent=2)+'\n')
     seconds = (UNTIMED_RECORDING_MS // 1000 if session.get('no_time_limit') else
@@ -391,6 +450,16 @@ def main():
                         help='Use controlled paint timing; preserve the recording save policy')
     parser.add_argument('--upgrade-v1-to-v4',action='store_true',help='Experiment with controlled queued paints as well as timers')
     parser.add_argument('--message-noise',action='store_true',help='Diagnostic: add queued timer/paint messages during controlled replay')
+    parser.add_argument('--fast',action='store_true',
+                        help='Deterministic-trace replay without recorded blocking waits')
+    parser.add_argument('--probe-function', metavar='MODULE:VA[,MODULE:VA...]',
+                        help='Diagnostic with --fast: log calls to registry functions, e.g. tplayer:005159D0')
+    parser.add_argument('--probe-updates', metavar='FIRST-LAST', default='0-10000000',
+                        help='Completed world-update counts during which --probe-function logs calls')
+    parser.add_argument('--clock-log', metavar='FIRST-LAST',
+                        help='Diagnostic with --fast: log the source line of every clock read in this completed-update window')
+    parser.add_argument('--dump-state-at', type=int, metavar='UPDATES',
+                        help='Diagnostic with --fast: dump every object at this completed world-update count')
     parser.add_argument('--zone-probe',action='store_true',help='Diagnostic: log zone-map cache creation sites during replay')
     parser.add_argument('--smoke', action='store_true', help='Private automated plumbing test, not human qualification')
     parser.add_argument('--editor', action='store_true',
@@ -427,6 +496,7 @@ def main():
                        'cursor_check':args.cursor_check,'editor':args.editor,
                        'observe':args.observe,'rng_only':args.rng_only,
                        'alloc_fill':bool(args.observe and args.rng_only),
+                       'idle_throttle_ms':1 if args.observe and args.rng_only else None,
                        'save_bundle':str(args.save_bundle) if args.save_bundle else None}
             report = run_session(result['runs'],session,not args.smoke)
             if args.cursor_check:
@@ -449,6 +519,7 @@ def main():
                 capture_report = Path(result['runs'][0]['capture'])
                 shutil.copy2(capture_report.parent / report['rng_recording']['file'], output / 'rng.bin')
                 recording['alloc_fill'] = bool(report.get('alloc_fill'))
+                recording['idle_throttle_ms'] = report['fixture']['human'].get('idle_throttle_ms')
                 if report.get('message_recording'):
                     recording['message_recording'] = report['message_recording']
                     shutil.copy2(capture_report.parent / report['message_recording']['file'], output / 'messages.bin')
@@ -484,9 +555,24 @@ def main():
             if recording.get('message_recording',{}).get('format') in ('aoe-message-pump-v3-le','aoe-message-pump-v7-le'):
                 session['message_recording'] = recording['message_recording']
                 message_path = args.recording.parent / recording['message_recording']['file']
+                if not message_path.exists() and message_path.with_name(message_path.name + '.xz').exists():
+                    message_path = message_path.with_name(message_path.name + '.xz')
                 if not message_path.exists():
                     message_path = Path(recording['source_report']).parent / recording['message_recording']['file']
                 session['message_replay_path'] = str(message_path.resolve())
+            if args.fast:
+                session['trace_fast'] = True
+                session.pop('replay_update_trace', None)  # The global clock trace covers every read.
+            if args.dump_state_at:
+                session['state_dump'] = args.dump_state_at
+            if args.clock_log:
+                first, last = (int(value) for value in args.clock_log.split('-'))
+                session['clock_log'] = {'first':first, 'last':last}
+            if args.probe_function:
+                functions = [dict(zip(('module', 'va'), item.split(':'))) for item in args.probe_function.split(',')]
+                first, last = (int(value) for value in args.probe_updates.split('-'))
+                session['call_probe'] = {'functions':[{'module':row['module'], 'va':row['va'].upper().zfill(8)}
+                                                      for row in functions], 'first':first, 'last':last}
             if args.zone_probe:
                 session['zone_probe'] = True
             if recording.get('alloc_fill'):
@@ -503,7 +589,8 @@ def main():
                     row['dropped_unrequested_messages'] = report['status']['human']['dropped']
                     return index, row, received, None
                 except (OSError, ValueError) as error:
-                    return index, None, None, str(error)
+                    # Keep the capture path of a failed run for divergence reports.
+                    return index, rows[0] if rows else None, None, str(error)
 
             completed = [None] * args.runs
             received_runs = [None] * args.runs

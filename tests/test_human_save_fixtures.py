@@ -76,6 +76,25 @@ def test_controlled_save_replay_keeps_strict_contract():
         human.execution_plan(data)
 
 
+def test_replay_uses_only_saves_pinned_by_its_strict_contract():
+    data = session()
+    assert human.replay_save_filter(data) == {'late_game_match.gmx': 'fixture'}
+    data['save_bundle'] = 'chain-01/checkpoint-01'
+    assert human.replay_save_filter(data) is None
+
+
+def test_new_common_save_fixtures_are_pinned():
+    import prepare_runtime
+    if not all((prepare_runtime.LOCAL_SAVES / name).exists()
+               for name in ('late_game_match_2.gmx', 'new_game_15mins_in.gmx')):
+        pytest.skip('Personal save fixtures are not in local/harness/savegames.')
+    fixtures = {row['name']: row for _, row in prepare_runtime.save_fixtures()}
+    assert fixtures['late_game_match_2.gmx']['sha256'] == (
+        '169165e6afa68fc55e18f892f68b55817d62f2489ffec6a7ff128ccccb79d34f')
+    assert fixtures['new_game_15mins_in.gmx']['sha256'] == (
+        'b54559781b0889bfea867070326e666ab6543cd317bf93c855c3c7aa1a676547')
+
+
 def test_preserved_late_game_recording():
     root = Path(__file__).resolve().parents[1]
     recording, sha256 = human.load_recording_with_sha256(root / 'config/harness/human-late-game-match.json')

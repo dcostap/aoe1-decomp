@@ -5,6 +5,18 @@
       "name": "late_game_match.gmx",
       "size": 875400,
       "sha256": "fccd0ca0ccd98a6658a1eeb3b306c89afee3af9caf58ab518ee04eae434687f4"
+    },
+    {
+      "name": "late_game_match_2.gmx",
+      "local": true,
+      "size": 881104,
+      "sha256": "169165e6afa68fc55e18f892f68b55817d62f2489ffec6a7ff128ccccb79d34f"
+    },
+    {
+      "name": "new_game_15mins_in.gmx",
+      "local": true,
+      "size": 239135,
+      "sha256": "b54559781b0889bfea867070326e666ab6543cd317bf93c855c3c7aa1a676547"
     }
   ]
 }
