@@ -75,8 +75,7 @@ int RGE_Communications_Queue::AllocateQueue(unsigned int NewQSize) {
     return result;
 }
 
-unsigned char RGE_Communications_Queue::ExpectedNextSequence(
-    unsigned long TurnID, unsigned int PlayerNo) {
+unsigned char RGE_Communications_Queue::ExpectedNextSequence(unsigned long TurnID, unsigned int PlayerNo) {
     static unsigned char Count;
     unsigned char seq;
     unsigned int i;

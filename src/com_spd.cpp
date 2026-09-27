@@ -8,10 +8,7 @@ static char buf[152];
 static char speedstr[256];
 static char Info[256];
 
-RGE_Communications_Speed::RGE_Communications_Speed(
-    TCommunications_Handler* c) {
-    // The constructor initializes ten player records, then
-    // allocates FrameTSLC before TurnTSLC.
+RGE_Communications_Speed::RGE_Communications_Speed(TCommunications_Handler* c) {
     Comm = c;
     CurrentBufferGranularity = 90;
     OptimalBufferGranularity = 90;
@@ -61,9 +58,7 @@ RGE_Communications_Speed::~RGE_Communications_Speed() {
     }
 }
 
-void RGE_Communications_Speed::SetPlayerTurnSpeed(
-    unsigned int PlayerNo, unsigned char AvgFramesMsec,
-    unsigned char HiLatencyCenti) {
+void RGE_Communications_Speed::SetPlayerTurnSpeed(unsigned int PlayerNo, unsigned char AvgFramesMsec, unsigned char HiLatencyCenti) {
     if (PlayerNo < 1 || PlayerNo > 9) {
         return;
     }
@@ -71,8 +66,7 @@ void RGE_Communications_Speed::SetPlayerTurnSpeed(
     this->PlayerHighLatencyMsec[PlayerNo] = HiLatencyCenti * 10;
 }
 
-void RGE_Communications_Speed::SetActualLatency(
-    unsigned int PlayerNo, unsigned long Msec) {
+void RGE_Communications_Speed::SetActualLatency(unsigned int PlayerNo, unsigned long Msec) {
     if (PlayerNo >= 1 && PlayerNo <= 9) {
         if (Msec < 30)
             Msec = 30;
@@ -82,9 +76,7 @@ void RGE_Communications_Speed::SetActualLatency(
     }
 }
 
-void RGE_Communications_Speed::SetFutureSpeedChange(
-    unsigned int BuffCount, unsigned int BuffGran,
-    unsigned long ExecTurn) {
+void RGE_Communications_Speed::SetFutureSpeedChange(unsigned int BuffCount, unsigned int BuffGran, unsigned long ExecTurn) {
     if (this->NextLatencyChangeTurn)
         return;
     this->FutureBufferFrames = BuffCount;

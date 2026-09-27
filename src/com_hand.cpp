@@ -160,6 +160,7 @@ TCommunications_Handler::TCommunications_Handler(void* WinHandle, unsigned char 
     L->Log("COMM:  RGE COMMUNICTIONS STARTED ---------------%s", com_hand_source_path);
     L->Log("COMM:  %s  Version... %s", com_hand_source_path, "Fri Jul 17 09:39:38 1998");
 
+    //! Dead code
     {
         char Codestr[32];
         strcpy(Codestr, "13:17:08");
@@ -173,6 +174,7 @@ TCommunications_Handler::TCommunications_Handler(void* WinHandle, unsigned char 
             } while (*p != 0);
         }
     }
+
     this->CommunicationsVersionCode = 0x2E2887;
     int count = MaxPlayers + 1;
 

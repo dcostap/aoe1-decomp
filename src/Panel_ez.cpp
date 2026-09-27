@@ -199,8 +199,7 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
     return 1;
 }
 
-TEasy_Panel::TEasy_Panel()
-    : TPanel() {
+TEasy_Panel::TEasy_Panel() : TPanel() {
     init_vars();
 }
 

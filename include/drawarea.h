@@ -135,6 +135,7 @@ public:
     void* OldBitmap;                      // +0x14
     int Width;                            // +0x18
     int Height;                           // +0x1C
+    // Row stride in bytes from DirectDraw; may exceed Width due to padding.
     int Pitch;                            // +0x20
     int Orien;                            // +0x24
     tagRECT ClipRect;                     // +0x28
@@ -240,7 +241,10 @@ public:
         PALETTEENTRY palette[256];       // +0x78
         PALETTEENTRY Palette[256];       // +0x78
     };
+    // Inferred backend: 1 = legacy WING/software (Init rejects it); 2 = DirectDraw.
+    // Zero is the constructor default, not a confirmed backend.
     unsigned char DrawType;              // +0x478
+    // Inferred mode values: 1 = windowed; 2 = fullscreen.
     unsigned char ScreenMode;            // +0x479
 
     TDrawSystem();
