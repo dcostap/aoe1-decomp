@@ -1006,26 +1006,26 @@ int TribePriestUnitAIModule::bestUnitToHeal(int idleHeal, float* allyDistance) {
     a = 1;
     while (a <= maxLimit) {
         i = 0;
-        if (VisibleUnitList_Size[a - 1] > 0) {
+        if (VisibleUnitList_Size[a] > 0) {
             do {
-                if (VisibleUnitList[a - 1][i].object_id != this->objectValue->id) {
+                if (VisibleUnitList[a][i].object_id != this->objectValue->id) {
                     RGE_Static_Object* unit =
-                        this->lookupObject(VisibleUnitList[a - 1][i].object_id);
+                        this->lookupObject(VisibleUnitList[a][i].object_id);
                     if (unit != 0) {
                         if (unit->master_obj->object_group != 3) {
                             if ((float)(int)unit->master_obj->hp > unit->hp) {
                                 if (unit->object_state < 3) {
-                                    if (idleHeal != 0 || VisibleUnitList[a - 1][i].distance <= 4) {
-                                        if (this->objectValue->owner->id != 0 || VisibleUnitList[a - 1][i].distance <= 2) {
-                                            if (this->objectValue->canPath(VisibleUnitList[a - 1][i].object_id,
+                                    if (idleHeal != 0 || VisibleUnitList[a][i].distance <= 4) {
+                                        if (this->objectValue->owner->id != 0 || VisibleUnitList[a][i].distance <= 2) {
+                                            if (this->objectValue->canPath(VisibleUnitList[a][i].object_id,
                                                                            1.0f, 0, 0, -1, -1)) {
                                                 float need = (float)(int)unit->master_obj->hp -
-                                                    unit->hp / (float)(int)VisibleUnitList[a - 1][i].distance;
+                                                    unit->hp / (float)(int)VisibleUnitList[a][i].distance;
                                                 if (allyToHealID == -1 || need < allyNeed) {
                                                     allyNeed = need;
                                                     allyToHealID = unit->id;
                                                     if (allyDistance != 0) {
-                                                        *allyDistance = (float)(int)VisibleUnitList[a - 1][i].distance;
+                                                        *allyDistance = (float)(int)VisibleUnitList[a][i].distance;
                                                     }
                                                 }
                                             }
@@ -1037,7 +1037,7 @@ int TribePriestUnitAIModule::bestUnitToHeal(int idleHeal, float* allyDistance) {
                     }
                 }
                 ++i;
-            } while (i < VisibleUnitList_Size[a - 1]);
+            } while (i < VisibleUnitList_Size[a]);
         }
         if (allyToHealID != -1) {
             return allyToHealID;
@@ -1060,15 +1060,15 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* distance) {
     float targetValue = 0.0f;
     int i = 0;
 
-    if (VisibleUnitList_Size[3] > 0) {
+    if (VisibleUnitList_Size[4] > 0) {
         do {
-            if (this->objectValue->owner->isEnemy((int)VisibleUnitList[3][i].player) != 0) {
-                RGE_Static_Object* found = this->lookupObject(VisibleUnitList[3][i].object_id);
+            if (this->objectValue->owner->isEnemy((int)VisibleUnitList[4][i].player) != 0) {
+                RGE_Static_Object* found = this->lookupObject(VisibleUnitList[4][i].object_id);
 
                 if (found != 0 && found->object_state < 3) {
                     if (this->canConvert(found->id) != 0) {
                         float priority =
-                            (float)VisibleUnitList[3][i].distance;
+                            (float)VisibleUnitList[4][i].distance;
                         if (priority < 1.0f)
                             priority = 1.0f;
 
@@ -1087,7 +1087,7 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* distance) {
             }
 
             i++;
-        } while (i < VisibleUnitList_Size[3]);
+        } while (i < VisibleUnitList_Size[4]);
     }
 
     return best_id;
@@ -1180,7 +1180,7 @@ int TribePriestUnitAIModule::processIdle(int doSearch) {
             return 6;
         }
 
-        int range = VisibleUnitList_Size[3];
+        int range = VisibleUnitList_Size[4];
         int r = debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 1708) % (range + 2);
         if (range > 0 && r > range) {
             float allyDistance;
