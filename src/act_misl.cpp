@@ -89,8 +89,9 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
 
             float target_vx =
                 (float)cos(this->target_obj->getAngle()) * target_speed;
+            // The original stores the sine product as a float for the later correction.
             float target_vy =
-                (float)sin(this->target_obj->getAngle()) * target_speed;
+                (float)(sin(this->target_obj->getAngle()) * target_speed);
             target_speed =
                 d -
                 (float)sqrt((dx + target_vx) * (dx + target_vx) + (dy + target_vy) * (dy + target_vy) + dz * dz) +

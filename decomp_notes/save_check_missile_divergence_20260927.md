@@ -1,8 +1,8 @@
-# Save-check missile divergence
+# Save-check missile divergence and repair
 
 ## Observed result
 
-The recorded `save-check` run still fails parity. The main trace report is
+The earlier recorded `save-check` run failed parity. Its trace report is
 `build/runtime/traces-20260927T222151457247Z-00957913927f/report.json`.
 It reports the first RNG call-site difference at record 4,034,042 and world
 update 56,688. It reports the first state difference at update 56,694.
@@ -55,9 +55,25 @@ in two float addition operand orders. Its result is also `MISMATCH`.
 
 The launch fields differ before the first RNG call-site difference. The
 trail remainder then separates during flight and crosses the trail threshold
-one update earlier. This supports the launch numeric difference as the
-cause of the first RNG call-site difference. A replay with a corrected
-`set_state` result is still necessary to confirm parity.
+one update earlier. The later paired replay confirms that the launch
+numeric difference caused this first RNG call-site difference.
+
+## Repair
+
+`src/act_misl.cpp` now casts the full sine-and-speed product to `float`.
+The old source cast the sine result before multiplication. The new form
+causes VC5 to store the product as a float. It also stores the adjusted
+speed before division. The original code uses both float stores. A paired
+flight probe found equal action velocity and acceleration words at launch
+and at probe updates 56,651, 56,686, 56,687, and 56,688.
+
+The complete `save-check` traced suite case passed for the candidate build.
+Both the original and rebuilt runs exited successfully. The report is
+`build/runtime/traces-20260927T233144057465Z-174440aa7cc6/report.json`.
+The final source also has one comment that records the rounding reason.
+Its full traced suite passed all three cases: `random-map-opening`,
+`save-check`, and `saved-game-session-1`. The final report is
+`build/runtime/traces-20260927T233824373008Z-11f90698461c/report.json`.
 
 ## Capture files
 
@@ -73,12 +89,25 @@ cause of the first RNG call-site difference. A replay with a corrected
 The capture files are local build output. They are not tracked evidence.
 This note retains the measured values and the path to each local capture.
 
-## Next check
+The prior rebuilt diagnostic run ended with a replay update-count mismatch.
+The repaired diagnostic run completed with the same final input, update,
+time, and object counts as the original run. The corrected `set_state`
+function remains a byte mismatch; do not change its registry status to
+`matching`. Keep the existing trail update: the original binary proves it.
 
-Seek a natural source form for `RGE_Action_Missile::set_state` that gives
-the original float stores and matches the launch fields. Then rerun the
-full `save-check` replay. Do not add fake volatility or a manual assembly
-wrapper. Keep the existing trail update: the original binary proves it.
+## Final validation limits
 
-No source change or full validation followed these probes. The rebuilt
-diagnostic run ended with a replay update-count mismatch.
+- Registry check: `validate_translation_units.py --no-build-checks` passed.
+- Build: all 226 sources compiled and linked. The final build report is
+  `build/executable/user/20260927T233630057825Z-3def6616d612/20260927T233630291819Z/report.json`.
+- Changed-unit audit: five `matching` results and two observed nonmatching
+  results. The owner audit found zero mismatches. Reports are under
+  `build/validation/missile-fix-final-20260927/functions/` and
+  `build/validation/missile-fix-final-20260927/owners.json`.
+- Linked-image audit: 11,354 supported passes, zero supported failures, and
+  47,842 unknown checks. The report is under
+  `build/validation/missile-fix-final-20260927/dependencies/`.
+- Automated tests: 995 passed, two skipped, and 31 subtests passed. The
+  report is `build/validation/missile-fix-final-20260927/tests.xml`.
+- The paced parity suite and the capture suite did not run. The three
+  traced cases give bounded replay evidence, not whole-game parity.
