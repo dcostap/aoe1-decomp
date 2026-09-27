@@ -515,7 +515,7 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                     this->statistics[player_index][2]->set_text("");
                 }
 
-                sprintf(temptxt, "%d", player->victory_conditions->get_attribute_id(7));
+                sprintf(temptxt, "%d%%", player->victory_conditions->get_attribute_id(7));
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(8) > 0) {
