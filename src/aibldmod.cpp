@@ -282,7 +282,8 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
             continue;
         }
 
-        sscanf(temp, " %c%d %s %d %d ", &buildCategoryAsChar, &quantity, name, &buildFrom, &buildCap);
+        // No leading space: a blank line reads '\n' and is skipped by the switch below.
+        sscanf(temp, "%c%d %s %d %d ", &buildCategoryAsChar, &quantity, name, &buildFrom, &buildCap);
 
         int buildCategory;
         switch (buildCategoryAsChar) {
