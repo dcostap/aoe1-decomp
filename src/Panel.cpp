@@ -813,7 +813,7 @@ void TPanel::set_redraw(TPanel::RedrawMode redraw_mode) {
         return;
     }
     need_redraw = redraw_mode;
-    if (redraw_mode != 0 && render_area != 0 && visible != 0 && active != 0) {
+    if (redraw_mode != TPanel::RedrawNone && render_area != 0 && visible != 0 && active != 0) {
         InvalidateRect(render_area->Wnd, &clip_rect, FALSE);
     }
 }

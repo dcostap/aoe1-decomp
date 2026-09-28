@@ -38,8 +38,7 @@ RGE_Campaign_Info::RGE_Campaign_Info(int infile, RGE_Campaign** campaigns, long 
                 campaign = *pcamp;
                 if (scenario_num != campaign->scenario_number()) {
                     if (scenario_num > campaign->scenario_number()) {
-                        RGE_Scenario_Info* new_info =
-                            (RGE_Scenario_Info*)calloc(campaign->scenario_number(), 1);
+                        RGE_Scenario_Info* new_info = (RGE_Scenario_Info*)calloc(campaign->scenario_number(), 1);
                         if (scenario_num < campaign->scenario_number()) {
                             memcpy(new_info, scenario_info, scenario_num);
                         } else {
@@ -117,8 +116,7 @@ void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** campaigns, long campaign
         if (strcmp((*pp)->get_name(), name) == 0) {
             campaign = *pp;
             if (scenario_num != campaign->scenario_number()) {
-                RGE_Scenario_Info* newsi =
-                    (RGE_Scenario_Info*)calloc(campaign->scenario_number(), 1);
+                RGE_Scenario_Info* newsi = (RGE_Scenario_Info*)calloc(campaign->scenario_number(), 1);
                 if (scenario_num < campaign->scenario_number()) {
                     memcpy(newsi, scenario_info, scenario_num);
                 } else {

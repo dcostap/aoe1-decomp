@@ -385,16 +385,14 @@ int RGE_Base_Game::setup() {
                                     if (file_number >= 0) {
                                         file_number = this->registry->RegGetInt(0, "Game File Number");
                                         sprintf(filename, "game%d.nfo", file_number);
-                                        this->player_game_info =
-                                            new RGE_Game_Info(filename);
+                                        this->player_game_info = new RGE_Game_Info(filename);
                                     } else {
                                         int i;
                                         for (i = 0; i < 9999; ++i) {
                                             sprintf(filename, "game%d.nfo", i);
                                             if (_findfirst(filename, &file_info) == -1) {
                                                 this->registry->RegSetInt(0, "Game File Number", i);
-                                                this->player_game_info =
-                                                    new RGE_Game_Info(filename);
+                                                this->player_game_info = new RGE_Game_Info(filename);
                                                 break;
                                             }
                                         }
