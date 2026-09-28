@@ -1,5 +1,6 @@
 
 #include "../include/dlg_conf.h"
+#include "../include/program_mode.h"
 #include "../include/game_globals.h"
 #include "../include/pathsys.h"
 #include "../include/colorlog.h"
@@ -86,7 +87,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
     for (i = 0; i < 3; ++i)
         this->speedButton[i]->set_radio_info(this->speedButton, 3);
 
-    if (rge_base_game->prog_mode == 5) {
+    if (rge_base_game->prog_mode == ProgModeGameOver) {
         for (i = 0; i < 3; ++i)
             this->speedButton[i]->set_disabled(1);
     }
@@ -430,7 +431,7 @@ long TribeConfigDialog::action(TPanel* fromPanel, long actionIn, unsigned long a
                     }
                 }
 
-                if (rge_base_game->prog_mode != 5) {
+                if (rge_base_game->prog_mode != ProgModeGameOver) {
                     float new_speed = 0.0f;
 
                     if (this->speedButton[0]->get_state() != 0)

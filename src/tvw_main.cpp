@@ -1,5 +1,6 @@
 
 #include "../include/basegame.h"
+#include "../include/program_mode.h"
 #include "../include/game_globals.h"
 #include "../include/main.h"
 #include "../include/view.h"
@@ -283,7 +284,7 @@ int TRIBE_Main_View::command_place_multi_object(long x1, long y1, long x2, long 
 
     short master_id = rge_base_game->master_obj_id;
 
-    if (rge_base_game->prog_mode == 7) {
+    if (rge_base_game->prog_mode == ProgModeScenarioEditor) {
         if (master_id != -1) {
         TRIBE_Master_Building_Object* master =
             static_cast<TRIBE_Master_Building_Object*>(static_cast<TRIBE_Player*>(this->player)->master_objects[master_id]);
@@ -385,7 +386,8 @@ long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shi
     RGE_Pick_Info pick_info;
     RGE_Static_Object* object;
 
-    if (mode != 4 && mode != 6 && mode != 7 && mode != 5) {
+    if (mode != ProgModeGame && mode != ProgModeGameTempPaused &&
+        mode != ProgModeScenarioEditor && mode != ProgModeGameOver) {
         return 0;
     }
 
@@ -493,7 +495,8 @@ long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int sh
     int mode = rge_base_game->prog_mode;
     RGE_Pick_Info pick_info;
 
-    if (mode != 4 && mode != 6 && mode != 7 && mode != 5) {
+    if (mode != ProgModeGame && mode != ProgModeGameTempPaused &&
+        mode != ProgModeScenarioEditor && mode != ProgModeGameOver) {
         return 0;
     }
 

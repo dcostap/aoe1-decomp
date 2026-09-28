@@ -1,4 +1,5 @@
 #include "../include/tplayer.h"
+#include "../include/program_mode.h"
 #include "../include/player.h"
 #include "../include/world.h"
 #include "../include/tworld.h"
@@ -550,7 +551,7 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, 
             if (object->master_obj->master_type == 'P')
                 static_cast<TRIBE_Building_Object*>(object)->build(10000.0f);
         }
-        if (rge_base_game->prog_mode == 7 && (object->master_obj->object_group == 5 ||
+        if (rge_base_game->prog_mode == ProgModeScenarioEditor && (object->master_obj->object_group == 5 ||
              object->master_obj->object_group == 0x21))
             object->sprite_list->set_frame(object->sprite, 5);
     }

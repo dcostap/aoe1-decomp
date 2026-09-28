@@ -1,4 +1,5 @@
 #include "../include/vw_dimap.h"
+#include "../include/program_mode.h"
 #include "../include/game_globals.h"
 #include "../include/main.h"
 
@@ -19,12 +20,14 @@ long RGE_Diamond_Map_View::handle_mouse_down(unsigned char mouse_button_in, long
 long RGE_Diamond_Map_View::mouse_left_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (rge_base_game->get_paused() == 0) {
         int mode = rge_base_game->prog_mode;
-        if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+        if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
+            mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
             if (rge_base_game->prog_info->interface_style == 2) {
                 this->start_scroll_view(x, y);
                 return 1;
             }
-            if (mode == 4 || mode == 6 || mode == 7) {
+            if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
+                mode == ProgModeScenarioEditor) {
                 this->capture_mouse();
             }
             return 1;
@@ -35,7 +38,7 @@ long RGE_Diamond_Map_View::mouse_left_down_action(long x, long y, int ctrl_key, 
 
 long RGE_Diamond_Map_View::mouse_left_move_action(long x, long y, int ctrl_key, int shift_key) {
     int prog_mode = rge_base_game->prog_mode;
-    if (prog_mode == 4 || prog_mode == 6 || prog_mode == 7 || prog_mode == 5) {
+    if (prog_mode == ProgModeGame || prog_mode == ProgModeGameTempPaused || prog_mode == ProgModeScenarioEditor || prog_mode == ProgModeGameOver) {
         if (rge_base_game->get_paused()) {
             if (this->scrolling) {
                 this->end_scroll_view();
@@ -55,7 +58,8 @@ long RGE_Diamond_Map_View::mouse_left_move_action(long x, long y, int ctrl_key, 
 long RGE_Diamond_Map_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
 
-    if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
+        mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
         if (this->scrolling) {
             this->end_scroll_view();
             return 1;
@@ -67,7 +71,7 @@ long RGE_Diamond_Map_View::mouse_left_up_action(long x, long y, int ctrl_key, in
             return 0;
         }
 
-        if (rge_base_game->prog_mode == 5) {
+        if (rge_base_game->prog_mode == ProgModeGameOver) {
             return 0;
         }
 
@@ -99,9 +103,11 @@ long RGE_Diamond_Map_View::mouse_left_up_action(long x, long y, int ctrl_key, in
 long RGE_Diamond_Map_View::mouse_right_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (rge_base_game->get_paused() == 0) {
         int mode = rge_base_game->prog_mode;
-        if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+        if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
+            mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
             if (rge_base_game->prog_info->interface_style == 2) {
-                if (mode == 4 || mode == 6 || mode == 7) {
+                if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
+                    mode == ProgModeScenarioEditor) {
                     this->capture_mouse();
                     return 1;
                 }
@@ -116,7 +122,8 @@ long RGE_Diamond_Map_View::mouse_right_down_action(long x, long y, int ctrl_key,
 
 long RGE_Diamond_Map_View::mouse_right_move_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
-    if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
+        mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
         if (rge_base_game->get_paused()) {
             if (this->scrolling) {
                 this->end_scroll_view();
@@ -136,7 +143,8 @@ long RGE_Diamond_Map_View::mouse_right_move_action(long x, long y, int ctrl_key,
 long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int ctrl_key, int shift_key) {
     RGE_Tile* tile;
     int mode = rge_base_game->prog_mode;
-    if (mode != 4 && mode != 6 && mode != 7 && mode != 5) {
+    if (mode != ProgModeGame && mode != ProgModeGameTempPaused &&
+        mode != ProgModeScenarioEditor && mode != ProgModeGameOver) {
         return 0;
     }
 
@@ -155,7 +163,7 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int ctrl_key, i
     }
 
     if (rge_base_game->prog_info->interface_style == 2) {
-        if (rge_base_game->game_mode != 0 || rge_base_game->prog_mode == 5) {
+        if (rge_base_game->game_mode != 0 || rge_base_game->prog_mode == ProgModeGameOver) {
             return 0;
         }
         if (shift_key == 0) {
@@ -172,7 +180,7 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int ctrl_key, i
         return 1;
     }
 
-    if (rge_base_game->prog_mode == 7) {
+    if (rge_base_game->prog_mode == ProgModeScenarioEditor) {
         return 0;
     }
     if (rge_base_game->game_mode != 0) {

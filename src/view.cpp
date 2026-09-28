@@ -1,4 +1,5 @@
 #include <windows.h>
+#include "../include/program_mode.h"
 #include <ddraw.h>
 #include <stdio.h>
 #include <string.h>
@@ -2367,7 +2368,7 @@ tile_off_screen:
         MouseSystem->Poll();
     }
 
-    if (rge_base_game->prog_mode == 4 && this->have_focus != 0 && MouseSystem->get_game_enable() != 0) {
+    if (rge_base_game->prog_mode == ProgModeGame && this->have_focus != 0 && MouseSystem->get_game_enable() != 0) {
         unsigned long current_time = debug_timeGetTime((char*)s_C__msdev_work_age1_x1_view_cpp, 3857);
         tagPOINT CPoint;
 

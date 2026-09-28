@@ -1,5 +1,6 @@
 
 #include <windows.h>
+#include "../include/program_mode.h"
 #include <fcntl.h>
 #include <io.h>
 #include <new.h>
@@ -141,7 +142,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* prog_info_in, int do_setup)
     this->comm_speed = 1;
     this->comm_droppackets = 0;
     this->registry = 0;
-    this->prog_mode = 0;
+    this->prog_mode = ProgModeNone;
     this->game_mode = 0;
     this->sub_game_mode = 0;
     this->paused = 0;
@@ -372,7 +373,7 @@ int RGE_Base_Game::setup() {
                                     this->error_code = RGE_ERROR_SETUP_BLANK_SCREEN;
                                 } else {
                                     int file_number;
-                                    this->set_prog_mode(0);
+                                    this->set_prog_mode(ProgModeNone);
                                     this->setup_timings();
                                     this->handle_size(this->prog_window, 0, 0, 0);
                                     this->prog_ready = 1;
@@ -496,7 +497,7 @@ RGE_Base_Game::~RGE_Base_Game() {
         this->player_game_info = 0;
     }
 
-    this->prog_mode = 0;
+    this->prog_mode = ProgModeNone;
     if (this->world != 0) {
         delete this->world;
         this->world = 0;
@@ -892,7 +893,7 @@ int RGE_Base_Game::run() {
     MSG msg;
 
     while (1) {
-        if (this->prog_active != 0 && (this->prog_mode == 4 || this->prog_mode == 2)) {
+        if (this->prog_active != 0 && (this->prog_mode == ProgModeGame || this->prog_mode == ProgModeMenu)) {
             TCommunications_Handler* comm = this->comm_handler;
             if (comm == 0 || comm->IsPaused() == 0) {
                 if (PeekMessageA(&msg, 0, 0, 0, PM_REMOVE) != 0) {
@@ -2294,7 +2295,7 @@ void RGE_Base_Game::set_player(short new_player_id) {
 }
 
 int RGE_Base_Game::get_paused() {
-    if (this->prog_mode == 7)
+    if (this->prog_mode == ProgModeScenarioEditor)
         return 0;
     return this->comm_handler->IsPaused();
 }
@@ -2629,7 +2630,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
                     SetCursor(NULL);
                     SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
 
-                    if (this->prog_mode != 1) {
+                    if (this->prog_mode != ProgModeVideo) {
                         this->restart_sound_system();
                     }
 
@@ -2641,7 +2642,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
                         this->set_render_all();
                     }
 
-                    if (this->prog_mode != 1) {
+                    if (this->prog_mode != ProgModeVideo) {
                         if (this->draw_system != 0) {
                             this->draw_system->ClearPrimarySurface();
                             this->draw_system->ModifyPalette(0, 256, this->draw_system->palette);
@@ -2657,13 +2658,13 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
             } else if (basegame_is_active == 0) {
                 SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
 
-                if (this->prog_mode != 1) {
+                if (this->prog_mode != ProgModeVideo) {
                     this->stop_sound_system();
                 }
 
                 basegame_is_active = 1;
 
-                if (this->prog_mode != 1 && this->mouse_pointer != 0) {
+                if (this->prog_mode != ProgModeVideo && this->mouse_pointer != 0) {
                     this->mouse_pointer->Shutdown_Mouse();
                 }
             }
@@ -2935,7 +2936,9 @@ int RGE_Base_Game::handle_paint(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam
         return 0;
     }
 
-    if (((this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 7) &&
+    if (((this->prog_mode == ProgModeGame ||
+          this->prog_mode == ProgModeGameTempPaused ||
+          this->prog_mode == ProgModeScenarioEditor) &&
          this->draw_system->DrawType != 1 && this->custom_mouse != 0) && this->mouse_blit_sync != 0) {
         IDirectDrawSurface* surface = this->draw_system->PrimarySurface;
         result = surface->GetBltStatus(1);
@@ -2996,7 +2999,7 @@ paint_done:
     color_log(0x32, 0x24, 4);
     if (basegame_palette_restore_pending != 0) {
         basegame_palette_restore_pending = 0;
-        if ((this->prog_mode == 4 || this->prog_mode == 5) && this->do_show_timings != 0)
+        if ((this->prog_mode == ProgModeGame || this->prog_mode == ProgModeGameOver) && this->do_show_timings != 0)
             this->show_timings();
     }
 
@@ -3061,7 +3064,9 @@ int RGE_Base_Game::handle_activate(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpa
     }
 
     if (this->prog_active != 0) {
-        if ((this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 7) && this->auto_paused == 1) {
+        if ((this->prog_mode == ProgModeGame ||
+             this->prog_mode == ProgModeGameTempPaused ||
+             this->prog_mode == ProgModeScenarioEditor) && this->auto_paused == 1) {
             this->auto_paused = 0;
             this->set_paused(0, 0);
         }
@@ -3073,7 +3078,9 @@ int RGE_Base_Game::handle_activate(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpa
         }
         this->action_activate();
     } else {
-        if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 7) {
+        if (this->prog_mode == ProgModeGame ||
+            this->prog_mode == ProgModeGameTempPaused ||
+            this->prog_mode == ProgModeScenarioEditor) {
             if (this->singlePlayerGame() == 1 && this->get_paused() == 0) {
                 this->auto_paused = 1;
                 this->set_paused(1, 0);
@@ -3125,7 +3132,7 @@ int RGE_Base_Game::handle_palette_changed(HWND wnd, UINT msg, WPARAM wparam, LPA
         TDrawSystem* ds = this->draw_system;
         if (ds->DrawType == 1 || ds->ScreenMode == 1 || ds == 0) {
             this->handle_query_new_palette(wnd, msg, wparam, lparam);
-        } else if (this->prog_mode != 1) {
+        } else if (this->prog_mode != ProgModeVideo) {
             ds->ModifyPalette(0, 256, ds->palette);
             return 1;
         }
@@ -3244,7 +3251,7 @@ void RGE_Base_Game::calc_timings() {
 
     this->calc_timing_text();
 
-    if (do_fps_log != 0 && this->prog_mode == 4) {
+    if (do_fps_log != 0 && this->prog_mode == ProgModeGame) {
         int object_count = 0;
         int sleeping_object_count = 0;
         int player_count = this->world->player_num;

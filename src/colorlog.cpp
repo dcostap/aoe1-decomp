@@ -1,6 +1,7 @@
 // This file owns the module's handwritten definition.
 
 #include "../include/colorlog.h"
+#include "../include/program_mode.h"
 #include "../include/basegame.h"
 #include "../include/drawarea.h"
 #include "../include/rge_base_game_global.h"
@@ -11,7 +12,7 @@ void __cdecl color_log(unsigned char c1, unsigned char c2, int pos) {
     RGE_Base_Game* game = rge_base_game;
     if (!game)
         return;
-    if (game->prog_mode < 2)
+    if (game->prog_mode < ProgModeMenu)
         return;
 
     TDrawSystem* sys = game->draw_system;

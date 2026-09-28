@@ -1,6 +1,7 @@
 // This file owns every normal function in the compiland.
 
 #include "../include/dlg_dip.h"
+#include "../include/program_mode.h"
 #include "../include/asm_draw.h"
 #include "../include/tcommand.h"
 #include "../include/com_hand.h"
@@ -114,7 +115,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
         GetPaletteEntries(this->palette, world->players[player_id]->color_table->map_color, 1, &paletteColor);
 
         int disable_buttons;
-        if (rge_base_game->prog_mode == 5 || player_id == world->curr_player ||
+        if (rge_base_game->prog_mode == ProgModeGameOver || player_id == world->curr_player ||
             world->players[player_id]->game_status != 0) {
             disable_buttons = 1;
         } else {
@@ -173,7 +174,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
 
             for (i = 0; i < 3; ++i) {
                 buttons[i]->set_radio_info(buttons, 3);
-                if (rge_base_game->prog_mode == 5) {
+                if (rge_base_game->prog_mode == ProgModeGameOver) {
                     buttons[i]->set_disabled(1);
                 }
             }
@@ -230,11 +231,11 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
     }
     this->allianceButton->set_state(rge_base_game->get_player()->get_allied_victory());
     this->allianceButton->set_help_info(STRING_ID_HELP_DIPLOMACY_ALLIED_VICTORY, -1);
-    if (rge_base_game->prog_mode == 5) {
+    if (rge_base_game->prog_mode == ProgModeGameOver) {
         this->allianceButton->set_disabled(1);
     }
 
-    if (rge_base_game->prog_mode != 5) {
+    if (rge_base_game->prog_mode != ProgModeGameOver) {
         if (!this->create_button(this, &this->okButton, STRING_ID_BUTTON_OK, 0, 10, 367, 190, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
             return;
         }
@@ -670,7 +671,7 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
 int TribeDiplomacyDialog::check_gold() {
     int gold_ok;
 
-    if (rge_base_game->prog_mode != 5) {
+    if (rge_base_game->prog_mode != ProgModeGameOver) {
         RGE_Player* player = rge_base_game->get_player();
         if (player->attributes[3] - this->goldTotal <= 0.0f) {
             gold_ok = 1;
@@ -704,7 +705,7 @@ int TribeDiplomacyDialog::check_gold() {
 int TribeDiplomacyDialog::check_wood() {
     int result;
 
-    if (rge_base_game->prog_mode == 5) {
+    if (rge_base_game->prog_mode == ProgModeGameOver) {
         result = 1;
     } else {
         RGE_Player* player = rge_base_game->get_player();
@@ -745,7 +746,7 @@ int TribeDiplomacyDialog::check_food() {
     TButtonPanel** buttons;
     RGE_Player* player;
 
-    if (rge_base_game->prog_mode == 5) {
+    if (rge_base_game->prog_mode == ProgModeGameOver) {
         has_food = 1;
     } else {
         player = rge_base_game->get_player();
@@ -785,7 +786,7 @@ int TribeDiplomacyDialog::check_stone() {
     TButtonPanel** buttons;
     RGE_Player* player;
 
-    if (rge_base_game->prog_mode == 5) {
+    if (rge_base_game->prog_mode == ProgModeGameOver) {
         result = 1;
     } else {
         player = rge_base_game->get_player();

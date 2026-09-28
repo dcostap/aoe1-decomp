@@ -1,4 +1,5 @@
 #include "../include/com_hand.h"
+#include "../include/program_mode.h"
 #include "../include/tribegam.h"
 #include "../include/resource_ids.h"
 #include "../include/main.h"
@@ -225,7 +226,7 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* prog_info_in, int do_setup)
 
 TRIBE_Game::~TRIBE_Game() {
     this->inHandleIdle = 0;
-    this->prog_mode = 0;
+    this->prog_mode = ProgModeNone;
 
     if (this->input_disabled_window != 0) {
         DestroyWindow(reinterpret_cast<HWND>(this->input_disabled_window));
@@ -986,12 +987,12 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
 }
 
 TPanel* TRIBE_Game::get_view_panel() {
-    if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
+    if (this->prog_mode == ProgModeGame || this->prog_mode == ProgModeGameTempPaused || this->prog_mode == ProgModeGameOver) {
         if (this->game_screen != 0)
             return this->game_screen->get_view_panel();
     }
 
-    if (this->prog_mode == 7) {
+    if (this->prog_mode == ProgModeScenarioEditor) {
         TPanel* panel = panel_system.panel("Scenario Editor Screen");
         if (panel != 0)
             return static_cast<TRIBE_Screen_Sed*>(panel)->main_view;
@@ -1001,13 +1002,13 @@ TPanel* TRIBE_Game::get_view_panel() {
 }
 
 TPanel* TRIBE_Game::get_map_panel(void) {
-    if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
+    if (this->prog_mode == ProgModeGame || this->prog_mode == ProgModeGameTempPaused || this->prog_mode == ProgModeGameOver) {
         if (this->game_screen != 0) {
             return this->game_screen->get_map_panel();
         }
     }
 
-    if (this->prog_mode == 7) {
+    if (this->prog_mode == ProgModeScenarioEditor) {
         TPanel* p = panel_system.panel("Scenario Editor Screen");
         if (p != 0) {
             return static_cast<TRIBE_Screen_Sed*>(p)->map_view;
@@ -1304,7 +1305,7 @@ int TRIBE_Game::start_campaign_menu() {
     }
 
     panel_system.setCurrentPanel("Campaign Selection Screen", 0);
-    this->set_prog_mode(2);
+    this->set_prog_mode(ProgModeMenu);
 
     music = this->music_system;
     if (music != 0 && this->started_menu_music == 0) {
@@ -1341,7 +1342,7 @@ int TRIBE_Game::start_menu() {
     }
 
     panel_system.setCurrentPanel("Main Menu", 0);
-    this->set_prog_mode(2);
+    this->set_prog_mode(ProgModeMenu);
 
     TMusic_System* music = this->music_system;
     if (music != 0 && this->started_menu_music == 0) {
@@ -1373,7 +1374,7 @@ void TRIBE_Game::quit_game() {
     }
 
     this->disconnect_multiplayer_game();
-    this->prog_mode = 0;
+    this->prog_mode = ProgModeNone;
 
     if (do_debug_random != 0) {
         debug_random_write();
@@ -1429,7 +1430,7 @@ void TRIBE_Game::quit_game() {
 
         TribeJoinScreen* join_screen = new TribeJoinScreen;
         panel_system.setCurrentPanel("Join Screen", 0);
-        this->set_prog_mode(2);
+        this->set_prog_mode(ProgModeMenu);
     }
 
     this->close_game_screens(0);
@@ -1449,7 +1450,7 @@ void TRIBE_Game::restart_game() {
     this->close_game_screens(0);
     this->game_screen = 0;
     panel_system.destroyPanel("Game Screen");
-    this->prog_mode = 0;
+    this->prog_mode = ProgModeNone;
     this->world->del_game_info();
 
     for (int player = 1; player < 9; ++player) {
@@ -1537,7 +1538,8 @@ extern "C" char* __cdecl strchr(const char* source, int character);
 extern int ENABLE_COMPRESSION; // 00585A6C
 
 int TRIBE_Game::save_game(char* fileName) {
-    if (this->prog_mode != 4 && this->prog_mode != 6 && this->prog_mode != 7 && this->prog_mode != 5) {
+    if (this->prog_mode != ProgModeGame && this->prog_mode != ProgModeGameTempPaused &&
+        this->prog_mode != ProgModeScenarioEditor && this->prog_mode != ProgModeGameOver) {
         return 0;
     }
 
@@ -1576,7 +1578,8 @@ int TRIBE_Game::save_game(char* fileName) {
 }
 
 int TRIBE_Game::save_scenario(char* fileName) {
-    if (this->prog_mode != 4 && this->prog_mode != 6 && this->prog_mode != 7 && this->prog_mode != 5) {
+    if (this->prog_mode != ProgModeGame && this->prog_mode != ProgModeGameTempPaused &&
+        this->prog_mode != ProgModeScenarioEditor && this->prog_mode != ProgModeGameOver) {
         return 0;
     }
 
@@ -2172,7 +2175,7 @@ int TRIBE_Game::start_game(int skip_startup_screens) {
 int TRIBE_Game::test_scenario(char* scenario_file) {
     strcpy(this->testing_scenario, scenario_file);
     panel_system.destroyPanel("Scenario Editor Screen");
-    this->set_prog_mode(0);
+    this->set_prog_mode(ProgModeNone);
 
     if (this->start_scenario(this->testing_scenario))
         return 1;
@@ -2294,8 +2297,8 @@ int TRIBE_Game::load_game(char* fileName) {
     cur_panel = panel_system.currentPanel();
     this->disable_input();
 
-    if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
-        this->prog_mode = 0;
+    if (this->prog_mode == ProgModeGame || this->prog_mode == ProgModeGameTempPaused || this->prog_mode == ProgModeGameOver) {
+        this->prog_mode = ProgModeNone;
         this->world->del_game_info();
         this->game_screen = 0;
         panel_system.destroyPanel("Game Screen");
@@ -2699,8 +2702,9 @@ void TRIBE_Game::do_game_over(void) {
     }
 
     int mode = this->prog_mode;
-    if (mode == 4 || mode == 6 || mode == 5 || mode == 3) {
-        this->prog_mode = 0;
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
+        mode == ProgModeGameOver || mode == ProgModeMultiplayerWait) {
+        this->prog_mode = ProgModeNone;
         if (this->world != 0) {
             turn_world_sound_off();
 
@@ -3049,7 +3053,7 @@ int TRIBE_Game::create_game_screen() {
                 wait->set_text(STRING_ID_STATUS_WAITING_FOR_PLAYERS);
                 panel_system.setCurrentPanel("Multiplayer Wait Screen", 0);
                 panel_system.destroyPanel("Status Screen");
-                this->set_prog_mode(3);
+                this->set_prog_mode(ProgModeMultiplayerWait);
                 goto create_game_screen_common;
             }
 
@@ -3076,7 +3080,7 @@ int TRIBE_Game::create_game_screen() {
         panel_system.destroyPanel("MP Startup Screen");
         panel_system.destroyPanel("Main Menu");
         panel_system.destroyPanel("Campaign Selection Screen");
-        if (this->prog_mode != 3) {
+        if (this->prog_mode != ProgModeMultiplayerWait) {
             this->let_game_begin();
         }
         return 1;
@@ -3454,7 +3458,7 @@ void TRIBE_Game::let_game_begin() {
     }
 
     this->reset_timings();
-    this->set_prog_mode(4);
+    this->set_prog_mode(ProgModeGame);
     if (this->singlePlayerGame() == 1) {
         this->set_paused(0, 0);
     }
@@ -3785,7 +3789,7 @@ long __stdcall TRIBE_Game::wnd_proc(void* wnd, unsigned int msg, unsigned int wp
                 }
             }
         } else {
-            if (this->prog_mode == 1) {
+            if (this->prog_mode == ProgModeVideo) {
                 SetCursor(NULL);
             }
         }
@@ -3793,7 +3797,7 @@ long __stdcall TRIBE_Game::wnd_proc(void* wnd, unsigned int msg, unsigned int wp
         switch (msg) {
         case WM_LBUTTONDOWN:
         case WM_RBUTTONDOWN:
-            if (this->prog_mode == 1) {
+            if (this->prog_mode == ProgModeVideo) {
                 this->stop_video(1);
                 return 0;
             }
@@ -3828,7 +3832,7 @@ int TRIBE_Game::handle_idle() {
     color_log(0x4C, 0x4C, 5);
     color_log(0x4C, 0x16, 5);
 
-    if (this->prog_mode == 1 && this->video_window != 0) {
+    if (this->prog_mode == ProgModeVideo && this->video_window != 0) {
         unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 4993);
         if (now - this->last_video_time >= 1000) {
             SendMessageA(this->video_window, TRIBE_MCIWNDM_GETMODEA, sizeof(str), reinterpret_cast<long>(str));
@@ -3839,7 +3843,7 @@ int TRIBE_Game::handle_idle() {
             }
             this->last_video_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5005);
         }
-    } else if (this->prog_mode == 3) {
+    } else if (this->prog_mode == ProgModeMultiplayerWait) {
         if (this->comm_handler->MultiplayerGameStart() != 0) {
             color_log(0x4C, 0x24, 5);
             this->let_game_begin();
@@ -3866,7 +3870,7 @@ int TRIBE_Game::handle_idle() {
                 last_wait_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5036);
             }
         }
-    } else if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
+    } else if (this->prog_mode == ProgModeGame || this->prog_mode == ProgModeGameTempPaused || this->prog_mode == ProgModeGameOver) {
         color_log(0x4C, 0x32, 5);
         if (out_of_sync2 == 0 && this->game_screen != 0) {
             this->game_screen->handle_game_update();
@@ -3898,7 +3902,7 @@ int TRIBE_Game::handle_query_new_palette(void* wnd, unsigned int msg, unsigned i
 int TRIBE_Game::handle_activate(void* wnd, unsigned int msg, unsigned int wparam, long lparam) {
     RGE_Base_Game::handle_activate(wnd, msg, wparam, lparam);
 
-    if (this->prog_mode == 1 && this->video_window != 0) {
+    if (this->prog_mode == ProgModeVideo && this->video_window != 0) {
         if (wparam == 1) {
             if (this->video_paused != 0) {
                 SendMessageA(this->video_window, MCI_RESUME, 0, 0);
@@ -3925,7 +3929,7 @@ int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
     TEasy_Panel* panel;
     int player;
 
-    if (this->prog_mode == 3) {
+    if (this->prog_mode == ProgModeMultiplayerWait) {
         switch (val1) {
         case 0x17a8:
         case 0x17a9:
@@ -3957,7 +3961,7 @@ int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
             panel->popupOKDialog(STRING_ID_PLAYER_DROPPED_NOTICE, 0, TEASY_POPUP_WIDTH, 100);
             break;
         }
-    } else if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
+    } else if (this->prog_mode == ProgModeGame || this->prog_mode == ProgModeGameTempPaused || this->prog_mode == ProgModeGameOver) {
         switch (val1) {
         case 0x17b2:
             if (this->game_screen == 0) {
@@ -4048,7 +4052,7 @@ int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
 }
 
 int TRIBE_Game::action_key_down(unsigned long key, int repeat_count, int ctrl_key, int alt_key, int shift_key) {
-    if (this->prog_mode == 1) {
+    if (this->prog_mode == ProgModeVideo) {
         switch (key) {
         case 0x0D:
         case 0x20:
@@ -4065,7 +4069,8 @@ int TRIBE_Game::action_key_down(unsigned long key, int repeat_count, int ctrl_ke
         return 1;
     }
     if (!this->multiplayerGame() ||
-        (this->prog_mode != 4 && this->prog_mode != 6 && this->prog_mode != 7 && this->prog_mode != 5)) {
+        (this->prog_mode != ProgModeGame && this->prog_mode != ProgModeGameTempPaused &&
+         this->prog_mode != ProgModeScenarioEditor && this->prog_mode != ProgModeGameOver)) {
         WinHelpA(this->prog_window, "empires.hlp", 3, 0);
     }
     return 0;
@@ -4074,7 +4079,7 @@ int TRIBE_Game::action_key_down(unsigned long key, int repeat_count, int ctrl_ke
 int TRIBE_Game::action_close() {
     if (this->comm_handler) {
         this->disconnect_multiplayer_game();
-        this->prog_mode = 0;
+        this->prog_mode = ProgModeNone;
     }
     return 1;
 }
@@ -4224,7 +4229,7 @@ int TRIBE_Game::setup_video_system() {
     }
 
     L->Log("video_changed_res=%d, double_size=%d", this->video_changed_res, this->video_double_size);
-    this->set_prog_mode(1);
+    this->set_prog_mode(ProgModeVideo);
     this->stop_sound_system();
     this->video_setup = 1;
     return 1;
@@ -4253,7 +4258,7 @@ void TRIBE_Game::shutdown_video_system() {
 
     InvalidateRect(this->prog_window, NULL, TRUE);
 
-    set_prog_mode(2);
+    set_prog_mode(ProgModeMenu);
     restart_sound_system();
 
     void* cursor = LoadCursorA(0, IDC_ARROW);
@@ -4269,7 +4274,8 @@ void TRIBE_Game::disconnect_multiplayer_game() {
         return;
     }
 
-    if (this->prog_mode != 4 && this->prog_mode != 6 && this->prog_mode != 7 && this->prog_mode != 5) {
+    if (this->prog_mode != ProgModeGame && this->prog_mode != ProgModeGameTempPaused &&
+        this->prog_mode != ProgModeScenarioEditor && this->prog_mode != ProgModeGameOver) {
         return;
     }
 

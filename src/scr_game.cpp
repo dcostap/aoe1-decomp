@@ -1,5 +1,6 @@
 
 #include "../include/scr_game.h"
+#include "../include/program_mode.h"
 #include "../include/game_globals.h"
 #include "../include/resource_ids.h"
 #include "../include/dsutil.h"
@@ -508,7 +509,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     confirmed_close = 0;
     if (rge_base_game->check_prog_argument("PAUSE")) {
         start_paused = 1;
-        rge_base_game->set_prog_mode(6);
+        rge_base_game->set_prog_mode(ProgModeGameTempPaused);
         rge_base_game->world->temp_pause = 1;
     }
 }
@@ -1058,14 +1059,15 @@ long TRIBE_Screen_Game::handle_idle() {
     color_log(0x5F, 0x16, 5);
     int mode = rge_base_game->prog_mode;
 
-    if (mode == 4 || mode == 6 || mode == 5) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
+        mode == ProgModeGameOver) {
         if (panel_system.currentPanel() == this && this->main_view->get_focus() != 0) {
             color_log(0x5F, 0x45, 5);
             this->handle_anim_pal();
         }
     }
 
-    if (mode == 4 || mode == 6) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused) {
         color_log(0x5F, 0x32, 5);
         this->handle_terrain_sound();
         color_log(0x5F, 0xBA, 5);
@@ -1090,7 +1092,7 @@ void TRIBE_Screen_Game::handle_game_update() {
     }
 
     int mode = rge_base_game->prog_mode;
-    if (static_cast<unsigned char>(mode) != 6) {
+    if (static_cast<unsigned char>(mode) != ProgModeGameTempPaused) {
         color_log(0x24, 0x32, 5);
 
         int num_updates;
@@ -1137,7 +1139,7 @@ void TRIBE_Screen_Game::handle_game_update() {
 
             if (start_paused != 0) {
                 game_state = 0;
-                rge_base_game->set_prog_mode(6);
+                rge_base_game->set_prog_mode(ProgModeGameTempPaused);
             } else if (this->game_ended != 0) {
                 game_state = 1;
             } else {
@@ -1189,7 +1191,7 @@ void TRIBE_Screen_Game::handle_game_update() {
 
             if (start_paused == 0 && (game_state == 1 || this->world->players[this->world->curr_player]->game_status == 2 ||
                  this->player_quit == 1)) {
-                if (static_cast<unsigned char>(mode) != 5) {
+                if (static_cast<unsigned char>(mode) != ProgModeGameOver) {
                     color_log(0x24, 0x45, 5);
                     this->command_cancel();
                     this->command_unselect();
@@ -1200,7 +1202,7 @@ void TRIBE_Screen_Game::handle_game_update() {
                     this->message_panel4->remove_message();
                     this->message_panel5->remove_message();
                     this->message_panel6->remove_message();
-                    rge_base_game->set_prog_mode(5);
+                    rge_base_game->set_prog_mode(ProgModeGameOver);
 
                     if (panel_system.mouseOwner() != 0) {
                         panel_system.mouseOwner()->release_mouse();
@@ -1347,7 +1349,8 @@ long TRIBE_Screen_Game::wnd_proc(void* hwnd, unsigned int msg, unsigned int wPar
         if (confirmed_close == 0) {
             confirmed_close = 1;
             int mode = rge_base_game->prog_mode;
-            if (mode == 5 || mode == 4 || mode == 6 || mode == 7) {
+            if (mode == ProgModeGameOver || mode == ProgModeGame ||
+                mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor) {
                 if (IsIconic(this->render_area->Wnd) == 0) {
                     this->popupYesNoDialog(STRING_ID_CONFIRM_QUIT_GAME, "CloseProgramDialog", TEASY_POPUP_WIDTH, 100);
                     return 1;
@@ -1428,7 +1431,7 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
         return 1;
     }
 
-    game_over = (rge_base_game->prog_mode == 5);
+    game_over = (rge_base_game->prog_mode == ProgModeGameOver);
 
     if (ctrl_key != 0 && shift_key != 0 && alt_key != 0) {
         if (game_over == 0) {
@@ -2484,7 +2487,7 @@ void TRIBE_Screen_Game::setup_buttons() {
         final_frame = this->cancel_frame;
         final_type = 0x0B;
         set_final_button = 1;
-    } else if ((rge_base_game->game_mode == 0) && (rge_base_game->prog_mode != 5)) {
+    } else if ((rge_base_game->game_mode == 0) && (rge_base_game->prog_mode != ProgModeGameOver)) {
         if (this->game_obj->owner == player) {
             unsigned char level = player->unit_level_selected();
             int continue_setup = 1;
@@ -3684,7 +3687,7 @@ void TRIBE_Screen_Game::command_chat() {
         command_quick_chat();
         return;
     }
-    if (game_ended == 0 && rge_base_game->prog_mode == 5) {
+    if (game_ended == 0 && rge_base_game->prog_mode == ProgModeGameOver) {
         message_panel->show_message(
             TMessagePanel::BadMessage, get_string(STRING_ID_ERROR_CHAT_AFTER_DEFEAT), TMessagePanel::NormalColor, 0, 0, 0, 0);
         return;
@@ -3693,7 +3696,7 @@ void TRIBE_Screen_Game::command_chat() {
 }
 
 void TRIBE_Screen_Game::command_quick_chat() {
-    if (game_ended == 0 && rge_base_game->prog_mode == 5) {
+    if (game_ended == 0 && rge_base_game->prog_mode == ProgModeGameOver) {
         message_panel->show_message(
             TMessagePanel::BadMessage, get_string(STRING_ID_ERROR_CHAT_AFTER_DEFEAT), TMessagePanel::NormalColor, 0, 0, 0, 0);
         return;
@@ -3783,7 +3786,7 @@ void TRIBE_Screen_Game::command_game_speed(int increase_speed) {
     }
 
     this->last_game_speed_change = t;
-    if (rge_base_game->prog_mode != 5) {
+    if (rge_base_game->prog_mode != ProgModeGameOver) {
         new_speed = 0.0f;
         cur_speed = this->world->game_speed;
 
@@ -3907,7 +3910,7 @@ void TRIBE_Screen_Game::command_select_group(int id, int unsel_prior) {
 }
 
 void TRIBE_Screen_Game::command_menu() {
-    if (rge_base_game->prog_mode == 6) {
+    if (rge_base_game->prog_mode == ProgModeGameTempPaused) {
         static_cast<TRIBE_Command*>(this->world->commands)->do_commands();
     }
     if (rge_base_game->singlePlayerGame() == 1) {
@@ -3984,7 +3987,7 @@ void TRIBE_Screen_Game::command_pause() {
 
     last_pause_change = t;
 
-    if (rge_base_game->prog_mode != 5) {
+    if (rge_base_game->prog_mode != ProgModeGameOver) {
         if (rge_base_game->multiplayerGame() != 0) {
             const char* s = get_string(STRING_ID_MESSAGE_GAME_PAUSED);
             sprintf(msg, s);
@@ -4039,7 +4042,7 @@ void TRIBE_Screen_Game::command_research(int id) {
 }
 
 void TRIBE_Screen_Game::command_save_game() {
-    if (rge_base_game->prog_mode == 6) {
+    if (rge_base_game->prog_mode == ProgModeGameTempPaused) {
         static_cast<TRIBE_Command*>(this->world->commands)->do_commands();
     }
     new TribeSaveGameScreen(TribeSaveGameScreen::SaveGame, 0, 0);
@@ -4047,7 +4050,7 @@ void TRIBE_Screen_Game::command_save_game() {
 }
 
 void TRIBE_Screen_Game::command_save_scenario() {
-    if (rge_base_game->prog_mode == 6) {
+    if (rge_base_game->prog_mode == ProgModeGameTempPaused) {
         static_cast<TRIBE_Command*>(this->world->commands)->do_commands();
     }
     new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenario, 0, 0);

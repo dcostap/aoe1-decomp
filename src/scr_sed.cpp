@@ -1,5 +1,6 @@
 
 #include "../include/scr_sed.h"
+#include "../include/program_mode.h"
 
 // Shared declarations are consumed privately by this source owner. The
 // screen header owns only TRIBE_Screen_Sed and its local list record.
@@ -97,7 +98,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
     this->save_window_color = 0;
     this->changed_system_colors = 0;
     this->CurrentVictory = 0;
-    rge_base_game->set_prog_mode(7);
+    rge_base_game->set_prog_mode(ProgModeScenarioEditor);
     if (!this->command_new_map(scenario_name_in, is_multi_player_in, 0, 144, 144, 1)) {
         this->error_code = 1;
         return;
@@ -1625,7 +1626,7 @@ long TRIBE_Screen_Sed::handle_size(long win_wid, long win_hgt) {
 }
 
 long TRIBE_Screen_Sed::handle_idle() {
-    if (rge_base_game->prog_mode == 7) {
+    if (rge_base_game->prog_mode == ProgModeScenarioEditor) {
         unsigned long now = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_sed_cp, 2225);
         if (last_update_time - now >= update_interval) {
             if (panel_system.modalPanel() == 0) {

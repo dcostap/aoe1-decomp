@@ -1,5 +1,6 @@
 // This file owns the complete Player source body order.
 #include "../include/player.h"
+#include "../include/program_mode.h"
 #include "../include/world.h"
 #include "../include/mst_play.h"
 #include "../include/obj_list.h"
@@ -541,7 +542,7 @@ void RGE_Player::scenario_load(int infile, long* player_id_hash, float version) 
         rge_read(file_handle, &this->map_y, 2);
 
         has_team = 0;
-        if (rge_base_game->prog_mode != 7) {
+        if (rge_base_game->prog_mode != ProgModeScenarioEditor) {
             for (int player = 1; player < 9; player++) {
                 if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == ME_HUMAN ||
                      comm->GetPlayerHumanity(player) == ME_COMPUTER)) {
@@ -647,7 +648,7 @@ void RGE_Player::scenario_postload(int infile, long* player_id_hash,
     rge_read(file_handle, &this->map_y, 2);
 
     has_team = 0;
-    if (rge_base_game->prog_mode != 7) {
+    if (rge_base_game->prog_mode != ProgModeScenarioEditor) {
         for (int player = 1; player < 9; ++player) {
             if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == ME_HUMAN ||
                  comm->GetPlayerHumanity(player) == ME_COMPUTER)) {

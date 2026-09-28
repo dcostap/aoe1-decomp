@@ -1,4 +1,5 @@
 #include "../include/dlg_smsg.h"
+#include "../include/program_mode.h"
 #include "../include/asm_draw.h"
 #include "../include/Pnl_scr.h"
 #include "../include/panel.h"
@@ -191,7 +192,7 @@ long TribeSendMessageDialog::action(TPanel* fromPanel, long actionIn, unsigned l
 
                 if (rge_base_game->processCheatCode(rge_base_game->world->curr_player, save_msg) == 0) {
                     if (rge_base_game->multiplayerGame() != 0) {
-                        if (rge_base_game->prog_mode != 5) {
+                        if (rge_base_game->prog_mode != ProgModeGameOver) {
                             comm->SendGroupChatMsg(save_msg);
                             L->Log("$$$ SEND CHAT @%u: %s", rge_base_game->world->world_time, save_msg);
                         }
@@ -228,7 +229,7 @@ long TribeSendMessageDialog::action(TPanel* fromPanel, long actionIn, unsigned l
                     goto done;
 
                 if (rge_base_game->multiplayerGame() != 0) {
-                    if (rge_base_game->prog_mode == 5)
+                    if (rge_base_game->prog_mode == ProgModeGameOver)
                         goto done;
                     comm->SendGroupChatMsg(save_msg);
                     L->Log("$$$ SEND CHAT @%u: %s", rge_base_game->world->world_time, save_msg);
@@ -392,7 +393,7 @@ long TribeSendQuickMessageDialog::action(TPanel* fromPanel, long actionIn, unsig
                     goto success;
 
                 if (rge_base_game->multiplayerGame() != 0) {
-                    if (rge_base_game->prog_mode == 5)
+                    if (rge_base_game->prog_mode == ProgModeGameOver)
                         goto success;
                     comm->SendGroupChatMsg(save_msg);
                     return 1;

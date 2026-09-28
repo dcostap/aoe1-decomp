@@ -1,5 +1,6 @@
 
 #include "../include/m_s_obj.h"
+#include "../include/program_mode.h"
 #include "../include/game_globals.h"
 #include "../include/basegame.h"
 #include "../include/player.h"
@@ -946,7 +947,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
                 return 2;
             }
 
-            if (check_vis != 0 && (rge_base_game->prog_mode == 7 || player->visible->get_visible(x_index, y_index) != 0)) {
+            if (check_vis != 0 && (rge_base_game->prog_mode == ProgModeScenarioEditor || player->visible->get_visible(x_index, y_index) != 0)) {
                 part_vis = 1;
             }
 

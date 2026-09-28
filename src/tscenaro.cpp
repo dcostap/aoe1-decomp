@@ -1,4 +1,5 @@
 #include <string.h>
+#include "../include/program_mode.h"
 
 #include "../include/tscenaro.h"
 #include "../include/basegame.h"
@@ -808,7 +809,7 @@ void T_Scenario::set_player_tech(TRIBE_Player* player) {
         this->world->effects->do_effect(100, player);
     }
 
-    if (rge_base_game->prog_mode != 7) {
+    if (rge_base_game->prog_mode != ProgModeScenarioEditor) {
         //! @bug Iron and post-iron starts run every research here, before civ stat bonuses exist.
         //! Unit upgrades copy source stats now, so upgraded units never receive the civ bonus.
         //! The cascade also completes researches the civ can never use (yamato armored elephants).

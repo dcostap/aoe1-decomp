@@ -1,5 +1,6 @@
 
 #include "../include/rpnl_tbx.h"
+#include "../include/program_mode.h"
 
 #include "../include/asp_list.h"
 #include "../include/basegame.h"
@@ -197,11 +198,11 @@ long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in, unsigned lon
                 return 1;
             }
             if ((from_panel == this->command_button) && (action_in == 1)) {
-                if (rge_base_game->prog_mode == 4) {
-                    rge_base_game->set_prog_mode(6);
+                if (rge_base_game->prog_mode == ProgModeGame) {
+                    rge_base_game->set_prog_mode(ProgModeGameTempPaused);
                     rge_base_game->world->temp_pause = 1;
                 } else {
-                    rge_base_game->set_prog_mode(4);
+                    rge_base_game->set_prog_mode(ProgModeGame);
                     return 1;
                 }
             } else {
@@ -250,7 +251,8 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key, int
     long y2;
 
     if (rge_base_game->get_paused() == 0) {
-        if (rge_base_game->prog_mode != 4 && rge_base_game->prog_mode != 6 && rge_base_game->prog_mode != 7) {
+        if (rge_base_game->prog_mode != ProgModeGame && rge_base_game->prog_mode != ProgModeGameTempPaused &&
+            rge_base_game->prog_mode != ProgModeScenarioEditor) {
             return 0;
         }
 

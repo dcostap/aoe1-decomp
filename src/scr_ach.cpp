@@ -1,5 +1,6 @@
 
 #include "../include/scr_ach.h"
+#include "../include/program_mode.h"
 #include "../include/pnl_btn.h"
 #include "../include/Pnl_scbr.h"
 #include "../include/Shape.h"
@@ -815,7 +816,8 @@ long TribeAchievementsScreen::wnd_proc(void* hwnd, unsigned int msg, unsigned in
     if (msg == WM_CLOSE && confirmed_close == 0) {
         confirmed_close = 1;
         int mode = rge_base_game->prog_mode;
-        if (mode == 5 || mode == 4 || mode == 6 || mode == 7) {
+        if (mode == ProgModeGameOver || mode == ProgModeGame ||
+            mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor) {
             if (IsIconic(render_area->Wnd) == 0) {
                 popupYesNoDialog(get_string(STRING_ID_CONFIRM_QUIT_GAME), 0, TEASY_POPUP_WIDTH, 100);
                 return 1;

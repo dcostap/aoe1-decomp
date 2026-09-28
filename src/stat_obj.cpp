@@ -1,4 +1,5 @@
 #include "../include/act_obj.h"
+#include "../include/program_mode.h"
 #include "../include/asp_list.h"
 #include "../include/basegame.h"
 #include "../include/color.h"
@@ -486,7 +487,7 @@ void RGE_Static_Object::draw(TDrawArea* render_area, short x, short y, RGE_Color
 
     if (this->tile != 0 && this->object_state < 7) {
         if (this->selected != 0 || rge_base_game->outline_type == 3 ||
-            ((this->master_obj->draw_flag & 1) == 1 && rge_base_game->prog_mode == 7)) {
+            ((this->master_obj->draw_flag & 1) == 1 && rge_base_game->prog_mode == ProgModeScenarioEditor)) {
             this->capture_frame(render_area, x, y);
         }
 
@@ -665,7 +666,7 @@ void RGE_Static_Object::capture_frame_3d_square(TDrawArea* render_area, short x,
     } else if ((this->selected & 1) == 0) {
         if (rge_base_game->outline_type == 3) {
             draw_color = 0x74;
-        } else if ((master->draw_flag & 1) == 1 && rge_base_game->prog_mode == 7) {
+        } else if ((master->draw_flag & 1) == 1 && rge_base_game->prog_mode == ProgModeScenarioEditor) {
             draw_color = master->draw_color;
         } else {
             draw_color = 0xff;

@@ -1,5 +1,6 @@
 
 #include "../include/spnl_obj.h"
+#include "../include/program_mode.h"
 #include "../include/asm_draw.h"
 
 #include "../include/Shape.h"
@@ -301,8 +302,8 @@ void TRIBE_Scenario_Editor_Panel_Object::draw_item(int row, int pic_index, Value
 // spnl_obj.cpp lines 390-397.
 long TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     this->release_mouse();
-    if (rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 ||
-        rge_base_game->prog_mode == 7 || rge_base_game->prog_mode == 5) {
+    if (rge_base_game->prog_mode == ProgModeGame || rge_base_game->prog_mode == ProgModeGameTempPaused ||
+        rge_base_game->prog_mode == ProgModeScenarioEditor || rge_base_game->prog_mode == ProgModeGameOver) {
         return 1;
     }
     return 1;
