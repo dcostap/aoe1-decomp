@@ -229,3 +229,8 @@ The `vw_main` review kept the same two-byte timing-register drift and
 rewrote the unsigned subtraction as two direct steps. The `tribegam`
 review moved one retry-counter declaration to its first use.
 Neither edit changed the reviewed target bytes in its isolated module.
+
+The `Timeline` review retained the original second-lookup index bug.
+It changed the allocation literal `48` to `sizeof(RGE_Time_Entry)`.
+The target still differs by 16 code bytes, and linked vtable storage
+remains unverified. This edit does not renew full behavior approval.

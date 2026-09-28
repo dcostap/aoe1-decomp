@@ -26,7 +26,7 @@ RGE_Timeline::RGE_Timeline(int infile, RGE_Game_World* gworld) {
     index = 0;
     if (this->list_num > 0) {
         do {
-            RGE_Time_Entry* entry = (RGE_Time_Entry*)calloc(1, 48);
+            RGE_Time_Entry* entry = (RGE_Time_Entry*)calloc(1, sizeof(RGE_Time_Entry));
             rge_read(infile, &entry->time, 4);
             rge_read(infile, &entry->command, 1);
             rge_read(infile, &entry->obj_type, 2);
