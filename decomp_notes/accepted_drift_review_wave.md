@@ -156,7 +156,15 @@ Keeping that unused declaration, but removing the old global definition,
 passed the isolated 157-group exact-claim audit.
 The integrated source now uses this form. The header declaration has no
 object reference; its compiler-context effect remains unexplained.
-Linked storage remains unknown, so `0042CD50` retains `scratch` status.
+At integration time, linked storage remained unknown.
+`0042CD50` retains `scratch` status for the remaining checks.
+
+The fresh linked build places function-static `Lin` at `00571268`.
+Its `0x800` bytes end at the next named static, and the PE loader zeroes
+the range. All eleven function relocations target that static and its rows.
+The original PDB records the same owner and extent at `0062C6F0`.
+No compiled object references the old global name.
+Runtime behavior and the unused header declaration remain open.
 
 `00531750` and `00518090` also have `scratch` status.
 The first has broad unproved drift; the second crosses its original boundary.
@@ -243,3 +251,8 @@ Its two-byte drift changes the register for one virtual call.
 The `vis_unit` review restored a bounded loop over all 17 `NormalLOS`
 entries. The low address operands are COFF relocations to that table,
 not null pointers. The loop still differs by ten bytes.
+
+All 89 assigned module reviews have now finished.
+The `taiuaimd` review found no new behavior defect at `00504750`.
+Its clearer source emits the same bytes, but its rebuilt body exceeds the
+original boundary by seven bytes. This target now has `scratch` status.

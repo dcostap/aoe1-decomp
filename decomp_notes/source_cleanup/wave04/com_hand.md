@@ -6,7 +6,7 @@ The integrated source now owns function-static eight-row `Lin`.
 It removed the seven-row global definition but kept the unused header
 declaration. Removing that declaration alone failed five exact claims.
 The isolated 157-group candidate audit passed all exact claims.
-The linked address and surrounding storage remain unchecked.
+The later linked check appears in `decomp_notes/functions/0042/0042CD50.md`.
 
 ## Delivery
 

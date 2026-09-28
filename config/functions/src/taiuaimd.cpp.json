@@ -20,7 +20,7 @@
     "00504480": {"status": "matching", "symbol": "?processNotify@TribeLionUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
     "00504600": {"status": "matching", "symbol": "?processIdle@TribeLionUnitAIModule@@MAEHH@Z"},
     "00504700": {"status": "matching", "symbol": "??0TribeRangedUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z"},
-    "00504750": {"status": "accepted_drift", "symbol": "?processNotify@TribeRangedUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
+    "00504750": {"status": "scratch", "symbol": "?processNotify@TribeRangedUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
     "00504880": {"status": "matching", "symbol": "??0TribeRangedUnitAIModule2@@QAE@PAVRGE_Static_Object@@H@Z"},
     "005048D0": {"status": "matching", "symbol": "?processNotify@TribeRangedUnitAIModule2@@MAEHPAUNotifyEvent@@K@Z"},
     "00504B60": {"status": "matching", "symbol": "??0TribeCivilianUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z"},

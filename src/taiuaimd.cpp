@@ -386,12 +386,12 @@ int TribeRangedUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     }
 
     if (this->currentActionValue == 600) {
-        RGE_Game_World* gameWorld = this->objectValue->owner->world;
-        RGE_Static_Object* targetObj = gameWorld->object(this->currentTargetValue);
+        RGE_Static_Object* targetObj =
+            this->objectValue->owner->world->object(this->currentTargetValue);
 
         if (targetObj) {
             float distanceDiff = targetObj->getSpeed();
-            if (distanceDiff != 0.0f) {
+            if (distanceDiff != g_ranged_ai_zero_distance) {
                 this->order(this->objectValue->id, 0x2BC, this->currentTargetValue, -1,
                             this->currentTargetXValue, this->currentTargetYValue,
                             this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
@@ -400,7 +400,7 @@ int TribeRangedUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
 
                 float speed2 = thisObj->rateOfFire();
                 float speed1 = thisObj->maximumSpeed();
-                float speed = speed1 * speed2 * 3.0f;
+                float speed = speed1 * speed2 * g_ai_evasive_distance_scale;
                 float dx = targetObj->world_x - thisObj->world_x;
                 float dy = targetObj->world_y - thisObj->world_y;
                 float dist = (float)sqrt(dx * dx + dy * dy);
