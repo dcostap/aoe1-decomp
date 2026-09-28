@@ -152,3 +152,23 @@ localized scheduling and register-order change.
 The final shared ABI repairs make `004992E0 object_changed` and
 `0049BEA0 command_cancel` exact. Standalone checks report `MATCH`, `0.0000%`,
 correct owners, boundaries, relocations, direct targets, and aligned calls.
+
+## 2026-09-28 accepted-drift re-review
+
+The review used the local original `XPack/empiresx.exe`, SHA-256
+`88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
+See the four target notes under `decomp_notes/functions/0049/` for instruction
+addresses, behavior traces, state IDs, run events, and byte reports.
+
+The final single-job module audit compiled all 96 owners. Its report is
+`build/drift-016-scr_game/final-module-audit/report.txt`.
+It observed `00496550` at 34 changed bytes, `0049B910` at 13,
+`0049BDB0` at 29, and `0049C0B0` at 4. All four owners match.
+Each has zero relocation and boundary errors. The audit held the existing
+drift claims. It did not approve behavior or change registry status.
+
+No source change was retained. Direct-global spelling probes worsened
+`0049BDB0` and `0049C0B0`, so both functions returned to baseline source.
+The review did not run the game, a linked-image dependency audit, or audio and
+panel runtime checks. `0049BDB0` retains an open invalid-receiver/stack-fault
+ordering question.

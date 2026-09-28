@@ -681,9 +681,11 @@ success:
 int RGE_Combat_Object::moveAwayFrom(int targetID, int unconditional) { return 0; }
 
 int RGE_Combat_Object::gather(int targetID, int unconditional) {
-    RGE_Static_Object* target = this->owner->world->object(targetID);
+    RGE_Static_Object* target;
     RGE_Task* task;
     RGE_Action_Gather* action;
+    target = this->owner->world->object(targetID);
+
     if (target == 0) {
         return 0;
     }
@@ -779,8 +781,6 @@ success:
 }
 
 int RGE_Combat_Object::transport(float tX, float tY, float tZ, int unconditional) {
-    int result;
-
     if (actions->have_action() == 1) {
         RGE_Action* action = (RGE_Action*)actions->get_action();
         if (action->type() == 0x0C) {
@@ -792,14 +792,12 @@ int RGE_Combat_Object::transport(float tX, float tY, float tZ, int unconditional
     }
 
     RGE_Action_Transport* transport = new RGE_Action_Transport(this, 0, tX, tY, tZ);
-    result = 0;
-    if (transport != 0) {
-        actions->delete_list();
-        this->set_only_action(transport);
-        transport->work(this, tX, tY, tZ);
-        result = 1;
-    }
-    return result;
+    if (transport == 0) return 0;
+
+    actions->delete_list();
+    this->set_only_action(transport);
+    transport->work(this, tX, tY, tZ);
+    return 1;
 }
 
 int RGE_Combat_Object::unload(int unconditional, float x, float y, float z) {

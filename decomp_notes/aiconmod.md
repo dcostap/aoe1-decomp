@@ -21,17 +21,25 @@ The module has one compiler-facing source file: `src/aiconmod.cpp`. It contains
 all 19 normal owners in PDB order. It has no wrapper source, `.cpp` include,
 or context macro. The module uses one reviewed shared context header.
 
-The prior source banks supplied 17 matching owners and two accepted-drift
-owners. The migration keeps these states:
+The registry still labels 17 owners as matching and two as accepted drift.
+This re-review did not change those labels.
 
-- `0040B1A0` `save`: VC5 places the three private scalar temporaries in
-  different stack homes. The 67 writes, values, widths, list traversal,
-  boundaries, memory effects, fault order, and return value remain equal.
-- `0040B980` `setReferencePoint`: VC5 places two private upper-bound
-  temporaries in different stack homes. The x/y calculations, predicates,
-  list edits, calls, cleanup, and 495-byte boundary remain equal.
+- `0040B1A0` `save` remains accepted drift. Static review found no behavior
+  defect. Its 48 byte differences use different local stack offsets. See
+  `decomp_notes/functions/0040/0040B1A0.md` for instruction evidence and
+  unresolved runtime cases.
+- `0040B980` `setReferencePoint` now builds to an exact 495-byte match. Its
+  source uses two upper-bound scratch locals in comma operands. The source
+  form needs root review. See
+  `decomp_notes/functions/0040/0040B980.md` for instruction evidence and
+  unresolved runtime cases.
 
-These are localized code-generation differences. They do not change behavior.
+The final module audit is
+`build/drift-031-aiconmod/final-audit-final/report.json`. It compiled 19
+owners with one job. It found 17 exact matches, one accepted-drift mismatch,
+and one exact match that needs review. Four adjacent owners changed bytes or
+relocation names; no exact regressions were reported. No linked-image or
+runtime checks ran.
 
 ## Cross-module context
 

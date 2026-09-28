@@ -341,20 +341,22 @@ void TRIBE_Command::place_line_of_walls(
 }
 
 void TRIBE_Command::do_command_explore(TRIBE_Command_Explore* order) {
-    RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(reinterpret_cast<unsigned char*>(order) + sizeof(*order));
-    if (this->world->players[order->unit_player_id] != 0) {
-        int i = 0;
-        if (order->numUnits > 0) {
-            do {
-                RGE_Static_Object* obj = this->get_obj(*ids);
-                if (obj != 0) {
-                    obj->removeAllFromPathingGroup();
-                    obj->explore((int)order->targetXPosition, (int)order->targetYPosition, 1);
-                }
-                ++i;
-                ++ids;
-            } while (i < (int)order->numUnits);
-        }
+    RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(order + 1);
+    if (this->world->players[order->unit_player_id] == 0) {
+        return;
+    }
+
+    int i = 0;
+    if (order->numUnits > 0) {
+        do {
+            RGE_Static_Object* obj = this->get_obj(*ids);
+            if (obj != 0) {
+                obj->removeAllFromPathingGroup();
+                obj->explore((int)order->targetXPosition, (int)order->targetYPosition, 1);
+            }
+            ++i;
+            ++ids;
+        } while (i < (int)order->numUnits);
     }
 }
 
@@ -363,10 +365,10 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* order) {
     char fileName[260];
     switch (order->game_command) {
     case 5:
-        this->world->players[order->var1]->set_allied_victory((unsigned char)order->var2);
+        this->world->players[order->var1]->set_allied_victory(order->var2);
         break;
     case 0:
-        this->world->players[order->var1]->set_relation(order->var2, (unsigned char)order->var3);
+        this->world->players[order->var1]->set_relation(order->var2, order->var3);
         rge_base_game->notification(8, order->var1, order->var2, order->var4, 0);
         this->world->update_mutual_allies();
         break;
@@ -473,8 +475,8 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* orde
 }
 
 void TRIBE_Command::do_command_trade_attribute(TRIBE_Command_Trade_Attribute* order) {
-    RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(reinterpret_cast<unsigned char*>(order) + sizeof(*order));
-    for (int count = (unsigned char)order->unit_num; count > 0; --count) {
+    RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(order + 1);
+    for (int count = order->unit_num; count > 0; --count) {
         RGE_Static_Object* object = this->get_obj(*ids);
         if (object != 0) {
             object->attribute_type_held = (short)order->attribute;

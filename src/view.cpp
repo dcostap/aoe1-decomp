@@ -392,7 +392,7 @@ next_entry:
 void RGE_View::display_object_selection(int id, int duration, int select_type, int reset_type) {
     int found = 0;
     int i = 0;
-    DisplaySelectedObjRec* slot = 0;
+    DisplaySelectedObjRec* n;
 
     if (this->DispSel_List_Max > 0) {
         int key = reset_type;
@@ -401,7 +401,7 @@ void RGE_View::display_object_selection(int id, int duration, int select_type, i
             DisplaySelectedObjRec* entry = &this->DispSel_List[i];
             if (entry->active == 0) {
                 found = 1;
-                slot = entry;
+                n = entry;
             } else if (key != 0 && entry->select_type == key) {
                 entry->start_time -= entry->duration;
             }
@@ -409,13 +409,13 @@ void RGE_View::display_object_selection(int id, int duration, int select_type, i
         } while (i < this->DispSel_List_Max);
     }
 
-    if (found && slot != 0) {
-        slot->active = 1;
-        slot->id = id;
+    if (found) {
+        n->active = 1;
+        n->id = id;
         unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\view.cpp", 797);
-        slot->start_time = now;
-        slot->duration = duration;
-        slot->select_type = select_type;
+        n->start_time = now;
+        n->duration = duration;
+        n->select_type = select_type;
         this->DispSel_List_Size++;
     }
 }

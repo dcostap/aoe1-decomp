@@ -1,0 +1,21 @@
+# Experiment b4bce563f5991fc0074176e0f44496d73a1881aadc081782519d7cf41abb491f
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/player.cpp b/src/player.cpp
+index 14b14f722..a9555d345 100644
+--- a/src/player.cpp
++++ b/src/player.cpp
+@@ -1312,8 +1312,12 @@ void RGE_Player::reset_selected() {
+     this->replacement_overlay_shape = -1;
+     this->sel_count = 0;
+     this->selected_obj = 0;
+-    memset(this->sel_list, 0, 100);
+-    memset(this->groups_used, 0, 127);
++    for (int i = 0; i < 25; ++i) {
++        this->sel_list[i] = 0;
++    }
++    for (int j = 0; j < 127; ++j) {
++        this->groups_used[j] = 0;
++    }
+ }
+ 
+ int RGE_Player::select_object(RGE_Static_Object* obj) {

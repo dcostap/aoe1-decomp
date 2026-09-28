@@ -171,10 +171,11 @@ void PathingSystem::incrementObstruction(int x, int y) {
 }
 
 void PathingSystem::decrementObstruction(int x, int y) {
-    unsigned char val = obstructionValue[x][y >> 2];
+    unsigned char* row = obstructionValue[x];
+    unsigned char val = row[y >> 2];
     unsigned char field = (val >> ObstructionValueShift[y & 3]) & 3;
     if (field > 0) {
-        obstructionValue[x][y >> 2] =
+        row[y >> 2] =
             (ObstructionValueMask[y & 3] & val) | ((field - 1) << ObstructionValueShift[y & 3]);
     }
 }

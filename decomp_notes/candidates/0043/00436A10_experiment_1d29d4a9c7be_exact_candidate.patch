@@ -1,0 +1,52 @@
+# Experiment 1d29d4a9c7be08990208c95f1afe9d5a69c669279edfb8ba74f073b353cc5075
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/diam_map.cpp b/src/diam_map.cpp
+index 5af0456f5..1f55bdc32 100644
+--- a/src/diam_map.cpp
++++ b/src/diam_map.cpp
+@@ -67,7 +67,7 @@ int RGE_Diamond_Map::set_bitmap(char *map_bmp, long res_id) {
+   TPicture *picture;
+   short pic_hgt;
+   short pic_wid;
+-  char *pic_line;
++  unsigned char *pic_line;
+   short pic_pitch;
+   short y;
+   if (this->map_image_lines != 0) {
+@@ -91,11 +91,10 @@ int RGE_Diamond_Map::set_bitmap(char *map_bmp, long res_id) {
+   this->map_image_lines = (RGE_Map_Image_Line *)calloc(pic_hgt, 6);
+ 
+   if (picture->Orien == 1) {
+-    pic_line = (char *)picture->Bits;
++    pic_line = picture->Bits;
+     pic_pitch = (short)picture->AlignedWidth();
+   } else {
+-    pic_line =
+-        (char *)(picture->AlignedWidth() * (pic_hgt - 1) + (long)picture->Bits);
++    pic_line = picture->Bits + picture->AlignedWidth() * (pic_hgt - 1);
+     pic_pitch = -(short)picture->AlignedWidth();
+   }
+ 
+@@ -108,11 +107,11 @@ int RGE_Diamond_Map::set_bitmap(char *map_bmp, long res_id) {
+     do {
+       short start_x = -1;
+       short x = 0;
+-      char *p = pic_line;
++      unsigned char *p = pic_line;
+ 
+       if (pic_wid > 0) {
+         for (; x < pic_wid; ++p, ++x) {
+-          if (*p == -1) {
++          if (*p == 0xFF) {
+             start_x = x;
+             break;
+           }
+@@ -121,7 +120,7 @@ int RGE_Diamond_Map::set_bitmap(char *map_bmp, long res_id) {
+ 
+       if (start_x != -1) {
+         short line_len = 0;
+-        while (x < pic_wid && *p == -1) {
++        while (x < pic_wid && *p == 0xFF) {
+           ++line_len;
+           ++p;
+           ++x;

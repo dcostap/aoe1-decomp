@@ -266,9 +266,8 @@ int PointMaker::CreateShape(int xt, int yt) {
     NumTilesActuallyChosen = 0;
     int attempts = 0;
     while (chosen_tiles < minimum_tiles && attempts++ < 1500) {
-        chosen_tiles = Prime.y;
         x = Prime.x;
-        y = chosen_tiles;
+        y = Prime.y;
         CurrentNumberOfBranchLevels = MaxNumberOfBranchLevels;
         NumNodes = 0;
         chosen_tiles = MakeFirstLink();

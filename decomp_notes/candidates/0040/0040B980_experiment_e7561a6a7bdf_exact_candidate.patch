@@ -1,0 +1,22 @@
+# Experiment e7561a6a7bdfb6abc2b79210d02ab07fb6a710f9278e42bd97a7f1c7ca841faf
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/aiconmod.cpp b/src/aiconmod.cpp
+index 9a68fef03..6ae23ea00 100644
+--- a/src/aiconmod.cpp
++++ b/src/aiconmod.cpp
+@@ -335,9 +335,13 @@ void ConstructionAIModule::setReferencePoint(int mXSize, int mYSize, float x, fl
+         item->setY(item->y() + y);
+         item->setZ(item->z() + z);
+ 
++        float itemCoordinate;
++        float itemSize;
+         if (item->x() - item->xSize() * 0.5f < 0.0f || item->y() - item->ySize() * 0.5f < 0.0f ||
+-            item->x() - item->xSize() * -0.5f > (float)(this->mapXSizeValue - 1) ||
+-            item->y() - item->ySize() * -0.5f > (float)(this->mapYSizeValue - 1)) {
++            (itemCoordinate = item->x(), itemSize = item->xSize(),
++             itemCoordinate - itemSize * -0.5f > (float)(this->mapXSizeValue - 1)) ||
++            (itemCoordinate = item->y(), itemSize = item->ySize(),
++             itemCoordinate - itemSize * -0.5f > (float)(this->mapYSizeValue - 1))) {
+             this->numberConstructionLotsValue--;
+             ConstructionItem* next = item->next;
+             item->prev->next = next;

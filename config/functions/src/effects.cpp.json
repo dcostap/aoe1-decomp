@@ -6,7 +6,7 @@
     "flags": "default"
   },
   "functions": {
-    "004490E0": {"status": "accepted_drift", "symbol": "??0RGE_Effects@@QAE@H@Z"},
+    "004490E0": {"status": "scratch", "symbol": "??0RGE_Effects@@QAE@H@Z"},
     "00449260": {"status": "accepted_drift", "symbol": "??0RGE_Effects@@QAE@PAD@Z"},
     "00449440": {"status": "matching", "symbol": "??1RGE_Effects@@UAE@XZ"},
     "004494B0": {"status": "matching", "symbol": "?save@RGE_Effects@@UAEXH@Z"},

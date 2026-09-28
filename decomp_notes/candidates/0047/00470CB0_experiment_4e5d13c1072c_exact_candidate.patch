@@ -1,0 +1,51 @@
+# Experiment 4e5d13c1072cdf1b5e5db72628e3f0cb8afcf78a0b241fa0efdcf5756b3c8298
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/player.cpp b/src/player.cpp
+index 14b14f722..0b6d9032c 100644
+--- a/src/player.cpp
++++ b/src/player.cpp
+@@ -1075,11 +1075,11 @@ unsigned char RGE_Player::check_ally_group(long& count) {
+         int i = 1;
+         if (world->player_num > 1) {
+             do {
+-                if (this->relations[i] == 0) {
+-                    if (world->players[i]->relation(this->id) != 0)
+-                        goto failed;
+-                    if (this->world->players[i]->allied_victory == 0)
+-                        goto failed;
++                if (this->relations[i] == 0 &&
++                    (world->players[i]->relation(this->id) != 0 ||
++                     this->world->players[i]->allied_victory == 0)) {
++                    ok = 0;
++                    break;
+                 }
+                 count++;
+                 i++;
+@@ -1088,12 +1088,6 @@ unsigned char RGE_Player::check_ally_group(long& count) {
+         }
+     }
+ 
+-    goto done;
+-
+-failed:
+-    ok = 0;
+-
+-done:
+     if (last_count >= 0 && count != last_count)
+         ok = 0;
+ 
+@@ -1312,8 +1306,12 @@ void RGE_Player::reset_selected() {
+     this->replacement_overlay_shape = -1;
+     this->sel_count = 0;
+     this->selected_obj = 0;
+-    memset(this->sel_list, 0, 100);
+-    memset(this->groups_used, 0, 127);
++    for (int i = 0; i < 25; ++i) {
++        this->sel_list[i] = 0;
++    }
++    for (int j = 0; j < 127; ++j) {
++        this->groups_used[j] = 0;
++    }
+ }
+ 
+ int RGE_Player::select_object(RGE_Static_Object* obj) {

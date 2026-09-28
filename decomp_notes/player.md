@@ -77,7 +77,7 @@ migration regression. Twenty natural variants emitted the same 28-byte basin.
 The original is 27 bytes. The owner is now scratch and is not registered as
 exact. The direct natural source remains unchanged.
 
-## Checksum re-review — 0046FF90
+## Historical checksum re-review — superseded 2026-09-28
 
 The old `13` entry was the effective-size shortfall, not the positional byte
 difference. A fresh baseline at state
@@ -110,3 +110,66 @@ The final closure event is
 `32c9f7b9d0c466136fb742cbe340a0521ade2cb7fb728379df08e51627df5e31`. It
 compiled all 125 Player owners. All 120 exact owners stayed exact, with no
 exact-neighbor regressions. The registry status remains unchanged.
+
+## Current accepted-drift re-review — 2026-09-28
+
+This section supersedes the older checksum and closure results above for the
+four assigned functions. The current body for `0046FF90` is 277 bytes, not the
+older 268-byte body.
+
+### Behavior
+
+`0046FF90` has one proved fault-order difference for invalid mixed list
+pointers. The original reads the sleeping-list count before the doppelganger
+count. The rebuild reads them in reverse order. Normal-state reachability of a
+one-invalid-pointer state is unknown. No source repair succeeded.
+
+`004706B0` keeps its one relation call, arguments, count writes, and cleanup.
+Its three-byte difference reverses the loop-exit branch polarity. The signed
+compare and both paths are unchanged.
+
+`00470CB0` now matches all 101 original bytes. The loops clear the original
+25 selection pointers and 127 group bytes.
+
+`00470F80` has six SIB-byte differences. Each swaps scale-one base and index
+registers from EAX, ECX, and EDX. No EBP or ESP register appears, so the
+default segment remains DS. The effective addresses are equal. The original
+out-of-range group-index behavior remains.
+
+No gameplay runtime test ran. The checksum pointer invariant and the normal
+reachability of an invalid pointer state remain unknown.
+
+### Source
+
+Only `src/player.cpp` changed.
+`check_ally_group` now uses a short-circuit condition and `break`.
+`reset_selected` now uses two ascending array loops.
+No checksum or group source change remains.
+No status, registry, or header changed.
+
+### Bytes
+
+Final states and events:
+
+- `0046FF90`: state `2583bfedcfaaa4f401f66289de625e9c5c6441313dbd22903c17ce0a5e030ba3`, event `e2c16eff98cea7b98ed6b32164191b7bda5ccbaf7c9e755dbc183325a1f21a37`; two-byte mismatch.
+- `004706B0`: state `a2bbc19f77f4d773c1324ddb4042c7e0beb13baf457e86a1b4c16ee97870fc44`, event `5dc96560c0e0c79401482fd1c1f07f1a54ae77464f7d36f5e34243c41b2455bc`; three-byte mismatch.
+- `00470CB0`: state `4e5d13c1072cdf1b5e5db72628e3f0cb8afcf78a0b241fa0efdcf5756b3c8298`, event `62f15dd8152affc4e5607359e09b62ea9cc28ba24f8eaedf006368e1f8aa1acf`; exact match.
+- `00470F80`: state `58f53f4de53c7c746ebbba4b62f337439d99a11fff0d9b3651268107440b1e78`, event `c0556a9174be451544fe574608593f7387a665d95324c5a9c606fda28c91702e`; six-byte mismatch.
+
+The final module report is
+`build/validation/drift-014-player-review/report.txt`.
+It covers 125 normal functions: 120 exact matches, three accepted-drift
+observations, one grouped exact match for review, and one new verified-logic
+observation. It reports no exact-neighbor regression.
+
+### Integration
+
+The audit command was
+`python tools/audit_translation_unit_functions.py --affected-by src/player.cpp --jobs 1 --output-dir build/validation/drift-014-player-review`.
+The queue recommends promotion review for `00470CB0`.
+This work makes no status approval and changes no registry entry.
+
+Proposal: promote `00470CB0` to exact after review.
+Proposal: review accepted drift for `004706B0` and `00470F80`.
+Do not approve `0046FF90` as behavior-equivalent drift until fault order is
+proved safe or source repair is found.

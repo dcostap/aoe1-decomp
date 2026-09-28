@@ -11,8 +11,8 @@
     "0047E4B0": {"status": "matching", "symbol": "??8@YAHABVXYZ@@0@Z"},
     "0047E4E0": {"status": "matching", "symbol": "??9@YAHABVXYZ@@0@Z"},
     "0047E510": {"status": "matching", "symbol": "??4XYZ@@QAEAAV0@ABV0@@Z"},
-    "0047E530": {"status": "accepted_drift", "symbol": "??HXYZ@@QBE?AV0@ABV0@@Z"},
+    "0047E530": {"status": "scratch", "symbol": "??HXYZ@@QBE?AV0@ABV0@@Z"},
     "0047E580": {"status": "matching", "symbol": "??GXYZ@@QBE?AV0@ABV0@@Z"},
-    "0047E5D0": {"status": "accepted_drift", "symbol": "?rotateXYByFacet@XYZ@@QAEXABV1@AAV1@E@Z"}
+    "0047E5D0": {"status": "scratch", "symbol": "?rotateXYByFacet@XYZ@@QAEXABV1@AAV1@E@Z"}
   }
 }

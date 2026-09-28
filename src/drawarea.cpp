@@ -850,24 +850,18 @@ int TDrawSystem::GetColorKeyErrorNum(long ddrval) {
 
 void TDrawSystem::SetPalette(void* pal_in) {
     tagPALETTEENTRY color_table[256];
-    tagPALETTEENTRY* p;
-    int count;
 
     this->Pal = pal_in;
 
     if (pal_in) {
         GetPaletteEntries(pal_in, 0, 256, color_table);
     } else {
-        p = color_table;
-        count = 256;
-        do {
-            p->peRed = 0;
-            p->peGreen = 0;
-            p->peBlue = 0;
-            p->peFlags = 0;
-            p++;
-            count--;
-        } while (count != 0);
+        for (int index = 0; index < 256; ++index) {
+            color_table[index].peRed = 0;
+            color_table[index].peGreen = 0;
+            color_table[index].peBlue = 0;
+            color_table[index].peFlags = 0;
+        }
     }
 
     color_table[0].peRed = 0;
@@ -1032,9 +1026,8 @@ int TDrawArea::Init(TDrawSystem* draw_system_in, long wid_in, long hgt_in,
             if (cur == 0) {
                 this->DrawSystem->DrawAreaList = this->Node;
             } else {
-                for (node = cur->NextNode; node != 0; node = node->NextNode) {
-                    cur = node;
-                }
+                while (cur->NextNode != 0)
+                    cur = cur->NextNode;
                 cur->NextNode = this->Node;
                 this->Node->PrevNode = cur;
             }

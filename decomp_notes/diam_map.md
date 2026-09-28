@@ -116,3 +116,29 @@ Nine owners have compiler-local relocation-label changes only.
 
 The function note records the complete static behavior review, final state, and eight archived lab families containing 1,856 cases.
 No shared header changed. Linked-image storage and runtime checks remain separate work.
+
+## Worker pass: drift-021-diam_map
+
+This section supersedes older metrics above for the three reviewed targets.
+The only source file changed in this pass is `src/diam_map.cpp`.
+
+- `00436A10 set_bitmap` now has an exact natural-source candidate.
+  The final state is `d2ae8c007891971dfa65c397b06b205cf2952cbfb24b12783f32581ae23059ab`.
+  Its run event is `5a181af159914df18b923fc5f95baefb`.
+  The detailed review is `decomp_notes/functions/0043/00436A10.md`.
+- `004374C0 clear_image` remains 82 bytes different.
+  The final state is `77365fef9634fd10256886aaa348a6299eee0e999046d3e56d23d0acc74f7119`.
+  Its run event is `ee208c80918541dda30e45f55c86d3d1`.
+  The detailed review is `decomp_notes/functions/0043/004374C0.md`.
+- `00438060 draw_object` remains 36 bytes different.
+  The final state is `a9b3a1e8542da258e7926d877b85bb7258090fc4be7b231ba28d5282d596e947`.
+  Its run event is `f7f533b81dc448d080e4a688a7af64a7`.
+  The detailed review is `decomp_notes/functions/0043/00438060.md`.
+- The final one-job audit compiled 29 normal functions and checked 22 exact targets.
+  It found no exact-owner regression; all other matching owners stayed exact.
+- The audit reports 22 matching results, four verified-logic mismatches, two accepted-drift observations, and one grouped match review.
+- Its report is `build/drift-021-diam_map/final-audit/report.txt`.
+- All three accepted-drift registry entries in `diam_map` were reviewed. No other accepted-drift entry exists in this module.
+- The registry remains unchanged. No approval or integration claim is made.
+- No candidate linked executable was found under `build/`. Linked storage, initial data, and runtime behavior remain untested.
+- The four `new_verified_logic` targets and all other non-assigned functions were not behavior-reviewed in this pass.

@@ -1,0 +1,72 @@
+# Experiment d2ae8c007891971dfa65c397b06b205cf2952cbfb24b12783f32581ae23059ab
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/diam_map.cpp b/src/diam_map.cpp
+index 5af0456f5..22f121026 100644
+--- a/src/diam_map.cpp
++++ b/src/diam_map.cpp
+@@ -67,7 +67,7 @@ int RGE_Diamond_Map::set_bitmap(char *map_bmp, long res_id) {
+   TPicture *picture;
+   short pic_hgt;
+   short pic_wid;
+-  char *pic_line;
++  unsigned char *pic_line;
+   short pic_pitch;
+   short y;
+   if (this->map_image_lines != 0) {
+@@ -91,11 +91,10 @@ int RGE_Diamond_Map::set_bitmap(char *map_bmp, long res_id) {
+   this->map_image_lines = (RGE_Map_Image_Line *)calloc(pic_hgt, 6);
+ 
+   if (picture->Orien == 1) {
+-    pic_line = (char *)picture->Bits;
++    pic_line = picture->Bits;
+     pic_pitch = (short)picture->AlignedWidth();
+   } else {
+-    pic_line =
+-        (char *)(picture->AlignedWidth() * (pic_hgt - 1) + (long)picture->Bits);
++    pic_line = picture->Bits + picture->AlignedWidth() * (pic_hgt - 1);
+     pic_pitch = -(short)picture->AlignedWidth();
+   }
+ 
+@@ -108,11 +107,11 @@ int RGE_Diamond_Map::set_bitmap(char *map_bmp, long res_id) {
+     do {
+       short start_x = -1;
+       short x = 0;
+-      char *p = pic_line;
++      unsigned char *p = pic_line;
+ 
+       if (pic_wid > 0) {
+         for (; x < pic_wid; ++p, ++x) {
+-          if (*p == -1) {
++          if (*p == 0xFF) {
+             start_x = x;
+             break;
+           }
+@@ -121,7 +120,7 @@ int RGE_Diamond_Map::set_bitmap(char *map_bmp, long res_id) {
+ 
+       if (start_x != -1) {
+         short line_len = 0;
+-        while (x < pic_wid && *p == -1) {
++        while (x < pic_wid && *p == 0xFF) {
+           ++line_len;
+           ++p;
+           ++x;
+@@ -425,7 +424,7 @@ void RGE_Diamond_Map::clear_image() {
+         ex = (short)this->clip_rect.right;
+ 
+       if ((int)s2 >= this->clip_rect.left && (int)ex <= this->clip_rect.right)
+-        memset(p + sx, this->color, (int)ex - (int)s2 + 1);
++        memset(p + sx, this->color, ex - s2 + 1);
+     }
+     line++;
+     p += (int)pi;
+@@ -793,8 +792,8 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *game_obj, unsigned
+ 
+ void RGE_Diamond_Map::draw_object(short col, short row, unsigned char color, short size, RGE_Static_Object *game_obj) {
+   short max_coord = row;
+-  int row_index = (int)this->map_wid + (int)row - (int)col;
+-  RGE_Map_Tile_Row *tile_row = this->map_tile_rows + row_index - 1;
++  int row_index = this->map_wid + row - col;
++  RGE_Map_Tile_Row *tile_row = &this->map_tile_rows[row_index - 1];
+ 
+   if (col < row)
+     max_coord = col;

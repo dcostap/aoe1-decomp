@@ -1,0 +1,18 @@
+# Experiment 71dbd606bae5110be2093bd8b575326afbcba307b1f17c16cac40eb38aae7314
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/drawarea.cpp b/src/drawarea.cpp
+index 798be0a28..9d9a8bde3 100644
+--- a/src/drawarea.cpp
++++ b/src/drawarea.cpp
+@@ -1032,9 +1032,8 @@ int TDrawArea::Init(TDrawSystem* draw_system_in, long wid_in, long hgt_in,
+             if (cur == 0) {
+                 this->DrawSystem->DrawAreaList = this->Node;
+             } else {
+-                for (node = cur->NextNode; node != 0; node = node->NextNode) {
+-                    cur = node;
+-                }
++                while (cur->NextNode != 0)
++                    cur = cur->NextNode;
+                 cur->NextNode = this->Node;
+                 this->Node->PrevNode = cur;
+             }

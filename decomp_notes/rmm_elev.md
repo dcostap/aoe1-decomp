@@ -89,3 +89,27 @@ The target source keeps the canonical typed map and stack owners. It applies
 the PDB-supported unsigned-char `done` local, the named float `in_zone` cost
 home, and a scoped full-width base-elevation local. These source forms emit
 the same natural 790-byte basin. No registry status change is proposed.
+
+## Reopened drift review: drift-026-rmm_elev
+
+The accepted-drift approvals for `004847C0`, `004848A0`, and `00484B90` were
+reopened. This worker did not reaffirm them or change registry status.
+
+Three final baseline closures used `--jobs 1`. Each compiled all ten module
+functions, checked five exact targets, and found no exact regressions.
+
+| VA | State | Event | Check report | Closure report |
+| --- | --- | --- | --- | --- |
+| `004847C0` | `9086bb74573f4eedaf1bc4f00a9c532ac98c449613b166d8cc9345a146fe3d70` | `14689942f3a9f1ddefbc1d2245d3d8d14c4d1d5792a44c8b94d70c3f9f1c7e14` | `build/experiment_runs/21d500a5597d4cb7b155a9dbc0a6d02b/check.txt` | `build/experiment_runs/21d500a5597d4cb7b155a9dbc0a6d02b/closure/report.txt` |
+| `004848A0` | `a5c5b89370d717a8fc0422249eba3082f1d25e4b02a81f0cadc665c06831fc18` | `c836ba29561aad6361d99ce683416289923ec8df8f920edf1990d49af7120516` | `build/experiment_runs/11611f4beeaf4b3995bfceda82b94402/check.txt` | `build/experiment_runs/11611f4beeaf4b3995bfceda82b94402/closure/report.json` |
+| `00484B90` | `dc62ee26627db9720d557a50d8d37cac7f0bf300dba02ea6f17b6ae47873e638` | `2ef9aaf5920b5c27cc3ff176f0307f64850daec97e29c553d95d2f10bfadf48f` | `build/experiment_runs/a6fb66c07cfa420890e8bb90a47d63e6/check.txt` | `build/experiment_runs/a6fb66c07cfa420890e8bb90a47d63e6/closure/report.json` |
+
+The `004847C0` dead-parameter counter probe reduced its target diff by one
+byte. Its closure made exact neighbor `00484B50` differ by two bytes. Moving
+the assignment later did not remove that regression. An explicit area local
+in `count_map_tiles` also did not restore those bytes. All probes were rolled
+back. The final source matches the baseline source hash.
+
+The per-function notes record original instruction evidence, source ownership,
+byte results, and unknowns. No runtime tests or linked-image storage audit ran.
+Nothing was staged, committed, or integrated.

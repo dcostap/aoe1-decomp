@@ -41,7 +41,7 @@
     "00430ED0": {"status": "accepted_drift", "symbol": "?gather@RGE_Combat_Object@@UAEHHH@Z"},
     "00431020": {"status": "matching", "symbol": "?explore@RGE_Combat_Object@@UAEHHHH@Z"},
     "00431150": {"status": "matching", "symbol": "?enter@RGE_Combat_Object@@UAEHHH@Z"},
-    "00431250": {"status": "accepted_drift", "symbol": "?transport@RGE_Combat_Object@@UAEHMMMH@Z"},
+    "00431250": {"status": "matching", "symbol": "?transport@RGE_Combat_Object@@UAEHMMMH@Z"},
     "00431340": {"status": "matching", "symbol": "?unload@RGE_Combat_Object@@UAEHHMMM@Z"},
     "00431440": {"status": "matching", "symbol": "?stopAction@RGE_Combat_Object@@UAEHXZ"},
     "00431470": {"status": "matching", "symbol": "?pause@RGE_Combat_Object@@UAEHXZ"},

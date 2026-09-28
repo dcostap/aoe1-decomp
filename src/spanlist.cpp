@@ -485,10 +485,11 @@ void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num, int Xpos, int
         unsigned short* outline =
             (unsigned short*)(theShape->FShape->Version + info->Shape_Outline_Offset);
         X2 = info->Width - 1 + Xpos;
+        int height = info->Height;
 
         if (Mirror == 0) {
             int line = Ypos;
-            if (line < Ypos + info->Height) {
+            if (line < Ypos + height) {
                 do {
                     unsigned short start = *outline++;
                     unsigned short end = *outline++;
@@ -501,7 +502,7 @@ void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num, int Xpos, int
             }
         } else {
             int line = Ypos;
-            if (line < Ypos + info->Height) {
+            if (line < Ypos + height) {
                 do {
                     unsigned short start = *outline++;
                     unsigned short end = *outline++;
@@ -1034,21 +1035,19 @@ int TSpan_List_Manager::ValidateSpan(int Line) {
 
 int TSpan_List_Manager::DecodeLine(unsigned char* LineBuf, int Line, unsigned char fillC, int MaxX) {
     int count = 0;
+    VSpan_Node* node = this->Line_Head_Ptrs[Line];
 
-    if (this->Line_Head_Ptrs[Line] != 0) {
-        VSpan_Node* node = this->Line_Head_Ptrs[Line];
-        do {
-            int x = node->StartPx;
-            int end = node->EndPx;
-            if (x <= end) {
-                do {
-                    LineBuf[x] = LineBuf[x] + fillC;
-                    ++x;
-                } while (x <= end);
-            }
-            node = node->Next;
-            ++count;
-        } while (node != 0);
+    while (node != 0) {
+        int x = node->StartPx;
+        int end = node->EndPx;
+        if (x <= end) {
+            do {
+                LineBuf[x] = LineBuf[x] + fillC;
+                ++x;
+            } while (x <= end);
+        }
+        node = node->Next;
+        ++count;
     }
 
     return count;

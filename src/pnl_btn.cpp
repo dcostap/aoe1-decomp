@@ -153,12 +153,11 @@ void TButtonPanel::set_radio_info(TButtonPanel** buttons_in, short button_count_
         this->radio_buttons = 0;
     }
     if (button_count_in != 0) {
-        int button_count = (int)(short)button_count_in;
         this->num_radio_buttons = button_count_in;
-        this->radio_buttons = (TButtonPanel**)calloc(button_count, sizeof(TButtonPanel*));
+        this->radio_buttons = (TButtonPanel**)calloc(button_count_in, sizeof(TButtonPanel*));
         if (button_count_in > 0) {
             int index = 0;
-            int remaining = button_count;
+            int remaining = button_count_in;
             do {
                 this->radio_buttons[index] = buttons_in[index];
                 ++index;

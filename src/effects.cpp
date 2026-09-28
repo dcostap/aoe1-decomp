@@ -32,8 +32,8 @@ RGE_Effects::RGE_Effects(int infile) {
                     RGE_Effect_Command* allocated =
                         (RGE_Effect_Command*)calloc(effect_record->effect_list_num, 12);
                     command_index = 0;
+                    effect_list = allocated;
                     if (command_index < effect_record->effect_list_num) {
-                        effect_list = allocated;
                         do {
                             RGE_Effect_Command* command =
                                 &effect_list[command_index];

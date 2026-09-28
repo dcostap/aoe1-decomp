@@ -146,3 +146,38 @@ The full affected audit kept all 1,789 matching owners exact. It also made
 Use `tile->border_type | (tile->border_shape << 4)` without an intermediate
 byte cast. This keeps the packed semantics and preserves exact tile-picture
 code generation.
+
+## 2026-09-14 drift-007 re-review
+
+The final command was:
+
+```text
+python tools/audit_translation_unit_functions.py --group view --jobs 1 --output-dir build/drift-007-view/audit-final
+```
+
+The audit compiled one translation unit with 79 normal owners. It checked 62
+exact targets and found zero compile errors. The report lists 62 matching
+results, 11 verified-logic observations, three accepted-drift observations,
+two boundary problems, and one grouped match that needs review.
+
+| VA | Behavior | Source | Bytes | Integration |
+| --- | --- | --- | --- | --- |
+| `00533AF0` | Static review found no behavior defect. Failed files and malformed tables remain untested. | Typed table source remains. Direct member indexing worsened codegen. | 802 vs 799 bytes; 167 differences. | Two boundary escapes overlap `00533E10`. Two file strings need linked-storage checks. Do not integrate. |
+| `00533E10` | Static review found no behavior defect. Concurrent updates remain untested. | Source remains. Compound byte operations were a codegen duplicate. | 169 vs 162 bytes; 61 differences. | One boundary escape extends seven bytes. The debug-time string needs linked-storage validation. Do not integrate. |
+| `00533EC0` | Found implies pointer assignment. The exact body preserves scan and publication order. | Source uses PDB-proven, uninitialized local `n`. | 163 vs 163 bytes; exact match. | Zero boundary escapes; relocation targets match. One debug-time string still needs linked-storage validation. Review for promotion. |
+| `00535A80` | Static review found no behavior counterexample. Live gameplay was not tested. | Natural typed source remains. No new source lead was found. | 495 vs 495 bytes; 37 differences. | Zero boundary escapes. `Picked_Objects` storage remains unknown. Hold current drift status. |
+| `00539510` | Static review found no behavior counterexample. Malformed SLP data was not tested. | Natural typed decoder remains. Earlier source probes found no exact form. | 413 vs 413 bytes; 52 differences. | Zero boundary escapes. Switch-table storage remains unknown. Hold current drift status. |
+| `0053B300` | Static review found no behavior counterexample. Invalid list pointers were not tested. | Natural typed source remains. Moving a local worsened codegen. | 103 vs 103 bytes; 15 differences. | Zero boundary escapes or relocations. Hold current drift status. |
+
+The audit reports `00533AF0` and `00533E10` as `boundary_problem`. It reports
+`00533EC0` as an exact grouped match that needs promotion review. It reports
+the other three targets as accepted-drift observations that remain closed.
+These are audit results, not registry changes. No status, original, or
+inventory file changed.
+
+The registry still labels all six entries `accepted_drift`. This conflicts
+with the prior independent audit's `scratch` notes for `00533AF0`,
+`00535A80`, and `00539510`. This task did not change those labels. The full
+reports are `build/drift-007-view/audit-final/report.txt`, `report.csv`, and
+`report.json`. Function notes under `decomp_notes/functions/0053/` contain
+original instruction ranges, state IDs, event IDs, and experiment report paths.

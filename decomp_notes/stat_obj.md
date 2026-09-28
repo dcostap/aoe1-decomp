@@ -103,3 +103,23 @@ nonexact. Root restored both headers.
 The three slot identities are strong binary evidence. They still need one
 coordinated source model that preserves the ambient VC5 expression order in
 `missile_move`. Do not append duplicate virtuals or accept that regression.
+
+## 2026-09-28 accepted-drift re-review
+
+The one-job final module audit is `build/drift-018-stat_obj/final-audit/report.txt`.
+It compiled 116 normal functions and reported 107 matching results.
+It also reported five verified-logic rows and four accepted-drift rows.
+All 107 matching rows stayed exact; the four accepted-drift rows stayed nonexact.
+The audit found no relocation mismatches or boundary escapes in the four reviewed targets.
+
+The fresh `004C2B50` check reports 668 bytes, two differing bytes,
+27 matching relocations, 22 aligned calls, and no boundary escape.
+Its final baseline-to-source closure found no changed compiled owner.
+The earlier claim that this body escaped its boundary does not reproduce.
+The earlier audit used a different build report; its exact source state is unknown.
+See `decomp_notes/functions/004C/004C2B50.md` for the instruction evidence.
+
+The other reviewed targets are `004C1E70`, `004C1ED0`, and `004C4C50`.
+Their current differences remain 84, 55, and 134 bytes.
+Each has a matching owner, zero relocation mismatches, and zero boundary escapes.
+The review found no behavior defect and made no registry-status change.

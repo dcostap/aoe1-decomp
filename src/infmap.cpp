@@ -7,7 +7,7 @@
 
 #include <new.h>
 
-static const char print_mode[] = "wt";
+static const char print_mode[] = "wa";
 static const char print_filename[] = "FILENAME: %s\n";
 static const char print_dimensions[] = "  Dimensions: %d X %d\n";
 static const char print_reference[] = "  Reference Point: (%d, %d)\n";

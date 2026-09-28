@@ -905,7 +905,7 @@ void RGE_Static_Object::draw_frame_3d_square_front(TDrawArea* render_area, short
             int denom = this->master_obj->hp;
             if (denom > 0) {
                 int bar_bottom = (-1) + y1;
-                int bar_left = (-12) + x1;
+                int bar_left = x1 - 12;
                 render_area->FillRect(bar_left, bar_bottom - 1, bar_left + 24, bar_bottom, 0x97);
                 bar_bottom = y1;
                 bar_bottom--;

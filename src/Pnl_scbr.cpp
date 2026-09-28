@@ -163,12 +163,12 @@ void TScrollBarPanel::calc_item_rects() {
 }
 
 void TScrollBarPanel::set_tab_pos(long list_num_in) {
-    this->list_num = (int)list_num_in;
+    this->list_num = list_num_in;
 
     if (this->orientationValue == 1) {
         if (this->list_len > 0) {
-            int half = this->tabSize / 2;
-            this->tab_x = ((half + this->tab_max_x - this->tab_min_x) * (int)list_num_in) / this->list_len + this->tab_min_x;
+            this->tab_x = ((this->tabSize / 2 + this->tab_max_x - this->tab_min_x) * list_num_in) /
+                          this->list_len + this->tab_min_x;
         }
 
         if (this->tab_x < this->tab_min_x) {
@@ -178,11 +178,11 @@ void TScrollBarPanel::set_tab_pos(long list_num_in) {
         }
     } else {
         if (this->list_len > 0) {
-            if ((int)list_num_in == this->list_len - 1) {
+            if (list_num_in == this->list_len - 1) {
                 this->tab_y = this->tab_max_y;
             } else {
-                int half = this->tabSize / 2;
-                this->tab_y = ((half + this->tab_max_y - this->tab_min_y) * (int)list_num_in) / this->list_len + this->tab_min_y;
+                this->tab_y = ((this->tabSize / 2 + this->tab_max_y - this->tab_min_y) * list_num_in) /
+                              this->list_len + this->tab_min_y;
             }
         }
 

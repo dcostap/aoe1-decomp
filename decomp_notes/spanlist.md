@@ -68,3 +68,38 @@ The final target remains 339 bytes versus 337, with 184 differences, five
 aligned calls, and a two-byte boundary escape. The one-job spanlist audit is
 `build/sa-510f5e48-spanlist-final/report.txt`. `take_snapshot` and the 23 exact
 owners remain unchanged.
+
+## Worker drift-017-spanlist accepted-drift re-review
+
+The worker reviewed `AddShape`, `DeleteShape`, `DecodeLine`, and `take_snapshot`
+against original instruction streams. Target notes cite the instruction evidence.
+No behavior defect was proved. Runtime tests and a whole-executable dependency
+audit did not run.
+
+`AddShape` now captures `Height` before the mirror branch. The loops still read
+`info->Height` after each `AddSpan` call. This source shape follows the original
+shared initial load and the exact `AddShape_Align` donor. It produces 252 bytes
+and 186 strict differences, with no boundary escape. The previous natural form
+produced 259 bytes and crossed the original boundary.
+
+The source also expresses `DecodeLine` as a head-loaded `while` loop. It emits
+the same 58-byte body as the previous source. It preserves unchecked x writes,
+inclusive byte addition, next-link order, and node count.
+
+Final target states and run events:
+
+- `AddShape`: state `88fd2fef826f4d9cbf82ff122988b7bb746082fe685e4fbadd76c1a6638b3127`;
+  event `7dfeb3badcb478ac4e5e82bce9e18722ff6624470912300bf81b7f943535e254`.
+- `DeleteShape`: state `abe9dc679ccedcba06305c60280086c023a74d37021d79658dea613de4accc98`;
+  event `451c098abea2661188d94d528deea263b1065b2446b34a04b463de6651a61883`.
+- `DecodeLine`: state `2b910546a3ec8a133f71065f2f9f190b423a443b0ec6e9470909b4b134abef3d`;
+  event `0bbda8ee7d5acf16e15d4da46bd13964b07a39eebfc189cdaf6638603cf42143`.
+- `take_snapshot`: state `b9a4af2eaf7fda83c0b4939209791bdb0ea68c1286ac80d30255e32f1e35cc63`;
+  event `8e1ac333414baa45e83228d73a98fe48c44b7edf9f85ef20aa129878fa74b599`.
+
+The final `--jobs 1` module audit is
+`build/validation/drift-017-spanlist-final-20260928/report.txt`.
+It compiled all 29 normal owners. It found 23 matching results, four accepted-drift
+observations, and two new-verified-logic observations. The four targets remain
+in `hold_accepted_drift`; registry statuses are unchanged. No status approval,
+staging, commit, or integration occurred.

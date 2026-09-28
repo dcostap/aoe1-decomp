@@ -20,7 +20,7 @@
     "004BDA00": {"status": "matching", "symbol": "?SetSpanRegions@TSpan_List_Manager@@QAEXHHHH@Z"},
     "004BDA70": {"status": "matching", "symbol": "?ResetAll@TSpan_List_Manager@@QAEXXZ"},
     "004BDB00": {"status": "new_verified_logic", "symbol": "?AddSpan@TSpan_List_Manager@@QAEXHHH@Z", "behavior_review": "logic_matching/004BDB00/review-20260913T043318Z-coord07/attempt-01"},
-    "004BDEA0": {"status": "accepted_drift", "symbol": "?AddShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"},
+    "004BDEA0": {"status": "scratch", "symbol": "?AddShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"},
     "004BDFA0": {"status": "matching", "symbol": "?AddShape_Align@TSpan_List_Manager@@QAEXPAEPAUShape_Info@@HHH@Z"},
     "004BE090": {"status": "new_verified_logic", "symbol": "?AddLine_Align@TSpan_List_Manager@@QAEXHHHH@Z", "behavior_review": "logic_matching/004BE090/review-01/attempt-01"},
     "004BE1F0": {"status": "matching", "symbol": "?AddMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z"},
@@ -34,6 +34,6 @@
     "004BE850": {"status": "matching", "symbol": "?ScrollSpansVertically@TSpan_List_Manager@@QAEXHH@Z"},
     "004BE9E0": {"status": "matching", "symbol": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z"},
     "004BEAD0": {"status": "accepted_drift", "symbol": "?DecodeLine@TSpan_List_Manager@@QAEHPAEHEH@Z"},
-    "004BEB10": {"status": "accepted_drift", "symbol": "?take_snapshot@TSpan_List_Manager@@QAEXPADAAHPAVTDrawArea@@HPAPAV1@PAHH@Z"}
+    "004BEB10": {"status": "scratch", "symbol": "?take_snapshot@TSpan_List_Manager@@QAEXPADAAHPAVTDrawArea@@HPAPAV1@PAHH@Z"}
   }
 }

@@ -31,8 +31,8 @@ checks before exact promotion.
 - `00460210`, `004608D0`, `00460900`, and `00460B20` also remain scratch.
 - All other normal owners retain matching status.
 
-The wave20 full audit found `00460940 userDefinedWaypoint` exact in the
-natural source. The other reviewed results did not change.
+The wave20 full audit found `00460940 userDefinedWaypoint` exact in an earlier
+source and compiler context. This is not the current result.
 
 The user-guided review first proved the 15-byte drift in `0045D3D0 teleport` behavior-equal.
 Further source experiments recovered a simpler exact loop: `for (short i = 0; i < count; ++i)`.
@@ -79,10 +79,11 @@ maps `0x584C80`, `0x584C84`, and `0x584C9C` to file offsets `0x182E80`,
 `MISMATCH` with 1120 differing bytes. Other owner results did not change.
 Removing `(float*)0` from path calls reduced `doTrivialMove` to 3679 bytes and
 did not improve its grouped 2912-byte mismatch; the typed null casts remain.
-Typed packed-waypoint indexing caused the extractor to lose the unique owner
-record, so the proven three-byte pointer arithmetic remains. `rge_write` needs
-the explicit cast because its reviewed ABI takes `void*`, while `waypoint()` is
-const. Downcasts to moving-master fields remain required by the base owner ABI.
+An earlier packed-waypoint indexing variant caused the extractor to lose the
+unique owner record. The 2026-09-28 typed-array form retained its owner.
+`rge_write` needs its explicit cast because its reviewed ABI takes `void*`,
+while `waypoint()` is const. Downcasts to moving-master fields remain required
+by the base owner ABI.
 
 The final grouped observed audit compiled the authentic module with 51 normal
 owners. It reports 38 grouped matches, 10 scratch mismatches, and three
@@ -111,3 +112,18 @@ owner as behavior-equal `accepted_drift`.
 The repository now retains the supported vtable topology. It does not retain
 the two false overloads as virtual or nonvirtual compiler context. The final
 affected-closure audit compiled 55 groups and 1,759 normal owners.
+
+## Reopened accepted-drift review - 2026-09-28
+
+The assignment reopened every accepted-drift approval after `004D7CB0` proved
+behaviorally wrong. The review found no behavior defect in `00460940` or
+`00460F40`. It changed only their natural source forms.
+`00460940` remains a 9-byte mismatch from pointer-load and index-calculation
+order. `00460F40` remains an 8-byte EBX/EBP register recolor.
+The detailed behavior proof and states are in the two function notes.
+
+The final audit used `--group move_obj --jobs 1`.
+It compiled all 51 owners. All 47 matching claims passed.
+It reported the two accepted-drift owners and two existing
+`new_verified_logic` mismatches. It found no exact-owner regression from this
+review. Report: `build/drift-038-move_obj/final-audit/report.txt`.

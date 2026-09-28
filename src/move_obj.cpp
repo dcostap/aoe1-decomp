@@ -1934,7 +1934,7 @@ void RGE_Moving_Object::setWaitingToMove(unsigned char w) { this->waitingToMoveV
 
 XYZBYTEPoint* RGE_Moving_Object::userDefinedWaypoint(int v) {
     if (v < 0 || v >= numberUserDefinedWaypointsValue) return 0;
-    return (XYZBYTEPoint*)((char*)userDefinedWaypoints + v * 3);
+    return &this->userDefinedWaypoints[v];
 }
 
 int RGE_Moving_Object::addUserDefinedWaypoint(XYZBYTEPoint* p, int stopObject) {
@@ -2154,22 +2154,20 @@ void RGE_Moving_Object::rotate(long amount) {
 
 long RGE_Moving_Object::get_waypoint_checksum() {
     float temp = 0.0f;
-    Path* path = &this->pathValue;
-    int savedIndex = path->currentWaypointNumber();
-    path->initToStart();
+    int savedIndex = this->pathValue.currentWaypointNumber();
+    this->pathValue.initToStart();
     int i = 0;
-    if (path->numberOfWaypoints() > 0) {
+    if (this->pathValue.numberOfWaypoints() > 0) {
         do {
             // Keep currentWaypoint calls at 00460F72 and 00460F7B. The binary
             // uses y(first) + x(second) + temp at 00460F80, 00460F83, and 00460F88.
-            Waypoint* yWaypoint = path->currentWaypoint();
-            Waypoint* xWaypoint = path->currentWaypoint();
-            float waypointSum = yWaypoint->y + xWaypoint->x;
-            temp += waypointSum;
+            Waypoint* yWaypoint = this->pathValue.currentWaypoint();
+            Waypoint* xWaypoint = this->pathValue.currentWaypoint();
+            temp += yWaypoint->y + xWaypoint->x;
             i++;
-            path->moveToNextWaypoint();
-        } while (i < path->numberOfWaypoints());
+            this->pathValue.moveToNextWaypoint();
+        } while (i < this->pathValue.numberOfWaypoints());
     }
-    path->setCurrentWaypointNumber(savedIndex);
-    return (long)(int)temp;
+    this->pathValue.setCurrentWaypointNumber(savedIndex);
+    return temp;
 }
