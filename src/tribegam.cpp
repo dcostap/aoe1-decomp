@@ -1130,8 +1130,7 @@ int TRIBE_Game::start_video(int video_num, char* video_file) {
                 SetWindowLongA(this->video_window, GWL_WNDPROC, reinterpret_cast<long>(::video_sub_wnd_proc));
 
                 if (this->video_hi_color == 0) {
-                    void* palette = reinterpret_cast<void*>(
-                        SendMessageA(this->video_window, TRIBE_MCIWNDM_GETPALETTE, 0, 0));
+                    void* palette = reinterpret_cast<void*>(SendMessageA(this->video_window, TRIBE_MCIWNDM_GETPALETTE, 0, 0));
                     this->draw_system->SetPalette(palette);
                 }
 
