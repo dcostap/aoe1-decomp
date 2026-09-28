@@ -628,7 +628,6 @@ unsigned short guid_hex_digits[16] = {
     '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
 };
 char comm_enum_buffer[0x100] = {0};
-char comm_info_buffers[0x700] = {0};
 char g_status_buffer[0x20] = {0};
 char ready_player_buffer[64] = {0};
 

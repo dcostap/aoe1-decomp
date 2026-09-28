@@ -88,10 +88,8 @@ void Visible_Unit_Manager::Build_Distance_Table() {
         table[i] = 0xff;
     }
 
-    int distance = 0;
-    LOSTBL** offsets = NormalLOS;
-    do {
-        LOSTBL* entry = *offsets;
+    for (int distance = 0; distance < 17; distance++) {
+        LOSTBL* entry = NormalLOS[distance];
         int row = entry->y;
         while (row != 999) {
             int first = entry->x1;
@@ -119,9 +117,7 @@ void Visible_Unit_Manager::Build_Distance_Table() {
             ++entry;
             row = entry->y;
         }
-        offsets++;
-        distance++;
-    } while (offsets <= &NormalLOS[16]);
+    }
 }
 
 void Visible_Unit_Manager::Update_Unit_Info(

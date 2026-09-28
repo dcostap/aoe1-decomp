@@ -149,11 +149,14 @@ The source now preserves both paths; its 149-byte drift has `scratch` status.
 The original `00480A20` leak and tail-match fault remain in the clearer source.
 
 The `GetCommInfo` worker proved that function-static `Lin` has eight rows.
-The integrated seven-row global does not preserve the return for input eight.
+The old seven-row global did not preserve the return for input eight.
 An isolated eight-row candidate kept the same two code-byte differences.
-Its 157-group shared audit reported five failed matching claims and unknown linked storage.
-The candidate remains outside the integrated source; `0042CD50` now has `scratch` status.
-The `com_hand` worker is isolating those five failures before another integration attempt.
+Removing its old header declaration caused five failed exact claims.
+Keeping that unused declaration, but removing the old global definition,
+passed the isolated 157-group exact-claim audit.
+The integrated source now uses this form. The header declaration has no
+object reference; its compiler-context effect remains unexplained.
+Linked storage remains unknown, so `0042CD50` retains `scratch` status.
 
 `00531750` and `00518090` also have `scratch` status.
 The first has broad unproved drift; the second crosses its original boundary.
@@ -234,3 +237,9 @@ The `Timeline` review retained the original second-lookup index bug.
 It changed the allocation literal `48` to `sizeof(RGE_Time_Entry)`.
 The target still differs by 16 code bytes, and linked vtable storage
 remains unverified. This edit does not renew full behavior approval.
+
+The `tact_bld` review retained the original farm carry-loss path.
+Its two-byte drift changes the register for one virtual call.
+The `vis_unit` review restored a bounded loop over all 17 `NormalLOS`
+entries. The low address operands are COFF relocations to that table,
+not null pointers. The loop still differs by ten bytes.

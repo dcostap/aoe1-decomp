@@ -3658,37 +3658,39 @@ int TCommunications_Handler::IsPlayerComputer(unsigned int PlayerNo) {
 typedef unsigned long ulong;
 
 char* TCommunications_Handler::GetCommInfo(unsigned char LineNum) {
-    char* p = comm_info_buffers;
-    char tmp[0x100];
+    static char Lin[8][256];
+    char* buffer = Lin[0];
+    char* p = buffer;
+    char tmp[255];
     --LineNum;
 
     if (this->Multiplayer == 0) {
         do {
             strcpy(p, ">");
             p += 0x100;
-        } while (p < comm_info_buffers + 0x700);
-        sprintf(comm_info_buffers, "SinglePlayer> T#%d ", this->current_turn);
-        return comm_info_buffers + (static_cast<unsigned int>(LineNum) << 8);
+        } while (p < buffer + 0x700);
+        sprintf(buffer, "SinglePlayer> T#%d ", this->current_turn);
+        return buffer + (static_cast<unsigned int>(LineNum) << 8);
     }
 
     do {
         strcpy(p, " ");
         p += 0x100;
-    } while (p < comm_info_buffers + 0x700);
+    } while (p < buffer + 0x700);
     strcpy(tmp, "");
     if (this->MeHost != 0) {
         strcpy(tmp, "Host");
     } else {
         strcpy(tmp, "Client");
     }
-    sprintf(comm_info_buffers, "P%d T#%6ld [%.7s] %s  TX: %0.1f  RX: %0.1f", this->Me, this->current_turn, tmp, this->GetReadyPlayerStr(), static_cast<double>(this->lastTXDataRate), static_cast<double>(this->lastRXDataRate));
-    sprintf(comm_info_buffers + 0x100, "%s ", this->Speed->GetLatencyInfo());
-    sprintf(comm_info_buffers + 0x200, "%s  Speed Adjusts=%d ", this->Speed->GetMachineSpeedInfo(), this->Speed->GetAdjustmentCount());
+    sprintf(buffer, "P%d T#%6ld [%.7s] %s  TX: %0.1f  RX: %0.1f", this->Me, this->current_turn, tmp, this->GetReadyPlayerStr(), static_cast<double>(this->lastTXDataRate), static_cast<double>(this->lastRXDataRate));
+    sprintf(buffer + 0x100, "%s ", this->Speed->GetLatencyInfo());
+    sprintf(buffer + 0x200, "%s  Speed Adjusts=%d ", this->Speed->GetMachineSpeedInfo(), this->Speed->GetAdjustmentCount());
 
     ulong dwCount = 0;
     direct_play_interface->GetMessageCount(local_player_dpid, &dwCount);
-    sprintf(comm_info_buffers + 0x300, "%s  DPMsgs%d ", this->Speed->GetSelfPlayerOptimalSpeedStr(), dwCount);
-    sprintf(comm_info_buffers + 0x400, "%s ", this->Speed->GetPlayerSpeedStatusStr(0));
+    sprintf(buffer + 0x300, "%s  DPMsgs%d ", this->Speed->GetSelfPlayerOptimalSpeedStr(), dwCount);
+    sprintf(buffer + 0x400, "%s ", this->Speed->GetPlayerSpeedStatusStr(0));
 
     unsigned long now = debug_timeGetTime(com_hand_source_path, 5224);
     unsigned long t8, t7, t6, t5, t4, t3, t2, t1;
@@ -3732,9 +3734,9 @@ char* TCommunications_Handler::GetCommInfo(unsigned char LineNum) {
     } else {
         t1 = 0;
     }
-    sprintf(comm_info_buffers + 0x500, "LastComm: P1=%-5d  P2=%-5d  P3=%-5d  P4=%-5d P5=%-5d P6=%-5d P7=%-5d P8=%-5d", t1, t2, t3, t4, t5, t6, t7, t8);
+    sprintf(buffer + 0x500, "LastComm: P1=%-5d  P2=%-5d  P3=%-5d  P4=%-5d P5=%-5d P6=%-5d P7=%-5d P8=%-5d", t1, t2, t3, t4, t5, t6, t7, t8);
 
-    return comm_info_buffers + (static_cast<unsigned int>(LineNum) << 8);
+    return buffer + (static_cast<unsigned int>(LineNum) << 8);
 }
 
 char* TCommunications_Handler::GetPlayerName(unsigned int PlayerNo) {

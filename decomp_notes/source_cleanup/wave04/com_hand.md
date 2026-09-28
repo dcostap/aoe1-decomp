@@ -2,10 +2,11 @@
 
 ## Later accepted-drift review
 
-The isolated worker changed `GetCommInfo` to a function-static eight-row `Lin`.
-The integrated source has not accepted that proposal.
-Its shared closure failed five matching claims, and linked storage remains unchecked.
-The later notes below describe the isolated worker, not the integrated source.
+The integrated source now owns function-static eight-row `Lin`.
+It removed the seven-row global definition but kept the unused header
+declaration. Removing that declaration alone failed five exact claims.
+The isolated 157-group candidate audit passed all exact claims.
+The linked address and surrounding storage remain unchecked.
 
 ## Delivery
 
