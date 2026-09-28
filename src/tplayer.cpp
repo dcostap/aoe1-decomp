@@ -1206,8 +1206,8 @@ int TRIBE_Player::objectCostByType(int id) {
     short inv_amt_1;
     short inv_2;
     short inv_1;
-    short inv_amt_3;
     short inv_amt_2;
+    short inv_amt_3;
 
     obj_cost(static_cast<short>(id), 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
     return inv_amt_1 + inv_amt_2 + inv_amt_3;

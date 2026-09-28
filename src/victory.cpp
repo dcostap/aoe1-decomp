@@ -714,9 +714,11 @@ void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* node) {
 
     if (e->ally_flag && p->allied_victory) {
         RGE_Game_World* world = p->world;
-        int i = world->player_num - 1;
+        int i = world->player_num;
+        RGE_Player** players = world->players;
+        --i;
         if (i >= 0) {
-            RGE_Player** pp = world->players + i;
+            RGE_Player** pp = players + i;
             do {
                 if (p->relations[i] == 0) {
                     RGE_Player* other = *pp;
@@ -1087,14 +1089,12 @@ char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* node) {
 
 RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long condition) {
     RGE_Victory_Entry* entry;
-    long wanted;
     long count;
 
     entry = this->victory_list;
-    wanted = condition;
     count = 0;
     while (entry != 0) {
-        if (count == wanted) {
+        if (count == condition) {
             return entry;
         }
         entry = entry->next;
@@ -1237,7 +1237,7 @@ unsigned char RGE_Victory_Conditions::add_points_high_attribute_amount(unsigned 
 
 void RGE_Victory_Conditions::handle_points_attribute_amount(RGE_Victory_Point_Entry* node) {
     if (node->state == 0) {
-        int amount = (int)this->player->attributes[node->attribute];
+        long amount = (long)this->player->attributes[node->attribute];
         int calculated_points = amount / node->amount;
         node->curr_attribute_amount = (float)amount;
         if (calculated_points < 0) {
@@ -1312,9 +1312,7 @@ void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_E
                     float* score = &players[i]->attributes[node->attribute];
                     if (*score > current) {
                         points = 0;
-                        break;
-                    }
-                    if (*score == current) {
+                    } else if (!(*score < current)) {
                         points = node->curr_points;
                     }
                 }

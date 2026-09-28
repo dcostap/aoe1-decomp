@@ -1,0 +1,16 @@
+# Experiment b6fe7ee1e32b168e5025e981e9bb9fa8e672124c7bb55adea0c50551dd7b70f4
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/tplayer.cpp b/src/tplayer.cpp
+index 5d33fe6a0..1f7e1d17d 100644
+--- a/src/tplayer.cpp
++++ b/src/tplayer.cpp
+@@ -1206,8 +1206,8 @@ int TRIBE_Player::objectCostByType(int id) {
+     short inv_amt_1;
+     short inv_2;
+     short inv_1;
+-    short inv_amt_3;
+     short inv_amt_2;
++    short inv_amt_3;
+ 
+     obj_cost(static_cast<short>(id), 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
+     return inv_amt_1 + inv_amt_2 + inv_amt_3;

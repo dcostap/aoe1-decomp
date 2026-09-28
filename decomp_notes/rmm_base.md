@@ -7,10 +7,6 @@ The 21 matching owners were exact in the prior wrapper. The migration changes
 their compiler-facing owner from a source-bank fragment to `src/rmm_base.cpp`.
 The focused candidate build is the migration gate.
 
-`remove_module` at 00480A20 remains accepted drift. Its list edits, free call,
-return values, boundary, and protected owner symbol match. The 13 differing
-bytes are register-color and address-source choices in the list walk.
-
 `randomize_stack` at 00480EC0 is scratch. The fresh grouped audit in
 `build/audit_accepted_drift_final2/report.txt` reports a
 219-byte rebuild against the 237-byte original and 106 differing bytes. The
@@ -18,9 +14,12 @@ frame differs by four bytes, the instruction count differs by four, and the
 checker reports a control-flow difference. The calls and list effects remain
 aligned, but this is broader than localized accepted drift.
 
-`remove_module` at 00480A20 remains accepted drift. Its fresh grouped result
-has 13 differing bytes, the original boundary, the owning symbol, and no
-relocation or boundary mismatch.
+`remove_module` at 00480A20 has a reopened behavior review and a new natural
+predecessor-cursor source variant. The original and rebuilt bodies still differ
+at 13 byte positions. See
+`decomp_notes/functions/0048/00480A20.md` for the instruction-level behavior
+review, tested states, and re-approval proposal. The registry status is not
+changed by this note.
 
 `find_path(Map_Stack&, ...)` at 00481000 remains scratch. The source preserves
 the eight-neighbor search and ten ordered helper calls. Its frame, FPU local

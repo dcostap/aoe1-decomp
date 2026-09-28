@@ -138,3 +138,22 @@ The following additional targets have `scratch` status:
 | `004E0470` | The clearer loop still has broad, unapproved drift. |
 | `004F57C0`, `00502310`, `00503070` | Emitted code crosses the original boundaries. |
 | `00401170`, `004012B0` | Floating-point and linked-value checks remain open. |
+
+The next packages cover `victory`, `tplayer`, `tvw_main`, `rmm_base`,
+`color`, `airesitm`, `act_move`, and `dlg_dip`.
+The original `00533240` continues after a higher peer sets points to zero.
+A later equal or unordered peer can restore the prior points.
+The old source broke early and missed the unordered case.
+The source now preserves both paths; its 149-byte drift has `scratch` status.
+`005326F0` and `00514590` have new exact source proposals.
+The original `00480A20` leak and tail-match fault remain in the clearer source.
+
+The `GetCommInfo` worker proved that function-static `Lin` has eight rows.
+The integrated seven-row global does not preserve the return for input eight.
+An isolated eight-row candidate kept the same two code-byte differences.
+Its 157-group shared audit reported five failed matching claims and unknown linked storage.
+The candidate remains outside the integrated source; `0042CD50` now has `scratch` status.
+The `com_hand` worker is isolating those five failures before another integration attempt.
+
+`00531750` and `00518090` also have `scratch` status.
+The first has broad unproved drift; the second crosses its original boundary.

@@ -1,5 +1,12 @@
 # Source cleanup report: `com_hand.cpp`
 
+## Later accepted-drift review
+
+The isolated worker changed `GetCommInfo` to a function-static eight-row `Lin`.
+The integrated source has not accepted that proposal.
+Its shared closure failed five matching claims, and linked storage remains unchecked.
+The later notes below describe the isolated worker, not the integrated source.
+
 ## Delivery
 
 - Module: `src/com_hand.cpp`
@@ -96,6 +103,15 @@ buffers or loop locals. This includes `g_status_buffer`, `InContent`,
 `comm_info_buffers`, `ready_player_buffer`, and several ordinary locals whose
 PDB homes are optimized or reused. These names remain unchanged. The shared
 definitions are owned by `src/game_globals.cpp`, outside this assignment.
+
+### Later ownership update: GetCommInfo
+
+The drift-012 review supersedes the old `comm_info_buffers` statement for
+`GetCommInfo`. The PDB records its function-static `Lin` at `0062C6F0` with an
+extent of 2,048 bytes. Current source owns this storage as
+`static char Lin[8][256]` inside the function. The shared `comm_info_buffers`
+declaration and definition are no longer present. This note keeps the earlier
+wave's source state as history.
 
 The PDB records establish the original function boundaries and the `this`
 register in `ecx` for member procedures. No calling convention, member layout,

@@ -384,7 +384,6 @@ void TRIBE_Main_View::place_line_of_walls(TRIBE_Player* player, TRIBE_Master_Bui
 long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
     RGE_Pick_Info pick_info;
-    RGE_Static_Object* object;
 
     if (mode != ProgModeGame && mode != ProgModeGameTempPaused &&
         mode != ProgModeScenarioEditor && mode != ProgModeGameOver) {
@@ -454,11 +453,11 @@ done_b:
             goto done_a;
         goto error_a;
 
-    case 104:
+    case 104: {
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        object = this->pick_best_target(x, y, 0, -1);
+        RGE_Static_Object* object = this->pick_best_target(x, y, 0, -1);
         if (object != 0 && static_cast<TRIBE_Player*>(this->player)->command_make_repair(object) != 0) {
             this->display_object_selection(object->id, 0x5DC, 2, 2);
             this->reset_overlay_sprites();
@@ -466,6 +465,7 @@ done_b:
             goto done_a;
         }
         goto error_a;
+    }
 
     case 105:
         this->release_mouse();

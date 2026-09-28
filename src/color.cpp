@@ -58,7 +58,7 @@ void __cdecl RGE_translate_palette(tagPALETTEENTRY* palette1, tagPALETTEENTRY* p
 
 void __cdecl RGE_fade_palette(TDrawArea* surface, tagPALETTEENTRY color, float fade_time, unsigned char direction, tagPALETTEENTRY* new_palette, int ignore_color1, int ignore_color2) {
     float delta_time;
-    bool done;
+    unsigned char done;
     long old_time;
     float fade_time2;
     tagPALETTEENTRY palette1[256];

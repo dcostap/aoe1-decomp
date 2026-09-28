@@ -137,24 +137,23 @@ uchar RGE_Random_Map_Module::remove_module(
     RGE_Random_Map_Module* module) {
     RGE_Random_Map_Module_List* head = this->list;
     RGE_Random_Map_Module_List* found = 0;
+    RGE_Random_Map_Module_List* previous;
+    RGE_Random_Map_Module_List* curr;
 
     if (head != 0) {
         if (head->module == module) {
             found = head;
             this->list = head->next;
         } else {
-            RGE_Random_Map_Module_List* curr;
-            RGE_Random_Map_Module_List** pprev = &head->next;
-            curr = *pprev;
-            if (curr != 0) {
-                do {
-                    if (curr->module == module) {
-                        found = curr;
-                        *pprev = curr->next;
-                    }
-                    pprev = &(*pprev)->next;
-                    curr = *pprev;
-                } while (curr != 0);
+            curr = head->next;
+            previous = head;
+            while (curr != 0) {
+                if (curr->module == module) {
+                    found = curr;
+                    previous->next = curr->next;
+                }
+                previous = previous->next;
+                curr = previous->next;
             }
         }
     }

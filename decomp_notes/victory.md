@@ -143,3 +143,28 @@ The complete review in `logic_reviews/00531750.md` accepts the typed natural
 constructor as `accepted_drift`. The registry now records this result. The
 earlier scratch wording above is historical. The current scratch owners are
 `005327A0` and `00532880`; the module has eight accepted-drift owners.
+
+## drift-002-victory re-review
+
+The worker re-reviewed all 11 assigned accepted-drift functions against the
+original instructions. It retained four source changes in `src/victory.cpp`:
+
+- `005326F0` now loads `world->players` before the signed player-count guard.
+  The function is an exact byte match. Review the candidate before any status
+  change.
+- `00532ED0` now compares the traversal count with the PDB-named `condition`
+  parameter. This removes a redundant alias and emits the same bytes.
+- `00533120` now uses the PDB-proven signed `long` type for `amount`. This emits
+  the same bytes as the prior 32-bit `int` form.
+- `00533240` now continues after a higher peer and preserves the original x87
+  unordered result. The old `break` and `==` form did not match the executable.
+  This repair increases the byte difference to 149 and leaves a control-flow
+  mismatch. Review the behavior repair before any status decision.
+
+The other seven functions have no source change. Their durable notes record the
+original instruction ranges, state and event IDs, report paths, and open tests.
+The one-job audit is `build/validation/drift-002-victory-final/report.txt`. It
+compiled all 58 owners, found 47 exact matches, 10 accepted-drift observations,
+and one exact match awaiting review. The owner audit reports zero mismatches.
+No exact owner regressed. The registry did not change. No linked-image audit,
+game build, or runtime test ran.

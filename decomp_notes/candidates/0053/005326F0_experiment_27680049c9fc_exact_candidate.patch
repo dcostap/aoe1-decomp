@@ -1,0 +1,20 @@
+# Experiment 27680049c9fc6e362bde200dbba7c7b125257212e29174082960520f7e5d5732
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/victory.cpp b/src/victory.cpp
+index 3aab73526..c165bd1ed 100644
+--- a/src/victory.cpp
++++ b/src/victory.cpp
+@@ -714,9 +714,11 @@ void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* node) {
+ 
+     if (e->ally_flag && p->allied_victory) {
+         RGE_Game_World* world = p->world;
+-        int i = world->player_num - 1;
++        int i = world->player_num;
++        RGE_Player** players = world->players;
++        --i;
+         if (i >= 0) {
+-            RGE_Player** pp = world->players + i;
++            RGE_Player** pp = players + i;
+             do {
+                 if (p->relations[i] == 0) {
+                     RGE_Player* other = *pp;
