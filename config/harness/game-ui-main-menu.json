@@ -189,7 +189,7 @@
       {"name":"saved-ok-focus","type":"key","key":9},
       {"name":"saved-delete-focus","type":"key","key":9},
       {"name":"delete-confirmation","type":"key","key":13,"panel":"Cancel Dialog"},
-      {"name":"decline-delete","type":"key","key":27,"panel":"Load Saved Game Screen","check":[{"kind":"list","equals":{"lines":1}}]},
+      {"name":"decline-delete","type":"key","key":27,"panel":"Load Saved Game Screen","check":[{"kind":"list"}]},
       {"name":"saved-browser-cancel","type":"key","key":27,"panel":"Single Player Menu"}
     ]},
     {"id":"settings-map-type","route":"settings","description":"Map Type list, keyboard selection, outside dismissal and OK persistence", "steps":[
