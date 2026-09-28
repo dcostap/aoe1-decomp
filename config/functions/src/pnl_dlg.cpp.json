@@ -8,7 +8,7 @@
   "functions": {
     "00473C10": {"status": "matching", "symbol": "??0TDialogPanel@@QAE@PAD@Z"},
     "00473C80": {"status": "new_verified_logic", "symbol": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z", "behavior_review": "logic_matching/00473C80/review-01/attempt-01"},
-    "00473D60": {"status": "new_verified_logic", "symbol": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJEH@Z", "behavior_review": "logic_matching/00473D60/current-review-20260914-r01/review-01-a"},
+    "00473D60": {"status": "matching", "symbol": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJEH@Z", "behavior_review": "logic_matching/00473D60/current-review-20260914-r01/review-01-a"},
     "00473E40": {"status": "matching", "symbol": "??1TDialogPanel@@UAE@XZ"},
     "00473EC0": {"status": "matching", "symbol": "?set_focus@TDialogPanel@@UAEXH@Z"}
   }
