@@ -14,7 +14,7 @@
     "00486110": {"status": "matching", "symbol": "?to_close@RGE_RMM_Object_Generator@@IAEEAAURGE_Object_Info_Line@@JJ@Z"},
     "00486180": {"status": "matching", "symbol": "?set_search_area@RGE_RMM_Object_Generator@@IAEXJJJE@Z"},
     "00486210": {"status": "matching", "symbol": "?remove_area_from_lists@RGE_RMM_Object_Generator@@IAEXJJJ@Z"},
-    "004862B0": {"status": "accepted_drift", "symbol": "?place_avoid_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@J@Z"},
+    "004862B0": {"status": "scratch", "symbol": "?place_avoid_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@J@Z"},
     "004864F0": {"status": "new_verified_logic", "symbol": "?place_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@@Z", "behavior_review": "logic_matching/004864F0/stale-link-review-004864F0-20260913T120000Z/attempt-01"},
     "00486700": {"status": "matching", "symbol": "?place_land_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@JJJJJ@Z"},
     "00486A60": {"status": "matching", "symbol": "?place_group@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@JJPAVRGE_Player@@@Z"},

@@ -205,3 +205,12 @@ source edit. Root keeps the separate formatting commit `9ce8ef635` intact.
 The `t_c_obj` review found a narrow x87 operand-form difference at
 `004CC4C0`. NaN payload behavior remains unproved, so this target now
 has `scratch` status. The `taiconmd` and `tact_rep` source remains unchanged.
+
+The `scr_ach` source now sums victory-point IDs 16 and 15 with one local.
+The original prepares later call arguments before those getter calls.
+The source does not preserve that stack-write order, so `0048E400`
+now has `scratch` status pending a fault-order proof.
+
+The `rmm_obj` review found that `004862B0` reorders a player-pointer read
+and a zone-output stack push. The valid-object path agrees, but invalid
+object fault order remains open. This target now has `scratch` status.

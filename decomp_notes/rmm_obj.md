@@ -65,8 +65,9 @@ relocation target mismatch and no boundary escape. `00485F10` extracts 503
 rebuilt bytes from its 507-byte section in both the old wrapper and the merged
 source; this is not a migration regression.
 
-`004862B0 place_avoid_objects` remains accepted drift. Its reviewed residual is
-limited to private setup register and scheduling differences.
+`004862B0 place_avoid_objects` remains accepted drift. The drift-042 review
+found no defect for a valid game object graph, but left malformed player-array
+fault timing open. See `decomp_notes/functions/0048/004862B0.md`.
 
 `00485F10 make_placement_stack`, `004864F0 place_objects`, and `00486C40
 place_cluster` remain scratch. Their source notes describe the unresolved local
