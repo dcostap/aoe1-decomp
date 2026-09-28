@@ -214,3 +214,18 @@ now has `scratch` status pending a fault-order proof.
 The `rmm_obj` review found that `004862B0` reorders a player-pointer read
 and a zone-output stack push. The valid-object path agrees, but invalid
 object fault order remains open. This target now has `scratch` status.
+
+The `tact_mob` review found a proved AI history-text defect at `004D0FC0`.
+The old source omitted `uniqueID=%d.` from three log formats, although it
+passed that argument. The source now contains the original three formats.
+The constructor `004D0EB0` reorders vptr and ID stores; partial-object
+fault order remains open. Both targets now have `scratch` status.
+
+The `scr_cred` review found that `00492FB0` sent the scroll-end action to
+`curr_child`. The original sends it to `parent_panel`. The source now uses
+the correct field and has an exact matching candidate.
+
+The `vw_main` review kept the same two-byte timing-register drift and
+rewrote the unsigned subtraction as two direct steps. The `tribegam`
+review moved one retry-counter declaration to its first use.
+Neither edit changed the reviewed target bytes in its isolated module.

@@ -4111,12 +4111,11 @@ int TRIBE_Game::randomComputerName(int civ) {
     int max;
     int slot;
     int i;
-    int tries;
 
     this->get_string((civ + STRING_ID_COMPUTER_NAME_COUNT_BASE) * 10, scount, 10);
     max = atoi(scount);
 
-    tries = 0;
+    int tries = 0;
 
     do {
         int r = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5409);

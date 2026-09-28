@@ -58,18 +58,17 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar first_time) {
     if (first_time == 0) return;
 
     if (this->obj_id < 0) {
-        static_cast<TRIBE_Player*>(this->obj->owner)->logMessage("Canceling Train #1a:  obj_id=%d, obj->id=%d",
+        static_cast<TRIBE_Player*>(this->obj->owner)->logMessage("Canceling Train #1a:  obj_id=%d, obj->id=%d, uniqueID=%d.",
                                                                  (int)this->obj_id, (int)this->obj->id, this->unique_id);
     } else {
         if (static_cast<TRIBE_Player*>(this->obj->owner) ->master_objects[this->obj_id] == 0) {
-            static_cast<TRIBE_Player*>(this->obj->owner)->logMessage("Canceling Train #1b:  obj_id=%d, obj->id=%d",
+            static_cast<TRIBE_Player*>(this->obj->owner)->logMessage("Canceling Train #1b:  obj_id=%d, obj->id=%d, uniqueID=%d.",
                                                                      (int)this->obj_id, (int)this->obj->id, this->unique_id);
         } else {
             if (!this->pre_paid) {
-                uchar paid = static_cast<TRIBE_Player*>(this->obj->owner)
-                    ->pay_obj_cost(this->obj_id, 1.0f, 0);
-                if (paid == 0) {
-                    static_cast<TRIBE_Player*>(this->obj->owner)->logMessage("Canceling Train #1c:  obj_id=%d, obj->id=%d",
+                if (static_cast<TRIBE_Player*>(this->obj->owner)
+                        ->pay_obj_cost(this->obj_id, 1.0f, 0) == 0) {
+                    static_cast<TRIBE_Player*>(this->obj->owner)->logMessage("Canceling Train #1c:  obj_id=%d, obj->id=%d, uniqueID=%d.",
                                                                              (int)this->obj_id, (int)this->obj->id, this->unique_id);
                     static_cast<TRIBE_Player*>(this->obj->owner)->cancelTrain(
                         0, (int)this->obj_id, (int)this->obj->id, this->unique_id);

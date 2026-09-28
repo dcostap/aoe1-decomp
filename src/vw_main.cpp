@@ -850,7 +850,9 @@ void RGE_Main_View::draw() {
     ac2 = rge_base_game->get_accum_time(0xB);
     ac2 -= at;
     et = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 1346);
-    rge_base_game->add_to_timing(6, (et - start) - ac2);
+    et -= start;
+    et -= ac2;
+    rge_base_game->add_to_timing(6, et);
     rge_base_game->increment_view_update_count();
     rge_base_game->add_to_timing(0xC, ac2);
 }

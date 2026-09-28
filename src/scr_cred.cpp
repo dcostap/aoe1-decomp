@@ -297,7 +297,9 @@ long TScrollTextPanel::handle_idle() {
     } else {
         unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 479);
         __int64 elapsed = (unsigned long)(now - this->last_time);
-        int amount = (long)(((double)elapsed * g_scroll_time_scale) * this->speed);
+        double elapsed_scale = elapsed * g_scroll_time_scale;
+        double scroll_rate = this->speed;
+        int amount = (long)(elapsed_scale * scroll_rate);
         if (amount > 0) {
             this->scroll += amount;
             this->set_redraw(TPanel::RedrawNormal);
@@ -305,8 +307,8 @@ long TScrollTextPanel::handle_idle() {
         }
     }
     if (this->done != 0) {
-        if (this->curr_child != 0) {
-            this->curr_child->action(this, 1, 0, 0);
+        if (this->parent_panel != 0) {
+            this->parent_panel->action(this, 1, 0, 0);
         }
     }
     return this->TPanel::handle_idle();
