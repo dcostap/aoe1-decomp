@@ -16,7 +16,7 @@
     "004CFF20": {"status": "matching", "symbol": "?get_move_sprite@TRIBE_Action_Hunt@@IAEPAVRGE_Sprite@@XZ"},
     "004CFF50": {"status": "matching", "symbol": "?get_wait_sprite@TRIBE_Action_Hunt@@IAEPAVRGE_Sprite@@XZ"},
     "004CFF90": {"status": "matching", "symbol": "?stop@TRIBE_Action_Hunt@@UAEHXZ"},
-    "004CFFD0": {"status": "accepted_drift", "symbol": "?move_to@TRIBE_Action_Hunt@@UAEHPAVRGE_Static_Object@@MMM@Z"},
+    "004CFFD0": {"status": "matching", "symbol": "?move_to@TRIBE_Action_Hunt@@UAEHPAVRGE_Static_Object@@MMM@Z"},
     "004D0080": {"status": "matching", "symbol": "?work@TRIBE_Action_Hunt@@UAEHPAVRGE_Static_Object@@MMM@Z"}
   }
 }

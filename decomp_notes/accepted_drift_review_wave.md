@@ -183,3 +183,8 @@ The `Command` review proposes an exact `00434FB0` after restoring the
 original packet and object read order. The `scr_mps` review makes the
 player-version loop simpler, but `004A2060` still has an unresolved
 register-map conflict. That target now has `scratch` status.
+
+`00431D30` had a proved saved-register alias defect.
+The new source restores EDI after the output write, but crosses its
+original boundary by two bytes. It now has `scratch` status.
+The action reviews propose exact matches for `004CFFD0` and `004D2250`.

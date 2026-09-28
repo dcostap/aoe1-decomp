@@ -1,0 +1,17 @@
+# Experiment 451ee1b614c62e2a3756cc24b90c8ce02bbcbe530bc3fdb4403d8c52f7acdea5
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/tact_hnt.cpp b/src/tact_hnt.cpp
+index 73cb32c85..ca23f46c2 100644
+--- a/src/tact_hnt.cpp
++++ b/src/tact_hnt.cpp
+@@ -544,9 +544,9 @@ int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, floa
+             return 1;
+         }
+     }
+-    this->target_z = z;
+     this->target_x = x;
+     this->target_y = y;
++    this->target_z = z;
+     this->set_target_obj(0);
+     this->set_state(0x0F);
+     return 1;

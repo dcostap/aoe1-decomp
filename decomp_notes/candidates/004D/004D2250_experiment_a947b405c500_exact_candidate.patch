@@ -1,0 +1,16 @@
+# Experiment a947b405c500fd7f77e211a281f73b59ac199d68be90f422b7ac703e268027a3
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/tact_tek.cpp b/src/tact_tek.cpp
+index 800591ebc..05504dffb 100644
+--- a/src/tact_tek.cpp
++++ b/src/tact_tek.cpp
+@@ -19,8 +19,7 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int infile, RGE_Action_Object* ob
+ }
+ 
+ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* obj_in, short id, int uID)
+-    : RGE_Action(obj_in, 1) {
+-    this->unique_id = uID;
++    : RGE_Action(obj_in, 1), unique_id(uID) {
+     this->action_type = 0x67;
+     this->tech_id = id;
+ }

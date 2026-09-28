@@ -7,7 +7,7 @@
   },
   "functions": {
     "004D21B0": {"status": "matching", "symbol": "??0TRIBE_Action_Make_Tech@@QAE@HPAVRGE_Action_Object@@@Z"},
-    "004D2250": {"status": "accepted_drift", "symbol": "??0TRIBE_Action_Make_Tech@@QAE@PAVRGE_Action_Object@@FH@Z"},
+    "004D2250": {"status": "matching", "symbol": "??0TRIBE_Action_Make_Tech@@QAE@PAVRGE_Action_Object@@FH@Z"},
     "004D2290": {"status": "matching", "symbol": "??1TRIBE_Action_Make_Tech@@UAE@XZ"},
     "004D2370": {"status": "matching", "symbol": "?save@TRIBE_Action_Make_Tech@@UAEXH@Z"},
     "004D23B0": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Make_Tech@@UAEXE@Z"},

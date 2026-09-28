@@ -19,8 +19,7 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int infile, RGE_Action_Object* ob
 }
 
 TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* obj_in, short id, int uID)
-    : RGE_Action(obj_in, 1) {
-    this->unique_id = uID;
+    : RGE_Action(obj_in, 1), unique_id(uID) {
     this->action_type = 0x67;
     this->tech_id = id;
 }

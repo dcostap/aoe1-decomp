@@ -31,9 +31,11 @@ The five matching owners were registered in the former wrapper and had zero
 positional diff before this consolidation: 004D21B0, 004D2370, 004D23B0,
 004D2440, and 004D2550.
 
-VA 004D2250 remains accepted drift. Its constructor stores the same base state,
-unique ID, action type `0x67`, and technology ID. The prior isolated result
-showed only constructor store-order drift.
+VA 004D2250 remains registered as accepted drift. The reopened review found its
+prior source emitted the derived-vtable store before `unique_id`; the original
+stores `unique_id` first. A natural member initializer now produces all 49
+original bytes. See `decomp_notes/functions/004D/004D2250.md` for behavior
+evidence, state IDs, and the remaining linked-vtable unknown.
 
 VA 004D25E0 remains accepted drift. It writes the technology ID and progress,
 gets the optional technology name, calls `strncpy`, and writes the final null.

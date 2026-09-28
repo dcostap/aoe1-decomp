@@ -19,7 +19,7 @@
     "00431BF0": {"status": "matching", "symbol": "?AddItem@RGE_Communications_Queue@@QAEHKPAXKIEH@Z"},
     "00431D10": {"status": "matching", "symbol": "?GetQueueDepth@RGE_Communications_Queue@@QAEIXZ"},
     "00431D20": {"status": "matching", "symbol": "?GetHighQueueDepth@RGE_Communications_Queue@@QAEIXZ"},
-    "00431D30": {"status": "accepted_drift", "symbol": "?GetSpecificItem@RGE_Communications_Queue@@QAEPAXIKEPAI@Z"},
+    "00431D30": {"status": "scratch", "symbol": "?GetSpecificItem@RGE_Communications_Queue@@QAEPAXIKEPAI@Z"},
     "00431DD0": {"status": "matching", "symbol": "?GetNextItemSingle@RGE_Communications_Queue@@QAEPAXXZ"},
     "00431E40": {"status": "matching", "symbol": "?GetNextItemOrdered@RGE_Communications_Queue@@QAEPAXK@Z"},
     "00431F10": {"status": "matching", "symbol": "?GetNextSequence@RGE_Communications_Queue@@QAEEK@Z"},

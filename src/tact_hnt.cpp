@@ -544,9 +544,9 @@ int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, floa
             return 1;
         }
     }
-    this->target_z = z;
     this->target_x = x;
     this->target_y = y;
+    this->target_z = z;
     this->set_target_obj(0);
     this->set_state(0x0F);
     return 1;

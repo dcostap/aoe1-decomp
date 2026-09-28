@@ -247,10 +247,7 @@ void* RGE_Communications_Queue::GetSpecificItem(
     unsigned int idx = 0;
     MsgQueue* entry = this->Queue;
 
-    while (1) {
-        if (entry->Code == targetCode && entry->ExecTurn == ExecuteOnTurn) {
-            goto found;
-        }
+    while (entry->Code != targetCode || entry->ExecTurn != ExecuteOnTurn) {
         idx++;
         entry++;
         if (idx > this->HighQueueDepth) {
@@ -258,7 +255,6 @@ void* RGE_Communications_Queue::GetSpecificItem(
         }
     }
 
-found:
     *Size = this->Queue[idx].Size;
     retptr = this->Queue[idx].msgptr;
     this->Queue[idx].msgptr = 0;
