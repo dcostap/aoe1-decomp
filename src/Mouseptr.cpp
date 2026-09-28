@@ -275,22 +275,21 @@ int TMousePointer::LoadCursors(char* cursor_file_name, int resId, int Reload) {
 }
 
 void TMousePointer::delete_surfaces() {
-    TMousePointer* self = this;
     TDrawArea* t;
     int i;
-    if (self->custom_draw != 0) {
-        if ((t = self->save_area) != 0) {
+    if (this->custom_draw != 0) {
+        if ((t = this->save_area) != 0) {
             delete t;
-            self->save_area = 0;
+            this->save_area = 0;
         }
-        for (i = 0; i < self->Max_Cursors; ++i) {
-            if ((t = self->cursors[i]) != 0) {
+        for (i = 0; i < this->Max_Cursors; ++i) {
+            if ((t = this->cursors[i]) != 0) {
                 delete t;
-                self->cursors[i] = 0;
+                this->cursors[i] = 0;
             }
         }
-        self->Num_Cursors = 0;
-        self->reset();
+        this->Num_Cursors = 0;
+        this->reset();
     }
 }
 
@@ -431,8 +430,8 @@ void TMousePointer::draw(int dMode) {
                 }
             }
             if (this->MouseOnScreen != 0) {
-                RECT* ptVar1 = &this->mouse_rect;
-                long err = this->save_area->DrawSurface->Blt(&this->new_save_rect, this->renderSurface, ptVar1,
+                long err = this->save_area->DrawSurface->Blt(&this->new_save_rect, this->renderSurface,
+                                                             &this->mouse_rect,
                                                              DDBLT_WAIT, 0);
                 if (err != 0) {
                     this->LastddError = err;
@@ -463,16 +462,16 @@ void TMousePointer::draw(int dMode) {
                 if (this->Mouse_Mode == 1) {
                     uchar* p = this->render_area->Lock("mouseptr::draw", 1);
                     if (p != 0) {
-                        long f = this->next_facet;
+                        int f = this->next_facet;
                         Shape_Info* si = this->Cursor_Shape->shape_info;
-                        this->Cursor_Shape->shape_draw(this->render_area, si[f].Hotspot_X + ptVar1->left,
+                        this->Cursor_Shape->shape_draw(this->render_area, si[f].Hotspot_X + this->mouse_rect.left,
                                                        si[f].Hotspot_Y + this->mouse_rect.top, f, 0, 0);
                         this->render_area->Unlock("mouseptr::draw");
                     }
                 }
                 if (this->Mouse_Mode == 0) {
                     this->cursors[this->next_facet]->SetTrans(1, 0);
-                    err = this->renderSurface->BltFast(ptVar1->left, this->mouse_rect.top,
+                    err = this->renderSurface->BltFast(this->mouse_rect.left, this->mouse_rect.top,
                                                        this->cursors[this->next_facet]->DrawSurface, &this->cursor_rect,
                                                        DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
                     if (err != 0) {
