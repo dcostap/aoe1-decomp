@@ -470,7 +470,8 @@ TribeInformationAIModule::~TribeInformationAIModule() {
         }
     }
 
-    unsigned char currentPlayer = this->md->player->world->player_turn;
+    unsigned char currentPlayer =
+        ((TRIBE_World*)this->md->player->world)->controllingComputerPlayer;
     if ((currentPlayer == this->md->player->id || currentPlayer == 0xff) &&
         (unit_history_file = rge_open(this->unitHistoryFilename, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
                                       _S_IREAD | _S_IWRITE),
