@@ -374,9 +374,8 @@ int TRIBE_Game::setup() {
 
     SetPaletteEntries(this->prog_palette, 248, 7, pal_entries);
 
-    this->input_disabled_window =
-        CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, this->prog_window, 0,
-                        reinterpret_cast<HINSTANCE>(this->prog_info->instance), 0);
+    this->input_disabled_window = CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, this->prog_window, 0,
+                                                  reinterpret_cast<HINSTANCE>(this->prog_info->instance), 0);
 
     // These packed values are the video type "vidc" and the lowercase handler "iv41".
     video_codec_available = ICInfo(MAKEFOURCC('v', 'i', 'd', 'c'), MAKEFOURCC('i', 'v', '4', '1'), &ici);
@@ -1100,7 +1099,7 @@ int TRIBE_Game::start_video(int video_num, char* video_file) {
         if (str[0] != 0 && strcmp(str, "stopped") != 0) {
             SendMessageA(this->video_window, MCI_STOP, 0, 0);
         }
-            SendMessageA(this->video_window, WM_CLOSE, 0, 0);
+        SendMessageA(this->video_window, WM_CLOSE, 0, 0);
         this->video_window = 0;
     }
 
@@ -1224,10 +1223,8 @@ void TRIBE_Game::stop_video(unsigned char goto_next_video) {
 
         {
             char* description = this->world->scenario->Get_description();
-            if (description != 0 && description[0] != 0 && this->multiplayerGame() == 0 &&
-                (this->randomGame() == 0 || this->campaignGame() != 0)) {
-                TRIBE_Mission_Screen* screen =
-                    new TRIBE_Mission_Screen(description, 0, this->world->scenario->mission_picture);
+            if (description != 0 && description[0] != 0 && this->multiplayerGame() == 0 && (this->randomGame() == 0 || this->campaignGame() != 0)) {
+                TRIBE_Mission_Screen* screen = new TRIBE_Mission_Screen(description, 0, this->world->scenario->mission_picture);
                 panel_system.setCurrentPanel("Mission Dialog", 0);
                 return;
             }
