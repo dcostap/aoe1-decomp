@@ -102,14 +102,14 @@ def hook_config(exe: Path, manifest: dict, ui=False, probes=()):
                 if not thunk & 0x80000000:
                     start = file_offset(thunk) + 2
                     name = image[start:image.index(b'\0', start)].decode('ascii')
-                    if name in ('GetKeyState', 'GetAsyncKeyState', 'GetCursorPos'):
+                    if name in ('GetKeyState', 'GetAsyncKeyState', 'GetKeyboardState', 'GetCursorPos'):
                         if name in result['inputIAT']:
                             raise ValueError('Duplicate input import identity.')
                         result['inputIAT'][name] = first_thunk + index * 4
                 index += 1
             descriptor += 20
-        if len(result['inputIAT']) != 3 or len(set(result['inputIAT'].values())) != 3:
-            raise ValueError('Expected three separate game input import slots.')
+        if len(result['inputIAT']) != 4 or len(set(result['inputIAT'].values())) != 4:
+            raise ValueError('Expected four separate game input import slots.')
     for key, address in addresses.items():
         rva = address - image_base
         if key == 'panelSystem':

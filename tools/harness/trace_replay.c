@@ -295,6 +295,9 @@ dispatch_enter (GumInvocationContext * ic)
       ACTIVE[ACTIVE_COUNT].thread = thread;
       ACTIVE_COUNT++;
     }
+    /* The recorder takes F10 as its stop key and blanks the message before the game sees it. */
+    if (GAME_WINDOW != 0 && !STOPPED && (msg[1] == 0x100 || msg[1] == 0x104) && msg[2] == 0x79)
+      msg[1] = 0;
     if (GAME_WINDOW != 0 && !STOPPED && is_input (msg[1]))
       s->delivered = js_dispatch_input (msg);
   }
@@ -559,6 +562,16 @@ s16 API
 key_state (s32 key)
 {
   return key >= 0 && key < 256 && KEYS[key] ? (s16) 0x8000 : 0;
+}
+
+/* Arrow-key scrolling reads GetKeyboardState. SetKeyboardState does not reach it in a hidden replay. */
+int API
+keyboard_state (u8 * state)
+{
+  s32 key;
+  for (key = 0; key < 256; key++)
+    state[key] = KEYS[key] ? 0x80 : 0;
+  return 1;
 }
 
 int API

@@ -128,6 +128,12 @@ const cm = new CModule(cfg.traceNative, {
     js_flush: callback(() => flush(), 'void', []),
     js_bind: callback(() => guard(bindHumanInput), 'void', []),
     js_removed: callback((message, value, parameter, hwnd) => {
+        // F10 stopped the recording, so it is never a recorded input. Stop here as the recorder did.
+        if ((message === 0x100 || message === 0x104) && value === 0x79) {
+            if (!stopReason) stopReason = 'F10';
+            slot('stop_requested').writeU32(1);
+            return;
+        }
         const event = events[posted];
         if (!event || event.message !== message || event.value !== value || event.parameter !== parameter)
             fail('recorded input differs from message stream');
@@ -281,10 +287,11 @@ function dumpState(world) {
     send({kind:'state-dump', updates:u32('updates'), rows, last:true});
 }
 function bindHumanInput() {
-    for (const name of ['GetKeyState','GetAsyncKeyState','GetCursorPos']) {
+    const natives = {GetKeyState:'key_state', GetAsyncKeyState:'key_state', GetKeyboardState:'keyboard_state', GetCursorPos:'cursor_pos'};
+    for (const name of Object.keys(natives)) {
         const slot = base.add(cfg.inputIAT[name]), protection = Process.findRangeByAddress(slot).protection;
         if (!Memory.protect(slot, 4, 'rw-')) throw new Error('Cannot bind input import');
-        slot.writePointer(name === 'GetCursorPos' ? native('cursor_pos') : native('key_state'));
+        slot.writePointer(native(natives[name]));
         if (!Memory.protect(slot, 4, protection)) throw new Error('Cannot protect input import');
     }
 }
