@@ -195,3 +195,13 @@ The sprite source removes one redundant output alias and uses a PDB-backed
 The original `0047C640` has a text-wrap path that can fail to advance.
 The source retains that behavior. The two-byte `00404590` drift is in an
 unreachable block; no source or status change was required.
+
+The `Sound` and `taibldmd` reviews propose exact matches for `004BC270`
+and `004D5D40`. The sound source retains unsigned elapsed-time wrap.
+The AI build-list loop preserves call order and advances after `continue`.
+The `Sounddrv` review found no new defect at `004BCD30` and proposed no
+source edit. Root keeps the separate formatting commit `9ce8ef635` intact.
+
+The `t_c_obj` review found a narrow x87 operand-form difference at
+`004CC4C0`. NaN payload behavior remains unproved, so this target now
+has `scratch` status. The `taiconmd` and `tact_rep` source remains unchanged.

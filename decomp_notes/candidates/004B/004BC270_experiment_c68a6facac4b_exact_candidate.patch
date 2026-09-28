@@ -1,0 +1,30 @@
+# Experiment c68a6facac4b5a8e29d2347c1a38d44370f65ad897e17aec9cfddf6ca7464e5f
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/Sound.cpp b/src/Sound.cpp
+index 06b2e203d..bfb611c76 100644
+--- a/src/Sound.cpp
++++ b/src/Sound.cpp
+@@ -118,16 +118,17 @@ void RGE_Sound::restart_sound(TSound_Driver* sound) {
+ }
+ 
+ void RGE_Sound::update(unsigned long curr_time) {
+-    if ((this->sound_num > 0) && (this->cache_time != 0)) {
+-        int i = 0;
+-        if (this->sound_num > 0) {
+-            do {
+-                if ((this->sounds[i].loaded == 1) && (this->cache_time < curr_time - this->sounds[i].time)) {
++    int i;
++    if (this->sound_num > 0) {
++        if (this->cache_time > 0) {
++            i = 0;
++            while (i < this->sound_num) {
++                if ((this->sounds[i].loaded == 1) && (curr_time - this->sounds[i].time > this->cache_time)) {
+                     this->sounds[i].digital_sound->unload();
+                     this->sounds[i].loaded = 2;
+                 }
+                 i++;
+-            } while (i < this->sound_num);
++            }
+         }
+     }
+ }

@@ -1,0 +1,44 @@
+# Experiment b6cb0877737f9ecb713a9721f0debe363149153d38b44c67a3e54be134a87980
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/taibldmd.cpp b/src/taibldmd.cpp
+index 15bcb169e..cacb4b2cb 100644
+--- a/src/taibldmd.cpp
++++ b/src/taibldmd.cpp
+@@ -973,32 +973,21 @@ void TribeBuildAIModule::unskipBuildList(int builtSP, int builtG) {
+     BuildItem* item = this->buildList.next;
+     BuildItem* sentinel = &this->buildList;
+ 
+-    if (item == sentinel)
+-        return;
+-    if (item == 0)
+-        return;
+-
+-    for (;;) {
+-        if (item == 0)
+-            break;
++    for (; item != sentinel && item != 0; item = item->next) {
+         if (item->built() == 1)
+-            goto next;
++            continue;
+         if (item->inProgress() == 1)
+-            goto next;
++            continue;
+         if (storage_pit_count > 0 && item->typeID() == 0x67)
+-            goto next;
++            continue;
+         if (granary_count > 0 && item->typeID() == 0x44)
+-            goto next;
++            continue;
+ 
+         item->setSkip(0);
+         item->setBuildAttempts(0);
+         item->setSkipCycles(0);
+         item->setPermanentSkip(0);
+ 
+-    next:
+-        item = item->next;
+-        if (item == sentinel)
+-            break;
+     }
+ }
+ 

@@ -69,8 +69,10 @@ switch-table relocation. `004D5600` differs only in a virtual-call register.
 forbidden compiler steering, but its rebuilt code changes saved-register
 allocation, branch displacement, low-byte parameter loading, and strict
 stack-fault order. Recommend registry demotion to `scratch`.
-`004D5D40` retains its localized loop/register drift review. None changes
-the target call set or logical return behavior.
+The reopened review of `004D5D40` replaced the former accepted-drift finding:
+the natural sentinel-and-null `for` loop now matches all 155 original bytes.
+Its registry status remains unchanged pending orchestrator review. See
+`decomp_notes/functions/004D/004D5D40.md` for behavior proof and experiment IDs.
 
 ## Current scratch and accepted-drift notes
 

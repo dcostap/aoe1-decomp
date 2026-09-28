@@ -32,7 +32,7 @@
     "004D5BB0": {"status": "matching", "symbol": "?numberBuiltOrInProgressItemsOfType@TribeBuildAIModule@@UAEHHH@Z"},
     "004D5C20": {"status": "matching", "symbol": "?allBuilt@TribeBuildAIModule@@QAEHHH@Z"},
     "004D5CA0": {"status": "new_verified_logic", "symbol": "?readyToResearch@TribeBuildAIModule@@QAEHHH@Z", "behavior_review": "logic_matching/004D5CA0/coord-03-20260913T032455Z/attempt-01"},
-    "004D5D40": {"status": "accepted_drift", "symbol": "?unskipBuildList@TribeBuildAIModule@@QAEXHH@Z"},
+    "004D5D40": {"status": "matching", "symbol": "?unskipBuildList@TribeBuildAIModule@@QAEXHH@Z"},
     "004D5DE0": {"status": "matching", "symbol": "?buildItem@TribeBuildAIModule@@QAEPAVBuildItem@@HHH@Z"}
   }
 }

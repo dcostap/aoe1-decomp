@@ -42,7 +42,7 @@
     "004CBD40": {"status": "matching", "symbol": "?higher_check_for_cliff@TRIBE_Combat_Object@@UAEHPAVRGE_Static_Object@@HHMMMMPAVRGE_Map@@0AAMAAH@Z"},
     "004CBEF0": {"status": "new_verified_logic", "symbol": "?higher_than_target@TRIBE_Combat_Object@@UAEHPAVRGE_Static_Object@@@Z", "behavior_review": "logic_matching/004CBEF0/review-01/attempt-01"},
     "004CC1B0": {"status": "matching", "symbol": "?area_attack@TRIBE_Combat_Object@@MAEEMMMPAVRGE_Combat_Object@@PAVRGE_Static_Object@@@Z"},
-    "004CC4C0": {"status": "accepted_drift", "symbol": "?heal@TRIBE_Combat_Object@@MAEEM@Z"},
+    "004CC4C0": {"status": "scratch", "symbol": "?heal@TRIBE_Combat_Object@@MAEEM@Z"},
     "004CC570": {"status": "matching", "symbol": "?canRepair@TRIBE_Combat_Object@@MAEHXZ"},
     "004CC5B0": {"status": "matching", "symbol": "?do_repair@TRIBE_Combat_Object@@QAEXPAVRGE_Static_Object@@@Z"}
   }

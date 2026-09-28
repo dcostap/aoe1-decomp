@@ -118,16 +118,14 @@ void RGE_Sound::restart_sound(TSound_Driver* sound) {
 }
 
 void RGE_Sound::update(unsigned long curr_time) {
-    if ((this->sound_num > 0) && (this->cache_time != 0)) {
+    if ((this->sound_num > 0) && (this->cache_time > 0)) {
         int i = 0;
-        if (this->sound_num > 0) {
-            do {
-                if ((this->sounds[i].loaded == 1) && (this->cache_time < curr_time - this->sounds[i].time)) {
-                    this->sounds[i].digital_sound->unload();
-                    this->sounds[i].loaded = 2;
-                }
-                i++;
-            } while (i < this->sound_num);
+        while (i < this->sound_num) {
+            if ((this->sounds[i].loaded == 1) && (curr_time - this->sounds[i].time > this->cache_time)) {
+                this->sounds[i].digital_sound->unload();
+                this->sounds[i].loaded = 2;
+            }
+            i++;
         }
     }
 }

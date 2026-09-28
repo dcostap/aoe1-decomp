@@ -1,0 +1,31 @@
+# Experiment 9bf967422d155e818d593a75109f8ba9697d37c4c99412768bb5e71941932302
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/taibldmd.cpp b/src/taibldmd.cpp
+index 15bcb169e..9ec4647aa 100644
+--- a/src/taibldmd.cpp
++++ b/src/taibldmd.cpp
+@@ -973,14 +973,7 @@ void TribeBuildAIModule::unskipBuildList(int builtSP, int builtG) {
+     BuildItem* item = this->buildList.next;
+     BuildItem* sentinel = &this->buildList;
+ 
+-    if (item == sentinel)
+-        return;
+-    if (item == 0)
+-        return;
+-
+-    for (;;) {
+-        if (item == 0)
+-            break;
++    while (item != sentinel && item != 0) {
+         if (item->built() == 1)
+             goto next;
+         if (item->inProgress() == 1)
+@@ -997,8 +990,6 @@ void TribeBuildAIModule::unskipBuildList(int builtSP, int builtG) {
+ 
+     next:
+         item = item->next;
+-        if (item == sentinel)
+-            break;
+     }
+ }
+ 

@@ -973,32 +973,21 @@ void TribeBuildAIModule::unskipBuildList(int builtSP, int builtG) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
 
-    if (item == sentinel)
-        return;
-    if (item == 0)
-        return;
-
-    for (;;) {
-        if (item == 0)
-            break;
+    for (; item != sentinel && item != 0; item = item->next) {
         if (item->built() == 1)
-            goto next;
+            continue;
         if (item->inProgress() == 1)
-            goto next;
+            continue;
         if (storage_pit_count > 0 && item->typeID() == 0x67)
-            goto next;
+            continue;
         if (granary_count > 0 && item->typeID() == 0x44)
-            goto next;
+            continue;
 
         item->setSkip(0);
         item->setBuildAttempts(0);
         item->setSkipCycles(0);
         item->setPermanentSkip(0);
 
-    next:
-        item = item->next;
-        if (item == sentinel)
-            break;
     }
 }
 
