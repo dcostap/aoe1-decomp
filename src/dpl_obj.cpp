@@ -139,8 +139,8 @@ void RGE_Doppleganger_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj,
             this->map_color = obj->owner->color_table->map_color;
         }
 
-        int row = (int)(long)y;
-        int col = (int)(long)x;
+        int row = (int)y;
+        int col = (int)x;
         unsigned long* map_addr = unified_map_offsets[row] + col;
 
         this->LastMapValue = 0;
