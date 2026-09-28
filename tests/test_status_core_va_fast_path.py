@@ -26,7 +26,7 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
 
         self.assertEqual(len(rows), 1)
         row = rows[0]
-        self.assertEqual(row["source_bucket"], "accepted_drift")
+        self.assertEqual(row["source_bucket"], "scratch")
         self.assertEqual(row["source_path"], "src/point.cpp")
         self.assertEqual(
             row["function_note_path"],

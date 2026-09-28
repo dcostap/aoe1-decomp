@@ -52,7 +52,7 @@ class ScrAchTranslationUnitTests(unittest.TestCase):
         self.assertEqual(len(metadata["functions"]), 8)
         self.assertEqual(
             {entry["status"] for entry in metadata["functions"].values()},
-            {"matching", "accepted_drift", "new_verified_logic"},
+            {"matching", "scratch", "new_verified_logic"},
         )
 
 
