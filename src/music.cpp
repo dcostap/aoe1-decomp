@@ -87,9 +87,8 @@ int TMusic_System::open_device() {
             }
 
             if (this->open_mixer() != 0) {
-                this->start_volume =
-                    (this->mixer_volume_value.dwValue * 10000) /
-                    (unsigned int)(this->mixer_volume_control.Bounds.lMaximum - this->mixer_volume_control.Bounds.lMinimum);
+                this->start_volume = (this->mixer_volume_value.dwValue * 10000) /
+                                     (unsigned int)(this->mixer_volume_control.Bounds.lMaximum - this->mixer_volume_control.Bounds.lMinimum);
                 this->start_volume += MUSIC_MIN_VOLUME;
                 this->volume = this->start_volume;
             }
