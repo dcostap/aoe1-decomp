@@ -282,6 +282,11 @@ def main():
     p.add_argument('--visible', action='store_true', help='Show game windows on the interactive desktop')
     for name in ("build", "original", "rebuilt", "capture"):
         p = subs.add_parser(name)
+        if name in ("original", "rebuilt"):
+            p.add_argument("--replace-default-args", action="store_true",
+                           help="Use only the EXE arguments after --, not NOSTARTUP GAMECD")
+            p.add_argument("exe_args", nargs=argparse.REMAINDER,
+                           help="Arguments for the game EXE; put -- before options")
         if name == "capture":
             p.add_argument("target", choices=("original", "rebuilt"))
             p.add_argument("--seconds", type=float, default=8)
@@ -480,7 +485,11 @@ def main():
             return run_worker(command, output / 'hidden-worker.log', args.seconds + 30, args.visible)
         if args.command != "build" and not args.prepare_only:
             env = dict(os.environ, __COMPAT_LAYER="" if args.graphics == "cnc-ddraw" else "DWM8And16BitMitigation")
-            process = subprocess.Popen([str(output / "empiresx.exe"), *DEFAULT_ARGUMENTS], cwd=output, env=env)
+            exe_args = getattr(args, "exe_args", [])
+            if exe_args[:1] == ["--"]:
+                exe_args = exe_args[1:]
+            default_args = [] if getattr(args, "replace_default_args", False) else DEFAULT_ARGUMENTS
+            process = subprocess.Popen([str(output / "empiresx.exe"), *default_args, *exe_args], cwd=output, env=env)
             print(f"Started PID {process.pid}.")
         return 0
     except (OSError, ValueError, subprocess.CalledProcessError) as error:

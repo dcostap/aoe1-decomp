@@ -194,3 +194,35 @@ def test_capture_prepare_only_does_not_start_worker(tmp_path, monkeypatch):
         pytest.fail('Prepare-only must not start a worker.')
     monkeypatch.setattr(game, 'run_worker', refuse)
     assert game.main() == 0
+
+
+def test_original_forwards_exe_args_after_separator(tmp_path, monkeypatch):
+    monkeypatch.setattr(game.sys, 'argv', ['game.py', 'original', '--', '--name', 'LOBBY'])
+    monkeypatch.setattr(game, 'stage', lambda *args, **kwargs: tmp_path)
+    calls = []
+
+    class Process:
+        pid = 123
+
+    monkeypatch.setattr(game.subprocess, 'Popen',
+                        lambda command, **kwargs: calls.append((command, kwargs)) or Process())
+
+    assert game.main() == 0
+    assert calls[0][0] == [str(tmp_path / 'empiresx.exe'), 'NOSTARTUP', 'GAMECD', '--name', 'LOBBY']
+    assert calls[0][1]['cwd'] == tmp_path
+
+
+def test_original_can_replace_default_exe_args(tmp_path, monkeypatch):
+    monkeypatch.setattr(game.sys, 'argv', [
+        'game.py', 'original', '--replace-default-args', '--', '--name', 'LOBBY'])
+    monkeypatch.setattr(game, 'stage', lambda *args, **kwargs: tmp_path)
+    calls = []
+
+    class Process:
+        pid = 123
+
+    monkeypatch.setattr(game.subprocess, 'Popen',
+                        lambda command, **kwargs: calls.append(command) or Process())
+
+    assert game.main() == 0
+    assert calls[0] == [str(tmp_path / 'empiresx.exe'), '--name', 'LOBBY']
