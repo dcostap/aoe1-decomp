@@ -103,7 +103,7 @@ void TRIBE_World::logStatus(FILE* out, int firstTime) {
 }
 
 void TRIBE_World::data_load_players_type(short id, short type, FILE* infile) {
-    if (static_cast<int>(type) - 1 != 0) {
+    if (type != 1) {
         RGE_Game_World::data_load_players_type(id, type, infile);
         return;
     }
@@ -231,12 +231,8 @@ void TRIBE_World::load_player(int infile, unsigned char type, short index) {
 }
 
 void TRIBE_World::setup_gaia() {
-    TRIBE_Gaia* g;
-    g = new TRIBE_Gaia(this, static_cast<RGE_Master_Player*>(this->master_players[0]), 0, "GAIA", 0);
-    if (g == 0) {
-        g = 0;
-    }
-    this->players[0] = g;
+    this->players[0] =
+        new TRIBE_Gaia(this, this->master_players[0], 0, "GAIA", 0);
 }
 
 void TRIBE_World::setup_players(RGE_Player_Info& info) {

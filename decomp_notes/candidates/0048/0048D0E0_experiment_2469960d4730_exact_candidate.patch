@@ -1,0 +1,115 @@
+# Experiment 2469960d4730ed2619dbc89bb2f7a25c70a739a581947f63a7d69b557a79ec8f
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/sceninfo.cpp b/src/sceninfo.cpp
+index 4f49a6fd8..001cfc7d0 100644
+--- a/src/sceninfo.cpp
++++ b/src/sceninfo.cpp
+@@ -84,48 +84,48 @@ void RGE_Scenario_File_Info::save() {
+ }
+ 
+ void RGE_Scenario_File_Info::reload_scenarios() {
+-    char file_name[260];
++    long count = 0;
++    long version;
++    char file_name[256];
+     struct _finddata_t file_info;
+     long handle;
+-    long count;
+-    int total = 0;
+-    char looped = 0;
++    unsigned char looped = 0;
+     RGE_Scenario_File_Entry* new_scenarios;
+     RGE_Scenario_File_Entry* current;
+     int index;
+-    char found_in_list;
++    unsigned char found_in_list;
+ 
+-    sprintf(file_name + 4, "%s*.scn", rge_base_game->prog_info->scenario_dir);
+-    handle = _findfirst(file_name + 4, &file_info);
++    sprintf(file_name, "%s*.scn", rge_base_game->prog_info->scenario_dir);
++    handle = _findfirst(file_name, &file_info);
+     if (handle != -1) {
+         do {
+-            ++total;
++            ++count;
+         } while (_findnext(handle, &file_info) != -1);
+     }
+ 
+-    sprintf(file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
+-    handle = _findfirst(file_name + 4, &file_info);
++    sprintf(file_name, "%s*.scx", rge_base_game->prog_info->scenario_dir);
++    handle = _findfirst(file_name, &file_info);
+     if (handle != -1) {
+         do {
+-            ++total;
++            ++count;
+         } while (_findnext(handle, &file_info) != -1);
+     }
+ 
+-    sprintf(file_name + 4, "%s*.scn", rge_base_game->prog_info->scenario_dir);
+-    if (total <= 0)
++    sprintf(file_name, "%s*.scn", rge_base_game->prog_info->scenario_dir);
++    if (count <= 0)
+         return;
+ 
+-    count = _findfirst(file_name + 4, &file_info);
+-    if (count == -1) {
+-        sprintf(file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
+-        count = _findfirst(file_name + 4, &file_info);
++    handle = _findfirst(file_name, &file_info);
++    if (handle == -1) {
++        sprintf(file_name, "%s*.scx", rge_base_game->prog_info->scenario_dir);
++        handle = _findfirst(file_name, &file_info);
+         looped = 1;
+     }
+ 
+-    if (count == -1)
++    if (handle == -1)
+         return;
+ 
+-    new_scenarios = (RGE_Scenario_File_Entry*)calloc(total, sizeof(RGE_Scenario_File_Entry));
++    new_scenarios = (RGE_Scenario_File_Entry*)calloc(count, sizeof(RGE_Scenario_File_Entry));
+     current = new_scenarios;
+ 
+     do {
+@@ -150,10 +150,10 @@ void RGE_Scenario_File_Info::reload_scenarios() {
+             strcpy(current->name, file_info.name);
+             current->time = file_info.time_write;
+ 
+-            sprintf(file_name + 4, "%s%s", rge_base_game->prog_info->scenario_dir, file_info.name);
+-            int fd = rge_open(file_name + 4, _O_BINARY);
++            sprintf(file_name, "%s%s", rge_base_game->prog_info->scenario_dir, file_info.name);
++            int fd = rge_open(file_name, _O_BINARY);
+             if (fd > -1) {
+-                rge_read_uncompressed(fd, file_name, 4);
++                rge_read_uncompressed(fd, &version, 4);
+                 current->scenario_header = rge_base_game->new_scenario_header(fd);
+                 rge_close(fd);
+             }
+@@ -161,13 +161,13 @@ void RGE_Scenario_File_Info::reload_scenarios() {
+ 
+         ++current;
+ 
+-        if (_findnext(count, &file_info) == -1) {
++        if (_findnext(handle, &file_info) == -1) {
+             if (looped)
+                 break;
+ 
+-            sprintf(file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
+-            count = _findfirst(file_name + 4, &file_info);
+-            if (count == -1)
++            sprintf(file_name, "%s*.scx", rge_base_game->prog_info->scenario_dir);
++            handle = _findfirst(file_name, &file_info);
++            if (handle == -1)
+                 break;
+             looped = 1;
+         }
+@@ -182,7 +182,7 @@ void RGE_Scenario_File_Info::reload_scenarios() {
+     }
+ 
+     this->scenarios = new_scenarios;
+-    this->scenario_num = total;
++    this->scenario_num = count;
+ }
+ 
+ char* RGE_Scenario_File_Info::get_scenario_name(long id) {

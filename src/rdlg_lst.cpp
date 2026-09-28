@@ -91,9 +91,8 @@ int RGE_Dialog_List::create_object_list() {
     this->list_size = 1;
     end_i = player->master_object_num;
     if (end_i > 0) {
-        int count;
         int object_index = 0;
-        count = end_i;
+        int count = end_i;
         do {
             if (player->master_objects[object_index] && player->master_objects[object_index]->hide_in_scenario_editor == 0)
                 this->list_size++;
@@ -112,25 +111,26 @@ int RGE_Dialog_List::create_object_list() {
     this->list_info[0].id = -1;
     strcpy(this->list_info[0].text, " <None> ");
 
-    i = 1;
-    j = 0;
+    j = 1;
+    i = 0;
     if (end_i > 0) {
         int object_index = 0;
         do {
             if (player->master_objects[object_index] &&
                 player->master_objects[object_index]->hide_in_scenario_editor == 0) {
-                this->list_info[i].id = j;
+                this->list_info[j].id = i;
                 if (player->master_objects[object_index]->string_id > 0) {
-                    rge_base_game->get_string(2, player->master_objects[object_index]->string_id,
-                                              this->list_info[i].text, 100);
+                    rge_base_game->get_string(RGE_STRING_TYPE_RESOURCE,
+                                              player->master_objects[object_index]->string_id,
+                                              this->list_info[j].text, 100);
                 } else {
-                    strcpy(this->list_info[i].text, player->master_objects[object_index]->name);
+                    strcpy(this->list_info[j].text, player->master_objects[object_index]->name);
                 }
-                i++;
+                j++;
             }
-            j++;
+            i++;
             object_index++;
-        } while (j < end_i);
+        } while (i < end_i);
     }
 
     return 1;

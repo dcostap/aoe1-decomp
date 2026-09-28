@@ -8,7 +8,7 @@
   "functions": {
     "00546720": {"status": "matching", "symbol": "?zone_pop@@YAEPAPAUZone_Queue@@0AAJ1@Z"},
     "00546770": {"status": "matching", "symbol": "?zone_push@@YAXPAPAUZone_Queue@@0JJ@Z"},
-    "005467B0": {"status": "accepted_drift", "symbol": "??0RGE_Zone_Map@@QAE@HPAVRGE_Map@@@Z"},
+    "005467B0": {"status": "scratch", "symbol": "??0RGE_Zone_Map@@QAE@HPAVRGE_Map@@@Z"},
     "005468C0": {"status": "matching", "symbol": "??0RGE_Zone_Map@@QAE@PAVRGE_Map@@PAMJ@Z"},
     "005469C0": {"status": "matching", "symbol": "??1RGE_Zone_Map@@QAE@XZ"},
     "00546A00": {"status": "matching", "symbol": "?save@RGE_Zone_Map@@QAEXH@Z"},

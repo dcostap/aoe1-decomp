@@ -1,0 +1,16 @@
+# Experiment 64920ee0559633db77494d0b6a776801c67013a64e9a2ddb9be992b9b67886de
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/Pnl_drop.cpp b/src/Pnl_drop.cpp
+index e1199fbde..36935e8b4 100644
+--- a/src/Pnl_drop.cpp
++++ b/src/Pnl_drop.cpp
+@@ -81,8 +81,7 @@ long TDropDownPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, v
+                                                        this->scbar_arrow_hgt, this->scbar_tab_hgt,
+                                                        this->list_panel, list_num_lines_in,
+                                                        TScrollBarPanel::Vertical)) != 0) {
+-                    TScrollBarPanel* scrollbar = this->scbar_panel;
+-                    this->list_panel->set_scrollbar(scrollbar, 0);
++                    this->list_panel->set_scrollbar(this->scbar_panel, 0);
+                     this->scbar_panel->set_active(0);
+                     this->set_mode(ModeValue);
+                     result = 1;

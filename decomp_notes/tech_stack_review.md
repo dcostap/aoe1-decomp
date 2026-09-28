@@ -2,6 +2,9 @@
 
 Base: `ef479e9e7`. Review the four remaining Tech functions against their complete original instruction ranges.
 No game was run. This review does not change the exact-match rules.
+The 2026-09-28 assignment reopened the older accepted-drift conclusions.
+This file preserves prior evidence; per-function re-reviews record current
+findings and limits. No registry status changed in that assignment.
 The stack proof is conditional. The overlap objection below is a generic
 malformed-input counterexample. The complete direct-caller review below tests
 whether it applies to the assigned call sites.
@@ -96,12 +99,16 @@ Every mapped range stays inside the unchanged allocated frame. No two distinct a
 No private stack address escapes through LEA, explicit ESP-relative addressing, or a copied frame pointer.
 Saved registers, argument slots, return addresses, frame sizes, and cleanup remain unchanged.
 
-The frame-offset mappings below use decimal EBP-relative offsets:
+The current source's frame-offset mappings use decimal EBP-relative offsets.
+The 2026-09-28 direct checks show:
 
-- `tech_cost`: tech -12 to -8; total -8 to -4; carry flag -4 to -12.
-- `check_tech_cost`: tech -16 to -8; carry -12 to -20; cost -8 to -12; index -24 to -16; attribute -20 to -24.
-- `start_research`: tech -8 to -4; cost -4 to -8; index -16 to -12; attribute -12 to -16.
-- `check_for_new_tech`: tech -28 to -20; inner index -20 to -28; done count -16 to -8; prerequisite count -12 to -16; active count -8 to -4; changed flag -4 to -12.
+- `tech_cost`: tech -12 to -4; total -8 to -8; carry flag -4 to -12.
+- `check_tech_cost`: tech -16 to -8; carry -12 to -12; float cost -8 to -24; index -24 to -16; attribute -20 to -20.
+- `start_research`: tech -8 to -4; float cost -4 to -8; index -16 to -16; attribute -12 to -12.
+- `check_for_new_tech`: tech -28 to -16; outer index -24 to -24; active count -8 to -8; changed flag -4 to -12; prerequisite count -12 to -28; done count -16 to -4; inner index -20 to -20.
+
+These mappings correct the earlier table in this note. They come from the
+fresh original and rebuilt instruction listings, not from type names alone.
 
 Unlisted accessed slots retain their original positions.
 Byte padding read by a wider flag load is removed by the same immediate mask before use.
@@ -116,20 +123,29 @@ This condition does not establish the project's required stack-overlap behavior.
 The source interfaces do not establish that every input object avoids the private frame.
 The project also preserves malformed and stack-overlapping inputs; do not assume disjointness without evidence.
 
-For `tech_cost`, let the first output reference point to EBP-8 in the eventual callee frame.
-The original stores the short total there. The rebuild stores the tech pointer there.
-The initial minus-one output write therefore changes different live values.
-For example, it changes a rebuilt tech pointer ending in `0000` to one ending in `FFFF`.
-With a mapped original tech record and an unmapped changed address, the rebuild can fault at its first used-attribute read.
-The original pointer remains intact at EBP-12. Give it unused attributes and valid remaining outputs to avoid that fault.
-This is a static instruction counterexample, not an executed test.
+For the current `tech_cost` build, let the first output reference point to
+EBP-4 in the eventual callee frame. The original stores the carry flag there;
+the rebuild stores the tech pointer there. The first minus-one output write
+therefore changes different live values. The later carry-result store repairs
+the original flag. It does not repair the rebuilt pointer. The write replaces
+the pointer's low word with `FFFF`. With a mapped original tech record and an
+unmapped changed address, the rebuild can fault at its first tech-flag read.
+The instruction sequence proves the order: pointer store at `0050C74B`, output
+write at `0050C757`, carry-result store at `0050C793`, and tech-flag read at
+`0050C7B8`.
+The original pointer remains intact at EBP-12. Use a valid tech row with all
+three `attribute_used` bytes zero and valid, disjoint remaining outputs. The
+original returns; the rebuilt pointer read can fault. This is a static
+instruction counterexample, not an executed test.
 
-The counterexample rejects an unconditional stack-permutation proof for an
-invented pointer into future callee-owned storage. The original draft approval
-relied only on disjointness. Event
+The counterexample proves a behavior difference for this crafted raw pointer.
+The caller audit below found no target callsite that supplies one. Whether
+such fabricated frame pointers belong to the supported input domain remains
+unresolved. The earlier draft approval relied only on disjointness. Event
 `c2db7184ed40c0ca530e6189ab8d2b8373bbe81d9d27b5464cc5658fa5e5de79` preserves
-that rejected draft. The follow-up caller review below supplies the missing
-evidence for the real direct call sites.
+that rejected draft. The follow-up caller review below supplies evidence for
+the reviewed direct call sites. It does not test fabricated pointers into a
+future callee frame.
 
 The separate declaration-order lab tested all 24 orders of the four `start_research` locals.
 All compile. They produce two 334-byte outputs, each with 22 differences. None matches.
@@ -142,14 +158,13 @@ Retain none of these binding changes merely for a lower byte count.
 ## Integration
 
 Retain the double-literal repair and the later natural scope improvements.
-The caller review approves the private-storage differences in `0050C730` and
-`0050CA9E` as accepted drift. The assigned caller and storage review below
-supports accepted drift for `0050CC25` and `0050CE68`.
+The older caller review proposed private-storage drift for these functions.
+The 2026-09-28 assignment reopened those claims. See the per-function
+reassessments for current evidence and limits. This file makes no new
+registry status decision.
 Keep the simplest scalar source. Do not add fake records, local aliases, or extra declarations to force stack positions.
-The final module audit retains all 29 existing matching functions. The four
-authoritative target checks remain nonexact. Existing config records two
-accepted-drift results; the assigned CC25 and CE68 proposals await the
-orchestrator's status decision.
+The older module audit reported 29 exact functions and four nonexact target
+functions. It is not a result from the 2026-09-28 assignment.
 
 The final closure compares all 33 defined Tech bodies against the baseline.
 Only the two comparison opcodes change, from D8 to DC. All other instruction bytes remain unchanged.
@@ -162,12 +177,12 @@ The proof also retains every mutable string's name, offset, contents, and sectio
 
 ## Follow-up caller and storage review
 
-The direct target references provide complete static caller coverage for the two
+The direct target references provide static caller coverage for the two
 target functions. `tech_cost` is called at `0049A2F4`, `00512C19`, `00513110`,
-and `0051460D`. Its six output addresses are distinct caller-owned locals or
-forwarded caller objects. At each call, those addresses are above the target's
-new private frame. The caller-owned addresses remain disjoint from the frame
-under either local-slot permutation.
+and `0051460D`. Its output addresses are caller-owned locals or forwarded
+caller objects. The call at `0049A2F4` aliases two outputs to the same short
+slot. All reviewed destinations are above the target frame. A fabricated
+pointer into future callee storage remains untested.
 
 `check_tech_cost` is called at `0050C78E`, `0050CC4E`, and `00513D70`. The
 first call passes null. The second passes the `first_in_stack` input-area
@@ -176,11 +191,11 @@ local through `TRIBE_Player::check_tech_cost`. Each nonnull address remains
 above the target private frame. No direct caller constructs a pointer into
 future callee-owned storage.
 
-The review covers caller-owned aliases. The original write order and all
-external memory operations remain unchanged. Project policy excludes the old
-counterexample without executable evidence of actual use. The two target
-results are therefore accepted drift. Their completed ledgers are
-`logic_reviews/0050C730.md` and `logic_reviews/0050CA9E.md`.
+The review covers caller-owned aliases. The original write order and external
+memory operations match at the reviewed callsites. The old stack-overlap
+counterexample still distinguishes arbitrary fabricated input pointers. The
+current proposal is limited to the reviewed executable callsites; it is not a
+proof for every possible machine-state pointer.
 
 `DAT_005766d8` is a separate linked-storage check for `check_for_new_tech`.
 The original global dump proves an eight-byte read-only double at `005766D8`,
@@ -191,15 +206,15 @@ for that symbol, at `.text+0x1816` in the original object view and function
 offset 494 in the fresh object. The fresh full link map resolves the symbol
 from `game_globals.obj` at `005FA038`. PE inspection places it in the rebuilt
 `.data` zero-fill tail, proving the linked initial value is zero. This storage
-proof supports the `0050CE68` accepted-drift proposal. The rebuilt section is
+proof supports a `0050CE68` drift proposal. The rebuilt section is
 writable `.data`, unlike the original read-only `.rdata`; the complete
 reference scan finds no executable write or second reference. This is a
 separate global-storage section issue, not a private stack-slot effect.
 
 ## Follow-up source probes
 
-Fresh direct checks retain ordinary source scopes that reduce local displacement
-drift without changing behavior or ABI:
+The retained ordinary source forms preserve size, frame, and call set while
+reducing local displacement drift:
 
 | Function | Retained source shape | Current differing bytes |
 |---|---|---:|
@@ -208,12 +223,20 @@ drift without changing behavior or ABI:
 | `0050CC25` | `i` scoped inside the charged path | 8 |
 | `0050CE68` | outer-loop `i` and per-entry `prereq_count` scopes | 14 |
 
-Each target keeps its original size, frame, call set, control-flow shape,
-operand widths, and external memory operations. Closure checks report no exact
-owner regressions. The remaining differences are private local displacement
-coloring. The caller review resolves the first two targets. The assigned
-caller and storage review below resolves the direct-call and linked-storage
-questions for the latter two targets.
+Each focused comparison keeps the original size, frame, call set, control-flow
+shape, operand widths, and external memory operations. Closure checks report
+no exact-owner regressions. The remaining byte differences are private local
+displacements. The reviewed callers limit the overlap concern but do not prove
+behavior for fabricated pointers into the future frame. Focused checks also
+leave linked numeric dependencies unknown.
+
+A six-order declaration lab for `0050C730` used state
+`1f1f55323a10a918a157a2fc3be1caed594df19f4ff272404972bb227bc0edd1` and finding
+event `10d039bc1c246f08db9843623c867831a7d9f2e35b01b9cf192dd78fb9e97c3a`.
+Its report is
+`build/variant_lab/0050C730_tech_cost/20260929_002403/summary.txt`. All variants
+kept size, frame, and call set. They produced two mismatch groups; neither
+restored the original local-slot map.
 
 A 120-order declaration lab for `0050CE68` with these scopes produced only two
 code groups. Its best group remains 14 bytes. The four target checks were
@@ -231,11 +254,10 @@ rebuilt after the follow-up probes on 2026-09-09.
 `0050C5D4`, `0050C644`, `00512887`, and `0052C355`. The method has no pointer
 argument or output. It passes only its receiver and a short value to
 `do_tech`; no local address escapes. The complete slot mappings are private
-permutations within the unchanged frame. Therefore the original and rebuilt
-methods preserve calls, arguments, memory effects, faults, fault order,
-returns, and cleanup at all direct call sites. The eight CC25 bytes and 14
-CE68 bytes are accepted-drift proposals, not exact-match debt. Do not force
-exact local stack spelling.
+permutations within the unchanged frame. The reviewed direct callsites support
+proposals for the eight CC25 bytes and 14 CE68 bytes. They do not prove
+equivalence for arbitrary fabricated future-frame pointers. Do not force exact
+local stack spelling without new behavior evidence.
 
 The original `DAT_005766D8` record is a read-only eight-byte zero double. Its
 only executable reference is the `fcomp` at `0050D054`. The fresh Tech object
@@ -249,4 +271,12 @@ are the direct linked-storage evidence.
 The caller and storage findings are recorded in experiment events
 `4d3ef49dc278511225a396a8d220b0c7a221a7fee8553b98b07cfd8e0926335c` and
 `0c2736f249bb1f93b78769a4c10905ba689456b20a316d8a389d986f8fcec7da`.
+The final one-job module report is
+`build/validation/drift-020-tech-final/functions/report.txt`. It compiled all
+33 Tech functions: 29 matched and four stayed nonmatching. It reports no
+compile errors or failed exact claims. The owner report is
+`build/validation/drift-020-tech-final/owners.txt`; all 29 matching owners
+passed, with no mismatch or repair item. The function report's action queue
+lists `hold_accepted_drift` for four rows. This tool output does not approve
+them.
 The orchestrator owns final status changes.

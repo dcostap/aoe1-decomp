@@ -125,3 +125,17 @@ non-8-bit widths. The explicit 8/16 split belongs to the silence-chunk path at
 `00448CFB-00448D34`. State
 `131f0fb217e5bc5e96abd06d0ebb3ae98acc95a30e3c014cfc30e159bfb07786` restores
 this source fact and reports 664 differences versus 820 in its parent.
+
+## Reopened accepted-drift review: `00448660`
+
+The status summary above records an earlier review. The current registry lists
+`00448660` as `accepted_drift`. Worker `drift-059-Dsutil` rechecked its full
+original body and PDB scoped parameters. The source still matches every write,
+argument, width, and fault order. No source change was retained. See
+`decomp_notes/functions/0044/00448660.md` for the behavior proof and saved
+states.
+
+The fresh serial audit is
+`build/drift-059-Dsutil/final-audit/report.txt`. It compiled all 32 owners.
+Thirty matched, `00448660` retained its 16-byte mismatch, and `00448BA0`
+retained its 1237-byte mismatch. Other matching owners stayed exact.

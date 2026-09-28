@@ -15,7 +15,7 @@
     "00467380": {"status": "matching", "symbol": "?setup_shadow_area@TEasy_Panel@@QAEXH@Z"},
     "00467560": {"status": "matching", "symbol": "?draw_setup@TEasy_Panel@@UAEXH@Z"},
     "00467570": {"status": "matching", "symbol": "?draw@TEasy_Panel@@UAEXXZ"},
-    "004675C0": {"status": "accepted_drift", "symbol": "?draw_background@TEasy_Panel@@UAEXH@Z"},
+    "004675C0": {"status": "matching", "symbol": "?draw_background@TEasy_Panel@@UAEXH@Z"},
     "004679A0": {"status": "matching", "symbol": "?handle_mouse_down@TEasy_Panel@@UAEJEJJHH@Z"},
     "004679F0": {"status": "matching", "symbol": "?set_info_file@TEasy_Panel@@QAEXPADJ@Z"},
     "00467A50": {"status": "matching", "symbol": "?set_ideal_size@TEasy_Panel@@MAEXJJ@Z"},

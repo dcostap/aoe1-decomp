@@ -157,3 +157,29 @@ The `com_hand` worker is isolating those five failures before another integratio
 
 `00531750` and `00518090` also have `scratch` status.
 The first has broad unproved drift; the second crosses its original boundary.
+
+The following packages add exact proposals for `004C86C0` and `00473FD0`.
+The building queue source now uses the original `master_id` output slot,
+32-bit counters, separate word copies, and the null old-queue check.
+`004C9870` differs by one branch byte and still needs runtime review.
+`004C9C80` has a different stack-save fault point and now has `scratch` status.
+The original `00542750` body crosses its boundary by one rebuilt byte.
+It now has `scratch` status even though its ordinary call paths align.
+`00485480`, `00477AF0`, and `004786B0` also have `scratch` status:
+their source reads memory in a different order from the original.
+Those three results agree for stable, valid objects; fault order remains open.
+
+The `Panel`, `Panel_ez`, `tworld`, and `sceninfo` packages propose exact
+matches for `004642C0`, `004675C0`, `0052E920`, and `0048D0E0`.
+The scenario source now owns a 256-byte filename and a separate four-byte
+version local, as the PDB and original code show. It retains the original
+missing `FindClose` behavior.
+`005467B0` remains a broad constructor mismatch with unproved fault order.
+`0050C730` has a proved output-alias difference for a crafted stack pointer.
+`0050CE68` has a known linked zero in the wrong storage section.
+Those three targets now have `scratch` status.
+
+The `Command` review proposes an exact `00434FB0` after restoring the
+original packet and object read order. The `scr_mps` review makes the
+player-version loop simpler, but `004A2060` still has an unresolved
+register-map conflict. That target now has `scratch` status.

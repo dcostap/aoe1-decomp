@@ -413,12 +413,12 @@ void TEasy_Panel::draw_background(int use_background2) {
         pic_hgt = y_max - y_min + 1;
         switch (this->background_pos) {
         case 1: {
-            short yy = this->pnl_y + this->pnl_hgt / 2 - pic_hgt / 2;
-            short xx = this->pnl_x + this->pnl_wid / 2 - pic_w / 2;
-            pic->shape_draw(this->render_area, (long)xx, (long)yy, 0, 0, 0);
+            long pic_x = (short)((short)this->pnl_x + (short)(this->pnl_wid / 2) - (short)(pic_w / 2));
+            long pic_y = (short)((short)this->pnl_y + (short)(this->pnl_hgt / 2) - (short)(pic_hgt / 2));
+            pic->shape_draw(this->render_area, pic_x, pic_y, 0, 0, 0);
             if (use_background2 && this->shadow_color_table) {
                 this->render_area->SetShadowTable(this->shadow_color_table);
-                this->render_area->DrawShadowBox((long)xx, (long)yy, xx + pic_w - 1, yy + pic_hgt - 1);
+                this->render_area->DrawShadowBox(pic_x, pic_y, pic_x + pic_w - 1, pic_y + pic_hgt - 1);
             }
             break;
         }

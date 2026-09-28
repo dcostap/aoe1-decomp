@@ -9,7 +9,7 @@
     "0048CEA0": {"status": "matching", "symbol": "??0RGE_Scenario_File_Info@@QAE@PAD@Z"},
     "0048CFD0": {"status": "matching", "symbol": "??1RGE_Scenario_File_Info@@QAE@XZ"},
     "0048D040": {"status": "matching", "symbol": "?save@RGE_Scenario_File_Info@@QAEXXZ"},
-    "0048D0E0": {"status": "accepted_drift", "symbol": "?reload_scenarios@RGE_Scenario_File_Info@@QAEXXZ"},
+    "0048D0E0": {"status": "matching", "symbol": "?reload_scenarios@RGE_Scenario_File_Info@@QAEXXZ"},
     "0048D4D0": {"status": "matching", "symbol": "?get_scenario_name@RGE_Scenario_File_Info@@QAEPADJ@Z"},
     "0048D500": {"status": "matching", "symbol": "?get_scenario_info@RGE_Scenario_File_Info@@QAEPAVRGE_Scenario_Header@@J@Z"}
   }

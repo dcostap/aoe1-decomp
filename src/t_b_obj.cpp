@@ -22,15 +22,6 @@
 int debug_rand(char*, int);
 
 
-static TRIBE_Player* tribe_player(RGE_Player* player) {
-    return static_cast<TRIBE_Player*>(player);
-}
-
-static TRIBE_Master_Building_Object* building_master(
-    TRIBE_Building_Object* object) {
-    return static_cast<TRIBE_Master_Building_Object*>(object->master_obj);
-}
-
 static TRIBE_Game* tribe_game() {
     return static_cast<TRIBE_Game*>(rge_base_game);
 }
@@ -236,17 +227,20 @@ void TRIBE_Building_Object::destroy_obj() {
 }
 
 unsigned char TRIBE_Building_Object::heal(float healing) {
-    TRIBE_Master_Building_Object* master = building_master(this);
+    TRIBE_Master_Building_Object* master =
+        static_cast<TRIBE_Master_Building_Object*>(master_obj);
     float max_hp = (float)(int)master->hp;
-    float required = max_hp * healing / (float)(int)master->build_pts_required;
-    if (required + hp > max_hp) {
-        required = max_hp - hp;
+    healing = healing * (float)(int)master->hp /
+              (float)(int)master->build_pts_required;
+    if (healing + hp > max_hp) {
+        healing = max_hp - hp;
     }
 
-    if (tribe_player(owner)->pay_obj_cost(master->id, required / (float)((int)master->hp * 2), 0) == 0) {
-        return 2;
+    if (static_cast<TRIBE_Player*>(owner)->pay_obj_cost(
+            master->id, healing / (float)((int)master->hp * 2), 0) != 0) {
+        return TRIBE_Combat_Object::heal(healing);
     }
-    return TRIBE_Combat_Object::heal(required);
+    return 2;
 }
 
 void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
@@ -806,64 +800,70 @@ void TRIBE_Building_Object::damage(int weapon_num,
 
 void TRIBE_Building_Object::add_to_production_queue(short master_id,
                                                      short unit_count) {
+    short original_master_id = master_id;
     short queue_count = production_queue_count;
     unsigned char queue_changed = 0;
 
-    if (queue_count > 0 && production_queue[queue_count - 1].master_id == master_id) {
-        for (short i = 0; i < unit_count; ++i) {
-            short temp_attr = master_id;
-            if (tribe_player(owner)->check_obj_cost(temp_attr, &temp_attr, 1.0f, 1) == 0) {
-                rge_base_game->notification(0x7D, owner->id, temp_attr, 0, 0);
+    if (queue_count <= 0 ||
+        production_queue[queue_count - 1].master_id != master_id) {
+        while (queue_count > 0) {
+            remove_from_production_queue(production_queue[0].master_id, 1);
+            queue_count = production_queue_count;
+        }
+
+        if (static_cast<TRIBE_Player*>(owner)->check_obj_cost(
+                original_master_id, &master_id, 1.0f, 1) == 0) {
+            rge_base_game->notification(0x7D, owner->id, master_id, 0, 0);
+            return;
+        }
+
+        if (production_queue_count == production_queue_size) {
+            Production_Queue_Record* new_queue =
+                static_cast<Production_Queue_Record*>(calloc(
+                    production_queue_size + 10, sizeof(Production_Queue_Record)));
+            if (new_queue == 0) return;
+            if (production_queue != 0) {
+                for (short i = 0; i < production_queue_size; ++i) {
+                    new_queue[i].master_id = production_queue[i].master_id;
+                    new_queue[i].unit_count = production_queue[i].unit_count;
+                }
+                free(production_queue);
+            }
+            production_queue_size += 10;
+            production_queue = new_queue;
+        }
+
+        production_queue[production_queue_count].unit_count = 0;
+        for (int i = 0; i < unit_count; ++i) {
+            if (static_cast<TRIBE_Player*>(owner)->check_obj_cost(
+                    original_master_id, &master_id, 1.0f, 1) == 0) {
+                rge_base_game->notification(0x7D, owner->id, master_id, 0, 0);
                 break;
             }
-            tribe_player(owner)->pay_obj_cost(master_id, 1.0f, 1);
+            static_cast<TRIBE_Player*>(owner)->pay_obj_cost(original_master_id, 1.0f, 1);
+            production_queue[production_queue_count].unit_count++;
+        }
+        production_queue[production_queue_count].master_id = original_master_id;
+        production_queue_count++;
+        production_queue_change_flag++;
+        rge_base_game->notification(0x7C, owner->id, 0, 0, 0);
+    } else {
+        for (int i = 0; i < unit_count; ++i) {
+            if (static_cast<TRIBE_Player*>(owner)->check_obj_cost(
+                    original_master_id, &master_id, 1.0f, 1) == 0) {
+                rge_base_game->notification(0x7D, owner->id, master_id, 0, 0);
+                break;
+            }
+            static_cast<TRIBE_Player*>(owner)->pay_obj_cost(
+                original_master_id, 1.0f, 1);
             production_queue[production_queue_count - 1].unit_count++;
             queue_changed = 1;
         }
-        if (queue_changed != 0) {
+        if (queue_changed == 1) {
             production_queue_change_flag++;
             rge_base_game->notification(0x7C, owner->id, 0, 0, 0);
         }
-        return;
     }
-
-    while (queue_count > 0) {
-        remove_from_production_queue(production_queue[0].master_id, 1);
-        queue_count = production_queue_count;
-    }
-
-    short temp_attr = master_id;
-    if (tribe_player(owner)->check_obj_cost(temp_attr, &temp_attr, 1.0f, 1) == 0) {
-        rge_base_game->notification(0x7D, owner->id, temp_attr, 0, 0);
-        return;
-    }
-
-    if (production_queue_count == production_queue_size) {
-        Production_Queue_Record* new_queue =
-            static_cast<Production_Queue_Record*>(calloc(production_queue_size + 10, sizeof(Production_Queue_Record)));
-        if (new_queue == 0) return;
-        for (short i = 0; i < production_queue_size; ++i) {
-            new_queue[i] = production_queue[i];
-        }
-        free(production_queue);
-        production_queue = new_queue;
-        production_queue_size += 10;
-    }
-
-    production_queue[production_queue_count].unit_count = 0;
-    for (short i = 0; i < unit_count; ++i) {
-        short temp_attr = master_id;
-        if (tribe_player(owner)->check_obj_cost(temp_attr, &temp_attr, 1.0f, 1) == 0) {
-            rge_base_game->notification(0x7D, owner->id, temp_attr, 0, 0);
-            break;
-        }
-        tribe_player(owner)->pay_obj_cost(master_id, 1.0f, 1);
-        production_queue[production_queue_count].unit_count++;
-    }
-    production_queue[production_queue_count].master_id = master_id;
-    production_queue_count++;
-    production_queue_change_flag++;
-    rge_base_game->notification(0x7C, owner->id, 0, 0, 0);
 }
 
 void TRIBE_Building_Object::remove_from_production_queue(short master_id,
@@ -940,8 +940,9 @@ void TRIBE_Building_Object::advance_production_queue() {
     production_queue_change_flag++;
     if (production_queue->unit_count <= 0) {
         --production_queue_count;
-        for (short i = 0; i < production_queue_count; ++i) {
-            production_queue[i] = production_queue[i + 1];
+        for (int i = 0; i < production_queue_count; ++i) {
+            production_queue[i].master_id = production_queue[i + 1].master_id;
+            production_queue[i].unit_count = production_queue[i + 1].unit_count;
         }
     }
     rge_base_game->notification(0x7C, owner->id, 0, 0, 0);

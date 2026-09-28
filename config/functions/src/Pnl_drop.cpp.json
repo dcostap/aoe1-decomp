@@ -8,7 +8,7 @@
   "functions": {
     "00473ED0": {"status": "matching", "symbol": "??0TDropDownPanel@@QAE@XZ"},
     "00473F50": {"status": "matching", "symbol": "??1TDropDownPanel@@UAE@XZ"},
-    "00473FD0": {"status": "accepted_drift", "symbol": "?setup@TDropDownPanel@@QAEJPAVTDrawArea@@PAVTPanel@@PAXJJHEHEJJJJFFJJPADJJPAPADFJ3333JJ@Z"},
+    "00473FD0": {"status": "matching", "symbol": "?setup@TDropDownPanel@@QAEJPAVTDrawArea@@PAVTPanel@@PAXJJHEHEJJJJFFJJPADJJPAPADFJ3333JJ@Z"},
     "00474340": {"status": "matching", "symbol": "?draw@TDropDownPanel@@UAEXXZ"},
     "00474350": {"status": "matching", "symbol": "?handle_mouse_down@TDropDownPanel@@UAEJEJJHH@Z"},
     "00474400": {"status": "matching", "symbol": "?handle_mouse_move@TDropDownPanel@@UAEJJJHH@Z"},

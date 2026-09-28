@@ -681,25 +681,26 @@ typedef unsigned char uchar;
 
 
 void RGE_Command::do_command_group_waypoint(RGE_Command_Group_Waypoint* order) {
-    int c;
+    int count;
     RGE_Obj_Info* ids;
-    XYZBYTEPoint p;
 
-    c = order->unit_num;
+    count = order->unit_num;
     ids = reinterpret_cast<RGE_Obj_Info*>(reinterpret_cast<unsigned char*>(order) + sizeof(*order));
-    if (c > 0) {
-        int count = c;
-        do {
-            RGE_Static_Object* obj = this->get_obj(*ids);
-            if (obj != 0) {
-                p.x = order->x;
-                p.y = order->y;
-                p.z = 0;
-                obj->owner->processAddWaypointCommand(obj->id, &p, 1);
-            }
-            ++ids;
-            --count;
-        } while (count != 0);
+    while (count > 0) {
+        RGE_Static_Object* obj = this->get_obj(*ids);
+        if (obj != 0) {
+            XYZBYTEPoint p;
+            unsigned char x = order->x;
+            unsigned char y = order->y;
+            p.x = x;
+            RGE_Player* owner = obj->owner;
+            int object_id = obj->id;
+            p.y = y;
+            p.z = 0;
+            owner->processAddWaypointCommand(object_id, &p, 1);
+        }
+        ++ids;
+        --count;
     }
 }
 
@@ -790,8 +791,7 @@ unsigned char RGE_Command::duplicate_check_command_stop(RGE_Command_Stop* order)
 
 
 unsigned char RGE_Command::close_check_for_duplicate_orders(unsigned char* order) {
-    unsigned char selector = *order;
-    switch (selector) {
+    switch (*order) {
     case 0:
     case 2:
     case 3:

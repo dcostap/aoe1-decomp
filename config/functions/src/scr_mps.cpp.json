@@ -12,7 +12,7 @@
     "004A1640": {"status": "matching", "symbol": "?handle_idle@TribeMPSetupScreen@@UAEJXZ"},
     "004A16D0": {"status": "matching", "symbol": "?key_down_action@TribeMPSetupScreen@@UAEJJFHHH@Z"},
     "004A16E0": {"status": "new_verified_logic", "symbol": "?action@TribeMPSetupScreen@@UAEJPAVTPanel@@JKK@Z", "behavior_review": "logic_matching/004A16E0/current-review-20260914-r01/review-01-a"},
-    "004A2060": {"status": "accepted_drift", "symbol": "?startGame@TribeMPSetupScreen@@IAEHXZ"},
+    "004A2060": {"status": "scratch", "symbol": "?startGame@TribeMPSetupScreen@@IAEHXZ"},
     "004A27A0": {"status": "accepted_drift", "symbol": "?calcRandomPositions@TribeMPSetupScreen@@IAEXXZ"},
     "004A2910": {"status": "matching", "symbol": "?showNetInfo@TribeMPSetupScreen@@IAEXXZ"},
     "004A2BA0": {"status": "matching", "symbol": "?cancelScreen@TribeMPSetupScreen@@IAEXH@Z"},

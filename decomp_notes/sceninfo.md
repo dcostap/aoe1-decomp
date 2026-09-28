@@ -34,9 +34,9 @@ The previous order emitted `+0x34`.
 The typed scenario-entry source has no boundary escape.
 It reports `MATCH` and `0.0000%`.
 
-`0048D0E0` remains accepted drift.
-Its direct source keeps enumeration and cleanup behavior.
-It has ten stack-displacement differences.
-Its compared boundary is 995 bytes.
+`0048D0E0` now uses PDB-supported locals and path-buffer bounds.
+Its fresh VC5 check matches all 995 bytes, the boundary, and the owner.
+The registry still lists it as accepted drift.
+See `decomp_notes/functions/0048/0048D0E0.md` for behavior evidence.
 
-There are five exact owners and one accepted-drift owner.
+The registry lists five matching owners and one accepted-drift owner.

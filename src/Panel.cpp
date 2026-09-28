@@ -349,15 +349,15 @@ void TPanelSystem::setCurrentPanel(TPanel* p, int makeModal) {
 void* TPanelSystem::get_palette(char* file_name, long res_id) {
     char file_name2[260];
 
-    if (file_name == 0) {
-        file_name2[0] = 0;
-    } else {
+    if (file_name != 0) {
         if (strchr(file_name, '.') == 0) {
             sprintf(file_name2, "%s.pal", file_name);
         } else {
             strcpy(file_name2, file_name);
         }
         strupr(file_name2);
+    } else {
+        file_name2[0] = 0;
     }
 
     int found = -1;

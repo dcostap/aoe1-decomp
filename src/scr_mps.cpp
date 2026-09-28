@@ -863,7 +863,7 @@ int TribeMPSetupScreen::startGame() {
             }
         }
         int u4;
-        for (u12 = 0; u12 < 8; u12 = u4) {
+        for (u12 = 0; u12 < 8; ++u12) {
             u4 = u12 + 1;
             if (u4 != comm->WhoAmI() && comm->GetPlayerHumanity(u4) == ME_HUMAN) {
                 if (rge_base_game->playerVersion(u12) != 1) {

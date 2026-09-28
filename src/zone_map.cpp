@@ -107,11 +107,11 @@ void RGE_Zone_Map::save(int outfile) {
 }
 
 uchar RGE_Zone_Map::do_zone_map() {
-    int map_width;
-    int map_height;
-    int group;
-    uchar visible;
-    int y;
+    long map_width;
+    long map_height;
+    long y;
+    uchar group;
+    long row_offset;
     int group_counter;
     int row;
     int col;
@@ -128,36 +128,36 @@ uchar RGE_Zone_Map::do_zone_map() {
         }
     }
 
-    group = 0;
+    y = 0;
     if (map_width > 0) {
         do {
             int x = 0;
-            if (x < map_height) {
-                y = 0;
+            if (map_height > 0) {
+                row_offset = 0;
                 do {
-                    if (this->zone_map_rows[group][x] == 0xFF) {
+                    if (this->zone_map_rows[y][x] == 0xFF) {
                         if (group_counter >= 255)
                             group_counter = 0;
 
                         int terrainByte =
-                            ((unsigned char*)this->map->map_row_offset[group])[y + 5]
+                            ((unsigned char*)this->map->map_row_offset[y])[row_offset + 5]
                             & 0x1F;
                         float passability =
                             this->terrain_passability_rules[terrainByte];
-                        visible = 1;
+                        group = 1;
                         if (!(passability > 0.0))
-                            visible = 0;
+                            group = 0;
 
-                        this->zone_map_rows[group][x] = (uchar)group_counter;
-                        do_zone_map_area(x, group, visible, (uchar)group_counter);
+                        this->zone_map_rows[y][x] = (uchar)group_counter;
+                        do_zone_map_area(x, y, group, (uchar)group_counter);
                         group_counter++;
                     }
                     x++;
-                    y += 0x18;
+                    row_offset += 0x18;
                 } while (x < map_height);
             }
-            group++;
-        } while (group < map_width);
+            y++;
+        } while (y < map_width);
     }
 
     return 1;

@@ -1,0 +1,25 @@
+# Experiment e1f7dd8e7ca6e0ca1cee3926f0855e82b2dbb6b4f91791f3f80f9cef5f536a91
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/Panel.cpp b/src/Panel.cpp
+index 4a41d00fc..ec69f0e62 100644
+--- a/src/Panel.cpp
++++ b/src/Panel.cpp
+@@ -349,15 +349,15 @@ void TPanelSystem::setCurrentPanel(TPanel* p, int makeModal) {
+ void* TPanelSystem::get_palette(char* file_name, long res_id) {
+     char file_name2[260];
+ 
+-    if (file_name == 0) {
+-        file_name2[0] = 0;
+-    } else {
++    if (file_name != 0) {
+         if (strchr(file_name, '.') == 0) {
+             sprintf(file_name2, "%s.pal", file_name);
+         } else {
+             strcpy(file_name2, file_name);
+         }
+         strupr(file_name2);
++    } else {
++        file_name2[0] = 0;
+     }
+ 
+     int found = -1;

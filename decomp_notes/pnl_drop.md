@@ -21,17 +21,20 @@ The source owns `TDropDownPanel` and `TDropDownButtonPanel`. The scalar
 and vector deleting destructors at `00473F30` and `00475490` are compiler
 generated. They are not normal source owners.
 
-The manifest keeps 37 matching owners, one scratch owner, and two
-accepted-drift owners:
+The manifest currently keeps 37 matching owners, one accepted-drift owner,
+and one `new_verified_logic` owner:
 
-- Scratch: `00474880` (`set_mode`).
-- Accepted drift: `00473FD0` (`setup`) and `004754C0` (`TDropDownButtonPanel::handle_mouse_move`).
-- Matching: the other 37 normal owners.
+- Accepted drift: `00473FD0` (`setup`). Its reopened review found no behavior
+  defect. A direct member-argument source form now matches all 865 bytes.
+  Root review should decide whether to promote it to `matching`.
+- `new_verified_logic`: `00474880` (`set_mode`).
+- Matching: the other 38 normal owners, including `004754C0`.
 
-Setup's completed review is `logic_reviews/00473FD0.md`.
-The January-supported store order reduces its difference from 158 bytes to two.
-Only a caller-saved register selection differs at scrollbar deactivation.
-All 37 matching neighbors remain exact. No further matching work is required without new evidence.
+The complete `00473FD0` re-review and experiment history are in
+`decomp_notes/functions/0047/00473FD0.md` and
+`decomp_notes/experiments/`. The final serial module audit is
+`build/drift-062-Pnl_drop/final/report.txt`. It compiled all 40 owners and kept
+all 37 matching neighbors exact. `00474880` remains a separate held result.
 
 ## Header composition
 

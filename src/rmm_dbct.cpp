@@ -737,41 +737,41 @@ void RGE_RMM_Database_Controller::add_terrain_module() {
 }
 
 void RGE_RMM_Database_Controller::add_object_module() {
-    int index1 = 0;
+    int object_index = 0;
     RGE_Map_Data_Entry* map = this->map_info.maps + this->map_type;
     this->object_info.object_num = map->object_info.object_num;
 
     if (map->object_info.object_num > 0) {
         int source_index = 0;
         do {
-            this->object_info.objects[index1].obj_id =
+            this->object_info.objects[object_index].obj_id =
                 map->object_info.objects[source_index].obj_id;
-            this->object_info.objects[index1].terrain =
+            this->object_info.objects[object_index].terrain =
                 map->object_info.objects[source_index].terrain;
-            this->object_info.objects[index1].group_flag =
+            this->object_info.objects[object_index].group_flag =
                 map->object_info.objects[source_index].group_flag;
-            this->object_info.objects[index1].scale_flag =
+            this->object_info.objects[object_index].scale_flag =
                 map->object_info.objects[source_index].scale_flag;
-            this->object_info.objects[index1].object_number_per_group =
+            this->object_info.objects[object_index].object_number_per_group =
                 map->object_info.objects[source_index].object_number_per_group;
-            this->object_info.objects[index1].object_number_varience =
+            this->object_info.objects[object_index].object_number_varience =
                 map->object_info.objects[source_index].object_number_varience;
-            this->object_info.objects[index1].number_of_groups =
+            this->object_info.objects[object_index].number_of_groups =
                 map->object_info.objects[source_index].number_of_groups;
-            this->object_info.objects[index1].player_id =
+            this->object_info.objects[object_index].player_id =
                 map->object_info.objects[source_index].player_id;
-            this->object_info.objects[index1].land_id =
+            this->object_info.objects[object_index].land_id =
                 map->object_info.objects[source_index].land_id;
-            this->object_info.objects[index1].land_inner_radius =
+            this->object_info.objects[object_index].land_inner_radius =
                 map->object_info.objects[source_index].land_inner_radius;
-            this->object_info.objects[index1].land_outer_radius =
+            this->object_info.objects[object_index].land_outer_radius =
                 map->object_info.objects[source_index].land_outer_radius;
-            this->object_info.objects[index1].group_area =
+            this->object_info.objects[object_index].group_area =
                 map->object_info.objects[source_index].group_area;
-            this->object_info.objects[index1].object_exclusion_zone = 1;
-            ++index1;
+            this->object_info.objects[object_index].object_exclusion_zone = 1;
+            ++object_index;
             ++source_index;
-        } while (index1 < map->object_info.object_num);
+        } while (object_index < map->object_info.object_num);
     }
 
     this->object_info.land_num = this->land_info.land_num;
@@ -779,16 +779,16 @@ void RGE_RMM_Database_Controller::add_object_module() {
     if (map->land_info.land[0].by_player_flag != 0) {
         player = 1;
     }
-    int land_index = 0;
+    long index1 = 0;
     if (this->land_info.land_num > 0) {
         RGE_Land_Info_Line* source = this->land_info.land;
         int map_land_index = 0;
         do {
-            this->object_info.lands[land_index].x = source->x;
-            this->object_info.lands[land_index].y = source->y;
-            this->object_info.lands[land_index].id =
+            this->object_info.lands[index1].x = source->x;
+            this->object_info.lands[index1].y = source->y;
+            this->object_info.lands[index1].id =
                 map->land_info.land[map_land_index].land_id;
-            this->object_info.lands[land_index].player_id = player;
+            this->object_info.lands[index1].player_id = player;
 
             if (player > 0 && ++player > this->number_of_players)
                 player = 0;
@@ -797,9 +797,9 @@ void RGE_RMM_Database_Controller::add_object_module() {
                 if (map->land_info.land[map_land_index].by_player_flag != 0)
                     player = 1;
             }
-            ++land_index;
+            ++index1;
             ++source;
-        } while (land_index < this->land_info.land_num);
+        } while (index1 < this->land_info.land_num);
     }
 }
 

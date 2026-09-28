@@ -1,0 +1,21 @@
+# Experiment 16af66eb03983b93051e4c066b7b5a8938b182cda26d66a55873b2abfa2e8e05
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/tworld.cpp b/src/tworld.cpp
+index 7f1254f0a..159e87edf 100644
+--- a/src/tworld.cpp
++++ b/src/tworld.cpp
+@@ -231,12 +231,8 @@ void TRIBE_World::load_player(int infile, unsigned char type, short index) {
+ }
+ 
+ void TRIBE_World::setup_gaia() {
+-    TRIBE_Gaia* g;
+-    g = new TRIBE_Gaia(this, static_cast<RGE_Master_Player*>(this->master_players[0]), 0, "GAIA", 0);
+-    if (g == 0) {
+-        g = 0;
+-    }
+-    this->players[0] = g;
++    this->players[0] =
++        new TRIBE_Gaia(this, static_cast<RGE_Master_Player*>(this->master_players[0]), 0, "GAIA", 0);
+ }
+ 
+ void TRIBE_World::setup_players(RGE_Player_Info& info) {

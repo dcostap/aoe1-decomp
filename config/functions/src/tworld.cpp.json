@@ -23,7 +23,7 @@
     "0052E770": {"status": "matching", "symbol": "?base_save@TRIBE_World@@UAEXH@Z"},
     "0052E790": {"status": "matching", "symbol": "?save@TRIBE_World@@UAEXH@Z"},
     "0052E830": {"status": "matching", "symbol": "?load_player@TRIBE_World@@UAEXHEF@Z"},
-    "0052E920": {"status": "accepted_drift", "symbol": "?setup_gaia@TRIBE_World@@UAEXXZ"},
+    "0052E920": {"status": "matching", "symbol": "?setup_gaia@TRIBE_World@@UAEXXZ"},
     "0052E990": {"status": "matching", "symbol": "?setup_players@TRIBE_World@@UAEXAAURGE_Player_Info@@@Z"},
     "0052EAC0": {"status": "matching", "symbol": "?check_destructables@TRIBE_World@@QAEXFFMME@Z"},
     "0052ECF0": {"status": "matching", "symbol": "?scenario_make_player@TRIBE_World@@UAEXFEEEPAD@Z"},
