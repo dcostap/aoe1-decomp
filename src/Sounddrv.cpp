@@ -5,23 +5,20 @@
 #include <string.h>
 #include <fcntl.h>
 
-extern "C" void __cdecl ds_stream_init(
-    void* main_wnd, LPDIRECTSOUND direct_sound,
-    LPDIRECTSOUNDBUFFER primary_buffer);
+extern "C" void __cdecl ds_stream_init(void* main_wnd, LPDIRECTSOUND direct_sound,
+                                         LPDIRECTSOUNDBUFFER primary_buffer);
 extern "C" void __cdecl ds_stream_exit(void);
 extern "C" int __cdecl ds_stream_file(char* file_name, int mode, long resource_id);
 extern "C" int __cdecl ds_stream_volume(long volume);
 extern "C" int __cdecl ds_stream_pause(void);
 extern "C" int __cdecl ds_stream_resume(void);
 extern "C" int __cdecl ds_stream_stop(void);
-extern "C" unsigned int __cdecl ds_stream_messages(
-    void* a, unsigned int b, unsigned int c, long d);
+extern "C" unsigned int __cdecl ds_stream_messages(void* a, unsigned int b, unsigned int c, long d);
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" int __cdecl _open(const char* path, int flags, ...);
 extern "C" int __cdecl close(int fd);
 extern "C" unsigned int __cdecl read(int fd, void* buffer, unsigned int count);
-extern "C" int __cdecl strncmp(const char* left, const char* right,
-                               unsigned int count);
+extern "C" int __cdecl strncmp(const char* left, const char* right, unsigned int count);
 extern void __cdecl color_log(unsigned char a, unsigned char b, int c);
 
 struct _tag_wavheader {
@@ -182,11 +179,12 @@ void TSound_Driver::set_volume(long in_vol, int permanent) {
         return;
     }
 
-    delta = (unsigned long)(this->mixer_volume_control.Bounds.lMaximum - this->mixer_volume_control.Bounds.lMinimum);
+    delta = (unsigned long)(this->mixer_volume_control.Bounds.lMaximum -
+                            this->mixer_volume_control.Bounds.lMinimum);
     scaled = (unsigned long)((delta * (in_vol + 10000)) / 10000);
     this->mixer_volume_value.dwValue = scaled;
-    this->dsrval = mixerSetControlDetails((HMIXEROBJ)this->mixer_handle, &this->mixer_volume_details,
-                                          MIXER_SETCONTROLDETAILSF_VALUE);
+    this->dsrval = mixerSetControlDetails((HMIXEROBJ)this->mixer_handle,
+                                          &this->mixer_volume_details, MIXER_SETCONTROLDETAILSF_VALUE);
 }
 
 int TSound_Driver::stream_file(char* file_name, int loop, long volume) {
@@ -274,45 +272,36 @@ int TSound_Driver::open_mixer() {
         if (mixerOpen(&this->mixer_handle, mixer_id, 0, 0, 0) == 0) {
             memset(&this->mixer_line_info, 0, sizeof(this->mixer_line_info));
             this->mixer_line_info.cbStruct = sizeof(this->mixer_line_info);
-            this->mixer_line_info.dwComponentType =
-                MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT;
+            this->mixer_line_info.dwComponentType = MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT;
 
-            if (mixerGetLineInfoA(this->mixer_handle, &this->mixer_line_info, MIXER_GETLINEINFOF_COMPONENTTYPE) == 0) {
+            if (mixerGetLineInfoA(this->mixer_handle, &this->mixer_line_info,
+                                  MIXER_GETLINEINFOF_COMPONENTTYPE) == 0) {
                 memset(&this->mixer_line_controls, 0, sizeof(this->mixer_line_controls));
                 memset(&this->mixer_volume_control, 0, sizeof(this->mixer_volume_control));
-                this->mixer_line_controls.cbStruct =
-                    sizeof(this->mixer_line_controls);
-                this->mixer_line_controls.dwLineID =
-                    this->mixer_line_info.dwLineID;
-                this->mixer_line_controls.dwControlType =
-                    MIXERCONTROL_CONTROLTYPE_VOLUME;
+                this->mixer_line_controls.cbStruct = sizeof(this->mixer_line_controls);
+                this->mixer_line_controls.dwLineID = this->mixer_line_info.dwLineID;
+                this->mixer_line_controls.dwControlType = MIXERCONTROL_CONTROLTYPE_VOLUME;
                 this->mixer_line_controls.cControls = 1;
-                this->mixer_line_controls.cbmxctrl =
-                    sizeof(this->mixer_volume_control);
-                this->mixer_line_controls.pamxctrl =
-                    &this->mixer_volume_control;
+                this->mixer_line_controls.cbmxctrl = sizeof(this->mixer_volume_control);
+                this->mixer_line_controls.pamxctrl = &this->mixer_volume_control;
 
                 if (mixerGetLineControlsA(this->mixer_handle, &this->mixer_line_controls,
                                           MIXER_GETLINECONTROLSF_ONEBYTYPE) == 0) {
                     memset(&this->mixer_volume_details, 0, sizeof(this->mixer_volume_details));
                     memset(&this->mixer_volume_value, 0, sizeof(this->mixer_volume_value));
-                    this->mixer_volume_details.cbStruct =
-                        sizeof(this->mixer_volume_details);
-                    this->mixer_volume_details.dwControlID =
-                        this->mixer_volume_control.dwControlID;
+                    this->mixer_volume_details.cbStruct = sizeof(this->mixer_volume_details);
+                    this->mixer_volume_details.dwControlID = this->mixer_volume_control.dwControlID;
                     this->mixer_volume_details.cChannels = 1;
-                    this->mixer_volume_details.cbDetails =
-                        sizeof(this->mixer_volume_value);
-                    this->mixer_volume_details.paDetails =
-                        &this->mixer_volume_value;
+                    this->mixer_volume_details.cbDetails = sizeof(this->mixer_volume_value);
+                    this->mixer_volume_details.paDetails = &this->mixer_volume_value;
 
                     if (mixerGetControlDetailsA(this->mixer_handle, &this->mixer_volume_details,
                                                 MIXER_GETCONTROLDETAILSF_VALUE) == 0) {
                         this->mixer_open = 1;
                         this->start_volume =
-                            (int)(((unsigned long)this->mixer_volume_value.dwValue * 10000) / (unsigned long)(
-                                      this->mixer_volume_control.Bounds.lMaximum -
-                                      this->mixer_volume_control.Bounds.lMinimum)) -
+                            (int)(((unsigned long)this->mixer_volume_value.dwValue * 10000) /
+                                  (unsigned long)(this->mixer_volume_control.Bounds.lMaximum -
+                                                  this->mixer_volume_control.Bounds.lMinimum)) -
                             10000;
                         this->volume = this->start_volume;
                         return 1;
@@ -451,7 +440,8 @@ int TDigital::load(char* file_name, long res_id) {
                 goto fail_return;
             }
 
-            if (strncmp((char*)wave_hdr.szRIFF, "RIFF", 4) != 0 || wave_hdr.wFormatTag != WAVE_FORMAT_PCM) {
+            if (strncmp((char*)wave_hdr.szRIFF, "RIFF", 4) != 0 ||
+                wave_hdr.wFormatTag != WAVE_FORMAT_PCM) {
                 this->failed = 1;
                 close(fd);
                 goto fail_return;
@@ -507,7 +497,8 @@ int TDigital::load(char* file_name, long res_id) {
                 goto fail_return;
             }
 
-            if (this->sound_buffer->Lock(0, this->data_size, &mem1, &size1, &mem2, &size2, 0) == 0) {
+            if (this->sound_buffer->Lock(0, this->data_size, &mem1, &size1,
+                                         &mem2, &size2, 0) == 0) {
                 memcpy(mem1, this->wave_data, size1);
                 if (size2 != 0) {
                     memcpy(mem2, this->wave_data + size1, size2);
@@ -530,7 +521,8 @@ int TDigital::load(char* file_name, long res_id) {
         }
     }
 
-    if (res_id <= -1 || (resource_data = RESFILE_load(RES_TYPE_WAVE, res_id, load_type, resDataSize)) == 0) {
+    if (res_id <= -1 ||
+        (resource_data = RESFILE_load(RES_TYPE_WAVE, res_id, load_type, resDataSize)) == 0) {
         this->failed = 1;
     } else {
         memcpy(&wave_hdr.szRIFF, resource_data, sizeof(wave_hdr));
@@ -576,7 +568,8 @@ wave_info_fail:
                 if (direct_sound->CreateSoundBuffer(&buffer_desc, buffer_slot, 0) != 0) {
                     this->failed = 1;
                 } else {
-                    if ((*buffer_slot)->Lock(0, this->data_size, &mem1, &size1, &mem2, &size2, 0) == 0) {
+                    if ((*buffer_slot)->Lock(0, this->data_size, &mem1, &size1,
+                                             &mem2, &size2, 0) == 0) {
                         memcpy(mem1, this->wave_data, size1);
                         if (size2 != 0) {
                             memcpy(mem2, this->wave_data + size1, size2);
