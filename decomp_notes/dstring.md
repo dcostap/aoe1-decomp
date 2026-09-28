@@ -16,8 +16,10 @@ The direct source reports `MATCH` and `0.0000%` for 42 registered owners.
 These include the constructors, string accessors, word helpers, conversion
 helpers, case-copy helpers, and DKeyString owners.
 
-`00447420 uppercase` and `004474E0 lowercase` are scratch. The canonical
-`<ctype.h>` declarations cause two bytes of direct code drift in each owner.
+The accepted-drift reviews for `004471F0 append`, `00447420 uppercase`, and
+`004474E0 lowercase` were reopened by `drift-022-dstring`. No behavior defect
+was proved. Natural probes did not change the small SIB-address differences.
+No source or registry change remains.
 The other eight unresolved owners remain scratch. A shared-worktree trial proved
 `00446D30 operator char*` exact after the tools learned its VC5 conversion-
 operator symbol. Do not restore copied stream layouts or manual CRT declarations
