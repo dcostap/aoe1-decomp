@@ -256,3 +256,58 @@ All 89 assigned module reviews have now finished.
 The `taiuaimd` review found no new behavior defect at `00504750`.
 Its clearer source emits the same bytes, but its rebuilt body exceeds the
 original boundary by seven bytes. This target now has `scratch` status.
+
+## Final integrated validation
+
+All 89 workers finished their assigned module reviews.
+Of the 228 original accepted-drift entries, 23 now have `matching` status,
+63 have `scratch` status, and 142 retain `accepted_drift` status.
+These status counts do not establish runtime behavior.
+
+The final serial function audit compiled all 225 groups and 5,426 normal
+functions. It reported 5,004 matching results with no failed exact claims.
+It also reported 17 boundary problems in non-exact functions.
+The owner audit found zero mismatches among the 5,004 matching results.
+Reports are in `build/validation/accepted-drift-wave-final-20260929/functions/`
+and `build/validation/accepted-drift-wave-final-20260929/owners.txt`.
+
+The final linked build compiled 226 sources and one assembly source.
+It linked without unresolved symbols. Its EXE hash is
+`6fe3b80148542b0985f1fb362b5978aefb610d8bfe0c48a5bb9d3ec7d87c9eec`.
+Its report is
+`build/executable/user/20260928T230856214889Z-c379160be343/20260928T230856444341Z/report.json`.
+The final image audit found 11,387 passes, no supported failures, and
+48,168 unknown checks. Linked references had 7,515 passes and 5,350 unknowns.
+Header emissions had 133 matches. The named initializer audit found 124
+equal byte ranges, 59 unmapped names, and 107 entries needing further review.
+These reports are under `build/validation/accepted-drift-wave-final-20260929/`.
+
+The first full automated run found five tests with old hard-coded status
+expectations. Commit `b89285971` updated those tests after the review.
+The final run passed 1,000 tests, skipped two, and passed 31 subtests.
+Both skips require optional preserved historical builds that are absent.
+Its report is `build/validation/accepted-drift-wave-final-20260929/tests-final.xml`.
+Replay fixture checks passed. Gameplay suite results must be recorded separately.
+
+### Deterministic trace result
+
+The final five-case fast trace suite failed two cases on the rebuilt EXE.
+`save-check` and `chaos-ffa-run-1` stopped at updates 14,744 and 34,900.
+`chaos-run-1-cut`, `random-map-opening`, and `saved-game-session-1` passed.
+The first failure report is
+`build/runtime/traces-20260928T231831418146Z-f683fcfdce7b/report.json`.
+A serial `save-check` rerun failed at the same message record, 619,657.
+Its report is `build/runtime/traces-20260928T232404708566Z-96e438581c8a/report.json`.
+The original and rebuilt observer records agree through update 14,743.
+The next recorded message expects a different update count in the rebuilt run.
+The cause is not established. Do not treat this as a passed runtime check.
+The focused `main-credits` UI case passed against the final linked EXE.
+
+The full UI run passed 40 cases and failed `saved-delete-confirmation` on
+both original runs and the rebuilt run. The fixture expected exactly one save.
+The shared asset set now contains five saves. The test now checks that the
+list exists, then compares its controls and pixels between original and rebuilt.
+The focused case passed after that fixture change. The first full report is
+`build/runtime/ui-main-menu-20260928T233045151121Z-6cc2308cdcc8/report.json`.
+The focused report is
+`build/runtime/ui-main-menu-20260928T233938677516Z-8417ac1881d8/report.json`.
