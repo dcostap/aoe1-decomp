@@ -72,3 +72,35 @@ caches the canonical temporary-field address before late returns.
 
 The complete polished candidate check reports `43/43` registered owners as
 `MATCH`, with zero relocation mismatches and zero boundary escapes.
+
+## Accepted-drift behavior re-review (2026-09-28)
+
+The four assigned drift targets were checked again against their original bodies.
+No behavior defect was proved, so no behavior repair was made.
+The old 43/5 count above records the earlier reunification sweep.
+The current translation-unit audit includes 50 functions: 46 exact and four drift targets.
+0048AE10 now matches exactly; it is not one of the four current drift targets.
+
+0048AD60 still has nine differing bytes in its constructor clear setup.
+Both builds store the same fields and clear the same 4096 bytes.
+An equivalent first-byte pointer expression produced the same nine-byte mismatch.
+The source uses the simpler array expression.
+
+0048BCC0 still differs by 74 bytes; 0048BEC0 and 0048C0E0 each differ by 95 bytes.
+Each rebuilt getter is eight bytes shorter than the original.
+All three retain the original guards, calls, arguments, memory effects, and return fields.
+The rebuilt code caches the temporary-text address before `sprintf` returns.
+The original recomputes the same address after `sprintf`.
+
+The CityPlan and AI getters compare `BuildList[which_player]` with both sentinel strings.
+The original executable proves this field choice.
+No evidence proves that it is a defect, so the source preserves it.
+
+The re-review removed unused two-byte padding declarations from `Get_BuildList` and `Get_CityPlan`.
+PDB offsets and the AI getter's natural local layout support compiler alignment.
+This cleanup changed no emitted owner bytes.
+
+Fresh closure checks report 46 exact owners, four accepted-drift owners, and no exact regressions.
+The final private audit report is `build/drift-015-scenario/module-final/report.txt`.
+Function evidence is in `decomp_notes/functions/0048/0048AD60.md`, `0048BCC0.md`, `0048BEC0.md`, and `0048C0E0.md`.
+No registry status changed.

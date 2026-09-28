@@ -503,9 +503,7 @@ char* RGE_Scenario::Get_Mission_Bmp() { return this->Mission_Bmp; }
 
 char* RGE_Scenario::Get_BuildList(int which_player, int WithExtension) {
     char random_str[50];
-    char pad1[2];
     char none_str[50];
-    char pad2[2];
     char temp_path[MAX_PATH];
     int fd = -1;
 
@@ -542,9 +540,7 @@ char* RGE_Scenario::Get_BuildList(int which_player, int WithExtension) {
 
 char* RGE_Scenario::Get_CityPlan(int which_player, int WithExtension) {
     char random_str[50];
-    char pad1[2];
     char none_str[50];
-    char pad2[2];
     char temp_path[MAX_PATH];
     int fd = -1;
 
