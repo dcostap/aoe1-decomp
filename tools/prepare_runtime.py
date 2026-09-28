@@ -73,6 +73,15 @@ def save_fixtures(bundle=None):
         if path.is_symlink() or path.stat().st_size != row.get('size') or digest(path) != row.get('sha256'):
             raise ValueError(f'Save fixture hash or size differs: {name}')
         result.append((path, row))
+    if bundle is None and LOCAL_SAVES.is_dir():
+        # Any other personal save joins the pool as it is now. A recording pins its
+        # hash, so a later change to the file fails that recording's save check.
+        for path in sorted(LOCAL_SAVES.iterdir()):
+            if path.suffix.lower() not in ('.gmx', '.gam') or path.name.lower() in names or \
+                    path.is_symlink() or not path.is_file():
+                continue
+            names.add(path.name.lower())
+            result.append((path, dict(name=path.name, local=True, size=path.stat().st_size, sha256=digest(path))))
     return result
 
 

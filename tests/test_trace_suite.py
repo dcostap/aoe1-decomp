@@ -251,3 +251,61 @@ def test_record_command_records_traced_editor_session_and_imports_it(monkeypatch
         shutil.rmtree(Path(calls[0][calls[0].index('--output') + 1]), ignore_errors=True)
     assert {'--record', '--no-time-limit', '--editor', '--observe', '--rng-only'} <= set(calls[0])
     assert calls[1][1].endswith('trace_suite.py') and calls[1][2] == 'import' and calls[1][-2:] == ['--name', 'my-game']
+
+
+def message_record(api, updates, inputs, rng_count):
+    fields = [0] * 20
+    fields[0], fields[16], fields[17], fields[19] = api, updates, inputs, rng_count
+    return struct.pack('<20I', *fields)
+
+
+def test_cut_keeps_the_prefix_through_an_update_and_derives_its_oracle(tmp_path, monkeypatch):
+    traces, registry = tmp_path / 'traces', tmp_path / 'traces.json'
+    monkeypatch.setattr(trace_suite, 'TRACE_DIR', traces)
+    monkeypatch.setattr(trace_suite, 'REGISTRY', registry)
+    peek, dispatch = 0x80000003, 6
+    messages = b''.join([message_record(peek, 0, 0, 0), message_record(3, 0, 1, 0),
+                         message_record(peek, 1, 1, 2), message_record(3, 1, 2, 2),
+                         message_record(peek, 2, 2, 5), message_record(dispatch, 2, 2, 5)])
+    capture = tmp_path / 'capture' / 'report.json'
+    capture.parent.mkdir()
+    capture.write_text(json.dumps({'events': [
+        {'kind': 'human-camera', 'time_ms': 5, 'updates': 1, 'camera': {'x': 1}},
+        # A move after the update's time but still at that update comes after the cut.
+        {'kind': 'human-camera', 'time_ms': 12, 'updates': 1, 'camera': {'x': 2}}]}))
+    recording = {'duration_ms': 100, 'events': [{'time_ms': 1}, {'time_ms': 2}, {'time_ms': 3}],
+                 'source_report': str(capture),
+                 'update_trace': [{'updates': 1, 'time_ms': 10, 'exit_time': 40},
+                                  {'updates': 2, 'time_ms': 20, 'exit_time': 80}],
+                 'message_recording': {'records': 6, 'sha256': hashlib.sha256(messages).hexdigest()},
+                 'oracle': {'rng_records': 5, 'rng_sha256': 'full', 'rng_sites': {}, 'updates': 3,
+                            'update_rng': [[2, 'a'], [5, 'b'], [5, 'c']], 'inputs': 3,
+                            'world': {'time': 90, 'objects': 7}, 'camera': {'x': 3}, 'alloc': None}}
+    folder = traces / 'full'
+    folder.mkdir(parents=True)
+    stored = lzma.compress(json.dumps(recording).encode())
+    stored_messages = lzma.compress(messages)
+    (folder / 'recording.json.xz').write_bytes(stored)
+    (folder / 'messages.bin.xz').write_bytes(stored_messages)
+    registry.write_text(json.dumps({'schema': 1, 'cases': {'full': {
+        'recording_sha256': hashlib.sha256(stored).hexdigest(),
+        'messages_sha256': hashlib.sha256(stored_messages).hexdigest(), 'duration_ms': 100}}}))
+    row = trace_suite.cut_trace('full', 'part', 1)
+    assert row['updates'] == 1 and row['inputs'] == 1 and row['rng_records'] == 2 and row['cut_from'] == 'full'
+    assert set(trace_suite.check_fixtures()) == {'full', 'part'}
+    cut = json.loads(lzma.decompress((traces / 'part/recording.json.xz').read_bytes()))
+    kept = lzma.decompress((traces / 'part/messages.bin.xz').read_bytes())
+    assert kept == messages[:2 * 80] and cut['message_recording']['records'] == 2
+    assert cut['events'] == recording['events'][:1] and len(cut['update_trace']) == 1
+    assert cut['oracle'] == {'rng_records': 2, 'rng_sites': {}, 'update_rng': [[2, 'a']], 'updates': 1,
+                             'inputs': 1, 'world': {'time': 40}, 'alloc': None, 'camera': {'x': 1}}
+    with pytest.raises(ValueError, match='Choose an update'):
+        trace_suite.cut_trace('full', 'late', 3)
+
+
+def test_a_cut_oracle_checks_only_what_it_knows():
+    cut = {'rng_records': 3, 'updates': 2, 'inputs': 1, 'world': {'time': 1}, 'update_rng': [[1, 'x'], [3, 'y']]}
+    run = dict(oracle(), errors=[], camera={'x': 9})
+    result = trace_suite.compare(cut, run)
+    assert result['passed'] is True and 'rng_sha256' not in result['checks'] and 'camera' not in result['checks']
+    assert trace_suite.compare(cut, dict(run, world={'time': 2, 'objects': 2}))['checks']['world'] is False

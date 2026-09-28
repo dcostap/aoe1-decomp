@@ -77,6 +77,18 @@
         if (messageUsed === MESSAGE_BATCH_RECORDS) flushMessageTrace();
         } finally { recordingMessage = false; }
     }
+    // A title-bar press starts Windows' modal move loop inside DispatchMessage. The game
+    // keeps running there until the mouse is released, and replay cannot hold the mouse.
+    // Recording turns these presses into WM_NULL before the trace stores them, so the
+    // trace and its replay agree. Close-button presses still reach the game.
+    const WINDOW_DRAG_HITS = new Set([2, 3, 8, 9]); // caption, system menu, minimize, maximize
+    function neutralizeWindowDrag(msg) {
+        const message = msg.add(4).readU32();
+        if ((message !== 0xa1 && message !== 0xa3) || !WINDOW_DRAG_HITS.has(msg.add(8).readU32())) return;
+        const hit = msg.add(8).readU32();
+        msg.add(4).writeU32(0); msg.add(8).writeU32(0); msg.add(12).writeU32(0);
+        send({kind:'window-drag-blocked', message, hit});
+    }
     function recordMessageEnter(api,thread,msg,hwndFilter,min,max,flags) {
         recordMessage((api|0x80000000)>>>0,thread,0,msg,hwndFilter,min,max,flags,0);
     }
@@ -99,6 +111,7 @@
             onLeave(retval) {
                 const result = retval.toUInt32();
                 if (result && result !== 0xffffffff && !ownedMessageWindow(this.msg.readPointer())) return;
+                if (!isReplay && result && result !== 0xffffffff) neutralizeWindowDrag(this.msg);
                 recordMessageEnter(api,this.threadId,null,this.hwnd,this.min,this.max,this.flags);
                 try { recordMessage(api,this.threadId,result,this.msg,this.hwnd,this.min,this.max,this.flags,
                     (realTick()-this.wallStart)>>>0); }

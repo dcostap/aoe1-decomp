@@ -17,10 +17,71 @@ traced case named `rec-<date>-<time>` (or `--name`). `game.cmd test-traces`
 replays it on both executables from then on. See
 [exact fast replay](#exact-fast-replay-from-a-traced-recording) for what is checked.
 
+Do not drag, resize, or switch away from the game window while recording.
+Switching away stops the recording.
+Title-bar presses (caption, system menu, minimize, maximize) never reach the game. The recorder turns them
+into `WM_NULL` before the trace stores them, so the window cannot be dragged. A real drag runs
+the game inside Windows' move loop until the mouse is released, and replay cannot reproduce that.
+Recordings made before this block can contain a drag. Their replay then fails on both
+executables at that message with `update count differs`.
+
+To keep the part of such a recording before the drag, cut it:
+
+```cmd
+game.cmd cut-trace CASE --at-update N --name NEW-CASE
+```
+
+The new case replays CASE only through world update N. Replay stops at the first message-pump
+poll after that update. Each trace record carries the update, input, and RNG counts, so the new
+oracle still comes from the recording. It checks the RNG count and the per-update RNG
+checkpoints, update and input counts, world time, and the camera at the cut. It also checks the
+per-update state hashes between executables. It does not know the final object count, the whole-trace
+RNG hash, or which files the game had written by then. Remove the uncut case from
+`local/harness/traces.json` if it can never pass.
+
 Every file the game writes during the session, such as saves or scenarios, becomes
 part of the check. Replay must write the same files with the same bytes.
-Saved Game lists only the pinned fixture pool. A save made in one recording is not
-available when a later recording starts.
+Saved Game lists the pinned fixture pool plus every save in `local/harness/savegames/`.
+A save made in one recording is not available when a later recording starts.
+To start a recording from a personal save, copy it into that folder first.
+A recording pins the save's hash. If the file changes later, that case fails its save check.
+
+### Start from a chaos save
+
+```cmd
+game.cmd chaos-start
+game.cmd record
+```
+
+`chaos-start` makes a stress-test start with the original game, then `record` records play from it.
+It starts a normal random-map game with eight players and the game's own map generation.
+The defaults are a Gigantic Continental map, Stone Age, and Hardest computer players.
+At the first world update it adds, per player:
+
+- villagers up to 20;
+- 20,000 of each resource;
+- a population limit of 200;
+- a 200-unit army of randomly chosen land combat units in a block formation near the town centre.
+
+By default the game is a forced free-for-all (`--diplomacy ffa`).
+Without teams, the normal random-map setup starts every computer player neutral. About ten seconds
+in, the computer AI turns every still-neutral computer into one alliance against the human
+(`taimdmd.cpp`). Its tactical AI also drifts each update toward neutral or allied stances.
+The generator makes every player an enemy of every other, turns allied victory off, and locks every
+stance in each computer's diplomacy module. Locked stances cannot drift.
+After reloading, it lets the game run for `--check-seconds` of game time (default 15) and
+fails if any stance is not still enemy. Use `--diplomacy standard` to keep the normal random-map
+diplomacy. Tributes you send can still change a computer's stance.
+
+The army mixes infantry, archers, cavalry, chariots, elephants, siege, and priests.
+Heroes and boats are left out. The engine's placement check accepts every unit, so a crowded or wet site
+spreads the army over several blocks. The game's own save function writes the result
+to `local/harness/savegames/chaos-<seed>.gmx`. The generator then reloads that save
+and keeps screenshots under `build/chaos-start/`. In `record`, load it from
+**Single Player > Saved Game**. Run `game.cmd chaos-start --help` for the map, age, army,
+villager, resource, and seed options. A given seed repeats the civilizations and
+the army mix and positions. It does not give a byte-identical save: a few hundred bytes of
+clock-dependent computer-player state vary.
 
 ## Record a short session
 

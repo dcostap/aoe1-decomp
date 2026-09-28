@@ -228,11 +228,17 @@ def main():
     p = subs.add_parser('import-trace', help='Add a --deterministic-trace recording to the traced suite')
     p.add_argument('recording_dir', type=Path, help='build/runtime/human-* folder with recording.json')
     p.add_argument('--name', required=True, help='Case name: letters, digits, dashes, underscores')
+    p = subs.add_parser('cut-trace', help='Add a traced case that replays an existing case only up to a world update')
+    p.add_argument('source', help='Existing traced case')
+    p.add_argument('--at-update', type=int, required=True, help='Last world update to keep')
+    p.add_argument('--name', required=True, help='New case name')
     p = subs.add_parser('test-parity', help='Run the standard gameplay suite, including the saved-game recording')
     p.add_argument('--check-fixtures', action='store_true', help='Validate all permanent recordings and required saves without running games')
     p.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite with its known repeatability limits')
     p.add_argument('--editor', action='store_true', help='Also run the V7 editor input, camera, and RGB case')
     p.add_argument('--jobs', type=int, default=1, help='Must be 1; parallel parity workers are disabled')
+    subs.add_parser('chaos-start', add_help=False,
+                    help='Generate a random-map save with huge armies near every town centre; see chaos-start --help')
     p = subs.add_parser('feature-lab', help='Generate, open, or compare a native feature map')
     p.add_argument('operation', choices=('generate', 'replay', 'test', 'test-all', 'open'))
     p.add_argument('options', nargs=argparse.REMAINDER, help='Options for the feature-map operation')
@@ -288,6 +294,10 @@ def main():
         p.add_argument("--graphics", choices=("cnc-ddraw", "native"), default="cnc-ddraw")
         p.add_argument("--assets", choices=("hardlink", "copy"), default="hardlink")
         p.add_argument("--prepare-only", action="store_true")
+    if sys.argv[1:2] == ['chaos-start']:
+        # All options, including --help, belong to the generator.
+        return subprocess.run([str(ROOT/'build/harness-env/Scripts/python.exe'),
+            str(ROOT/'tools/harness/chaos_start.py'), *sys.argv[2:]], cwd=ROOT).returncode
     args = parser.parse_args()
     try:
         if args.command in ('replay-original', 'replay-rebuilt', 'test-parity',
@@ -313,6 +323,10 @@ def main():
             if code == 0:
                 print(f'Added test case {name}. Run: game.cmd test-traces --case {name}')
             return code
+        if args.command == 'cut-trace':
+            return subprocess.run([str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/trace_suite.py'),
+                                   'cut', args.source, '--at-update', str(args.at_update), '--name', args.name],
+                                  cwd=ROOT).returncode
         if args.command in ('test-traces', 'import-trace'):
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/trace_suite.py')]
             if args.command == 'import-trace':

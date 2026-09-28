@@ -120,8 +120,10 @@ def test_unknown_asset_mode_rejected(inputs):
 
 
 @pytest.fixture
-def harness_inputs(inputs):
+def harness_inputs(inputs, tmp_path, monkeypatch):
     source, exe, output = inputs
+    # Personal saves on this machine are not part of these tests.
+    monkeypatch.setattr(prepare_runtime, 'LOCAL_SAVES', tmp_path / 'no-local-saves')
     folder = prepare_runtime.ROOT / 'config/harness/savegames'
     folder.mkdir(parents=True)
     fixture = folder / 'late_game_match.gmx'
@@ -150,6 +152,26 @@ def test_local_saves_are_optional_pool_members(harness_inputs, tmp_path, monkeyp
     assert [path for path, _ in prepare_runtime.save_fixtures()] == [fixture]
     with pytest.raises(ValueError, match='missing personal.gmx'):
         prepare_runtime.select_save_fixtures(prepare_runtime.save_fixtures(), {'personal.gmx':'x'})
+
+
+def test_unlisted_local_saves_join_the_pool_with_their_current_hash(harness_inputs, tmp_path, monkeypatch):
+    source, exe, output, fixture = harness_inputs
+    local = tmp_path / 'local-saves'
+    local.mkdir()
+    monkeypatch.setattr(prepare_runtime, 'LOCAL_SAVES', local)
+    (local / 'chaos-1.gmx').write_bytes(b'chaos')
+    (local / 'notes.txt').write_text('not a save')
+    rows = prepare_runtime.save_fixtures()
+    assert [path for path, _ in rows] == [fixture, local / 'chaos-1.gmx']
+    assert rows[1][1] == {'name':'chaos-1.gmx', 'local':True, 'size':5,
+                          'sha256':prepare_runtime.digest(local / 'chaos-1.gmx')}
+    selected = prepare_runtime.select_save_fixtures(rows, {'chaos-1.gmx':rows[1][1]['sha256']})
+    assert [path for path, _ in selected] == [local / 'chaos-1.gmx']
+    # A recording pins the hash it saw; a changed file no longer satisfies it.
+    (local / 'chaos-1.gmx').write_bytes(b'changed')
+    with pytest.raises(ValueError, match='hash differs'):
+        prepare_runtime.select_save_fixtures(prepare_runtime.save_fixtures(),
+                                             {'chaos-1.gmx':rows[1][1]['sha256']})
 
 
 def test_harness_uses_only_private_copies_of_repository_saves(harness_inputs):
@@ -204,7 +226,8 @@ def test_save_fixture_paths_are_bounded(harness_inputs, name):
 
 @pytest.mark.skipif(not local_saves_present(), reason='Personal save fixtures are not in local/harness/savegames.')
 def test_repository_save_fixture_identity():
-    fixtures = prepare_runtime.save_fixtures()
+    # Other personal saves can follow the pinned rows; they are not part of this identity.
+    fixtures = prepare_runtime.save_fixtures()[:3]
     assert [row['name'] for _, row in fixtures] == [
         'late_game_match.gmx', 'late_game_match_2.gmx', 'new_game_15mins_in.gmx']
     assert fixtures[0][1]['sha256'] == 'fccd0ca0ccd98a6658a1eeb3b306c89afee3af9caf58ab518ee04eae434687f4'

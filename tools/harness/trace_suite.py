@@ -181,6 +181,74 @@ def import_trace(human_dir, name):
     return registry['cases'][name]
 
 
+def message_field(messages, index, field):
+    return int.from_bytes(messages[index * 80 + field * 4:index * 80 + field * 4 + 4], 'little')
+
+
+def cut_trace(source, name, at_update):
+    """Add a case that replays SOURCE only through world update AT_UPDATE.
+
+    The cut falls on the first message-pump poll after that update. Replay finds
+    the trace exhausted there and stops normally. Each message record holds the
+    update, input, and RNG counts at that moment, so the oracle comes from the
+    recording itself. World object count, the full RNG hash, allocations, and
+    written files are not known at the cut; the per-update RNG checkpoints and the
+    two-executable checks still cover them.
+    """
+    if not name.replace('-', '').replace('_', '').isalnum():
+        raise ValueError('Use letters, digits, dashes, and underscores in the case name.')
+    check_fixtures([source])
+    folder = TRACE_DIR / source
+    recording = json.loads(lzma.decompress((folder / 'recording.json.xz').read_bytes()))
+    messages = lzma.decompress((folder / 'messages.bin.xz').read_bytes())
+    oracle = recording['oracle']
+    if not 1 <= at_update < oracle['updates']:
+        raise ValueError(f'Choose an update from 1 to {oracle["updates"] - 1}.')
+    polls = (0x80000001, 0x80000003)  # Poll entry records: GetMessage and PeekMessage.
+    cut = next((index for index in range(len(messages) // 80)
+                if message_field(messages, index, 16) == at_update and message_field(messages, index, 0) in polls), None)
+    if cut is None:
+        raise ValueError(f'No message-pump poll follows update {at_update}.')
+    rng_count, inputs = message_field(messages, cut, 19), message_field(messages, cut, 17)
+    if rng_count != oracle['update_rng'][at_update - 1][0]:
+        raise ValueError('RNG calls run between that update and the next poll; choose another update.')
+    update_row = recording['update_trace'][at_update - 1]
+    if update_row['updates'] != at_update:
+        raise ValueError('The update trace does not line up with the message trace.')
+    kept = messages[:cut * 80]
+    recording['events'] = recording['events'][:inputs]
+    recording['update_trace'] = recording['update_trace'][:at_update]
+    recording['message_recording'] = dict(recording['message_recording'], records=cut, sha256=sha256(kept))
+    cut_oracle = {'rng_records': rng_count, 'rng_sites': oracle.get('rng_sites'),
+                  'update_rng': oracle['update_rng'][:at_update], 'updates': at_update, 'inputs': inputs,
+                  'world': {'time': update_row['exit_time']}, 'alloc': None}
+    capture = Path(recording['source_report'])
+    if capture.exists():
+        # The recording capture's camera events give the view at the cut. A move later in the
+        # same idle turn happens after the cut, so events are selected by time, not update.
+        cameras = [row for row in json.loads(capture.read_text())['events']
+                   if row.get('kind') == 'human-camera' and row['time_ms'] <= update_row['time_ms']]
+        if cameras:
+            cut_oracle['camera'] = cameras[-1]['camera']
+    recording['oracle'] = cut_oracle
+    recording['cut'] = {'source': source, 'at_update': at_update, 'message_records': cut,
+                        'source_recording_sha256': load_registry()['cases'][source]['recording_sha256']}
+    output = TRACE_DIR / name
+    output.mkdir(parents=True, exist_ok=False)
+    stored = lzma.compress(json.dumps(recording, separators=(',', ':')).encode(), preset=6)
+    (output / 'recording.json.xz').write_bytes(stored)
+    stored_messages = lzma.compress(kept, preset=6)
+    (output / 'messages.bin.xz').write_bytes(stored_messages)
+    registry = load_registry()
+    registry['cases'][name] = {
+        'recording_sha256': sha256(stored), 'messages_sha256': sha256(stored_messages),
+        'duration_ms': recording['duration_ms'], 'inputs': inputs, 'updates': at_update,
+        'rng_records': rng_count, 'outputs': {}, 'cut_from': source,
+    }
+    REGISTRY.write_text(json.dumps(registry, indent=2, sort_keys=True) + '\n', newline='\n')
+    return registry['cases'][name]
+
+
 def check_fixtures(names=None):
     registry = load_registry()
     cases = registry['cases']
@@ -223,8 +291,12 @@ def first_rng_difference(left_dir, right_dir, sites, updates):
 
 def compare(oracle, run):
     checks = {'completed': not run['errors']}
-    for key in ('rng_records', 'rng_sha256', 'updates', 'inputs', 'world', 'camera'):
-        checks[key] = run[key] == oracle[key]
+    # A cut case's oracle omits what the recording cannot know at the cut.
+    for key in ('rng_records', 'rng_sha256', 'updates', 'inputs', 'camera'):
+        if key in oracle:
+            checks[key] = run[key] == oracle[key]
+    world = oracle.get('world')
+    checks['world'] = run['world'] == world if not isinstance(world, dict) or not isinstance(run['world'], dict)         else all(run['world'].get(key) == value for key, value in world.items())
     if 'written_files' in oracle:
         checks['written_files'] = file_set(run.get('written_files')) == file_set(oracle['written_files'])
     first = next((number for number, (want, got) in enumerate(zip(oracle['update_rng'], run['update_rng']), 1)
@@ -339,6 +411,10 @@ def main():
     p = subs.add_parser('import', help='Add a deterministic-trace human recording as a permanent case')
     p.add_argument('recording_dir', type=Path, help='build/runtime/human-* folder holding recording.json')
     p.add_argument('--name', required=True)
+    p = subs.add_parser('cut', help='Add a case that replays an existing case only up to a world update')
+    p.add_argument('source', help='Existing traced case')
+    p.add_argument('--at-update', type=int, required=True, help='Last world update to keep')
+    p.add_argument('--name', required=True, help='New case name')
     p = subs.add_parser('check', help='Check pinned trace fixtures without starting games')
     p.add_argument('--case', action='append')
     p = subs.add_parser('run', help='Replay traced cases on both executables and compare with the recordings')
@@ -349,6 +425,10 @@ def main():
     if args.command == 'import':
         row = import_trace(args.recording_dir.resolve(), args.name)
         print(f'Imported {args.name}: {json.dumps(row)}')
+        return 0
+    if args.command == 'cut':
+        row = cut_trace(args.source, args.name, args.at_update)
+        print(f'Added {args.name}: {json.dumps(row)}')
         return 0
     if args.command == 'check':
         cases = check_fixtures(args.case)
