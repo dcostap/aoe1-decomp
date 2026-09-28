@@ -424,8 +424,7 @@ unsigned char RGE_Sprite::get_facetindex(long facet, long frame, long& facetinde
             i = i - facet;
         }
         facetindex = i;
-        int tmp = facetindex;
-        facetindex = (tmp - ((int)this->facet_num >> 2)) *
+        facetindex = (facetindex - ((int)this->facet_num >> 2)) *
                     (int)this->frame_num + frame;
         return 1;
     }
@@ -740,7 +739,7 @@ int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y
 int RGE_Sprite::get_frame_min_max(short& min_x, short& min_y, short& max_x,
                                   short& max_y, long facet, long frame,
                                   short pic_x, short pic_y) {
-    int facetindex;
+    long facetindex;
     long frame_index = frame;
     long calc_min_y;
     long calc_max_y;

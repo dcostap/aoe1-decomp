@@ -188,3 +188,10 @@ register-map conflict. That target now has `scratch` status.
 The new source restores EDI after the output write, but crosses its
 original boundary by two bytes. It now has `scratch` status.
 The action reviews propose exact matches for `004CFFD0` and `004D2250`.
+
+The `sprite`, `Pnl_txt`, and `act_list` reviews found no new source defect.
+The sprite source removes one redundant output alias and uses a PDB-backed
+`long` facet index. The changes emit the same reviewed target bytes.
+The original `0047C640` has a text-wrap path that can fail to advance.
+The source retains that behavior. The two-byte `00404590` drift is in an
+unreachable block; no source or status change was required.
