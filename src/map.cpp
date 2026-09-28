@@ -1281,7 +1281,7 @@ void RGE_Map::save_map(int outfile) {
     rge_write(handle, &map->map_visible_flag, 1);
     rge_write(handle, &map->fog_flag, 1);
 
-    if (!(save_game_version < g_map_save_version_7_0)) {
+    if (save_game_version >= g_map_save_version_7_0) {
         int y = 0;
         if (*height > 0) {
             do {

@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "004407A0": {"status": "accepted_drift", "symbol": "??0TribeSendMessageDialog@@QAE@PAVTScreenPanel@@@Z"},
+    "004407A0": {"status": "scratch", "symbol": "??0TribeSendMessageDialog@@QAE@PAVTScreenPanel@@@Z"},
     "00440E20": {"status": "matching", "symbol": "??1TribeSendMessageDialog@@UAE@XZ"},
     "00440F20": {"status": "matching", "symbol": "?action@TribeSendMessageDialog@@MAEJPAVTPanel@@JKK@Z"},
     "00441410": {"status": "matching", "symbol": "?checkButtons@TribeSendMessageDialog@@IAEXXZ"},

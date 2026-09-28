@@ -4155,29 +4155,23 @@ void TribeInformationAIModule::storeLot(int typeID, unsigned char x,
 void TribeInformationAIModule::removeLot(
     int typeID, unsigned char x, unsigned char y, unsigned char newStatus) {
     int idx = 0;
-    if (maxBuildingLots <= 0) return;
-
-    BuildingLot* lot = buildingLots;
-    goto enter;
-
-loop:
-    idx++;
-    lot++;
-    if (idx >= maxBuildingLots) return;
-
-enter:
-    if (lot->typeID == typeID && lot->x == x && lot->y == y)
-        goto found;
-    goto loop;
-
-found:
-    if (newStatus != 3) {
-        buildingLots[idx].status = newStatus;
-    } else {
-        buildingLots[idx].typeID = -1;
-        buildingLots[idx].x = 0;
-        buildingLots[idx].y = 0;
-        buildingLots[idx].status = 3;
+    if (maxBuildingLots > 0) {
+        BuildingLot* lot = buildingLots;
+        do {
+            if (lot->typeID == typeID && lot->x == x && lot->y == y) {
+                if (newStatus != 3) {
+                    lot->status = newStatus;
+                } else {
+                    lot->typeID = -1;
+                    lot->x = 0;
+                    lot->y = 0;
+                    lot->status = 3;
+                }
+                return;
+            }
+            ++idx;
+            ++lot;
+        } while (idx < maxBuildingLots);
     }
 }
 
@@ -4224,35 +4218,26 @@ int TribeInformationAIModule::undesirableLot(
     int typeID, unsigned char x, unsigned char y, int overlapSize) {
     int i = 0;
     int max = this->maxBuildingLots;
-    BuildingLot* pLot;
+    if (max > 0) {
+        BuildingLot* pLot = this->buildingLots;
+        do {
+            if (pLot->typeID == typeID && pLot->status == 1) {
+                int lotY = (int)pLot->y;
+                int lotX = (int)pLot->x;
+                int yMinusOff = lotY - overlapSize;
+                int offPlusX = overlapSize + lotX;
+                int xMinusOff = lotX - overlapSize;
+                int offPlusY = overlapSize + lotY;
 
-    if (max <= 0) {
-        goto ret_zero_late;
+                if (xMinusOff <= (int)x && offPlusX >= (int)x &&
+                    yMinusOff <= (int)y && offPlusY >= (int)y) {
+                    return 1;
+                }
+            }
+            ++pLot;
+            ++i;
+        } while (i < max);
     }
-
-    pLot = this->buildingLots;
-
-loop:
-    if (pLot->typeID == typeID && pLot->status == 1) {
-        int lotX = (int)pLot->x;
-        int lotY = (int)pLot->y;
-        int yMinusOff = lotY - overlapSize;
-        int offPlusX = overlapSize + lotX;
-        int xMinusOff = lotX - overlapSize;
-        int offPlusY = overlapSize + lotY;
-
-        if (xMinusOff <= (int)x && offPlusX >= (int)x && yMinusOff <= (int)y && offPlusY >= (int)y) {
-            goto ret_one;
-        }
-    }
-    pLot++;
-    i++;
-    if (i < max) goto loop;
-    return 0;
-
-ret_one:
-    return 1;
-ret_zero_late:
     return 0;
 }
 

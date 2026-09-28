@@ -1,0 +1,41 @@
+# Experiment 0472f708d24ceaa1c1bdb99cad66b50dbe2921d72ea5f4307b4ee5618781a7c3
+# Base 23f6673f7e701837099507a9888d0197784c1db4
+diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index cdcf24681..767b0023c 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -6626,7 +6626,6 @@ int TribeTacticalAIModule::taskAttacker(int soldierID, float xLocation,
+                                         int pathLength, int commanderID,
+                                         int idleAttackRoundup) {
+     RGE_Static_Object* attacker;
+-    float distance;
+     int priority;
+ 
+     if (soldierID == -1) {
+@@ -6652,7 +6651,7 @@ int TribeTacticalAIModule::taskAttacker(int soldierID, float xLocation,
+             return 0;
+         }
+ 
+-        distance = attacker->distance_to_object(target);
++        float distance = attacker->distance_to_object(target);
+         priority = this->calculatePriority(distance);
+         int command;
+         if (idleAttackRoundup == 1)
+@@ -6663,7 +6662,7 @@ int TribeTacticalAIModule::taskAttacker(int soldierID, float xLocation,
+         this->md->player->sendUnitAIOrder((int)this->md->player->id, soldierID, command, targetID, targetOwner, xLocation,
+                                           yLocation, 1.0f, attacker->weaponRange(), 1, 0, priority);
+     } else {
+-        distance = attacker->distance_to_position(xLocation, yLocation, 1.0f);
++        float distance = attacker->distance_to_position(xLocation, yLocation, 1.0f);
+         priority = this->calculatePriority(distance);
+         this->moveUnit(soldierID, xLocation, yLocation, priority);
+     }
+@@ -6708,7 +6707,7 @@ int TribeTacticalAIModule::taskDefender(int defender, float x, float y) {
+ }
+ 
+ int TribeTacticalAIModule::taskTrain(BuildItem* trainItem) {
+-    int objectID = 0;
++    int objectID;
+     RGE_Static_Object* trainBuilding;
+     ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+ 

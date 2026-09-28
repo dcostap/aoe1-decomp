@@ -32,35 +32,53 @@ configuration consumer for `include/m_co_obj_context.h`. The canonical
 `m_co_obj.h` and `com_obj.h` owners provide the complete combat declarations,
 so the stale context was removed.
 
-## Validation state
+## Final review
 
-The thirteen former matching owners retain their exact source bodies:
+The final single-job audit compiled all fifteen normal functions.
+Thirteen matching functions passed.
+The audit found one boundary problem and one accepted drift.
 
-`0044FE40`, `0044FEC0`, `0044FF30`, `0044FFB0`, `00450170`, `00450680`,
-`004506D0`, `004507A0`, `00450810`, `00450A00`, `00450B40`, `00450D00`, and
-`00450E20`.
+Report: `build/drift-036-m_co_obj/audit-final/report.json`.
+Text report: `build/drift-036-m_co_obj/audit-final/report.txt`.
+The audit did not change registry states.
 
-`00450450` retains its reviewed accepted drift. Its size, six ordered parser
-calls, allocation loops, max scans, stores, cleanup, and fault order match.
-The seven changed bytes are only local stack displacements. The executable
-reuses dead parameter homes for four parser outputs. The natural source uses
-named local homes. The parser widths and destinations remain the same.
+### 00450450 `setup`
 
-`00451000` retains its reviewed accepted drift. It has the exact 188-byte size,
-frame, call set, nested loop bounds, x87 operation sequence, global thresholds,
-and return. The remaining twelve bytes are the base-armor and value register
-allocation basin at the entry and its dependent reload. The source uses the
-natural branch-local remaining counter. Register hints and allocator scaffolds
-are not retained.
+See `decomp_notes/functions/0045/00450450.md` for instruction-level behavior.
+The original parser reuses argument and stack homes for five `%hd` outputs.
+The old seven-byte source did not preserve those values after failed scans.
+The current source initializes typed locals from those original home values.
 
-The old exact claims are stale only as standalone source-bank claims. The module
-metadata records the thirteen exact owners and two accepted-drift owners in the
-single source file.
+The final object has 585 bytes. The original function has 557 bytes.
+Strict diff is 542 bytes.
+The group audit reports two boundary escapes.
+This source is not ready for integration.
+The boundary result is more important than its smaller raw byte mismatch.
 
-## Open regression
+The source keeps the unchecked sprite index, signed counts, allocation order,
+ignored scan results, and return behavior.
+The note cites the original instructions that prove each claim.
 
-The structural migration changes the ambient header context. The old wrapper
-used `m_co_obj_context.h`, while the natural header uses the canonical action
-hierarchy from `m_ac_obj.h`. The accepted-drift metrics need a fresh grouped
-candidate check after migration. Do not alter source behavior to hide a context
-regression. Restore exact repair on the final source tree.
+### 00451000 `calc_base_damage_ability`
+
+See `decomp_notes/functions/0045/00451000.md` for instruction-level behavior.
+The final object and original are both 188 bytes.
+Strict diff is twelve bytes.
+The difference is register allocation and instruction scheduling.
+The PDB names the integer scratch value `tot_armor`.
+The source now uses that name and the original field-read order.
+
+The behavior review supports an accepted-drift proposal.
+No registry status changed.
+The full linked-image dependency audit did not run.
+
+## Open work
+
+Do not integrate the current `00450450` source.
+Find a natural source form that preserves failed-scan fallbacks without
+crossing its original boundary, or record the blocker for owner review.
+
+No runtime test called either original function.
+The review uses original instructions, PDB scopes, source layouts, and compiler
+checks.
+No full executable link or linked-image data audit ran.

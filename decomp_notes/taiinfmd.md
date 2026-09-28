@@ -151,3 +151,38 @@ match with four aligned calls and eight compatible relocations. A one-job
 translation-unit audit compiled 121 owners and kept all existing matching
 neighbors exact. Detailed behavior evidence is in
 `decomp_notes/functions/004E/004E22F0.md`.
+
+## 2026-09-28 drift-004 accepted-drift re-review
+
+Worker `drift-004-taiinfmd` re-reviewed all nine assigned functions against
+the repository-local executable. Detailed findings and state/event IDs are in
+the per-function notes for `004D6BB0`, `004DE330`, `004DE600`, `004DEA80`,
+`004E02A0`, `004E0470`, `004E05C0`, `004E0FD0`, and `004E2D10`.
+
+The only retained source changes are natural guarded `do-while` forms in
+`removeLot` (`004E0470`) and `undesirableLot` (`004E05C0`). They preserve the
+original scan and write rules. The `removeLot` byte mismatch grew from 94 to
+149. The `undesirableLot` mismatch stayed at 142. The indexed-loop forms were
+worse and are preserved as experiment states. No proved behavior defect was
+found. The review found no PDB-scoped-local section in the nine packets.
+
+`storeAttackMemory` (`004E0FD0`) first showed an 11-byte mismatch. Reversing
+the commutative X-byte sum did not change output. With both lot-loop source
+reductions in the recorded translation-unit context, an unchanged
+`storeAttackMemory` body produced a 441-byte exact match. The final serial audit
+also reports `MATCH`, correct owner and boundary, and zero relocations. The
+compiler-context cause is unknown. Do not promote its status here.
+
+The final one-job translation-unit report is
+`build/validation/drift-004-taiinfmd-final/functions/report.txt`. It compiled
+one group and 121 normal functions. It reports 100 `matching_result`, 12
+`new_verified_logic_observed`, four `accepted_drift_observed`, four
+`boundary_problem`, and one `grouped_match_needs_review`. No existing exact
+owner regressed. The four boundary rows are `004D6BB0`, `004DE600`,
+`004DEA80`, and `004E2D10`; see the report for their flags. The `004E0FD0` row
+asks for promotion review, but registry status remains unchanged.
+
+No registry status changed. No files were staged or committed. Linked-image,
+runtime, and gameplay tests were not run. The experiment-history switch was
+refused after it found unrelated untracked capture data; source variants were
+restored with focused patches, and all tested states remain captured.

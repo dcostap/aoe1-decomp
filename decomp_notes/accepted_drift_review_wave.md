@@ -111,3 +111,30 @@ The following additional targets now have `scratch` status:
 
 The `0047E5D0` and `00473930` source probes were not integrated.
 Their function notes separate the isolated probes from the integrated source.
+
+The next packages cover `aiuaimod`, `dlg_smsg`, `m_co_obj`, `map`,
+`taiinfmd`, `taitacmd`, and `act_atak`.
+The original `00450450` reuses parameter and saved-pointer words as scan outputs.
+Its typed source now preserves those values when `fscanf` stops early.
+The rebuilt function still crosses its original boundary, so it has `scratch` status.
+The worker proposed deferring integration; root retained the proved fallback repair.
+The boundary and runtime fault cases remain open.
+
+`004FB2D0` and `004FB550` now match through natural local declarations.
+`004E0FD0` matches in the module context after two natural lot-loop changes.
+These three exact promotions require fresh integrated-owner checks.
+The `00457C50` comparison now spells `>=` directly.
+This source expresses the original unordered x87 branch and emits unchanged bytes locally.
+
+The following additional targets have `scratch` status:
+
+| Target | Open issue |
+| --- | --- |
+| `00414D40` | A reversed early register save has a proved stack-fault counterexample. |
+| `004407A0` | Broad drift and linked storage remain unproved. |
+| `00458600` | A parser output conflicts with its PDB parameter home. |
+| `00458C90` | The rebuild omits a repeated null check. |
+| `004D6BB0`, `004DE600`, `004DEA80`, `004E2D10` | Emitted code crosses the original boundaries. |
+| `004E0470` | The clearer loop still has broad, unapproved drift. |
+| `004F57C0`, `00502310`, `00503070` | Emitted code crosses the original boundaries. |
+| `00401170`, `004012B0` | Floating-point and linked-value checks remain open. |

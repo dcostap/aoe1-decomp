@@ -7,8 +7,8 @@
   },
   "functions": {
     "00401000": {"status": "matching", "symbol": "??0RGE_Action_Attack@@QAE@HPAVRGE_Action_Object@@@Z"},
-    "00401170": {"status": "accepted_drift", "symbol": "??0RGE_Action_Attack@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@PAVRGE_Sprite@@22MMFF@Z"},
-    "004012B0": {"status": "accepted_drift", "symbol": "??0RGE_Action_Attack@@QAE@PAVRGE_Action_Object@@MMMPAVRGE_Sprite@@11MMFF@Z"},
+    "00401170": {"status": "scratch", "symbol": "??0RGE_Action_Attack@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@PAVRGE_Sprite@@22MMFF@Z"},
+    "004012B0": {"status": "scratch", "symbol": "??0RGE_Action_Attack@@QAE@PAVRGE_Action_Object@@MMMPAVRGE_Sprite@@11MMFF@Z"},
     "004013A0": {"status": "matching", "symbol": "??1RGE_Action_Attack@@UAE@XZ"},
     "004013B0": {"status": "matching", "symbol": "?save@RGE_Action_Attack@@UAEXH@Z"},
     "004014B0": {"status": "matching", "symbol": "?first_in_stack@RGE_Action_Attack@@UAEXE@Z"},

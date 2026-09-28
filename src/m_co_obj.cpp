@@ -174,18 +174,23 @@ int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
 // m_co_obj.cpp lines 182-262.
 int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     FILE* input = infile;
-    short temp_base_armor;
-    short temp_area_effect_level;
     short temp_break_off_combat;
     short temp_fire_missile_at_frame;
     short index;
     short* armor_count_value;
     int value_count;
-    short temp_fight_sprite;
     RGE_Sprite* selected_sprite;
 
     RGE_Master_Action_Object::setup(input, sprites, sounds, in_id);
     master_type = 0x32;
+
+    // The original scanner outputs reuse dead arguments and halves of saved
+    // this. Preserve those fallback words when fscanf cannot assign them.
+    short temp_base_armor = (short)(unsigned long)infile;
+    short temp_area_effect_level = (short)(unsigned long)sounds;
+    short temp_fight_sprite = in_id;
+    temp_break_off_combat = (short)(unsigned long)this;
+    temp_fire_missile_at_frame = (short)(((unsigned long)this) >> 16);
 
     fscanf(input, "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f",
            &temp_fight_sprite, &temp_base_armor, &armor_num, &weapon_num, &defense_terrain_bonus,
@@ -224,9 +229,9 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
         selected_sprite = sprites[temp_fight_sprite];
     else
         selected_sprite = (RGE_Sprite*)0;
+    fight_sprite = selected_sprite;
     break_off_combat = (unsigned char)temp_break_off_combat;
     area_effect_level = (unsigned char)temp_area_effect_level;
-    fight_sprite = selected_sprite;
     base_armor = (unsigned char)temp_base_armor;
     // the shipped parser stores the low byte of this value.
     fire_missile_at_frame = (unsigned char)temp_fire_missile_at_frame;
@@ -536,19 +541,20 @@ long RGE_Master_Combat_Object::calc_base_damage_ability(
     RGE_Armor_Weapon_Info* weapon = attacker->weapon;
 
     if (count > 0) {
-        int remaining = count;
         int armor_count = this->armor_num;
+        int remaining = count;
         int base_armor = this->base_armor;
+        int tot_armor;
         do {
             int n;
-            int value = base_armor;
+            tot_armor = base_armor;
             if (armor_count > 0) {
                 short weapon_type = weapon->type;
                 RGE_Armor_Weapon_Info* armor = this->armor;
                 n = armor_count;
                 do {
                     if (armor->type == weapon_type) {
-                        value = armor->value;
+                        tot_armor = armor->value;
                     }
                     ++armor;
                     --n;
@@ -556,7 +562,7 @@ long RGE_Master_Combat_Object::calc_base_damage_ability(
             }
 
             int attack = weapon->value;
-            float diff = (float)attack - (float)value;
+            float diff = (float)attack - (float)tot_armor;
             if ((double)diff > g_damage_ability_positive_difference_threshold) {
                 total += diff;
             }
