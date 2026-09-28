@@ -236,25 +236,17 @@ void RGE_Visible_Map::set_all(unsigned char vis_flag) {
 void RGE_Visible_Map::explore_all(void) {
     log_map_call(this->world->world_time, (int)this->player->id, 6, 0, 0, 0, 0, 0, 0);
 
-    int y = 0;
-    if (this->heightValue > 0) {
-        do {
-            int x = 0;
-            if (this->widthValue > 0) {
-                do {
-                    unsigned char* row = this->map_offsets[y];
-                    if (row[x] == 0xFF) {
-                        row[x] = 0;
-                        this->numberTilesExploredValue++;
-                        unsigned long* explored = unified_map_offsets[y];
-                        explored[x] |= this->PlayerExploredMaskValue;
-                        this->player->tile_list.add_node(x, y);
-                    }
-                    x++;
-                } while (x < this->widthValue);
+    for (int y = 0; y < this->heightValue; ++y) {
+        for (int x = 0; x < this->widthValue; ++x) {
+            unsigned char* row = this->map_offsets[y];
+            if (row[x] == 0xFF) {
+                row[x] = 0;
+                this->numberTilesExploredValue++;
+                unsigned long* explored = unified_map_offsets[y];
+                explored[x] |= this->PlayerExploredMaskValue;
+                this->player->tile_list.add_node(x, y);
             }
-            y++;
-        } while (y < this->heightValue);
+        }
     }
     this->player->tile_list.collapse_list = 1;
 }
@@ -761,7 +753,7 @@ long RGE_Visible_Map::checksumVisible(void) {
             if (this->widthValue > 0) {
                 unsigned char* row = this->map_offsets[y];
                 do {
-                    value ^= x[row];
+                    value ^= row[x];
                     x++;
                 } while (x < this->widthValue);
             }
