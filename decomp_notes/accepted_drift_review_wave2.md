@@ -51,3 +51,28 @@ Its states, events, and referenced objects passed hash and input checks before i
 The integration preserves all new experiment records, not only the final metrics.
 The registry-only check, line-ending check, and diff check passed after integration.
 No source rebuild or runtime test ran for this note and status change.
+
+### `drift2-035-airesitm`
+
+The integration review retains the narrow `00412240` approval.
+One SIB byte exchanges scale-one terms under DS. All other instructions agree.
+The original count-above-eight overlap bug remains in the typed source.
+The worker audit found 15 exact neighbors and no exact regression.
+All new experiment records passed hash, parent, prerequisite, and input checks.
+No source changed, and no runtime cases ran for this review.
+
+### Shared map-table question
+
+The raw PDB record `0x1150` is an `LF_ARRAY` of `T_32PULONG` with length 1,024 bytes.
+`S_GDATA32 [0004:00307808]` names `unified_map_offsets` with that type and type `0x11BA`.
+The current declaration and definition use 1,024 pointers, which occupy 4,096 bytes.
+The doppleganger worker is checking the second type, executable references, and affected closure.
+No shared source repair is approved yet. Its first proposal and input records are preserved.
+
+### Inconclusive results
+
+The user requests a fresh subagent for each inconclusive result.
+Give each retry a fresh context and separate worktree. Keep the 40-worker limit.
+Do not assign two active recovery workers to the same natural module.
+Append `004471F0` has the first fresh retry assignment.
+An unrun runtime case alone does not invalidate a complete instruction proof.
