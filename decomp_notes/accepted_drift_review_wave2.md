@@ -135,3 +135,16 @@ The candidate row reads `VCALL_LOG` at `005EF570` instead.
 Initial zero bytes do not prove equal later values or faults.
 Keep the shared source repair as an experiment. Do not add a bounds check.
 Fresh retry `retry2-009-dpl_obj` will investigate original neighbors and caller constraints.
+
+### Drawing and game-screen intake
+
+Fresh retry `retry2-010-drawarea` covers `SetClipRect` exception and fault-order obligations.
+Its previous proof explains reordered field reads only for valid receivers.
+The simpler loop remains a proposal; no source is integrated.
+Fresh retry `retry2-011-scr_game` covers both targets and their linked-global obligations.
+The narrow line and diplomacy-draw proposals remain in the independent review queue.
+
+The integration verified and preserved 37 drawarea, 30 scr_game, and 17 dlg_dip records.
+All three retained drawarea input sets and the diplomacy input set passed verification.
+It also preserved 37 append retry records and 42 new map-table continuation files.
+Evidence preservation does not approve source, status, or linked behavior.
