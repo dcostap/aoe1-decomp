@@ -148,3 +148,28 @@ The integration verified and preserved 37 drawarea, 30 scr_game, and 17 dlg_dip 
 All three retained drawarea input sets and the diplomacy input set passed verification.
 It also preserved 37 append retry records and 42 new map-table continuation files.
 Evidence preservation does not approve source, status, or linked behavior.
+
+### dsutil, Command, and victory intake
+
+The integration verified and preserved 20 dsutil, 46 Command, and 106 victory records.
+The dsutil proposal and five narrow Command proposals remain in the independent review queue.
+Fresh retry `retry2-013-command` covers three explicit global and virtual-target gaps.
+No source proposal from these workers is integrated.
+
+The integration withdraws `005324A0 handle_destroy_all` to `scratch`.
+Fresh compiled artifacts confirm that its state write moved after EBP restoration.
+The shared tail serves both an empty target-player list and a nonpositive player count.
+Saved-stack-word aliasing and fault order remain unresolved. No gameplay defect is proved.
+Fresh retry `retry2-012-victory` covers this gap. The other seven victory proposals remain pending.
+The corrected `00533240` source and its scratch status stay unchanged.
+
+The isolated integration check retained a 199-byte body with 25 differences and no exact regression.
+Its run event is `f811103d52cf8d979c0c571ed8caf5bb760920115b8aabecc54f8d5552138dfb`.
+An earlier cached diagnostic failed. The experiment runner also refused the main worktree.
+Neither failed attempt is validation; the refused experiment remains preserved.
+Finding `e78f14b8ad770011ad5c32593f272b32ad330b50bcc94c42be7fdbd11f78513c` records the integration objection.
+Registry-only validation and diff checks passed after the status change.
+No new game build, linked-image audit, or runtime suite ran.
+
+The integration also preserved 34 move_obj, 50 taiinfmd, 31 sprite, and 49 stat_obj records.
+Both retained move_obj input sets passed verification. Their proposals remain unapproved.

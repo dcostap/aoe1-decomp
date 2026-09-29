@@ -20,7 +20,7 @@
     "00532220": {"status": "matching", "symbol": "?handle_create_in_area@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "005323B0": {"status": "matching", "symbol": "?handle_destroy@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "005323D0": {"status": "matching", "symbol": "?handle_destroy_multiple@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
-    "005324A0": {"status": "accepted_drift", "symbol": "?handle_destroy_all@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
+    "005324A0": {"status": "scratch", "symbol": "?handle_destroy_all@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "00532570": {"status": "matching", "symbol": "?handle_destroy_player@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "005325A0": {"status": "matching", "symbol": "?handle_bring_area@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "00532610": {"status": "matching", "symbol": "?handle_bring_object@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
