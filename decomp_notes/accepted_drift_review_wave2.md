@@ -173,3 +173,28 @@ No new game build, linked-image audit, or runtime suite ran.
 
 The integration also preserved 34 move_obj, 50 taiinfmd, 31 sprite, and 49 stat_obj records.
 Both retained move_obj input sets passed verification. Their proposals remain unapproved.
+
+### `drift2-033-act_list`
+
+The integration retains accepted drift at `00404590 add_action_at_end`.
+Both changed bytes belong to an unreachable block.
+A zero successor branches to append; a nonzero successor must branch back to the scan.
+The complete review confirms all reachable effects, arguments, faults, and cleanup.
+The fresh isolated check retained 114 bytes and two differences. All 24 exact neighbors remain exact.
+Its run event is `b42f7a02cc1dfa9d2c0fbb40657c14e669fcc8e529c19919bcbf158969567a22`.
+Complete operand review resolves the local numeric-window limitation. No absolute storage operand occurs here.
+
+The integration rejects the successor-local probe for its changed empty-list fault order.
+It reads the action vtable before linking, unlike the original.
+The correcting finding and both probe runs remain preserved. No source change is integrated.
+Registry-only validation and diff checks passed. No new linked-image audit or runtime test ran.
+
+### Scenario and mouse-pointer intake
+
+The integration verified and preserved 40 action-list and 33 scenario records.
+It verified 25 mouse-pointer records and imported 24 new files.
+The restored action-list input and both mouse-pointer input sets passed verification.
+Fresh retry `retry2-014-scenario` covers constructor exception evidence and all four targets' linked references.
+Fresh retry `retry2-015-mouseptr` covers drawing references, argument staging, and failure effects.
+The cursor-deletion proposal remains queued. Its original over-bound loop must remain.
+No scenario or mouse-pointer proposal is approved yet.
