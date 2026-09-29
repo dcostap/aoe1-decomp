@@ -1312,7 +1312,9 @@ void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_E
                     float* score = &players[i]->attributes[node->attribute];
                     if (*score > current) {
                         points = 0;
-                    } else if (!(*score < current)) {
+                        break;
+                    }
+                    if (*score == current) {
                         points = node->curr_points;
                     }
                 }

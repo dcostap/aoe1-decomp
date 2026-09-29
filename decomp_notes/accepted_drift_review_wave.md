@@ -141,10 +141,10 @@ The following additional targets have `scratch` status:
 
 The next packages cover `victory`, `tplayer`, `tvw_main`, `rmm_base`,
 `color`, `airesitm`, `act_move`, and `dlg_dip`.
-The original `00533240` continues after a higher peer sets points to zero.
-A later equal or unordered peer can restore the prior points.
-The old source broke early and missed the unordered case.
-The source now preserves both paths; its 149-byte drift has `scratch` status.
+The first `00533240` review misread the original zero-points branch as a loop
+edge. It exits the scan. The old source's early `break` was correct.
+The review also misread VC5's unordered comparison result. The post-integration
+correction restores the original source form. This function remains `scratch`.
 `005326F0` and `00514590` have new exact source proposals.
 The original `00480A20` leak and tail-match fault remain in the clearer source.
 
@@ -257,7 +257,7 @@ The `taiuaimd` review found no new behavior defect at `00504750`.
 Its clearer source emits the same bytes, but its rebuilt body exceeds the
 original boundary by seven bytes. This target now has `scratch` status.
 
-## Final integrated validation
+## First integrated validation (before the peer-scan correction)
 
 All 89 workers finished their assigned module reviews.
 Of the 228 original accepted-drift entries, 23 now have `matching` status,
@@ -300,7 +300,28 @@ A serial `save-check` rerun failed at the same message record, 619,657.
 Its report is `build/runtime/traces-20260928T232404708566Z-96e438581c8a/report.json`.
 The original and rebuilt observer records agree through update 14,743.
 The next recorded message expects a different update count in the rebuilt run.
-The cause is not established. Do not treat this as a passed runtime check.
+The first linked run did not pass runtime validation.
+An isolated replay of the earlier `c14e88d0` EXE completed all 59,944
+`save-check` updates. Its RNG bytes match the original run, and both runs
+consumed 1,776,762 messages. The intermediate `843c860d` EXE fails at the
+same update and message record as the final `6fe3b801` EXE.
+The isolated runs are under `../aoe1-drift-runtime-bisect/build/runtime/`:
+`old-save-check-rebuilt-only/` and `intermediate-save-check-rebuilt-only/`.
+This brackets a runtime change before the final `taiuaimd` integration.
+Commit `63afd3ce2` passed an isolated `save-check` replay, and commit
+`8a65f748f` failed it. Reverting only the `victory.cpp` changes in the latter
+made the replay pass. Restoring only the old peer scan in `00533240` also
+made it pass. The original zero-points store at `005332F6` is after the
+loop's exit jump, not before an index update. The removed `break` caused a
+score difference that the observer hash did not measure.
+
+With a read-only peer-scan probe, the original gave one player 50 points per
+update near update 14,735. The incorrect replacement gave two players 50.
+The old source's ordinary equality test also compiles to the original
+`test ah,40h`. Its replacement `!(*score < current)` compiles to
+`test ah,01h` and changes unordered handling. The source now restores the
+early `break` and ordinary `==`. The corrected build and replay results appear
+below, separate from the first failed full suite.
 The focused `main-credits` UI case passed against the final linked EXE.
 
 The full UI run passed 40 cases and failed `saved-delete-confirmation` on
@@ -311,3 +332,32 @@ The focused case passed after that fixture change. The first full report is
 `build/runtime/ui-main-menu-20260928T233045151121Z-6cc2308cdcc8/report.json`.
 The focused report is
 `build/runtime/ui-main-menu-20260928T233938677516Z-8417ac1881d8/report.json`.
+
+### Validation after the peer-scan correction
+
+The corrected linked EXE hash is
+`26981774a281d9b5430ae00c170937156cc430731fac811b4867f00023bd3df3`.
+Its build report is
+`build/executable/user/20260929T004702201733Z-776f2388dfbd/20260929T004702433284Z/report.json`.
+The rebuilt game passed all five fast deterministic trace cases against the
+original. The report is
+`build/runtime/traces-20260929T004849722354Z-a6e0ce928056/report.json`.
+
+The final whole-project audit compiled all 225 groups and found 5,004
+matching results with no failed exact claims. The owner audit found zero
+mismatches among those 5,004 functions. The 17 non-exact boundary problems
+remain. Reports are in `build/validation/accepted-drift-peer-correction/`.
+The corrected linked image had 11,387 supported dependency passes,
+48,168 unknown checks, and no supported failure. Linked references had
+7,515 passes and 5,350 unknowns. Header emissions had 133 matches.
+The initializer audit found 124 equal byte ranges, 59 unmapped names,
+and 107 entries needing type or startup review.
+The full automated suite passed 1,000 tests and 31 subtests. It skipped two
+tests that need absent optional historical builds. Its report is
+`build/validation/accepted-drift-peer-correction/tests.xml`.
+The final scripted gameplay parity stage passed on the corrected build.
+Its report is
+`build/runtime/parity-20260929T010105014803Z-452e7167e6ea/report.json`.
+The corrected UI suite passed all 41 cases on original and rebuilt.
+Its report is
+`build/runtime/ui-main-menu-20260929T180609111360Z-991a019bd71d/report.json`.
