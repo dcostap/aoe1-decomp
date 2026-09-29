@@ -37,4 +37,17 @@ This check did not compile code or repeat behavior reviews.
 
 ## Results
 
-Pending. No second-review result is approved yet.
+### `drift2-012-dstring`
+
+All three assigned targets received a review. No source change remains.
+The integration review retains the two narrow case-change approvals.
+Their SIB changes preserve DS addressing, effects, and fault order.
+The append exception-path proof remains unresolved. Its approval returns to `scratch`.
+The current game map does not name its owner; it cannot supply linked SEH proof.
+No source defect was proved. No string runtime cases ran.
+
+The worker audit found 47 exact results and no exact-neighbor regression.
+Its states, events, and referenced objects passed hash and input checks before import.
+The integration preserves all new experiment records, not only the final metrics.
+The registry-only check, line-ending check, and diff check passed after integration.
+No source rebuild or runtime test ran for this note and status change.

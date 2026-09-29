@@ -39,7 +39,7 @@
     "004470B0": {"status": "matching", "symbol": "?moveToFirstWord@DString@@QAEXXZ"},
     "004470C0": {"status": "matching", "symbol": "?moveToNextWord@DString@@QAEXXZ"},
     "00447140": {"status": "matching", "symbol": "?subString@DString@@QAE?AV1@HH@Z"},
-    "004471F0": {"status": "accepted_drift", "symbol": "?append@DString@@QAEXV1@@Z"},
+    "004471F0": {"status": "scratch", "symbol": "?append@DString@@QAEXV1@@Z"},
     "004472D0": {"status": "matching", "symbol": "?stripTrailing@DString@@QAE?AV1@D@Z"},
     "00447370": {"status": "matching", "symbol": "?stripLeading@DString@@QAE?AV1@D@Z"},
     "00447400": {"status": "matching", "symbol": "?asInt@DString@@QBEHXZ"},
