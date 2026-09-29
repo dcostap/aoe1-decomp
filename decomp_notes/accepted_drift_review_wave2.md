@@ -198,3 +198,11 @@ Fresh retry `retry2-014-scenario` covers constructor exception evidence and all 
 Fresh retry `retry2-015-mouseptr` covers drawing references, argument staging, and failure effects.
 The cursor-deletion proposal remains queued. Its original over-bound loop must remain.
 No scenario or mouse-pointer proposal is approved yet.
+
+### Text-panel retry intake
+
+The completed `retry2-006-pnl_txt` restored its byte-neutral width probe.
+It still leaves eleven word-wrap references unproved. Fresh retry `retry2-016-pnl_txt` covers those linked identities.
+The calc_draw_info proposal remains queued; unrun runtime cases alone do not require another retry.
+The original exact getter candidate still needs independent ownership, source, and compiler-context checks.
+The integration verified 33 retry records and preserved 32 new files. No text-panel source changed.
