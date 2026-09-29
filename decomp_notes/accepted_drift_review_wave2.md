@@ -84,3 +84,54 @@ cover the unresolved questions in their first proposals. Their source changes
 and behavior proposals are not approved yet. Each retry starts at
 `4ac7be826df092b01102db9cad2cbba9da11f4c2` in a separate worktree.
 The original workers remain stopped. Preserve their evidence before cleanup.
+
+Fresh retries `retry2-005-aiconmod` and `retry2-006-pnl_txt` cover the unresolved
+save and text targets. Exact candidates `0040B980` and `0047E2A0` remain pending
+independent source and behavior review. No candidate source is integrated yet.
+The integration verified and preserved 25 aiconmod records and 39 pnl_txt records.
+
+### `drift2-023-player`
+
+The integration retains the narrow approvals at `004706B0` and `00470F80`.
+The first exchanges a signed back-edge test for its complementary exit test.
+Both paths use unchanged compare flags and reach the same effectful successors.
+The second exchanges scale-one SIB terms under DS at six sites.
+The complete review covers object accesses, parameter-home reuse, cleanup, and
+the original out-of-range group-table behavior. Neither function uses x87.
+
+The worker's 30 new records passed hash, parent, prerequisite, and retained-input checks.
+Initial read-only reuse could not extract the ally target. It was not a valid check.
+The integration captured its unchanged input before a fresh target and one-job closure check.
+State `4cebe1083edb9ba9000aee7eae1e62fe1f312b740decb090179c946c87c048ad`
+and event `4df8fc443e4e64269c685a4493b4dbeae26818876fcc87da43e6b48809d72f56`
+record the three-byte mismatch and zero exact regressions. Current-artifact
+diagnostics then confirmed both complete bodies. Registry statuses stay unchanged.
+No linked-image audit or runtime case ran for this note-only integration.
+
+### Pending multiplayer, editor, and Shape proposals
+
+The integration verified and preserved 29 `scr_cj`, 23 `scr_sed`, and 21 Shape records.
+Both multiplayer input sets and the retained typed Shape cursor passed input checks.
+Fresh retry `retry2-007-scr_cj` covers both unresolved multiplayer targets.
+Fresh retry `retry2-008-shape` covers `004B98E0` and its linked `memset` identity.
+Typed Tech_Tree indexing and the `byte* save_buffer` proposal remain unapproved.
+No compiler-facing source from these workers is integrated.
+
+### Fresh append result
+
+`retry2-001-dstring` reports that `$L2321` names handler code, not a scope table.
+It traces original `0055D418` through FuncInfo `00579980` and the cleanup at `0055D410`.
+Its authentic-module diagnostic link resolves `__except_list` to zero for `FS:[0]` accesses.
+This resolves the prior worker's missing evidence, subject to independent integration review.
+The source and scratch status remain unchanged. Its smoke test did not run the original EXE.
+
+### Map-table continuation
+
+The stopped doppleganger continuation tested the unsized extern and 256-entry definition.
+The worker reports 3,951 exact checks across 157 affected header groups, with no owner mismatch.
+These byte checks do not resolve storage aliases beyond the 256-entry table.
+Original row 258 reads `world_update_counter` at `00886C10`.
+The candidate row reads `VCALL_LOG` at `005EF570` instead.
+Initial zero bytes do not prove equal later values or faults.
+Keep the shared source repair as an experiment. Do not add a bounds check.
+Fresh retry `retry2-009-dpl_obj` will investigate original neighbors and caller constraints.
