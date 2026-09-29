@@ -66,7 +66,9 @@ No source changed, and no runtime cases ran for this review.
 The raw PDB record `0x1150` is an `LF_ARRAY` of `T_32PULONG` with length 1,024 bytes.
 `S_GDATA32 [0004:00307808]` names `unified_map_offsets` with that type and type `0x11BA`.
 The current declaration and definition use 1,024 pointers, which occupy 4,096 bytes.
-The doppleganger worker is checking the second type, executable references, and affected closure.
+The raw `0x11BA` record is also an `LF_ARRAY`, but its length is zero.
+It describes an unsized array. The doppleganger worker is checking executable
+references, actual storage bounds, and the affected closure.
 No shared source repair is approved yet. Its first proposal and input records are preserved.
 
 ### Inconclusive results
@@ -76,3 +78,9 @@ Give each retry a fresh context and separate worktree. Keep the 40-worker limit.
 Do not assign two active recovery workers to the same natural module.
 Append `004471F0` has the first fresh retry assignment.
 An unrun runtime case alone does not invalidate a complete instruction proof.
+
+Fresh retries `retry2-002-taiinfmd`, `retry2-003-sprite`, and `retry2-004-stat_obj`
+cover the unresolved questions in their first proposals. Their source changes
+and behavior proposals are not approved yet. Each retry starts at
+`4ac7be826df092b01102db9cad2cbba9da11f4c2` in a separate worktree.
+The original workers remain stopped. Preserve their evidence before cleanup.
