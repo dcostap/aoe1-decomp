@@ -346,3 +346,12 @@ record the independent target and closure check.
   The corrected dispatch is proved.
   The merged `set_state(1)` call still changes return-address effects.
   Linked storage identity also remains incomplete.
+- `00546A90 RGE_Zone_Map::do_zone_map` stays accepted drift.
+  The original threshold is read-only double zero with seven direct `FCOMP` references.
+  The rebuilt declaration and definition now use `const double`.
+  A 157-group audit kept all 3,951 matching owners exact.
+  The two target bytes compare signed height with known-zero ESI instead of `TEST`.
+- `004F7E80 idleCivilian` remains open after retry 028.
+  PDB names protected `ManagedArray<int>::resize` at seven direct calls.
+  The shared-header candidate reduced the mismatch but changed three matching owners.
+  Fresh retry 043 must resolve those owners and the proposed friend access.
