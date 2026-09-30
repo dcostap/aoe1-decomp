@@ -767,7 +767,7 @@ unsigned char RGE_Game_World::load_world(int infile1) {
     int i;
     unsigned long *p;
     int count;
-    int type;
+    unsigned char type;
     int f = infile1;
     unsigned char tempGameState;
 

@@ -380,3 +380,9 @@ No gameplay or UI suite ran for this build.
 Fresh COFF and linked-image evidence resolves its four prior reference gaps.
 The source now names `DDERR_NOCLIPPERATTACHED` instead of its raw HRESULT.
 The pinned header proves the value, and the target bytes remain unchanged.
+
+`005420F0 RGE_Game_World::load_world` stays accepted drift.
+Fresh linked evidence resolves its four storage operands and numeric dependency.
+The changed compare uses known-zero BP and feeds the same signed `JLE` flags.
+Local `type` now uses the PDB-supported `unsigned char` width.
+The source change keeps the target bytes unchanged.
