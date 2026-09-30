@@ -453,3 +453,27 @@ The linked EH graph, allocation, constructor, and Gather vtable now resolve.
 VC5 reverses same-name overload declaration order in the vtable.
 Declaring the infile `setup` overload first restores the original two slot identities.
 The 37-module closure keeps all 1,092 exact targets exact.
+
+## Final validation, 2026-09-30
+
+The final whole-project audit compiled 225 groups and reviewed 5,426 normal functions.
+All 5,006 matching targets passed.
+Ownership review found no owner, class, or free-function mismatch.
+
+The selected build compiled 226 C/C++ sources and one assembly source.
+It linked with no unresolved symbol.
+Its directory is
+`build/executable/user/20260930T094911024644Z-29422cba6792/20260930T094911248690Z`.
+The executable SHA-256 is
+`d13d8c837a5305807b3844783cdafc039a629c821cba4d4aaf3d9c9b4793966f`.
+
+The linked dependency audit has 11,393 passes, 48,172 unknowns, and no failure.
+The linked-reference audit has 7,515 passes and 5,350 unknowns.
+All 133 supported header emissions match.
+
+The automated suite passed 1,000 tests and 31 subtests; two tests skipped.
+Five deterministic trace cases passed.
+All 41 UI capture cases passed.
+A six-run gameplay smoke passed repeat, state, input, RNG, and image checks.
+Permanent parity fixtures passed their hash check.
+The long paced parity suite did not run again.
