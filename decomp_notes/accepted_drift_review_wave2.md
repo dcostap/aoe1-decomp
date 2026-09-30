@@ -314,3 +314,35 @@ No source change or artificial register steering is needed.
 State `052c56731e0b59f307c04cd6c003f41f388ee7097561b4799c50cbca95520cb8`
 and run `4352ca0f83e089e29998c9a38686cbb525c76d219f9993d02b8c3dc4e5f9f882`
 record the independent target and closure check.
+
+### Latest focused decisions
+
+- `00405850 RGE_Action_Move_To::update` stays accepted drift.
+  The complete review covers 890 bytes, 31 calls, five switch targets, and eight x87 tests.
+  Linked selectors and constants agree.
+  Two bytes select EAX versus EDX for the same virtual `set_state(1)` call.
+  Fresh state `111728290da21f9f764434ba655f8649e1917f084066eaa51662640ff9ce854a`
+  reproduces the result without exact-neighbor regressions.
+- `0047C640 TTextPanel::word_wrap_append` stays accepted drift.
+  All 29 calls and 33 relocations are resolved.
+  Eleven storage references, both complete strings, and three GDI imports agree.
+  Its 27 differences only move private stack homes.
+  State `55e94372f800c48469d59e506ee0dfbb9c9bf3a9084712c7d120008e260d749f`
+  records the result.
+- `004BE4B0 TSpan_List_Manager::DeleteShape` stays accepted drift.
+  Three bytes only recolor registers while forming the same typed record pointer.
+  State `df354c79fa1e90e6c5961cb4094eedee4cbd568022697f73aa8c690e066fcbdd`
+  records the result.
+- `004BEAD0 TSpan_List_Manager::DecodeLine` moves to scratch.
+  Unchecked writes can reach swapped ESI and EDI save slots.
+  The rebuild can return with different saved-register values for the same input.
+  No proved caller contract excludes this alias.
+  State `120cf9182efcd296d933b92c20b8a16b01142cc9f60be2b059d226cce0fe662f`
+  records the counterexample.
+- `00430ED0 RGE_Combat_Object::gather` remains open.
+  Its EH cleanup home is proved equal.
+  Four storage references and one numeric dependency still lack linked identity.
+- Repaired `004D1BB0 TRIBE_Action_Repair::update` stays scratch.
+  The corrected dispatch is proved.
+  The merged `set_state(1)` call still changes return-address effects.
+  Linked storage identity also remains incomplete.

@@ -33,7 +33,7 @@
     "004BE750": {"status": "matching", "symbol": "?ScrollSpansHorizontally@TSpan_List_Manager@@QAEXHH@Z"},
     "004BE850": {"status": "matching", "symbol": "?ScrollSpansVertically@TSpan_List_Manager@@QAEXHH@Z"},
     "004BE9E0": {"status": "matching", "symbol": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z"},
-    "004BEAD0": {"status": "accepted_drift", "symbol": "?DecodeLine@TSpan_List_Manager@@QAEHPAEHEH@Z"},
+    "004BEAD0": {"status": "scratch", "symbol": "?DecodeLine@TSpan_List_Manager@@QAEHPAEHEH@Z"},
     "004BEB10": {"status": "scratch", "symbol": "?take_snapshot@TSpan_List_Manager@@QAEXPADAAHPAVTDrawArea@@HPAPAV1@PAHH@Z"}
   }
 }
