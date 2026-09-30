@@ -416,3 +416,17 @@ Calls, stack-slot reuse, signed division, retries, fallback, aliases, and fault 
 The retained source keeps the proved `actions` and `on_build_make_obj` repairs.
 It removes two redundant decrement locals without changing target bytes.
 Six SIB bytes exchange scale-one registers and equal-base DS/SS segments.
+
+The four scenario targets stay accepted drift.
+Original bytes, COFF relocations, and a linked image resolve their storage references.
+The constructor handler, FuncInfo, unwind action, vtable, and timeline cleanup agree.
+The getters keep separate buffers, unchecked indices, unbounded formatting, and original sentinel bugs.
+
+`004F7E80 idleCivilian` stays accepted drift.
+Reject the protected-resize and explicit-friend candidates.
+VC5 rejects direct protected calls, and no source evidence supports friendship.
+The friend workaround also changes three matching owners.
+
+Historical exact source for `0053B300 LocateIDbyDrawLevel` passed its old closure.
+Retry 045 could not prove that closure against current inputs.
+Fresh retry 048 will rebuild only the target source hunk from current HEAD.
