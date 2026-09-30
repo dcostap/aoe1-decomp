@@ -355,3 +355,23 @@ record the independent target and closure check.
   PDB names protected `ManagedArray<int>::resize` at seven direct calls.
   The shared-header candidate reduced the mismatch but changed three matching owners.
   Fresh retry 043 must resolve those owners and the proposed friend access.
+- `0053D0D0 RGE_Visible_Map::checksumVisible` stays accepted drift.
+  Signed bounds, table and row fault order, extreme counters, and the byte XOR agree.
+  One byte only exchanges scale-one EDX and ESI in `row[x]`.
+  The alternate `x[row]` spelling emits the same byte.
+- `0044B760 RGE_Fractal::MakeNewLink` remains open.
+  Public settings reach `Point[500]`, `NumNodes`, both distance divisors, and `ProbArray`.
+  Original and rebuild reload `NumNodes` after the x store.
+  The original restores EDI before that store. The rebuild restores it after the store.
+  Retry 044 will trace the first later fault or normal return in both images.
+
+### Const-threshold linked validation
+
+Build `build/executable/user/20260930T082357895238Z` linked 226 C/C++ sources and one assembly source.
+It has no unresolved symbol or link error.
+The executable SHA-256 is `e5495e93bfa2eee3c0d05488e41926901947e6b5f574ea0aeba294dd26ea81e7`.
+
+The image dependency audit found 11,393 passes, 48,162 unknowns, and no failure.
+The linked-reference audit found 7,515 passes and 5,350 unknowns.
+Automated tests passed 1,000 tests and 31 subtests. Two optional tests skipped.
+No gameplay or UI suite ran for this build.
