@@ -4438,20 +4438,22 @@ DClipInfo_Node* DClipInfo_List::LocateIDbyDrawLevel(int SearchID, int StartLevel
         EndLevel = max_levels;
     }
 
-    if (StartLevel <= max_levels && EndLevel >= 0 && StartLevel <= EndLevel) {
-        DClipInfo_Node** head_ptr = this->Draw_Level_Head + StartLevel;
+    if (StartLevel <= max_levels && EndLevel >= 0) {
         int level = StartLevel;
-        do {
-            DClipInfo_Node* node = *head_ptr;
-            while (node) {
-                if (node->Object_ID == SearchID && node->Node_Type == NodeType) {
-                    return node;
+        if (StartLevel <= EndLevel) {
+            DClipInfo_Node** head_ptr = this->Draw_Level_Head + StartLevel;
+            do {
+                DClipInfo_Node* node = *head_ptr;
+                while (node) {
+                    if (node->Object_ID == SearchID && node->Node_Type == NodeType) {
+                        return node;
+                    }
+                    node = node->NextOnLevel;
                 }
-                node = node->NextOnLevel;
-            }
-            level++;
-            head_ptr++;
-        } while (level <= EndLevel);
+                level++;
+                head_ptr++;
+            } while (level <= EndLevel);
+        }
     }
 
     return 0;

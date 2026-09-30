@@ -431,6 +431,11 @@ Historical exact source for `0053B300 LocateIDbyDrawLevel` passed its old closur
 Retry 045 could not prove that closure against current inputs.
 Fresh retry 048 will rebuild only the target source hunk from current HEAD.
 
+Retry 048 promotes `0053B300 LocateIDbyDrawLevel` to `matching`.
+The current-base natural guard form matches all 103 bytes.
+The 79-owner view closure has no failed exact claim or code-byte regression.
+The rejected `sprite_check` source remains unchanged.
+
 `0044B760 PointMaker::MakeNewLink` moves to scratch.
 A deterministic seed-1 trace reached indices 500 through 507 four times.
 Corruption changed `NumNodes` to minus 30 and caused 57 writes before the object.

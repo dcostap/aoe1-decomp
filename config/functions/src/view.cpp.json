@@ -79,7 +79,7 @@
     "0053B070": {"status": "matching", "symbol": "?SetDrawRegion@DClipInfo_List@@QAEXHHHH@Z"},
     "0053B0A0": {"status": "matching", "symbol": "?AddDrawNode@DClipInfo_List@@QAEXPAXPAUShape_Info@@HHHHPAEHHH@Z"},
     "0053B220": {"status": "matching", "symbol": "?AddGDINode@DClipInfo_List@@QAEPAUDClipInfo_Node@@HHHHHHHHHHHHH@Z"},
-    "0053B300": {"status": "accepted_drift", "symbol": "?LocateIDbyDrawLevel@DClipInfo_List@@QAEPAUDClipInfo_Node@@HHHH@Z"},
+    "0053B300": {"status": "matching", "symbol": "?LocateIDbyDrawLevel@DClipInfo_List@@QAEPAUDClipInfo_Node@@HHHH@Z"},
     "0053B370": {"status": "matching", "symbol": "?Scroll@DClipInfo_List@@QAEXHH@Z"},
     "0053B490": {"status": "matching", "symbol": "?FreeNode@DClipInfo_List@@QAEXPAUDClipInfo_Node@@@Z"},
     "0053B4B0": {"status": "matching", "symbol": "?FreeThread@DClipInfo_List@@QAEHPAUDClipInfo_Node@@0@Z"},
