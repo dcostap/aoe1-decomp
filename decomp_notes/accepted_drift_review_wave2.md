@@ -375,3 +375,8 @@ The image dependency audit found 11,393 passes, 48,162 unknowns, and no failure.
 The linked-reference audit found 7,515 passes and 5,350 unknowns.
 Automated tests passed 1,000 tests and 31 subtests. Two optional tests skipped.
 No gameplay or UI suite ran for this build.
+
+`0045BA60 TMousePointer::draw` stays accepted drift.
+Fresh COFF and linked-image evidence resolves its four prior reference gaps.
+The source now names `DDERR_NOCLIPPERATTACHED` instead of its raw HRESULT.
+The pinned header proves the value, and the target bytes remain unchanged.

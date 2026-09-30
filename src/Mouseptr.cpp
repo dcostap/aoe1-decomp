@@ -443,7 +443,7 @@ void TMousePointer::draw(int dMode) {
                 this->save_area_valid = 1;
                 if (this->Mouse_Mode == 0) {
                     err = this->renderSurface->GetClipper(&lplpDDClipper);
-                    if (err == (long)0x88760238) {
+                    if (err == DDERR_NOCLIPPERATTACHED) {
                         err = 0;
                         lplpDDClipper = 0;
                     }
