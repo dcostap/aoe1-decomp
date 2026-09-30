@@ -360,7 +360,7 @@ extern float g_main_view_scroll_fraction_threshold;
 extern float g_main_view_zero_scroll_distance;
 extern float g_world_difficulty_save_version;
 extern float g_world_milliseconds_to_seconds;
-extern double g_zone_passability_zero_threshold;
+extern const double g_zone_passability_zero_threshold;
 extern TRIBE_Cliff_Higher_Check_Record TRIBE_Cliff_Higher_Check_Table[25];
 extern unsigned int basegame_shift_key_down;
 extern unsigned int basegame_key_message;
