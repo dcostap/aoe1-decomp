@@ -442,3 +442,14 @@ Corruption changed `NumNodes` to minus 30 and caused 57 writes before the object
 Both tested layouts returned normally with equal normalized traces.
 The original restores EDI before the x store; the rebuild restores it after the store.
 An inaccessible adjacent page can expose different fault-time register state.
+
+`004920C0 TribeMPCreateDialog` and `004923C0 action` stay accepted drift.
+The constructor drift is limited to EH-state timing around stores within a valid allocation.
+No call can throw before both builds activate the same state.
+The action's 42 linked storage references and final action vtable slot resolve.
+
+`00430ED0 RGE_Combat_Object::gather` stays accepted drift after a header repair.
+The linked EH graph, allocation, constructor, and Gather vtable now resolve.
+VC5 reverses same-name overload declaration order in the vtable.
+Declaring the infile `setup` overload first restores the original two slot identities.
+The 37-module closure keeps all 1,092 exact targets exact.

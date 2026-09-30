@@ -18,8 +18,8 @@ public:
     RGE_Action(RGE_Action_Object* obj_in, int do_setup);
 
     virtual ~RGE_Action();
-    virtual int setup(RGE_Action_Object* obj_in);
     virtual int setup(int infile, RGE_Action_Object* obj_in);
+    virtual int setup(RGE_Action_Object* obj_in);
     virtual RGE_Action_List* create_action_list(RGE_Action_Object* obj_in);
     virtual void rehook();
     virtual void save(int outfile);
