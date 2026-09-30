@@ -206,3 +206,96 @@ It still leaves eleven word-wrap references unproved. Fresh retry `retry2-016-pn
 The calc_draw_info proposal remains queued; unrun runtime cases alone do not require another retry.
 The original exact getter candidate still needs independent ownership, source, and compiler-context checks.
 The integration verified 33 retry records and preserved 32 new files. No text-panel source changed.
+
+### Independent dispatch checks, 2026-09-30
+
+Direct PE reads confirmed the `004D1BB0` repair-action defect.
+The original table sends states 9 and 12 to the no-write return.
+It sends state 10 to the timer, state 11 to sub-actions, and state 13 to completion.
+The old source sent each state to a different handler.
+The integration restores these labels and removes the extra state-12 write.
+It withdraws the old approval to `scratch`.
+
+The independent baseline has two body differences but the wrong table.
+The repair has 691 differences and the correct outer and inner tables.
+Both one-job checks keep all 11 exact neighbors exact. Only the target changes.
+The emitted x87 status masks and their successors agree with the original.
+Shared call sites, return-address effects, linked dependencies, and runtime coverage remain open.
+State `1ad3f3ba36928f904758c42ba1f161393a94584d3d345da411c224a62554963b`
+and finding `356c9d84c423db1cfacf17a998d02b613a53ee5271d9db90970806d77e2d5cc8`
+preserve the independent source, objects, table reads, and comparison.
+
+The same direct-read method disproved the `00539510 sprite_check` defect report.
+The original table agrees with the current source, not the worker's proposed repair.
+Reject the selector changes and added stream increment. Keep source and status unchanged.
+Finding `bcbf7343f5cff4873d2fc9a7eb7fdc93d87bc454d3c0dbb1a9d6110cd6694648`
+preserves the raw table and the rejected worker note.
+The separate view exact candidate remains unapproved.
+
+### Stopped-worker evidence intake, 2026-09-30
+
+Hash checks covered the following new record sets before import.
+These counts describe preservation, not behavior approval or retained-input verification.
+
+| Worker | Verified records | New files imported |
+| --- | ---: | ---: |
+| `drift2-017-view` | 53 | 53 |
+| `drift2-029-spanlist` | 25 | 25 |
+| `drift2-034-act_move` | 14 | 14 |
+| `drift2-038-diam_map` | 30 | 30 |
+| `drift2-056-tact_rep` | 40 | 40 |
+| `drift2-066-world` | 19 | 19 |
+| `retry2-002-taiinfmd` | 45 | 40 |
+| `retry2-003-sprite` | 27 | 27 |
+| `retry2-004-stat_obj` | 34 | 30 |
+| `retry2-005-aiconmod` | 16 | 16 |
+| `retry2-007-scr_cj` | 8 | 8 |
+| `retry2-008-shape` | 26 | 26 |
+| `retry2-009-dpl_obj` | 32 | 30 |
+| `retry2-010-drawarea` | 27 | 26 |
+| `retry2-011-scr_game` | 29 | 28 |
+| `retry2-012-victory` | 10 | 9 |
+| `retry2-013-command` | 36 | 35 |
+| Failed `retry2-014-scenario` | 16 | 16 |
+| Failed `retry2-015-mouseptr` | 15 | 15 |
+
+The import added 487 files. Separate reported events archive changed notes and candidate patches.
+The failed text retry had no new records. Its empty import stopped the batch after the successful imports.
+No hash check failed. No worktree was reused or cleared.
+
+### Pending retry findings
+
+All results below remain proposals. Their registry labels do not grant independent approval.
+No source from these retries entered the game.
+
+- `taiinfmd`: the early-return proposal remains private. Fault, allocation-reentry, and alias checks remain open.
+- `sprite`: five unchanged proposals have added linked evidence. Their independent complete reviews remain pending.
+- `stat_obj`: four unchanged proposals have added call and storage evidence. Four tag-string links remain open.
+- `aiconmod`: save's private-home proof and compression lifetime review remain pending independent approval.
+- `Shape`: the linked `memset` body matches. `004B98E0` remains a 132-byte mismatch awaiting independent review.
+- `scr_cj`: moved EH state may skip base cleanup on initialization faults. Handler behavior and reachability need review.
+- `drawarea`: a malformed stack-alias receiver changes `SetSpanRegions` arguments. No valid-caller defect is proved.
+- `victory`: heap ownership excludes the saved-EBP alias for live entries. Malformed-list behavior remains unresolved.
+- `Command`: three targets have added import, string, and slot evidence. Startup values and dispatch claims remain pending.
+- `scr_game`: both unchanged targets have added vtable and image evidence. Dynamic classes and startup state remain open.
+- `dpl_obj`: the new private storage proposal moves ownership to visible and World modules.
+  Its reported initial window matches. Later-value and out-of-range alias proof still needs independent review.
+- `act_move`: the two-byte virtual-call difference remains pending ten linked references.
+- `spanlist`: `DeleteShape` has a narrow register proposal. `DecodeLine` has an unresolved saved-register alias.
+- `diam_map`: the unchanged 82-byte-difference result has a complete local instruction proposal, not new approval.
+
+### Failed workers and fresh assignments
+
+Managed state confirmed no active workers before the new launches.
+Retries 014, 015, and 016 failed with connection errors. World 066 failed with an access error.
+World nevertheless left source edits and two states. Preserve them as unapproved failed-worker evidence.
+Retries 014 and 015 also left records. Failure does not mean the worktree is empty.
+
+Fresh workers 017 scenario, 018 mouseptr, 019 pnl_txt, and 020 world have separate contexts and worktrees.
+They use the established model, thinking level, and one-job compiler limit.
+Their baseline is `b872d7c1396a66290e19d3655dc4ddf794ed1b90`.
+Batch `batch-174bd1e5` records their managed launch.
+The failed workers remain stopped. Their earlier findings are evidence, not approvals.
+
+Registry-only validation and diff checks passed after the repair and note changes.
+A fresh game build has started. Its result and later validation remain pending.

@@ -192,7 +192,7 @@ unsigned char TRIBE_Action_Repair::update() {
     }
 
     switch (this->state) {
-    case 10:
+    case 11:
         switch (this->sub_actions->update()) {
         case 4:
             this->set_target_obj(0);
@@ -208,8 +208,7 @@ unsigned char TRIBE_Action_Repair::update() {
         break;
 
     case 12:
-        this->set_state(1);
-        return 0;
+        break;
 
     case 4:
         switch (this->sub_actions->update()) {
@@ -224,7 +223,6 @@ unsigned char TRIBE_Action_Repair::update() {
             goto update_done;
         }
 
-    case 13:
         target = this->target_obj;
         repair_target_distance = this->obj->distance_to_object(target) - g_repair_distance_offset;
         if (repair_target_distance <= g_repair_distance_threshold) {
@@ -280,6 +278,9 @@ unsigned char TRIBE_Action_Repair::update() {
     }
 
     case 9:
+        break;
+
+    case 10:
         if (this->target_obj == 0) {
             break;
         }
@@ -299,7 +300,7 @@ unsigned char TRIBE_Action_Repair::update() {
     case 1:
         return 1;
 
-    case 11:
+    case 13:
         this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x26A, 0, 0);
         this->set_state(2);
         return 3;
