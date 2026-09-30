@@ -62,7 +62,7 @@
     "0047E200": {"status": "matching", "symbol": "?get_line@TTextPanel@@QAEJJ@Z"},
     "0047E230": {"status": "matching", "symbol": "?get_line@TTextPanel@@QAEJPAD@Z"},
     "0047E290": {"status": "matching", "symbol": "?get_text@TTextPanel@@QAEPADXZ"},
-    "0047E2A0": {"status": "accepted_drift", "symbol": "?get_text@TTextPanel@@QAEPADJ@Z"},
+    "0047E2A0": {"status": "matching", "symbol": "?get_text@TTextPanel@@QAEPADJ@Z"},
     "0047E2E0": {"status": "matching", "symbol": "?get_text2@TTextPanel@@QAEPADXZ"},
     "0047E2F0": {"status": "matching", "symbol": "?get_text2@TTextPanel@@QAEPADJ@Z"},
     "0047E330": {"status": "matching", "symbol": "?get_id@TTextPanel@@QAEJXZ"},

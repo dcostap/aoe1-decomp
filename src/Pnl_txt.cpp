@@ -1380,14 +1380,17 @@ char* TTextPanel::get_text() {
 
 char* TTextPanel::get_text(long line_in) {
     static char empty_text;
-    TTextPanel::TextNode* node = this->list;
-    long i = 0;
+    long i;
+    TTextPanel::TextNode* node;
+
+    i = 0;
+    node = this->list;
     if (node == 0) {
         empty_text = 0;
         return &empty_text;
     }
     while (node != 0) {
-        if (line_in == i) {
+        if (i == line_in) {
             return node->text;
         }
         node = node->next_node;

@@ -386,3 +386,8 @@ Fresh linked evidence resolves its four storage operands and numeric dependency.
 The changed compare uses known-zero BP and feeds the same signed `JLE` flags.
 Local `type` now uses the PDB-supported `unsigned char` width.
 The source change keeps the target bytes unchanged.
+
+`0047E2A0 TTextPanel::get_text(long)` becomes `matching`.
+The exact source follows the same-class `get_text2` declaration and loop form.
+It matches all 61 bytes and keeps all exact module neighbors exact.
+Focused linked evidence proves its one-byte static remains distinct from `get_text2`.
