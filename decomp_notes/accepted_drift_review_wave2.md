@@ -299,3 +299,18 @@ The failed workers remain stopped. Their earlier findings are evidence, not appr
 
 Registry-only validation and diff checks passed after the repair and note changes.
 A fresh game build has started. Its result and later validation remain pending.
+
+### `004471F0 DString::append` resolution
+
+The independent integration review restores the narrow accepted-drift approval.
+Fresh source inputs reproduce 223 bytes and three commutative scale-one SIB differences.
+All 47 exact neighbors remain exact.
+
+Original, fresh COFF, and a hash-checked authentic-module diagnostic link agree on EH ownership.
+The handler loads one-state FuncInfo. Its unwind action destroys by-value parameter `d` at entry `+4`.
+All three `__except_list` operands resolve to `FS:[0]`.
+The prior scope-table label was wrong: it names handler code.
+No source change or artificial register steering is needed.
+State `052c56731e0b59f307c04cd6c003f41f388ee7097561b4799c50cbca95520cb8`
+and run `4352ca0f83e089e29998c9a38686cbb525c76d219f9993d02b8c3dc4e5f9f882`
+record the independent target and closure check.
