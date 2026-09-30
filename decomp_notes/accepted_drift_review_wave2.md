@@ -391,3 +391,23 @@ The source change keeps the target bytes unchanged.
 The exact source follows the same-class `get_text2` declaration and loop form.
 It matches all 61 bytes and keeps all exact module neighbors exact.
 Focused linked evidence proves its one-byte static remains distinct from `get_text2`.
+
+`00535A80 pick_multi` stays accepted drift.
+The target and both helpers use one 768-byte, zero-initial `Picked_Objects` array.
+All nine linked target and helper relocations resolve to that array.
+Reviewed callbacks do not write it.
+
+The exact `0040B980 setReferencePoint` candidate remains rejected.
+Its comma expressions force compiler scheduling without PDB, period-source, or donor support.
+Keep the clearer direct bounds expressions and accepted-drift status.
+Retry 047 will close only their linked numeric storage.
+
+Repaired `004D1BB0 TRIBE_Action_Repair::update` remains scratch.
+The original state-11 call and rebuilt merged call have different return addresses.
+A callee, unwinder, stack walker, or hook can observe this difference.
+No natural source supports a forced call-site split.
+
+`0052A0B0 TRIBE_Game::randomComputerName` stays accepted drift.
+No saved natural variant emits exact bytes.
+Its 16 differences swap ESI and EDI roles and prologue order.
+Calls, stack-slot reuse, signed division, retries, fallback, aliases, and fault order agree.
