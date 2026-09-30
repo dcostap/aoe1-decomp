@@ -421,9 +421,7 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* new_owner) {
             long* value =
                 &static_cast<TRIBE_Game*>(rge_base_game)
                      ->queue_is_waiting_on_pop_counter[id];
-            long old = *value;
-            long result = old - 1;
-            *value = result;
+            *value = *value - 1;
         }
         production_queue_count = 1;
         production_queue->unit_count = 1;

@@ -411,3 +411,8 @@ No natural source supports a forced call-site split.
 No saved natural variant emits exact bytes.
 Its 16 differences swap ESI and EDI roles and prologue order.
 Calls, stack-slot reuse, signed division, retries, fallback, aliases, and fault order agree.
+
+`004C8CB0 TRIBE_Building_Object::change_ownership` stays accepted drift.
+The retained source keeps the proved `actions` and `on_build_make_obj` repairs.
+It removes two redundant decrement locals without changing target bytes.
+Six SIB bytes exchange scale-one registers and equal-base DS/SS segments.
