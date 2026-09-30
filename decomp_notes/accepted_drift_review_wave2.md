@@ -430,3 +430,10 @@ The friend workaround also changes three matching owners.
 Historical exact source for `0053B300 LocateIDbyDrawLevel` passed its old closure.
 Retry 045 could not prove that closure against current inputs.
 Fresh retry 048 will rebuild only the target source hunk from current HEAD.
+
+`0044B760 PointMaker::MakeNewLink` moves to scratch.
+A deterministic seed-1 trace reached indices 500 through 507 four times.
+Corruption changed `NumNodes` to minus 30 and caused 57 writes before the object.
+Both tested layouts returned normally with equal normalized traces.
+The original restores EDI before the x store; the rebuild restores it after the store.
+An inaccessible adjacent page can expose different fault-time register state.
