@@ -65,3 +65,6 @@ Run whole-project validation after shared changes settle.
 - `004BDEA0 AddShape`, `004BEAD0 DecodeLine`, and `004BEB10 take_snapshot` remain scratch.
   The unchecked DecodeLine write can corrupt differently ordered saved-register slots.
   No caller contract excludes the counterexample.
+- `00450450 RGE_Master_Combat_Object::setup` remains scratch with repaired source.
+  Original parameter-home scan writes restore the 557-byte extent and remove two boundary escapes.
+  Later field-store fault order still differs.

@@ -173,9 +173,9 @@ int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
 
 // m_co_obj.cpp lines 182-262.
 int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
-    FILE* input = infile;
     short temp_break_off_combat;
     short temp_fire_missile_at_frame;
+    FILE* input = infile;
     short index;
     short* armor_count_value;
     int value_count;
@@ -184,19 +184,12 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     RGE_Master_Action_Object::setup(input, sprites, sounds, in_id);
     master_type = 0x32;
 
-    // The original scanner outputs reuse dead arguments and halves of saved
-    // this. Preserve those fallback words when fscanf cannot assign them.
-    short temp_base_armor = (short)(unsigned long)infile;
-    short temp_area_effect_level = (short)(unsigned long)sounds;
-    short temp_fight_sprite = in_id;
-    temp_break_off_combat = (short)(unsigned long)this;
-    temp_fire_missile_at_frame = (short)(((unsigned long)this) >> 16);
-
+    // These outputs reuse the original parameter homes.
     fscanf(input, "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f",
-           &temp_fight_sprite, &temp_base_armor, &armor_num, &weapon_num, &defense_terrain_bonus,
+           &in_id, &infile, &armor_num, &weapon_num, &defense_terrain_bonus,
            &weapon_range, &area_effect_range, &speed_of_attack, &missile_id, &base_hit_chance, &temp_break_off_combat,
            &temp_fire_missile_at_frame, &weapon_offset_x, &weapon_offset_y,
-           &weapon_offset_z, &temp_area_effect_level, &minimum_weapon_range);
+           &weapon_offset_z, &sounds, &minimum_weapon_range);
 
     armor_count_value = &armor_num;
     index = 0;
@@ -225,14 +218,14 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
         weapon = (RGE_Armor_Weapon_Info*)0;
     }
 
-    if (temp_fight_sprite >= 0)
-        selected_sprite = sprites[temp_fight_sprite];
+    if (in_id >= 0)
+        selected_sprite = sprites[in_id];
     else
         selected_sprite = (RGE_Sprite*)0;
     fight_sprite = selected_sprite;
     break_off_combat = (unsigned char)temp_break_off_combat;
-    area_effect_level = (unsigned char)temp_area_effect_level;
-    base_armor = (unsigned char)temp_base_armor;
+    area_effect_level = (unsigned char)(unsigned long)sounds;
+    base_armor = (unsigned char)(unsigned long)infile;
     // the shipped parser stores the low byte of this value.
     fire_missile_at_frame = (unsigned char)temp_fire_missile_at_frame;
     orig_armor = (unsigned char)base_armor;
