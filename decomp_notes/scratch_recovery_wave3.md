@@ -146,3 +146,5 @@ Run whole-project validation after shared changes settle.
 - Both assigned `tech.cpp` targets remain scratch.
   `tech_cost` retains a future-stack-frame output-pointer counterexample.
   `check_for_new_tech` has unordered x87 branches and a linked zero constant in a different section.
+- `00438060 RGE_Diamond_Map::draw_object` remains scratch.
+  Its y-field loads occur in reverse order, which can expose a different fault on invalid mappings.
