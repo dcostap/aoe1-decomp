@@ -148,3 +148,5 @@ Run whole-project validation after shared changes settle.
   `check_for_new_tech` has unordered x87 branches and a linked zero constant in a different section.
 - `00438060 RGE_Diamond_Map::draw_object` remains scratch.
   Its y-field loads occur in reverse order, which can expose a different fault on invalid mappings.
+- `005467B0 RGE_Zone_Map` remains scratch.
+  The original reads map height before width for one allocation size, while the rebuild reverses those reads.
