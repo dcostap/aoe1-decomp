@@ -957,22 +957,20 @@ unsigned char TRIBE_Combat_Object::area_attack(
 }
 
 unsigned char TRIBE_Combat_Object::heal(float healing) {
-    RGE_Master_Static_Object* master = this->master_obj;
+    TRIBE_Master_Combat_Object* master =
+        static_cast<TRIBE_Master_Combat_Object*>(this->master_obj);
     const short type = master->object_group;
     if (type != 2 && type != 0x14 && type != 0x15 && type != 0x16) {
         return RGE_Static_Object::heal(healing);
     }
 
-    const long max_hp = master->hp;
-    const long heal_rate =
-        static_cast<TRIBE_Master_Combat_Object*>(master)->build_pts_required;
-    const float maximum = static_cast<float>(max_hp);
-    if ((healing = healing * maximum / heal_rate) + this->hp > maximum) {
-        healing = maximum - this->hp;
+    healing = healing * master->hp / master->build_pts_required;
+    if (healing + this->hp > master->hp) {
+        healing = master->hp - this->hp;
     }
 
     TRIBE_Player* player = static_cast<TRIBE_Player*>(this->owner);
-    if (player->pay_obj_cost(master->id, healing / static_cast<float>(max_hp * 2), 1)) {
+    if (player->pay_obj_cost(master->id, healing / static_cast<float>(master->hp * 2), 1)) {
         return RGE_Static_Object::heal(healing);
     }
     return 2;

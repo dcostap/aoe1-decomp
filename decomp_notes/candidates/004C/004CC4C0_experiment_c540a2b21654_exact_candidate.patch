@@ -1,0 +1,36 @@
+# Experiment c540a2b21654d3f08c7ba381cfa7e82fc3af465ce86d30f0be86360a041ddcf2
+# Base 1c0a1345c5fe84c6fb6026cc06834dca42233eb3
+diff --git a/src/t_c_obj.cpp b/src/t_c_obj.cpp
+index 3ea655ed0..4964bf278 100644
+--- a/src/t_c_obj.cpp
++++ b/src/t_c_obj.cpp
+@@ -957,22 +957,21 @@ unsigned char TRIBE_Combat_Object::area_attack(
+ }
+ 
+ unsigned char TRIBE_Combat_Object::heal(float healing) {
+-    RGE_Master_Static_Object* master = this->master_obj;
++    TRIBE_Master_Combat_Object* master =
++        static_cast<TRIBE_Master_Combat_Object*>(this->master_obj);
+     const short type = master->object_group;
+     if (type != 2 && type != 0x14 && type != 0x15 && type != 0x16) {
+         return RGE_Static_Object::heal(healing);
+     }
+ 
+-    const long max_hp = master->hp;
+-    const long heal_rate =
+-        static_cast<TRIBE_Master_Combat_Object*>(master)->build_pts_required;
+-    const float maximum = static_cast<float>(max_hp);
+-    if ((healing = healing * maximum / heal_rate) + this->hp > maximum) {
+-        healing = maximum - this->hp;
++    const short heal_rate = master->build_pts_required;
++    healing = healing * static_cast<float>(master->hp) / heal_rate;
++    if (healing + this->hp > master->hp) {
++        healing = master->hp - this->hp;
+     }
+ 
+     TRIBE_Player* player = static_cast<TRIBE_Player*>(this->owner);
+-    if (player->pay_obj_cost(master->id, healing / static_cast<float>(max_hp * 2), 1)) {
++    if (player->pay_obj_cost(master->id, healing / static_cast<float>(master->hp * 2), 1)) {
+         return RGE_Static_Object::heal(healing);
+     }
+     return 2;
