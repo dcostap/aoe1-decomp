@@ -90,3 +90,9 @@ Run whole-project validation after shared changes settle.
   `AddingCircle` now uses the local roles and initialization order recorded by PDB, without changing its output bytes.
 - Both `tact_mob` targets remain scratch.
   The constructor has observable partial-object write-order drift, while `first_in_stack` still needs linked string proof.
+- `00477AF0 delete_character` remains scratch with a nine-byte final field-load-order difference.
+  Its local declarations now follow the PDB order without changing emitted bytes.
+- All three `rmm_elev` targets remain scratch.
+  The first two lack complete malformed-map proof, and `link_stack_randomly` retains an alias-sensitive load-order difference.
+- Both `rmm_terr` targets remain scratch.
+  Natural forms did not change their code, and `count_map_tiles` still reverses dimension load order.

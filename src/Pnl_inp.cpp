@@ -424,8 +424,8 @@ int TInputPanel::delete_character() {
     unsigned char* delete_position;
     unsigned char* next_position;
     unsigned char* source_position;
-    int move_back_one;
     unsigned char* cur_dest;
+    int move_back_one;
     if (this->input_pos >= this->input_len) return 0;
     next_position = (unsigned char*)this->input_buffer1;
     move_back_one = 0;
