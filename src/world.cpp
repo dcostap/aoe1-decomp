@@ -1074,8 +1074,7 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info &info, int myPlayerNum) {
 
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1458);
     L->Log("  World: end_of_new_game (rand=%d)", this->random_seed);
-    RGE_Base_Game *base_game = rge_base_game;
-    base_game->get_string(STRING_ID_AI_FILE_RANDOM, randomString, 256);
+    rge_base_game->get_string(STRING_ID_AI_FILE_RANDOM, randomString, 256);
     if (team == 1) {
         for (i = 1; i < this->player_num; i++) {
             if (this->players[i]) {

@@ -76,3 +76,5 @@ Run whole-project validation after shared changes settle.
 - `0046FF90 create_checksum` remains scratch because two list loads can fault in a different order.
 - `0047AB20 set_tab_pos` remains scratch after donor and arithmetic variants kept its boundary escape.
 - `00518090 setupMinoan` remains scratch after donor-backed branch forms kept an extra pointer load.
+- `00542750 RGE_Game_World::new_game` remains scratch with a one-byte boundary escape.
+  PDB and exact donors reject its unused base-game alias, so the source now uses the named global directly.
