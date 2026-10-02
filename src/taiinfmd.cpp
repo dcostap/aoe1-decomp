@@ -155,8 +155,8 @@ TribeInformationAIModule::TribeInformationAIModule(void* pW, int pID)
 
     memset(this->fullyExploredZoneValue, 0, sizeof(this->fullyExploredZoneValue));
 
-    for (int y = 0; y < 4; y++) {
-        for (int x = 0; x < 4; x++) {
+    for (int x = 0; x < 4; x++) {
+        for (int y = 0; y < 4; y++) {
             this->quadrantLog[x][y].numberExploredTiles = 0;
             this->quadrantLog[x][y].numberAttacksOnUs = 0;
             this->quadrantLog[x][y].numberAttacksByUs = 0;

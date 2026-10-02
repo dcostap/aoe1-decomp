@@ -104,3 +104,6 @@ Run whole-project validation after shared changes settle.
   Its locals now use PDB-supported byte types, and its allocation pointer starts at the natural allocation site.
 - `00485480 chance` remains scratch.
   It writes the low byte of its `land_type` stack home, and a malformed receiver can expose the remaining read-order difference.
+- All five `taiinfmd` targets remain scratch.
+  The constructor now follows PDB quadrant-loop order and matches its 1,182-byte owner boundary.
+  Twelve bytes still differ, while the other four targets need further source or container evidence.
