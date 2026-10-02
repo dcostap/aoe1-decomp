@@ -78,3 +78,6 @@ Run whole-project validation after shared changes settle.
 - `00518090 setupMinoan` remains scratch after donor-backed branch forms kept an extra pointer load.
 - `00542750 RGE_Game_World::new_game` remains scratch with a one-byte boundary escape.
   PDB and exact donors reject its unused base-game alias, so the source now uses the named global directly.
+- `00504750 processNotify` remains scratch after a behavior repair.
+  It now reloads its object after virtual speed callbacks and preserves original coordinate access order.
+  The natural form grows across four bytes of the next original owner, so it is not an exact or drift claim.

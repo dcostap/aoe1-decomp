@@ -381,41 +381,38 @@ typedef unsigned long ulong;
 
 
 int TribeRangedUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
+    RGE_Static_Object* targetObj;
     if (nEvent->mType != 0x200) {
         return UnitAIModule::processNotify(nEvent, uTime);
     }
 
-    if (this->currentActionValue == 600) {
-        RGE_Static_Object* targetObj =
-            this->objectValue->owner->world->object(this->currentTargetValue);
-
-        if (targetObj) {
-            float distanceDiff = targetObj->getSpeed();
-            if (distanceDiff != g_ranged_ai_zero_distance) {
-                this->order(this->objectValue->id, 0x2BC, this->currentTargetValue, -1,
-                            this->currentTargetXValue, this->currentTargetYValue,
-                            this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
-
-                RGE_Static_Object* thisObj = this->objectValue;
-
-                float speed2 = thisObj->rateOfFire();
-                float speed1 = thisObj->maximumSpeed();
-                float speed = speed1 * speed2 * g_ai_evasive_distance_scale;
-                float dx = targetObj->world_x - thisObj->world_x;
-                float dy = targetObj->world_y - thisObj->world_y;
-                float dist = (float)sqrt(dx * dx + dy * dy);
-                float nty = -(dy / dist * speed);
-                float resultY = nty + thisObj->world_y;
-                float ntx = -(dx / dist * speed);
-                float resultX = ntx + thisObj->world_x;
-
-                this->evasiveMoveTo(resultX, resultY, thisObj->world_z, 1);
-
-                return 3;
-            }
-        }
+    targetObj = 0;
+    if (this->currentActionValue != 600 ||
+        (targetObj = this->objectValue->owner->world->object(this->currentTargetValue)) == 0 ||
+        targetObj->getSpeed() == g_ranged_ai_zero_distance) {
+        return 2;
     }
-    return 2;
+
+    this->order(this->objectValue->id, 0x2BC, this->currentTargetValue, -1,
+                this->currentTargetXValue, this->currentTargetYValue,
+                this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
+
+    RGE_Static_Object* thisObj = this->objectValue;
+
+    float speed = thisObj->rateOfFire();
+    speed = thisObj->maximumSpeed() * speed * g_ai_evasive_distance_scale;
+    thisObj = this->objectValue;
+    float dx = targetObj->world_x - thisObj->world_x;
+    float dy = targetObj->world_y - thisObj->world_y;
+    float dist = (float)sqrt(dx * dx + dy * dy);
+    float offset = -(dy / dist * speed);
+    float resultY = offset + thisObj->world_y;
+    offset = -(dx / dist * speed);
+    float resultX = offset + thisObj->world_x;
+
+    this->evasiveMoveTo(resultX, resultY, thisObj->world_z, 1);
+
+    return 3;
 }
 
 
