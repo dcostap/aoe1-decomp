@@ -96,3 +96,7 @@ Run whole-project validation after shared changes settle.
   The first two lack complete malformed-map proof, and `link_stack_randomly` retains an alias-sensitive load-order difference.
 - Both `rmm_terr` targets remain scratch.
   Natural forms did not change their code, and `count_map_tiles` still reverses dimension load order.
+- `004490E0 RGE_Effects` remains scratch.
+  Its five-byte compare/store reorder is safe for ordinary construction, but allocation-failure and unusual count states remain unproved.
+- `004CC4C0 heal` remains scratch because nine x87-related bytes still lack complete numeric and exception-state proof.
+- `004786B0 item_at` remains scratch because its two field reads can fault in a different order on an invalid receiver.
