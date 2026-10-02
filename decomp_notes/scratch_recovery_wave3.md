@@ -111,3 +111,5 @@ Run whole-project validation after shared changes settle.
   Its player-count local now uses the PDB `long` type without changing output bytes.
 - `004862B0 place_avoid_objects` remains scratch.
   A malformed player array can fault before or after the original first argument push.
+- `0043A070 DibFromBitmap` remains scratch.
+  Current source preserves known allocation and cleanup bugs, but GDI write extent and failure paths remain unproved.
