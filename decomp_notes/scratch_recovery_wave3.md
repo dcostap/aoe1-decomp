@@ -153,3 +153,5 @@ Run whole-project validation after shared changes settle.
 - Promoted `0053C5D0 RGE_Visible_Map::explore_all` to exact `matching`.
   Signed guards and direct `do-while` indexing match all 156 bytes.
   All 20 exact `visible.cpp` owners remain exact, including `Set_Map_Offsets`.
+- `004A2060 TribeMPSetupScreen::startGame` remains scratch.
+  All 83 calls align, but 68 linked references, one numeric dependency, and malformed color paths remain unproved.
