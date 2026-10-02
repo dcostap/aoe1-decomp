@@ -135,3 +135,5 @@ Run whole-project validation after shared changes settle.
 - `00414D40 UnitAIModule::order` remains scratch.
   The rebuild saves EDI earlier, so a one-word writable stack can fault where the original returns.
   Queue-allocation failure and partial-construction paths also remain unsafe and untested.
+- Both `RGE_Action_Attack` constructors at `00401170` and `004012B0` remain scratch.
+  Their typed source preserves the proved writes and original caller bug, but exception and malformed-object paths remain unproved.
