@@ -126,3 +126,5 @@ Run whole-project validation after shared changes settle.
   Its 21 byte differences only exchange registers.
 - `00531750 RGE_Victory_Conditions` and `005324A0 handle_destroy_all` remain scratch.
   Invalid objects can change field-read fault order, and malformed list nodes can alter saved EBP at failure.
+- `00473930 TButtonPanel::hit_button` remains scratch.
+  Its 18-byte coordinate-load difference can change malformed-object fault order before the shape check.
