@@ -121,3 +121,8 @@ Run whole-project validation after shared changes settle.
   `place_terrain_object` preserves known order, but malformed virtual-callee cleanup remains unknown.
 - `0046B680 decrementObstruction` remains scratch.
   Original code reads both arguments before saving registers, so invalid stack arguments can expose different fault-time state.
+- Promoted repaired `00533240 handle_points_highest_attribute` to `accepted_drift`.
+  The independent review confirms the greater-peer exit, unordered x87 equality, signed loop bound, owner, and boundary.
+  Its 21 byte differences only exchange registers.
+- `00531750 RGE_Victory_Conditions` and `005324A0 handle_destroy_all` remain scratch.
+  Invalid objects can change field-read fault order, and malformed list nodes can alter saved EBP at failure.
