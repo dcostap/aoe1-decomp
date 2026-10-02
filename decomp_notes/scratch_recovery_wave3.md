@@ -119,3 +119,5 @@ Run whole-project validation after shared changes settle.
 - Both `map.cpp` targets remain scratch.
   `load_terrain_obj_types` has an unresolved PDB parameter-home conflict.
   `place_terrain_object` preserves known order, but malformed virtual-callee cleanup remains unknown.
+- `0046B680 decrementObstruction` remains scratch.
+  Original code reads both arguments before saving registers, so invalid stack arguments can expose different fault-time state.
