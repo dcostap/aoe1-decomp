@@ -116,3 +116,6 @@ Run whole-project validation after shared changes settle.
 - Promoted `004407A0 TribeSendMessageDialog` to `accepted_drift`.
   Three complete reviews agree on calls, fields, EH, cleanup, failure paths, and the original partial-object hazard.
   Residual bytes are register allocation, zero encodings, and dependent branch displacements.
+- Both `map.cpp` targets remain scratch.
+  `load_terrain_obj_types` has an unresolved PDB parameter-home conflict.
+  `place_terrain_object` preserves known order, but malformed virtual-callee cleanup remains unknown.
