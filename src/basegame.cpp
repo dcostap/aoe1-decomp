@@ -1565,8 +1565,6 @@ int RGE_Base_Game::setup_main_window() {
 }
 
 int RGE_Base_Game::setup_graphics_system() {
-    TDrawSystem* draw_system;
-
     if (this->prog_info->use_dir_draw != 0) {
         HDC dc = GetDC(0);
         int bits = GetDeviceCaps(dc, BITSPIXEL);
@@ -1577,15 +1575,15 @@ int RGE_Base_Game::setup_graphics_system() {
         }
     }
 
-    char draw_mode;
-    char draw_type;
+    unsigned char draw_mode;
+    unsigned char draw_type;
     int use_sys_mem;
 
     draw_type = (this->prog_info->use_dir_draw != 0) + 1;
     draw_mode = (this->prog_info->full_screen != 0) + 1;
     use_sys_mem = this->prog_info->use_sys_mem != 0;
 
-    draw_system = new TDrawSystem;
+    TDrawSystem* draw_system = new TDrawSystem;
     this->draw_system = draw_system;
     if (draw_system == 0)
         return 0;

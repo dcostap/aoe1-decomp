@@ -100,3 +100,7 @@ Run whole-project validation after shared changes settle.
   Its five-byte compare/store reorder is safe for ordinary construction, but allocation-failure and unusual count states remain unproved.
 - `004CC4C0 heal` remains scratch because nine x87-related bytes still lack complete numeric and exception-state proof.
 - `004786B0 item_at` remains scratch because its two field reads can fault in a different order on an invalid receiver.
+- `0041E920 setup_graphics_system` remains scratch with a proved six-byte epilogue escape.
+  Its locals now use PDB-supported byte types, and its allocation pointer starts at the natural allocation site.
+- `00485480 chance` remains scratch.
+  It writes the low byte of its `land_type` stack home, and a malformed receiver can expose the remaining read-order difference.
