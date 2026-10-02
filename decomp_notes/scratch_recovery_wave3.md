@@ -56,3 +56,9 @@ After boundary integration, rank the remaining grouped mismatches as follows:
 
 Run affected closures after each integration group.
 Run whole-project validation after shared changes settle.
+
+## Integrated results
+
+- `0047E5D0 XYZ::rotateXYByFacet` is now `matching`.
+  A natural expression reduction matches all 147 bytes and removes two boundary escapes.
+- `0047E530 XYZ::operator+` remains scratch because invalid-reference fault order differs.

@@ -66,7 +66,6 @@ void XYZ::rotateXYByFacet(const XYZ& refPoint, XYZ& rPoint, unsigned char facet)
         float c = cos(rotAmount);
         rPoint.xValue = (int)(c * xDiff - s * yDiff);
         float y1 = c * yDiff;
-        float x1 = s * xDiff;
-        rPoint.yValue = (int)(y1 + x1);
+        rPoint.yValue = (int)(y1 + s * xDiff);
     }
 }
