@@ -113,3 +113,6 @@ Run whole-project validation after shared changes settle.
   A malformed player array can fault before or after the original first argument push.
 - `0043A070 DibFromBitmap` remains scratch.
   Current source preserves known allocation and cleanup bugs, but GDI write extent and failure paths remain unproved.
+- Promoted `004407A0 TribeSendMessageDialog` to `accepted_drift`.
+  Three complete reviews agree on calls, fields, EH, cleanup, failure paths, and the original partial-object hazard.
+  Residual bytes are register allocation, zero encodings, and dependent branch displacements.
