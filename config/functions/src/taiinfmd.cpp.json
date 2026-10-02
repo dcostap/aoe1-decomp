@@ -71,7 +71,7 @@
     "004E0090": {"status": "matching", "symbol": "?facetTo@TribeInformationAIModule@@QAEHAAUXYPoint@@0@Z"},
     "004E0100": {"status": "matching", "symbol": "?placementCode@TribeInformationAIModule@@QAEHH@Z"},
     "004E02A0": {"status": "accepted_drift", "symbol": "?storeLot@TribeInformationAIModule@@QAEXHEEE@Z"},
-    "004E0470": {"status": "scratch", "symbol": "?removeLot@TribeInformationAIModule@@QAEXHEEE@Z"},
+    "004E0470": {"status": "matching", "symbol": "?removeLot@TribeInformationAIModule@@QAEXHEEE@Z"},
     "004E0510": {"status": "matching", "symbol": "?availableLot@TribeInformationAIModule@@QAEPAUBuildingLot@@H@Z"},
     "004E0560": {"status": "matching", "symbol": "?invalidLot@TribeInformationAIModule@@QAEHHEE@Z"},
     "004E05C0": {"status": "accepted_drift", "symbol": "?undesirableLot@TribeInformationAIModule@@QAEHHEEH@Z"},

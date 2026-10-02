@@ -1,0 +1,44 @@
+# Experiment e7bc70df3e87728b2e6288bf02b887681291432b0b752ccfcb7ef8182cf08fee
+# Base 1c0a1345c5fe84c6fb6026cc06834dca42233eb3
+diff --git a/src/taiinfmd.cpp b/src/taiinfmd.cpp
+index add6fa615..aad3b9da3 100644
+--- a/src/taiinfmd.cpp
++++ b/src/taiinfmd.cpp
+@@ -4154,24 +4154,20 @@ void TribeInformationAIModule::storeLot(int typeID, unsigned char x,
+ 
+ void TribeInformationAIModule::removeLot(
+     int typeID, unsigned char x, unsigned char y, unsigned char newStatus) {
+-    int idx = 0;
+-    if (maxBuildingLots > 0) {
+-        BuildingLot* lot = buildingLots;
+-        do {
+-            if (lot->typeID == typeID && lot->x == x && lot->y == y) {
+-                if (newStatus != 3) {
+-                    lot->status = newStatus;
+-                } else {
+-                    lot->typeID = -1;
+-                    lot->x = 0;
+-                    lot->y = 0;
+-                    lot->status = 3;
+-                }
+-                return;
++    int count = maxBuildingLots;
++    for (int idx = 0; idx < count; ++idx) {
++        if (buildingLots[idx].typeID == typeID &&
++            buildingLots[idx].x == x && buildingLots[idx].y == y) {
++            if (newStatus != 3) {
++                buildingLots[idx].status = newStatus;
++            } else {
++                buildingLots[idx].typeID = -1;
++                buildingLots[idx].x = 0;
++                buildingLots[idx].y = 0;
++                buildingLots[idx].status = 3;
+             }
+-            ++idx;
+-            ++lot;
+-        } while (idx < maxBuildingLots);
++            return;
++        }
+     }
+ }
+ 

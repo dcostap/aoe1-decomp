@@ -4156,22 +4156,20 @@ void TribeInformationAIModule::removeLot(
     int typeID, unsigned char x, unsigned char y, unsigned char newStatus) {
     int idx = 0;
     if (maxBuildingLots > 0) {
-        BuildingLot* lot = buildingLots;
-        do {
+        for (; idx < maxBuildingLots; ++idx) {
+            BuildingLot* lot = &buildingLots[idx];
             if (lot->typeID == typeID && lot->x == x && lot->y == y) {
                 if (newStatus != 3) {
-                    lot->status = newStatus;
+                    buildingLots[idx].status = newStatus;
                 } else {
-                    lot->typeID = -1;
-                    lot->x = 0;
-                    lot->y = 0;
-                    lot->status = 3;
+                    buildingLots[idx].typeID = -1;
+                    buildingLots[idx].x = 0;
+                    buildingLots[idx].y = 0;
+                    buildingLots[idx].status = 3;
                 }
                 return;
             }
-            ++idx;
-            ++lot;
-        } while (idx < maxBuildingLots);
+        }
     }
 }
 
