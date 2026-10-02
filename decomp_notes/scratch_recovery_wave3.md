@@ -137,3 +137,6 @@ Run whole-project validation after shared changes settle.
   Queue-allocation failure and partial-construction paths also remain unsafe and untested.
 - Both `RGE_Action_Attack` constructors at `00401170` and `004012B0` remain scratch.
   Their typed source preserves the proved writes and original caller bug, but exception and malformed-object paths remain unproved.
+- `004C9C80 advance_production_queue` remains scratch.
+  The original saves ESI before its signed queue-count check, while the rebuild delays that stack write.
+  Malformed stacks and queues can therefore observe different fault state.
