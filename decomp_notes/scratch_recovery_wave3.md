@@ -128,3 +128,7 @@ Run whole-project validation after shared changes settle.
   Invalid objects can change field-read fault order, and malformed list nodes can alter saved EBP at failure.
 - `00473930 TButtonPanel::hit_button` remains scratch.
   Its 18-byte coordinate-load difference can change malformed-object fault order before the shape check.
+- Repaired `0049B910 handle_terrain_sound` to share the original null-file log epilogue.
+  It now has seven register-encoding differences and remains scratch until linked storage checks run.
+- `0049BDB0 command_building` remains scratch.
+  The rebuild loads `message_panel` before four pushes, which changes malformed-pointer and stack-fault order.

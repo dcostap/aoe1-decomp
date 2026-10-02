@@ -3506,9 +3506,6 @@ void TRIBE_Screen_Game::handle_terrain_sound() {
                 this->terrain_playing = 1;
                 this->terrain_sound_start_time =
                     debug_timeGetTime(s_scr_game_cpp, 4706);
-            } else {
-                color_log(0x54, 0x5F, 4);
-                return;
             }
         } else {
             color_log(0x54, 0x5F, 4);
