@@ -143,3 +143,6 @@ Run whole-project validation after shared changes settle.
 - The three `scr_sed.cpp` targets remain scratch.
   Their owners, boundaries, calls, event widths, and source behavior are supported.
   Linked storage, x87 constants, unchecked indices, and editor runtime paths remain unproved.
+- Both assigned `tech.cpp` targets remain scratch.
+  `tech_cost` retains a future-stack-frame output-pointer counterexample.
+  `check_for_new_tech` has unordered x87 branches and a linked zero constant in a different section.
