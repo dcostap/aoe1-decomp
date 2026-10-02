@@ -236,17 +236,23 @@ void RGE_Visible_Map::set_all(unsigned char vis_flag) {
 void RGE_Visible_Map::explore_all(void) {
     log_map_call(this->world->world_time, (int)this->player->id, 6, 0, 0, 0, 0, 0, 0);
 
-    for (int y = 0; y < this->heightValue; ++y) {
-        for (int x = 0; x < this->widthValue; ++x) {
-            unsigned char* row = this->map_offsets[y];
-            if (row[x] == 0xFF) {
-                row[x] = 0;
-                this->numberTilesExploredValue++;
-                unsigned long* explored = unified_map_offsets[y];
-                explored[x] |= this->PlayerExploredMaskValue;
-                this->player->tile_list.add_node(x, y);
+    int y = 0;
+    if (0 < this->heightValue) {
+        do {
+            int x = 0;
+            if (0 < this->widthValue) {
+                do {
+                    if (this->map_offsets[y][x] == 0xFF) {
+                        this->map_offsets[y][x] = 0;
+                        this->numberTilesExploredValue++;
+                        unified_map_offsets[y][x] |= this->PlayerExploredMaskValue;
+                        this->player->tile_list.add_node(x, y);
+                    }
+                    x++;
+                } while (x < this->widthValue);
             }
-        }
+            y++;
+        } while (y < this->heightValue);
     }
     this->player->tile_list.collapse_list = 1;
 }

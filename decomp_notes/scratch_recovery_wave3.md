@@ -150,3 +150,6 @@ Run whole-project validation after shared changes settle.
   Its y-field loads occur in reverse order, which can expose a different fault on invalid mappings.
 - `005467B0 RGE_Zone_Map` remains scratch.
   The original reads map height before width for one allocation size, while the rebuild reverses those reads.
+- Promoted `0053C5D0 RGE_Visible_Map::explore_all` to exact `matching`.
+  Signed guards and direct `do-while` indexing match all 156 bytes.
+  All 20 exact `visible.cpp` owners remain exact, including `Set_Map_Offsets`.

@@ -12,7 +12,7 @@
     "0053C400": {"status": "matching", "symbol": "?save@RGE_Visible_Map@@QAEXH@Z"},
     "0053C490": {"status": "matching", "symbol": "?get_visible@RGE_Visible_Map@@QBEEHH@Z"},
     "0053C4D0": {"status": "matching", "symbol": "?set_all@RGE_Visible_Map@@QAEXE@Z"},
-    "0053C5D0": {"status": "scratch", "symbol": "?explore_all@RGE_Visible_Map@@QAEXXZ"},
+    "0053C5D0": {"status": "matching", "symbol": "?explore_all@RGE_Visible_Map@@QAEXXZ"},
     "0053C670": {"status": "matching", "symbol": "?percentExplored@RGE_Visible_Map@@QBEMXZ"},
     "0053C680": {"status": "matching", "symbol": "?recomputeExplored@RGE_Visible_Map@@QAEXXZ"},
     "0053C6C0": {"status": "matching", "symbol": "?get_los_table@RGE_Visible_Map@@QAEPAULOSTBL@@HH@Z"},
