@@ -132,3 +132,6 @@ Run whole-project validation after shared changes settle.
   It now has seven register-encoding differences and remains scratch until linked storage checks run.
 - `0049BDB0 command_building` remains scratch.
   The rebuild loads `message_panel` before four pushes, which changes malformed-pointer and stack-fault order.
+- `00414D40 UnitAIModule::order` remains scratch.
+  The rebuild saves EDI earlier, so a one-word writable stack can fault where the original returns.
+  Queue-allocation failure and partial-construction paths also remain unsafe and untested.
