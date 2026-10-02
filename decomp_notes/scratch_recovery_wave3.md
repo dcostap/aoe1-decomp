@@ -62,3 +62,6 @@ Run whole-project validation after shared changes settle.
 - `0047E5D0 XYZ::rotateXYByFacet` is now `matching`.
   A natural expression reduction matches all 147 bytes and removes two boundary escapes.
 - `0047E530 XYZ::operator+` remains scratch because invalid-reference fault order differs.
+- `004BDEA0 AddShape`, `004BEAD0 DecodeLine`, and `004BEB10 take_snapshot` remain scratch.
+  The unchecked DecodeLine write can corrupt differently ordered saved-register slots.
+  No caller contract excludes the counterexample.
