@@ -4516,17 +4516,22 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
 
     i = 0;
     if (this->civilians.numberValue > 0) {
-        ManagedArray<int>* civilians = &this->civilians;
         do {
             RGE_Static_Object* object =
-                this->md->player->world->object((*civilians)[i]);
+                this->md->player->world->object(this->civilians[i]);
             if (object != 0) {
                 UnitAIModule* unitAI = object->unitAI();
                 if (unitAI != 0) {
-                    ManagedArray<int>* unitsTasked =
-                        &this->unitsTaskedThisUpdate;
-                    if (unitsTasked->contains((*civilians)[i]))
-                        goto next_civilian;
+                    int j = 0;
+                    while (j < this->unitsTaskedThisUpdate.numberValue) {
+                        if (j >= this->unitsTaskedThisUpdate.maximumSizeValue)
+                            break;
+                        int taskedID = this->unitsTaskedThisUpdate.value[j];
+                        int candidateID = this->civilians[i];
+                        if (taskedID == candidateID)
+                            goto next_civilian;
+                        j++;
+                    }
 
                     if (object->getSpeed() == 0.0 && object->attribute_amount_held > 0.0f &&
                         object->waitingToMove() == 0 && object->actionState() <= 2) {
@@ -4534,12 +4539,9 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
                             this->md->informationAI.findClosestReturnDropsite(object);
                         if (dropsite != 0) {
                             this->md->player->sendGameOrder(object, dropsite, dropsite->world_x, dropsite->world_y);
-
-                            int civilianID = (*civilians)[i];
-                            ManagedArray<int>* unitsTasked = &this->unitsTaskedThisUpdate;
-                            unitsTasked->add(civilianID);
+                            this->unitsTaskedThisUpdate.add(this->civilians[i]);
                         } else {
-                            this->stopUnit((*civilians)[i], 100);
+                            this->stopUnit(this->civilians[i], 100);
                         }
                     } else {
                         if (object->unitAI()->currentOrder() == 700) {
@@ -4547,7 +4549,7 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
                             RGE_Static_Object* targetObject =
                                 this->md->object(target);
                             if (targetObject == 0 || targetObject->object_state > 2) {
-                                this->stopUnit((*civilians)[i], 100);
+                                this->stopUnit(this->civilians[i], 100);
                             }
                         }
                     }
@@ -9721,7 +9723,9 @@ void TribeTacticalAIModule::taskElephantGatherers(
         int count;
         ManagedArray<int> alreadyTasked(0);
 
-        alreadyTasked.add(mainHunterID);
+        alreadyTasked.resize(1);
+        alreadyTasked.value[alreadyTasked.numberValue] = mainHunterID;
+        alreadyTasked.numberValue++;
         count = 0;
 
         while (count < numberToTask) {
@@ -9764,30 +9768,7 @@ void TribeTacticalAIModule::taskElephantGatherers(
             this->md->aiPlayer->taskResourceGatherer(bestValueID, targetID, 0,
                                                      targetObject->world_x, targetObject->world_y);
 
-            for (int j = 0; j < alreadyTasked.numberValue; j++) {
-                if (j >= alreadyTasked.maximumSizeValue)
-                    break;
-                if (alreadyTasked.value[j] == bestValueID)
-                    goto afterAdd;
-            }
-
-            if (alreadyTasked.numberValue > alreadyTasked.maximumSizeValue - 1) {
-                int newSize = alreadyTasked.numberValue + 1;
-                int* newValue = new int[newSize];
-                if (newValue != 0) {
-                    for (int k = 0; k < alreadyTasked.maximumSizeValue && k < newSize; k++) {
-                        newValue[k] = alreadyTasked.value[k];
-                    }
-                    operator delete(alreadyTasked.value);
-                    alreadyTasked.value = newValue;
-                    alreadyTasked.maximumSizeValue = newSize;
-                }
-            }
-
-            alreadyTasked.value[alreadyTasked.numberValue] = bestValueID;
-            alreadyTasked.numberValue++;
-
-        afterAdd:
+            alreadyTasked.add(bestValueID);
             count++;
         }
     }

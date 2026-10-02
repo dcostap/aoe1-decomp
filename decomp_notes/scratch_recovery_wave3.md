@@ -81,3 +81,7 @@ Run whole-project validation after shared changes settle.
 - `00504750 processNotify` remains scratch after a behavior repair.
   It now reloads its object after virtual speed callbacks and preserves original coordinate access order.
   The natural form grows across four bytes of the next original owner, so it is not an exact or drift claim.
+- The three `taitacmd` targets remain scratch after source repairs.
+  `evaluateOpenTasks` now preserves the original tasked-ID read order.
+  `taskElephantGatherers` now preserves the original initial resize and uses the natural array helper for later additions.
+  The switch table in `checkForAttackResponseBuildInsertions` belongs to that function, but its return still escapes by two bytes.
