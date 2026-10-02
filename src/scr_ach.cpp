@@ -343,7 +343,7 @@ TribeAchievementsScreen::~TribeAchievementsScreen() {
 // Mode 6 is emitted before mode 5 in the original handler
 // order. Mode 3 reads victory IDs 16 and 15 in that order.
 void TribeAchievementsScreen::set_mode(long new_mode) {
-    int player_num = static_cast<int>(rge_base_game->world->player_num) - 1;
+    long player_num = rge_base_game->world->player_num - 1;
     char temptxt[50];
 
     memset(temptxt + 31, 0, sizeof(temptxt) - 31);

@@ -107,3 +107,5 @@ Run whole-project validation after shared changes settle.
 - All five `taiinfmd` targets remain scratch.
   The constructor now follows PDB quadrant-loop order and matches its 1,182-byte owner boundary.
   Twelve bytes still differ, while the other four targets need further source or container evidence.
+- `0048E400 set_mode` remains scratch because `itoa` argument setup has an unresolved stack-fault order difference.
+  Its player-count local now uses the PDB `long` type without changing output bytes.
