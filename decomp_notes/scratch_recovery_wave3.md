@@ -140,3 +140,6 @@ Run whole-project validation after shared changes settle.
 - `004C9C80 advance_production_queue` remains scratch.
   The original saves ESI before its signed queue-count check, while the rebuild delays that stack write.
   Malformed stacks and queues can therefore observe different fault state.
+- The three `scr_sed.cpp` targets remain scratch.
+  Their owners, boundaries, calls, event widths, and source behavior are supported.
+  Linked storage, x87 constants, unchecked indices, and editor runtime paths remain unproved.
