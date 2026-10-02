@@ -255,7 +255,7 @@ void* RGE_Communications_Queue::GetSpecificItem(
         }
     }
 
-    *Size = this->Queue[idx].Size;
+    *Size = entry->Size;
     retptr = this->Queue[idx].msgptr;
     this->Queue[idx].msgptr = 0;
 

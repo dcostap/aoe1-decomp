@@ -68,3 +68,8 @@ Run whole-project validation after shared changes settle.
 - `00450450 RGE_Master_Combat_Object::setup` remains scratch with repaired source.
   Original parameter-home scan writes restore the 557-byte extent and remove two boundary escapes.
   Later field-store fault order still differs.
+- `0042CD50 GetCommInfo` is now accepted drift.
+  Its only two bytes select signed versus unsigned comparison for fixed low static addresses.
+- `00431D30 GetSpecificItem` remains scratch with a boundary-safe saved-EDI alias repair.
+- `00533AF0 Init_Tile_Edge_Tables` and `00533E10 update_display_selected_objects` remain scratch.
+  Their true owners are proved, but rebuilt paths still escape those boundaries.

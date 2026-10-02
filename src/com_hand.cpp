@@ -3668,7 +3668,7 @@ char* TCommunications_Handler::GetCommInfo(unsigned char LineNum) {
         do {
             strcpy(p, ">");
             p += 0x100;
-        } while (p < buffer + 0x700);
+        } while (p < Lin[7]);
         sprintf(buffer, "SinglePlayer> T#%d ", this->current_turn);
         return buffer + (static_cast<unsigned int>(LineNum) << 8);
     }
@@ -3676,7 +3676,7 @@ char* TCommunications_Handler::GetCommInfo(unsigned char LineNum) {
     do {
         strcpy(p, " ");
         p += 0x100;
-    } while (p < buffer + 0x700);
+    } while (p < Lin[7]);
     strcpy(tmp, "");
     if (this->MeHost != 0) {
         strcpy(tmp, "Host");
