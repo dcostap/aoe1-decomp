@@ -73,3 +73,6 @@ Run whole-project validation after shared changes settle.
 - `00431D30 GetSpecificItem` remains scratch with a boundary-safe saved-EDI alias repair.
 - `00533AF0 Init_Tile_Edge_Tables` and `00533E10 update_display_selected_objects` remain scratch.
   Their true owners are proved, but rebuilt paths still escape those boundaries.
+- `0046FF90 create_checksum` remains scratch because two list loads can fault in a different order.
+- `0047AB20 set_tab_pos` remains scratch after donor and arithmetic variants kept its boundary escape.
+- `00518090 setupMinoan` remains scratch after donor-backed branch forms kept an extra pointer load.
