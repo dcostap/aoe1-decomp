@@ -85,3 +85,8 @@ Run whole-project validation after shared changes settle.
   `evaluateOpenTasks` now preserves the original tasked-ID read order.
   `taskElephantGatherers` now preserves the original initial resize and uses the natural array helper for later additions.
   The switch table in `checkForAttackResponseBuildInsertions` belongs to that function, but its return still escapes by two bytes.
+- All three `fractal` targets remain scratch.
+  The reachable `MakeNewLink` overflow still exposes different fault-time EDI state.
+  `AddingCircle` now uses the local roles and initialization order recorded by PDB, without changing its output bytes.
+- Both `tact_mob` targets remain scratch.
+  The constructor has observable partial-object write-order drift, while `first_in_stack` still needs linked string proof.

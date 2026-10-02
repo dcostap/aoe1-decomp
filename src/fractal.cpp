@@ -665,21 +665,20 @@ void PointMaker::AddingCircle(int x1, int y1, int radius) {
     if (radius == 0) radius = 1;
 
     int step = 360 / (radius * 3);
-    float width = (float)Width;
+    float W = (float)Width;
     float offset;
     float x;
     float curx;
-    float W;
     float lasty;
-    lasty = 0.0f;
-    W = 0.0f;
     float lastx;
+    lastx = 0.0f;
+    lasty = 0.0f;
     for (int angle = 0; angle < 360; angle += step) {
-        lastx = trig.sin360(angle) * (float)radius;
-        curx = trig.cos360(angle) * (float)radius;
+        curx = trig.sin360(angle) * (float)radius;
+        x = trig.cos360(angle) * (float)radius;
 
-        if (lastx != lasty || curx != W) {
-            int loc = (int)(width * curx + lastx);
+        if (curx != lastx || x != lasty) {
+            int loc = (int)(W * x + curx);
             int prob_add = ProbabilityAdd;
             char add = (char)prob_add;
             if (loc >= 1 && loc < SizeArrays - 1) {
@@ -694,8 +693,8 @@ void PointMaker::AddingCircle(int x1, int y1, int radius) {
                 }
             }
 
-            lasty = lastx;
-            W = curx;
+            lastx = curx;
+            lasty = x;
             int random = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 497);
             if (random % 2) {
                 x = trig.sin360(angle) * (float)radius;
@@ -703,7 +702,7 @@ void PointMaker::AddingCircle(int x1, int y1, int radius) {
                     2 + x - 1.0f;
                 float y = trig.cos360(angle) * (float)radius;
                 int random_2 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 500) % 2;
-                loc = (int)(width * ((float)random_2 + y - 1.0f) + offset);
+                loc = (int)(W * ((float)random_2 + y - 1.0f) + offset);
                 int addp1 = ProbabilityAdd + 1;
                 if (loc >= 1 && loc < SizeArrays - 1) {
                     char add = (char)addp1;
