@@ -219,10 +219,10 @@ uchar TRIBE_Action_Convert::update() {
         }
     }
 
-    //! @bug This guard accepts only object_state == 2, but priest selectors accept < 3.
+    //! @bug This guard accepts only active objects, but priest selectors also accept unfinished objects.
     //! An enemy construction site (state 0) is dropped here and then picked again at once.
     //! The AI priest repeats that cycle forever and never moves.
-    if (this->target_obj != 0 && this->target_obj->object_state != 2) {
+    if (this->target_obj != 0 && this->target_obj->object_state != RGE_OBJECT_STATE_ACTIVE) {
         this->set_target_obj(0);
         this->set_state(3);
         return 0;

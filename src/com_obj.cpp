@@ -491,7 +491,7 @@ void RGE_Combat_Object::copy_obj(RGE_Master_Static_Object* source2) {
 }
 
 void RGE_Combat_Object::notify(int caller, int recipient, int mType, long p1, long p2, long p3) {
-    if (object_state == 2) {
+    if (object_state == RGE_OBJECT_STATE_ACTIVE) {
         if (unitAIValue != 0) {
             if (unitAIValue->notify(caller, recipient, mType, p1, p2, p3) != 0) {
                 return;

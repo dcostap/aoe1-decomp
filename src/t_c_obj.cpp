@@ -147,7 +147,7 @@ void TRIBE_Combat_Object::save(int outfile) {
 }
 
 unsigned char TRIBE_Combat_Object::update() {
-    if (this->master_obj->object_group == 0x12 && this->object_state == 2) {
+    if (this->master_obj->object_group == 0x12 && this->object_state == RGE_OBJECT_STATE_ACTIVE) {
         this->attribute_amount_held +=
             this->owner->attributes[35] *
             this->owner->world->world_time_delta_seconds;
@@ -194,8 +194,8 @@ void TRIBE_Combat_Object::transform(RGE_Master_Static_Object* obj) {
 }
 
 void TRIBE_Combat_Object::set_object_state(unsigned char new_object_state) {
-    if (this->owner->world->game_state == 0 && new_object_state >= 3 &&
-        this->object_state <= 2 && this->master_obj->object_group == 1) {
+    if (this->owner->world->game_state == 0 && new_object_state >= RGE_OBJECT_STATE_DYING &&
+        this->object_state <= RGE_OBJECT_STATE_ACTIVE && this->master_obj->object_group == 1) {
         this->reposition_artifact();
     } else {
         RGE_Static_Object::set_object_state(new_object_state);
@@ -207,7 +207,7 @@ void TRIBE_Combat_Object::cancel_object() {
 }
 
 void TRIBE_Combat_Object::die_die_die() {
-    if (this->object_state == 2 && this->owner->attributes[57] >= 1.0f) {
+    if (this->object_state == RGE_OBJECT_STATE_ACTIVE && this->owner->attributes[57] >= 1.0f) {
         RGE_Action* action = this->actions->get_action();
         if (action != 0 && action->type() == 0x68) {
             static_cast<TRIBE_Action_Convert*>(action)->martyrdom();
@@ -267,7 +267,7 @@ void TRIBE_Combat_Object::change_ownership(RGE_Player* new_owner) {
         this->owner->removeObject(this, this->sleep_flag, this->dopple_flag, this->player_object_node);
         this->player_object_node = new_owner->addObject(this, this->sleep_flag, this->dopple_flag);
 
-        if (this->object_state == 2) {
+        if (this->object_state == RGE_OBJECT_STATE_ACTIVE) {
             this->unexplore_terrain(this->owner, 0, -1);
         }
 
@@ -278,7 +278,7 @@ void TRIBE_Combat_Object::change_ownership(RGE_Player* new_owner) {
             this->own_master = 1;
         }
 
-        if (this->object_state == 2) {
+        if (this->object_state == RGE_OBJECT_STATE_ACTIVE) {
             this->explore_terrain(this->owner, 0, -1);
         }
 

@@ -2647,20 +2647,20 @@ void TRIBE_Screen_Game::setup_buttons() {
                 }
 
                 unsigned char object_state = building->object_state;
-                if (object_state < 2) {
+                if (object_state < RGE_OBJECT_STATE_ACTIVE) {
                     this->set_button(this->button_cmd_pic, 0, 3, 0x14, 0, 0x1D4E5, -1, 0, 0, 0, 0, 0);
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
                     final_type = 6;
                     set_final_button = 1;
                     continue_setup = 0;
-                } else if (object_state > 2) {
+                } else if (object_state > RGE_OBJECT_STATE_ACTIVE) {
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
                     final_type = 6;
                     set_final_button = 1;
                     continue_setup = 0;
-                } else if ((object_state == 2) && ((work_type == 0x67) || ((work_type == 0x66) &&
+                } else if ((object_state == RGE_OBJECT_STATE_ACTIVE) && ((work_type == 0x67) || ((work_type == 0x66) &&
                              (production_queues_is_use == 0)))) {
                     this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
                     final_pic = this->more_cancel_pic;
@@ -2668,7 +2668,7 @@ void TRIBE_Screen_Game::setup_buttons() {
                     final_type = 6;
                     set_final_button = 1;
                     continue_setup = 0;
-                } else if ((object_state == 2) && ((work_type != 0x66) || (production_queues_is_use != 0))) {
+                } else if ((object_state == RGE_OBJECT_STATE_ACTIVE) && ((work_type != 0x66) || (production_queues_is_use != 0))) {
                     short tech_cnt;
                     short make_cnt;
                     player->interface_tech_avail(&this->tech_list, &tech_cnt, this->game_obj->master_obj->id);

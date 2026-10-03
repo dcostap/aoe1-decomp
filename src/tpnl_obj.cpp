@@ -59,7 +59,7 @@ TRIBE_Panel_Object::TRIBE_Panel_Object(
     this->save_obj_type = 0;
     this->save_attr_type = -1;
     this->save_attr_amount = 0.0f;
-    this->save_object_state = 0;
+    this->save_object_state = RGE_OBJECT_STATE_UNBUILT;
     this->save_build_pts = 0.0f;
     this->save_list = 0;
     this->save_hp = 0.0f;
@@ -432,7 +432,7 @@ void TRIBE_Panel_Object::draw() {
                 progress = temp;
             }
 
-            if (this->game_obj->object_state != 0 && (this->game_obj->owner != this->player ||
+            if (this->game_obj->object_state != RGE_OBJECT_STATE_UNBUILT && (this->game_obj->owner != this->player ||
                  (work_type != 0x67 && work_type != 0x66))) {
                 bldg_obj->get_weapon(cur_val, orig_val);
                 if (cur_val > 0) {
@@ -447,7 +447,7 @@ void TRIBE_Panel_Object::draw() {
             }
 
             if (this->game_obj->owner == this->player) {
-                if (bldg_obj->object_state == 0) {
+                if (bldg_obj->object_state == RGE_OBJECT_STATE_UNBUILT) {
                     progress = bldg_obj->get_construction_progress();
                     this->draw_item(row, 9, ValueTypePercent, progress, 0);
                     ++row;
@@ -477,7 +477,7 @@ void TRIBE_Panel_Object::draw() {
             }
         }
 
-        if (this->game_obj->object_state != 0 && this->game_obj->object_state == 2) {
+        if (this->game_obj->object_state != RGE_OBJECT_STATE_UNBUILT && this->game_obj->object_state == RGE_OBJECT_STATE_ACTIVE) {
             int show_resource = 0;
             if (this->game_obj->owner == this->player) {
                 if (work_type != 0x67 && work_type != 0x66) {
@@ -533,7 +533,7 @@ resource_done:
         if (this->game_obj->master_obj->id == 0x2d && this->game_obj->owner != this->player) {
             RGE_Static_Object* nearby =
                 rge_base_game->get_player()->objects->find_by_master_id(0x2d, this->game_obj->world_x,
-                                                                        this->game_obj->world_y, 1, 2, this->game_obj);
+                                                                        this->game_obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE, this->game_obj);
 
             if (nearby != 0) {
                 dx = nearby->world_x - this->game_obj->world_x;

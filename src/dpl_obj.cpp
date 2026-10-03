@@ -53,7 +53,7 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object(
         } else {
             this->map_color = this->doppled_object->owner->color_table->map_color;
         }
-        if (this->doppled_object->object_state >= 7) {
+        if (this->doppled_object->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
             this->doppled_object = 0;
             this->doppledObjectID = -1;
         }
@@ -147,7 +147,7 @@ void RGE_Doppleganger_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj,
         this->CantSeeBits = 0;
         this->MapAddress = map_addr;
 
-        if (obj->object_state >= 7) {
+        if (obj->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
             this->doppled_object = 0;
             this->doppledObjectID = -1;
             this->validate();
@@ -226,14 +226,14 @@ unsigned char RGE_Doppleganger_Object::update() {
 
     if (this->doppled_object == 0) {
         this->doppledObjectID = -1;
-    } else if (this->doppled_object->object_state >= 7) {
+    } else if (this->doppled_object->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->doppled_object = 0;
         this->doppledObjectID = -1;
     }
 
     unsigned long map_value = *this->MapAddress;
     if (map_value != this->LastMapValue) {
-        if ((this->owner->mutualVisibleMask & map_value) != 0 && this->object_state < 3) {
+        if ((this->owner->mutualVisibleMask & map_value) != 0 && this->object_state < RGE_OBJECT_STATE_DYING) {
             if (DDlogf != 0) {
                 fprintf(DDlogf, "DIE DOP (@%d) id=%d own=%d\n", this->owner->world->world_time, this->id, this->owner->id);
             }
@@ -292,7 +292,7 @@ void RGE_Doppleganger_Object::validate() {
         this->owner->world->map->map_row_offset[row][col].objects.list;
 
     if (entry != 0) {
-        unsigned char check_value = 2;
+        unsigned char check_value = RGE_OBJECT_STATE_ACTIVE;
 
         do {
             RGE_Doppleganger_Object* obj =

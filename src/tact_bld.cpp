@@ -147,7 +147,7 @@ unsigned char TRIBE_Action_Build::update() {
         }
     }
 
-    if (this->target_obj != 0 && this->target_obj->object_state != 0 && this->timer == 0.0f) {
+    if (this->target_obj != 0 && this->target_obj->object_state != RGE_OBJECT_STATE_UNBUILT && this->timer == 0.0f) {
         if (this->target_obj->hp < (float)(int)this->target_obj->master_obj->hp) {
             this->obj->removeAllFromPathingGroup();
             this->obj->owner->processAIOrder(this->obj->owner->id, this->obj->id, 0x2CE, this->target_obj->id,

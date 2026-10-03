@@ -32,7 +32,7 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj_in, RGE_Task* task_i
     this->task = task_in;
     this->action_type = 0x6E;
     this->set_target_obj(target_obj_in);
-    if (target_obj_in && target_obj_in->object_state < 7) {
+    if (target_obj_in && target_obj_in->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->target_x = (float)target_obj_in->world_x;
         this->target_y = (float)target_obj_in->world_y;
         this->target_z = (float)target_obj_in->world_z;
@@ -141,7 +141,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
         this->target_x = this->target_obj->world_x;
         this->target_y = this->target_obj->world_y;
         this->target_z = this->target_obj->world_z;
-        if (this->target_obj->object_state <= 2) {
+        if (this->target_obj->object_state <= RGE_OBJECT_STATE_ACTIVE) {
             this->set_state(0x0C);
             return;
         }
@@ -200,7 +200,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
                     this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
                         static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site,
                         static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->backup_drop_site,
-                        this->obj->world_x, this->obj->world_y, 1, 2, (RGE_Static_Object*)this->obj));
+                        this->obj->world_x, this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE, (RGE_Static_Object*)this->obj));
                 } else {
                     this->set_target_obj2(0);
                 }
@@ -253,10 +253,10 @@ unsigned char TRIBE_Action_Hunt::update() {
         this->set_target_obj2(0);
     }
 
-    if (this->target_obj != 0 && this->target_obj->object_state >= 7) {
+    if (this->target_obj != 0 && this->target_obj->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->set_target_obj(0);
     }
-    if (this->target_obj2 != 0 && this->target_obj2->object_state >= 7) {
+    if (this->target_obj2 != 0 && this->target_obj2->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->set_target_obj2(0);
     }
 

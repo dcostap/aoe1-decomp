@@ -52,19 +52,19 @@ unsigned char RGE_Animated_Object::update() {
 
     unsigned char state = this->object_state;
     switch (state) {
-    case 3: {
+    case RGE_OBJECT_STATE_DYING: {
         RGE_Master_Static_Object* master = this->master_obj;
         if (master->death_sprite == 0) {
-            this->set_object_state(5);
+            this->set_object_state(RGE_OBJECT_STATE_DEAD);
         } else {
-            this->set_object_state(4);
+            this->set_object_state(RGE_OBJECT_STATE_DEATH_ANIMATION);
         }
         break;
     }
-    case 4: {
+    case RGE_OBJECT_STATE_DEATH_ANIMATION: {
         unsigned char animating = this->sprite_list->is_animating(this->sprite);
         if (animating == 0) {
-            this->object_state = 5;
+            this->object_state = RGE_OBJECT_STATE_DEAD;
             this->speed = 0.0f;
         }
         break;

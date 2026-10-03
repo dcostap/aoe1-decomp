@@ -97,7 +97,7 @@ int TribeHuntedAnimalUnitAIModule::processIdle(int doSearch) {
     int targetID;
     RGE_Static_Object* target;
     float evasiveMoveDistance, xDiff, yDiff, distanceDiff, nx, ny;
-    targetID = closestObject(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0);
+    targetID = closestObject(0xFFFFFFFF, 0xFFFFFFFF, static_cast<unsigned int>(RGE_OBJECT_STATE_ANY), 0xFFFFFFFF, 0);
 
     if (targetID != -1) {
         target = objectValue->owner->world->object(targetID);
@@ -342,7 +342,7 @@ int TribeLionUnitAIModule::processIdle(int doSearch) {
     idleTimeoutValue = 6000;
     setAdjustedIdleTimeout();
 
-    int targetId = closestObject(-1, -1, -1, -1, 0);
+    int targetId = closestObject(-1, -1, RGE_OBJECT_STATE_ANY, -1, 0);
     RGE_Static_Object* newTarget = lookupObject(targetId);
 
     if (targetId == -1 || newTarget == 0) {
@@ -756,7 +756,7 @@ caller_recorded:
             if (resourceType != -1)
                 targetID = this->closestResourceObject(resourceType, 0);
             else
-                targetID = this->closestObject(targetType, -1, -1, -1, 0);
+                targetID = this->closestObject(targetType, -1, RGE_OBJECT_STATE_ANY, -1, 0);
 
             if (targetID != -1) {
                 if (this->huntObject(targetID, 1) == 1)
@@ -800,9 +800,9 @@ caller_recorded:
             if (resourceType != -1) {
                 targetID = this->closestResourceObject(resourceType, 0);
             } else if (nEvent->p2 == 0x32) {
-                targetID = this->closestObject(targetType, -1, 2, 0x32, 0);
+                targetID = this->closestObject(targetType, -1, RGE_OBJECT_STATE_ACTIVE, 0x32, 0);
             } else {
-                targetID = this->closestObject(targetType, -1, -1, -1, 0);
+                targetID = this->closestObject(targetType, -1, RGE_OBJECT_STATE_ANY, -1, 0);
             }
 
             if (targetID != -1) {
@@ -838,10 +838,10 @@ caller_recorded:
                 this->evasiveMoveTo(x, y, object->world_z, 1);
             }
         } else if (action == 0x25a) {
-            int targetID = this->closestObject(this->currentTargetTypeValue, 3, 0, -1, 0);
+            int targetID = this->closestObject(this->currentTargetTypeValue, 3, RGE_OBJECT_STATE_UNBUILT, -1, 0);
             if (targetID == -1) {
                 int type = this->currentTargetTypeValue == 0x1b ? 3 : 0x1b;
-                targetID = this->closestObject(type, 3, 0, -1, 0);
+                targetID = this->closestObject(type, 3, RGE_OBJECT_STATE_UNBUILT, -1, 0);
             }
             if (targetID != -1 && this->objectValue->canPath(targetID, 1.0f, 0, 0, -1, -1) == 1) {
                 if (this->buildObject(targetID, 1) == 1)
@@ -1011,7 +1011,7 @@ int TribePriestUnitAIModule::bestUnitToHeal(int idleHeal, float* allyDistance) {
                     if (unit != 0) {
                         if (unit->master_obj->object_group != 3) {
                             if ((float)(int)unit->master_obj->hp > unit->hp) {
-                                if (unit->object_state < 3) {
+                                if (unit->object_state < RGE_OBJECT_STATE_DYING) {
                                     if (idleHeal != 0 || VisibleUnitList[a][i].distance <= 4) {
                                         if (this->objectValue->owner->id != 0 || VisibleUnitList[a][i].distance <= 2) {
                                             if (this->objectValue->canPath(VisibleUnitList[a][i].object_id,
@@ -1062,7 +1062,7 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* distance) {
             if (this->objectValue->owner->isEnemy((int)VisibleUnitList[4][i].player) != 0) {
                 RGE_Static_Object* found = this->lookupObject(VisibleUnitList[4][i].object_id);
 
-                if (found != 0 && found->object_state < 3) {
+                if (found != 0 && found->object_state < RGE_OBJECT_STATE_DYING) {
                     if (this->canConvert(found->id) != 0) {
                         float priority =
                             (float)VisibleUnitList[4][i].distance;
@@ -1188,7 +1188,7 @@ int TribePriestUnitAIModule::processIdle(int doSearch) {
             }
         }
 
-        int targetId = this->closestObject(-1, 2, -1, -1, 0);
+        int targetId = this->closestObject(-1, 2, RGE_OBJECT_STATE_ANY, -1, 0);
         if (targetId == -1) {
             return 5;
         }
@@ -1287,12 +1287,12 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) 
     case 0x202:
         if (this->currentActionValue == 0x267) {
             //! The trade ship searches only for dock id 0x2d; other drop-site units never match.
-            int id = this->closestObject(-1, 0, 2, 0x2d, 0);
+            int id = this->closestObject(-1, 0, RGE_OBJECT_STATE_ACTIVE, 0x2d, 0);
             if (id != -1 && this->tradeWithObject(id, 1) == 1) {
                 return 6;
             }
 
-            id = this->closestObject(-1, 1, 2, 0x2d, 0);
+            id = this->closestObject(-1, 1, RGE_OBJECT_STATE_ACTIVE, 0x2d, 0);
             if (id != -1 && this->tradeWithObject(id, 1) == 1) {
                 return 6;
             }
@@ -1427,7 +1427,7 @@ after_add:
 
 int TribeTradeShipUnitAIModule::processIdle(int doSearch) {
     if (this->objectValue->owner->computerPlayer()) {
-        int targetId = this->closestObject(-1, -1, -1, -1, 0);
+        int targetId = this->closestObject(-1, -1, RGE_OBJECT_STATE_ANY, -1, 0);
         if (targetId != -1) {
             RGE_Static_Object* target = this->objectValue->owner->world->object(targetId);
             if (target != 0) {
@@ -1536,7 +1536,7 @@ already_in_list:
 
 int TribeTransportShipUnitAIModule::processIdle(int doSearch) {
     if (this->objectValue->owner->computerPlayer()) {
-        int targetId = closestObject(-1, -1, -1, -1, 0);
+        int targetId = closestObject(-1, -1, RGE_OBJECT_STATE_ANY, -1, 0);
 
         if (targetId != -1) {
             RGE_Static_Object* target = this->objectValue->owner->world->object(targetId);
@@ -1680,7 +1680,7 @@ after_add:
 
 int TribeFishingShipUnitAIModule::processIdle(int doSearch) {
     if (objectValue->owner->computerPlayer()) {
-        int targetID = closestObject(-1, -1, -1, -1, 0);
+        int targetID = closestObject(-1, -1, RGE_OBJECT_STATE_ANY, -1, 0);
 
         if (targetID != -1) {
             RGE_Static_Object* target = objectValue->owner->world->object(targetID);
@@ -1944,7 +1944,7 @@ int TribeSoldierUnitAIModule::processIdle(int doSearch) {
                 }
 
                 if (this->currentOrderValue != 0x2BD && this->currentOrderValue != 0x2D5) {
-                    int targetID2 = this->closestObject(-1, -1, -1, -1, 0);
+                    int targetID2 = this->closestObject(-1, -1, RGE_OBJECT_STATE_ANY, -1, 0);
                     if (targetID2 != -1) {
                         RGE_Static_Object* target =
                             this->objectValue->owner->world->object(targetID2);
@@ -2201,7 +2201,7 @@ int TribeArtifactUnitAIModule::processIdle(int doSearch) {
     int target_id;
     RGE_Static_Object* target;
 
-    target_id = this->closestObject(-1, -1, -1, -1, 0);
+    target_id = this->closestObject(-1, -1, RGE_OBJECT_STATE_ANY, -1, 0);
     if ((numberDifferentPlayerObjectsVisible <= 1) && (target_id != -1)) {
         target = this->objectValue->owner->world->object(target_id);
         if (target != 0) {
@@ -2274,7 +2274,7 @@ int TribeTowerUnitAIModule::canAttackUnit(RGE_Static_Object* unit) {
         return 0;
     if (unit->master_obj->object_group == 1)
         return 0;
-    if (this->objectValue->object_state < 2)
+    if (this->objectValue->object_state < RGE_OBJECT_STATE_ACTIVE)
         return 0;
     return 1;
 }

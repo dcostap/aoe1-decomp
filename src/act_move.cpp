@@ -132,7 +132,7 @@ unsigned char RGE_Action_Move_To::update() {
         this->set_target_obj2(0);
     }
 
-    if (this->target_obj != 0 && this->target_obj->object_state >= 7) {
+    if (this->target_obj != 0 && this->target_obj->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->set_target_obj(0);
         goto target_lost;
     }

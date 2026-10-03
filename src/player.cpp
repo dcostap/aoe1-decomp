@@ -502,9 +502,9 @@ RGE_Static_Object* RGE_Player::make_scenario_obj(float world_x, float world_y,
     RGE_Master_Static_Object* master = this->master_objects[master_id];
     if (master != 0) {
         obj = (RGE_Static_Object*)master->make_new_obj(this, world_x, world_y, world_z);
-        if (state >= 7) {
+        if (state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
             obj->destroy_obj();
-        } else if (state > 2) {
+        } else if (state > RGE_OBJECT_STATE_ACTIVE) {
             obj->die_die_die();
         } else {
             obj->new_angle(new_angle);
@@ -1680,7 +1680,7 @@ unsigned char RGE_Player::get_selected_objects_to_command(
 
         object = *list;
         if (object != 0) {
-            if (object->object_state == 2 && object->owner == player) {
+            if (object->object_state == RGE_OBJECT_STATE_ACTIVE && object->owner == player) {
                 master = object->master_obj;
                 if (master->select_level >= min_select_level || player->id == 0) {
                     if (object_group == -1 || master->object_group == (unsigned char)object_group) {
@@ -1717,7 +1717,7 @@ void RGE_Player::update_selected() {
         if (selected >= player->sel_count) return;
         RGE_Static_Object* obj = player->sel_list[index];
         if (obj != 0) {
-            if (obj->object_state < 7 && obj->inside_obj == 0)
+            if (obj->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL && obj->inside_obj == 0)
                 selected++;
             else
                 player->unselect_one_object(index);

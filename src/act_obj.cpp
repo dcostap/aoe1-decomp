@@ -404,14 +404,14 @@ unsigned char RGE_Action_Object::update() {
     unsigned char result = RGE_Animated_Object::update();
     unsigned char state = this->object_state;
 
-    if (state > 2) {
+    if (state > RGE_OBJECT_STATE_ACTIVE) {
         if (this->actions->list != 0) {
             this->actions->delete_list();
             return result;
         }
     } else {
         if (this->actions->list == 0) {
-            if (state == 2 && static_cast<RGE_Master_Action_Object*>(this->master_obj) ->default_task != -1) {
+            if (state == RGE_OBJECT_STATE_ACTIVE && static_cast<RGE_Master_Action_Object*>(this->master_obj) ->default_task != -1) {
                 this->set_task(static_cast<RGE_Master_Action_Object*>(this->master_obj)->default_task);
                 return result;
             }

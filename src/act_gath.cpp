@@ -174,12 +174,12 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
                         this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
                                 ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
                                 ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
-                                this->obj->world_x, this->obj->world_y, 1, 2, (RGE_Static_Object*)this->obj));
+                                this->obj->world_x, this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE, (RGE_Static_Object*)this->obj));
                     } else {
                         this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
                                 ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
                                 ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
-                                this->obj->world_x, this->obj->world_y, 1, 2, (RGE_Static_Object*)0));
+                                this->obj->world_x, this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE, (RGE_Static_Object*)0));
                     }
                 } else {
                     this->set_target_obj2(0);
@@ -230,10 +230,10 @@ unsigned char RGE_Action_Gather::update() {
         this->set_target_obj2(0);
     }
 
-    if (this->target_obj != 0 && this->target_obj->object_state >= 7) {
+    if (this->target_obj != 0 && this->target_obj->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->set_target_obj(0);
     }
-    if (this->target_obj2 != 0 && this->target_obj2->object_state >= 7) {
+    if (this->target_obj2 != 0 && this->target_obj2->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->set_target_obj2(0);
     }
 

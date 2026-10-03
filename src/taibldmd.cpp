@@ -473,7 +473,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
                 if (this->md->resourceAI.resourcesAvailable(&itemCost)) {
                     int canBuildItem;
                     if (category == 2 || category == 1) {
-                        canBuildItem = this->md->object(-1, item->buildFrom(), -1, -1, -1, -1, -1, -1, 2, -1) != 0;
+                        canBuildItem = this->md->object(-1, item->buildFrom(), -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ACTIVE, -1) != 0;
                     } else {
                         canBuildItem =
                             this->md->constructionAI.canPlace(item);

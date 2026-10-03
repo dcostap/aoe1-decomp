@@ -184,7 +184,7 @@ RGE_Static_Object* MainDecisionAIModule::object(
             if (targetType != -1 && object->unitAI()->currentTargetType() != targetType) {
                 goto next_object;
             }
-            if ((objectState == -1 || (int)object->object_state == objectState) && (maxAttributeAmount == -1 ||
+            if ((objectState == RGE_OBJECT_STATE_ANY || (int)object->object_state == objectState) && (maxAttributeAmount == -1 ||
                  object->attribute_amount_held <= (float)maxAttributeAmount)) {
                 return object;
             }
@@ -228,7 +228,7 @@ RGE_Static_Object* MainDecisionAIModule::object(int gameID, int typeID, int grou
         if (ai->currentAction() == action2) {
             continue;
         }
-        if (objectState != -1 && (int)object->object_state != objectState) {
+        if (objectState != RGE_OBJECT_STATE_ANY && (int)object->object_state != objectState) {
             continue;
         }
         return object;
@@ -273,7 +273,7 @@ RGE_Static_Object* MainDecisionAIModule::mostDamaged(int oGroup, int oType) {
     for (int i = 0; i < this->objects.number(); ++i) {
         RGE_Static_Object* object =
             this->player->world->object(this->objects[i]);
-        if (object == 0 || object->unitAI() == 0 || !object->object_state) {
+        if (object == 0 || object->unitAI() == 0 || object->object_state == RGE_OBJECT_STATE_UNBUILT) {
             continue;
         }
         if ((int)object->master_obj->object_group != oGroup) {

@@ -70,7 +70,7 @@ TRIBE_Action_Wonder::~TRIBE_Action_Wonder() {
                     RGE_Static_Object* action = node->node;
                     if (action != this->obj) {
                         RGE_Master_Static_Object* master = action->master_obj;
-                        if (master->id == 0x114 && action->object_state >= 2) {
+                        if (master->id == 0x114 && action->object_state >= RGE_OBJECT_STATE_ACTIVE) {
                             found = 1;
                             break;
                         }
@@ -174,7 +174,7 @@ unsigned char TRIBE_Action_Wonder::update() {
         goto cleanup;
 
     case 2:
-        if (this->obj->object_state == 2) {
+        if (this->obj->object_state == RGE_OBJECT_STATE_ACTIVE) {
             this->set_state(6);
             return 0;
         }

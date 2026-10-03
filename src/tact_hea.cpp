@@ -130,7 +130,7 @@ unsigned char TRIBE_Action_Heal::update() {
         this->set_target_obj2(0);
     }
 
-    if (this->target_obj != 0 && this->target_obj->object_state != 2) {
+    if (this->target_obj != 0 && this->target_obj->object_state != RGE_OBJECT_STATE_ACTIVE) {
         this->set_target_obj(0);
         this->set_state(3);
         return 0;

@@ -995,7 +995,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
                 RGE_Object_Node* object_node = tile->objects.list;
                 while (object_node != 0) {
                     RGE_Static_Object* object = object_node->node;
-                    if (object->object_state < 7 && (can_be_built_on_flag == 0 ||
+                    if (object->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL && (can_be_built_on_flag == 0 ||
                          object->master_obj->can_be_built_on != 1 || this->can_be_built_on != 0)) {
                         RGE_Master_Static_Object* master = object->master_obj;
                         float object_radius_x = master->radius_x;

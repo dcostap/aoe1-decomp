@@ -287,7 +287,7 @@ unsigned char RGE_Action_Attack::update() {
         this->set_target_obj2(0);
     }
 
-    if (this->target_obj != 0 && this->target_obj->object_state >= 3) {
+    if (this->target_obj != 0 && this->target_obj->object_state >= RGE_OBJECT_STATE_DYING) {
         this->set_target_obj(0);
         this->set_state(2);
         return 5;

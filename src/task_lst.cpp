@@ -113,7 +113,7 @@ RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Obje
         return 0;
 
     if (target_obj != 0) {
-        if (target_obj->object_state == 0) {
+        if (target_obj->object_state == RGE_OBJECT_STATE_UNBUILT) {
             for (i = 0; i < list_num; i++) {
                 RGE_Task* task = list[i];
                 if (task->state_building == 1) {
@@ -139,7 +139,7 @@ RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Obje
             }
         }
 
-        if (target_obj->object_state < 3 && target_obj->master_obj->combat_level > 0) {
+        if (target_obj->object_state < RGE_OBJECT_STATE_DYING && target_obj->master_obj->combat_level > 0) {
             for (i = 0; i < list_num; i++) {
                 RGE_Task* task = list[i];
                 if (task->combat_level > 0) {

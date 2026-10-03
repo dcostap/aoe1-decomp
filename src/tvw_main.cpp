@@ -634,7 +634,7 @@ int TRIBE_Main_View::pick_weight(RGE_Static_Object* obj, int confidence) {
                 return 5;
             if (confidence == 1 || confidence == 2)
                 result = 3;
-            else if (confidence == 3 && obj->object_state < 2)
+            else if (confidence == 3 && obj->object_state < RGE_OBJECT_STATE_ACTIVE)
                 result = 2;
             break;
 

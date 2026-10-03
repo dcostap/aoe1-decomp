@@ -62,10 +62,10 @@ RGE_Static_Object::~RGE_Static_Object() {
     this->remove_visible_resource();
 
     if (this->owner != 0) {
-        if (this->object_state < 3) {
+        if (this->object_state < RGE_OBJECT_STATE_DYING) {
             this->take_attribute_from_owner();
         }
-        if (this->object_state < 7) {
+        if (this->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
             this->owner->victory_conditions->update_for_object(this);
         }
     }
@@ -149,7 +149,7 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_P
     this->selected = 0;
     this->selected_group = 0;
     this->worker_num = 0;
-    this->object_state = 2;
+    this->object_state = RGE_OBJECT_STATE_ACTIVE;
     this->curr_damage_percent = 0;
     this->goto_sleep_flag = 0;
     this->player_object_node = 0;
@@ -182,10 +182,10 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_P
 void RGE_Static_Object::recycle_out_of_game() {
     if (this->master_obj->recyclable != 0 &&
         this->owner->world->recycle_object_out_of_game(this->master_obj->master_type, this) != 0) {
-        if (this->object_state < 3) {
+        if (this->object_state < RGE_OBJECT_STATE_DYING) {
             this->take_attribute_from_owner();
         }
-        if (this->object_state < 7) {
+        if (this->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
             this->owner->victory_conditions->update_for_object(this);
         }
         if (this->sprite_list != 0) {
@@ -254,7 +254,7 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* tobj, RGE_Player* obj_own
     this->selected = 0;
     this->selected_group = 0;
     this->worker_num = 0;
-    this->object_state = 2;
+    this->object_state = RGE_OBJECT_STATE_ACTIVE;
     this->curr_damage_percent = 0;
     this->goto_sleep_flag = 0;
     this->get_starting_attribute();
@@ -485,7 +485,7 @@ void RGE_Static_Object::draw(TDrawArea* render_area, short x, short y, RGE_Color
         }
     }
 
-    if (this->tile != 0 && this->object_state < 7) {
+    if (this->tile != 0 && this->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
         if (this->selected != 0 || rge_base_game->outline_type == 3 ||
             ((this->master_obj->draw_flag & 1) == 1 && rge_base_game->prog_mode == ProgModeScenarioEditor)) {
             this->capture_frame(render_area, x, y);
@@ -500,7 +500,7 @@ void RGE_Static_Object::draw(TDrawArea* render_area, short x, short y, RGE_Color
 }
 
 void RGE_Static_Object::shadow_draw(TDrawArea* render_area, short x, short y, unsigned char flag) {
-    if (this->tile != 0 && this->object_state < 7) {
+    if (this->tile != 0 && this->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->sprite_list->shadow_draw(this->facet, this->shadow_x_offset + x, this->shadow_y_offset + y,
                                        this->owner->color_table, render_area, flag);
     }
@@ -510,7 +510,7 @@ void RGE_Static_Object::normal_draw(TDrawArea* render_area, short x, short y) {
     if (this->tile == 0) {
         return;
     }
-    if ((unsigned char)this->object_state >= 7) {
+    if ((unsigned char)this->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
         return;
     }
 
@@ -619,7 +619,7 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* render_area, short x, sh
             SDI_List->AddGDINode(4, y0, x1, y1, x + max_x + this->screen_x_offset + 1, y0, 0, 0, 0, 0, 10, 0xff,
                                  SDI_Object_ID);
 
-            if (this->object_state <= 2) {
+            if (this->object_state <= RGE_OBJECT_STATE_ACTIVE) {
                 int health = (int)this->hp;
                 if (health < 1) {
                     health = 0;
@@ -1134,7 +1134,7 @@ void RGE_Static_Object::draw_frame(TDrawArea* render_area, short x, short y) {
 
             render_area->DrawRect(x1, y1, x2, y2, 0xff);
 
-            if (this->object_state <= 2) {
+            if (this->object_state <= RGE_OBJECT_STATE_ACTIVE) {
                 int cur_hp = (int)this->hp;
                 if (cur_hp < 1) {
                     cur_hp = 0;
@@ -1170,7 +1170,7 @@ uchar RGE_Static_Object::update() {
         for (int i = 0; i < this->groupMembers.number(); i++) {
             int id = this->groupMembers[i];
             RGE_Static_Object* obj = this->owner->world->object(id);
-            if (obj == 0 || obj->object_state > 2) {
+            if (obj == 0 || obj->object_state > RGE_OBJECT_STATE_ACTIVE) {
                 this->groupMembers.remove(id);
                 i--;
             }
@@ -1178,11 +1178,11 @@ uchar RGE_Static_Object::update() {
     }
     if (this->inside_obj == 0) {
         switch (this->object_state) {
-        case 2:
+        case RGE_OBJECT_STATE_ACTIVE:
             this->check_damage_sprites();
-        case 0:
+        case RGE_OBJECT_STATE_UNBUILT:
             if (this->hp < 1.0f) {
-                this->set_object_state(3);
+                this->set_object_state(RGE_OBJECT_STATE_DYING);
                 this->new_sprite(this->master_obj->death_sprite);
                 int r = debug_rand(STR_STAT_OBJ, 1796);
                 int old = debug_random_on;
@@ -1193,15 +1193,15 @@ uchar RGE_Static_Object::update() {
                 debug_srand(STR_STAT_OBJ, 1806, r);
             }
             break;
-        case 3:
-        case 5:
+        case RGE_OBJECT_STATE_DYING:
+        case RGE_OBJECT_STATE_DEAD:
             if (this->attribute_type_held == -1 || this->attribute_amount_held <= 0.0f) {
                 if (this->master_obj->undead_flag != 0) {
-                    this->set_object_state(6);
+                    this->set_object_state(RGE_OBJECT_STATE_UNDEAD);
                     this->new_sprite(this->master_obj->undead_sprite);
                     break;
                 }
-                this->set_object_state(7);
+                this->set_object_state(RGE_OBJECT_STATE_PENDING_REMOVAL);
                 this->spawn_death_obj();
                 break;
             }
@@ -1214,10 +1214,10 @@ uchar RGE_Static_Object::update() {
                 }
             }
             break;
-        case 7:
-            this->set_object_state(8);
+        case RGE_OBJECT_STATE_PENDING_REMOVAL:
+            this->set_object_state(RGE_OBJECT_STATE_READY_TO_REMOVE);
             break;
-        case 8:
+        case RGE_OBJECT_STATE_READY_TO_REMOVE:
             if (this->master_obj->recyclable != 0)
                 ret = 2;
             else
@@ -1225,7 +1225,7 @@ uchar RGE_Static_Object::update() {
             break;
         }
     } else {
-        if (this->inside_obj->object_state > 2)
+        if (this->inside_obj->object_state > RGE_OBJECT_STATE_ACTIVE)
             this->set_object_state(this->inside_obj->object_state);
     }
     return ret;
@@ -1518,7 +1518,7 @@ float RGE_Static_Object::teleport(float x, float y, float z) {
         this->world_x = x;
         this->world_y = y;
         this->tile = new_tile;
-        if (this->object_state == 2) {
+        if (this->object_state == RGE_OBJECT_STATE_ACTIVE) {
             this->explore_terrain(this->owner, 0, -1);
         }
     } else {
@@ -1679,7 +1679,7 @@ void RGE_Static_Object::change_ownership(RGE_Player* new_owner) {
     float hp_num = this->hp / (float)(int)this->master_obj->hp;
     this->take_attribute_from_owner();
 
-    if (this->object_state == 2) {
+    if (this->object_state == RGE_OBJECT_STATE_ACTIVE) {
         this->unexplore_terrain(this->owner, 0, -1);
     }
 
@@ -1708,7 +1708,7 @@ void RGE_Static_Object::change_ownership(RGE_Player* new_owner) {
     this->master_obj = new_master;
     this->hp = (float)(int)new_master->hp * hp_num;
 
-    if (this->object_state == 2) {
+    if (this->object_state == RGE_OBJECT_STATE_ACTIVE) {
         this->explore_terrain(new_owner, 0, -1);
     }
 
@@ -1723,7 +1723,7 @@ void RGE_Static_Object::modify(float amount, unsigned char flag) {
         this->hp = (float)(short)(long)(amount * this->hp / max_hp);
     } break;
     case 1:
-        if (this->tile != 0 && this->object_state == 2) {
+        if (this->tile != 0 && this->object_state == RGE_OBJECT_STATE_ACTIVE) {
             this->unexplore_terrain(this->owner, 0, -1);
             this->explore_terrain(this->owner, 0, (int)amount);
             return;
@@ -1736,7 +1736,7 @@ void RGE_Static_Object::modify_delta(float amount, unsigned char flag) {
     unsigned int op = flag & 0xff;
     switch (op) {
     case 1:
-        if (this->tile != 0 && this->object_state == 2) {
+        if (this->tile != 0 && this->object_state == RGE_OBJECT_STATE_ACTIVE) {
             RGE_Player* owner = this->owner;
             this->unexplore_terrain(owner, 0, -1);
             RGE_Master_Static_Object* master = this->master_obj;
@@ -1760,7 +1760,7 @@ void RGE_Static_Object::modify_percent(float amount, unsigned char flag) {
         break;
     }
     case 1:
-        if (tile != 0 && object_state == 2) {
+        if (tile != 0 && object_state == RGE_OBJECT_STATE_ACTIVE) {
             this->unexplore_terrain(this->owner, 0, -1);
 
             int val = (int)(master_obj->los * amount);
@@ -1793,22 +1793,22 @@ void RGE_Static_Object::transform(RGE_Master_Static_Object* obj) {
 
     hp = (float)obj->hp;
     hp = hp * hp_num;
-    object_state = 0;
+    object_state = RGE_OBJECT_STATE_UNBUILT;
 
-    set_object_state(2);
+    set_object_state(RGE_OBJECT_STATE_ACTIVE);
 }
 
 void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Sprite* new_sprite = 0;
 
-    if (this->tile != 0 && this->object_state == 2) {
+    if (this->tile != 0 && this->object_state == RGE_OBJECT_STATE_ACTIVE) {
         this->unexplore_terrain(this->owner, 0, -1);
         this->explore_terrain(this->owner, 0, (int)source->los);
     }
 
     float hp_num = this->hp / (float)(int)this->master_obj->hp;
     this->hp = (float)(int)this->master_obj->hp;
-    if (this->object_state == 2) {
+    if (this->object_state == RGE_OBJECT_STATE_ACTIVE) {
         this->check_damage_sprites();
     }
 
@@ -1825,7 +1825,7 @@ void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* source) {
     int new_hp = source->hp;
     this->master_obj = source;
     this->hp = (float)(int)new_hp * hp_num;
-    if (this->object_state == 2) {
+    if (this->object_state == RGE_OBJECT_STATE_ACTIVE) {
         this->check_damage_sprites();
     }
 
@@ -1836,7 +1836,7 @@ void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* source) {
 }
 
 void RGE_Static_Object::destroy_obj(void) {
-    if (this->object_state < 7) {
+    if (this->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
         if (this->inside_obj != 0) {
             this->exit_obj();
         }
@@ -1844,7 +1844,7 @@ void RGE_Static_Object::destroy_obj(void) {
             this->owner->unselect_one_object(this);
         }
         this->set_sleep_flag(0);
-        this->set_object_state(7);
+        this->set_object_state(RGE_OBJECT_STATE_PENDING_REMOVAL);
     }
 }
 
@@ -1919,31 +1919,31 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
 
 void RGE_Static_Object::set_object_state(unsigned char new_object_state) {
     if (this->object_state != new_object_state) {
-        if (new_object_state >= 3 && this->object_state < 3) {
+        if (new_object_state >= RGE_OBJECT_STATE_DYING && this->object_state < RGE_OBJECT_STATE_DYING) {
             this->take_attribute_from_owner();
             if (this->master_obj->create_doppleganger_on_death == 2) {
                 this->create_doppleganger_when_dying();
             }
         }
 
-        if (this->object_state <= 3 && new_object_state >= 7) {
+        if (this->object_state <= RGE_OBJECT_STATE_DYING && new_object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
             this->remove_visible_resource();
         }
 
-        if (new_object_state >= 3 && this->object_state == 2 && this->tile != 0) {
+        if (new_object_state >= RGE_OBJECT_STATE_DYING && this->object_state == RGE_OBJECT_STATE_ACTIVE && this->tile != 0) {
             this->unexplore_terrain(this->owner, 0, -1);
             if (this->master_obj->los > 0.0) {
                 this->explore_terrain(this->owner, 1, -1);
             }
         }
 
-        if (this->object_state < 7 && new_object_state == 7 && this->tile != 0 && this->master_obj->los > 0.0) {
+        if (this->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL && new_object_state == RGE_OBJECT_STATE_PENDING_REMOVAL && this->tile != 0 && this->master_obj->los > 0.0) {
             this->unexplore_terrain(this->owner, 1, -1);
         }
 
         this->object_state = new_object_state;
 
-        if (new_object_state == 3 && this->groupCommanderValue == this->id && this->unitAIValue != 0 &&
+        if (new_object_state == RGE_OBJECT_STATE_DYING && this->groupCommanderValue == this->id && this->unitAIValue != 0 &&
             this->groupMembers.number() > 1) {
             int i = 0;
             int newCommander = -1;
@@ -1951,7 +1951,7 @@ void RGE_Static_Object::set_object_state(unsigned char new_object_state) {
                 do {
                     if (this->groupMembers[i] != this->id) {
                         RGE_Static_Object* member = this->owner->world->object(this->groupMembers[i]);
-                        if (member != 0 && member->object_state <= 2 && member->unitAI() != 0) {
+                        if (member != 0 && member->object_state <= RGE_OBJECT_STATE_ACTIVE && member->unitAI() != 0) {
                             if (newCommander == -1) {
                                 newCommander = this->groupMembers[i];
                             }
@@ -1966,7 +1966,7 @@ void RGE_Static_Object::set_object_state(unsigned char new_object_state) {
             }
         }
 
-        if (this->sleep_flag != 0 && this->object_state != 2 && this->object_state != 6) {
+        if (this->sleep_flag != 0 && this->object_state != RGE_OBJECT_STATE_ACTIVE && this->object_state != RGE_OBJECT_STATE_UNDEAD) {
             this->set_sleep_flag(0);
         }
     }
@@ -2042,7 +2042,7 @@ unsigned char RGE_Static_Object::is_moving() {
 
 // this method is an exceptional nonvirtual member. Its original
 unsigned char RGE_Static_Object::is_dying(void) {
-    if (object_state >= 3 && object_state != 6) {
+    if (object_state >= RGE_OBJECT_STATE_DYING && object_state != RGE_OBJECT_STATE_UNDEAD) {
         return 1;
     }
     return 0;
@@ -2241,12 +2241,12 @@ void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* caller) {
     }
     if (this->worker_num == 0) {
         unsigned char state = this->object_state;
-        if (state == 2) {
+        if (state == RGE_OBJECT_STATE_ACTIVE) {
             if (!(this->hp < 0.0f)) {
                 goto sleep_it;
             }
         }
-        if (state != 6) {
+        if (state != RGE_OBJECT_STATE_UNDEAD) {
             return;
         }
     sleep_it:

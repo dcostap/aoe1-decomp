@@ -362,7 +362,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
                         base_game->master_obj_id =
                             pick_info.object->master_obj->id;
                         this->movable_object = pick_info.object;
-                        pick_info.object->object_state = 7;
+                        pick_info.object->object_state = RGE_OBJECT_STATE_PENDING_REMOVAL;
                         if (draw_level == 0)
                             this->set_redraw(TPanel::RedrawImmediate);
                         rge_base_game->set_game_mode(8, 1);
@@ -443,7 +443,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
         if (rge_base_game->game_mode == 8) {
             this->command_place_object(x, y, 1);
             if (rge_base_game->sub_game_mode == 1) {
-                this->movable_object->object_state = 2;
+                this->movable_object->object_state = RGE_OBJECT_STATE_ACTIVE;
                 this->movable_object = 0;
                 rge_base_game->set_game_mode(0x0F, 0);
                 if (this->save_player != 0) {
@@ -626,7 +626,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
     case 8:
         this->command_place_object(x, y, 1);
         if (rge_base_game->sub_game_mode == 1) {
-            this->movable_object->object_state = 2;
+            this->movable_object->object_state = RGE_OBJECT_STATE_ACTIVE;
             this->movable_object = 0;
             rge_base_game->set_game_mode(0x0F, 0);
             if (this->save_player != 0) {
@@ -1007,7 +1007,7 @@ unsigned char RGE_Main_View::pick1(unsigned char pick_mode_in,
 
             RGE_Static_Object* object =
                 this->world->objectsValue[info->object_id];
-            if (object == 0 || object->object_state >= 7 || object->master_obj->select_level < select_level)
+            if (object == 0 || object->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL || object->master_obj->select_level < select_level)
                 continue;
 
             if (pick_dopples == 0 && this->map->map_visible_flag == 0 && this->pick_through_fog(object) == 0 &&
@@ -1033,7 +1033,7 @@ unsigned char RGE_Main_View::pick1(unsigned char pick_mode_in,
 
             RGE_Static_Object* object =
                 this->world->objectsValue[info->object_id];
-            if (object == 0 || object->object_state >= 7 || object->master_obj->select_level < select_level ||
+            if (object == 0 || object->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL || object->master_obj->select_level < select_level ||
                 this->pick_weight(object, info->confidence) <= 0)
                 continue;
 
@@ -1145,7 +1145,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                     if (picked >= 0) {
                         RGE_Static_Object* object =
                             this->world->objectsValue[picked];
-                        if (object != 0 && object->object_state < 7) {
+                        if (object != 0 && object->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
                             RGE_Task* action = master_obj->tasks->get_target_task(
                                 static_cast<RGE_Action_Object*>(selected_objects[j]), object, 0, 0, 0);
                             if (action != 0) {

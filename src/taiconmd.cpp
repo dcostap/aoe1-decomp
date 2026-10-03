@@ -82,7 +82,7 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int b
                                                                startTime);
     }
 
-    RGE_Static_Object* protoBuilder = this->md->object(-1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
+    RGE_Static_Object* protoBuilder = this->md->object(-1, -1, 4, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     if (protoBuilder == 0) {
         return 0;
     }

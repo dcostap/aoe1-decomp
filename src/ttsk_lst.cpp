@@ -15,7 +15,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Ob
                                            float target_x, float target_y, float target_z) {
     short attribute_type = obj->attribute_type_held;
 
-    if (attribute_type != -1 && obj->attribute_amount_held > 0.0f && target_obj != 0 && target_obj->object_state == 2 &&
+    if (attribute_type != -1 && obj->attribute_amount_held > 0.0f && target_obj != 0 && target_obj->object_state == RGE_OBJECT_STATE_ACTIVE &&
         (obj->master_obj->object_group == 4 || obj->master_obj->object_group == 0x15)) {
         short target_id = -1;
         short alternate_target_id = -1;
@@ -54,7 +54,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Ob
 
     if (target_obj != 0) {
         if (obj != 0 && target_obj->owner == obj->owner && target_obj->master_obj->master_type == 0x50 &&
-            target_obj->object_state == 0) {
+            target_obj->object_state == RGE_OBJECT_STATE_UNBUILT) {
             for (int index = 0; index < list_num; index++) {
                 RGE_Task* task = list[index];
                 if (task->action_type == 0x65)
@@ -64,7 +64,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Ob
         }
 
         if ((target_obj->owner == obj->owner || (obj->owner->isAlly(target_obj->owner->id) &&
-              target_obj->owner->isAlly(obj->owner->id))) && target_obj->object_state < 3 &&
+              target_obj->owner->isAlly(obj->owner->id))) && target_obj->object_state < RGE_OBJECT_STATE_DYING &&
             target_obj->master_obj->unit_level == 7) {
             for (int index = 0; index < list_num; index++) {
                 RGE_Task* task = list[index];
@@ -77,7 +77,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Ob
         if (obj != 0 && (target_obj->owner == obj->owner || obj->owner->isAlly(target_obj->owner->id))) {
             RGE_Master_Static_Object* master_obj = target_obj->master_obj;
             if (master_obj->master_type == 0x50 && target_obj->hp < (float)master_obj->hp &&
-                target_obj->object_state < 3 && master_obj->id != 0x32) {
+                target_obj->object_state < RGE_OBJECT_STATE_DYING && master_obj->id != 0x32) {
                 for (int index = 0; index < list_num; index++) {
                     RGE_Task* task = list[index];
                     if (task->action_type == 0x6A && (task->object_group == -1 || task->object_group == 0))
@@ -91,7 +91,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Ob
               target_obj->owner->isAlly(obj->owner->id)))) {
             short target_group = target_obj->master_obj->object_group;
             if ((target_group == 2 || target_group == 0x14 || target_group == 0x15 || target_group == 0x16) &&
-                target_obj->hp < (float)target_obj->master_obj->hp && target_obj->object_state < 3) {
+                target_obj->hp < (float)target_obj->master_obj->hp && target_obj->object_state < RGE_OBJECT_STATE_DYING) {
                 for (int index = 0; index < list_num; index++) {
                     RGE_Task* task = list[index];
                     if (task->action_type == 0x6A && task->object_group == target_group)
@@ -104,7 +104,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Ob
 
     if (obj != 0 && obj->master_obj->object_group == 0x12) {
         if (target_obj != 0) {
-            if (target_obj->owner != obj->owner && target_obj->object_state < 3 && target_obj->owner->id > 0 &&
+            if (target_obj->owner != obj->owner && target_obj->object_state < RGE_OBJECT_STATE_DYING && target_obj->owner->id > 0 &&
                 !obj->owner->isAlly(target_obj->owner->id) && target_obj->master_obj->object_group != 1) {
                 for (int index = 0; index < list_num; index++) {
                     RGE_Task* task = list[index];
@@ -116,7 +116,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Ob
 
             if (target_obj->owner == obj->owner || obj->owner->isAlly(target_obj->owner->id)) {
                 RGE_Master_Static_Object* master_obj = target_obj->master_obj;
-                if (target_obj->hp < (float)master_obj->hp && target_obj->object_state < 3) {
+                if (target_obj->hp < (float)master_obj->hp && target_obj->object_state < RGE_OBJECT_STATE_DYING) {
                     short target_group = master_obj->object_group;
                     if (target_group != 0x15 && target_group != 2 && target_group != 0x14 && target_group != 0x16 &&
                         target_group != 1 && target_group != 0x1B && target_group != 3) {

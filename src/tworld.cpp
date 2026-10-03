@@ -1069,14 +1069,14 @@ void TRIBE_World::cheat(short player, short cheat_code) {
         switch (cheat_code) {
         case 0:
             if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
+                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
                 if (object != 0)
                     static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x112);
             }
             break;
         case 1:
             if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
+                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
                 if (object != 0)
                     static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0xf8);
             }
@@ -1130,7 +1130,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             break;
         case 14:
             if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
+                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
                 if (object != 0)
                     static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x182);
             }
@@ -1141,14 +1141,14 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             break;
         case 16:
             if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
+                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
                 if (object != 0)
                     static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x18d);
             }
             break;
         case 17:
             if (player > 0)
-                this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
+                this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
             break;
         case 18:
             this->effects->do_effect(0xd8, this->players[0]);
@@ -1165,7 +1165,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
                         RGE_Object_Node* node = this->players[i]->objects->list;
                         while (node != 0) {
                             RGE_Static_Object* object = node->node;
-                            if (object->object_state < 3 && object->master_obj->object_group != 1)
+                            if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != 1)
                                 object->die_die_die();
                             node = node->next;
                         }
@@ -1179,7 +1179,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             RGE_Object_Node* node = this->players[player]->objects->list;
             while (node != 0) {
                 RGE_Static_Object* object = node->node;
-                if (object->object_state < 3 && object->master_obj->object_group != 1)
+                if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != 1)
                     object->die_die_die();
                 node = node->next;
             }
@@ -1208,7 +1208,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
                 RGE_Object_Node* node = this->players[other_player]->objects->list;
                 while (node != 0) {
                     RGE_Static_Object* object = node->node;
-                    if (object->object_state < 3 && object->master_obj->object_group != 1)
+                    if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != 1)
                         object->die_die_die();
                     node = node->next;
                 }
@@ -1216,7 +1216,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             break;
         }
         case 220: {
-            RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
+            RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
             if (object != 0)
                 static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x174);
             break;

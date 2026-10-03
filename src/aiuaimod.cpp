@@ -471,7 +471,7 @@ int UnitAIModule::numberAttackingUnits() const {
 int UnitAIModule::update(unsigned long uTime) {
     int haveGameAction;
 
-    if (this->objectValue->object_state > 2) {
+    if (this->objectValue->object_state > RGE_OBJECT_STATE_ACTIVE) {
         return 1;
     }
 
@@ -504,7 +504,7 @@ int UnitAIModule::update(unsigned long uTime) {
                 this->idleTimerValue = this->idleTimeoutValue;
             }
         } else {
-            if (this->objectValue->object_state == 2 && target->object_state > 2 &&
+            if (this->objectValue->object_state == RGE_OBJECT_STATE_ACTIVE && target->object_state > RGE_OBJECT_STATE_ACTIVE &&
                 this->actionRequiresLiveTarget(this->currentActionValue) == 1) {
                 this->stopAfterTargetKilledValue = 0;
                 if (this->currentActionValue == 0x258) {
@@ -568,7 +568,7 @@ int UnitAIModule::update(unsigned long uTime) {
         while (i < this->attackingUnitsValue.numberValue) {
             RGE_Static_Object* attacker =
                 this->lookupObject(this->attackingUnitsValue[i]);
-            if (attacker == 0 || attacker->unitAI() == 0 || attacker->object_state > 2 ||
+            if (attacker == 0 || attacker->unitAI() == 0 || attacker->object_state > RGE_OBJECT_STATE_ACTIVE ||
                 attacker->unitAI()->currentTarget() != this->objectValue->id) {
                 this->attackingUnitsValue.remove(this->attackingUnitsValue[i]);
                 break;
@@ -611,7 +611,7 @@ int UnitAIModule::update(unsigned long uTime) {
         }
     }
 
-    if (this->objectValue->object_state > 2) {
+    if (this->objectValue->object_state > RGE_OBJECT_STATE_ACTIVE) {
         return 0;
     }
 
@@ -818,7 +818,7 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                     if (grouping->groupID == trigger->value1()) {
                         ++numberInGroup;
                         member = this->lookupObject(grouping->id);
-                        if (member == 0 || member->object_state > 2) {
+                        if (member == 0 || member->object_state > RGE_OBJECT_STATE_ACTIVE) {
                             ++deadCount;
                         }
                     }
@@ -868,7 +868,7 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                     grouping = &this->playStatus->groupings[groupingIndex];
                     if (grouping->groupID == trigger->value1()) {
                         member = this->lookupObject(grouping->id);
-                        if (member != 0 && member->object_state == 2) {
+                        if (member != 0 && member->object_state == RGE_OBJECT_STATE_ACTIVE) {
                             triggerSatisfied = 0;
                         }
                     }
@@ -1063,7 +1063,7 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
 int UnitAIModule::order(int issuer, int orderType, int target, int targetOwner,
                         float targetX, float targetY, float targetZ, float range,
                         int immediate, int inFront, int priority) {
-    if (this->objectValue->object_state <= 2) {
+    if (this->objectValue->object_state <= RGE_OBJECT_STATE_ACTIVE) {
         if (immediate == 0) {
             this->addToOrderQueue(issuer, orderType, target, targetOwner, targetX, targetY, targetZ, range, inFront,
                                   priority);
@@ -1103,7 +1103,7 @@ int UnitAIModule::order(int issuer, int orderType, int target, int targetOwner,
 
 int UnitAIModule::notify(int callerID, int recipientID, int mType, long p1,
                          long p2, long p3) {
-    if (objectValue->object_state != 2)
+    if (objectValue->object_state != RGE_OBJECT_STATE_ACTIVE)
         return 0;
 
     int msg = mType;
@@ -1309,7 +1309,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
             do {
                 RGE_Static_Object* target =
                     world->object(VisibleUnitList[i][j].object_id);
-                if (target != 0 && target->object_state <= 2 && this->objectValue->owner->isAlly(target->owner->id) != 1 &&
+                if (target != 0 && target->object_state <= RGE_OBJECT_STATE_ACTIVE && this->objectValue->owner->isAlly(target->owner->id) != 1 &&
                     target->inside_obj == 0 && ((allowWallAttacks != 0 && numberObjectsInRange != 0) ||
                      target->master_obj->object_group != 0x1B) && ((target->master_obj->object_group != 3 ||
                       target->hp > g_unit_ai_map_boundary_adjustment || (this->objectValue->master_obj->id != 0x23 &&
@@ -1360,7 +1360,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
                 }
             }
             target = world->object(this->currentTargetValue);
-            if (target != 0 && target->object_state == 2 && this->objectValue->owner->isAlly(target->owner->id) == 0) {
+            if (target != 0 && target->object_state == RGE_OBJECT_STATE_ACTIVE && this->objectValue->owner->isAlly(target->owner->id) == 0) {
                 if (target->master_obj->id == 0x114) {
                     return target->id;
                 }
@@ -1415,7 +1415,7 @@ skipCurrentTarget:
             do {
                 RGE_Static_Object* target =
                     world->object(VisibleUnitList[i][j].object_id);
-                if (target != 0 && target->object_state <= 2 && this->objectValue->owner->isAlly(target->owner->id) != 1 &&
+                if (target != 0 && target->object_state <= RGE_OBJECT_STATE_ACTIVE && this->objectValue->owner->isAlly(target->owner->id) != 1 &&
                     target->inside_obj == 0 && ((allowWallAttacks != 0 && numberObjectsInRange != 0) ||
                      target->master_obj->object_group != 0x1B) && ((target->master_obj->object_group != 3 ||
                       target->hp > g_unit_ai_map_boundary_adjustment || (this->objectValue->master_obj->id != 0x23 &&
@@ -1585,13 +1585,13 @@ int UnitAIModule::closestObject(int objectGroup, int desiredRelation,
                 if (this->objectValue->id != VisibleUnitList[category][i].object_id) {
                     RGE_Static_Object* object =
                         this->objectValue->owner->world->object(VisibleUnitList[category][i].object_id);
-                    if (object != 0 && object->object_state < 7) {
+                    if (object != 0 && object->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
                         if ((desiredRelation != 0 || category == 2 || category == 1) &&
                             (desiredRelation != 2 || category == 4) && (desiredRelation != 3 || category == 1) &&
                             (desiredRelation != 1 || category == 3) && (objectGroup == -1 ||
                              object->master_obj->object_group == objectGroup) &&
                             (objectType == -1 || object->master_obj->id == objectType) &&
-                            (objectState == -1 || object->object_state == objectState)) {
+                            (objectState == RGE_OBJECT_STATE_ANY || object->object_state == objectState)) {
                             if (closestObjectID == -1 || (float)VisibleUnitList[category][i].distance < closestDistance) {
                                 closestObjectID = VisibleUnitList[category][i].object_id;
                                 closestDistance = (float)VisibleUnitList[category][i].distance;
@@ -2559,7 +2559,7 @@ void UnitAIModule::lookAround() {
         for (int j = 0; j < VisibleUnitList_Size[category]; ++j) {
             VISIBLE_UNIT_REC* entries = VisibleUnitList[category];
             RGE_Static_Object* obj = world->object(entries[j].object_id);
-            if (obj != 0 && obj->object_state <= 2) {
+            if (obj != 0 && obj->object_state <= RGE_OBJECT_STATE_ACTIVE) {
                 this->objectValue->owner->notify(obj_id, ownerID, 0x20D, obj->id, 0, 0);
             }
         }
@@ -2602,7 +2602,7 @@ void UnitAIModule::askForHelp(int unitToAttack) {
                             this->lookupObject(VisibleUnitList[category + 1][i].object_id);
                         if (object != 0 && object->unitAI() != 0) {
                             RGE_Player* owner = object->owner;
-                            if (owner != 0 && object->object_state <= 2) {
+                            if (owner != 0 && object->object_state <= RGE_OBJECT_STATE_ACTIVE) {
                                 short group = object->master_obj->object_group;
                                 if (group != 1 && group != 3 && group != 4 && group != 0x15 && group != 0x12 &&
                                     group != 0x14 && group != 0x1b) {
@@ -3371,7 +3371,7 @@ no_target_fallback:
             int resourceType = this->convertToLOSResourceType(targetType);
             int targetID;
             if (resourceType == -1) {
-                targetID = this->closestObject(targetType, -1, -1, -1, 0);
+                targetID = this->closestObject(targetType, -1, RGE_OBJECT_STATE_ANY, -1, 0);
             } else {
                 targetID = this->closestResourceObject(resourceType, 0);
             }
@@ -3658,7 +3658,7 @@ int UnitAIModule::processMisc() {
                 this->currentTargetYValue = target->world_y;
             }
 
-            if (target->object_state > 2 && target->owner->id != 0) {
+            if (target->object_state > RGE_OBJECT_STATE_ACTIVE && target->owner->id != 0) {
                 this->defendTargetValue = invalidValue;
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
@@ -3729,7 +3729,7 @@ int UnitAIModule::processMisc() {
         RGE_Static_Object* target = 0;
         if (this->currentTargetValue != invalidValue) {
             target = this->lookupObject(this->currentTargetValue);
-            if (target == 0 || target->object_state > 2) {
+            if (target == 0 || target->object_state > RGE_OBJECT_STATE_ACTIVE) {
                 this->defendTargetValue = invalidValue;
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
@@ -3800,7 +3800,7 @@ int UnitAIModule::processRetryableOrder() {
 
     result = this->retryableOrder(this->lastOrderValue);
     if (result == 1) {
-        result = this->closestObject(this->lastTargetTypeValue, -1, -1, -1, 0);
+        result = this->closestObject(this->lastTargetTypeValue, -1, RGE_OBJECT_STATE_ANY, -1, 0);
         if (result != -1) {
             switch (this->lastOrderValue) {
             case 0x2C5:

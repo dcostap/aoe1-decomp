@@ -183,7 +183,7 @@ unsigned char TRIBE_Action_Repair::update() {
 
     check_target = this->target_obj;
     if (check_target != 0) {
-        if (check_target->object_state != 2) {
+        if (check_target->object_state != RGE_OBJECT_STATE_ACTIVE) {
             goto invalid_target;
         }
         if (this->target_obj != 0 && this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {

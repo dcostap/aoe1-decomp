@@ -417,7 +417,7 @@ void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* node) {
 void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* node) {
     RGE_Static_Object* obj = (RGE_Static_Object*)node->target_obj;
     if (obj) {
-        if (obj->object_state > 2) {
+        if (obj->object_state > RGE_OBJECT_STATE_ACTIVE) {
             node->target_obj = 0;
             if (node->state == 0) {
                 node->state = 1;
@@ -451,7 +451,7 @@ void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* node) {
     RGE_Object_Node* object_node = self->objects->list;
 
     while (object_node != 0) {
-        if (object_node->node->master_obj->copy_id == node->obj_type && object_node->node->object_state == 2) {
+        if (object_node->node->master_obj->copy_id == node->obj_type && object_node->node->object_state == RGE_OBJECT_STATE_ACTIVE) {
             count++;
         }
         object_node = object_node->next;
@@ -470,7 +470,7 @@ void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* node) {
                     RGE_Object_Node* object_node = players[i]->objects->list;
                     while (object_node != 0) {
                         if (object_node->node->master_obj->copy_id == node->obj_type &&
-                            object_node->node->object_state == 2) {
+                            object_node->node->object_state == RGE_OBJECT_STATE_ACTIVE) {
                             count++;
                         }
                         object_node = object_node->next;
@@ -497,7 +497,7 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* node) {
     RGE_Object_Node* object_node = player->objects->list;
     while (object_node != 0) {
         RGE_Static_Object* obj = object_node->node;
-        if (obj->master_obj->copy_id == node->obj_type && obj->object_state == 2 && obj->world_x >= node->x0 &&
+        if (obj->master_obj->copy_id == node->obj_type && obj->object_state == RGE_OBJECT_STATE_ACTIVE && obj->world_x >= node->x0 &&
             obj->world_x <= node->x1 && obj->world_y >= node->y0 && obj->world_y <= node->y1) {
             count++;
         }
@@ -518,7 +518,7 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* node) {
                         object_node = p->objects->list;
                         while (object_node != 0) {
                             RGE_Static_Object* obj = object_node->node;
-                            if (obj->master_obj->copy_id == node->obj_type && obj->object_state == 2 &&
+                            if (obj->master_obj->copy_id == node->obj_type && obj->object_state == RGE_OBJECT_STATE_ACTIVE &&
                                 obj->world_x >= node->x0 && obj->world_x <= node->x1 && obj->world_y >= node->y0 &&
                                 obj->world_y <= node->y1) {
                                 count++;
@@ -542,7 +542,7 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* node) {
 
 
 void RGE_Victory_Conditions::handle_destroy(RGE_Victory_Entry* node) {
-    if (node->target_obj && node->target_obj->object_state == 7) {
+    if (node->target_obj && node->target_obj->object_state == RGE_OBJECT_STATE_PENDING_REMOVAL) {
         node->state = 2;
         node->target_obj = 0;
     }
@@ -556,7 +556,7 @@ void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* node) {
     if (node->target_player) {
         RGE_Object_Node* object_node = node->target_player->objects->list;
         while (object_node) {
-            if (object_node->node->master_obj->copy_id == node->obj_type && object_node->node->object_state == 7)
+            if (object_node->node->master_obj->copy_id == node->obj_type && object_node->node->object_state == RGE_OBJECT_STATE_PENDING_REMOVAL)
                 node->count++;
             object_node = object_node->next;
         }
@@ -571,7 +571,7 @@ void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* node) {
                     RGE_Object_Node* object_node = current_players[0]->objects->list;
                     while (object_node) {
                         if (object_node->node->master_obj->copy_id == node->obj_type &&
-                            object_node->node->object_state == 7)
+                            object_node->node->object_state == RGE_OBJECT_STATE_PENDING_REMOVAL)
                             node->count++;
                         object_node = object_node->next;
                     }
@@ -643,7 +643,7 @@ void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* node) {
     RGE_Static_Object* obj = node->this_obj;
 
     if (obj) {
-        if (obj->object_state >= 3) {
+        if (obj->object_state >= RGE_OBJECT_STATE_DYING) {
             if (node->state == 0) {
                 node->state = 1;
             }
@@ -671,7 +671,7 @@ void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* node) {
         return;
     }
 
-    if (node->this_obj->object_state >= 3 || node->target_obj->object_state >= 3) {
+    if (node->this_obj->object_state >= RGE_OBJECT_STATE_DYING || node->target_obj->object_state >= RGE_OBJECT_STATE_DYING) {
         node->this_obj = 0;
         node->target_obj = 0;
         if (node->state == 0) {

@@ -10,6 +10,7 @@
 #include "../include/debuglog.h"
 #include "../include/pnl_lst.h"
 #include "../include/resource_ids.h"
+#include "../include/stat_obj.h"
 #include <stdio.h>
 
 TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
@@ -280,7 +281,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
     }
 
     RGE_Static_Object* market =
-        rge_base_game->get_player()->objects->find_by_master_id(0x54, -1.0f, -1.0f, 1, 2, 0);
+        rge_base_game->get_player()->objects->find_by_master_id(0x54, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
     if (market != 0) {
         this->tribute_flag = 1;
         this->needMarket->set_active(0);

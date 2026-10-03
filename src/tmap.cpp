@@ -130,7 +130,7 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     } else if (tile->terrain_type == 18) {
         RGE_Object_Node* node = tile->objects.list;
         while (node != 0) {
-            if (node->node->master_obj->object_group == 15 && node->node->object_state < 8)
+            if (node->node->master_obj->object_group == 15 && node->node->object_state < RGE_OBJECT_STATE_READY_TO_REMOVE)
                 forest_object = 1;
             node = node->next;
         }

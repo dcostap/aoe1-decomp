@@ -186,10 +186,10 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float world_x, float world_y,
     RGE_Master_Static_Object* type = this->master_objects[master_id];
     if (type) {
         obj = type->make_new_obj(this, world_x, world_y, world_z);
-        if (state >= 7) {
+        if (state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
             obj->destroy_obj();
         }
-        else if (state > 2) {
+        else if (state > RGE_OBJECT_STATE_ACTIVE) {
             obj->die_die_die();
         }
         else {
@@ -202,7 +202,7 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float world_x, float world_y,
                 obj->facet = static_cast<unsigned char>(static_cast<int>(new_angle));
             }
         }
-        if (this->master_objects[master_id]->master_type == 0x50 && state == 2) {
+        if (this->master_objects[master_id]->master_type == 0x50 && state == RGE_OBJECT_STATE_ACTIVE) {
             static_cast<TRIBE_Building_Object*>(obj)->build(10000.0f);
         }
     }
@@ -273,7 +273,7 @@ void TRIBE_Player::update() {
                 RGE_Static_Object* object = node->node;
                 int group = object->master_obj->object_group;
                 if (group != 0xb && group != 0x1e && group != 0x1b && group != 1 && group != 0x15 && group != 0x14 &&
-                    group != 2 && group != 0x25 && object->object_state == 2)
+                    group != 2 && group != 0x25 && object->object_state == RGE_OBJECT_STATE_ACTIVE)
                     break;
                 node = node->next;
             }
@@ -521,7 +521,7 @@ RGE_Static_Object* TRIBE_Player::find_obj(short obj_id, RGE_Static_Object* after
             RGE_Static_Object* object = node->node;
             if (object != 0) {
                 if (found) {
-                    if (object->master_obj->id == obj_id && object->object_state <= 2)
+                    if (object->master_obj->id == obj_id && object->object_state <= RGE_OBJECT_STATE_ACTIVE)
                         return node->node;
                 } else if (object == after_obj) {
                     found = 1;
@@ -535,7 +535,7 @@ RGE_Static_Object* TRIBE_Player::find_obj(short obj_id, RGE_Static_Object* after
     if (node == 0) return 0;
     while (node != 0) {
         RGE_Static_Object* object = node->node;
-        if (object != 0 && object->master_obj->id == obj_id && object->object_state == 2)
+        if (object != 0 && object->master_obj->id == obj_id && object->object_state == RGE_OBJECT_STATE_ACTIVE)
             return node->node;
         node = node->next;
     }
@@ -902,11 +902,11 @@ unsigned char TRIBE_Player::command_make_repair(RGE_Static_Object* obj) {
     short list_num;
     RGE_Static_Object** list;
     if (!(((obj->owner == this || this->isAlly(obj->owner->id)) && obj->master_obj->master_type == 'P' &&
-           static_cast<float>(obj->master_obj->hp) > obj->hp && obj->object_state < 3) || ((obj->owner == this ||
+           static_cast<float>(obj->master_obj->hp) > obj->hp && obj->object_state < RGE_OBJECT_STATE_DYING) || ((obj->owner == this ||
             (this->isAlly(obj->owner->id) && obj->owner->isAlly(this->id))) && (obj->master_obj->object_group == 2 ||
             obj->master_obj->object_group == 0x14 || obj->master_obj->object_group == 0x15 ||
             obj->master_obj->object_group == 0x16) && static_cast<float>(obj->master_obj->hp) > obj->hp &&
-           obj->object_state < 3)))
+           obj->object_state < RGE_OBJECT_STATE_DYING)))
         return 0;
     if (!this->get_selected_objects_to_command(&list, &list_num, 4, 4, -1, -1))
         return 0;
@@ -3349,7 +3349,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
                 goto finish;
             case 1:
             case 8:
-                if ((this->sel_object_properties & 1) != 0 && thisObj->object_state <= 2) {
+                if ((this->sel_object_properties & 1) != 0 && thisObj->object_state <= RGE_OBJECT_STATE_ACTIVE) {
                     newFacet = 4;
                     text_id = current + action_var;
                     goto finish;
@@ -3395,7 +3395,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
                 if ((this->sel_object_properties & 0x20) == 0) {
                     goto finish;
                 }
-                if (thisObj->object_state == 0) {
+                if (thisObj->object_state == RGE_OBJECT_STATE_UNBUILT) {
                     current = 50;
                 }
                 //! @bug The full-hp gate drops an intact farm here and falls back to the retry.

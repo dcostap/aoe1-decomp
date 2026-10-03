@@ -136,7 +136,7 @@ void RGE_Object_List::draw(TDrawArea* render_area, short x, short y,
             case 1:
                 break;
             case 2:
-                if (fogged_tile && object->object_state > 2) {
+                if (fogged_tile && object->object_state > RGE_OBJECT_STATE_ACTIVE) {
                     should_draw = 0;
                 }
                 break;

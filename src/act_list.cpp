@@ -227,7 +227,7 @@ unsigned char RGE_Action_List::update() {
 void RGE_Action_List::add_action(RGE_Action* action) {
     RGE_Action_Node* node;
 
-    if (this->obj->object_state > 2) {
+    if (this->obj->object_state > RGE_OBJECT_STATE_ACTIVE) {
         if (action != 0) {
             delete action;
         }
@@ -245,7 +245,7 @@ void RGE_Action_List::add_action_at_end(RGE_Action* action) {
     RGE_Action_Node* node;
     RGE_Action_Node* current;
 
-    if (this->obj->object_state > 2) {
+    if (this->obj->object_state > RGE_OBJECT_STATE_ACTIVE) {
         if (action != 0) {
             delete action;
         }
@@ -279,7 +279,7 @@ void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
     RGE_Action_Node* node;
     RGE_Action_Node* current;
 
-    if (this->obj->object_state > 2) {
+    if (this->obj->object_state > RGE_OBJECT_STATE_ACTIVE) {
         if (action != 0) {
             delete action;
         }
@@ -317,7 +317,7 @@ void RGE_Action_List::remove_action() {
             delete node->action;
         }
         free(node);
-        if (this->list != 0 && this->obj->object_state < 3) {
+        if (this->list != 0 && this->obj->object_state < RGE_OBJECT_STATE_DYING) {
             this->list->action->first_in_stack(0);
         }
     }

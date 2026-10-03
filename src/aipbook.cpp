@@ -791,7 +791,7 @@ void AIPlayStatus::removeDeadUnits(int gID, RGE_Game_World* world) {
     for (int i = 0; i < 50; i++, g++) {
         if (g->id != -1) {
             RGE_Static_Object* obj = world->object(g->id);
-            if (obj == 0 || obj->object_state > 2) {
+            if (obj == 0 || obj->object_state > RGE_OBJECT_STATE_ACTIVE) {
                 g->id = -1;
                 g->groupID = 0xFF;
                 g->type = 0xFF;

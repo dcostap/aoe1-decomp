@@ -164,7 +164,7 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
             while (node != 0) {
                 RGE_Static_Object* entity = node->node;
                 short type = entity->master_obj->object_group;
-                if (type != 1 && type != 0x0B && type != 0x1E && entity->object_state == 2) {
+                if (type != 1 && type != 0x0B && type != 0x1E && entity->object_state == RGE_OBJECT_STATE_ACTIVE) {
                     ++player_list[entity->owner->id];
                 }
                 node = node->next;

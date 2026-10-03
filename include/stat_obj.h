@@ -4,6 +4,21 @@
 #include "utmarray.h"
 #include "xyz_point.h"
 
+// Object lifecycle values. Existing range checks depend on their order.
+// Keep existing state storage and parameter types unchanged.
+// Numeric macros preserve VC5 output; enum declarations change unrelated code.
+#define RGE_OBJECT_STATE_UNBUILT 0
+#define RGE_OBJECT_STATE_ACTIVE 2
+#define RGE_OBJECT_STATE_DYING 3
+#define RGE_OBJECT_STATE_DEATH_ANIMATION 4
+#define RGE_OBJECT_STATE_DEAD 5
+#define RGE_OBJECT_STATE_UNDEAD 6
+#define RGE_OBJECT_STATE_PENDING_REMOVAL 7
+#define RGE_OBJECT_STATE_READY_TO_REMOVE 8
+
+// Search filter only; never store this in object_state.
+#define RGE_OBJECT_STATE_ANY (-1)
+
 class InfluenceMap;
 struct LOSTBL;
 class Path;

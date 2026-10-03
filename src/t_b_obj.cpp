@@ -158,7 +158,7 @@ int TRIBE_Building_Object::setup(TRIBE_Master_Building_Object* tobj,
     built = 0;
     TRIBE_Combat_Object::setup(tobj, obj_owner, x, y, z);
     type = 0x50;
-    set_object_state(0);
+    set_object_state(RGE_OBJECT_STATE_UNBUILT);
 
     if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required > 0) {
         new_sprite(static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_sprite);
@@ -246,7 +246,7 @@ unsigned char TRIBE_Building_Object::heal(float healing) {
 void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
     unsigned char dopple_removed;
 
-    if (new_object_state == 2) {
+    if (new_object_state == RGE_OBJECT_STATE_ACTIVE) {
         build_pts = (float)(int)static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required;
 
         int random_value = debug_rand("C:\\msdev\\work\\age1_x1\\t_b_obj.cpp", 299);
@@ -307,7 +307,7 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
         static_cast<TRIBE_Player*>(owner)->registerBuild(this, unique_build_id);
     }
 
-    if (new_object_state == 3 && object_state == 2) {
+    if (new_object_state == RGE_OBJECT_STATE_DYING && object_state == RGE_OBJECT_STATE_ACTIVE) {
         take_building_attribute_from_owner();
         owner->doppleganger_creator->remove_doppleganger_check(this);
         DoppleInstalled = 0;
@@ -320,7 +320,7 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
 
     if (dopple_removed != 0) {
         RGE_Static_Object* object = owner->objects->find_by_master_id(
-            static_cast<TRIBE_Master_Building_Object*>(master_obj)->id, -1.0f, -1.0f, 1, 2, 0);
+            static_cast<TRIBE_Master_Building_Object*>(master_obj)->id, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
         if (object == 0) {
             if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech > -1) {
                 static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(
@@ -339,7 +339,7 @@ void TRIBE_Building_Object::rehook() {
 }
 
 unsigned char TRIBE_Building_Object::update() {
-    if (object_state == 0) {
+    if (object_state == RGE_OBJECT_STATE_UNBUILT) {
         short max_value = sprite->facet_num;
         TRIBE_Master_Building_Object* master =
             static_cast<TRIBE_Master_Building_Object*>(master_obj);
@@ -350,7 +350,7 @@ unsigned char TRIBE_Building_Object::update() {
             facet = result;
         }
         if ((float)(int)master->build_pts_required <= build_pts) {
-            set_object_state(2);
+            set_object_state(RGE_OBJECT_STATE_ACTIVE);
         }
     }
 
@@ -361,7 +361,7 @@ unsigned char TRIBE_Building_Object::update() {
     PriorTurn1 = world_update_counter;
 
     unsigned char result = TRIBE_Combat_Object::update();
-    if (object_state > 2) {
+    if (object_state > RGE_OBJECT_STATE_ACTIVE) {
         empty_production_queue();
     } else {
         update_production_queue();
@@ -401,7 +401,7 @@ void TRIBE_Building_Object::save(int outfile) {
 //! A later building death leaves a dangling entry that other code still reads.
 //! No fog ghost spawns for the ex-owner, so the converted building vanishes in its fog.
 void TRIBE_Building_Object::change_ownership(RGE_Player* new_owner) {
-    if (object_state == 2) {
+    if (object_state == RGE_OBJECT_STATE_ACTIVE) {
         for (int i = 0; i < 3; ++i) {
             RGE_Master_Static_Object* master = master_obj;
             if (master->attribute_flag[i] >= 4 && master->attribute_type_held[i] >= 0) {
@@ -410,7 +410,7 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* new_owner) {
         }
     }
 
-    if (object_state == 0) {
+    if (object_state == RGE_OBJECT_STATE_UNBUILT) {
         unexplore_terrain(owner, 1, -1);
     }
 
@@ -430,11 +430,11 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* new_owner) {
     actions->delete_list();
     TRIBE_Combat_Object::change_ownership(new_owner);
 
-    if (object_state == 0) {
+    if (object_state == RGE_OBJECT_STATE_UNBUILT) {
         explore_terrain(owner, 1, -1);
     }
 
-    if (object_state == 2) {
+    if (object_state == RGE_OBJECT_STATE_ACTIVE) {
         if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj > -1) {
             owner->master_objects[static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj]->make_new_obj(
                 owner, world_x, world_y, world_z);
@@ -445,7 +445,7 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* new_owner) {
         }
     }
 
-    if (object_state == 2) {
+    if (object_state == RGE_OBJECT_STATE_ACTIVE) {
         for (int i = 0; i < 3; ++i) {
             RGE_Master_Static_Object* master = master_obj;
             if (master->attribute_flag[i] >= 4 && master->attribute_type_held[i] >= 0) {
@@ -465,7 +465,7 @@ void TRIBE_Building_Object::modify(float amount, unsigned char flag) {
 
 void TRIBE_Building_Object::transform(TRIBE_Master_Building_Object* obj) {
     TRIBE_Combat_Object::transform(obj);
-    object_state = 0;
+    object_state = RGE_OBJECT_STATE_UNBUILT;
     TRIBE_Master_Combat_Object* combat_master =
         static_cast<TRIBE_Master_Combat_Object*>(master_obj);
     if (combat_master->build_pts_required > 0) {
@@ -660,7 +660,7 @@ void TRIBE_Building_Object::lay_down_passable_terrain() {
 }
 
 void TRIBE_Building_Object::cancel_object() {
-    if (object_state < 2) {
+    if (object_state < RGE_OBJECT_STATE_ACTIVE) {
         cancel_build();
     } else {
         TRIBE_Combat_Object::cancel_object();
@@ -673,7 +673,7 @@ void TRIBE_Building_Object::cancel_build() {
     }
 
     float percent;
-    if (object_state >= 2 || hp <= g_building_zero_hp) {
+    if (object_state >= RGE_OBJECT_STATE_ACTIVE || hp <= g_building_zero_hp) {
         percent = 0.0f;
     } else {
         percent = ((float)(int)static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required - build_pts) /
@@ -694,7 +694,7 @@ void TRIBE_Building_Object::cancel_build() {
 }
 
 unsigned char TRIBE_Building_Object::build(float build_amount) {
-    if (object_state == 0) {
+    if (object_state == RGE_OBJECT_STATE_UNBUILT) {
         TRIBE_Master_Building_Object* object_master =
             static_cast<TRIBE_Master_Building_Object*>(master_obj);
         if (build_amount + build_pts > (float)(int)object_master->build_pts_required) {
@@ -707,7 +707,7 @@ unsigned char TRIBE_Building_Object::build(float build_amount) {
         }
         build_pts += build_amount;
         if (build_pts >= (float)(int)object_master->build_pts_required) {
-            set_object_state(2);
+            set_object_state(RGE_OBJECT_STATE_ACTIVE);
             return 1;
         }
         return 0;
@@ -741,7 +741,7 @@ int TRIBE_Building_Object::work_status(short& work_type, short& work_target,
 }
 
 short TRIBE_Building_Object::get_construction_progress() {
-    if (object_state != 0) {
+    if (object_state != RGE_OBJECT_STATE_UNBUILT) {
         return 100;
     }
     TRIBE_Master_Building_Object* master =

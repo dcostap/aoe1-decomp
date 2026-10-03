@@ -141,9 +141,9 @@ void RGE_Timeline::update() {
             if (event == 0 && entry->time > this->old_time)
                 event = entry;
 
-            if (entry->this_obj != 0 && entry->this_obj->object_state >= 8)
+            if (entry->this_obj != 0 && entry->this_obj->object_state >= RGE_OBJECT_STATE_READY_TO_REMOVE)
                 entry->this_obj = 0;
-            if (entry->target_obj != 0 && entry->target_obj->object_state >= 8)
+            if (entry->target_obj != 0 && entry->target_obj->object_state >= RGE_OBJECT_STATE_READY_TO_REMOVE)
                 entry->target_obj = 0;
             entry = entry->next;
         } while (entry != 0);

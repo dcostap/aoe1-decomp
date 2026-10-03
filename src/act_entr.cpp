@@ -130,7 +130,7 @@ unsigned char RGE_Action_Enter::update() {
     }
 
     if (this->target_obj != 0) {
-        if (this->target_obj->object_state >= 3) {
+        if (this->target_obj->object_state >= RGE_OBJECT_STATE_DYING) {
             goto target_lost;
         }
         if (this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {

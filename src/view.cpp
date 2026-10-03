@@ -1303,7 +1303,7 @@ unsigned char RGE_View::pick_multi(unsigned char select_level, long x1, long y1,
             int idx = pp->object_id;
             if (idx != -1) {
                 RGE_Static_Object* obj = this->world->objectsValue[idx];
-                if (obj != 0 && obj->object_state < 7) {
+                if (obj != 0 && obj->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
                     if (!this->player->select_one_object(obj,0)) break;
                     picked_any = 1;
                 }
@@ -1335,7 +1335,7 @@ unsigned char RGE_View::pick_multi(unsigned char select_level, long x1, long y1,
                 int idx = pp->object_id;
                 if (idx >= 0) {
                     RGE_Static_Object* obj = this->world->objectsValue[idx];
-                    if (obj && obj->object_state < 7 && obj->master_obj->select_level >= 2) {
+                    if (obj && obj->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL && obj->master_obj->select_level >= 2) {
                         if (!this->map->map_visible_flag && !this->pick_through_fog(obj)) {
                             int vy = (int)obj->world_y;
                             int vx = (int)obj->world_x;
@@ -3448,7 +3448,7 @@ int RGE_View::pick_multi_objects(int Xpos1, int Ypos1, int Xpos2, int Ypos2,
                 if (object_id >= 0 && Xpos1 <= node->x2 && node->x1 <= Xpos2 && Ypos1 <= node->y2 && node->y1 <= Ypos2) {
                     RGE_Static_Object* object =
                         this->world->objectsValue[object_id];
-                    if ((player == -1 || object->owner->id == player) && object->object_state == 2 &&
+                    if ((player == -1 || object->owner->id == player) && object->object_state == RGE_OBJECT_STATE_ACTIVE &&
                         object->master_obj->select_level >= select_level) {
                         found = 1;
                     }
@@ -3685,7 +3685,7 @@ RGE_Static_Object* RGE_View::hit_object(RGE_Tile* tile, short x, short y, short 
         short sy = y;
         RGE_Static_Object* obj;
         for (; cur != 0 && (obj = cur->node) != 0; cur = cur->next) {
-                if (obj->object_state < 7) {
+                if (obj->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
                     if ((!fog_flag || obj->master_obj->fog_flag) && obj->master_obj->select_level >= this->function_parm) {
                         if (this->function_mode == '+' || this->function_mode == ',') {
                             if (obj->owner == this->player) {
