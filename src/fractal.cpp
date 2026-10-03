@@ -555,19 +555,19 @@ void PointMaker::DrawCurrentSatelliteIntoProbArray(int which) {
 
     int prob_idx = Point[which].y * Width + Point[which].x;
     int prob_add = ProbabilityAdd;
+    char add = (char)prob_add;
     if (prob_idx >= 1 && prob_idx < SizeArrays - 1) {
-        char* cell = ProbArray + prob_idx;
-        if (*cell == 0) {
-            *cell = (char)prob_add;
+        char& cur = ProbArray[prob_idx];
+        if (cur == 0) {
+            cur = add;
             ProbabilityTiles++;
-        } else {
-            int total = prob_add + (int)*cell;
-            if (total < 0xFF) {
-                *cell = (char)total;
-            } else {
-                *cell = (char)-1;
-            }
+            return;
         }
+        if (prob_add + (int)cur < 0xFF) {
+            cur = add + cur;
+            return;
+        }
+        cur = (char)-1;
     }
 }
 
