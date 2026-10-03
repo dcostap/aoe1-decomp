@@ -112,6 +112,8 @@ void TRIBE_Command::do_command_make(TRIBE_Command_Make* order) {
 
     building = static_cast<TRIBE_Building_Object*>(this->world->object(order->unit_id));
     if (building != 0) {
+        //! @bug This make-order path never checks the requested unit's id_of_building_obj against this building.
+        //! A make order can train a unit at the wrong building.
         building->work_status(progress, work_target, work_type, work_name, 100);
         if (progress != 0x67 && progress != 0x66) {
             TRIBE_Action_Make_Obj* action = new TRIBE_Action_Make_Obj(building, order->obj_id, order->unique_id, 0);
@@ -518,6 +520,7 @@ void TRIBE_Command::do_command_queue(TRIBE_Command_Queue* order) {
         static_cast<TRIBE_Building_Object*>(this->world->object(order->bldg_id));
     if (building != 0) {
         if (0 < order->train_count) {
+            //! @bug Queued training also accepts the unit without checking its required building.
             building->add_to_production_queue(order->train_id, order->train_count);
             return;
         }

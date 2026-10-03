@@ -197,6 +197,8 @@ unsigned char TRIBE_Action_Trade::update() {
         this->set_target_obj2(0);
     }
 
+    //! @bug A converted home dock remains target_obj2; no check rejects its new owner.
+    //! The existing trade route can still return gold to the former owner.
     if (this->target_obj != 0 && this->obj->owner->id == this->target_obj->owner->id) {
         this->set_target_obj(0);
         this->set_target_obj2(0);

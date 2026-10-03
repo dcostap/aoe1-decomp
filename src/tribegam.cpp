@@ -3213,6 +3213,8 @@ int TRIBE_Game::processCheatCode(int playerID, char* text) {
             static_cast<TRIBE_World*>(this->world)->send_cheat(0x67);
             return 1;
         } else if (strcmp(encstr, "1Zhx#Lhx") == 0) {
+            //! GAIA has no single-player check; it changes the local controlled player to 0.
+            //! The December 1999 patch readme lists GAIA among the cheats removed from multiplayer.
             this->get_player()->unselect_object();
             if (this->game_mode == 6 && this->sub_game_mode == 1)
                 this->set_game_mode(0, 0);
@@ -3231,6 +3233,7 @@ int TRIBE_Game::processCheatCode(int playerID, char* text) {
             this->get_player()->command_add_attribute(2, 1000.0f);
             return 1;
         } else if (strcmp(encstr, "1$ ^Am%%%^#L?>1$") == 0) {
+            //! STEROIDS can submit the shared quick-build toggle in multiplayer when cheats are enabled.
             static_cast<TRIBE_Command*>(this->world->commands)
                 ->command_quick_build(static_cast<short>(this->quick_build == 0));
             return 1;
@@ -3238,6 +3241,8 @@ int TRIBE_Game::processCheatCode(int playerID, char* text) {
             static_cast<TRIBE_World*>(this->world)->send_cheat(0xdc);
             return 1;
         } else if (strcmp(encstr, "%%Am&TAmhx+! %chxw>") == 0) {
+            //! REVEAL MAP and NO FOG also lack a single-player check.
+            //! The December 1999 patch readme removes both from multiplayer.
             static_cast<TRIBE_World*>(this->world)->send_cheat(0xe6);
             return 1;
         } else if (strcmp(encstr, "dW%^ Jm%^1Z") == 0) {
