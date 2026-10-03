@@ -1,5 +1,12 @@
 # rmm_land.cpp recovery
 
+## Current hackathon result: 2026-10-03
+
+`00485480` remains scratch with 19 differences in 159 bytes. Commit: `76fad5b52` preserves new evidence only.
+The positive-path wall/y read order still differs. No natural probe resolves it.
+The fresh five-owner audit proves both matching claims. The target note records argument-home writes and corrected caller arguments.
+Older byte counts below describe historical source states.
+
 ## Source order and status
 
 The PDB source is `C:\\msdev\\work\\age1_x1\\rmm_land.cpp`. The source

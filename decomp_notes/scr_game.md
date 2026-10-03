@@ -1,5 +1,11 @@
 # `scr_game.cpp` source-module recovery
 
+## Current hackathon result: 2026-10-03
+
+`0049BDB0` has simpler pause and cost-check inputs. Commit: `7c553c4d5`.
+Output remains 225 bytes with 29 differences. Message-panel fault order remains unproved; keep scratch.
+The fresh 96-owner audit proves all 88 matching claims. The target note records the rejected drift proposal.
+
 - PDB source: `C:\\msdev\\work\\age1_x1\\scr_game.cpp`.
 - The module has 96 normal owners in PDB order, from lines 201 to 5941.
 - The owner range contains 36,932 normal bytes.

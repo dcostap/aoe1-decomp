@@ -1,5 +1,13 @@
 # `taiinfmd.cpp` module recovery
 
+## Current hackathon result: 2026-10-03
+
+`004DEA80` uses ordered continue guards in a counted loop. Commit: `993d8b135`.
+The natural source reduces 226 baseline differences to 117. It emits 276 bytes against 277 original bytes.
+Keep scratch; no exact or accepted-drift claim is made. The fresh 121-owner audit proves all 102 matching claims.
+The linked image audit cannot align this owner, so its numeric storage remains unknown.
+The target note records original filter order, unordered-value rejection, conversion order, and first-record tie selection.
+
 - PDB source: `C:\\msdev\\work\\age1_x1\\taiinfmd.cpp`.
 - Source: `src/taiinfmd.cpp`.
 - Header: `include/taiinfmd.h`.

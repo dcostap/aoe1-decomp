@@ -1,5 +1,12 @@
 # Natural `rmm_elev.cpp` module
 
+## Current hackathon result: 2026-10-03
+
+`004847C0` uses read-only pointer types. Commit: `075423602`. Output remains 224 bytes with 147 differences.
+It remains scratch; no status improvement is claimed. The fresh ten-owner audit proves all five matching claims.
+Two owners have new verified logic; three remain scratch. The target note records rejected probes and fault-order limits.
+Older accepted-drift claims below do not describe the current registry.
+
 ## Ownership
 
 The PDB assigns ten normal functions to

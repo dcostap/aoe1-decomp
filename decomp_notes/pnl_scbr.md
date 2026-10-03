@@ -1,5 +1,11 @@
 # Pnl_scbr.cpp source recovery
 
+## Current hackathon result: 2026-10-03
+
+`0047AB20` now uses the existing `Horizontal` enum name. Commit: `06303aaae`.
+Output remains 243 bytes with 192 differences against 239 original bytes. Keep scratch.
+The fresh 19-owner audit proves all 15 matching claims. The target note records the rejected snapshot probes.
+
 ## Module
 
 - PDB source: `C:\msdev\work\age1_x1\Pnl_scbr.cpp`

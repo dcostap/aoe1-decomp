@@ -1,5 +1,12 @@
 # tact_mob.cpp recovery notes
 
+## Current hackathon result: 2026-10-03
+
+`004D0EB0` now matches with the natural `unique_id(uniqueID)` initializer. Commit: `f91077959`.
+The fresh ten-owner audit proves nine matching claims. Only `004D10F0` remains scratch.
+The target note records the constructor symbol, boundary, and direct-call evidence.
+Older status claims below describe historical source states, not the current registry.
+
 ## PDB context
 
 The PDB names `C:\\msdev\\work\\age1_x1\\tact_mob.cpp` as the source

@@ -1,5 +1,13 @@
 # fractal.cpp module recovery
 
+## Current hackathon result: 2026-10-03
+
+`0044BCD0` has accepted drift after a complete machine-effect review. Commit: `cd2e706a1`.
+The natural typed-reference tail emits 171 bytes with eight register-encoding differences.
+Memory access order and saved stack homes agree. Caller-saved fault-context registers can differ; the review records this limit.
+The fresh 41-owner audit proves 32 matching claims. Six owners have accepted drift; two remain scratch.
+One owner has new verified logic. The function note supersedes older saturation-tail claims below.
+
 - PDB source: `C:\msdev\work\age1_x1\fractal.cpp`.
 - Source: `src/fractal.cpp`.
 - Header: `include/fractal.h`.
