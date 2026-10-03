@@ -3426,27 +3426,30 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int unitID) {
 
     ObjectMemory* bestObject = 0;
     int bestDockDistance = 0;
-    int i = 0;
 
-    if (this->maxImportantObjectMemory > 0) {
-        do {
-            //! The AI trade-partner search also accepts only dock id 0x2D.
-            if (this->importantObjectMemory[i].id != -1 && this->importantObjectMemory[i].owner != this->md->player->id &&
-                this->importantObjectMemory[i].type == 0x2D) {
-                RGE_Static_Object* dock = this->md->object(this->importantObjectMemory[i].id);
-                if (dock != 0 && dock->owner->attributes[9] > 0.0f) {
-                    ObjectMemory* candidate = &this->importantObjectMemory[i];
-                    int dx = (int)candidate->x - (int)unit->world_x;
-                    int dy = (int)candidate->y - (int)unit->world_y;
-                    int dist = dx * dx + dy * dy;
-                    if (bestObject == 0 || dist < bestDockDistance) {
-                        bestObject = candidate;
-                        bestDockDistance = dist;
-                    }
-                }
-            }
-            i++;
-        } while (i < this->maxImportantObjectMemory);
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        //! The AI trade-partner search also accepts only dock id 0x2D.
+        if (this->importantObjectMemory[i].id == -1)
+            continue;
+        if (this->importantObjectMemory[i].owner == this->md->player->id)
+            continue;
+        if (this->importantObjectMemory[i].type != 0x2D)
+            continue;
+
+        RGE_Static_Object* dock = this->md->object(this->importantObjectMemory[i].id);
+        if (dock == 0)
+            continue;
+        if (!(dock->owner->attributes[9] > 0.0f))
+            continue;
+
+        ObjectMemory* candidate = &this->importantObjectMemory[i];
+        int dx = (int)candidate->x - (int)unit->world_x;
+        int dy = (int)candidate->y - (int)unit->world_y;
+        int dist = dx * dx + dy * dy;
+        if (bestObject == 0 || dist < bestDockDistance) {
+            bestObject = candidate;
+            bestDockDistance = dist;
+        }
     }
 
     return bestObject;
