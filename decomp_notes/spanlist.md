@@ -103,3 +103,10 @@ It compiled all 29 normal owners. It found 23 matching results, four accepted-dr
 observations, and two new-verified-logic observations. The four targets remain
 in `hold_accepted_drift`; registry statuses are unchanged. No status approval,
 staging, commit, or integration occurred.
+
+## Current hackathon result: 2026-10-03
+
+`004BEAD0 DecodeLine` remains scratch because unchecked writes can affect its exchanged saved-register homes.
+Four new probes and 12 lab forms emitted the same 58-byte body with 12 differences.
+The fresh 29-owner audit preserves all 23 matching claims. Source and registry are unchanged.
+The target note supersedes older accepted-drift claims for this function.
