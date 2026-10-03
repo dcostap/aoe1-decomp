@@ -13,8 +13,7 @@
 #include "../include/resource_ids.h"
 #include <string.h>
 
-TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
-    : TScreenPanel("Main Menu") {
+TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel("Main Menu") {
     RECT rect;
     TPanel* tabList[5];
     char temp_str[512];

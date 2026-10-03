@@ -1059,8 +1059,7 @@ long TRIBE_Screen_Game::handle_idle() {
     color_log(0x5F, 0x16, 5);
     int mode = rge_base_game->prog_mode;
 
-    if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
-        mode == ProgModeGameOver) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeGameOver) {
         if (panel_system.currentPanel() == this && this->main_view->get_focus() != 0) {
             color_log(0x5F, 0x45, 5);
             this->handle_anim_pal();
@@ -1097,16 +1096,13 @@ void TRIBE_Screen_Game::handle_game_update() {
 
         int num_updates;
         if (rge_base_game->multiplayerGame()) {
-            unsigned long single_time =
-                rge_base_game->get_last_single_time(2);
+            unsigned long single_time = rge_base_game->get_last_single_time(2);
             single_time += rge_base_game->get_last_single_time(3);
             unsigned long average_time;
 
             if (rge_base_game->get_last_world_update_count() != 0) {
-                unsigned long world_update_count =
-                    rge_base_game->get_last_world_update_count();
-                average_time = rge_base_game->get_last_time(1) /
-                               world_update_count;
+                unsigned long world_update_count = rge_base_game->get_last_world_update_count();
+                average_time = rge_base_game->get_last_time(1) / world_update_count;
                 if (average_time == 0) {
                     average_time = 1;
                 }
@@ -1133,8 +1129,7 @@ void TRIBE_Screen_Game::handle_game_update() {
             color_log(0x24, 0x4c, 5);
             color_log(0x24, 0x24, 1);
 
-            unsigned long update_start =
-                debug_timeGetTime(s_scr_game_cpp, 1682);
+            unsigned long update_start = debug_timeGetTime(s_scr_game_cpp, 1682);
             unsigned char game_state;
 
             if (start_paused != 0) {
@@ -1189,8 +1184,7 @@ void TRIBE_Screen_Game::handle_game_update() {
 
             color_log(0x24, 0x54, 5);
 
-            if (start_paused == 0 && (game_state == 1 || this->world->players[this->world->curr_player]->game_status == 2 ||
-                 this->player_quit == 1)) {
+            if (start_paused == 0 && (game_state == 1 || this->world->players[this->world->curr_player]->game_status == 2 || this->player_quit == 1)) {
                 if (static_cast<unsigned char>(mode) != ProgModeGameOver) {
                     color_log(0x24, 0x45, 5);
                     this->command_cancel();
@@ -1236,8 +1230,7 @@ void TRIBE_Screen_Game::handle_game_update() {
                         }
                     }
 
-                    this->game_over_time =
-                        debug_timeGetTime(s_scr_game_cpp, 1836);
+                    this->game_over_time = debug_timeGetTime(s_scr_game_cpp, 1836);
                     this->showing_game_over = 1;
                 } else if (this->showing_game_over != 0) {
                     if (debug_timeGetTime(s_scr_game_cpp, 1844) - this->game_over_time > 5000) {
@@ -1276,8 +1269,7 @@ void TRIBE_Screen_Game::handle_game_update() {
             }
 
             if (this->world->world_time_delta != 0) {
-                unsigned long auto_exit_time =
-                    static_cast<TRIBE_Game*>(rge_base_game)->auto_exit_time;
+                unsigned long auto_exit_time = static_cast<TRIBE_Game*>(rge_base_game)->auto_exit_time;
                 if (auto_exit_time != 0 && this->world->world_time >= auto_exit_time) {
                     rge_base_game->close();
                     color_log(0x24, 0x5f, 5);
@@ -1301,8 +1293,7 @@ void TRIBE_Screen_Game::handle_game_update() {
             if (this->score_panel[0] != 0 && this->score_panel[0]->active != 0 &&
                 calc_game_time - this->last_score_time >= this->score_interval) {
                 this->reset_score_display();
-                this->last_score_time =
-                    debug_timeGetTime(s_scr_game_cpp, 1960);
+                this->last_score_time = debug_timeGetTime(s_scr_game_cpp, 1960);
             }
         }
 

@@ -3876,8 +3876,7 @@ int TRIBE_Game::handle_idle() {
                     }
                 }
 
-                TRIBE_Screen_Wait* wait =
-                    static_cast<TRIBE_Screen_Wait*>(panel_system.panel("Multiplayer Wait Screen"));
+                TRIBE_Screen_Wait* wait = static_cast<TRIBE_Screen_Wait*>(panel_system.panel("Multiplayer Wait Screen"));
                 if (wait != 0) {
                     wait->set_text(msg);
                 }
