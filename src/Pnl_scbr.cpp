@@ -165,7 +165,7 @@ void TScrollBarPanel::calc_item_rects() {
 void TScrollBarPanel::set_tab_pos(long list_num_in) {
     this->list_num = list_num_in;
 
-    if (this->orientationValue == 1) {
+    if (this->orientationValue == Horizontal) {
         if (this->list_len > 0) {
             this->tab_x = ((this->tabSize / 2 + this->tab_max_x - this->tab_min_x) * list_num_in) /
                           this->list_len + this->tab_min_x;
