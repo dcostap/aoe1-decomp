@@ -3627,9 +3627,9 @@ void TRIBE_Screen_Game::command_building(int id) {
     short attr;
     char msg[512];
 
-    int paused = rge_base_game->get_paused();
-    if (paused == 0) {
-        if (static_cast<TRIBE_Player*>(rge_base_game->get_player()) ->check_obj_cost(id, &attr, 1.0f, paused)) {
+    if (rge_base_game->get_paused() == 0) {
+        if (static_cast<TRIBE_Player*>(rge_base_game->get_player())
+                ->check_obj_cost(static_cast<short>(id), &attr, 1.0f, 0)) {
             RGE_Base_Game* game = rge_base_game;
             game->master_obj_id = id;
             TRIBE_Player* player =
@@ -3644,7 +3644,7 @@ void TRIBE_Screen_Game::command_building(int id) {
             rge_base_game->set_game_mode(7, 0);
             return;
         } else {
-            rge_base_game->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1, static_cast<int>(attr), msg, 512);
+            rge_base_game->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1, static_cast<int>(attr), msg, sizeof(msg));
             // This palette index has no verified name for this error path.
             this->message_panel->show_message(TMessagePanel::BadMessage, msg, 0x56, 0, 0, 0, 0);
         }
