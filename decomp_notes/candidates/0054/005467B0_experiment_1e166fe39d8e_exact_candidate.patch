@@ -1,0 +1,15 @@
+# Experiment 1e166fe39d8e03838e1f2fbde39bb816f196544e93c833aa71d5ec56bc013c98
+# Base 49abe672fd1e5d44fefa3e03a2ce02e308d6f2ce
+diff --git a/src/zone_map.cpp b/src/zone_map.cpp
+index 914d33577..7a2f1da29 100644
+--- a/src/zone_map.cpp
++++ b/src/zone_map.cpp
+@@ -47,7 +47,7 @@ RGE_Zone_Map::RGE_Zone_Map(int infile, RGE_Map* new_map) {
+     this->map = new_map;
+ 
+     this->zone_map = (uchar*)calloc(new_map->map_width * new_map->map_height, 1);
+-    this->zone_map_rows = (uchar**)calloc(new_map->map_height, 4);
++    this->zone_map_rows = (uchar**)calloc(this->map->map_height, 4);
+ 
+     for (int i = 0; i < this->map->map_height; i++) {
+         this->zone_map_rows[i] = this->zone_map + this->map->map_width * i;

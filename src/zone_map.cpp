@@ -47,7 +47,7 @@ RGE_Zone_Map::RGE_Zone_Map(int infile, RGE_Map* new_map) {
     this->map = new_map;
 
     this->zone_map = (uchar*)calloc(new_map->map_width * new_map->map_height, 1);
-    this->zone_map_rows = (uchar**)calloc(new_map->map_height, 4);
+    this->zone_map_rows = (uchar**)calloc(this->map->map_height, 4);
 
     for (int i = 0; i < this->map->map_height; i++) {
         this->zone_map_rows[i] = this->zone_map + this->map->map_width * i;

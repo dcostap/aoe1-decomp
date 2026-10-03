@@ -12,16 +12,15 @@
 
 ## Status
 
-The module has 20 matching owners and two accepted-drift owners.
+The module has 21 matching owners and one accepted-drift owner.
 The source owns all 22 normal functions in one PDB-ordered file.
 
 The reopened behavior reviews are in `functions/0054/005467B0.md` and
 `functions/0054/00546A90.md`. The worker proposes renewed accepted drift for
 `00546A90` after checking its loops, bounds, calls, memory writes, and zero
 threshold. The only byte difference is `cmp edx, esi` versus `test edx, edx`.
-The worker does not propose renewed acceptance for `005467B0` yet. Its normal
-constructor behavior matches, but prologue and cleanup scheduling leave an
-unresolved fault-order question for invalid stack or unmapped-object cases.
+The hackathon repair for `005467B0` restores the member reload after allocation.
+Fresh local and grouped checks prove an exact result. Its earlier fault-order objection is resolved.
 
 `005468C0` is matching. The earlier two-byte allocation-product mismatch no
 longer describes the current source or registry status.
