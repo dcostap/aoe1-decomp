@@ -72,3 +72,10 @@ three source repairs. Reverting the `handle_mouse_input` field restores the
 and `sounddrv` source includes prevents the canonical compile or restores the
 `00473930` coordinate mismatch. The retained source uses no wrapper, fragment,
 manual vtable, inline assembly, or codegen-only declaration.
+
+## Current hackathon result: 2026-10-03
+
+The older exact claim for `00473930` does not reproduce from base `49abe672f`.
+Fresh baseline and long-local source both have 18 differences in 124 bytes.
+The coordinate field-read order differs. Keep the registry at `scratch`, not accepted drift.
+The final 56-owner audit preserves all 53 matching claims. The target note records the evidence.

@@ -884,9 +884,9 @@ int TButtonPanel::hit_button(long x, long y) {
         return 1;
     }
     if (this->pic[this->cur_state] != 0) {
-        int shape_index = this->pic_index[this->cur_state];
-        int shape_y = (y - this->pic_y) - this->pnl_y;
-        int shape_x = (x - this->pic_x) - this->pnl_x;
+        long shape_index = this->pic_index[this->cur_state];
+        long shape_y = (y - this->pic_y) - this->pnl_y;
+        long shape_x = (x - this->pic_x) - this->pnl_x;
         return this->pic[this->cur_state]->shape_check(shape_x, shape_y, shape_index)
                    ? 1
                    : 0;
