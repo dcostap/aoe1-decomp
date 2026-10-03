@@ -1604,10 +1604,13 @@ void TRIBE_Screen_Sed::set_unit_player(short val) {
 }
 
 void TRIBE_Screen_Sed::set_unit(short val) {
+    RGE_Base_Game *game;
     if (val == -1) {
-        rge_base_game->master_obj_id = val;
+        game = rge_base_game;
+        game->master_obj_id = val;
     } else {
-        rge_base_game->master_obj_id = unit_list_info[val].id;
+        game = rge_base_game;
+        game->master_obj_id = unit_list_info[val].id;
     }
 
     unit_list->scroll_cur_line(1, val, 1);

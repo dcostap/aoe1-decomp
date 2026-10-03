@@ -40,6 +40,14 @@ ABI boundary.
 
 ## Recovery states
 
+### Current hackathon result: 2026-10-03
+
+`004AB670 set_unit` is now matching, using a branch-assigned game-pointer local.
+The fresh 47-owner closure preserves all 42 matching neighbors. The target note records the full evidence.
+The counts and status claims below describe older validation states, not the live registry.
+
+### Historical validation
+
 The natural module validation reports 36 exact functions, two accepted-drift
 functions, and nine scratch functions:
 

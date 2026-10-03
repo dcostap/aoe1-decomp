@@ -1,0 +1,20 @@
+# Experiment c90c46f1e38a283557bf978fc4530f7ed531349805223c4e9f48361f529315eb
+# Base 49abe672fd1e5d44fefa3e03a2ce02e308d6f2ce
+diff --git a/src/scr_sed.cpp b/src/scr_sed.cpp
+index 2af1b7330..35e445a3b 100644
+--- a/src/scr_sed.cpp
++++ b/src/scr_sed.cpp
+@@ -1605,9 +1605,11 @@ void TRIBE_Screen_Sed::set_unit_player(short val) {
+ 
+ void TRIBE_Screen_Sed::set_unit(short val) {
+     if (val == -1) {
+-        rge_base_game->master_obj_id = val;
++        RGE_Base_Game *game = rge_base_game;
++        game->master_obj_id = val;
+     } else {
+-        rge_base_game->master_obj_id = unit_list_info[val].id;
++        RGE_Base_Game *game = rge_base_game;
++        game->master_obj_id = unit_list_info[val].id;
+     }
+ 
+     unit_list->scroll_cur_line(1, val, 1);
