@@ -57,8 +57,8 @@ uchar RGE_RMM_Elevation_Generator::check_start_elevation(
     long x, long y, uchar base_terrain, uchar base_elevation, uchar spacing) {
     long x0 = x - spacing;
     long y0 = y - spacing;
-    RGE_Tile** row_ptr;
-    RGE_Tile* row_base;
+    RGE_Tile* const* row_ptr;
+    const RGE_Tile* row_base;
     long index1;
     long y1;
     long x1;
@@ -83,7 +83,7 @@ uchar RGE_RMM_Elevation_Generator::check_start_elevation(
     row_base = *row_ptr + x0;
     while (index1 <= y1) {
         if (x0 <= x1) {
-            RGE_Tile* cell = row_base;
+            const RGE_Tile* cell = row_base;
             long col = x0;
             do {
                 if (base_terrain == 0xFF || cell->terrain_type != base_terrain || cell->height < base_elevation) {
