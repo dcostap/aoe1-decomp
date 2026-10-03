@@ -53,6 +53,16 @@
 
 #define TRIBE_OPEN_READ_PERMISSIONS 256
 
+// Video stages select the next clip or screen after playback.
+#define TRIBE_VIDEO_STAGE_NONE (-1)
+#define TRIBE_VIDEO_STAGE_FIRST_LOGO 0
+#define TRIBE_VIDEO_STAGE_SECOND_LOGO 1
+#define TRIBE_VIDEO_STAGE_INTRO 2
+#define TRIBE_VIDEO_STAGE_PRE_GAME 3
+#define TRIBE_VIDEO_STAGE_POST_GAME 4
+// No playback source is established for this menu-return stage.
+#define TRIBE_VIDEO_STAGE_MENU_RETURN 5
+
 void encrypt_codes(char* source, char* dest, int maxlen) {
     char c = *source;
     char* out = dest;
@@ -147,7 +157,7 @@ struct ICINFO {
 extern "C" int __stdcall ICInfo(unsigned long fccType, unsigned long fccHandler, ICINFO* info);
 
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* prog_info_in, int do_setup)
-    : RGE_Base_Game(prog_info_in, 0), video_window(0), cur_video(-1), old_video_wnd_proc(0), video_paused(0),
+    : RGE_Base_Game(prog_info_in, 0), video_window(0), cur_video(TRIBE_VIDEO_STAGE_NONE), old_video_wnd_proc(0), video_paused(0),
       last_video_time(0), video_setup(0), video_double_size(0), video_changed_res(0), video_hi_color(0),
       video_save_res_wid(0), video_save_res_hgt(0), video_save_palette(0), started_menu_music(0), show_object_id(0),
       game_screen(0), inHandleIdle(0) {
@@ -437,7 +447,7 @@ int TRIBE_Game::setup() {
                     }
                 }
             } else if (this->prog_info->skip_startup == 0) {
-                this->start_video(0, "logo1");
+                this->start_video(TRIBE_VIDEO_STAGE_FIRST_LOGO, "logo1");
             } else {
                 if (this->start_menu() == 0) {
                     return 0;
@@ -1172,7 +1182,7 @@ void TRIBE_Game::stop_video(unsigned char goto_next_video) {
     int show_menu_after_video = 0;
 
     save_vid_num = this->cur_video;
-    this->cur_video = -1;
+    this->cur_video = TRIBE_VIDEO_STAGE_NONE;
 
     if (this->video_window != 0) {
         SendMessageFn send_message = SendMessageA;
@@ -1193,30 +1203,30 @@ void TRIBE_Game::stop_video(unsigned char goto_next_video) {
     }
 
     switch (save_vid_num) {
-    case 0:
+    case TRIBE_VIDEO_STAGE_FIRST_LOGO:
         if (goto_next_video != 0) {
-            this->start_video(1, "logo2");
+            this->start_video(TRIBE_VIDEO_STAGE_SECOND_LOGO, "logo2");
             return;
         }
         show_menu_after_video = 1;
         break;
 
-    case 1:
+    case TRIBE_VIDEO_STAGE_SECOND_LOGO:
         if (goto_next_video != 0) {
-            this->start_video(2, "introx");
+            this->start_video(TRIBE_VIDEO_STAGE_INTRO, "introx");
             return;
         }
         show_menu_after_video = 1;
         break;
 
-    case 2:
-    case 5:
+    case TRIBE_VIDEO_STAGE_INTRO:
+    case TRIBE_VIDEO_STAGE_MENU_RETURN:
         if (this->start_menu() == 0) {
             this->close();
         }
         return;
 
-    case 3:
+    case TRIBE_VIDEO_STAGE_PRE_GAME:
         if (this->video_setup != 0) {
             this->shutdown_video_system();
         }
@@ -1233,7 +1243,7 @@ void TRIBE_Game::stop_video(unsigned char goto_next_video) {
         this->create_game_screen();
         return;
 
-    case 4:
+    case TRIBE_VIDEO_STAGE_POST_GAME:
         if (this->video_setup != 0) {
             this->shutdown_video_system();
         }
@@ -2165,7 +2175,7 @@ int TRIBE_Game::start_game(int skip_startup_screens) {
     if (skip_startup_screens != 0)
         return this->create_game_screen();
 
-    this->start_video(3, this->world->scenario->Cine_PreGame);
+    this->start_video(TRIBE_VIDEO_STAGE_PRE_GAME, this->world->scenario->Cine_PreGame);
     return 1;
 }
 
@@ -2709,10 +2719,10 @@ void TRIBE_Game::do_game_over(void) {
 
             RGE_Player* player = get_player();
             if (player->game_status == 1) {
-                start_video(4, this->world->scenario->Cine_Victory);
+                start_video(TRIBE_VIDEO_STAGE_POST_GAME, this->world->scenario->Cine_Victory);
                 return;
             }
-            start_video(4, this->world->scenario->Cine_Loss);
+            start_video(TRIBE_VIDEO_STAGE_POST_GAME, this->world->scenario->Cine_Loss);
         }
     }
 }
