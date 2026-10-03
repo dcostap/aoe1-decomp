@@ -1,0 +1,16 @@
+# Experiment 6db8e3a7bfa88d5321070c318ed528f0ba795808916c479e19c20b0997b70241
+# Base 49abe672fd1e5d44fefa3e03a2ce02e308d6f2ce
+diff --git a/src/tact_mob.cpp b/src/tact_mob.cpp
+index 7993c1adc..8c4c69574 100644
+--- a/src/tact_mob.cpp
++++ b/src/tact_mob.cpp
+@@ -29,8 +29,7 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int infile, RGE_Action_Object* obj_
+ }
+ 
+ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj_in, short id, int uniqueID, unsigned char paid)
+-    : RGE_Action(obj_in, 1) {
+-    this->unique_id = uniqueID;
++    : RGE_Action(obj_in, 1), unique_id(uniqueID) {
+     this->action_type = 0x66;
+     this->obj_id = id;
+     this->work_done = 0.0f;

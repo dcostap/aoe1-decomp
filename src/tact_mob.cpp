@@ -29,8 +29,7 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int infile, RGE_Action_Object* obj_
 }
 
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj_in, short id, int uniqueID, unsigned char paid)
-    : RGE_Action(obj_in, 1) {
-    this->unique_id = uniqueID;
+    : RGE_Action(obj_in, 1), unique_id(uniqueID) {
     this->action_type = 0x66;
     this->obj_id = id;
     this->work_done = 0.0f;
