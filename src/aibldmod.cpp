@@ -241,15 +241,15 @@ void BuildAIModule::displayBuildList() {
 #include <stdio.h>
 #include <io.h>
 int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
+    int buildCap;
     int typeID;
     int quantity;
     int buildFrom;
-    int buildCap;
     char name[64];
     char temp[256];
     FILE* fileIn;
-    float ySize;
     float xSize;
+    float ySize;
     char commentTemp1;
     char buildCategoryAsChar;
     char commentTemp2;
@@ -275,21 +275,15 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
     this->buildListLengthValue = 0;
 
     while (fgets(temp, 0x100, fileIn) != 0) {
-        xSize = ySize = 1.5f;
-        typeID = -1;
+        ySize = xSize = 1.5f;
+        buildCap = -1;
         sscanf(temp, " %c%c", &commentTemp1, &commentTemp2);
         if (commentTemp1 == '/' && commentTemp2 == '/') {
             continue;
         }
 
-        // These variable names are misleading? They come from the original PDB:
-        // - "quantity" is the object/type ID,
-        // - "buildFrom" is the number of BuildItem entries to create.
-        // - "buildCap" is actually buildFrom
-        // - "typeID" is actually buildCap
-
         // No leading space: a blank line reads '\n' and is skipped by the switch below.
-        sscanf(temp, "%c%d %s %d %d ", &buildCategoryAsChar, &quantity, name, &buildFrom, &buildCap);
+        sscanf(temp, "%c%d %s %d %d ", &buildCategoryAsChar, &typeID, name, &quantity, &buildFrom);
 
         int buildCategory;
         switch (buildCategoryAsChar) {
@@ -302,7 +296,7 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
             break;
         case 'A':
             buildCategory = 0;
-            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &typeID);
+            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &buildCap);
             break;
         case 'R':
             buildCategory = 1;
@@ -315,7 +309,7 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
             break;
         case 'T':
             buildCategory = 2;
-            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &typeID);
+            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &buildCap);
             break;
         case 'L':
             buildCategory = 3;
@@ -329,31 +323,31 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
         }
 
         if (buildCategory == 0) {
-            if (this->typesToIgnore.contains(quantity)) {
+            if (this->typesToIgnore.contains(typeID)) {
                 goto next_line;
             }
         }
 
-        if ((buildCategory == 0 || buildCategory == 2) && quantity >= 0 && quantity < player->master_object_num &&
-            player->master_objects[quantity] != 0) {
-            RGE_Master_Static_Object* master = player->master_objects[quantity];
-            ySize = master->radius_x;
-            xSize = master->radius_y;
+        if ((buildCategory == 0 || buildCategory == 2) && typeID >= 0 && typeID < player->master_object_num &&
+            player->master_objects[typeID] != 0) {
+            RGE_Master_Static_Object* master = player->master_objects[typeID];
+            xSize = master->radius_x;
+            ySize = master->radius_y;
         }
-        ySize += ySize;
         xSize += xSize;
+        ySize += ySize;
 
         int i;
-        for (i = 0; i < buildFrom; ++i) {
-            BuildItem* item = new BuildItem(buildCategory, quantity, this->buildListLengthValue,
-                                            1, 0, buildCap, name, ySize, xSize, 0.0f, -1, -1, -1, 0);
+        for (i = 0; i < quantity; ++i) {
+            BuildItem* item = new BuildItem(buildCategory, typeID, this->buildListLengthValue,
+                                            1, 0, buildFrom, name, xSize, ySize, 0.0f, -1, -1, -1, 0);
 
             ++this->buildListLengthValue;
             item->next = &this->buildList;
             BuildItem* oldTail = this->buildList.prev;
             item->prev = oldTail;
             oldTail->next = item;
-            item->setBuildCap(typeID);
+            item->setBuildCap(buildCap);
             this->buildList.prev = item;
         }
 

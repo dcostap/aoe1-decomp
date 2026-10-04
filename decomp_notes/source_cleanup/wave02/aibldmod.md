@@ -1,5 +1,12 @@
 # `aibldmod.cpp` cleanup report
 
+## Later name-mapping correction
+
+The original cleanup assigned six `loadBuildList` names to the wrong variables.
+The PDB table below has the correct names and offsets in its referenced inventory.
+The source now uses those names at the correct operations.
+See [the direct offset review](../../aibldmod_loadBuildList_names.md) for the correction and validation limits.
+
 ## Delivery
 
 - Module: `src/aibldmod.cpp`
