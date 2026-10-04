@@ -282,6 +282,12 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
             continue;
         }
 
+        // These variable names are misleading? They come from the original PDB:
+        // - "quantity" is the object/type ID,
+        // - "buildFrom" is the number of BuildItem entries to create.
+        // - "buildCap" is actually buildFrom
+        // - "typeID" is actually buildCap
+
         // No leading space: a blank line reads '\n' and is skipped by the switch below.
         sscanf(temp, "%c%d %s %d %d ", &buildCategoryAsChar, &quantity, name, &buildFrom, &buildCap);
 
