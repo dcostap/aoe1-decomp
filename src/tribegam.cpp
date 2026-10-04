@@ -207,12 +207,12 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* prog_info_in, int do_setup)
     this->current_notification_loc = -1;
     this->current_notification_recalled = -1;
 
-    civ = 1;
+    civ = CIVILIZATION_FIRST;
     for (player = 0; player < 9; ++player) {
         this->setCivilization(player, civ);
         ++civ;
-        if (civ > 16) {
-            civ = 1;
+        if (civ > CIVILIZATION_LAST) {
+            civ = CIVILIZATION_FIRST;
         }
         this->setScenarioPlayer(player, player);
         this->setPlayerColor(player, 1);
@@ -2809,7 +2809,7 @@ int TRIBE_Game::create_game(int not_used) {
 
         this->resetRandomComputerName();
         for (i = 0; i < this->numberPlayers(); ++i) {
-            int civilization = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3320) % 16 + 1;
+            int civilization = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3320) % CIVILIZATION_COUNT + CIVILIZATION_FIRST;
             this->setCivilization(i, civilization);
             this->setComputerName(i, this->randomComputerName(civilization));
         }
@@ -2854,12 +2854,12 @@ int TRIBE_Game::create_game(int not_used) {
         player_info.type[i] = -1;
         player_info.name[i][0] = 0;
         player_info.player_id_hash[i] = i;
-        player_info.tribe[i] = 1;
+        player_info.tribe[i] = CIVILIZATION_EGYPTIAN;
         player_info.color[i] = -1;
         this->random_civ[i] = 0;
 
-        if (this->civilization(i) > 16 || this->civilization(i) < 0) {
-            this->setCivilization(i, debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3387) * 16 / 0x7FFF + 1);
+        if (this->civilization(i) > CIVILIZATION_LAST || this->civilization(i) < 0) {
+            this->setCivilization(i, debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3387) * CIVILIZATION_COUNT / 0x7FFF + CIVILIZATION_FIRST);
             this->random_civ[i] = 1;
         }
     }
@@ -4157,7 +4157,7 @@ int TRIBE_Game::randomComputerName(int civ) {
 void TRIBE_Game::resetRandomComputerName() {
     int i;
 
-    for (i = 0; i < 16; ++i) {
+    for (i = 0; i < CIVILIZATION_COUNT; ++i) {
         memset(this->computerNameUsed[i], 0, sizeof(this->computerNameUsed[i]));
     }
 }

@@ -6,6 +6,18 @@
 #include "../include/pnl_pic.h"
 #include "../include/basegame.h"
 
+// This screen uses its own button order, not game civilization IDs.
+#define TRIBE_INFO_ASSYRIAN   0
+#define TRIBE_INFO_BABYLONIAN 1
+#define TRIBE_INFO_EGYPTIAN   2
+#define TRIBE_INFO_GREEK      3
+#define TRIBE_INFO_HITTITE    4
+#define TRIBE_INFO_ISREALITE  5
+#define TRIBE_INFO_MINOAN     6
+#define TRIBE_INFO_PHOENICIAN 7
+#define TRIBE_INFO_SUMERIAN   8
+#define TRIBE_INFO_COUNT      9
+
 TribeSelectTribeScreen::TribeSelectTribeScreen()
     : TScreenPanel("Select Tribe Screen") {
     char backgroundName[10];
@@ -69,7 +81,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     i = 0;
     TButtonPanel** button = this->tribeButton;
 
-    while (i < 9) {
+    while (i < TRIBE_INFO_COUNT) {
         *button = new TButtonPanel;
         if (*button == 0) {
             this->error_code = 1;
@@ -122,11 +134,11 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     this->cancelButton->set_text_info("Cancel", font->font, font->font_wid, font->font_hgt, -1, -1);
 
     this->set_curr_child(this->background);
-    this->background->set_curr_child(this->tribeButton[0]);
-    this->fillTribeText(0);
+    this->background->set_curr_child(this->tribeButton[TRIBE_INFO_ASSYRIAN]);
+    this->fillTribeText(TRIBE_INFO_ASSYRIAN);
 
-    memcpy(tabList, this->tribeButton, 9 * sizeof(this->tribeButton[0]));
-    tabList[9] = this->okButton;
+    memcpy(tabList, this->tribeButton, TRIBE_INFO_COUNT * sizeof(this->tribeButton[0]));
+    tabList[TRIBE_INFO_COUNT] = this->okButton;
     this->TPanel::set_tab_order(tabList, 10);
 }
 
@@ -137,7 +149,7 @@ TribeSelectTribeScreen::~TribeSelectTribeScreen() {
     delete tribeText;
     {
         int i;
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < TRIBE_INFO_COUNT; i++) {
             delete tribeButton[i];
         }
     }
@@ -161,7 +173,7 @@ long TribeSelectTribeScreen::action(TPanel* fromPanel, long actionIn, unsigned l
         }
     } else if (actionIn == 1) {
         int i;
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < TRIBE_INFO_COUNT; i++) {
             if (fromPanel == (TPanel*)this->tribeButton[i]) {
                 this->fillTribeText(i);
                 return 1;
@@ -174,31 +186,31 @@ long TribeSelectTribeScreen::action(TPanel* fromPanel, long actionIn, unsigned l
 
 void TribeSelectTribeScreen::fillTribeText(int t) {
     switch (t) {
-    case 0:
+    case TRIBE_INFO_ASSYRIAN:
         this->tribeText->set_text("Assyrian information here.");
         break;
-    case 1:
+    case TRIBE_INFO_BABYLONIAN:
         this->tribeText->set_text("Babylonian information here.");
         break;
-    case 2:
+    case TRIBE_INFO_EGYPTIAN:
         this->tribeText->set_text("Egyptian information here.");
         break;
-    case 3:
+    case TRIBE_INFO_GREEK:
         this->tribeText->set_text("Greek information here.");
         break;
-    case 4:
+    case TRIBE_INFO_HITTITE:
         this->tribeText->set_text("Hittite information here.");
         break;
-    case 5:
+    case TRIBE_INFO_ISREALITE:
         this->tribeText->set_text("Isrealite information here.");
         break;
-    case 6:
+    case TRIBE_INFO_MINOAN:
         this->tribeText->set_text("Minoan information here.");
         break;
-    case 7:
+    case TRIBE_INFO_PHOENICIAN:
         this->tribeText->set_text("Phoenician information here.");
         break;
-    case 8:
+    case TRIBE_INFO_SUMERIAN:
         this->tribeText->set_text("Sumerian information here.");
         break;
     }
@@ -208,15 +220,15 @@ void TribeSelectTribeScreen::fillTribeText(int t) {
 
 char* TribeSelectTribeScreen::tribeName(int i) {
     switch (i) {
-    case 0: return "Assyrian";
-    case 1: return "Babylonian";
-    case 2: return "Egyptian";
-    case 3: return "Greek";
-    case 4: return "Hittite";
-    case 5: return "Isrealite";
-    case 6: return "Minoan";
-    case 7: return "Phoenician";
-    case 8: return "Sumerian";
+    case TRIBE_INFO_ASSYRIAN: return "Assyrian";
+    case TRIBE_INFO_BABYLONIAN: return "Babylonian";
+    case TRIBE_INFO_EGYPTIAN: return "Egyptian";
+    case TRIBE_INFO_GREEK: return "Greek";
+    case TRIBE_INFO_HITTITE: return "Hittite";
+    case TRIBE_INFO_ISREALITE: return "Isrealite";
+    case TRIBE_INFO_MINOAN: return "Minoan";
+    case TRIBE_INFO_PHOENICIAN: return "Phoenician";
+    case TRIBE_INFO_SUMERIAN: return "Sumerian";
     default: return "No Culture";
     }
 }

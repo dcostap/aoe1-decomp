@@ -72,7 +72,7 @@ Switch labels retain their values. Byte comparisons still use small integer valu
 The change retains localization, lookup order, save fields, and network fields.
 It does not rename parameters, locals, members, or functions.
 
-## Unchanged questions
+## First-pass limits
 
 - Dropdown game ID `17` has no verified civilization name. Keep the existing literal and comment.
 - Do not infer a random-choice name from the empty resource slot alone.
@@ -133,3 +133,107 @@ This object comparison covers six changed source modules, not all consumers of `
 The full function audit covers all configured modules, but not every nonmatching function's pre-cleanup payload.
 No separate owner audit, linked executable, automated regression tests, or gameplay tests have run.
 Follow `docs/testing.md` for the separate validation stages and their coverage limits.
+
+## Follow-up: remaining civilization values
+
+The follow-up starts from commit `4543b1f805e995f5def9ed26bb235faf7ce210c9`.
+It changes these files:
+
+- `include/tribegam.h`: Gaia ID, playable range, and playable count.
+- `src/tribegam.cpp`: defaults, range bounds, random selection, and computer-name reset count.
+- `src/tplayer.cpp`: zero-based AI comparisons and legacy civilization-string arithmetic.
+- `src/scr_mps.cpp`: random selection, defaults, cached-selection sentinel, and shared-color offset.
+- `src/scr_sed.cpp`: first playable civilization when cycling editor players.
+- `src/scr_trb.cpp`: the information screen's independent button indices and count.
+- `src/tworld.cpp`: Gaia's master-player index and civilization argument.
+- This report: evidence, limits, and validation results.
+
+All new names are cleanup names. No new header, enum declaration, function, or runtime table is added.
+
+### Additional values and evidence
+
+| Name or expression | Value | Evidence and role |
+| --- | --- | --- |
+| `CIVILIZATION_GAIA` | 0 | `TRIBE_World::setup_gaia` selects master player zero and passes zero as `m_player_id`. |
+| `CIVILIZATION_FIRST` | 1 | The constructor and random selection start the playable range at Egyptian. |
+| `CIVILIZATION_LAST` | 16 | The constructor wraps after Macedonian; new-game setup rejects larger civilization values. |
+| `CIVILIZATION_COUNT` | 16 | Random selection uses modulus or multiplication by 16 for the playable range. |
+| `CIVILIZATION_* - 1` | 0 through 15 | The AI first subtracts one from `master_player_id`. Named comparisons retain its eight selected values and order. |
+| `MP_SETUP_SHARED_COLOR_OFFSET` | `0x32` | Ready player slots with equal colors copy civilization and team values with an added offset of 50. |
+| `MP_SETUP_NO_CIVILIZATION_SELECTION` | 0 | `myCivilization` starts or resets to zero; `fillPlayers` ignores that cached selection at zero. |
+
+Gaia uses the same master-player ID field as playable civilizations, but it is not part of their count.
+Other zero values are not automatically Gaia IDs. Scenario defaults and player slots retain their existing meanings.
+
+The information-screen order is independent of the game ID order:
+
+| Button index | Local name | Existing text |
+| --- | --- | --- |
+| 0 | `TRIBE_INFO_ASSYRIAN` | `Assyrian` |
+| 1 | `TRIBE_INFO_BABYLONIAN` | `Babylonian` |
+| 2 | `TRIBE_INFO_EGYPTIAN` | `Egyptian` |
+| 3 | `TRIBE_INFO_GREEK` | `Greek` |
+| 4 | `TRIBE_INFO_HITTITE` | `Hittite` |
+| 5 | `TRIBE_INFO_ISREALITE` | `Isrealite` |
+| 6 | `TRIBE_INFO_MINOAN` | `Minoan` |
+| 7 | `TRIBE_INFO_PHOENICIAN` | `Phoenician` |
+| 8 | `TRIBE_INFO_SUMERIAN` | `Sumerian` |
+
+`TRIBE_INFO_COUNT` remains 9. Existing text, including the spelling `Isrealite`, remains unchanged.
+The screen's row-wrap tests remain numeric layout indices. They do not test game civilizations.
+
+Supporting original instruction records are:
+
+- `inventory/functions/0052/0052E920_setup_gaia.txt` for Gaia setup.
+- `inventory/functions/004A/004A37D0_fillPlayers.txt` for the offset addition and removal.
+  Instructions at `004A38C9` and `004A38E5` add `0x32` before the civilization and team setters.
+- `inventory/functions/004B/004B8070_tribeName.txt` for the independent button-to-name mapping.
+- `inventory/functions/004B/004B7F70_fillTribeText.txt` for the matching information-text mapping.
+- `inventory/functions/0051/00515E00_intelligentBuildListAndRulesSelection.txt` for the AI's zero-based comparisons.
+
+The AI log lookup's original base `0x27F6` equals `STRING_ID_CIVILIZATION_EGYPTIAN - 1`.
+The named expression preserves this legacy arithmetic lookup.
+It does not replace it with the expansion's separate name mapping.
+The existing comments described a missing player-name range; the call uses civilization IDs instead.
+The comments now describe the arithmetic lookup and the separate expansion IDs.
+The first-pass resource evidence above establishes the named base and expansion resource values.
+
+### Follow-up limits
+
+Stored fields, public interfaces, comparison operators, expression order, and random-call counts remain unchanged.
+The computer-name reset loop still covers indices 0 through 15. It does not expand to all 18 stored rows.
+ID 17 and its empty label remain unnamed. No random-choice label is inferred from missing text.
+One-based conversion expressions such as `i + 1` or `master_player_id - 1` remain where their role is already clear.
+Data-loaded technology effects, visual culture IDs, player-slot numbers, and Boolean random-selection flags remain separate.
+This is a source-wide review of the named civilization paths, not proof that every possible numeric alias was identified.
+
+### Follow-up baseline
+
+Before editing, all 225 current input fingerprints matched the first-pass final audit.
+The check used `build_input_manifest` with each recorded source, flag profile, and the pinned toolchain.
+No baseline fingerprint differed.
+Thus, `build/validation/civilization-ids-macros-20261004-023233/functions/objects/` supplies the compiled pre-follow-up baseline.
+Pre-edit copies of changed sources and `tribegam.h` are under `build/civilization-id-followup/before/`.
+
+### Follow-up validation
+
+The full function audit returned exit code 0.
+All 225 modules compiled. All 5,013 exact claims passed among 5,426 normal functions.
+The remaining 413 functions retain the first-pass categories and their existing coverage limits.
+
+Report: `build/validation/civilization-ids-followup-20261004-024848/functions/report.json`.
+Command: `python tools/audit_translation_unit_functions.py --jobs 4 --output-dir build/validation/civilization-ids-followup-20261004-024848/functions`.
+
+The full before/after object comparison returned exit code 0.
+All 225 objects retain identical non-debug section bytes, sizes, flags, relocation targets, and allocated symbol identities.
+The comparison normalizes private compiler-label serial numbers by section and offset.
+It excludes debug metadata and COFF timestamps. No object differs.
+This includes unchanged header consumers and nonmatching function payloads, not only the six edited source modules.
+
+Report: `build/validation/civilization-ids-followup-20261004-024848/object-comparison.json`.
+Command: `python build/object-state-cleanup/compare_objects.py --before build/validation/civilization-ids-macros-20261004-023233/functions/objects --after build/validation/civilization-ids-followup-20261004-024848/functions/objects --output build/validation/civilization-ids-followup-20261004-024848/object-comparison.json`.
+
+`git diff --check` passed. All eight changed files retain LF line endings.
+No source or registry configuration, function status, stored type, or public signature changed.
+No separate owner audit, linked executable, automated regression tests, or gameplay tests ran for this follow-up.
+The object comparison establishes unchanged compiled payloads, not complete agreement with the original game.

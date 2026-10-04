@@ -35,6 +35,10 @@
 #include <string.h>
 #include <io.h>
 
+// The host adds this offset when ready player slots use the same color.
+#define MP_SETUP_SHARED_COLOR_OFFSET 0x32
+#define MP_SETUP_NO_CIVILIZATION_SELECTION 0
+
 TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     char str[256];
     char* setup_file;
@@ -362,7 +366,7 @@ void TribeMPSetupScreen::init_vars() {
     this->close_button = 0;
     this->cancelMode = 0;
     this->playerToKick = 0;
-    this->myCivilization = 0;
+    this->myCivilization = MP_SETUP_NO_CIVILIZATION_SELECTION;
     this->myScenarioPlayer = -1;
     this->myPlayerColor = 0;
     this->myPlayerTeam = 0;
@@ -414,7 +418,7 @@ void TribeMPSetupScreen::init_vars() {
         for (i = 0; i < 8; ++i) {
             this->defaultColor[i] = static_cast<unsigned char>(i + 1);
             static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i,
-                                                                     debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 584) % 16 + 1);
+                                                                     debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 584) % CIVILIZATION_COUNT + CIVILIZATION_FIRST);
             static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, i);
             static_cast<TRIBE_Game*>(rge_base_game)->setPlayerHasCD(i, 0);
             static_cast<TRIBE_Game*>(rge_base_game)->setPlayerVersion(i, 0);
@@ -966,17 +970,17 @@ int TribeMPSetupScreen::startGame() {
         if (num > 0) {
             do {
                 int civ = static_cast<TRIBE_Game*>(rge_base_game)->civilization(i5);
-                if (civ >= 0x32) {
+                if (civ >= MP_SETUP_SHARED_COLOR_OFFSET) {
                     L->Log("$$$ HOST RESET2 CIV+50");
                     civ = static_cast<TRIBE_Game*>(rge_base_game)->civilization(i5);
-                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i5, civ - 0x32);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i5, civ - MP_SETUP_SHARED_COLOR_OFFSET);
                     send_options = 1;
                 }
                 int team = rge_base_game->playerTeam(i5);
-                if (team >= 0x32) {
+                if (team >= MP_SETUP_SHARED_COLOR_OFFSET) {
                     L->Log("$$$ HOST RESET2 TEAM+50");
                     team = rge_base_game->playerTeam(i5);
-                    rge_base_game->setPlayerTeam(i5, team - 0x32);
+                    rge_base_game->setPlayerTeam(i5, team - MP_SETUP_SHARED_COLOR_OFFSET);
                     send_options = 1;
                 }
                 i5++;
@@ -990,7 +994,7 @@ int TribeMPSetupScreen::startGame() {
         int temp_civ[8];
         int idx = 0;
         for (int i = 0; i < 8; i++) temp_team[i] = 1;
-        for (int j = 0; j < 8; j++) temp_civ[j] = 1;
+        for (int j = 0; j < 8; j++) temp_civ[j] = CIVILIZATION_EGYPTIAN;
         do {
             int val = idx + 1;
             temp_color[idx] = val;
@@ -1192,19 +1196,19 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
             for (int i = 0; i < rge_base_game->numberPlayers(); ++i) {
                 int civilization =
                     static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
-                if (civilization >= 0x32) {
+                if (civilization >= MP_SETUP_SHARED_COLOR_OFFSET) {
                     L->Log("$$$ HOST RESET CIV+50");
                     civilization =
                         static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
-                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, civilization - 0x32);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, civilization - MP_SETUP_SHARED_COLOR_OFFSET);
                     this->resend_game_options = 1;
                 }
 
                 int team = rge_base_game->playerTeam(i);
-                if (team >= 0x32) {
+                if (team >= MP_SETUP_SHARED_COLOR_OFFSET) {
                     L->Log("$$$ HOST RESET TEAM+50");
                     team = rge_base_game->playerTeam(i);
-                    rge_base_game->setPlayerTeam(i, team - 0x32);
+                    rge_base_game->setPlayerTeam(i, team - MP_SETUP_SHARED_COLOR_OFFSET);
                     this->resend_game_options = 1;
                 }
             }
@@ -1294,8 +1298,8 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
 
                 int civilization =
                     debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 1750) %
-                        16 +
-                    1;
+                        CIVILIZATION_COUNT +
+                    CIVILIZATION_FIRST;
                 if (static_cast<TRIBE_Game*>(rge_base_game)->civilization(i) != civilization) {
                     static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, civilization);
                     changed = 1;
@@ -1340,22 +1344,22 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
         for (int i = 0; i < rge_base_game->numberPlayers(); ++i) {
             int civilization =
                 static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
-            if (civilization >= 0x32) {
+            if (civilization >= MP_SETUP_SHARED_COLOR_OFFSET) {
                 L->Log("$$$ CIV2>50");
                 civilization =
                     static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
-                static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, civilization - 0x32);
+                static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, civilization - MP_SETUP_SHARED_COLOR_OFFSET);
                 if (i + 1 == comm->WhoAmI()) {
-                    this->myCivilization = 0;
+                    this->myCivilization = MP_SETUP_NO_CIVILIZATION_SELECTION;
                     L->Log("$$$ RESETTING MYCIV2");
                 }
             }
 
             int team = rge_base_game->playerTeam(i);
-            if (team >= 0x32) {
+            if (team >= MP_SETUP_SHARED_COLOR_OFFSET) {
                 L->Log("$$$ TEAM2>50");
                 team = rge_base_game->playerTeam(i);
-                rge_base_game->setPlayerTeam(i, team - 0x32);
+                rge_base_game->setPlayerTeam(i, team - MP_SETUP_SHARED_COLOR_OFFSET);
                 if (i + 1 == comm->WhoAmI()) {
                     this->myPlayerTeam = 0;
                     L->Log("$$$ RESETTING MYTEAM2");
@@ -1475,9 +1479,9 @@ void TribeMPSetupScreen::fillPlayers() {
                                 if (other_color == player_color) {
                                     L->Log("$$$ SETTING CIV/TEAM+50 (%d,%d)", i, j);
                                     int civ = static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
-                                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(j, civ + 0x32);
+                                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(j, civ + MP_SETUP_SHARED_COLOR_OFFSET);
                                     int team = rge_base_game->playerTeam(i);
-                                    rge_base_game->setPlayerTeam(j, team + 0x32);
+                                    rge_base_game->setPlayerTeam(j, team + MP_SETUP_SHARED_COLOR_OFFSET);
                                     color2 = 1;
                                 }
                             }
@@ -1564,8 +1568,8 @@ void TribeMPSetupScreen::fillPlayers() {
                 this->playerTeam[i]->set_state(static_cast<short>(this->myPlayerTeam - 1));
             } else {
                 int team = rge_base_game->playerTeam(i);
-                if (team >= 0x32) {
-                    team -= 0x32;
+                if (team >= MP_SETUP_SHARED_COLOR_OFFSET) {
+                    team -= MP_SETUP_SHARED_COLOR_OFFSET;
                 }
                 this->playerTeam[i]->set_state(team - 1);
             }
@@ -1614,12 +1618,12 @@ void TribeMPSetupScreen::fillPlayers() {
             }
 
             if (this->playerCivDrop[i]->mode != 2) {
-                if (is_me == 1 && this->myCivilization != 0) {
+                if (is_me == 1 && this->myCivilization != MP_SETUP_NO_CIVILIZATION_SELECTION) {
                     this->playerCivDrop[i]->set_line(this->playerCivDrop[i]->get_line(this->myCivilization));
                 } else {
                     int civ = static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
-                    if (civ >= 0x32) {
-                        civ -= 0x32;
+                    if (civ >= MP_SETUP_SHARED_COLOR_OFFSET) {
+                        civ -= MP_SETUP_SHARED_COLOR_OFFSET;
                     }
                     this->playerCivDrop[i]->set_line(this->playerCivDrop[i]->get_line(civ));
                 }
@@ -2165,7 +2169,7 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
         do {
             int civilization =
                 debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 2865) %
-                    16 + 1;
+                    CIVILIZATION_COUNT + CIVILIZATION_FIRST;
             static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(player, civilization);
             static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(player, player + 1);
             player = player + 1;

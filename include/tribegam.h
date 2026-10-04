@@ -8,6 +8,7 @@ struct RGE_Prog_Info;
 
 // These are game civilization IDs, not string resource IDs or zero-based list indices.
 // Fixed-value macros avoid adding declarations that can change VC5 output in unrelated functions.
+#define CIVILIZATION_GAIA         0
 #define CIVILIZATION_EGYPTIAN     1
 #define CIVILIZATION_GREEK        2
 #define CIVILIZATION_BABYLONIAN   3
@@ -24,6 +25,11 @@ struct RGE_Prog_Info;
 #define CIVILIZATION_CARTHAGINIAN 14
 #define CIVILIZATION_PALMYRAN      15
 #define CIVILIZATION_MACEDONIAN   16
+
+#define CIVILIZATION_FIRST       CIVILIZATION_EGYPTIAN
+#define CIVILIZATION_LAST        CIVILIZATION_MACEDONIAN
+// Count the playable civilizations only. Gaia is not included.
+#define CIVILIZATION_COUNT       16
 
 struct MouseClickInfo {
     int object_group;

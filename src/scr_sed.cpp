@@ -2479,7 +2479,7 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
     for (i = 0; i < 8; i++) {
         tribe++;
         if (tribe >= this->world->master_player_num) {
-            tribe = 1;
+            tribe = CIVILIZATION_FIRST;
         }
         this->set_string(player_info.name[i], STRING_ID_PLAYER_NAME_BASE + i, 65);
         player_info.type[i] = 0;

@@ -1792,7 +1792,10 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0) {
         int civ = this->master_player_id - 1;
-        if (civ == 3 || civ == 0 || civ == 1 || civ == 4 || civ == 8 || civ == 6 || civ == 7 || civ == 10) {
+        if (civ == (CIVILIZATION_ASSYRIAN - 1) || civ == (CIVILIZATION_EGYPTIAN - 1) ||
+            civ == (CIVILIZATION_GREEK - 1) || civ == (CIVILIZATION_MINOAN - 1) ||
+            civ == (CIVILIZATION_PERSIAN - 1) || civ == (CIVILIZATION_PHOENICIAN - 1) ||
+            civ == (CIVILIZATION_SUMERIAN - 1) || civ == (CIVILIZATION_YAMATO - 1)) {
             int aggressiveSelections = tplayer_globals::aggressiveBuildListCount;
             int selectedBuildLists = tplayer_globals::selectedBuildListCount;
             if (mapType == 0) {
@@ -2154,8 +2157,8 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
     ++tplayer_globals::selectedBuildListCount;
 
 selectedCountersDone:
-    // This player-name resource range is absent from the checked DLL.
-    rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27F6, tempString, 256);
+    // Keep the arithmetic lookup; expansion civilization names use different resource IDs.
+    rge_base_game->get_string(static_cast<int>(this->master_player_id) + (STRING_ID_CIVILIZATION_EGYPTIAN - 1), tempString, 256);
     this->playerAI->logCommonHistory("I am the %s civ (culture #%d):", tempString, static_cast<int>(this->master_player_id) - 1);
     this->playerAI->logCommonHistory("Selected a best build list of '%s'.", b);
     strcpy(r, tplayerRandomName);
@@ -3074,8 +3077,8 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime) {
 
     fprintf(out, "Player %d:\n", static_cast<int>(this->id));
     if (firstTime == 1) {
-        // This player-name resource range is absent from the checked DLL.
-        rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27f6, tempString, 256);
+        // Keep the arithmetic lookup; expansion civilization names use different resource IDs.
+        rge_base_game->get_string(static_cast<int>(this->master_player_id) + (STRING_ID_CIVILIZATION_EGYPTIAN - 1), tempString, 256);
         if (this->playerAI == 0) {
             fprintf(out, "  Human Player, %s.\n", tempString);
         } else {

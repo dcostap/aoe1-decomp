@@ -232,7 +232,7 @@ void TRIBE_World::load_player(int infile, unsigned char type, short index) {
 
 void TRIBE_World::setup_gaia() {
     this->players[0] =
-        new TRIBE_Gaia(this, this->master_players[0], 0, "GAIA", 0);
+        new TRIBE_Gaia(this, this->master_players[CIVILIZATION_GAIA], 0, "GAIA", CIVILIZATION_GAIA);
 }
 
 void TRIBE_World::setup_players(RGE_Player_Info& info) {
