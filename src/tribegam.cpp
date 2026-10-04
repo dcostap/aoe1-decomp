@@ -790,52 +790,52 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
         break;
     case RGE_STRING_TYPE_CIVILIZATION:
         switch (id) {
-        case 1:
+        case CIVILIZATION_EGYPTIAN:
             this->get_string(STRING_ID_CIVILIZATION_EGYPTIAN, str, max_len);
             break;
-        case 2:
+        case CIVILIZATION_GREEK:
             this->get_string(STRING_ID_CIVILIZATION_GREEK, str, max_len);
             break;
-        case 3:
+        case CIVILIZATION_BABYLONIAN:
             this->get_string(STRING_ID_CIVILIZATION_BABYLONIAN, str, max_len);
             break;
-        case 4:
+        case CIVILIZATION_ASSYRIAN:
             this->get_string(STRING_ID_CIVILIZATION_ASSYRIAN, str, max_len);
             break;
-        case 5:
+        case CIVILIZATION_MINOAN:
             this->get_string(STRING_ID_CIVILIZATION_MINOAN, str, max_len);
             break;
-        case 6:
+        case CIVILIZATION_HITTITE:
             this->get_string(STRING_ID_CIVILIZATION_HITTITE, str, max_len);
             break;
-        case 7:
+        case CIVILIZATION_PHOENICIAN:
             this->get_string(STRING_ID_CIVILIZATION_PHOENICIAN, str, max_len);
             break;
-        case 8:
+        case CIVILIZATION_SUMERIAN:
             this->get_string(STRING_ID_CIVILIZATION_SUMERIAN, str, max_len);
             break;
-        case 9:
+        case CIVILIZATION_PERSIAN:
             this->get_string(STRING_ID_CIVILIZATION_PERSIAN, str, max_len);
             break;
-        case 10:
+        case CIVILIZATION_SHANG:
             this->get_string(STRING_ID_CIVILIZATION_SHANG, str, max_len);
             break;
-        case 11:
+        case CIVILIZATION_YAMATO:
             this->get_string(STRING_ID_CIVILIZATION_YAMATO, str, max_len);
             break;
-        case 12:
+        case CIVILIZATION_CHOSON:
             this->get_string(STRING_ID_CIVILIZATION_CHOSON, str, max_len);
             break;
-        case 13:
+        case CIVILIZATION_ROMAN:
             this->get_string(STRING_ID_CIVILIZATION_ROMAN, str, max_len);
             break;
-        case 14:
+        case CIVILIZATION_CARTHAGINIAN:
             this->get_string(STRING_ID_CIVILIZATION_CARTHAGINIAN, str, max_len);
             break;
-        case 15:
+        case CIVILIZATION_PALMYRAN:
             this->get_string(STRING_ID_CIVILIZATION_PALMYRAN, str, max_len);
             break;
-        case 16:
+        case CIVILIZATION_MACEDONIAN:
             this->get_string(STRING_ID_CIVILIZATION_MACEDONIAN, str, max_len);
             break;
         default:

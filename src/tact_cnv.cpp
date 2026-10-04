@@ -1,6 +1,7 @@
 //
 
 #include "../include/game_globals.h"
+#include "../include/tribegam.h"
 #include "../include/rge_fio.h"
 #include "../include/tact_cnv.h"
 #include "../include/act_list.h"
@@ -306,7 +307,7 @@ uchar TRIBE_Action_Convert::update() {
 //! Conversion resistance is hard-coded here: 4 for Macedonian owners, 2 for boat and priest groups.
 //! Chariot groups get 8; every other class keeps 1. The owner-civ branch preempts the class branches.
 //! RockNROR makes these factors configurable in the dat.
-            if (tplayer->master_player_id == 0x10) {
+            if (tplayer->master_player_id == CIVILIZATION_MACEDONIAN) {
                 chance = chance * g_conversion_special_player_factor;
             } else {
                 short type = this->target_obj->master_obj->object_group;

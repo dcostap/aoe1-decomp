@@ -6,6 +6,25 @@
 struct RGE_Prog_Info;
 #include "basegame.h"
 
+// These are game civilization IDs, not string resource IDs or zero-based list indices.
+// Fixed-value macros avoid adding declarations that can change VC5 output in unrelated functions.
+#define CIVILIZATION_EGYPTIAN     1
+#define CIVILIZATION_GREEK        2
+#define CIVILIZATION_BABYLONIAN   3
+#define CIVILIZATION_ASSYRIAN     4
+#define CIVILIZATION_MINOAN       5
+#define CIVILIZATION_HITTITE      6
+#define CIVILIZATION_PHOENICIAN   7
+#define CIVILIZATION_SUMERIAN     8
+#define CIVILIZATION_PERSIAN      9
+#define CIVILIZATION_SHANG        10
+#define CIVILIZATION_YAMATO       11
+#define CIVILIZATION_CHOSON       12
+#define CIVILIZATION_ROMAN        13
+#define CIVILIZATION_CARTHAGINIAN 14
+#define CIVILIZATION_PALMYRAN      15
+#define CIVILIZATION_MACEDONIAN   16
+
 struct MouseClickInfo {
     int object_group;
     int self_action;

@@ -115,22 +115,22 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         this->playerCivDrop[i]->set_draw_val_rect(0);
         this->playerCivDrop[i]->set_help_info(STRING_ID_HELP_MP_CIVILIZATION, STRING_ID_HELP_MP_CIVILIZATION_MORE);
         this->playerCivDrop[i]->empty_list();
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_EGYPTIAN, 1);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_GREEK, 2);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_BABYLONIAN, 3);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_ASSYRIAN, 4);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_MINOAN, 5);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_HITTITE, 6);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_PHOENICIAN, 7);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_SUMERIAN, 8);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_PERSIAN, 9);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_SHANG, 10);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_YAMATO, 11);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_CHOSON, 12);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_ROMAN, 13);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_CARTHAGINIAN, 14);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_PALMYRAN, 15);
-        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_MACEDONIAN, 16);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_EGYPTIAN, CIVILIZATION_EGYPTIAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_GREEK, CIVILIZATION_GREEK);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_BABYLONIAN, CIVILIZATION_BABYLONIAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_ASSYRIAN, CIVILIZATION_ASSYRIAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_MINOAN, CIVILIZATION_MINOAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_HITTITE, CIVILIZATION_HITTITE);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_PHOENICIAN, CIVILIZATION_PHOENICIAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_SUMERIAN, CIVILIZATION_SUMERIAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_PERSIAN, CIVILIZATION_PERSIAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_SHANG, CIVILIZATION_SHANG);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_YAMATO, CIVILIZATION_YAMATO);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_CHOSON, CIVILIZATION_CHOSON);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_ROMAN, CIVILIZATION_ROMAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_CARTHAGINIAN, CIVILIZATION_CARTHAGINIAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_PALMYRAN, CIVILIZATION_PALMYRAN);
+        this->playerCivDrop[i]->append_line(STRING_ID_CIVILIZATION_MACEDONIAN, CIVILIZATION_MACEDONIAN);
         // This empty resource slot has no verified civilization name.
         this->playerCivDrop[i]->append_line(0x280A, 17);
 

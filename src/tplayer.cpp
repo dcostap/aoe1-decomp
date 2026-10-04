@@ -1772,22 +1772,22 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
     memset(buildLists, 0, sizeof(buildLists));
 
     switch (this->master_player_id) {
-    case 1:  this->setupEgyptian(buildLists, mapType, gameType, mapSize); break;
-    case 2:  this->setupGreek(buildLists, mapType, gameType, mapSize); break;
-    case 3:  this->setupBabylonian(buildLists, mapType, gameType, mapSize); break;
-    case 4:  this->setupAssyrian(buildLists, mapType, gameType, mapSize); break;
-    case 5:  this->setupMinoan(buildLists, mapType, gameType, mapSize); break;
-    case 6:  this->setupHittite(buildLists, mapType, gameType, mapSize); break;
-    case 7:  this->setupPhoenician(buildLists, mapType, gameType, mapSize); break;
-    case 8:  this->setupSumerian(buildLists, mapType, gameType, mapSize); break;
-    case 9:  this->setupPersian(buildLists, mapType, gameType, mapSize); break;
-    case 10: this->setupShang(buildLists, mapType, gameType, mapSize); break;
-    case 11: this->setupYamato(buildLists, mapType, gameType, mapSize); break;
-    case 12: this->setupChoson(buildLists, mapType, gameType, mapSize); break;
-    case 13: this->setupRoman(buildLists, mapType, gameType, mapSize); break;
-    case 14: this->setupCarthaginian(buildLists, mapType, gameType, mapSize); break;
-    case 15: this->setupPalmyran(buildLists, mapType, gameType, mapSize); break;
-    case 16: this->setupMacedonian(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_EGYPTIAN: this->setupEgyptian(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_GREEK: this->setupGreek(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_BABYLONIAN: this->setupBabylonian(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_ASSYRIAN: this->setupAssyrian(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_MINOAN: this->setupMinoan(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_HITTITE: this->setupHittite(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_PHOENICIAN: this->setupPhoenician(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_SUMERIAN: this->setupSumerian(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_PERSIAN: this->setupPersian(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_SHANG: this->setupShang(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_YAMATO: this->setupYamato(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_CHOSON: this->setupChoson(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_ROMAN: this->setupRoman(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_CARTHAGINIAN: this->setupCarthaginian(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_PALMYRAN: this->setupPalmyran(buildLists, mapType, gameType, mapSize); break;
+    case CIVILIZATION_MACEDONIAN: this->setupMacedonian(buildLists, mapType, gameType, mapSize); break;
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0) {

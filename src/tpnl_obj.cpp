@@ -540,7 +540,7 @@ resource_done:
                 float dy = nearby->world_y - this->game_obj->world_y;
                 float distance = g_trade_display_distance_scale *
                     ((dx * dx + dy * dy) * g_trade_display_distance_factor);
-                if (this->player->master_player_id == 0x0f)
+                if (this->player->master_player_id == CIVILIZATION_PALMYRAN)
                     distance += distance;
                 if (!(distance >= g_trade_display_modifier_threshold))
                     distance = g_trade_display_minimum_modifier;

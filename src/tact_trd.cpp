@@ -1,5 +1,6 @@
 
 #include "../include/game_globals.h"
+#include "../include/tribegam.h"
 #include "../include/rge_fio.h"
 #include "../include/tact_trd.h"
 #include "../include/act_move.h"
@@ -368,7 +369,7 @@ unsigned char TRIBE_Action_Trade::update() {
                         modifier = (dx * dx + dy * dy) * g_trade_distance_modifier_factor;
                         modifier *= g_trade_distance_modifier_scale;
                     }
-                    if (this->obj->owner->master_player_id == 0x0F) {
+                    if (this->obj->owner->master_player_id == CIVILIZATION_PALMYRAN) {
                         modifier += modifier;
                     }
                     if (modifier < g_trade_modifier_threshold) {
