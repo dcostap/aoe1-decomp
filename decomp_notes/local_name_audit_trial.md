@@ -1,5 +1,8 @@
 # Twelve-module local-name trial
 
+The [sequential review of all eight functions](local_name_audit_review.md) records approved identifier mappings and remaining limits.
+It resolves the `get_border_type` lifetime cases but leaves `load_map` row-name ownership unresolved.
+
 ## Result
 
 The broader trial found the same name-mapping problem in eight additional functions.
