@@ -479,21 +479,21 @@ void RGE_Map::scenario_save(int outfile) {
 }
 
 void RGE_Map::scenario_load(int infile, unsigned char* zone_terrain) {
-    long map_height;
     long w;
+    long h;
 
-    rge_read(infile, &map_height, 4);
     rge_read(infile, &w, 4);
-    this->new_map(map_height, w);
+    rge_read(infile, &h, 4);
+    this->new_map(w, h);
 
     long height_count = this->map_height;
-    long h = 0;
+    long y = 0;
     if (height_count > 0) {
         do {
             int i = 0;
-            long y = 0;
+            long x = 0;
             if (height_count > 0) {
-                short x = (short)h;
+                short row_index = (short)y;
                 do {
                     unsigned char terrain_info;
                     unsigned char height_info;
@@ -503,16 +503,16 @@ void RGE_Map::scenario_load(int infile, unsigned char* zone_terrain) {
                     rge_read(infile, &height_info, 1);
                     rge_read(infile, &overlay_info, 1);
 
-                    this->map_row_offset[x][i].terrain_type = terrain_info;
-                    this->map_row_offset[x][i].height = height_info;
+                    this->map_row_offset[row_index][i].terrain_type = terrain_info;
+                    this->map_row_offset[row_index][i].height = height_info;
 
-                    y = y + 1;
-                    i = (int)(short)y;
+                    x = x + 1;
+                    i = (int)(short)x;
                 } while (i < this->map_height);
             }
             height_count = this->map_height;
-            ++h;
-        } while ((short)h < height_count);
+            ++y;
+        } while ((short)y < height_count);
     }
 
     this->set_elev(0, 0, (short)this->map_width - 1, (short)this->map_height - 1, 0, 0, 0);
@@ -623,14 +623,14 @@ unsigned char RGE_Map::postclean_elevation(long x1, long y1, long x2, long y2,
 void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
                                  unsigned char elevation_height) {
     short width = (short)this->map_width;
-    short offset_northwest = -1 - width;
-    short offset_north = -width;
-    short offset_northeast = 1 - width;
-    short offset_southeast = width + 1;
-    short offset_southwest = width - 1;
+    short offset1 = -1 - width;
+    short offset2 = -width;
+    short offset3 = 1 - width;
+    short offset5 = width + 1;
+    short offset7 = width - 1;
     short offset_south = width;
-    long index2;
     long index1;
+    long index2;
     unsigned char change_flag;
 
     do {
@@ -644,63 +644,63 @@ void RGE_Map::preclean_elevation(long x1, long y1, long x2, long y2,
         if (y2 < this->map_height - 1)
             ++y2;
 
-        for (index2 = y1; index2 <= y2; ++index2) {
-            RGE_Tile* tile = this->map_row_offset[index2] + x1;
-            for (index1 = x1; index1 <= x2; ++tile, ++index1) {
-                unsigned char tile_byte = tile->height;
-                short northwest = 0;
-                short northeast = 0;
-                short east = 0;
-                short southeast = 0;
-                short south = 0;
-                short southwest = 0;
-                short west = 0;
+        for (index1 = y1; index1 <= y2; ++index1) {
+            RGE_Tile* tile = this->map_row_offset[index1] + x1;
+            for (index2 = x1; index2 <= x2; ++tile, ++index2) {
+                unsigned char tile_height = tile->height;
+                short place1 = 0;
+                short place3 = 0;
+                short place4 = 0;
+                short place5 = 0;
+                short place6 = 0;
+                short place7 = 0;
+                short place8 = 0;
                 short north = 0;
-                short elevation = (short)tile_byte;
+                short elevation = (short)tile_height;
 
-                if (index2 > 0 && (tile + offset_north)->height > elevation)
+                if (index1 > 0 && (tile + offset2)->height > elevation)
                     north = 1;
-                if (index2 < this->map_height - 1 && (tile + offset_south)->height > elevation)
-                    south = 1;
-                if (index1 > 0 && tile[-1].height > elevation)
-                    west = 1;
-                if (index1 < this->map_width - 1 && tile[1].height > elevation)
-                    east = 1;
-                if (index2 > 0) {
-                    if (index1 > 0 && (tile + offset_northwest)->height > elevation)
-                        northwest = 1;
-                    if (index1 < this->map_width - 1 && (tile + offset_northeast)->height > elevation)
-                        northeast = 1;
+                if (index1 < this->map_height - 1 && (tile + offset_south)->height > elevation)
+                    place6 = 1;
+                if (index2 > 0 && tile[-1].height > elevation)
+                    place8 = 1;
+                if (index2 < this->map_width - 1 && tile[1].height > elevation)
+                    place4 = 1;
+                if (index1 > 0) {
+                    if (index2 > 0 && (tile + offset1)->height > elevation)
+                        place1 = 1;
+                    if (index2 < this->map_width - 1 && (tile + offset3)->height > elevation)
+                        place3 = 1;
                 }
-                if (index2 < this->map_height - 1) {
-                    if (index1 > 0 && (tile + offset_southwest)->height > elevation)
-                        southwest = 1;
-                    if (index1 < this->map_width - 1 && (tile + offset_southeast)->height > elevation)
-                        southeast = 1;
+                if (index1 < this->map_height - 1) {
+                    if (index2 > 0 && (tile + offset7)->height > elevation)
+                        place7 = 1;
+                    if (index2 < this->map_width - 1 && (tile + offset5)->height > elevation)
+                        place5 = 1;
                 }
 
                 unsigned char conflict = 0;
-                if (north && south)
+                if (north && place6)
                     conflict = 1;
-                if (east && west)
+                if (place4 && place8)
                     conflict = 1;
                 if (conflict) {
                     if (elevation >= elevation_height) {
-                        if (northwest)
-                            (tile + offset_northwest)->height = (unsigned char)elevation;
+                        if (place1)
+                            (tile + offset1)->height = (unsigned char)elevation;
                         if (north)
-                            (tile + offset_north)->height = (unsigned char)elevation;
-                        if (northeast)
-                            (tile + offset_northeast)->height = (unsigned char)elevation;
-                        if (east)
+                            (tile + offset2)->height = (unsigned char)elevation;
+                        if (place3)
+                            (tile + offset3)->height = (unsigned char)elevation;
+                        if (place4)
                             tile[1].height = (unsigned char)elevation;
-                        if (southeast)
-                            (tile + offset_southeast)->height = (unsigned char)elevation;
-                        if (south)
+                        if (place5)
+                            (tile + offset5)->height = (unsigned char)elevation;
+                        if (place6)
                             (tile + offset_south)->height = (unsigned char)elevation;
-                        if (southwest)
-                            (tile + offset_southwest)->height = (unsigned char)elevation;
-                        if (west)
+                        if (place7)
+                            (tile + offset7)->height = (unsigned char)elevation;
+                        if (place8)
                             tile[-1].height = (unsigned char)elevation;
                     } else {
                         tile->height = (unsigned char)(elevation + 1);
@@ -1195,13 +1195,13 @@ void RGE_Map::map_generate2(RGE_Game_World* gworld, long new_width, long new_hei
 }
 
 void RGE_Map::load_map(int infile) {
-    long map_height;
     long w;
+    long h;
     unsigned char c;
 
-    rge_read(infile, &map_height, 4);
     rge_read(infile, &w, 4);
-    this->new_map(map_height, w);
+    rge_read(infile, &h, 4);
+    this->new_map(w, h);
 
     RGE_Zone_Map_List* old_zones = this->map_zones;
     if (old_zones != 0)
@@ -1214,11 +1214,11 @@ void RGE_Map::load_map(int infile) {
     rge_read(infile, &this->fog_flag, 1);
 
     if (!(save_game_version < g_map_save_version_7_0)) {
-        long h = 0;
+        long row_index = 0;
         if (this->map_height > 0) {
             do {
-                RGE_Tile* tile = this->map_row_offset[h];
-                int y = 0;
+                RGE_Tile* tile = this->map_row_offset[row_index];
+                int x = 0;
                 if (this->map_width > 0) {
                     do {
                         rge_read(infile, tile, 2);
@@ -1243,26 +1243,26 @@ void RGE_Map::load_map(int infile) {
                         tile->last_drawn_shape2 = 0xff;
 
                         ++tile;
-                        ++y;
-                    } while (y < this->map_width);
+                        ++x;
+                    } while (x < this->map_width);
                 }
-                ++h;
-            } while (h < this->map_height);
+                ++row_index;
+            } while (row_index < this->map_height);
         }
     } else {
         rge_read(infile, this->map, this->map_width * this->map_height * 24);
-        long h = 0;
+        long row_index = 0;
         if (this->map_height > 0) {
             do {
-                int y = 0;
+                int column_index = 0;
                 if (this->map_width > 0) {
                     do {
-                        this->map_row_offset[h][y].objects.list = 0;
-                        ++y;
-                    } while (y < this->map_width);
+                        this->map_row_offset[row_index][column_index].objects.list = 0;
+                        ++column_index;
+                    } while (column_index < this->map_width);
                 }
-                ++h;
-            } while (h < this->map_height);
+                ++row_index;
+            } while (row_index < this->map_height);
         }
     }
 
@@ -2378,18 +2378,18 @@ unsigned char RGE_Map::get_tile_type(short map_col, short map_row) {
 }
 
 void RGE_Map::get_border_type(short map_col, short map_row) {
-    unsigned char ter_top_lft;
+    unsigned char ter_cur;
+    unsigned char ter_top;
     unsigned char ter_lft;
     unsigned char ter_rgt;
-    unsigned char ter_top_rgt;
     unsigned char ter_bot;
+    unsigned char ter_top_lft;
     unsigned char ter_bot_lft;
-    unsigned char ter_bot_rgt;
     int yMax;
     int xMax;
     int xi;
-    unsigned char ter_top;
-    unsigned char ter_cur;
+    unsigned char ter_top_rgt;
+    unsigned char ter_bot_rgt;
     unsigned char ter_top_rgt_unused;
 
     if (map_col < 0 || map_col >= this->map_width || map_row < 0 || map_row >= this->map_height)
@@ -2398,75 +2398,75 @@ void RGE_Map::get_border_type(short map_col, short map_row) {
     RGE_Tile** rows = this->map_row_offset;
     xi = map_col;
     RGE_Tile* tile = rows[map_row] + xi;
-    ter_top_lft = tile->terrain_type & 0x1f;
+    ter_cur = tile->terrain_type & 0x1f;
     if (map_row > 0)
-        ter_lft = rows[map_row - 1][xi].terrain_type & 0x1f;
+        ter_top = rows[map_row - 1][xi].terrain_type & 0x1f;
     else
-        ter_lft = ter_top_lft;
+        ter_top = ter_cur;
     yMax = this->map_height - 1;
     if (map_row < yMax)
         ter_bot = rows[map_row + 1][xi].terrain_type & 0x1f;
     else
-        ter_bot = ter_top_lft;
+        ter_bot = ter_cur;
     if (map_col > 0)
-        ter_rgt = rows[map_row][xi - 1].terrain_type & 0x1f;
+        ter_lft = rows[map_row][xi - 1].terrain_type & 0x1f;
     else
-        ter_rgt = ter_top_lft;
+        ter_lft = ter_cur;
     xMax = this->map_width - 1;
     if (xi < xMax)
-        ter_top_rgt = rows[map_row][xi + 1].terrain_type & 0x1f;
+        ter_rgt = rows[map_row][xi + 1].terrain_type & 0x1f;
     else
-        ter_top_rgt = ter_top_lft;
+        ter_rgt = ter_cur;
     if (map_row > 0 && map_col > 0)
-        ter_bot_lft = rows[map_row - 1][xi - 1].terrain_type & 0x1f;
+        ter_top_lft = rows[map_row - 1][xi - 1].terrain_type & 0x1f;
     else
-        ter_bot_lft = ter_top_lft;
+        ter_top_lft = ter_cur;
     if (map_row > 0 && xi < xMax)
-        ter_top = rows[map_row - 1][xi + 1].terrain_type & 0x1f;
+        ter_top_rgt = rows[map_row - 1][xi + 1].terrain_type & 0x1f;
     else
-        ter_top = ter_top_lft;
+        ter_top_rgt = ter_cur;
     if (map_row < yMax && map_col > 0)
-        ter_bot_rgt = rows[map_row + 1][xi - 1].terrain_type & 0x1f;
+        ter_bot_lft = rows[map_row + 1][xi - 1].terrain_type & 0x1f;
     else
-        ter_bot_rgt = ter_top_lft;
+        ter_bot_lft = ter_cur;
     if (map_row < yMax && xi < xMax)
-        ter_cur = rows[map_row + 1][xi + 1].terrain_type & 0x1f;
+        ter_bot_rgt = rows[map_row + 1][xi + 1].terrain_type & 0x1f;
     else
-        ter_cur = ter_top_lft;
+        ter_bot_rgt = ter_cur;
 
-    check_for_border(ter_top_lft, ter_lft);
-    check_for_border(ter_top_lft, ter_bot);
-    check_for_border(ter_top_lft, ter_rgt);
-    check_for_border(ter_top_lft, ter_top_rgt);
-    check_for_border(ter_top_lft, ter_bot_lft);
-    check_for_border(ter_top_lft, ter_top);
-    check_for_border(ter_top_lft, ter_bot_rgt);
-    check_for_border(ter_top_lft, ter_cur);
+    check_for_border(ter_cur, ter_top);
+    check_for_border(ter_cur, ter_bot);
+    check_for_border(ter_cur, ter_lft);
+    check_for_border(ter_cur, ter_rgt);
+    check_for_border(ter_cur, ter_top_lft);
+    check_for_border(ter_cur, ter_top_rgt);
+    check_for_border(ter_cur, ter_bot_lft);
+    check_for_border(ter_cur, ter_bot_rgt);
 
     unsigned char bor_ter;
-    if (ter_lft != ter_top_lft)
-        bor_ter = ter_lft;
-    else if (ter_bot != ter_top_lft)
-        bor_ter = ter_bot;
-    else if (ter_rgt != ter_top_lft)
-        bor_ter = ter_rgt;
-    else if (ter_top_rgt != ter_top_lft)
-        bor_ter = ter_top_rgt;
-    else if (ter_bot_lft != ter_top_lft)
-        bor_ter = ter_bot_lft;
-    else if (ter_top != ter_top_lft)
+    if (ter_top != ter_cur)
         bor_ter = ter_top;
-    else if (ter_bot_rgt != ter_top_lft)
+    else if (ter_bot != ter_cur)
+        bor_ter = ter_bot;
+    else if (ter_lft != ter_cur)
+        bor_ter = ter_lft;
+    else if (ter_rgt != ter_cur)
+        bor_ter = ter_rgt;
+    else if (ter_top_lft != ter_cur)
+        bor_ter = ter_top_lft;
+    else if (ter_top_rgt != ter_cur)
+        bor_ter = ter_top_rgt;
+    else if (ter_bot_lft != ter_cur)
+        bor_ter = ter_bot_lft;
+    else if (ter_bot_rgt != ter_cur)
         bor_ter = ter_bot_rgt;
-    else if (ter_cur != ter_top_lft)
-        bor_ter = ter_cur;
     else {
         tile->border_type = 0;
         tile->border_shape = 0;
         return;
     }
 
-    short* border_table = this->terrain_types[ter_top_lft].borders;
+    short* border_table = this->terrain_types[ter_cur].borders;
     short border = border_table[bor_ter];
     if (border == -1 || border < 0 || border >= 16 || this->border_types[border].loaded == 0) {
         tile->border_type = 0;
@@ -2477,42 +2477,42 @@ void RGE_Map::get_border_type(short map_col, short map_row) {
     unsigned char edge;
     if (this->border_types[border].border_style == 1) {
         edge = 0;
-        if (border_table[(unsigned char)ter_lft] == border)
+        if (border_table[(unsigned char)ter_top] == border)
             edge |= 1;
         if (border_table[(unsigned char)ter_bot] == border)
             edge += 2;
-        if (border_table[(unsigned char)ter_rgt] == border)
+        if (border_table[(unsigned char)ter_lft] == border)
             edge += 4;
-        if (border_table[(unsigned char)ter_top_rgt] == border)
+        if (border_table[(unsigned char)ter_rgt] == border)
             edge += 8;
         tile->border_type = (unsigned char)border;
         tile->border_shape = edge;
         return;
     }
 
-    if (border_table[(unsigned char)ter_lft] == border && border_table[(unsigned char)ter_rgt] == border)
+    if (border_table[(unsigned char)ter_top] == border && border_table[(unsigned char)ter_lft] == border)
         edge = 1;
-    else if (border_table[(unsigned char)ter_lft] == border && border_table[(unsigned char)ter_top_rgt] == border)
+    else if (border_table[(unsigned char)ter_top] == border && border_table[(unsigned char)ter_rgt] == border)
         edge = 2;
-    else if (border_table[(unsigned char)ter_bot] == border && border_table[(unsigned char)ter_rgt] == border)
+    else if (border_table[(unsigned char)ter_bot] == border && border_table[(unsigned char)ter_lft] == border)
         edge = 3;
-    else if (border_table[(unsigned char)ter_bot] == border && border_table[(unsigned char)ter_top_rgt] == border)
+    else if (border_table[(unsigned char)ter_bot] == border && border_table[(unsigned char)ter_rgt] == border)
         edge = 4;
-    else if (border_table[(unsigned char)ter_lft] == border)
+    else if (border_table[(unsigned char)ter_top] == border)
         edge = 9;
     else if (border_table[(unsigned char)ter_bot] == border)
         edge = 10;
-    else if (border_table[(unsigned char)ter_rgt] == border)
+    else if (border_table[(unsigned char)ter_lft] == border)
         edge = 11;
-    else if (border_table[(unsigned char)ter_top_rgt] == border)
+    else if (border_table[(unsigned char)ter_rgt] == border)
         edge = 12;
-    else if (border_table[(unsigned char)ter_bot_lft] == border)
+    else if (border_table[(unsigned char)ter_top_lft] == border)
         edge = 5;
-    else if (border_table[(unsigned char)ter_top] == border)
+    else if (border_table[(unsigned char)ter_top_rgt] == border)
         edge = 6;
-    else if (border_table[(unsigned char)ter_bot_rgt] == border)
+    else if (border_table[(unsigned char)ter_bot_lft] == border)
         edge = 7;
-    else if (border_table[ter_cur] == border)
+    else if (border_table[ter_bot_rgt] == border)
         edge = 8;
     else {
         tile->border_type = 0;

@@ -2108,13 +2108,13 @@ void TribeMPSetupScreen::setupTabOrder() {
 }
 
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
+    int first_any_player;
     int first_any_civ;
     int first_any_color;
-    int first_any_color_index;
     if (rge_base_game->scenarioGame() != 0) {
+        first_any_player = -1;
         first_any_civ = -1;
         first_any_color = -1;
-        first_any_color_index = -1;
 
         if (this->scenarioInfo != 0) {
             int player_count = 0;
@@ -2127,11 +2127,11 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
                     static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(player_count, civilization);
                     static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(player_count, scenario_player + 1);
 
-                    if (this->scenarioInfo->Get_player_Type(scenario_player) == 1 && first_any_civ == -1) {
-                        first_any_civ = scenario_player;
-                        first_any_color =
+                    if (this->scenarioInfo->Get_player_Type(scenario_player) == 1 && first_any_player == -1) {
+                        first_any_player = scenario_player;
+                        first_any_civ =
                             this->scenarioInfo->Get_player_Civ(scenario_player);
-                        first_any_color_index = scenario_player + 1;
+                        first_any_color = scenario_player + 1;
                     }
                     ++player_count;
                 }
@@ -2140,11 +2140,11 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
         }
 
         rge_base_game->setNumberPlayers(this->scenarioPlayerCount);
-        if (first_any_civ != -1) {
+        if (first_any_player != -1) {
             int player = 1;
             if (this->scenarioPlayerCount > 1) {
                 while (player < this->scenarioPlayerCount) {
-                    if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(player) == first_any_civ) {
+                    if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(player) == first_any_player) {
                         int scenario_player =
                             static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(0);
                         static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(player, scenario_player);
@@ -2160,9 +2160,9 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
                 }
             }
 
-            static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0, first_any_civ);
-            static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(0, first_any_color);
-            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(0, first_any_color_index);
+            static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0, first_any_player);
+            static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(0, first_any_civ);
+            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(0, first_any_color);
         }
     } else {
         int player = 0;

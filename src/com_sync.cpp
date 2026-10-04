@@ -150,11 +150,11 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(
     L->Log("Sync check at turn #%d", this->CheckTurn);
     this->CheckTurn += 4;
 
-    long cs4 = 0;
     long cs2 = 0;
     long cs3 = 0;
+    long cs4 = 0;
     char tmp[255];
-    rge_base_game->GetWorldChecksums(cs4, cs2, cs3);
+    rge_base_game->GetWorldChecksums(cs2, cs3, cs4);
 
     if (this->SendChatMsgs) {
         sprintf(tmp, "Worldtime=%ld Random=%d Checksum=%d", worldTime, this->LastWorldRandom, this->GameWorldChecksum);
@@ -176,9 +176,9 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(
     unsigned long unifiedChecksum = unified_visible_map_checksum;
     long pathChecksum = pathSystem.checksum();
 
-    this->Add(this->Comm->WhoAmI(), worldTime, turn, this->LastWorldRandom, unifiedChecksum, cs4, cs2, cs3, pathChecksum);
+    this->Add(this->Comm->WhoAmI(), worldTime, turn, this->LastWorldRandom, unifiedChecksum, cs2, cs3, cs4, pathChecksum);
 
-    this->Comm->SendChecksumMessage(worldTime, this->LastWorldRandom, unifiedChecksum, cs4, cs2, cs3, pathChecksum);
+    this->Comm->SendChecksumMessage(worldTime, this->LastWorldRandom, unifiedChecksum, cs2, cs3, cs4, pathChecksum);
 
     L->Log("Checksum: T#%d wt=%d   rand=%d  csum=%d", turn, worldTime, this->LastWorldRandom, this->GameWorldChecksum);
     L->FlushLog();

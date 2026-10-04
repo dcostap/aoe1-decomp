@@ -242,15 +242,15 @@ int ConstructionAIModule::save(int outfile) {
 int ConstructionAIModule::loadConstructionPlan(char* pName, int mXSize, int mYSize, float xRef, float yRef, float zRef) {
     char commentTemp1;
     char commentTemp2;
+    float unused_y;
     float y;
     float x;
     float z;
     float zSize;
-    float item_arg_6;
-    int xSize;
+    int id;
+    float xSize;
     float ySize;
-    float item_arg_5;
-    char itemName[60];
+    char name[60];
     char temp[260];
     FILE* fp;
     char* plan;
@@ -284,14 +284,14 @@ int ConstructionAIModule::loadConstructionPlan(char* pName, int mXSize, int mYSi
         do {
             sscanf(temp + 4, " %c%c", &commentTemp1, &commentTemp2);
             if (commentTemp1 != '/' || commentTemp2 != '/') {
-                sscanf(temp + 4, "%f %f %f %f %f %f %d %s ", &z, &x, &zSize, &ySize, &item_arg_5, &item_arg_6, &xSize, itemName);
-                z = this->xReferencePointValue + z;
-                x = this->yReferencePointValue + x;
-                zSize = this->zReferencePointValue + zSize;
-                if (this->lot(z, x) == 0) {
+                sscanf(temp + 4, "%f %f %f %f %f %f %d %s ", &x, &y, &z, &xSize, &ySize, &zSize, &id, name);
+                x = this->xReferencePointValue + x;
+                y = this->yReferencePointValue + y;
+                z = this->zReferencePointValue + z;
+                if (this->lot(x, y) == 0) {
                     ConstructionItem* item;
                     ConstructionItem* prev;
-                    item = new ConstructionItem(z, x, zSize, ySize, item_arg_5, item_arg_6, xSize, itemName);
+                    item = new ConstructionItem(x, y, z, xSize, ySize, zSize, id, name);
                     item->next = &this->constructionLots;
                     prev = this->constructionLots.prev;
                     item->prev = prev;

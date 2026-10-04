@@ -707,28 +707,28 @@ void RGE_Master_Static_Object::modify_percent(float amount, unsigned char flag) 
 void RGE_Master_Static_Object::save(int outfile) {
     RGE_Master_Static_Object* self = this;
     short name_size = 0;
+    short temp_sprite = -1;
     short temp_death_sprite = -1;
     short temp_undead_sprite = -1;
     short created_sound_num = -1;
-    short temp_sprite = -1;
-    short selected_sound_num = -1;
     short death_sound_num = -1;
+    short selected_sound_num = -1;
 
     RGE_Sound* s;
     RGE_Sprite* sp;
 
     s = self->created_sound;
-    if (s) temp_sprite = s->id;
+    if (s) created_sound_num = s->id;
     s = self->selected_sound;
-    if (s) death_sound_num = s->id;
-    s = self->death_sound;
     if (s) selected_sound_num = s->id;
+    s = self->death_sound;
+    if (s) death_sound_num = s->id;
     sp = self->sprite;
-    if (sp) temp_death_sprite = sp->id;
+    if (sp) temp_sprite = sp->id;
     sp = self->death_sprite;
-    if (sp) temp_undead_sprite = sp->id;
+    if (sp) temp_death_sprite = sp->id;
     sp = self->undead_sprite;
-    if (sp) created_sound_num = sp->id;
+    if (sp) temp_undead_sprite = sp->id;
 
     char* name = self->name;
     name_size = (short)strlen(name);
@@ -740,9 +740,9 @@ void RGE_Master_Static_Object::save(int outfile) {
     rge_write(outfile, (void*)(&self->string_id), 2);
     rge_write(outfile, (void*)(&self->string_id2), 2);
     rge_write(outfile, (void*)(&self->object_group), 2);
+    rge_write(outfile, (void*)(&temp_sprite), 2);
     rge_write(outfile, (void*)(&temp_death_sprite), 2);
     rge_write(outfile, (void*)(&temp_undead_sprite), 2);
-    rge_write(outfile, (void*)(&created_sound_num), 2);
     rge_write(outfile, (void*)(&self->undead_flag), 1);
     rge_write(outfile, (void*)(&self->hp), 2);
     rge_write(outfile, (void*)(&self->los), 4);
@@ -750,7 +750,7 @@ void RGE_Master_Static_Object::save(int outfile) {
     rge_write(outfile, (void*)(&self->radius_x), 4);
     rge_write(outfile, (void*)(&self->radius_y), 4);
     rge_write(outfile, (void*)(&self->radius_z), 4);
-    rge_write(outfile, (void*)(&temp_sprite), 2);
+    rge_write(outfile, (void*)(&created_sound_num), 2);
     rge_write(outfile, (void*)(&self->death_spawn_obj_id), 2);
     rge_write(outfile, (void*)(&self->sort_number), 1);
     rge_write(outfile, (void*)(&self->can_be_built_on), 1);
@@ -790,17 +790,17 @@ void RGE_Master_Static_Object::save(int outfile) {
     rge_write(outfile, (void*)(&self->outline_radius_y), 4);
     rge_write(outfile, (void*)(&self->outline_radius_z), 4);
 
-    unsigned char* soundPtr = self->attribute_flag;
-    float* selectedProb = self->attribute_amount_held;
-    short* selected = self->attribute_type_held;
+    unsigned char* attribute_flags = self->attribute_flag;
+    float* attribute_amounts = self->attribute_amount_held;
+    short* attribute_types = self->attribute_type_held;
     int i = 3;
     do {
-        rge_write(outfile, (void*)(selected), 2);
-        rge_write(outfile, (void*)(selectedProb), 4);
-        rge_write(outfile, (void*)(soundPtr), 1);
-        selected++;
-        selectedProb++;
-        soundPtr++;
+        rge_write(outfile, (void*)(attribute_types), 2);
+        rge_write(outfile, (void*)(attribute_amounts), 4);
+        rge_write(outfile, (void*)(attribute_flags), 1);
+        attribute_types++;
+        attribute_amounts++;
+        attribute_flags++;
         --i;
     } while (i);
 
@@ -818,8 +818,8 @@ void RGE_Master_Static_Object::save(int outfile) {
         }
     }
 
-    rge_write(outfile, (void*)(&death_sound_num), 2);
     rge_write(outfile, (void*)(&selected_sound_num), 2);
+    rge_write(outfile, (void*)(&death_sound_num), 2);
     rge_write(outfile, (void*)(&self->attack_reaction), 1);
     rge_write(outfile, (void*)(&self->convert_terrain_flag), 1);
     if (name_size != 0) {
