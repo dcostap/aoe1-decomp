@@ -28,11 +28,8 @@ extern int out_of_sync2;
 extern void __cdecl debug_random_write();
 extern void __cdecl dump_vismap_log();
 
-TRIBE_Command::TRIBE_Command(
-    TRIBE_World* world,
-    TCommunications_Handler* com_hand)
-    : RGE_Command(world, com_hand) {
-}
+TRIBE_Command::TRIBE_Command(TRIBE_World* world, TCommunications_Handler* com_hand)
+    : RGE_Command(world, com_hand) {}
 
 extern int __cdecl debug_rand(char* file, int line);
 

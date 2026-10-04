@@ -74,8 +74,7 @@ void RGE_Master_Player::finish_init(int infile, RGE_Sprite** sprites,
     rge_read(infile, &this->master_object_num, 2);
 
     if (this->master_object_num > 0) {
-        this->master_objects =
-            (RGE_Master_Static_Object**)calloc((int)this->master_object_num, 4);
+        this->master_objects = (RGE_Master_Static_Object**)calloc((int)this->master_object_num, 4);
         rge_read(infile, this->master_objects, (int)this->master_object_num * 4);
 
         for (int i = 0; (short)i < this->master_object_num; i++) {

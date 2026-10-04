@@ -1990,8 +1990,7 @@ void TCommunications_Handler::SendIResignMsg() {
     MSGFORMAT_ONTURN resign;
     MSGFORMAT_ALL_DONE alldone;
 
-    resign.ExecuteOnTurn = this->current_turn +
-                           this->PlayerOptions.CommandTurnIncrement;
+    resign.ExecuteOnTurn = this->current_turn + this->PlayerOptions.CommandTurnIncrement;
     L->Log("  >TX RSGN (%d)", 4);
     this->CommOut(0, 0x51, &resign, sizeof(resign), 0);
 
@@ -1999,18 +1998,15 @@ void TCommunications_Handler::SendIResignMsg() {
     alldone.FrameRateMsec = this->Speed->GetAvgFrameRate();
     alldone.Command = 'D';
 
-    alldone.ExecuteOnTurn = this->current_turn +
-                         this->PlayerOptions.CommandTurnIncrement + 1;
+    alldone.ExecuteOnTurn = this->current_turn + this->PlayerOptions.CommandTurnIncrement + 1;
     L->Log("  >TX DONE (%d)", 0x0C);
     this->CommOut(0, 0x44, &alldone, sizeof(alldone), 0);
 
-    alldone.ExecuteOnTurn = this->current_turn +
-                         this->PlayerOptions.CommandTurnIncrement + 2;
+    alldone.ExecuteOnTurn = this->current_turn + this->PlayerOptions.CommandTurnIncrement + 2;
     L->Log("  >TX DONE (%d)", 0x0C);
     this->CommOut(0, 0x44, &alldone, sizeof(alldone), 0);
 
-    alldone.ExecuteOnTurn = this->current_turn +
-                         this->PlayerOptions.CommandTurnIncrement + 3;
+    alldone.ExecuteOnTurn = this->current_turn + this->PlayerOptions.CommandTurnIncrement + 3;
     L->Log("  >TX DONE (%d)", 0x0C);
     this->CommOut(0, 0x44, &alldone, sizeof(alldone), 0);
 }
@@ -3985,29 +3981,18 @@ void TCommunications_Handler::PackPlayersDown() {
                     strcpy(this->FriendlyName[i].Text, this->FriendlyName[src].Text);
                     strcpy(this->FormalName[i].Text, this->FormalName[src].Text);
 
-                    this->PlayerOptions.PlayerReady[i] =
-                        this->PlayerOptions.PlayerReady[src];
-                    this->PlayerOptions.dcoID[i] =
-                        this->PlayerOptions.dcoID[src];
-                    this->PlayerOptions.User1[i] =
-                        this->PlayerOptions.User1[src];
-                    this->PlayerOptions.User2[i] =
-                        this->PlayerOptions.User2[src];
-                    this->PlayerOptions.User3[i] =
-                        this->PlayerOptions.User3[src];
-                    this->PlayerOptions.User4[i] =
-                        this->PlayerOptions.User4[src];
-                    this->PlayerOptions.User5[i] =
-                        this->PlayerOptions.User5[src];
-                    this->PlayerOptions.User6[i] =
-                        this->PlayerOptions.User6[src];
-                    this->PlayerOptions.User7[i] =
-                        this->PlayerOptions.User7[src];
-                    this->PlayerOptions.Humanity[i] =
-                        this->PlayerOptions.Humanity[src];
+                    this->PlayerOptions.PlayerReady[i] = this->PlayerOptions.PlayerReady[src];
+                    this->PlayerOptions.dcoID[i] = this->PlayerOptions.dcoID[src];
+                    this->PlayerOptions.User1[i] = this->PlayerOptions.User1[src];
+                    this->PlayerOptions.User2[i] = this->PlayerOptions.User2[src];
+                    this->PlayerOptions.User3[i] = this->PlayerOptions.User3[src];
+                    this->PlayerOptions.User4[i] = this->PlayerOptions.User4[src];
+                    this->PlayerOptions.User5[i] = this->PlayerOptions.User5[src];
+                    this->PlayerOptions.User6[i] = this->PlayerOptions.User6[src];
+                    this->PlayerOptions.User7[i] = this->PlayerOptions.User7[src];
+                    this->PlayerOptions.Humanity[i] = this->PlayerOptions.Humanity[src];
                     this->LastTurnAck[i] = this->LastTurnAck[src];
-                    this->LastPlayerCommunication[i] =
-                        this->LastPlayerCommunication[src];
+                    this->LastPlayerCommunication[i] = this->LastPlayerCommunication[src];
 
                     save = i;
                     L->Log("Moved %d->%d", src, save);
