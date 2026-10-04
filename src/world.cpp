@@ -2202,7 +2202,9 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info &info) {
                     int idx = index - 1;
                     this->players[player_id_hash[index]]->loadAIInformation(
                         this->scenario->Get_BuildList(idx, 1), this->scenario->Get_CityPlan(idx, 1),
-                        this->scenario->Get_player_AI(idx, 1), this->scenario->GetPlayerPosture(idx), -1);
+                        this->scenario->Get_player_AI(idx, 1), this->scenario->GetPlayerPosture(idx),
+                        -1
+                    );
                 }
             } else {
                 return;

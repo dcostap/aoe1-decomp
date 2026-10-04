@@ -36,46 +36,46 @@ extern int __cdecl debug_rand(char* file, int line);
 void TRIBE_Command::do_command(void* order) {
     debug_rand("C:\\msdev\\work\\age1_x1\\tcommand.cpp", 63);
     switch (static_cast<TRIBE_Command_Header*>(order)->command) {
-    case 0x64:
+    case TRIBE_COMMAND_ID_MAKE:
         do_command_make(static_cast<TRIBE_Command_Make*>(order));
         return;
-    case 0x65:
+    case TRIBE_COMMAND_ID_RESEARCH:
         do_command_research(static_cast<TRIBE_Command_Research*>(order));
         return;
-    case 0x66:
+    case TRIBE_COMMAND_ID_BUILD:
         do_command_build(static_cast<TRIBE_Command_Build*>(order));
         return;
-    case 0x69:
+    case TRIBE_COMMAND_ID_BUILD_WALL:
         do_command_build_wall(static_cast<TRIBE_Command_Build_Wall*>(order));
         return;
-    case 0x68:
+    case TRIBE_COMMAND_ID_EXPLORE:
         do_command_explore(static_cast<TRIBE_Command_Explore*>(order));
         return;
-    case 0x67:
+    case TRIBE_COMMAND_ID_GAME:
         do_command_game(static_cast<TRIBE_Command_Game*>(order));
         return;
-    case 0x04:
+    case RGE_COMMAND_ID_CREATE:
         do_command_tribe_create(static_cast<RGE_Command_Create*>(order));
         return;
-    case 0x6A:
+    case TRIBE_COMMAND_ID_CANCEL_BUILD:
         do_command_cancel_build(static_cast<TRIBE_Command_Cancel_Build*>(order));
         return;
-    case 0x6B:
+    case TRIBE_COMMAND_ID_ATTACK_GROUND:
         do_command_attack_ground(static_cast<TRIBE_Command_Attack_Ground*>(order));
         return;
-    case 0x6C:
+    case TRIBE_COMMAND_ID_GIVE_ATTRIBUTE:
         do_command_give_attribute(static_cast<TRIBE_Command_Give_Attribute*>(order));
         return;
-    case 0x6D:
+    case TRIBE_COMMAND_ID_TRADE_ATTRIBUTE:
         do_command_trade_attribute(static_cast<TRIBE_Command_Trade_Attribute*>(order));
         return;
-    case 0x6E:
+    case TRIBE_COMMAND_ID_REPAIR:
         do_command_repair(static_cast<TRIBE_Command_Repair*>(order));
         return;
-    case 0x6F:
+    case TRIBE_COMMAND_ID_UNLOAD:
         do_command_unload(static_cast<TRIBE_Command_Unload*>(order));
         return;
-    case 0x77:
+    case TRIBE_COMMAND_ID_QUEUE:
         do_command_queue(static_cast<TRIBE_Command_Queue*>(order));
         return;
     default:
@@ -363,18 +363,18 @@ void TRIBE_Command::do_command_explore(TRIBE_Command_Explore* order) {
 void TRIBE_Command::do_command_game(TRIBE_Command_Game* order) {
     char fileName[260];
     switch (order->game_command) {
-    case 5:
+    case TRIBE_GAME_COMMAND_ID_ALLIED_VICTORY:
         this->world->players[order->var1]->set_allied_victory(order->var2);
         break;
-    case 0:
+    case TRIBE_GAME_COMMAND_ID_RELATION:
         this->world->players[order->var1]->set_relation(order->var2, order->var3);
         rge_base_game->notification(8, order->var1, order->var2, order->var4, 0);
         this->world->update_mutual_allies();
         break;
-    case 1:
+    case TRIBE_GAME_COMMAND_ID_GAME_SPEED:
         this->world->set_game_speed(order->var3);
         break;
-    case 8: {
+    case TRIBE_GAME_COMMAND_ID_SAVE_GAME: {
         out_of_sync2 = 1;
         TRIBE_Screen_Status_Message* status = new TRIBE_Screen_Status_Message("Temp Screen", "", 0, -1);
         (void)status;
@@ -402,19 +402,19 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* order) {
         panel_system.destroyPanel("Temp Screen");
         break;
     }
-    case 2:
+    case TRIBE_GAME_COMMAND_ID_INVENTORY:
         this->world->players[order->var1]->add_attribute_num(order->var2, order->var3, 0);
         break;
-    case 4: {
+    case TRIBE_GAME_COMMAND_ID_QUICK_BUILD: {
         TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
         game->quick_build = order->var1;
         break;
     }
-    case 6:
+    case TRIBE_GAME_COMMAND_ID_CHEAT:
         static_cast<TRIBE_World*>(this->world)->cheat(
             order->var1, static_cast<short>(static_cast<unsigned char>(order->var2)));
         break;
-    case 7:
+    case TRIBE_GAME_COMMAND_ID_SHARED_LOS:
         this->world->effects->do_effect(0x71, this->world->players[order->var1]);
         break;
     default:
@@ -536,7 +536,7 @@ void TRIBE_Command::command_make(RGE_Static_Object* unit, short obj_id) {
             RGE_Player* owner = unit->owner;
             short unit_id_copy = obj_id;
             cmd->unit_player_id = static_cast<unsigned char>(owner->id);
-            cmd->command = 100;
+            cmd->command = TRIBE_COMMAND_ID_MAKE;
             cmd->obj_id = unit_id_copy;
             cmd->unique_id = -1;
             RGE_Master_Static_Object* master = unit->master_obj;
@@ -555,7 +555,7 @@ void TRIBE_Command::command_make(
         if (cmd) {
             cmd->unit_id = buildingID;
             cmd->unit_player_id = static_cast<unsigned char>(playerID);
-            cmd->command = 0x64;
+            cmd->command = TRIBE_COMMAND_ID_MAKE;
             cmd->obj_id = static_cast<short>(objID);
             cmd->unique_id = uniqueID;
             L->Log("      >SEND CMD MAKE2 (PLR=%d,BLDG=%d,OBJ=%d)", playerID, buildingID, objID);
@@ -573,7 +573,7 @@ void TRIBE_Command::command_research(RGE_Static_Object* unit, short tech_id) {
             RGE_Player* owner = unit->owner;
             short tech_id_copy = tech_id;
             cmd->unit_player_id = static_cast<unsigned char>(owner->id);
-            cmd->command = 0x65;
+            cmd->command = TRIBE_COMMAND_ID_RESEARCH;
             cmd->tech_id = tech_id_copy;
             cmd->unique_id = -1;
             RGE_Master_Static_Object* master = unit->master_obj;
@@ -592,7 +592,7 @@ void TRIBE_Command::command_research(
         if (cmd) {
             cmd->unit_id = buildingID;
             cmd->unit_player_id = static_cast<unsigned char>(playerID);
-            cmd->command = 0x65;
+            cmd->command = TRIBE_COMMAND_ID_RESEARCH;
             cmd->tech_id = static_cast<short>(techID);
             cmd->unique_id = uniqueID;
             L->Log("      >SEND CMD RESEARCH2 (PLR=%d,BLDG=%d,TECH=%d)", playerID, buildingID, techID);
@@ -619,7 +619,7 @@ void TRIBE_Command::command_build(
                     unit_ids[i].id = -1;
                 }
             }
-            cmd->command = 0x66;
+            cmd->command = TRIBE_COMMAND_ID_BUILD;
             cmd->unit_num = static_cast<unsigned char>(list_num);
             int owner_id;
             if (unit[0]) {
@@ -651,7 +651,7 @@ void TRIBE_Command::command_build(int playerID, int* unitID, int numUnits,
             for (int i = 0; i < numUnits; ++i) {
                 unit_ids[i].id = unitID[i];
             }
-            cmd->command = 0x66;
+            cmd->command = TRIBE_COMMAND_ID_BUILD;
             cmd->unit_num = static_cast<unsigned char>(numUnits);
             cmd->obj_id = static_cast<short>(objectID);
             cmd->location_x = xLoc;
@@ -683,7 +683,7 @@ void TRIBE_Command::command_build_wall(
                     unit_ids[i].id = -1;
                 }
             }
-            cmd->command = 0x69;
+            cmd->command = TRIBE_COMMAND_ID_BUILD_WALL;
             cmd->unit_num = static_cast<unsigned char>(list_num);
             int owner_id;
             if (unit[0]) {
@@ -726,7 +726,7 @@ void TRIBE_Command::command_explore(
             for (int i = 0; i < numUnits; ++i) {
                 unit_ids[i].id = unitID[i];
             }
-            cmd->command = 0x68;
+            cmd->command = TRIBE_COMMAND_ID_EXPLORE;
             cmd->numUnits = static_cast<unsigned char>(numUnits);
             cmd->unit_player_id = static_cast<unsigned char>(playerID);
             cmd->targetXPosition = x;
@@ -747,8 +747,8 @@ void TRIBE_Command::command_allied_victory(short player, unsigned char flag) {
         cmd->var1 = player;
         cmd->var2 = static_cast<short>(flag_short);
         cmd->var3 = 0.0f;
-        cmd->command = 0x67;
-        cmd->game_command = 5;
+        cmd->command = TRIBE_COMMAND_ID_GAME;
+        cmd->game_command = TRIBE_GAME_COMMAND_ID_ALLIED_VICTORY;
         L->Log("      >SEND CMD ALLIED VIC (PLR=%d,FLAG=%d)", player_id_int, flag_int);
         this->submit(cmd, sizeof(TRIBE_Command_Game));
     }
@@ -761,8 +761,8 @@ void TRIBE_Command::command_relation(short player, short target_player, short re
         cmd->var2 = target_player;
         cmd->var3 = static_cast<float>((int)relation);
         cmd->var4 = relation;
-        cmd->command = 0x67;
-        cmd->game_command = 0;
+        cmd->command = TRIBE_COMMAND_ID_GAME;
+        cmd->game_command = TRIBE_GAME_COMMAND_ID_RELATION;
         L->Log("      >SEND CMD RELATION (PLR=%d,TAR=%d,REL=%d)", (int)player, (int)target_player, (int)relation);
         this->submit(cmd, sizeof(TRIBE_Command_Game));
     }
@@ -771,9 +771,9 @@ void TRIBE_Command::command_relation(short player, short target_player, short re
 void TRIBE_Command::command_game_speed(float gamespeed) {
     TRIBE_Command_Game* packet = static_cast<TRIBE_Command_Game*>(calloc(1, sizeof(TRIBE_Command_Game)));
     if (packet != 0) {
-        packet->command = 0x67;
+        packet->command = TRIBE_COMMAND_ID_GAME;
         packet->var3 = gamespeed;
-        packet->game_command = 1;
+        packet->game_command = TRIBE_GAME_COMMAND_ID_GAME_SPEED;
         L->Log("      >SEND CMD GAME SPD");
         this->submit(packet, sizeof(TRIBE_Command_Game));
     }
@@ -782,8 +782,8 @@ void TRIBE_Command::command_game_speed(float gamespeed) {
 void TRIBE_Command::command_save_game() {
     TRIBE_Command_Game* packet = static_cast<TRIBE_Command_Game*>(calloc(1, sizeof(TRIBE_Command_Game)));
     if (packet != 0) {
-        packet->command = 0x67;
-        packet->game_command = 0x08;
+        packet->command = TRIBE_COMMAND_ID_GAME;
+        packet->game_command = TRIBE_GAME_COMMAND_ID_SAVE_GAME;
         L->Log("      >SEND CMD SAVEGAME");
         this->submit(packet, sizeof(TRIBE_Command_Game));
     }
@@ -795,8 +795,8 @@ void TRIBE_Command::command_inventory(short player, short inventory, float amoun
         cmd->var1 = player;
         cmd->var2 = inventory;
         cmd->var3 = amount;
-        cmd->command = 0x67;
-        cmd->game_command = 2;
+        cmd->command = TRIBE_COMMAND_ID_GAME;
+        cmd->game_command = TRIBE_GAME_COMMAND_ID_INVENTORY;
         L->Log("      >SEND CMD INV (PLR=%d,INV=%d)", (int)player, (int)inventory);
         this->submit(cmd, sizeof(TRIBE_Command_Game));
     }
@@ -806,9 +806,9 @@ void TRIBE_Command::command_inventory(short player, short inventory, float amoun
 void TRIBE_Command::command_upgrade_town(short player) {
     TRIBE_Command_Game* packet = static_cast<TRIBE_Command_Game*>(calloc(1, sizeof(TRIBE_Command_Game)));
     if (packet != 0) {
-        packet->command = 0x67;
+        packet->command = TRIBE_COMMAND_ID_GAME;
         packet->var1 = player;
-        packet->game_command = 3;
+        packet->game_command = TRIBE_GAME_COMMAND_ID_UPGRADE_TOWN;
         L->Log("      >SEND CMD UPG TOWN");
         this->submit(packet, sizeof(TRIBE_Command_Game));
     }
@@ -817,9 +817,9 @@ void TRIBE_Command::command_upgrade_town(short player) {
 void TRIBE_Command::command_quick_build(short quick_build) {
     TRIBE_Command_Game* packet = static_cast<TRIBE_Command_Game*>(calloc(1, sizeof(TRIBE_Command_Game)));
     if (packet != 0) {
-        packet->command = 0x67;
+        packet->command = TRIBE_COMMAND_ID_GAME;
         packet->var1 = quick_build;
-        packet->game_command = 4;
+        packet->game_command = TRIBE_GAME_COMMAND_ID_QUICK_BUILD;
         L->Log("      >SEND CMD QUICKBLD");
         this->submit(packet, sizeof(TRIBE_Command_Game));
     }
@@ -830,9 +830,9 @@ void TRIBE_Command::command_shared_los(short player) {
 
     order = static_cast<TRIBE_Command_Game*>(calloc(1, sizeof(TRIBE_Command_Game)));
     if (order != 0) {
-        order->command = 0x67;
+        order->command = TRIBE_COMMAND_ID_GAME;
         order->var1 = player;
-        order->game_command = 7;
+        order->game_command = TRIBE_GAME_COMMAND_ID_SHARED_LOS;
         L->Log("      >SEND CMD SHAREDLOS");
         this->submit(order, sizeof(TRIBE_Command_Game));
     }
@@ -843,7 +843,7 @@ void TRIBE_Command::command_cancel_build(RGE_Static_Object* unit) {
     TRIBE_Command_Cancel_Build* cmd =
         static_cast<TRIBE_Command_Cancel_Build*>(calloc(1, sizeof(TRIBE_Command_Cancel_Build)));
     if (cmd) {
-        cmd->command = 0x6A;
+        cmd->command = TRIBE_COMMAND_ID_CANCEL_BUILD;
         cmd->unit_id = unit->id;
         L->Log("      >SEND CMD CANCELBLD");
         this->submit(cmd, sizeof(TRIBE_Command_Cancel_Build));
@@ -867,7 +867,7 @@ void TRIBE_Command::command_attack_ground(RGE_Static_Object** unit, short list_n
                     unit_ids[i].id = -1;
                 }
             }
-            cmd->command = 0x6B;
+            cmd->command = TRIBE_COMMAND_ID_ATTACK_GROUND;
             cmd->unit_num = (unsigned char)list_num;
             cmd->location_x = x;
             cmd->location_y = y;
@@ -884,10 +884,10 @@ extern "C" void* __cdecl calloc(size_t, size_t);
 void TRIBE_Command::command_cheat(short player, short cheat_code) {
     TRIBE_Command_Game* buf = static_cast<TRIBE_Command_Game*>(calloc(1, sizeof(TRIBE_Command_Game)));
     if (buf) {
-        buf->command = 0x67;
+        buf->command = TRIBE_COMMAND_ID_GAME;
         buf->var1 = player;
         buf->var2 = cheat_code;
-        buf->game_command = 6;
+        buf->game_command = TRIBE_GAME_COMMAND_ID_CHEAT;
         L->Log("      >SEND CMD CHEAT %d", cheat_code);
         submit(buf, sizeof(TRIBE_Command_Game));
     }
@@ -901,7 +901,7 @@ void TRIBE_Command::command_give_attribute(
     float attr_cost) {
     TRIBE_Command_Give_Attribute* packet =
         static_cast<TRIBE_Command_Give_Attribute*>(calloc(1, sizeof(TRIBE_Command_Give_Attribute)));
-    packet->command = 0x6C;
+    packet->command = TRIBE_COMMAND_ID_GIVE_ATTRIBUTE;
     packet->player_id = static_cast<unsigned char>(player_id);
     packet->to_player_id = static_cast<unsigned char>(to_player_id);
     packet->attr_id = static_cast<unsigned char>(attr_id);
@@ -928,7 +928,7 @@ void TRIBE_Command::command_trade_attribute(RGE_Static_Object** unit, short list
                     unit_ids[i].id = -1;
                 }
             }
-            cmd->command = 0x6D;
+            cmd->command = TRIBE_COMMAND_ID_TRADE_ATTRIBUTE;
             cmd->unit_num = (unsigned char)list_num;
             cmd->attribute = attribute;
 
@@ -949,7 +949,7 @@ void TRIBE_Command::command_trade_attribute(int unitID, int playerID, long attri
 
     if (buf && unit_ids) {
         unit_ids[0].id = unitID;
-        buf->command = 0x6D;
+        buf->command = TRIBE_COMMAND_ID_TRADE_ATTRIBUTE;
         buf->unit_num = 1;
         buf->attribute = attribute;
         L->Log("      >SEND CMD TRADE ATTR2");
@@ -980,7 +980,7 @@ void TRIBE_Command::command_repair(
                 }
             }
             packet->target.id = target->id;
-            packet->command = 0x6E;
+            packet->command = TRIBE_COMMAND_ID_REPAIR;
             packet->unit_num = (unsigned char)unit_count;
             L->Log("      >SEND CMD REPAIR (CNT=%d)", object_count);
             this->submit(packet, size);
@@ -1004,7 +1004,7 @@ void TRIBE_Command::command_unload(RGE_Static_Object** unit, short list_num, flo
                     unit_ids[i].id = -1;
                 }
             }
-            cmd->command = 0x6F;
+            cmd->command = TRIBE_COMMAND_ID_UNLOAD;
             cmd->unit_num = static_cast<unsigned char>(list_num);
             cmd->location_x = x;
             cmd->location_y = y;
@@ -1023,7 +1023,7 @@ void TRIBE_Command::command_queue(
     short train_count) {
     TRIBE_Command_Queue* cmd = static_cast<TRIBE_Command_Queue*>(calloc(1, sizeof(TRIBE_Command_Queue)));
     if (cmd) {
-        cmd->command = 0x77;
+        cmd->command = TRIBE_COMMAND_ID_QUEUE;
         int building_id = bldg_obj->id;
         cmd->train_count = train_count;
         cmd->bldg_id = building_id;

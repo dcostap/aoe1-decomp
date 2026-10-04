@@ -3,6 +3,31 @@
 
 #include "Command.h"
 
+#define TRIBE_COMMAND_ID_MAKE            0x64
+#define TRIBE_COMMAND_ID_RESEARCH        0x65
+#define TRIBE_COMMAND_ID_BUILD           0x66
+#define TRIBE_COMMAND_ID_GAME            0x67
+#define TRIBE_COMMAND_ID_EXPLORE         0x68
+#define TRIBE_COMMAND_ID_BUILD_WALL      0x69
+#define TRIBE_COMMAND_ID_CANCEL_BUILD    0x6A
+#define TRIBE_COMMAND_ID_ATTACK_GROUND   0x6B
+#define TRIBE_COMMAND_ID_GIVE_ATTRIBUTE  0x6C
+#define TRIBE_COMMAND_ID_TRADE_ATTRIBUTE 0x6D
+#define TRIBE_COMMAND_ID_REPAIR          0x6E
+#define TRIBE_COMMAND_ID_UNLOAD          0x6F
+#define TRIBE_COMMAND_ID_QUEUE           0x77
+
+// Game subcommands carried by TRIBE_COMMAND_ID_GAME.
+#define TRIBE_GAME_COMMAND_ID_RELATION       0
+#define TRIBE_GAME_COMMAND_ID_GAME_SPEED     1
+#define TRIBE_GAME_COMMAND_ID_INVENTORY      2
+#define TRIBE_GAME_COMMAND_ID_UPGRADE_TOWN   3
+#define TRIBE_GAME_COMMAND_ID_QUICK_BUILD    4
+#define TRIBE_GAME_COMMAND_ID_ALLIED_VICTORY 5
+#define TRIBE_GAME_COMMAND_ID_CHEAT          6
+#define TRIBE_GAME_COMMAND_ID_SHARED_LOS     7
+#define TRIBE_GAME_COMMAND_ID_SAVE_GAME      8
+
 class RGE_Static_Object;
 class TCommunications_Handler;
 class TRIBE_Master_Building_Object;

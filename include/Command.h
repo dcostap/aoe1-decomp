@@ -3,6 +3,26 @@
 
 #include "command_waypoint.h"
 
+// Packet IDs. Macros keep the integer type and add no storage.
+#define RGE_COMMAND_ID_ORDER             0
+#define RGE_COMMAND_ID_STOP              1
+#define RGE_COMMAND_ID_WORK              2
+#define RGE_COMMAND_ID_MOVE              3
+#define RGE_COMMAND_ID_CREATE            4
+#define RGE_COMMAND_ID_ADD_ATTRIBUTE     5
+#define RGE_COMMAND_ID_FORMATION         6
+#define RGE_COMMAND_ID_GIVE_ATTRIBUTE    7
+#define RGE_COMMAND_ID_CREATE_GROUP      8
+#define RGE_COMMAND_ID_DESTROY_GROUP     9
+#define RGE_COMMAND_ID_AI_ORDER          10
+#define RGE_COMMAND_ID_RESIGN            11
+#define RGE_COMMAND_ID_ADD_WAYPOINT      12
+#define RGE_COMMAND_ID_PAUSE             13
+#define RGE_COMMAND_ID_ADD_TO_GROUP      14
+#define RGE_COMMAND_ID_REMOVE_FROM_GROUP 15
+#define RGE_COMMAND_ID_GROUP_WAYPOINT    16
+#define RGE_COMMAND_ID_GROUP_AI_ORDER    17
+
 class RGE_Game_World;
 class RGE_Static_Object;
 class TCommunications_Handler;
