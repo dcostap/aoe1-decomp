@@ -152,7 +152,7 @@ void TRIBE_Action_Wonder::set_state(unsigned char new_state) {
 unsigned char TRIBE_Action_Wonder::update() {
     switch (this->state) {
     case 6:
-        if (this->timer >= LIMIT) return 0;
+        if (this->timer >= LIMIT) return RGE_ACTION_UPDATE_CONTINUE;
 
         {
             float time_delta = this->obj->owner->world->world_time_delta_seconds;
@@ -176,14 +176,14 @@ unsigned char TRIBE_Action_Wonder::update() {
     case 2:
         if (this->obj->object_state == RGE_OBJECT_STATE_ACTIVE) {
             this->set_state(6);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         goto cleanup;
 
 cleanup:
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     default:
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 }

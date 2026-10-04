@@ -144,36 +144,36 @@ unsigned char RGE_Action_Enter::update() {
             unsigned char result = this->sub_actions->update();
 
             switch (result) {
-            case 1:
-            case 2:
+            case RGE_ACTION_UPDATE_REMOVE:
+            case RGE_ACTION_UPDATE_COMPLETED:
                 if (this->obj->distance_to_object(this->target_obj) - 1.0f > this->task->work_range) {
                     this->set_state(2);
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
                 this->obj->enter_obj(this->target_obj);
                 goto entered;
 
-            case 3:
+            case RGE_ACTION_UPDATE_FAILED:
                 this->set_state(2);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
 
-            case 4:
-            case 5:
+            case RGE_ACTION_UPDATE_TARGET_INVALID:
+            case RGE_ACTION_UPDATE_TARGET_LOST:
                 break;
 
             default:
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         }
 
         this->set_target_obj(0);
         this->set_state(0x0D);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 2:
         this->timer -= this->obj->owner->world->world_time_delta_seconds;
         if (this->timer > 0.0f) {
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
 
         if (this->obj->distance_to_object(this->target_obj) - 1.0f > this->task->work_range) {
@@ -195,7 +195,7 @@ unsigned char RGE_Action_Enter::update() {
                         this->target_x = this->target_obj->world_x;
                         this->target_y = this->target_obj->world_y;
                         this->set_state(4);
-                        return 0;
+                        return RGE_ACTION_UPDATE_CONTINUE;
                     }
 
                     this->target_x = x;
@@ -220,17 +220,17 @@ unsigned char RGE_Action_Enter::update() {
         }
 
         this->set_state(4);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 0x0D:
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ENTER, 0, 0);
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
 
     default:
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
 entered:
@@ -238,11 +238,11 @@ entered:
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_ENTER, 0, 0);
     }
     this->set_state(1);
-    return 2;
+    return RGE_ACTION_UPDATE_COMPLETED;
 
 target_lost:
     this->set_state(1);
     this->set_target_obj(0);
     this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ENTER, 0, 0);
-    return 4;
+    return RGE_ACTION_UPDATE_TARGET_INVALID;
 }

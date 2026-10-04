@@ -187,7 +187,7 @@ unsigned char RGE_Action_Missile::update() {
 
     switch (this->state) {
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
     case 4:
         if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type == 0) {
             this->timer += s;
@@ -304,7 +304,7 @@ unsigned char RGE_Action_Missile::update() {
             this->set_state(1);
         }
     }
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 }
 
 void RGE_Action_Missile::save(int outfile) {

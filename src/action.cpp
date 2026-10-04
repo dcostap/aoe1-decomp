@@ -218,7 +218,7 @@ unsigned char RGE_Action::inside_obj_update() {
     if (this->target_obj2 != 0 && this->target_obj2->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->set_target_obj2((RGE_Static_Object*)0);
     }
-    return 1;
+    return RGE_ACTION_UPDATE_REMOVE;
 }
 
 unsigned char RGE_Action::idle_update() {
@@ -242,9 +242,9 @@ unsigned char RGE_Action::update() {
         return this->sub_actions->update();
 
     if (this->state != 1)
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
-    return 1;
+    return RGE_ACTION_UPDATE_REMOVE;
 }
 
 void RGE_Action::set_target_obj(RGE_Static_Object* new_obj) {

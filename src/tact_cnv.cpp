@@ -210,7 +210,7 @@ uchar TRIBE_Action_Convert::update() {
         if (this->obj->owner->world->object(this->targetID) == 0) {
             this->set_target_obj(0);
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
     }
 
@@ -226,7 +226,7 @@ uchar TRIBE_Action_Convert::update() {
     if (this->target_obj != 0 && this->target_obj->object_state != RGE_OBJECT_STATE_ACTIVE) {
         this->set_target_obj(0);
         this->set_state(3);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     if (this->target_obj != 0 && this->obj->owner->isAlly(this->target_obj->owner->id) == 1) {
@@ -236,60 +236,60 @@ uchar TRIBE_Action_Convert::update() {
         this->set_state(1);
         this->obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_TARGET_INVALID,
                           static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L);
-        return 4;
+        return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
 
     switch (this->state) {
     // Original table 004CE3FC assigns these handlers to states 11 and 4.
     case 11:
         switch (this->sub_actions->update()) {
-        case 3:
+        case RGE_ACTION_UPDATE_FAILED:
             this->set_state(13);
-            return 0;
-        case 4:
+            return RGE_ACTION_UPDATE_CONTINUE;
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
             this->set_target_obj(0);
             this->set_state(11);
-            return 0;
-        case 1:
-        case 2:
-        case 5:
+            return RGE_ACTION_UPDATE_CONTINUE;
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 4:
         switch (this->sub_actions->update()) {
-        case 4:
-        case 5:
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             this->set_target_obj(0);
             this->set_state(11);
-            return 0;
-        case 3:
+            return RGE_ACTION_UPDATE_CONTINUE;
+        case RGE_ACTION_UPDATE_FAILED:
             this->set_state(13);
-            return 0;
-        case 1:
-        case 2:
+            return RGE_ACTION_UPDATE_CONTINUE;
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
             this->set_state(6);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 6:
         if (this->target_obj == 0) {
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         if (this->obj->turn_towards(this->target_obj, 0, 0)) {
             this->set_state(7);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 7: {
         if (this->target_obj == 0) {
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         this->target_obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->target_obj->id), UNIT_AI_NOTIFY_ATTACKED,
                                  static_cast<long>(this->obj->id), static_cast<long>(this->target_obj->hp),
@@ -327,22 +327,22 @@ uchar TRIBE_Action_Convert::update() {
                 this->set_state(3);
             }
             this->set_state(4);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
     }
 
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 13:
         this->obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_ACTION_FAILED,
                           static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L);
         this->set_state(2);
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
     }
 
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 }
 
 int TRIBE_Action_Convert::work(RGE_Static_Object* obj_in, float x, float y, float z) {

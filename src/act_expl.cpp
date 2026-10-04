@@ -90,23 +90,23 @@ unsigned char RGE_Action_Explore::update(void) {
         int obj_id = this->obj->id;
         this->obj->notify(obj_id, obj_id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_EXPLORE, 0, 0);
         this->set_state(2);
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
     }
 
     case 11:
         switch (this->sub_actions->update()) {
-        case 4:
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
             this->set_target_obj(0);
             this->set_state(11);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
 
-        case 1:
-        case 2:
-        case 5:
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
 
-        case 3:
+        case RGE_ACTION_UPDATE_FAILED:
             this->set_state(13);
             goto return_zero;
         }
@@ -117,10 +117,10 @@ unsigned char RGE_Action_Explore::update(void) {
     }
 
 return_zero:
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 
 return_one:
-    return 1;
+    return RGE_ACTION_UPDATE_REMOVE;
 }
 
 int RGE_Action_Explore::work(RGE_Static_Object* obj_in, float x, float y, float z) {

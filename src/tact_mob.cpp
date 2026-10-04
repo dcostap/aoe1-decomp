@@ -90,7 +90,7 @@ void TRIBE_Action_Make_Obj::set_state(uchar new_state) { this->state = new_state
 unsigned char TRIBE_Action_Make_Obj::update() {
     switch (this->state) {
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
     case 6:
         if (rge_base_game->quick_build != 0) {
             this->work_done = 1000.0f;
@@ -117,19 +117,19 @@ unsigned char TRIBE_Action_Make_Obj::update() {
                 static_cast<TRIBE_Player*>(this->obj->owner)->cancelTrain(
                     0, (int)this->obj_id, (int)this->obj->id, this->unique_id);
                 this->obj->notify((int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long)UNIT_AI_ACTION_TRAIN, (long)0, (long)0);
-                return 1;
+                return RGE_ACTION_UPDATE_REMOVE;
             } else {
                 rge_base_game->notification(0x66, static_cast<TRIBE_Player*>(this->obj->owner)->id,
                                             (int)this->obj_id, (long)this->obj->world_x, (long)this->obj->world_y);
                 static_cast<TRIBE_Player*>(this->obj->owner)->registerTrain(
                     (int)this->obj_id, (int)this->obj->id, this->unique_id, (int)newObject->id);
                 this->obj->notify((int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, (long)UNIT_AI_ACTION_TRAIN, (long)0, (long)0);
-                return 1;
+                return RGE_ACTION_UPDATE_REMOVE;
             }
         }
         break;
     }
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 }
 
 // The retry loops use the shipped side-selection and radius

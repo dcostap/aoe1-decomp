@@ -280,7 +280,7 @@ unsigned char RGE_Action_Attack::update() {
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
         this->set_state(2);
-        return 5;
+        return RGE_ACTION_UPDATE_TARGET_LOST;
     }
 
     if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
@@ -290,7 +290,7 @@ unsigned char RGE_Action_Attack::update() {
     if (this->target_obj != 0 && this->target_obj->object_state >= RGE_OBJECT_STATE_DYING) {
         this->set_target_obj(0);
         this->set_state(2);
-        return 5;
+        return RGE_ACTION_UPDATE_TARGET_LOST;
     }
 
     if (this->target_obj != 0 && this->obj->owner->id != 0 && this->obj->owner->isAlly(this->target_obj->owner->id)) {
@@ -298,7 +298,7 @@ unsigned char RGE_Action_Attack::update() {
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0);
         }
-        return 4;
+        return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
 
     if (this->target_obj != 0 && this->target_obj->inside_obj != 0) {
@@ -306,12 +306,12 @@ unsigned char RGE_Action_Attack::update() {
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0);
         }
-        return 4;
+        return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
 
     switch (this->state) {
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 2:
         if (this->obj->sprite_list->looped(this->obj->sprite) == 1) {
@@ -321,32 +321,32 @@ unsigned char RGE_Action_Attack::update() {
             }
             this->set_state(1);
             if (this->subActionValue == 1) {
-                return 5;
+                return RGE_ACTION_UPDATE_TARGET_LOST;
             }
-            return 2;
+            return RGE_ACTION_UPDATE_COMPLETED;
         }
         break;
 
     case 4:
         switch (this->sub_actions->update()) {
-        case 1:
-        case 2:
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
             this->set_state(6);
             break;
 
-        case 3:
+        case RGE_ACTION_UPDATE_FAILED:
             this->set_state(13);
             if (this->subActionValue == 0) {
                 this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ATTACK, 0, 0);
             }
-            return 3;
+            return RGE_ACTION_UPDATE_FAILED;
 
-        case 4:
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
             this->set_state(14);
             if (this->subActionValue == 0) {
                 this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0);
             }
-            return 4;
+            return RGE_ACTION_UPDATE_TARGET_INVALID;
 
         default:
             break;
@@ -367,21 +367,21 @@ unsigned char RGE_Action_Attack::update() {
             if (this->obj->can_attack() == 1) {
                 if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
                     this->set_state(2);
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
 
                 static_cast<RGE_Combat_Object*>(this->obj)
                     ->reset_attack_timer();
                 this->set_state(6);
                 if (this->state == 13 || this->state == 4) {
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
                 this->set_state(7);
             }
 
             if (this->need_to_attack == 0) {
                 if (this->obj->sprite_list->looped(this->obj->sprite) != 1 && (this->obj->sprite->flags & 1) != 0) {
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
 
                 if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
@@ -389,7 +389,7 @@ unsigned char RGE_Action_Attack::update() {
                 } else {
                     this->set_state(6);
                 }
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         }
 
@@ -407,13 +407,13 @@ unsigned char RGE_Action_Attack::update() {
 
     case 13:
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ATTACK, 0, 0);
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
 
     default:
         break;
     }
 
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 }
 
 int RGE_Action_Attack::work(RGE_Static_Object* obj_in, float x, float y, float z) {

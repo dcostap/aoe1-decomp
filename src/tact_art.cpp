@@ -88,7 +88,7 @@ void TRIBE_Action_Artifact::set_state(unsigned char new_state) {
 
 unsigned char TRIBE_Action_Artifact::update() {
     unsigned char val = sub_actions->update();
-    if (val > 0 && val <= 3) {
+    if (val > RGE_ACTION_UPDATE_CONTINUE && val <= RGE_ACTION_UPDATE_FAILED) {
         sub_actions->delete_list();
     }
     switch (state) {
@@ -97,11 +97,11 @@ unsigned char TRIBE_Action_Artifact::update() {
         float speed = this->timer - obj->owner->world->world_time_delta_seconds;
         if (speed > g_artifact_timer_threshold) {
             this->timer = speed;
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         this->timer = speed;
         this->set_state(6);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     case 6: {
@@ -109,22 +109,22 @@ unsigned char TRIBE_Action_Artifact::update() {
         if (owner != 0) {
             sub_actions->delete_list();
             this->obj->change_ownership(owner);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         this->set_state(10);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     case 100:
         this->obj->change_ownership(this->obj->owner->world->players[0]);
         this->set_state(6);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     default:
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 }
 

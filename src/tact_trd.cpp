@@ -207,12 +207,12 @@ unsigned char TRIBE_Action_Trade::update() {
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_TRADE, this->targetID, 0);
         }
-        return 4;
+        return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
 
     switch (this->state) {
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 11:
         if (this->timer < g_trade_zero_value) {
@@ -221,27 +221,27 @@ unsigned char TRIBE_Action_Trade::update() {
                 this->timer = 0.0f;
                 if (this->target_obj != 0) {
                     this->set_state(4);
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
                 this->set_state(3);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         } else {
             switch (this->sub_actions->update()) {
-            case 3:
-            case 4:
+            case RGE_ACTION_UPDATE_FAILED:
+            case RGE_ACTION_UPDATE_TARGET_INVALID:
                 this->timer = -0.5f;
-                return 0;
-            case 1:
-            case 2:
-            case 5:
+                return RGE_ACTION_UPDATE_CONTINUE;
+            case RGE_ACTION_UPDATE_REMOVE:
+            case RGE_ACTION_UPDATE_COMPLETED:
+            case RGE_ACTION_UPDATE_TARGET_LOST:
                 this->set_state(3);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             default:
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         }
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 4:
         if (this->timer < g_trade_zero_value) {
@@ -250,56 +250,56 @@ unsigned char TRIBE_Action_Trade::update() {
                 this->timer = 0.0f;
                 if (this->target_obj != 0) {
                     this->set_state(4);
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
                 this->set_state(3);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         } else {
             switch (this->sub_actions->update()) {
-            case 1:
-            case 2:
+            case RGE_ACTION_UPDATE_REMOVE:
+            case RGE_ACTION_UPDATE_COMPLETED:
                 this->set_state(6);
-                return 0;
-            case 3:
-            case 4:
+                return RGE_ACTION_UPDATE_CONTINUE;
+            case RGE_ACTION_UPDATE_FAILED:
+            case RGE_ACTION_UPDATE_TARGET_INVALID:
                 this->timer = -0.5f;
-                return 0;
-            case 5:
+                return RGE_ACTION_UPDATE_CONTINUE;
+            case RGE_ACTION_UPDATE_TARGET_LOST:
                 this->set_target_obj(0);
                 this->set_state(3);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             default:
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         }
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 6:
         if (this->target_obj == 0) {
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         if (this->obj->turn_towards(this->target_obj, 0, 0)) {
             if (this->target_obj->attribute_amount_held > g_trade_positive_amount_threshold ||
                 this->obj->keepGatheringWhenObjectIsOut((short)this->target_obj->master_obj->id) != 0) {
                 this->set_state(7);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
             this->set_target_obj(0);
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 7: {
         if (this->target_obj == 0) {
             if (this->obj->attribute_amount_held > g_trade_positive_amount_threshold) {
                 this->set_state(8);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
 
         if (this->obj->attribute_type_held != RGE_RESOURCE_FOOD && this->obj->attribute_type_held != RGE_RESOURCE_STONE &&
@@ -323,14 +323,14 @@ unsigned char TRIBE_Action_Trade::update() {
 
         if (this->obj->attribute_amount_held >= max_hold) {
             this->set_state(8);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         if (this->target_obj->owner->attributes[9] <= g_trade_positive_amount_threshold &&
             this->obj->keepGatheringWhenObjectIsOut((short)this->target_obj->master_obj->id) == 0) {
             this->set_state(8);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     case 8:
@@ -339,21 +339,21 @@ unsigned char TRIBE_Action_Trade::update() {
             if (this->timer > g_trade_zero_value) {
                 this->timer = 0.0f;
                 this->set_state(8);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         } else {
             switch (this->sub_actions->update()) {
-            case 3:
-            case 4:
-            case 5:
+            case RGE_ACTION_UPDATE_FAILED:
+            case RGE_ACTION_UPDATE_TARGET_INVALID:
+            case RGE_ACTION_UPDATE_TARGET_LOST:
                 this->timer = -0.5f;
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
 
-            case 1:
-            case 2:
+            case RGE_ACTION_UPDATE_REMOVE:
+            case RGE_ACTION_UPDATE_COMPLETED:
                 if (this->target_obj2 == 0) {
                     this->set_state(8);
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
                 if (this->obj->attribute_amount_held > g_trade_positive_amount_threshold) {
                     if (this->task->work_sound2 != 0) {
@@ -393,20 +393,20 @@ unsigned char TRIBE_Action_Trade::update() {
                 } else {
                     this->set_state(3);
                 }
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             default:
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         }
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 13:
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_TRADE, 0, 0);
         this->set_state(2);
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
 
     default:
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 }
 

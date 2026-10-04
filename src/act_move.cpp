@@ -146,7 +146,7 @@ unsigned char RGE_Action_Move_To::update() {
             }
             this->obj->setWaitingToMove(0);
             this->obj->pathingGroupMembers.zeroNumber();
-            return 2;
+            return RGE_ACTION_UPDATE_COMPLETED;
         }
 
         if (this->target_obj != 0) {
@@ -179,7 +179,7 @@ unsigned char RGE_Action_Move_To::update() {
 
         if (this->obj->findPath() == RGE_Moving_Object::PathFound) {
             this->set_state(4);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
@@ -210,37 +210,37 @@ unsigned char RGE_Action_Move_To::update() {
                 this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_MOVE, 0, 0);
             }
             this->set_state(1);
-            return 2;
+            return RGE_ACTION_UPDATE_COMPLETED;
         }
         break;
 
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 13:
     state_done:
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_MOVE, 0, 0);
         }
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
 
     reached_target:
         this->obj->notify(this->obj->id, this->obj->id, 0x1FC, 0, 0, 0);
         this->set_state(3);
         this->update();
         this->update();
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     }
 
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 
 target_lost:
     if (this->subActionValue == 1) {
-        return 5;
+        return RGE_ACTION_UPDATE_TARGET_LOST;
     }
     this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_MOVE, this->targetID, 0);
-    return 4;
+    return RGE_ACTION_UPDATE_TARGET_INVALID;
 }
 
 unsigned char RGE_Action_Move_To::is_in_range() {

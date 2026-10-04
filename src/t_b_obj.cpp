@@ -1035,7 +1035,7 @@ void TRIBE_Building_Object::update_production_queue() {
         }
 
         char action_state = production_queue_actions->update();
-        if (action_state == 3 || action_state == 2 || action_state == 1) {
+        if (action_state == RGE_ACTION_UPDATE_FAILED || action_state == RGE_ACTION_UPDATE_COMPLETED || action_state == RGE_ACTION_UPDATE_REMOVE) {
             production_queue_actions->remove_action();
             advance_production_queue();
         }

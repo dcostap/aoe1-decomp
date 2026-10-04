@@ -422,7 +422,7 @@ unsigned char RGE_Action_Object::update() {
             }
 
             unsigned char action_result = this->actions->update();
-            if (action_result == 3 || action_result == 1) {
+            if (action_result == RGE_ACTION_UPDATE_FAILED || action_result == RGE_ACTION_UPDATE_REMOVE) {
                 this->actions->remove_action();
             }
         }

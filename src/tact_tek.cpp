@@ -99,14 +99,14 @@ unsigned char TRIBE_Action_Make_Tech::update() {
                                     (int)action_object->world_x, (int)action_object->world_y);
         static_cast<TRIBE_Player*>(this->obj->owner)->registerResearch((int)this->tech_id, this->obj->id, this->unique_id);
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_RESEARCH, 0, 0);
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
     }
 
 fail:
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 
 success_initial:
-    return 1;
+    return RGE_ACTION_UPDATE_REMOVE;
 }
 
 int TRIBE_Action_Make_Tech::stop() {

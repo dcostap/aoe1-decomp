@@ -84,21 +84,21 @@ unsigned char RGE_Action_Bird::update(void) {
         if (this->timer <= bird_update_zero) {
             this->set_state(6);
         }
-        if ((((int)this->sub_actions->update()) & 0xFF) - 1 != 0) {
-            return 0;
+        if ((((int)this->sub_actions->update()) & 0xFF) - RGE_ACTION_UPDATE_REMOVE != 0) {
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         this->set_state(3);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 6:
         if (this->timer <= bird_update_zero) {
             this->set_state(4);
         }
-        if ((((int)this->sub_actions->update()) & 0xFF) - 1 != 0) {
-            return 0;
+        if ((((int)this->sub_actions->update()) & 0xFF) - RGE_ACTION_UPDATE_REMOVE != 0) {
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         this->set_state(3);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 3:
         {
@@ -110,15 +110,15 @@ unsigned char RGE_Action_Bird::update(void) {
         move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range, this->obj->sprite);
         if (move_to == 0) {
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         this->sub_actions->add_action(move_to);
         this->set_state(4);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
     }
 
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 }

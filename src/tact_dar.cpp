@@ -64,7 +64,7 @@ void TRIBE_Action_Discovery_Artifact::set_state(unsigned char new_state) {
 unsigned char TRIBE_Action_Discovery_Artifact::update() {
     switch (this->state) {
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 6:
         this->check_objects();
@@ -83,7 +83,7 @@ unsigned char TRIBE_Action_Discovery_Artifact::update() {
         break;
     }
 
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 }
 
 void TRIBE_Action_Discovery_Artifact::check_objects() {

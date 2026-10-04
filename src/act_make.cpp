@@ -72,8 +72,8 @@ unsigned char RGE_Action_Make::update() {
     }
 
 failure:
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 
 success:
-    return 1;
+    return RGE_ACTION_UPDATE_REMOVE;
 }

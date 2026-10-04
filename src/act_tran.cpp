@@ -76,20 +76,20 @@ unsigned char RGE_Action_Transport::update(void) {
     switch (this->state) {
     case 0x0B: {
         unsigned char result = this->sub_actions->update();
-        if (result > 0 && result <= 5) {
+        if (result > RGE_ACTION_UPDATE_CONTINUE && result <= RGE_ACTION_UPDATE_TARGET_LOST) {
             this->set_state(2);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     case 4: {
         unsigned char result = this->sub_actions->update();
-        if (result > 0 && result <= 5) {
+        if (result > RGE_ACTION_UPDATE_CONTINUE && result <= RGE_ACTION_UPDATE_TARGET_LOST) {
             this->set_state(6);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     case 6: {
@@ -132,20 +132,20 @@ unsigned char RGE_Action_Transport::update(void) {
     }
 
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 0x0D:
         // Typed casts select the virtual notify overload here.
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_TRANSPORT, 0, 0);
         this->set_state(2);
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
 
     default:
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     this->set_state(2);
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 }
 
 int RGE_Action_Transport::stop() {

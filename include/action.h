@@ -24,6 +24,16 @@
 #define TRIBE_ACTION_TYPE_TRADE               0x6F
 #define TRIBE_ACTION_TYPE_WONDER              0x78
 
+// Update results differ from action states and object-update results.
+// RGE_Action_List::update removes on REMOVE, not COMPLETED.
+#define RGE_ACTION_UPDATE_CONTINUE        0
+#define RGE_ACTION_UPDATE_REMOVE          1
+#define RGE_ACTION_UPDATE_COMPLETED       2
+#define RGE_ACTION_UPDATE_FAILED          3
+#define RGE_ACTION_UPDATE_TARGET_INVALID  4
+// Attack also returns TARGET_LOST after its sub-action completion animation clears the target.
+#define RGE_ACTION_UPDATE_TARGET_LOST     5
+
 class RGE_Action_List;
 class RGE_Action_Object;
 class RGE_Master_Action_Object;

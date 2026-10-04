@@ -136,7 +136,7 @@ unsigned char TRIBE_Action_Build::update() {
             this->set_target_obj(0);
             if (this->state != 2) {
                 this->set_state(3);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         }
     }
@@ -153,49 +153,49 @@ unsigned char TRIBE_Action_Build::update() {
             this->obj->owner->processAIOrder(this->obj->owner->id, this->obj->id, UNIT_AI_ORDER_REPAIR, this->target_obj->id,
                                              this->target_obj->owner->id, this->target_obj->world_x, this->target_obj->world_y,
                                              this->target_obj->world_z, 1.0f, 1, 0, 100);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
 
         this->set_target_obj(0);
         if (this->state != 2) {
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
     }
 
     switch (this->state) {
     case 0x0B:
         switch (this->sub_actions->update()) {
-        case 1:
-        case 2:
-        case 5:
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             this->set_state(3);
-            return 0;
-        case 3:
+            return RGE_ACTION_UPDATE_CONTINUE;
+        case RGE_ACTION_UPDATE_FAILED:
             goto state3_common;
-        case 4:
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
             goto reset_common;
         }
         break;
 
     case 4:
         switch (this->sub_actions->update()) {
-        case 4:
-        case 5:
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             goto reset_common;
-        case 3:
+        case RGE_ACTION_UPDATE_FAILED:
             goto state3_common;
-        case 1:
-        case 2:
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
             this->set_state(6);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 6:
         if (this->obj->turn_towards(this->target_obj, 0, 0)) {
             this->set_state(7);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
@@ -204,7 +204,7 @@ unsigned char TRIBE_Action_Build::update() {
             this->obj->removeAllFromPathingGroup();
             this->obj->setWaitingToMove(1);
             this->obj->do_command(this->target_obj, this->target_obj->world_x, this->target_obj->world_y, 0);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
 
         if (rge_base_game->quick_build != 0) {
@@ -221,23 +221,23 @@ unsigned char TRIBE_Action_Build::update() {
             //! If the carry is not food, the gather start discards it with no owner credit.
             if (this->target_obj != 0 && this->target_obj->master_obj->id == 0x32) {
                 this->timer = -1.0f;
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
             goto state3_common;
         }
         break;
 
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 0x0D:
         this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)UNIT_AI_NOTIFY_ACTION_FAILED, (long)UNIT_AI_ACTION_BUILD, 0L, 0L);
         this->set_state(2);
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
     }
 
 return_zero:
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 
 state3_common:
     this->set_state(3);

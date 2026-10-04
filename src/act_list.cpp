@@ -183,7 +183,7 @@ unsigned char RGE_Action_List::inside_obj_update() {
     unsigned char result;
 
     if (this->list == 0) {
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
     }
 
     result = this->list->action->inside_obj_update();
@@ -193,7 +193,7 @@ unsigned char RGE_Action_List::inside_obj_update() {
         node = node->next;
     }
 
-    if (result == 1) {
+    if (result == RGE_ACTION_UPDATE_REMOVE) {
         this->remove_action();
     }
     return result;
@@ -204,7 +204,7 @@ unsigned char RGE_Action_List::update() {
     unsigned char result;
 
     if (this->list == 0) {
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
     }
 
     result = this->list->action->update();
@@ -215,7 +215,7 @@ unsigned char RGE_Action_List::update() {
             node = node->next;
         }
 
-        if (result != 1) {
+        if (result != RGE_ACTION_UPDATE_REMOVE) {
             return result;
         }
         this->remove_action();

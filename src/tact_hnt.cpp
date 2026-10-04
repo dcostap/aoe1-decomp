@@ -267,7 +267,7 @@ unsigned char TRIBE_Action_Hunt::update() {
             if (this->timer > 0.0) {
                 this->timer = -10.0f;
                 this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HUNT, this->targetType, 0);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         }
         break;
@@ -275,94 +275,94 @@ unsigned char TRIBE_Action_Hunt::update() {
     case 11:
     case 15:
         switch (this->sub_actions->update()) {
-        case 4:
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
             this->set_target_obj(0);
             if (this->state == 11) {
                 this->set_state(11);
             } else {
                 this->set_state(15);
             }
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
 
-        case 1:
-        case 2:
-        case 5:
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             if (this->state == 11) {
                 this->set_state(3);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
             goto hunt_no_target;
 
-        case 3:
+        case RGE_ACTION_UPDATE_FAILED:
             if (this->obj->owner->computerPlayer() == 1) {
                 this->set_state(13);
             } else {
                 this->set_state(3);
             }
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 4:
         switch (this->sub_actions->update()) {
-        case 3:
+        case RGE_ACTION_UPDATE_FAILED:
             if (this->obj->owner->computerPlayer() == 1) {
                 this->set_state(13);
             } else {
                 this->set_state(3);
             }
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
 
-        case 1:
-        case 2:
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
             this->set_state(6);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
 
-        case 4:
-        case 5:
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             this->set_target_obj(0);
             this->set_state(11);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 12:
         switch (this->sub_actions->update()) {
-        case 4:
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
             this->set_target_obj(0);
             this->set_state(11);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
 
-        case 1:
-        case 2:
-        case 5:
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             if (this->target_obj != 0) {
                 this->set_state(4);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
 
-        case 3:
+        case RGE_ACTION_UPDATE_FAILED:
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 6:
         if (this->target_obj == 0) {
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         if (this->obj->turn_towards(this->target_obj, 0, 0) != 0) {
             if (this->target_obj->attribute_amount_held <= g_hunt_empty_amount) {
                 this->set_target_obj(0);
                 this->set_state(3);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
             this->set_state(7);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         this->set_state(3);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
 
     case 7: {
         float give_amount;
@@ -376,7 +376,7 @@ unsigned char TRIBE_Action_Hunt::update() {
             } else {
                 this->set_state(3);
             }
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
 
         if (rge_base_game->quick_build != 0) {
@@ -411,10 +411,10 @@ unsigned char TRIBE_Action_Hunt::update() {
         this->obj->set_attribute_amount(adjusted_amount, 1, 0);
 
         if (this->obj->attribute_amount_held < max_hold && this->target_obj->attribute_amount_held > g_hunt_empty_amount) {
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         this->set_state(8);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     case 8:
@@ -424,27 +424,27 @@ unsigned char TRIBE_Action_Hunt::update() {
                 this->timer = 0.0f;
                 this->set_target_obj2(0);
                 this->set_state(8);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
         } else {
             switch (this->sub_actions->update()) {
-            case 3:
-            case 4:
-            case 5:
+            case RGE_ACTION_UPDATE_FAILED:
+            case RGE_ACTION_UPDATE_TARGET_INVALID:
+            case RGE_ACTION_UPDATE_TARGET_LOST:
                 this->timer = -3.0f;
                 this->obj->stop_moving();
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
 
-            case 1:
-            case 2: {
+            case RGE_ACTION_UPDATE_REMOVE:
+            case RGE_ACTION_UPDATE_COMPLETED: {
                 if (this->target_obj2 == 0) {
                     this->set_state(8);
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
                 if (this->obj->distance_to_object(this->target_obj2) > g_hunt_drop_distance_threshold) {
                     this->timer = -3.0f;
                     this->obj->stop_moving();
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
 
                 if (this->task->work_sound2 != 0) {
@@ -462,11 +462,11 @@ unsigned char TRIBE_Action_Hunt::update() {
                 if (this->target_obj != 0) {
                     this->set_target_obj2(0);
                     this->set_state(4);
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
                 if (this->target_x != -1.0f && this->target_y != -1.0f) {
                     this->set_state(11);
-                    return 0;
+                    return RGE_ACTION_UPDATE_CONTINUE;
                 }
                 goto hunt_no_target;
             }
@@ -478,14 +478,14 @@ unsigned char TRIBE_Action_Hunt::update() {
         if (this->obj->owner->computerPlayer() == 0) {
             this->set_state(2);
         }
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 13:
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_HUNT, 0, 0);
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
     }
 
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 
 hunt_no_target:
     if (this->obj->owner->computerPlayer() == 0) {
@@ -493,7 +493,7 @@ hunt_no_target:
     } else {
         this->set_state(1);
     }
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 }
 
 RGE_Sprite* TRIBE_Action_Hunt::get_move_sprite(void) {

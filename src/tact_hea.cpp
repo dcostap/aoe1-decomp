@@ -123,7 +123,7 @@ unsigned char TRIBE_Action_Heal::update() {
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
         this->set_state(3);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0) {
@@ -133,77 +133,77 @@ unsigned char TRIBE_Action_Heal::update() {
     if (this->target_obj != 0 && this->target_obj->object_state != RGE_OBJECT_STATE_ACTIVE) {
         this->set_target_obj(0);
         this->set_state(3);
-        return 0;
+        return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     if (this->target_obj != 0 && this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {
         this->set_state(1);
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_HEAL, 0, 0);
-        return 4;
+        return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
 
     switch (this->state) {
     case 0x0B:
         switch (this->sub_actions->update()) {
-        case 1:
-        case 2:
-        case 5:
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             this->set_state(3);
-            return 0;
-        case 3:
+            return RGE_ACTION_UPDATE_CONTINUE;
+        case RGE_ACTION_UPDATE_FAILED:
             this->set_state(0x0D);
-            return 0;
-        case 4:
+            return RGE_ACTION_UPDATE_CONTINUE;
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
             this->set_target_obj(0);
             this->set_state(0x0B);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 4:
         switch (this->sub_actions->update()) {
-        case 4:
-        case 5:
+        case RGE_ACTION_UPDATE_TARGET_INVALID:
+        case RGE_ACTION_UPDATE_TARGET_LOST:
             this->set_target_obj(0);
             this->set_state(0x0B);
-            return 0;
-        case 3:
+            return RGE_ACTION_UPDATE_CONTINUE;
+        case RGE_ACTION_UPDATE_FAILED:
             this->set_state(0x0D);
-            return 0;
-        case 1:
-        case 2:
+            return RGE_ACTION_UPDATE_CONTINUE;
+        case RGE_ACTION_UPDATE_REMOVE:
+        case RGE_ACTION_UPDATE_COMPLETED:
             this->set_state(6);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 6:
         if (this->target_obj == 0) {
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         if (this->obj->turn_towards(this->target_obj, 0.0f, 0.0f) != 0) {
             this->set_state(7);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
 
     case 7: {
         if (this->target_obj == 0) {
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
 
         if (this->target_obj->world_x != this->target_x || this->target_y != this->target_obj->world_y) {
             float distance = this->obj->distance_to_object(this->target_obj);
             if (this->task->work_range < distance && g_heal_distance_threshold < distance) {
                 this->set_state(3);
-                return 0;
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
             this->target_x = this->target_obj->world_x;
             this->target_y = this->target_obj->world_y;
             this->target_z = this->target_obj->world_z;
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
 
         work = this->task->work_val1 *
@@ -216,26 +216,26 @@ unsigned char TRIBE_Action_Heal::update() {
         unsigned char result = this->target_obj->heal(work);
         if (result == 1) {
             this->set_state(3);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         if (result == 2) {
             this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_HEAL, 0, 0);
             this->set_state(2);
-            return 0;
+            return RGE_ACTION_UPDATE_CONTINUE;
         }
         break;
     }
 
     case 1:
-        return 1;
+        return RGE_ACTION_UPDATE_REMOVE;
 
     case 0x0D:
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_HEAL, 0, 0);
         this->set_state(2);
-        return 3;
+        return RGE_ACTION_UPDATE_FAILED;
     }
 
-    return 0;
+    return RGE_ACTION_UPDATE_CONTINUE;
 }
 
 //     RGE_Static_Object*, float, float, float)
