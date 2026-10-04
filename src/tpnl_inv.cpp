@@ -78,28 +78,28 @@ void TRIBE_Panel_Inven::draw() {
         long x = this->pnl_x + 0x20;
         long y = this->pnl_y + 2;
 
-        sprintf(str, s_fmt_ld, (long)this->player->attributes[1]);
+        sprintf(str, s_fmt_ld, (long)this->player->attributes[RGE_RESOURCE_WOOD]);
         SetTextColor(this->render_area->DrawDc, this->back_color);
         TextOutA(this->render_area->DrawDc, x - 1, y + 1, str, strlen(str));
         SetTextColor(this->render_area->DrawDc, this->font_color);
         TextOutA(this->render_area->DrawDc, x, y, str, strlen(str));
 
         x = this->pnl_x + 0x63;
-        sprintf(str, s_fmt_ld, (long)this->player->attributes[0]);
+        sprintf(str, s_fmt_ld, (long)this->player->attributes[RGE_RESOURCE_FOOD]);
         SetTextColor(this->render_area->DrawDc, this->back_color);
         TextOutA(this->render_area->DrawDc, x - 1, y + 1, str, strlen(str));
         SetTextColor(this->render_area->DrawDc, this->font_color);
         TextOutA(this->render_area->DrawDc, x, y, str, strlen(str));
 
         x = this->pnl_x + 0xA6;
-        sprintf(str, s_fmt_ld, (long)this->player->attributes[3]);
+        sprintf(str, s_fmt_ld, (long)this->player->attributes[RGE_RESOURCE_GOLD]);
         SetTextColor(this->render_area->DrawDc, this->back_color);
         TextOutA(this->render_area->DrawDc, x - 1, y + 1, str, strlen(str));
         SetTextColor(this->render_area->DrawDc, this->font_color);
         TextOutA(this->render_area->DrawDc, x, y, str, strlen(str));
 
         x = this->pnl_x + 0xE9;
-        sprintf(str, s_fmt_ld, (long)this->player->attributes[2]);
+        sprintf(str, s_fmt_ld, (long)this->player->attributes[RGE_RESOURCE_STONE]);
         SetTextColor(this->render_area->DrawDc, this->back_color);
         TextOutA(this->render_area->DrawDc, x - 1, y + 1, str, strlen(str));
         SetTextColor(this->render_area->DrawDc, this->font_color);
@@ -178,16 +178,16 @@ unsigned char TRIBE_Panel_Inven::get_help_info(char*& string, long& page, long x
         return 0;
 
     if (x < this->pnl_x + 0x37) {
-        sprintf(string, this->get_string(STRING_ID_HELP_INVENTORY_WOOD_FORMAT), (int)this->player->attributes[1]);
+        sprintf(string, this->get_string(STRING_ID_HELP_INVENTORY_WOOD_FORMAT), (int)this->player->attributes[RGE_RESOURCE_WOOD]);
         page = -1;
     } else if (x < this->pnl_x + 0x6E) {
-        sprintf(string, this->get_string(STRING_ID_HELP_INVENTORY_FOOD_FORMAT), (int)this->player->attributes[0]);
+        sprintf(string, this->get_string(STRING_ID_HELP_INVENTORY_FOOD_FORMAT), (int)this->player->attributes[RGE_RESOURCE_FOOD]);
         page = -1;
     } else if (x < this->pnl_x + 0xA5) {
-        sprintf(string, this->get_string(STRING_ID_HELP_INVENTORY_GOLD_FORMAT), (int)this->player->attributes[3]);
+        sprintf(string, this->get_string(STRING_ID_HELP_INVENTORY_GOLD_FORMAT), (int)this->player->attributes[RGE_RESOURCE_GOLD]);
         page = -1;
     } else {
-        sprintf(string, this->get_string(STRING_ID_HELP_INVENTORY_STONE_FORMAT), (int)this->player->attributes[2]);
+        sprintf(string, this->get_string(STRING_ID_HELP_INVENTORY_STONE_FORMAT), (int)this->player->attributes[RGE_RESOURCE_STONE]);
         page = -1;
     }
 

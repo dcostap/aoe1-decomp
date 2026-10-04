@@ -19,6 +19,61 @@
 // Search filter only; never store this in object_state.
 #define RGE_OBJECT_STATE_ANY (-1)
 
+// These IDs differ from RGE_Action::action_type and command packet IDs.
+// Keep numeric macros: enum declarations can change VC5 output in other functions.
+#define UNIT_AI_ACTION_ATTACK              0x258
+#define UNIT_AI_ACTION_DEFEND              0x259
+#define UNIT_AI_ACTION_BUILD               0x25A
+#define UNIT_AI_ACTION_HEAL                0x25B
+#define UNIT_AI_ACTION_CONVERT             0x25C
+#define UNIT_AI_ACTION_EXPLORE             0x25D
+#define UNIT_AI_ACTION_GATHER              0x261
+#define UNIT_AI_ACTION_MOVE                0x262
+#define UNIT_AI_ACTION_FOLLOW              0x264
+#define UNIT_AI_ACTION_HUNT                0x265
+#define UNIT_AI_ACTION_TRANSPORT           0x266
+#define UNIT_AI_ACTION_TRADE               0x267
+#define UNIT_AI_ACTION_ENTER               0x269
+#define UNIT_AI_ACTION_REPAIR              0x26A
+#define UNIT_AI_ACTION_TRAIN               0x26B
+#define UNIT_AI_ACTION_RESEARCH            0x26C
+#define UNIT_AI_ACTION_UNLOAD              0x26D
+#define UNIT_AI_ACTION_SEEK_AND_DESTROY     0x26E
+#define UNIT_AI_ACTION_EXPLORE_AND_DESTROY  0x26F
+#define UNIT_AI_ACTION_WAIT                0x274
+
+#define UNIT_AI_ORDER_ATTACK               0x2BC
+#define UNIT_AI_ORDER_DEFEND               0x2BD
+#define UNIT_AI_ORDER_BUILD                0x2BE
+#define UNIT_AI_ORDER_HEAL                 0x2BF
+#define UNIT_AI_ORDER_CONVERT              0x2C0
+#define UNIT_AI_ORDER_EXPLORE              0x2C1
+#define UNIT_AI_ORDER_STOP                 0x2C2
+#define UNIT_AI_ORDER_GATHER               0x2C5
+#define UNIT_AI_ORDER_MOVE                 0x2C6
+#define UNIT_AI_ORDER_FOLLOW               0x2C8
+#define UNIT_AI_ORDER_HUNT                 0x2C9
+#define UNIT_AI_ORDER_TRANSPORT            0x2CA
+#define UNIT_AI_ORDER_TRADE                0x2CB
+#define UNIT_AI_ORDER_ENTER                0x2CD
+#define UNIT_AI_ORDER_REPAIR               0x2CE
+#define UNIT_AI_ORDER_UNLOAD               0x2D1
+#define UNIT_AI_ORDER_SEEK_AND_DESTROY      0x2D2
+#define UNIT_AI_ORDER_EXPLORE_AND_DESTROY   0x2D3
+#define UNIT_AI_ORDER_MOVE_TO_TARGET       0x2D4
+#define UNIT_AI_ORDER_STAND_GROUND         0x2D5
+#define UNIT_AI_ORDER_START_PLAY           0x2D6
+#define UNIT_AI_ORDER_STOP_PLAY            0x2D7
+#define UNIT_AI_ORDER_WAIT                 0x2D8
+#define UNIT_AI_ORDER_ATTACK_ROUNDUP       0x2D9
+
+// Conversion also sends the attacked event, without applying damage.
+#define UNIT_AI_NOTIFY_ATTACKED           0x1F4
+#define UNIT_AI_NOTIFY_ACTION_FAILED      0x1F9
+#define UNIT_AI_NOTIFY_ACTION_COMPLETED   0x1FA
+#define UNIT_AI_NOTIFY_TARGET_INVALID     0x1FB
+#define UNIT_AI_NOTIFY_REQUEST_TASK       0x202
+
 class InfluenceMap;
 struct LOSTBL;
 class Path;

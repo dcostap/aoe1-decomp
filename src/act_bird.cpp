@@ -17,13 +17,13 @@ extern int __cdecl debug_rand(char*, int);
 
 RGE_Action_Bird::RGE_Action_Bird(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 10;
+    this->action_type = RGE_ACTION_TYPE_BIRD;
 }
 
 RGE_Action_Bird::RGE_Action_Bird(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 10;
+    this->action_type = RGE_ACTION_TYPE_BIRD;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;

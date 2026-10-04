@@ -375,7 +375,7 @@ unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id, short* missing_a
     unsigned char has_carry;
 
     tech = this->base_tech->tech_tree + tech_id;
-    carry = this->owner->attributes[3];
+    carry = this->owner->attributes[RGE_RESOURCE_GOLD];
 
     if (this->owner->attributes[0x1d] < 1.0) {
         carry = 0.0f;
@@ -433,8 +433,8 @@ unsigned char TRIBE_Player_Tech::start_research(short tech_id, unsigned char cha
                 if (attribute >= 0 && tech->attribute_used[i] != 0) {
                     cost = (float)(int)tech->attribute_cost[i];
                     if (this->owner->attributes[attribute] < cost) {
-                        this->owner->attributes[3] =
-                            this->owner->attributes[3] -
+                        this->owner->attributes[RGE_RESOURCE_GOLD] =
+                            this->owner->attributes[RGE_RESOURCE_GOLD] -
                             (cost - this->owner->attributes[attribute]);
                         this->owner->attributes[attribute] = 0.0f;
                     } else {

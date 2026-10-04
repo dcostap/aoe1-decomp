@@ -14,7 +14,7 @@
 
 RGE_Action_Move_To::RGE_Action_Move_To(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    action_type = 1;
+    action_type = RGE_ACTION_TYPE_MOVE;
     rge_read(infile, &range, 4);
 }
 
@@ -23,7 +23,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(
     RGE_Action_Object* obj_in, float x, float y, float z, float range_in,
     RGE_Sprite* sprite_in)
     : RGE_Action(obj_in, 1) {
-    action_type = 1;
+    action_type = RGE_ACTION_TYPE_MOVE;
     target_x = x;
     target_y = y;
     target_z = z;
@@ -50,7 +50,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(
     RGE_Action_Object* obj_in, RGE_Static_Object* target_obj_in,
     float range_in, RGE_Sprite* sprite_in)
     : RGE_Action(obj_in, 1) {
-    action_type = 1;
+    action_type = RGE_ACTION_TYPE_MOVE;
     set_target_obj(target_obj_in);
 
     if (target_obj_in != 0) {
@@ -142,7 +142,7 @@ unsigned char RGE_Action_Move_To::update() {
         if (this->target_obj != 0 && this->obj->inRange(this->target_obj, this->range) != 0) {
             this->set_state(1);
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x262, 0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_MOVE, 0, 0);
             }
             this->obj->setWaitingToMove(0);
             this->obj->pathingGroupMembers.zeroNumber();
@@ -207,7 +207,7 @@ unsigned char RGE_Action_Move_To::update() {
                 }
             }
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x262, 0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_MOVE, 0, 0);
             }
             this->set_state(1);
             return 2;
@@ -220,7 +220,7 @@ unsigned char RGE_Action_Move_To::update() {
     case 13:
     state_done:
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x262, 0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_MOVE, 0, 0);
         }
         return 3;
 
@@ -239,7 +239,7 @@ target_lost:
     if (this->subActionValue == 1) {
         return 5;
     }
-    this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x262, this->targetID, 0);
+    this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_MOVE, this->targetID, 0);
     return 4;
 }
 

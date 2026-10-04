@@ -9,13 +9,13 @@
 
 RGE_Action_Explore::RGE_Action_Explore(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 4;
+    this->action_type = RGE_ACTION_TYPE_EXPLORE;
 }
 
 RGE_Action_Explore::RGE_Action_Explore(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 4;
+    this->action_type = RGE_ACTION_TYPE_EXPLORE;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -37,7 +37,7 @@ void RGE_Action_Explore::set_state(unsigned char new_state) {
     case 3:
         {
             int obj_id = this->obj->id;
-            this->obj->notify(obj_id, obj_id, 0x202, 0x25D, 0, 0);
+            this->obj->notify(obj_id, obj_id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_EXPLORE, 0, 0);
         }
         goto new_sprite;
 
@@ -88,7 +88,7 @@ unsigned char RGE_Action_Explore::update(void) {
     switch (this->state) {
     case 13: {
         int obj_id = this->obj->id;
-        this->obj->notify(obj_id, obj_id, 0x1F9, 0x25D, 0, 0);
+        this->obj->notify(obj_id, obj_id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_EXPLORE, 0, 0);
         this->set_state(2);
         return 3;
     }

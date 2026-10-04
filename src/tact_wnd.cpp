@@ -16,12 +16,12 @@ static const float LIMIT = 2000.0f;
 
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 0x78;
+    this->action_type = TRIBE_ACTION_TYPE_WONDER;
 }
 
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* obj_in)
     : RGE_Action(obj_in, 1) {
-    this->action_type = 0x78;
+    this->action_type = TRIBE_ACTION_TYPE_WONDER;
     this->timer = 0.0f;
 }
 

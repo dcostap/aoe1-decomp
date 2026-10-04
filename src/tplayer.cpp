@@ -272,8 +272,8 @@ void TRIBE_Player::update() {
             while (node != 0) {
                 RGE_Static_Object* object = node->node;
                 int group = object->master_obj->object_group;
-                if (group != 0xb && group != 0x1e && group != 0x1b && group != 1 && group != 0x15 && group != 0x14 &&
-                    group != 2 && group != 0x25 && object->object_state == RGE_OBJECT_STATE_ACTIVE)
+                if (group != 0xb && group != 0x1e && group != OBJECT_GROUP_WALL && group != OBJECT_GROUP_ARTIFACT && group != OBJECT_GROUP_FISHING_BOAT && group != OBJECT_GROUP_TRANSPORT_BOAT &&
+                    group != OBJECT_GROUP_TRADE_BOAT && group != 0x25 && object->object_state == RGE_OBJECT_STATE_ACTIVE)
                     break;
                 node = node->next;
             }
@@ -284,9 +284,9 @@ void TRIBE_Player::update() {
         }
     }
     RGE_Player::update();
-    this->attributes[0] -= this->world->world_time_delta_seconds *
+    this->attributes[RGE_RESOURCE_FOOD] -= this->world->world_time_delta_seconds *
         this->attributes[33] * this->attributes[11] * 0.016666667f;
-    if (this->attributes[0] < 0.0) this->attributes[0] = 0.0f;
+    if (this->attributes[RGE_RESOURCE_FOOD] < 0.0) this->attributes[RGE_RESOURCE_FOOD] = 0.0f;
     int seed = debug_rand(tplayerSourceName, 607);
     int old = debug_random_on;
     global_save_debug_random_on1 = old;
@@ -305,10 +305,10 @@ void TRIBE_Player::update_dopplegangers() { RGE_Player::update_dopplegangers(); 
 
 void TRIBE_Player::scenario_save(int outfile) {
     RGE_Player::scenario_save(outfile);
-    rge_write(outfile, &this->attributes[0], 4);
-    rge_write(outfile, &this->attributes[1], 4);
-    rge_write(outfile, &this->attributes[3], 4);
-    rge_write(outfile, &this->attributes[2], 4);
+    rge_write(outfile, &this->attributes[RGE_RESOURCE_FOOD], 4);
+    rge_write(outfile, &this->attributes[RGE_RESOURCE_WOOD], 4);
+    rge_write(outfile, &this->attributes[RGE_RESOURCE_GOLD], 4);
+    rge_write(outfile, &this->attributes[RGE_RESOURCE_STONE], 4);
 }
 
 
@@ -336,10 +336,10 @@ void TRIBE_Player::scenario_load(int infile, long* player_id_hash, float version
     }
 
     if (version > 1.06) {
-        rge_read(infile, &this->attributes[0], 4);
-        rge_read(infile, &this->attributes[1], 4);
-        rge_read(infile, &this->attributes[3], 4);
-        rge_read(infile, &this->attributes[2], 4);
+        rge_read(infile, &this->attributes[RGE_RESOURCE_FOOD], 4);
+        rge_read(infile, &this->attributes[RGE_RESOURCE_WOOD], 4);
+        rge_read(infile, &this->attributes[RGE_RESOURCE_GOLD], 4);
+        rge_read(infile, &this->attributes[RGE_RESOURCE_STONE], 4);
     }
 
     this->attributes[30] = 0.0f;
@@ -810,7 +810,7 @@ unsigned char TRIBE_Player::command_building_cancel() {
     if (selected_obj != 0) {
         if (selected_obj->owner == this) {
             if (selected_obj->master_obj->master_type == 'P' || selected_obj->master_obj->master_type == 'F') {
-                if (selected_obj->master_obj->object_group != 1) {
+                if (selected_obj->master_obj->object_group != OBJECT_GROUP_ARTIFACT) {
                     static_cast<TRIBE_Command*>(this->world->commands)->command_cancel_build(selected_obj);
                     return 1;
                 }
@@ -903,9 +903,9 @@ unsigned char TRIBE_Player::command_make_repair(RGE_Static_Object* obj) {
     RGE_Static_Object** list;
     if (!(((obj->owner == this || this->isAlly(obj->owner->id)) && obj->master_obj->master_type == 'P' &&
            static_cast<float>(obj->master_obj->hp) > obj->hp && obj->object_state < RGE_OBJECT_STATE_DYING) || ((obj->owner == this ||
-            (this->isAlly(obj->owner->id) && obj->owner->isAlly(this->id))) && (obj->master_obj->object_group == 2 ||
-            obj->master_obj->object_group == 0x14 || obj->master_obj->object_group == 0x15 ||
-            obj->master_obj->object_group == 0x16) && static_cast<float>(obj->master_obj->hp) > obj->hp &&
+            (this->isAlly(obj->owner->id) && obj->owner->isAlly(this->id))) && (obj->master_obj->object_group == OBJECT_GROUP_TRADE_BOAT ||
+            obj->master_obj->object_group == OBJECT_GROUP_TRANSPORT_BOAT || obj->master_obj->object_group == OBJECT_GROUP_FISHING_BOAT ||
+            obj->master_obj->object_group == OBJECT_GROUP_WAR_BOAT) && static_cast<float>(obj->master_obj->hp) > obj->hp &&
            obj->object_state < RGE_OBJECT_STATE_DYING)))
         return 0;
     if (!this->get_selected_objects_to_command(&list, &list_num, 4, 4, -1, -1))
@@ -935,7 +935,7 @@ unsigned char TRIBE_Player::command_make_unload(float x, float y) {
 
 unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed,
                                              float modifier, int ignore_pop) {
-    float population = this->attributes[3];
+    float population = this->attributes[RGE_RESOURCE_GOLD];
     if (attribute_needed != 0) *attribute_needed = static_cast<short>(-1);
     bool population_available;
     if (this->attributes[29] < 1.0) {
@@ -986,7 +986,7 @@ unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float modifier, int ignor
             if (type >= 0 && combat->build_inventory[i].flag != 0 && (ignore_pop == 0 || type != 4)) {
                 float amount = combat->build_inventory[i].amount * modifier;
                 if (amount > this->attributes[type]) {
-                    this->attributes[3] -= amount - this->attributes[type];
+                    this->attributes[RGE_RESOURCE_GOLD] -= amount - this->attributes[type];
                     this->attributes[type] = 0.0f;
                 } else {
                     this->attributes[type] -= amount;
@@ -1673,7 +1673,7 @@ void TRIBE_Player::notify(int caller, int recipient, int mType,
         }
         break;
     case 0x20C:
-        if (p1 == 0x267)
+        if (p1 == UNIT_AI_ACTION_TRADE)
             static_cast<TRIBE_Game*>(rge_base_game)->notification(3, this->id, 0, 0, 0);
         break;
     case 0x207:
@@ -1704,8 +1704,8 @@ void TRIBE_Player::notifyAI(int callerID, int recipientID, int mType, long p1, l
     }
 
     switch (mType) {
-    case 0x1f9:
-        if (p1 != 0x25d) return;
+    case UNIT_AI_NOTIFY_ACTION_FAILED:
+        if (p1 != UNIT_AI_ACTION_EXPLORE) return;
         {
             TacticalAIGroup* group = this->playerAI->tacticalAI.groupUnitIsIn(callerID);
             if (group == 0) return;
@@ -1713,12 +1713,12 @@ void TRIBE_Player::notifyAI(int callerID, int recipientID, int mType, long p1, l
             this->playerAI->tacticalAI.removeGroup(group->id());
             return;
         }
-    case 0x202: {
+    case UNIT_AI_NOTIFY_REQUEST_TASK: {
         float unY;
         float unX;
         switch (p1) {
-        case 0x25d:
-        case 0x26f:
+        case UNIT_AI_ACTION_EXPLORE:
+        case UNIT_AI_ACTION_EXPLORE_AND_DESTROY:
             if (this->playerAI->informationAI.fullyExploredZone(callerID) != 0 &&
                 this->playerAI->informationAI.closestUnexploredTile(callerID, obj->world_x, obj->world_y, &unY, &unX) == 1) {
                 this->playerAI->tacticalAI.taskExplorer(callerID, unY, unX);
@@ -3101,10 +3101,10 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime) {
     fprintf(out, "  Kills:           %d.\n", this->victory_conditions->get_attribute_id(0));
     fprintf(out, "  Kill Ratio:      %d.\n", this->victory_conditions->get_attribute_id(2));
     fprintf(out, "  Razings:         %d.\n", this->victory_conditions->get_attribute_id(1));
-    fprintf(out, "  Food:            %d.\n", static_cast<int>(this->attributes[0]));
-    fprintf(out, "  Gold:            %d.\n", static_cast<int>(this->attributes[3]));
-    fprintf(out, "  Stone:           %d.\n", static_cast<int>(this->attributes[2]));
-    fprintf(out, "  Wood:            %d.\n", static_cast<int>(this->attributes[1]));
+    fprintf(out, "  Food:            %d.\n", static_cast<int>(this->attributes[RGE_RESOURCE_FOOD]));
+    fprintf(out, "  Gold:            %d.\n", static_cast<int>(this->attributes[RGE_RESOURCE_GOLD]));
+    fprintf(out, "  Stone:           %d.\n", static_cast<int>(this->attributes[RGE_RESOURCE_STONE]));
+    fprintf(out, "  Wood:            %d.\n", static_cast<int>(this->attributes[RGE_RESOURCE_WOOD]));
     fprintf(out, "  Technology:      %d.\n", this->victory_conditions->get_attribute_id(0x11));
     fprintf(out, "  Exploration:     %d.\n", this->victory_conditions->get_attribute_id(7));
 
@@ -3146,7 +3146,7 @@ void TRIBE_Player::get_achievement(unsigned char achievement, char* info) {
         sprintf(info, "%4.f", attributes[11]);
         break;
     case 4:
-        sprintf(info, "%5.f", attributes[3]);
+        sprintf(info, "%5.f", attributes[RGE_RESOURCE_GOLD]);
         break;
     case 5: {
         float pct = this->visible->percentExplored() * 100.0f;

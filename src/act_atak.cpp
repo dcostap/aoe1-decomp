@@ -26,7 +26,7 @@ RGE_Action_Attack::RGE_Action_Attack(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
     short short_val;
 
-    this->action_type = 9;
+    this->action_type = RGE_ACTION_TYPE_ATTACK;
     rge_read(infile, &this->range, 4);
     rge_read(infile, &this->min_range, 4);
     rge_read(infile, &this->missile_id, 2);
@@ -48,7 +48,7 @@ RGE_Action_Attack::RGE_Action_Attack(
     RGE_Sprite* wait_sprite_in, float range_in, float min_range_in,
     short missile_id_in, short fire_missile_at_frame_in)
     : RGE_Action(obj_in, 1) {
-    this->action_type = 9;
+    this->action_type = RGE_ACTION_TYPE_ATTACK;
     this->set_target_obj(target_obj_in);
     this->fight_sprite = fight_sprite_in;
     this->wait_sprite = wait_sprite_in;
@@ -107,7 +107,7 @@ RGE_Action_Attack::RGE_Action_Attack(
     this->target_z = z;
     this->target_y = y;
     this->missile_id = missile_id_in;
-    this->action_type = 9;
+    this->action_type = RGE_ACTION_TYPE_ATTACK;
     this->move_sprite = move_sprite_in;
     this->fight_sprite = fight_sprite_in;
     this->wait_sprite = wait_sprite_in;
@@ -184,7 +184,7 @@ void RGE_Action_Attack::save(int outfile) {
 void RGE_Action_Attack::first_in_stack(unsigned char first_time) {
     if (this->obj->maximumSpeed() != 0.0) {
         UnitAIModule* ai = this->obj->unitAI();
-        if (ai == 0 || this->obj->unitAI()->currentOrder() != 0x2D5) {
+        if (ai == 0 || this->obj->unitAI()->currentOrder() != UNIT_AI_ORDER_STAND_GROUND) {
             this->set_state(4);
             return;
         }
@@ -229,7 +229,7 @@ void RGE_Action_Attack::set_state(unsigned char new_state) {
         }
         if (action == 0) {
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x262, 0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_MOVE, 0, 0);
             }
             this->set_state(1);
             return;
@@ -296,7 +296,7 @@ unsigned char RGE_Action_Attack::update() {
     if (this->target_obj != 0 && this->obj->owner->id != 0 && this->obj->owner->isAlly(this->target_obj->owner->id)) {
         this->set_state(1);
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0);
         }
         return 4;
     }
@@ -304,7 +304,7 @@ unsigned char RGE_Action_Attack::update() {
     if (this->target_obj != 0 && this->target_obj->inside_obj != 0) {
         this->set_state(1);
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0);
         }
         return 4;
     }
@@ -317,7 +317,7 @@ unsigned char RGE_Action_Attack::update() {
         if (this->obj->sprite_list->looped(this->obj->sprite) == 1) {
             this->set_target_obj(0);
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x258, 0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_ATTACK, 0, 0);
             }
             this->set_state(1);
             if (this->subActionValue == 1) {
@@ -337,14 +337,14 @@ unsigned char RGE_Action_Attack::update() {
         case 3:
             this->set_state(13);
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x258, 0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ATTACK, 0, 0);
             }
             return 3;
 
         case 4:
             this->set_state(14);
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0);
             }
             return 4;
 
@@ -406,7 +406,7 @@ unsigned char RGE_Action_Attack::update() {
         break;
 
     case 13:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x258, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ATTACK, 0, 0);
         return 3;
 
     default:
@@ -472,8 +472,8 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
         goto too_far;
     }
 
-    if (this->target_obj->owner->id > 0 && this->target_obj->master_obj->object_group != 3 &&
-        this->target_obj->master_obj->object_group != 0x1B) {
+    if (this->target_obj->owner->id > 0 && this->target_obj->master_obj->object_group != OBJECT_GROUP_BUILDING &&
+        this->target_obj->master_obj->object_group != OBJECT_GROUP_WALL) {
         unsigned char visible = this->obj->owner->visible->get_visible((int)this->target_obj->world_x,
                                                                        (int)this->target_obj->world_y);
         if (visible == 0) {
@@ -519,7 +519,7 @@ too_close:
             if (this->obj->unitAI() == 0) {
                 return 0;
             }
-            if (this->obj->unitAI()->currentOrder() != 0x2D5) {
+            if (this->obj->unitAI()->currentOrder() != UNIT_AI_ORDER_STAND_GROUND) {
                 return 0;
             }
         }
@@ -539,7 +539,7 @@ too_far:
     if (this->subActionValue == 0) {
         this->obj->notify(this->obj->id, this->obj->id, 0x1FD, 0, 0, 0);
     }
-    if (this->obj->maximumSpeed() == 0.0 || (this->obj->unitAI() != 0 && this->obj->unitAI()->currentOrder() == 0x2D5)) {
+    if (this->obj->maximumSpeed() == 0.0 || (this->obj->unitAI() != 0 && this->obj->unitAI()->currentOrder() == UNIT_AI_ORDER_STAND_GROUND)) {
         this->set_state(0x0D);
     } else {
         this->set_state(4);

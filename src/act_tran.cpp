@@ -11,13 +11,13 @@
 
 RGE_Action_Transport::RGE_Action_Transport(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 0x0C;
+    this->action_type = RGE_ACTION_TYPE_TRANSPORT;
 }
 
 RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x0C;
+    this->action_type = RGE_ACTION_TYPE_TRANSPORT;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -98,7 +98,7 @@ unsigned char RGE_Action_Transport::update(void) {
             RGE_Action_Object* object = this->obj;
             RGE_Player* owner = object->owner;
             int id = object->id;
-            owner->notify(id, id, 0x207, 0x266, 0, 0);
+            owner->notify(id, id, 0x207, UNIT_AI_ACTION_TRANSPORT, 0, 0);
             break;
         }
 
@@ -106,11 +106,11 @@ unsigned char RGE_Action_Transport::update(void) {
             if (this->next_to_drop_off_terrain() != 0) {
                 zone = this->targetZone();
                 if (this->obj->drop_held_objects(zone) == 0) {
-                    this->obj->owner->notify(this->obj->id, this->obj->id, 0x207, 0x266, 0, 0);
+                    this->obj->owner->notify(this->obj->id, this->obj->id, 0x207, UNIT_AI_ACTION_TRANSPORT, 0, 0);
                     break;
                 }
                 if (this->obj->objects->number_of_objects > 0) {
-                    this->obj->owner->notify(this->obj->id, this->obj->id, 0x206, 0x266, 0, 0);
+                    this->obj->owner->notify(this->obj->id, this->obj->id, 0x206, UNIT_AI_ACTION_TRANSPORT, 0, 0);
                 }
                 break;
             } else {
@@ -126,7 +126,7 @@ unsigned char RGE_Action_Transport::update(void) {
             }
             RGE_Player* owner = this->obj->owner;
             int id = this->obj->id;
-            owner->notify(id, id, 0x207, 0x266, 0, 0);
+            owner->notify(id, id, 0x207, UNIT_AI_ACTION_TRANSPORT, 0, 0);
         }
         break;
     }
@@ -136,7 +136,7 @@ unsigned char RGE_Action_Transport::update(void) {
 
     case 0x0D:
         // Typed casts select the virtual notify overload here.
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x266, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_TRANSPORT, 0, 0);
         this->set_state(2);
         return 3;
 

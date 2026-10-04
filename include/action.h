@@ -1,6 +1,29 @@
 #ifndef AOE1_ACTION_H
 #define AOE1_ACTION_H
 
+// Task/action types differ from UnitAIModule action IDs and command packet IDs.
+#define RGE_ACTION_TYPE_MOVE       1
+#define RGE_ACTION_TYPE_ENTER      3
+#define RGE_ACTION_TYPE_EXPLORE    4
+#define RGE_ACTION_TYPE_GATHER     5
+#define RGE_ACTION_TYPE_MISSILE    8
+#define RGE_ACTION_TYPE_ATTACK     9
+#define RGE_ACTION_TYPE_BIRD       10
+#define RGE_ACTION_TYPE_TRANSPORT  0x0C
+#define RGE_ACTION_TYPE_RUN_AWAY   20
+#define RGE_ACTION_TYPE_MAKE       0x15
+#define TRIBE_ACTION_TYPE_BUILD               0x65
+#define TRIBE_ACTION_TYPE_MAKE_OBJECT         0x66
+#define TRIBE_ACTION_TYPE_MAKE_TECH           0x67
+#define TRIBE_ACTION_TYPE_CONVERT             0x68
+#define TRIBE_ACTION_TYPE_HEAL                0x69
+#define TRIBE_ACTION_TYPE_REPAIR              0x6A
+#define TRIBE_ACTION_TYPE_ARTIFACT            0x6B
+#define TRIBE_ACTION_TYPE_DISCOVERY_ARTIFACT  0x6C
+#define TRIBE_ACTION_TYPE_HUNT                0x6E
+#define TRIBE_ACTION_TYPE_TRADE               0x6F
+#define TRIBE_ACTION_TYPE_WONDER              0x78
+
 class RGE_Action_List;
 class RGE_Action_Object;
 class RGE_Master_Action_Object;

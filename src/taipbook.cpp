@@ -38,7 +38,7 @@ int TribeAIPlayBook::convertUnitNameToIntType(char* t) const {
 
 int TribeAIPlayBook::convertUnitToIntType(RGE_Static_Object* obj) const {
     short group = obj->master_obj->object_group;
-    if (group == 0x12) return 4;
+    if (group == OBJECT_GROUP_PRIEST) return 4;
     if (group == 0x1C) return 3;
     if (group == 0x0D) return 5;
     if (group == 0x0C || group == 0x23) return 2;

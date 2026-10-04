@@ -118,7 +118,7 @@ void TRIBE_Command::do_command_make(TRIBE_Command_Make* order) {
                 building->set_only_action(action);
             }
             if (building->unitAI() != 0) {
-                building->unitAI()->setCurrentAction(0x26c);
+                building->unitAI()->setCurrentAction(UNIT_AI_ACTION_RESEARCH);
                 building->unitAI()->setCurrentTarget(order->unique_id, -1, -1.0f, -1.0f, -1.0f);
                 return;
             }
@@ -153,7 +153,7 @@ void TRIBE_Command::do_command_research(TRIBE_Command_Research* order) {
                 building->set_only_action(action);
             }
             if (building->unitAI() != 0) {
-                building->unitAI()->setCurrentAction(0x26c);
+                building->unitAI()->setCurrentAction(UNIT_AI_ACTION_RESEARCH);
                 building->unitAI()->setCurrentTarget(order->unique_id, -1, -1.0f, -1.0f, -1.0f);
                 return;
             }
@@ -505,7 +505,7 @@ void TRIBE_Command::do_command_unload(TRIBE_Command_Unload* order) {
         if (obj) {
             obj->removeAllFromPathingGroup();
             RGE_Player* owner = obj->owner;
-            owner->processAIOrder(owner->id, obj->id, 0x2D1, obj->id, owner->id,
+            owner->processAIOrder(owner->id, obj->id, UNIT_AI_ORDER_UNLOAD, obj->id, owner->id,
                                   order->location_x, order->location_y, 0, 1.0f, 1, 0, 100);
         }
         ids++;

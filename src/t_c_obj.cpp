@@ -60,9 +60,9 @@ TRIBE_Combat_Object::~TRIBE_Combat_Object() {
 
     RGE_Master_Static_Object* master = this->master_obj;
     const short group = master->object_group;
-    if (group == 4 || group == 0x15 || group == 2) {
+    if (group == OBJECT_GROUP_CIVILIAN || group == OBJECT_GROUP_FISHING_BOAT || group == OBJECT_GROUP_TRADE_BOAT) {
         this->owner->attributes[37] -= g_combat_one_float;
-    } else if ((group != 0x12 && master->master_type == 'F') || master->id == 'O' || master->id == 'E' ||
+    } else if ((group != OBJECT_GROUP_PRIEST && master->master_type == 'F') || master->id == 'O' || master->id == 'E' ||
                master->id == 0xC7) {
         this->owner->attributes[40] -= g_combat_one_float;
     }
@@ -80,15 +80,15 @@ int TRIBE_Combat_Object::setup(TRIBE_Master_Combat_Object* tobj,
     this->initUnitAI();
     this->own_master = 0;
 
-    if (this->master_obj->object_group == 4 || this->master_obj->object_group == 0x15 ||
-        this->master_obj->object_group == 2) {
+    if (this->master_obj->object_group == OBJECT_GROUP_CIVILIAN || this->master_obj->object_group == OBJECT_GROUP_FISHING_BOAT ||
+        this->master_obj->object_group == OBJECT_GROUP_TRADE_BOAT) {
         this->owner->attributes[37] -= g_combat_negative_one;
-    } else if ((this->master_obj->object_group != 0x12 && this->master_obj->master_type == 'F') ||
+    } else if ((this->master_obj->object_group != OBJECT_GROUP_PRIEST && this->master_obj->master_type == 'F') ||
                this->master_obj->id == 0x4F || this->master_obj->id == 0x45 || this->master_obj->id == 0xC7) {
         this->owner->attributes[40] -= g_combat_negative_one;
     }
 
-    if (this->master_obj->object_group == 0x12) {
+    if (this->master_obj->object_group == OBJECT_GROUP_PRIEST) {
         this->attribute_amount_held = 100.0f;
         this->attribute_type_held = 0x22;
     }
@@ -147,7 +147,7 @@ void TRIBE_Combat_Object::save(int outfile) {
 }
 
 unsigned char TRIBE_Combat_Object::update() {
-    if (this->master_obj->object_group == 0x12 && this->object_state == RGE_OBJECT_STATE_ACTIVE) {
+    if (this->master_obj->object_group == OBJECT_GROUP_PRIEST && this->object_state == RGE_OBJECT_STATE_ACTIVE) {
         this->attribute_amount_held +=
             this->owner->attributes[35] *
             this->owner->world->world_time_delta_seconds;
@@ -195,7 +195,7 @@ void TRIBE_Combat_Object::transform(RGE_Master_Static_Object* obj) {
 
 void TRIBE_Combat_Object::set_object_state(unsigned char new_object_state) {
     if (this->owner->world->game_state == 0 && new_object_state >= RGE_OBJECT_STATE_DYING &&
-        this->object_state <= RGE_OBJECT_STATE_ACTIVE && this->master_obj->object_group == 1) {
+        this->object_state <= RGE_OBJECT_STATE_ACTIVE && this->master_obj->object_group == OBJECT_GROUP_ARTIFACT) {
         this->reposition_artifact();
     } else {
         RGE_Static_Object::set_object_state(new_object_state);
@@ -253,7 +253,7 @@ void TRIBE_Combat_Object::change_ownership(RGE_Player* new_owner) {
         }
     }
 
-    if (this->master_obj->object_group == 1) {
+    if (this->master_obj->object_group == OBJECT_GROUP_ARTIFACT) {
         RGE_Action_Object::change_ownership(new_owner);
         return;
     }
@@ -323,7 +323,7 @@ unsigned char TRIBE_Combat_Object::do_attack(RGE_Static_Object* target,
     }
 
     if (rge_base_game->quick_build != 0 && (this->master_obj->id == 0x7A || this->master_obj->id == 0x7B)) {
-        this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
+        this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, target->id, 0);
         target->die_die_die();
         return 1;
     }
@@ -334,7 +334,7 @@ unsigned char TRIBE_Combat_Object::do_attack(RGE_Static_Object* target,
     if (static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->area_effect_range > 0.0f &&
         static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->weapon_range < 0.99f) {
         this->area_attack(x, y, z, attacker, target);
-        this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
+        this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, target->id, 0);
         const int chance =
             debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp", 529) *
             100 / 0x7FFF;
@@ -518,9 +518,9 @@ int TRIBE_Combat_Object::hunt(int targetID, int unconditional) {
     if (target == 0) return 0;
 
     if (unconditional == 0 && this->actions->have_action() == 1 &&
-        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == 0x6E) return 1;
+        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_HUNT) return 1;
 
-    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == 0x6E) {
+    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_HUNT) {
         this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
@@ -541,9 +541,9 @@ int TRIBE_Combat_Object::convert(int targetID, int unconditional) {
     if (target == 0) return 0;
 
     if (unconditional == 0 && this->actions->have_action() == 1 &&
-        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == 0x68) return 1;
+        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_CONVERT) return 1;
 
-    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == 0x68) {
+    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_CONVERT) {
         this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
@@ -564,9 +564,9 @@ int TRIBE_Combat_Object::heal(int targetID, int unconditional) {
     if (target == 0) return 0;
 
     if (unconditional == 0 && this->actions->have_action() == 1 &&
-        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == 0x69) return 1;
+        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_HEAL) return 1;
 
-    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == 0x69) {
+    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_HEAL) {
         this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
@@ -587,9 +587,9 @@ int TRIBE_Combat_Object::repair(int targetID, int unconditional) {
     if (target == 0) return 0;
 
     if (unconditional == 0 && this->actions->have_action() == 1 &&
-        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == 0x6A) return 1;
+        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_REPAIR) return 1;
 
-    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == 0x6A) {
+    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_REPAIR) {
         this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
@@ -616,9 +616,9 @@ int TRIBE_Combat_Object::build(int targetID, int unconditional) {
     if (target == 0) return 0;
 
     if (unconditional == 0 && this->actions->have_action() == 1 &&
-        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == 0x65) return 1;
+        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_BUILD) return 1;
 
-    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == 0x65) {
+    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_BUILD) {
         this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
@@ -639,9 +639,9 @@ int TRIBE_Combat_Object::trade(int targetID, int unconditional) {
     if (target == 0) return 0;
 
     if (unconditional == 0 && this->actions->have_action() == 1 &&
-        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == 0x6F) return 1;
+        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_TRADE) return 1;
 
-    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == 0x6F) {
+    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == TRIBE_ACTION_TYPE_TRADE) {
         this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
@@ -670,34 +670,34 @@ unsigned char TRIBE_Combat_Object::keepGatheringWhenObjectIsOut(int oType) const
 //! area_attack() clears the attribute for every kill and has no group test.
 unsigned char TRIBE_Combat_Object::produceWhenKilledBy(int oGroup) const {
     const int group = this->master_obj->object_group;
-    if (group != 9 && group != 10) return 1;
-    if (oGroup != 4) return 0;
+    if (group != OBJECT_GROUP_HUNTED_ANIMAL && group != OBJECT_GROUP_PREDATOR) return 1;
+    if (oGroup != OBJECT_GROUP_CIVILIAN) return 0;
     return 1;
 }
 
 unsigned char TRIBE_Combat_Object::useSameZoneDropsite() const {
     const int group = this->master_obj->object_group;
-    if (group == 0x15 || group == 2) return 0;
+    if (group == OBJECT_GROUP_FISHING_BOAT || group == OBJECT_GROUP_TRADE_BOAT) return 0;
     return 1;
 }
 
 void TRIBE_Combat_Object::initUnitAI() {
     RGE_Master_Static_Object* master = this->master_obj;
     switch (master->object_group) {
-    case 1:
+    case OBJECT_GROUP_ARTIFACT:
         if (master->id == 0x63 || master->id == 0x0A) return;
         this->unitAIValue = new TribeArtifactUnitAIModule(this, 5);
         return;
-    case 4:
+    case OBJECT_GROUP_CIVILIAN:
         this->unitAIValue = new TribeCivilianUnitAIModule(this, 10);
         return;
-    case 0x12:
+    case OBJECT_GROUP_PRIEST:
         this->unitAIValue = new TribePriestUnitAIModule(this, 10);
         return;
-    case 9:
+    case OBJECT_GROUP_HUNTED_ANIMAL:
         this->unitAIValue = new TribeHuntedAnimalUnitAIModule(this, 10);
         return;
-    case 0x0A:
+    case OBJECT_GROUP_PREDATOR:
         if (master->id == 0x9D) {
             this->unitAIValue = new TribeHuntedAnimalUnitAIModule(this, 10);
         } else if (master->id == 0x30) {
@@ -708,17 +708,17 @@ void TRIBE_Combat_Object::initUnitAI() {
             this->unitAIValue = new TribePreditorUnitAIModule(this, 10);
         }
         return;
-    case 0x15:
+    case OBJECT_GROUP_FISHING_BOAT:
         this->unitAIValue = new TribeFishingShipUnitAIModule(this, 10);
         return;
-    case 2:
+    case OBJECT_GROUP_TRADE_BOAT:
         this->unitAIValue = new TribeTradeShipUnitAIModule(this, 10);
         return;
-    case 0x14:
+    case OBJECT_GROUP_TRANSPORT_BOAT:
         this->unitAIValue = new TribeTransportShipUnitAIModule(this, 10);
         return;
-    case 3:
-    case 0x1B:
+    case OBJECT_GROUP_BUILDING:
+    case OBJECT_GROUP_WALL:
         if (master->id == 0x4F || master->id == 0xC7 || master->id == 0x45 || master->id == 0x116 || master->id == 0x17F ||
             master->id == 0x17C) {
             this->unitAIValue = new TribeTowerUnitAIModule(this, 10);
@@ -728,15 +728,15 @@ void TRIBE_Combat_Object::initUnitAI() {
         return;
     case 5:
     case 7:
-    case 8:
+    case OBJECT_GROUP_STONE_SOURCE:
     case 0x0B:
     case 0x0E:
-    case 0x0F:
+    case OBJECT_GROUP_TREE:
     case 0x10:
     case 0x1D:
     case 0x1E:
     case 0x1F:
-    case 0x20:
+    case OBJECT_GROUP_GOLD_SOURCE:
     case 0x21:
         return;
     default:
@@ -762,7 +762,7 @@ int TRIBE_Combat_Object::higher_check_for_cliff(
         Map->map_row_offset[YTileInt][XTileInt].objects.list;
     while (node != 0) {
         RGE_Static_Object* cliff = node->node;
-        if (cliff->master_obj->object_group == 0x22 && cliff != LastCliffObject) {
+        if (cliff->master_obj->object_group == OBJECT_GROUP_CLIFF && cliff != LastCliffObject) {
             LastCliffObject = cliff;
             if (AngleToTarget == -1.0f) {
                 AngleToTarget = atan2(target->world_y - this->world_y, target->world_x - this->world_x);
@@ -960,7 +960,7 @@ unsigned char TRIBE_Combat_Object::heal(float healing) {
     TRIBE_Master_Combat_Object* master =
         static_cast<TRIBE_Master_Combat_Object*>(this->master_obj);
     const short type = master->object_group;
-    if (type != 2 && type != 0x14 && type != 0x15 && type != 0x16) {
+    if (type != OBJECT_GROUP_TRADE_BOAT && type != OBJECT_GROUP_TRANSPORT_BOAT && type != OBJECT_GROUP_FISHING_BOAT && type != OBJECT_GROUP_WAR_BOAT) {
         return RGE_Static_Object::heal(healing);
     }
 
@@ -1009,7 +1009,7 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* obj) {
             task = 0;
             do {
                 task = *task_list;
-                if (task->action_type == 0x6A) {
+                if (task->action_type == TRIBE_ACTION_TYPE_REPAIR) {
                     RGE_Master_Static_Object* target_master =
                         obj->master_obj;
                     if (target_master->master_type == 'P') {
@@ -1054,9 +1054,9 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* obj) {
         if (this->unitAIValue != 0) {
             order = -1;
             current_action = -1;
-            if (action_type == 0x6A) {
-                current_action = 0x26A;
-                order = 0x2CE;
+            if (action_type == TRIBE_ACTION_TYPE_REPAIR) {
+                current_action = UNIT_AI_ACTION_REPAIR;
+                order = UNIT_AI_ORDER_REPAIR;
             }
             this->unitAIValue->setCurrentOrder(order);
             this->unitAIValue->setCurrentAction(current_action);

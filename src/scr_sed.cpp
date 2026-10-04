@@ -1419,19 +1419,19 @@ void TRIBE_Screen_Sed::set_player(short val, uchar save_player, uchar load_playe
         int amount;
         amount = atoi(this->player_inven_input[0]->currentLine());
         static_cast<T_Scenario *>(this->world->scenario)->Set_player_Food(oldp, amount);
-        this->world->players[this->player_num]->attributes[0] = amount;
+        this->world->players[this->player_num]->attributes[RGE_RESOURCE_FOOD] = amount;
 
         amount = atoi(this->player_inven_input[1]->currentLine());
         static_cast<T_Scenario *>(this->world->scenario)->Set_player_Wood(oldp, amount);
-        this->world->players[this->player_num]->attributes[1] = amount;
+        this->world->players[this->player_num]->attributes[RGE_RESOURCE_WOOD] = amount;
 
         amount = atoi(this->player_inven_input[2]->currentLine());
         static_cast<T_Scenario *>(this->world->scenario)->Set_player_Stone(oldp, amount);
-        this->world->players[this->player_num]->attributes[2] = amount;
+        this->world->players[this->player_num]->attributes[RGE_RESOURCE_STONE] = amount;
 
         amount = atoi(this->player_inven_input[3]->currentLine());
         static_cast<T_Scenario *>(this->world->scenario)->Set_player_Gold(oldp, amount);
-        this->world->players[this->player_num]->attributes[3] = amount;
+        this->world->players[this->player_num]->attributes[RGE_RESOURCE_GOLD] = amount;
 
         this->world->scenario->SetPlayerName(oldp, this->player_inven_input[4]->currentLine());
         this->world->scenario->Set_player_Type(oldp, this->player_setting_drop[0]->currentLineNumber());

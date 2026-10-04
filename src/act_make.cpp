@@ -11,12 +11,12 @@
 
 RGE_Action_Make::RGE_Action_Make(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 0x15;
+    this->action_type = RGE_ACTION_TYPE_MAKE;
 }
 
 RGE_Action_Make::RGE_Action_Make(RGE_Action_Object* obj_in, RGE_Task* task_in)
     : RGE_Action(obj_in, 1) {
-    this->action_type = 0x15;
+    this->action_type = RGE_ACTION_TYPE_MAKE;
     this->task = task_in;
 }
 

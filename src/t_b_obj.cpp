@@ -1052,7 +1052,7 @@ int TRIBE_Building_Object::production_queue_status(short& master_id,
     progress = 0;
 
     TRIBE_Action_Make_Obj* action = static_cast<TRIBE_Action_Make_Obj*>(production_queue_actions->get_action());
-    if (action != 0 && action->action_type == 0x66) {
+    if (action != 0 && action->action_type == TRIBE_ACTION_TYPE_MAKE_OBJECT) {
         action->get_info(master_id, progress, 0, 0);
         return 1;
     }

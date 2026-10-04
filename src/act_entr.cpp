@@ -10,7 +10,7 @@
 
 RGE_Action_Enter::RGE_Action_Enter(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 3;
+    this->action_type = RGE_ACTION_TYPE_ENTER;
 }
 
 RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
@@ -20,7 +20,7 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in,
     XYPoint rVal;
     RGE_Action* action;
 
-    this->action_type = 3;
+    this->action_type = RGE_ACTION_TYPE_ENTER;
     this->task = task_in;
     this->set_target_obj(target_obj_in);
     if (target_obj_in == 0) {
@@ -226,7 +226,7 @@ unsigned char RGE_Action_Enter::update() {
         return 1;
 
     case 0x0D:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x269, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ENTER, 0, 0);
         return 3;
 
     default:
@@ -235,7 +235,7 @@ unsigned char RGE_Action_Enter::update() {
 
 entered:
     if (this->subActionValue == 0) {
-        this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x269, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_ENTER, 0, 0);
     }
     this->set_state(1);
     return 2;
@@ -243,6 +243,6 @@ entered:
 target_lost:
     this->set_state(1);
     this->set_target_obj(0);
-    this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x269, 0, 0);
+    this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ENTER, 0, 0);
     return 4;
 }

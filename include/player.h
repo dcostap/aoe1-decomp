@@ -1,6 +1,12 @@
 #ifndef AOE1_PLAYER_H
 #define AOE1_PLAYER_H
 
+// These resource IDs also select the first four player attributes.
+#define RGE_RESOURCE_FOOD   0
+#define RGE_RESOURCE_WOOD   1
+#define RGE_RESOURCE_STONE  2
+#define RGE_RESOURCE_GOLD   3
+
 #include <stdio.h>
 
 class RGE_Color_Table;

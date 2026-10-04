@@ -21,13 +21,13 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
     rge_read(infile, &this->pick_up_x, 4);
     rge_read(infile, &this->pick_up_y, 4);
-    this->action_type = 0x6F;
+    this->action_type = TRIBE_ACTION_TYPE_TRADE;
 }
 
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x6F;
+    this->action_type = TRIBE_ACTION_TYPE_TRADE;
     this->set_target_obj(target_obj_in);
     this->target_x = target_obj_in->world_x;
     this->target_y = target_obj_in->world_y;
@@ -39,7 +39,7 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in, RGE_Task* task
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x6F;
+    this->action_type = TRIBE_ACTION_TYPE_TRADE;
     *(int*)&this->target_x = *(int*)&x;
     *(int*)&this->target_y = *(int*)&y;
     this->pick_up_x = -1.0f;
@@ -54,8 +54,8 @@ void TRIBE_Action_Trade::save(int outfile) {
 }
 
 void TRIBE_Action_Trade::first_in_stack(unsigned char first_time) {
-    if (this->obj->attribute_type_held != 0 && this->obj->attribute_type_held != 2 && this->obj->attribute_type_held != 1) {
-        this->obj->attribute_type_held = 1;
+    if (this->obj->attribute_type_held != RGE_RESOURCE_FOOD && this->obj->attribute_type_held != RGE_RESOURCE_STONE && this->obj->attribute_type_held != RGE_RESOURCE_WOOD) {
+        this->obj->attribute_type_held = RGE_RESOURCE_WOOD;
     }
     if (first_time != 0) {
         if (this->target_obj != 0) {
@@ -74,7 +74,7 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 3:
-        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x267, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_TRADE, 0, 0);
         this->obj->new_sprite(this->get_wait_sprite());
         return;
 
@@ -164,7 +164,7 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
                 return;
             }
 
-            this->obj->notify(this->obj->id, this->obj->id, 0x203, 0x267, 0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, 0x203, UNIT_AI_ACTION_TRADE, 0, 0);
             this->set_state(0x0D);
             return;
         }
@@ -205,7 +205,7 @@ unsigned char TRIBE_Action_Trade::update() {
         this->set_target_obj2(0);
         this->set_state(1);
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x267, this->targetID, 0);
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_TRADE, this->targetID, 0);
         }
         return 4;
     }
@@ -302,9 +302,9 @@ unsigned char TRIBE_Action_Trade::update() {
             return 0;
         }
 
-        if (this->obj->attribute_type_held != 0 && this->obj->attribute_type_held != 2 &&
-            this->obj->attribute_type_held != 1) {
-            this->obj->attribute_type_held = 1;
+        if (this->obj->attribute_type_held != RGE_RESOURCE_FOOD && this->obj->attribute_type_held != RGE_RESOURCE_STONE &&
+            this->obj->attribute_type_held != RGE_RESOURCE_WOOD) {
+            this->obj->attribute_type_held = RGE_RESOURCE_WOOD;
         }
 
         float max_hold = (float)(int)this->obj->master_obj->attribute_max_amount;
@@ -401,7 +401,7 @@ unsigned char TRIBE_Action_Trade::update() {
         return 0;
 
     case 13:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x267, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_TRADE, 0, 0);
         this->set_state(2);
         return 3;
 

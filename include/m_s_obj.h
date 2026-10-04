@@ -1,6 +1,24 @@
 #ifndef AOE1_M_S_OBJ_H
 #define AOE1_M_S_OBJ_H
 
+// Master-object groups, not master-object IDs or tactical-group types.
+// Keep the short object_group field and existing integer parameter types.
+#define OBJECT_GROUP_ARTIFACT        1
+#define OBJECT_GROUP_TRADE_BOAT      2
+#define OBJECT_GROUP_BUILDING        3
+#define OBJECT_GROUP_CIVILIAN        4
+#define OBJECT_GROUP_STONE_SOURCE    8
+#define OBJECT_GROUP_HUNTED_ANIMAL   9
+#define OBJECT_GROUP_PREDATOR        10
+#define OBJECT_GROUP_TREE            0x0F
+#define OBJECT_GROUP_PRIEST          0x12
+#define OBJECT_GROUP_TRANSPORT_BOAT  0x14
+#define OBJECT_GROUP_FISHING_BOAT    0x15
+#define OBJECT_GROUP_WAR_BOAT        0x16
+#define OBJECT_GROUP_WALL            0x1B
+#define OBJECT_GROUP_GOLD_SOURCE     0x20
+#define OBJECT_GROUP_CLIFF           0x22
+
 #include <stdio.h>
 #include "rge_damage_sprite_info.h"
 

@@ -124,8 +124,8 @@ void RGE_Action_Object::move_to(RGE_Static_Object* obj, float x, float y, float 
             }
 
             if (this->unitAIValue != 0) {
-                this->unitAIValue->setCurrentOrder(0x2C6);
-                this->unitAIValue->setCurrentAction(0x262);
+                this->unitAIValue->setCurrentOrder(UNIT_AI_ORDER_MOVE);
+                this->unitAIValue->setCurrentAction(UNIT_AI_ACTION_MOVE);
                 if (obj != 0) {
                     this->unitAIValue->setCurrentTarget(obj->id, obj->master_obj->object_group, x, y, z);
                 } else {
@@ -190,7 +190,7 @@ void RGE_Action_Object::work2(RGE_Static_Object* obj, float x, float y, float z,
         }
 
         if (this->actions->have_action() == 1) {
-            if (this->actions->get_action()->get_target_obj() == obj && this->actions->get_action()->type() == 9) {
+            if (this->actions->get_action()->get_target_obj() == obj && this->actions->get_action()->type() == RGE_ACTION_TYPE_ATTACK) {
                 if (this->actions->get_action()->work(obj, x, y, z) != 0) {
                     actionType = this->actions->get_action()->type();
                     skip = 1;
@@ -208,7 +208,7 @@ void RGE_Action_Object::work2(RGE_Static_Object* obj, float x, float y, float z,
                 actionType = action->type();
                 this->set_only_action(action);
             } else {
-                actionType = 1;
+                actionType = RGE_ACTION_TYPE_MOVE;
                 this->move_to(obj, x, y, z);
             }
         }
@@ -217,53 +217,53 @@ void RGE_Action_Object::work2(RGE_Static_Object* obj, float x, float y, float z,
             order = -1;
             current_action = -1;
             switch (actionType) {
-            case 9:
-                current_action = 0x258;
-                order = 0x2BC;
+            case RGE_ACTION_TYPE_ATTACK:
+                current_action = UNIT_AI_ACTION_ATTACK;
+                order = UNIT_AI_ORDER_ATTACK;
                 break;
-            case 0x65:
-                current_action = 0x25A;
-                order = 0x2BE;
+            case TRIBE_ACTION_TYPE_BUILD:
+                current_action = UNIT_AI_ACTION_BUILD;
+                order = UNIT_AI_ORDER_BUILD;
                 break;
-            case 3:
-                current_action = 0x269;
-                order = 0x2CD;
+            case RGE_ACTION_TYPE_ENTER:
+                current_action = UNIT_AI_ACTION_ENTER;
+                order = UNIT_AI_ORDER_ENTER;
                 break;
-            case 4:
-                current_action = 0x25D;
-                order = 0x2C1;
+            case RGE_ACTION_TYPE_EXPLORE:
+                current_action = UNIT_AI_ACTION_EXPLORE;
+                order = UNIT_AI_ORDER_EXPLORE;
                 break;
-            case 5:
-                current_action = 0x261;
-                order = 0x2C5;
+            case RGE_ACTION_TYPE_GATHER:
+                current_action = UNIT_AI_ACTION_GATHER;
+                order = UNIT_AI_ORDER_GATHER;
                 break;
-            case 1:
-                current_action = 0x262;
-                order = 0x2C6;
+            case RGE_ACTION_TYPE_MOVE:
+                current_action = UNIT_AI_ACTION_MOVE;
+                order = UNIT_AI_ORDER_MOVE;
                 break;
-            case 0x6E:
-                current_action = 0x265;
-                order = 0x2C9;
+            case TRIBE_ACTION_TYPE_HUNT:
+                current_action = UNIT_AI_ACTION_HUNT;
+                order = UNIT_AI_ORDER_HUNT;
                 break;
-            case 0x0C:
-                current_action = 0x266;
-                order = 0x2CA;
+            case RGE_ACTION_TYPE_TRANSPORT:
+                current_action = UNIT_AI_ACTION_TRANSPORT;
+                order = UNIT_AI_ORDER_TRANSPORT;
                 break;
-            case 0x6F:
-                current_action = 0x267;
-                order = 0x2CB;
+            case TRIBE_ACTION_TYPE_TRADE:
+                current_action = UNIT_AI_ACTION_TRADE;
+                order = UNIT_AI_ORDER_TRADE;
                 break;
-            case 0x68:
-                current_action = 0x25C;
-                order = 0x2C0;
+            case TRIBE_ACTION_TYPE_CONVERT:
+                current_action = UNIT_AI_ACTION_CONVERT;
+                order = UNIT_AI_ORDER_CONVERT;
                 break;
-            case 0x69:
-                current_action = 0x25B;
-                order = 0x2BF;
+            case TRIBE_ACTION_TYPE_HEAL:
+                current_action = UNIT_AI_ACTION_HEAL;
+                order = UNIT_AI_ORDER_HEAL;
                 break;
-            case 0x6A:
-                current_action = 0x26A;
-                order = 0x2CE;
+            case TRIBE_ACTION_TYPE_REPAIR:
+                current_action = UNIT_AI_ACTION_REPAIR;
+                order = UNIT_AI_ORDER_REPAIR;
                 break;
             }
 

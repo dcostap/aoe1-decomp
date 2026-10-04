@@ -23,7 +23,7 @@
 TRIBE_Action_Repair::TRIBE_Action_Repair(int infile, RGE_Action_Object* obj_in,
                                          int do_setup)
     : RGE_Action(infile, obj_in, 0) {
-    this->action_type = 0x6A;
+    this->action_type = TRIBE_ACTION_TYPE_REPAIR;
     if (do_setup != 0) {
         this->setup(infile, obj_in);
     }
@@ -34,7 +34,7 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj_in,
                                          RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x6A;
+    this->action_type = TRIBE_ACTION_TYPE_REPAIR;
     this->save_target_command_flag = 0;
     this->set_target_obj(target_obj_in);
     if (target_obj_in != 0) {
@@ -50,7 +50,7 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj_in,
                                          float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x6A;
+    this->action_type = TRIBE_ACTION_TYPE_REPAIR;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -86,7 +86,7 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 3:
-        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x26a, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_REPAIR, 0, 0);
         break;
 
     case 11: {
@@ -127,7 +127,7 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
         RGE_Static_Object* target = this->target_obj;
         if (target == 0) return;
         short id = target->master_obj->object_group;
-        if (id != 2 && id != 0x14 && id != 0x15 && id != 0x16) return;
+        if (id != OBJECT_GROUP_TRADE_BOAT && id != OBJECT_GROUP_TRANSPORT_BOAT && id != OBJECT_GROUP_FISHING_BOAT && id != OBJECT_GROUP_WAR_BOAT) return;
         if (((RGE_Action_Object*)target)->command_flag != this->save_target_command_flag) return;
         target->moveTo(this->obj->world_x, this->obj->world_y, this->obj->world_z, 0, 1);
         return;
@@ -151,7 +151,7 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
     case 1:
         this->set_target_obj(0);
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1fa, 0x26a, 0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_REPAIR, 0, 0);
         }
         break;
 
@@ -269,7 +269,7 @@ unsigned char TRIBE_Action_Repair::update() {
             return 0;
         }
         if (result == 2) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x26A, 0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_REPAIR, 0, 0);
             rge_base_game->notification(0x6B, this->obj->owner->id, this->target_obj->id, 0, 0);
             this->set_state(2);
             return 0;
@@ -301,7 +301,7 @@ unsigned char TRIBE_Action_Repair::update() {
         return 1;
 
     case 13:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x26A, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_REPAIR, 0, 0);
         this->set_state(2);
         return 3;
     }
@@ -359,7 +359,7 @@ void TRIBE_Action_Repair::meet_target() {
     XYPoint dest;
     short type = this->target_obj->master_obj->object_group;
 
-    if (type == 2 || type == 0x14 || type == 0x15 || type == 0x16) {
+    if (type == OBJECT_GROUP_TRADE_BOAT || type == OBJECT_GROUP_TRANSPORT_BOAT || type == OBJECT_GROUP_FISHING_BOAT || type == OBJECT_GROUP_WAR_BOAT) {
         RGE_Object_Node* node = this->obj->owner->objects->list;
         while (node != 0) {
             RGE_Static_Object* action = node->node;

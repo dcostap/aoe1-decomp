@@ -395,7 +395,7 @@ void RGE_Player::sendPlayCommand(int recipient, int target, int playID) {
 
     this->command_destroy_group(recipient);
     if (this->world->playbook->play(playID) == 0) {
-        this->sendUnitAIOrder((int)this->id, recipient, 0x2d7, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
+        this->sendUnitAIOrder((int)this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
         return;
     }
 
@@ -413,7 +413,7 @@ void RGE_Player::sendPlayCommand(int recipient, int target, int playID) {
 
     if (selectedCount != 0) {
         this->command_create_group(recipient, selectedUnits, selectedCount, 2.0f);
-        this->sendUnitAIOrder((int)this->id, recipient, 0x2d6, target, playID, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
+        this->sendUnitAIOrder((int)this->id, recipient, UNIT_AI_ORDER_START_PLAY, target, playID, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
     }
 }
 
@@ -422,12 +422,12 @@ void RGE_Player::sendPlayCommand(int recipient, int* groupUnits, int groupCount,
     this->command_destroy_group(recipient);
     AIPlay* play = this->world->playbook->play(playID);
     if (play == 0) {
-        this->sendUnitAIOrder((int)this->id, recipient, 0x2d7, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
+        this->sendUnitAIOrder((int)this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
         return;
     }
     if (groupCount != 0) {
         this->command_create_group(recipient, groupUnits, groupCount, 2.0f);
-        this->sendUnitAIOrder((int)this->id, recipient, 0x2d6, target, playID, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
+        this->sendUnitAIOrder((int)this->id, recipient, UNIT_AI_ORDER_START_PLAY, target, playID, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
     }
 }
 
@@ -1795,7 +1795,7 @@ unsigned char RGE_Player::command_make_work(RGE_Static_Object* obj, float x,
             i = 0;
             if (list_num > 0) {
                 do {
-                    this->sendUnitAIOrder((int)this->id, list[i]->id, 0x2bd, obj->id, (int)obj->owner->id,
+                    this->sendUnitAIOrder((int)this->id, list[i]->id, UNIT_AI_ORDER_DEFEND, obj->id, (int)obj->owner->id,
                                           obj->world_x, obj->world_y, 1.0f, obj->master_obj->los * 0.5f, 0, 0, 100);
                     ++i;
                 } while (i < list_num);
@@ -1888,7 +1888,7 @@ unsigned char RGE_Player::command_stand_ground() {
 
     if (get_selected_objects_to_command(&list, &listNum, -1, -1, -1, -1)) {
         list[0]->play_command_sound();
-        this->world->commands->command_group_ai_order(this->id, this->id, list, listNum, 0x2d5, -1, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
+        this->world->commands->command_group_ai_order(this->id, this->id, list, listNum, UNIT_AI_ORDER_STAND_GROUND, -1, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
         free(list);
         return 1;
     }

@@ -17,12 +17,12 @@
 
 TRIBE_Action_Build::TRIBE_Action_Build(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 0x65;
+    this->action_type = TRIBE_ACTION_TYPE_BUILD;
 }
 
 TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
-    this->action_type = 0x65;
+    this->action_type = TRIBE_ACTION_TYPE_BUILD;
     this->task = task_in;
 
     if (!target_obj_in || obj_in->owner->id == target_obj_in->owner->id) {
@@ -36,7 +36,7 @@ TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* obj_in, RGE_Task* task
 TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x65;
+    this->action_type = TRIBE_ACTION_TYPE_BUILD;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -63,10 +63,10 @@ void TRIBE_Action_Build::set_state(unsigned char new_state) {
     switch (new_state) {
     case 3:
         if (this->obj->owner->computerPlayer() == 1) {
-            this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)0x1FA, 0x25AL, 0L, 0L);
+            this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)UNIT_AI_NOTIFY_ACTION_COMPLETED, (long)UNIT_AI_ACTION_BUILD, 0L, 0L);
             this->set_state(1);
         } else {
-            this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)0x202, 0x25AL, 0L, 0L);
+            this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)UNIT_AI_NOTIFY_REQUEST_TASK, (long)UNIT_AI_ACTION_BUILD, 0L, 0L);
         }
         this->obj->new_sprite(this->obj->master_obj->sprite);
         return;
@@ -150,7 +150,7 @@ unsigned char TRIBE_Action_Build::update() {
     if (this->target_obj != 0 && this->target_obj->object_state != RGE_OBJECT_STATE_UNBUILT && this->timer == 0.0f) {
         if (this->target_obj->hp < (float)(int)this->target_obj->master_obj->hp) {
             this->obj->removeAllFromPathingGroup();
-            this->obj->owner->processAIOrder(this->obj->owner->id, this->obj->id, 0x2CE, this->target_obj->id,
+            this->obj->owner->processAIOrder(this->obj->owner->id, this->obj->id, UNIT_AI_ORDER_REPAIR, this->target_obj->id,
                                              this->target_obj->owner->id, this->target_obj->world_x, this->target_obj->world_y,
                                              this->target_obj->world_z, 1.0f, 1, 0, 100);
             return 0;
@@ -231,7 +231,7 @@ unsigned char TRIBE_Action_Build::update() {
         return 1;
 
     case 0x0D:
-        this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)0x1F9, 0x25AL, 0L, 0L);
+        this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)UNIT_AI_NOTIFY_ACTION_FAILED, (long)UNIT_AI_ACTION_BUILD, 0L, 0L);
         this->set_state(2);
         return 3;
     }

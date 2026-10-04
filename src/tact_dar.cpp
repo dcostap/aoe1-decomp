@@ -14,7 +14,7 @@
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 0x6C;
+    this->action_type = TRIBE_ACTION_TYPE_DISCOVERY_ARTIFACT;
     this->flags = (unsigned char*)calloc(this->obj->owner->world->player_num, 1);
     rge_read(infile, this->flags, this->obj->owner->world->player_num);
 }
@@ -23,7 +23,7 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x6C;
+    this->action_type = TRIBE_ACTION_TYPE_DISCOVERY_ARTIFACT;
     RGE_Action::set_target_obj(target_obj_in);
     this->flags = (unsigned char*)calloc(this->obj->owner->world->player_num, 1);
 }
@@ -33,7 +33,7 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x6C;
+    this->action_type = TRIBE_ACTION_TYPE_DISCOVERY_ARTIFACT;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;

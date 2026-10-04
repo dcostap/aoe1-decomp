@@ -15,7 +15,7 @@
 
 RGE_Action_Missile::RGE_Action_Missile(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 8;
+    this->action_type = RGE_ACTION_TYPE_MISSILE;
     rge_read(infile, &velocity_x, 4);
     rge_read(infile, &velocity_y, 4);
     rge_read(infile, &velocity_z, 4);
@@ -26,7 +26,7 @@ RGE_Action_Missile::RGE_Action_Missile(int infile, RGE_Action_Object* obj_in)
 RGE_Action_Missile::RGE_Action_Missile(RGE_Action_Object* obj_in, RGE_Static_Object* launcher, RGE_Static_Object* target, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->target_x = x;
-    this->action_type = 8;
+    this->action_type = RGE_ACTION_TYPE_MISSILE;
     this->target_y = y;
     this->target_z = z;
     this->set_target_obj(target);

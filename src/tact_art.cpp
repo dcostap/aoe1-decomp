@@ -15,14 +15,14 @@
 
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 0x6B;
+    this->action_type = TRIBE_ACTION_TYPE_ARTIFACT;
 }
 
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
                                              RGE_Task* task_in,
                                              RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
-    this->action_type = 0x6B;
+    this->action_type = TRIBE_ACTION_TYPE_ARTIFACT;
     this->task = task_in;
     this->target_obj = target_obj_in;
 }
@@ -32,7 +32,7 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
                                              float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x6B;
+    this->action_type = TRIBE_ACTION_TYPE_ARTIFACT;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -164,7 +164,7 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
             while (node != 0) {
                 RGE_Static_Object* entity = node->node;
                 short type = entity->master_obj->object_group;
-                if (type != 1 && type != 0x0B && type != 0x1E && entity->object_state == RGE_OBJECT_STATE_ACTIVE) {
+                if (type != OBJECT_GROUP_ARTIFACT && type != 0x0B && type != 0x1E && entity->object_state == RGE_OBJECT_STATE_ACTIVE) {
                     ++player_list[entity->owner->id];
                 }
                 node = node->next;

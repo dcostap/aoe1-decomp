@@ -22,7 +22,7 @@
 
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 0x6E;
+    this->action_type = TRIBE_ACTION_TYPE_HUNT;
     rge_read(infile, &targetType, 4);
 }
 
@@ -30,7 +30,7 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj_in, RGE_Task* task_i
                                      RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x6E;
+    this->action_type = TRIBE_ACTION_TYPE_HUNT;
     this->set_target_obj(target_obj_in);
     if (target_obj_in && target_obj_in->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->target_x = (float)target_obj_in->world_x;
@@ -44,7 +44,7 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj_in, RGE_Task* task_i
                                      float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x6E;
+    this->action_type = TRIBE_ACTION_TYPE_HUNT;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -103,7 +103,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 3:
-        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x265, this->targetType, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HUNT, this->targetType, 0);
         this->obj->new_sprite(this->get_wait_sprite());
         this->timer = -10.0f;
         return;
@@ -216,7 +216,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
                 action->setSubAction(1);
                 return;
             }
-            this->obj->notify(this->obj->id, this->obj->id, 0x203, 0x265, 0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, 0x203, UNIT_AI_ACTION_HUNT, 0, 0);
             if (this->obj->owner->computerPlayer() == 0) {
                 this->set_state(2);
             } else {
@@ -266,7 +266,7 @@ unsigned char TRIBE_Action_Hunt::update() {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
             if (this->timer > 0.0) {
                 this->timer = -10.0f;
-                this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x265, this->targetType, 0);
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HUNT, this->targetType, 0);
                 return 0;
             }
         }
@@ -481,7 +481,7 @@ unsigned char TRIBE_Action_Hunt::update() {
         return 1;
 
     case 13:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x265, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_HUNT, 0, 0);
         return 3;
     }
 

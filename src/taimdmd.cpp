@@ -546,14 +546,14 @@ int TribeMainDecisionAIModule::removeObject(int id) {
 
 int TribeMainDecisionAIModule::objectGroupThatCanPerformAction(int a) {
     switch (a) {
-    case 0x25a:
-    case 0x25d:
-    case 0x261:
-    case 0x265:
-        return 4;
-    case 0x26b:
-    case 0x26c:
-        return 3;
+    case UNIT_AI_ACTION_BUILD:
+    case UNIT_AI_ACTION_EXPLORE:
+    case UNIT_AI_ACTION_GATHER:
+    case UNIT_AI_ACTION_HUNT:
+        return OBJECT_GROUP_CIVILIAN;
+    case UNIT_AI_ACTION_TRAIN:
+    case UNIT_AI_ACTION_RESEARCH:
+        return OBJECT_GROUP_BUILDING;
     default:
         return MainDecisionAIModule::objectGroupThatCanPerformAction(a);
     }
@@ -579,9 +579,9 @@ int TribeMainDecisionAIModule::isMoveable(int o) {
         return 0;
 
     short group = obj->master_obj->object_group;
-    if (group == 3 || group == 0x1B || group == 0x1E || group == 0x1F ||
-        group == 5 || group == 0x21 || group == 7 || group == 8 ||
-        group == 0x20 || group == 0x10 || group == 0x0E || group == 0x0F)
+    if (group == OBJECT_GROUP_BUILDING || group == OBJECT_GROUP_WALL || group == 0x1E || group == 0x1F ||
+        group == 5 || group == 0x21 || group == 7 || group == OBJECT_GROUP_STONE_SOURCE ||
+        group == OBJECT_GROUP_GOLD_SOURCE || group == 0x10 || group == 0x0E || group == OBJECT_GROUP_TREE)
         return 0;
 
     return 1;
@@ -603,7 +603,7 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
 void TribeMainDecisionAIModule::tributeNotify(int playerID, int resourceID, int amount) {
     char tempString[256];
 
-    if (this->waitingOnTribute == 1 && playerID == this->tacticalAI.strategicNumber(0x80) && resourceID == 3) {
+    if (this->waitingOnTribute == 1 && playerID == this->tacticalAI.strategicNumber(0x80) && resourceID == RGE_RESOURCE_GOLD) {
         this->tributeAmount += amount;
         return;
     }

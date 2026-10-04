@@ -17,19 +17,19 @@ TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule(RGE_Static_Object* 
 
     if (importantObjects) {
         importantObjects[0] = 0;
-        this->importantObjects[1] = 4;
+        this->importantObjects[1] = OBJECT_GROUP_CIVILIAN;
         this->importantObjects[2] = 0x1a;
         this->importantObjects[3] = 0x18;
         this->importantObjects[4] = 6;
         this->importantObjects[5] = 0x19;
         this->importantObjects[6] = 0x11;
-        this->importantObjects[7] = 0xa;
+        this->importantObjects[7] = OBJECT_GROUP_PREDATOR;
         this->importantObjects[8] = 0xc;
         this->importantObjects[9] = 0x23;
         this->importantObjects[10] = 0x17;
         this->importantObjects[11] = 0x24;
         this->importantObjects[12] = 0x1c;
-        this->importantObjects[13] = 0x12;
+        this->importantObjects[13] = OBJECT_GROUP_PRIEST;
         this->importantObjects[14] = 0xd;
         this->importantObjects[15] = 0x27;
     }
@@ -42,7 +42,7 @@ TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule(RGE_Static_Object* 
 
 int TribeHuntedAnimalUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uTime) {
     switch (nEvent->mType) {
-    case 0x1F4: {
+    case UNIT_AI_NOTIFY_ATTACKED: {
         if (nEvent->p2 <= 0) {
             this->purgeNotifyQueue(uTime);
             return 4;
@@ -124,9 +124,9 @@ TribePreditorUnitAIModule::TribePreditorUnitAIModule(RGE_Static_Object* o, int i
 
     if (importantObjects) {
         importantObjects[0] = 0x1D;
-        this->importantObjects[1] = 0x09;
+        this->importantObjects[1] = OBJECT_GROUP_HUNTED_ANIMAL;
         this->importantObjects[2] = 0x00;
-        this->importantObjects[3] = 0x04;
+        this->importantObjects[3] = OBJECT_GROUP_CIVILIAN;
         this->importantObjects[4] = 0x1A;
         this->importantObjects[5] = 0x18;
         this->importantObjects[6] = 0x06;
@@ -138,7 +138,7 @@ TribePreditorUnitAIModule::TribePreditorUnitAIModule(RGE_Static_Object* o, int i
         this->importantObjects[12] = 0x17;
         this->importantObjects[13] = 0x24;
         this->importantObjects[14] = 0x1C;
-        this->importantObjects[15] = 0x12;
+        this->importantObjects[15] = OBJECT_GROUP_PRIEST;
         this->importantObjects[16] = 0x27;
     }
 }
@@ -193,7 +193,7 @@ TribeElephantUnitAIModule::TribeElephantUnitAIModule(RGE_Static_Object* o, int i
 
 int TribeElephantUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uTime) {
     switch (nEvent->mType) {
-    case 0x1F4: {
+    case UNIT_AI_NOTIFY_ATTACKED: {
         if (nEvent->p2 <= 0) {
             this->purgeNotifyQueue(uTime);
             return 4;
@@ -250,9 +250,9 @@ TribeLionUnitAIModule::TribeLionUnitAIModule(RGE_Static_Object* o, int iQS)
 
     if (importantObjects) {
         importantObjects[0] = 0x1d;
-        this->importantObjects[1] = 9;
+        this->importantObjects[1] = OBJECT_GROUP_HUNTED_ANIMAL;
         this->importantObjects[2] = 0;
-        this->importantObjects[3] = 4;
+        this->importantObjects[3] = OBJECT_GROUP_CIVILIAN;
         this->importantObjects[4] = 0x1a;
         this->importantObjects[5] = 0x18;
         this->importantObjects[6] = 6;
@@ -264,7 +264,7 @@ TribeLionUnitAIModule::TribeLionUnitAIModule(RGE_Static_Object* o, int iQS)
         this->importantObjects[12] = 0x17;
         this->importantObjects[13] = 0x24;
         this->importantObjects[14] = 0x1c;
-        this->importantObjects[15] = 0x12;
+        this->importantObjects[15] = OBJECT_GROUP_PRIEST;
         this->importantObjects[16] = 0x27;
     }
 
@@ -306,8 +306,8 @@ int TribeLionUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uTim
     }
     break;
 
-    case 0x1FA:
-        if (nEvent->p1 != 0x258) {
+    case UNIT_AI_NOTIFY_ACTION_COMPLETED:
+        if (nEvent->p1 != UNIT_AI_ACTION_ATTACK) {
             break;
         }
         if (rge_base_game->scenarioGame() == 1) {
@@ -387,13 +387,13 @@ int TribeRangedUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     }
 
     targetObj = 0;
-    if (this->currentActionValue != 600 ||
+    if (this->currentActionValue != UNIT_AI_ACTION_ATTACK ||
         (targetObj = this->objectValue->owner->world->object(this->currentTargetValue)) == 0 ||
         targetObj->getSpeed() == g_ranged_ai_zero_distance) {
         return 2;
     }
 
-    this->order(this->objectValue->id, 0x2BC, this->currentTargetValue, -1,
+    this->order(this->objectValue->id, UNIT_AI_ORDER_ATTACK, this->currentTargetValue, -1,
                 this->currentTargetXValue, this->currentTargetYValue,
                 this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
 
@@ -433,12 +433,12 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* nEvent, unsigned long u
         return UnitAIModule::processNotify(nEvent, uTime);
     }
     target = 0;
-    if (this->currentActionValue != 0x258 ||
+    if (this->currentActionValue != UNIT_AI_ACTION_ATTACK ||
         (target = this->objectValue->owner->world->object(this->currentTargetValue)) == 0 ||
         target->getSpeed() == g_ranged_ai_zero_distance)
         return 2;
 
-    this->order(this->objectValue->id, 0x2bc, this->currentTargetValue, -1,
+    this->order(this->objectValue->id, UNIT_AI_ORDER_ATTACK, this->currentTargetValue, -1,
                 this->currentTargetXValue, this->currentTargetYValue,
                 this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
 
@@ -516,17 +516,17 @@ TribeCivilianUnitAIModule::TribeCivilianUnitAIModule(RGE_Static_Object* o, int i
     importantObjects = (int*)operator new(0x2c);
 
     if (importantObjects) {
-        importantObjects[0] = 3;
+        importantObjects[0] = OBJECT_GROUP_BUILDING;
         this->importantObjects[1] = 7;
-        this->importantObjects[2] = 8;
-        this->importantObjects[3] = 9;
-        this->importantObjects[4] = 0xa;
-        this->importantObjects[5] = 0xf;
+        this->importantObjects[2] = OBJECT_GROUP_STONE_SOURCE;
+        this->importantObjects[3] = OBJECT_GROUP_HUNTED_ANIMAL;
+        this->importantObjects[4] = OBJECT_GROUP_PREDATOR;
+        this->importantObjects[5] = OBJECT_GROUP_TREE;
         this->importantObjects[6] = 0x11;
-        this->importantObjects[7] = 0x12;
-        this->importantObjects[8] = 0x20;
+        this->importantObjects[7] = OBJECT_GROUP_PRIEST;
+        this->importantObjects[8] = OBJECT_GROUP_GOLD_SOURCE;
         this->importantObjects[9] = 0x21;
-        this->importantObjects[10] = 0x1b;
+        this->importantObjects[10] = OBJECT_GROUP_WALL;
     }
 }
 
@@ -547,7 +547,7 @@ int TribeCivilianUnitAIModule::attackObject(int targetID, int unconditional) {
     }
 
     int group = (int)obj->master_obj->object_group;
-    if (group == 9 || group == 10 || group == 15) {
+    if (group == OBJECT_GROUP_HUNTED_ANIMAL || group == OBJECT_GROUP_PREDATOR || group == OBJECT_GROUP_TREE) {
         return this->huntObject(targetID, unconditional);
     }
 
@@ -556,7 +556,7 @@ int TribeCivilianUnitAIModule::attackObject(int targetID, int unconditional) {
 
 int TribeCivilianUnitAIModule::canAttackUnit(RGE_Static_Object* unit) {
     if (!unit) return 0;
-    return unit->master_obj->object_group != 1;
+    return unit->master_obj->object_group != OBJECT_GROUP_ARTIFACT;
 }
 
 
@@ -564,7 +564,7 @@ int TribeCivilianUnitAIModule::canAttackUnitAtNeutrality(int oType) { return 0; 
 
 
 int TribeCivilianUnitAIModule::retryableOrder(int orderType) {
-    if (orderType == 0x2C1 || orderType == 0x2C5 || orderType == 0x2C9)
+    if (orderType == UNIT_AI_ORDER_EXPLORE || orderType == UNIT_AI_ORDER_GATHER || orderType == UNIT_AI_ORDER_HUNT)
         return 1;
     return 0;
 }
@@ -577,11 +577,11 @@ int TribeCivilianUnitAIModule::convertToLOSResourceType(int oType) {
     switch (oType) {
     case 7:
         return 1;
-    case 0x20:
+    case OBJECT_GROUP_GOLD_SOURCE:
         return 4;
-    case 8:
+    case OBJECT_GROUP_STONE_SOURCE:
         return 3;
-    case 0xF:
+    case OBJECT_GROUP_TREE:
         return 0;
     case 5:
     case 0x1F:
@@ -604,7 +604,7 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
             return 2;
         // Fall through.
 
-    case 0x1f4: {
+    case UNIT_AI_NOTIFY_ATTACKED: {
         if (nEvent->p2 <= 0) {
             RGE_Static_Object* object = this->objectValue;
             object->owner->notify(object->id, object->id, 0x209, nEvent->caller, 0, 0);
@@ -668,15 +668,15 @@ caller_recorded:
         unsigned char actionState = this->objectValue->actionState();
         int orderValue = this->currentOrderValue;
 
-        if (orderValue == 0x2c6 && speed > 0.0f)
+        if (orderValue == UNIT_AI_ORDER_MOVE && speed > 0.0f)
             return 2;
-        if (orderValue == 0x2bc)
+        if (orderValue == UNIT_AI_ORDER_ATTACK)
             return 2;
-        if (orderValue == 0x2c9 && actionState == 0x0c && target != 0 && target->master_obj->object_group == 0x0a &&
+        if (orderValue == UNIT_AI_ORDER_HUNT && actionState == 0x0c && target != 0 && target->master_obj->object_group == OBJECT_GROUP_PREDATOR &&
             attacker->owner->id == 0) {
             return 2;
         }
-        if (orderValue == 0x2ce)
+        if (orderValue == UNIT_AI_ORDER_REPAIR)
             return 2;
 
         if (attacker->owner->id == 0) {
@@ -684,7 +684,7 @@ caller_recorded:
                 this->order(this->objectValue->id, orderValue, this->currentTargetValue, -1,
                             this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue,
                             this->desiredTargetDistanceValue, 0, 0, this->currentOrderPriorityValue);
-                this->currentOrderValue = 0x2bc;
+                this->currentOrderValue = UNIT_AI_ORDER_ATTACK;
                 this->currentOrderPriorityValue = 100;
                 this->attackObject(nEvent->caller, 1);
                 this->stopAfterTargetKilledValue = 1;
@@ -694,7 +694,7 @@ caller_recorded:
             return 3;
         }
 
-        if (this->currentActionValue == 0x262 && speed != 0.0f)
+        if (this->currentActionValue == UNIT_AI_ACTION_MOVE && speed != 0.0f)
             return 3;
 
         this->order(this->objectValue->id, orderValue, this->currentTargetValue, -1,
@@ -709,7 +709,7 @@ caller_recorded:
         return 3;
     }
 
-    case 0x1fa:
+    case UNIT_AI_NOTIFY_ACTION_COMPLETED:
         if (this->currentActionValue != nEvent->p1)
             return 2;
         this->removeCurrentTarget();
@@ -721,7 +721,7 @@ caller_recorded:
         this->notifyCommander(nEvent);
         return 2;
 
-    case 0x1f9:
+    case UNIT_AI_NOTIFY_ACTION_FAILED:
         if (this->currentActionValue != nEvent->p1)
             return 2;
         this->removeCurrentTarget();
@@ -733,10 +733,10 @@ caller_recorded:
         this->notifyCommander(nEvent);
         return 2;
 
-    case 0x1fb:
-    case 0x202: {
+    case UNIT_AI_NOTIFY_TARGET_INVALID:
+    case UNIT_AI_NOTIFY_REQUEST_TASK: {
         int action = this->currentActionValue;
-        if (action == 0x265) {
+        if (action == UNIT_AI_ACTION_HUNT) {
             int targetType = this->currentTargetTypeValue;
             if (targetType == -1)
                 targetType = this->lastTargetTypeValue;
@@ -777,7 +777,7 @@ caller_recorded:
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
             }
-        } else if (action == 0x261) {
+        } else if (action == UNIT_AI_ACTION_GATHER) {
             int targetType = this->currentTargetTypeValue;
             if (targetType == -1)
                 targetType = this->lastTargetTypeValue;
@@ -837,7 +837,7 @@ caller_recorded:
                     y = object->world_y + 2.5f;
                 this->evasiveMoveTo(x, y, object->world_z, 1);
             }
-        } else if (action == 0x25a) {
+        } else if (action == UNIT_AI_ACTION_BUILD) {
             int targetID = this->closestObject(this->currentTargetTypeValue, 3, RGE_OBJECT_STATE_UNBUILT, -1, 0);
             if (targetID == -1) {
                 int type = this->currentTargetTypeValue == 0x1b ? 3 : 0x1b;
@@ -854,7 +854,7 @@ caller_recorded:
             if (target == 0 || this->objectValue->distance_to_object(target) > 1.0f) {
                 this->moveTo(this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, 1.0f, 1);
             }
-        } else if (action == 0x25d) {
+        } else if (action == UNIT_AI_ACTION_EXPLORE) {
             int tileX;
             int tileY;
             if (this->closestUndiscoveredTile(&tileX, &tileY, 1) == 1) {
@@ -880,7 +880,7 @@ caller_recorded:
         }
 
 action_finished:
-        if (nEvent->mType == 0x202)
+        if (nEvent->mType == UNIT_AI_NOTIFY_REQUEST_TASK)
             return 2;
 
         this->removeCurrentTarget();
@@ -912,21 +912,21 @@ TribePriestUnitAIModule::TribePriestUnitAIModule(RGE_Static_Object* o, int iQS)
     this->importantObjects = (int*)operator new(0x44);
 
     if (this->importantObjects) {
-        importantObjects[0] = 3;
+        importantObjects[0] = OBJECT_GROUP_BUILDING;
         this->importantObjects[1] = 0;
-        this->importantObjects[2] = 4;
+        this->importantObjects[2] = OBJECT_GROUP_CIVILIAN;
         this->importantObjects[3] = 0x1A;
         this->importantObjects[4] = 0x18;
         this->importantObjects[5] = 6;
         this->importantObjects[6] = 0x19;
         this->importantObjects[7] = 0x11;
-        this->importantObjects[8] = 0x0A;
+        this->importantObjects[8] = OBJECT_GROUP_PREDATOR;
         this->importantObjects[9] = 0x0C;
         this->importantObjects[10] = 0x23;
         this->importantObjects[11] = 0x17;
         this->importantObjects[12] = 0x24;
         this->importantObjects[13] = 0x1C;
-        this->importantObjects[14] = 0x12;
+        this->importantObjects[14] = OBJECT_GROUP_PRIEST;
         this->importantObjects[15] = 0x0D;
         this->importantObjects[16] = 0x27;
     }
@@ -948,7 +948,7 @@ int TribePriestUnitAIModule::attackObject(int targetID, int unconditional) {
 
 
 int TribePriestUnitAIModule::retryableOrder(int orderType) {
-    if (orderType == 0x2C0 || orderType == 0x2BF)
+    if (orderType == UNIT_AI_ORDER_CONVERT || orderType == UNIT_AI_ORDER_HEAL)
         return 1;
     return 0;
 }
@@ -962,15 +962,15 @@ int TribePriestUnitAIModule::canConvert(int targetID) {
             short sid = obj->master_obj->id;
 
             if (sid == 0x6D) return 0;
-            if (og == 0x1B) return 0;
+            if (og == OBJECT_GROUP_WALL) return 0;
             if (sid == 0x9F) return 0;
             if (sid == 0x114) return 0;
             if (sid == 0x9E) return 0;
             if (sid == 0xA3) return 0;
             if (og == 0x1E) return 0;
 
-            if (og == 0x12 && this->objectValue->owner->attributes[0x1B] <= 0.0f) return 0;
-            if (og == 3 && this->objectValue->owner->attributes[0x1C] <= 0.0f) return 0;
+            if (og == OBJECT_GROUP_PRIEST && this->objectValue->owner->attributes[0x1B] <= 0.0f) return 0;
+            if (og == OBJECT_GROUP_BUILDING && this->objectValue->owner->attributes[0x1C] <= 0.0f) return 0;
 
             return 1;
         }
@@ -1009,7 +1009,7 @@ int TribePriestUnitAIModule::bestUnitToHeal(int idleHeal, float* allyDistance) {
                     RGE_Static_Object* unit =
                         this->lookupObject(VisibleUnitList[a][i].object_id);
                     if (unit != 0) {
-                        if (unit->master_obj->object_group != 3) {
+                        if (unit->master_obj->object_group != OBJECT_GROUP_BUILDING) {
                             if ((float)(int)unit->master_obj->hp > unit->hp) {
                                 if (unit->object_state < RGE_OBJECT_STATE_DYING) {
                                     if (idleHeal != 0 || VisibleUnitList[a][i].distance <= 4) {
@@ -1095,10 +1095,10 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* distance) {
 
 int TribePriestUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uTime) {
     switch (nEvent->mType) {
-    case 0x1f9:
-    case 0x1fb:
-    case 0x202:
-        if (this->objectValue->owner->computerPlayer() == 0 && this->currentActionValue == 0x25c) {
+    case UNIT_AI_NOTIFY_ACTION_FAILED:
+    case UNIT_AI_NOTIFY_TARGET_INVALID:
+    case UNIT_AI_NOTIFY_REQUEST_TASK:
+        if (this->objectValue->owner->computerPlayer() == 0 && this->currentActionValue == UNIT_AI_ACTION_CONVERT) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int objId;
@@ -1113,12 +1113,12 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uT
             this->notifyCommander(nEvent);
             return 2;
         }
-        if (this->currentActionValue == 0x25c) {
+        if (this->currentActionValue == UNIT_AI_ACTION_CONVERT) {
             int id = this->bestUnitToConvert(0);
             if (id != -1 && this->convertObject(id, 1) == 1) {
                 return 3;
             }
-        } else if (this->currentActionValue == 0x25b) {
+        } else if (this->currentActionValue == UNIT_AI_ACTION_HEAL) {
             int id = this->bestUnitToHeal(0, 0);
             if (id != -1 && this->healObject(id, 1) == 1) {
                 return 3;
@@ -1267,11 +1267,11 @@ TribeTradeShipUnitAIModule::TribeTradeShipUnitAIModule(RGE_Static_Object* o, int
     importantObjects = (int*)operator new(0x14);
 
     if (importantObjects) {
-        importantObjects[0] = 3;
-        this->importantObjects[1] = 0x16;
-        this->importantObjects[2] = 0x14;
-        this->importantObjects[3] = 2;
-        this->importantObjects[4] = 0x15;
+        importantObjects[0] = OBJECT_GROUP_BUILDING;
+        this->importantObjects[1] = OBJECT_GROUP_WAR_BOAT;
+        this->importantObjects[2] = OBJECT_GROUP_TRANSPORT_BOAT;
+        this->importantObjects[3] = OBJECT_GROUP_TRADE_BOAT;
+        this->importantObjects[4] = OBJECT_GROUP_FISHING_BOAT;
     }
 }
 
@@ -1280,12 +1280,12 @@ TribeTradeShipUnitAIModule::TribeTradeShipUnitAIModule(RGE_Static_Object* o, int
 
 int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     switch (nEvent->mType) {
-    case 0x1f4:
+    case UNIT_AI_NOTIFY_ATTACKED:
     case 0x20f:
         break;
 
-    case 0x202:
-        if (this->currentActionValue == 0x267) {
+    case UNIT_AI_NOTIFY_REQUEST_TASK:
+        if (this->currentActionValue == UNIT_AI_ACTION_TRADE) {
             //! The trade ship searches only for dock id 0x2d; other drop-site units never match.
             int id = this->closestObject(-1, 0, RGE_OBJECT_STATE_ACTIVE, 0x2d, 0);
             if (id != -1 && this->tradeWithObject(id, 1) == 1) {
@@ -1296,7 +1296,7 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) 
             if (id != -1 && this->tradeWithObject(id, 1) == 1) {
                 return 6;
             }
-        } else if (this->currentActionValue == 0x25d) {
+        } else if (this->currentActionValue == UNIT_AI_ACTION_EXPLORE) {
             int tileX;
             int tileY;
             if (this->closestUndiscoveredTile(&tileX, &tileY, 1) == 1) {
@@ -1403,7 +1403,7 @@ after_add:
     if (this->objectValue->owner->computerPlayer() == 0 && this->currentOrderValue != -1) {
         return 2;
     }
-    if (this->currentActionValue != 0x262) {
+    if (this->currentActionValue != UNIT_AI_ACTION_MOVE) {
         this->order(this->objectValue->id, this->currentOrderValue, this->currentTargetValue, -1,
                     this->currentTargetXValue, this->currentTargetYValue,
                     this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 0, this->currentOrderPriorityValue);
@@ -1456,11 +1456,11 @@ TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule(RGE_Static_Object
     importantObjects = (int*)operator new(0x14);
 
     if (importantObjects) {
-        importantObjects[0] = 3;
-        this->importantObjects[1] = 0x16;
-        this->importantObjects[2] = 0x14;
-        this->importantObjects[3] = 2;
-        this->importantObjects[4] = 0x15;
+        importantObjects[0] = OBJECT_GROUP_BUILDING;
+        this->importantObjects[1] = OBJECT_GROUP_WAR_BOAT;
+        this->importantObjects[2] = OBJECT_GROUP_TRANSPORT_BOAT;
+        this->importantObjects[3] = OBJECT_GROUP_TRADE_BOAT;
+        this->importantObjects[4] = OBJECT_GROUP_FISHING_BOAT;
     }
 }
 
@@ -1468,7 +1468,7 @@ TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule(RGE_Static_Object
 
 int TribeTransportShipUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     switch (nEvent->mType) {
-    case 0x1f4:
+    case UNIT_AI_NOTIFY_ATTACKED:
     case 0x20f:
         break;
     default:
@@ -1570,11 +1570,11 @@ TribeFishingShipUnitAIModule::TribeFishingShipUnitAIModule(RGE_Static_Object* o,
     importantObjects = (int*)operator new(0x20);
 
     if (importantObjects) {
-        importantObjects[0] = 3;
-        this->importantObjects[1] = 0x16;
-        this->importantObjects[2] = 0x14;
-        this->importantObjects[3] = 2;
-        this->importantObjects[4] = 0x15;
+        importantObjects[0] = OBJECT_GROUP_BUILDING;
+        this->importantObjects[1] = OBJECT_GROUP_WAR_BOAT;
+        this->importantObjects[2] = OBJECT_GROUP_TRANSPORT_BOAT;
+        this->importantObjects[3] = OBJECT_GROUP_TRADE_BOAT;
+        this->importantObjects[4] = OBJECT_GROUP_FISHING_BOAT;
         this->importantObjects[5] = 5;
         this->importantObjects[6] = 0x1F;
         this->importantObjects[7] = 0x21;
@@ -1601,7 +1601,7 @@ int TribeFishingShipUnitAIModule::convertToLOSResourceType(int oType) {
 
 int TribeFishingShipUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     switch (nEvent->mType) {
-    case 0x1f4:
+    case UNIT_AI_NOTIFY_ATTACKED:
     case 0x20f:
         break;
     default:
@@ -1656,7 +1656,7 @@ after_add:
     if (this->objectValue->owner->computerPlayer() == 0 && this->currentOrderValue != -1) {
         return 2;
     }
-    if (this->currentActionValue != 0x262) {
+    if (this->currentActionValue != UNIT_AI_ACTION_MOVE) {
         this->order(this->objectValue->id, this->currentOrderValue, this->currentTargetValue, -1,
                     this->currentTargetXValue, this->currentTargetYValue,
                     this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 0, this->currentOrderPriorityValue);
@@ -1711,8 +1711,8 @@ TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(RGE_Static_Object* o, int iQS
 
     if (importantObjects) {
         importantObjects[0] = 0;
-        this->importantObjects[1] = 3;
-        this->importantObjects[2] = 4;
+        this->importantObjects[1] = OBJECT_GROUP_BUILDING;
+        this->importantObjects[2] = OBJECT_GROUP_CIVILIAN;
         this->importantObjects[3] = 0x1A;
         this->importantObjects[4] = 0x18;
         this->importantObjects[5] = 6;
@@ -1723,13 +1723,13 @@ TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(RGE_Static_Object* o, int iQS
         this->importantObjects[10] = 0x17;
         this->importantObjects[11] = 0x24;
         this->importantObjects[12] = 0x1C;
-        this->importantObjects[13] = 0x12;
+        this->importantObjects[13] = OBJECT_GROUP_PRIEST;
         this->importantObjects[14] = 0x0D;
-        this->importantObjects[15] = 0x1B;
-        this->importantObjects[16] = 0x16;
-        this->importantObjects[17] = 0x14;
-        this->importantObjects[18] = 2;
-        this->importantObjects[19] = 0x15;
+        this->importantObjects[15] = OBJECT_GROUP_WALL;
+        this->importantObjects[16] = OBJECT_GROUP_WAR_BOAT;
+        this->importantObjects[17] = OBJECT_GROUP_TRANSPORT_BOAT;
+        this->importantObjects[18] = OBJECT_GROUP_TRADE_BOAT;
+        this->importantObjects[19] = OBJECT_GROUP_FISHING_BOAT;
         this->importantObjects[20] = 0x27;
     }
 
@@ -1741,7 +1741,7 @@ TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(RGE_Static_Object* o, int iQS
 
 int TribeSoldierUnitAIModule::canAttackUnit(RGE_Static_Object* unit) {
     if (!unit) return 0;
-    return unit->master_obj->object_group != 1;
+    return unit->master_obj->object_group != OBJECT_GROUP_ARTIFACT;
 }
 
 
@@ -1819,7 +1819,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
         //! RockNROR skips the back-off when the target outranges the unit.
         if (this->objectValue->owner->computerPlayer() != 0 && this->objectValue->weaponRange() >= g_soldier_evasive_distance_threshold &&
             this->objectValue->master_obj->object_group != 0x1A) {
-            if (this->currentActionValue == 600) {
+            if (this->currentActionValue == UNIT_AI_ACTION_ATTACK) {
 
             target =
                 this->objectValue->owner->world->object(this->currentTargetValue);
@@ -1832,7 +1832,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     xDiff = target->world_x - this->objectValue->world_x;
                     yDiff = target->world_y - this->objectValue->world_y;
 
-                    this->order(this->objectValue->id, 700, this->currentTargetValue, -1,
+                    this->order(this->objectValue->id, UNIT_AI_ORDER_ATTACK, this->currentTargetValue, -1,
                                 this->currentTargetXValue, this->currentTargetYValue,
                                 this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
 
@@ -1927,7 +1927,7 @@ int TribeSoldierUnitAIModule::processIdle(int doSearch) {
 
     if (this->objectValue->owner->id != 0 && (this->objectValue->owner->computerPlayer() != 0 ||
          this->objectValue->master_obj->id != 0x12B)) {
-        if (this->currentOrderValue != 0x2D5 || (this->objectValue->master_obj->id != 0x23 &&
+        if (this->currentOrderValue != UNIT_AI_ORDER_STAND_GROUND || (this->objectValue->master_obj->id != 0x23 &&
              this->objectValue->master_obj->id != 0x24 && this->objectValue->master_obj->id != 0xFA)) {
             int targetID = this->bestUnitToAttack(1, 0, 0);
             if (targetID != -1 && this->attackObject(targetID, 1) == 1) {
@@ -1943,7 +1943,7 @@ int TribeSoldierUnitAIModule::processIdle(int doSearch) {
                     return 5;
                 }
 
-                if (this->currentOrderValue != 0x2BD && this->currentOrderValue != 0x2D5) {
+                if (this->currentOrderValue != UNIT_AI_ORDER_DEFEND && this->currentOrderValue != UNIT_AI_ORDER_STAND_GROUND) {
                     int targetID2 = this->closestObject(-1, -1, RGE_OBJECT_STATE_ANY, -1, 0);
                     if (targetID2 != -1) {
                         RGE_Static_Object* target =
@@ -1982,7 +1982,7 @@ TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(RGE_Static_Object* o, int i
 
     if (importantObjects) {
         importantObjects[0] = 0;
-        this->importantObjects[1] = 4;
+        this->importantObjects[1] = OBJECT_GROUP_CIVILIAN;
         this->importantObjects[2] = 0x1A;
         this->importantObjects[3] = 0x18;
         this->importantObjects[4] = 6;
@@ -1993,12 +1993,12 @@ TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(RGE_Static_Object* o, int i
         this->importantObjects[9] = 0x17;
         this->importantObjects[10] = 0x24;
         this->importantObjects[11] = 0x1C;
-        this->importantObjects[12] = 0x12;
+        this->importantObjects[12] = OBJECT_GROUP_PRIEST;
         this->importantObjects[13] = 0x0D;
-        this->importantObjects[14] = 0x16;
-        this->importantObjects[15] = 0x14;
-        this->importantObjects[16] = 2;
-        this->importantObjects[17] = 0x15;
+        this->importantObjects[14] = OBJECT_GROUP_WAR_BOAT;
+        this->importantObjects[15] = OBJECT_GROUP_TRANSPORT_BOAT;
+        this->importantObjects[16] = OBJECT_GROUP_TRADE_BOAT;
+        this->importantObjects[17] = OBJECT_GROUP_FISHING_BOAT;
         this->importantObjects[18] = 0x27;
     }
 
@@ -2029,7 +2029,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
         return 2;
     }
 
-    case 0x1fa:
+    case UNIT_AI_NOTIFY_ACTION_COMPLETED:
         if (this->currentOrderValue != -1) {
             if (this->currentActionValue + 0x64 == this->currentOrderValue) {
                 this->removeCurrentTarget();
@@ -2061,7 +2061,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
         this->notifyCommander(nEvent);
         return 2;
 
-    case 0x1f9:
+    case UNIT_AI_NOTIFY_ACTION_FAILED:
         if (this->currentOrderValue != -1) {
             if (this->currentActionValue + 0x64 == this->currentOrderValue) {
                 this->removeCurrentTarget();
@@ -2093,7 +2093,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
         this->notifyCommander(nEvent);
         return 2;
 
-    case 0x1fb:
+    case UNIT_AI_NOTIFY_TARGET_INVALID:
         if (this->currentOrderValue != -1) {
             if (this->currentActionValue + 0x64 == this->currentOrderValue) {
                 this->removeCurrentTarget();
@@ -2125,7 +2125,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
         this->notifyCommander(nEvent);
         return 2;
 
-    case 600: {
+    case UNIT_AI_ACTION_ATTACK: {
         int id = nEvent->caller;
         int i = 0;
         while (i < this->attackingUnitsValue.numberValue && i < this->attackingUnitsValue.maximumSizeValue) {
@@ -2151,7 +2151,7 @@ already:
         return 2;
     }
 
-    case 0x1f4:
+    case UNIT_AI_NOTIFY_ATTACKED:
     case 0x1f6:
     case 0x1f7:
     case 0x1f8:
@@ -2159,25 +2159,25 @@ already:
     case 0x1fe:
     case 0x1ff:
     case 0x200:
-    case 0x202:
+    case UNIT_AI_NOTIFY_REQUEST_TASK:
     case 0x203:
     case 0x20b:
     case 0x20f:
-    case 0x259:
-    case 0x25a:
-    case 0x25b:
-    case 0x25c:
-    case 0x25d:
+    case UNIT_AI_ACTION_DEFEND:
+    case UNIT_AI_ACTION_BUILD:
+    case UNIT_AI_ACTION_HEAL:
+    case UNIT_AI_ACTION_CONVERT:
+    case UNIT_AI_ACTION_EXPLORE:
     case 0x25e:
     case 0x25f:
     case 0x260:
-    case 0x261:
-    case 0x262:
-    case 0x265:
-    case 0x266:
-    case 0x267:
+    case UNIT_AI_ACTION_GATHER:
+    case UNIT_AI_ACTION_MOVE:
+    case UNIT_AI_ACTION_HUNT:
+    case UNIT_AI_ACTION_TRANSPORT:
+    case UNIT_AI_ACTION_TRADE:
     case 0x268:
-    case 0x269:
+    case UNIT_AI_ACTION_ENTER:
     case 0x2bb:
         return 2;
     }
@@ -2245,8 +2245,8 @@ TribeTowerUnitAIModule::TribeTowerUnitAIModule(RGE_Static_Object* o, int iQS)
 
     if (importantObjects) {
         importantObjects[0] = 0;
-        this->importantObjects[1] = 3;
-        this->importantObjects[2] = 4;
+        this->importantObjects[1] = OBJECT_GROUP_BUILDING;
+        this->importantObjects[2] = OBJECT_GROUP_CIVILIAN;
         this->importantObjects[3] = 0x1A;
         this->importantObjects[4] = 0x18;
         this->importantObjects[5] = 6;
@@ -2257,13 +2257,13 @@ TribeTowerUnitAIModule::TribeTowerUnitAIModule(RGE_Static_Object* o, int iQS)
         this->importantObjects[10] = 0x17;
         this->importantObjects[11] = 0x24;
         this->importantObjects[12] = 0x1C;
-        this->importantObjects[13] = 0x12;
+        this->importantObjects[13] = OBJECT_GROUP_PRIEST;
         this->importantObjects[14] = 0x0D;
-        this->importantObjects[15] = 0x1B;
-        this->importantObjects[16] = 0x16;
-        this->importantObjects[17] = 0x14;
-        this->importantObjects[18] = 2;
-        this->importantObjects[19] = 0x15;
+        this->importantObjects[15] = OBJECT_GROUP_WALL;
+        this->importantObjects[16] = OBJECT_GROUP_WAR_BOAT;
+        this->importantObjects[17] = OBJECT_GROUP_TRANSPORT_BOAT;
+        this->importantObjects[18] = OBJECT_GROUP_TRADE_BOAT;
+        this->importantObjects[19] = OBJECT_GROUP_FISHING_BOAT;
         this->importantObjects[20] = 0x27;
     }
 }
@@ -2272,7 +2272,7 @@ TribeTowerUnitAIModule::TribeTowerUnitAIModule(RGE_Static_Object* o, int iQS)
 int TribeTowerUnitAIModule::canAttackUnit(RGE_Static_Object* unit) {
     if (unit == 0)
         return 0;
-    if (unit->master_obj->object_group == 1)
+    if (unit->master_obj->object_group == OBJECT_GROUP_ARTIFACT)
         return 0;
     if (this->objectValue->object_state < RGE_OBJECT_STATE_ACTIVE)
         return 0;
@@ -2296,8 +2296,8 @@ TribeBuildingUnitAIModule::TribeBuildingUnitAIModule(RGE_Static_Object* o, int i
 
     if (importantObjects) {
         importantObjects[0] = 0;
-        this->importantObjects[1] = 3;
-        this->importantObjects[2] = 4;
+        this->importantObjects[1] = OBJECT_GROUP_BUILDING;
+        this->importantObjects[2] = OBJECT_GROUP_CIVILIAN;
         this->importantObjects[3] = 0x1A;
         this->importantObjects[4] = 0x18;
         this->importantObjects[5] = 6;
@@ -2308,13 +2308,13 @@ TribeBuildingUnitAIModule::TribeBuildingUnitAIModule(RGE_Static_Object* o, int i
         this->importantObjects[10] = 0x17;
         this->importantObjects[11] = 0x24;
         this->importantObjects[12] = 0x1C;
-        this->importantObjects[13] = 0x12;
+        this->importantObjects[13] = OBJECT_GROUP_PRIEST;
         this->importantObjects[14] = 0x0D;
-        this->importantObjects[15] = 0x1B;
-        this->importantObjects[16] = 0x16;
-        this->importantObjects[17] = 0x14;
-        this->importantObjects[18] = 2;
-        this->importantObjects[19] = 0x15;
+        this->importantObjects[15] = OBJECT_GROUP_WALL;
+        this->importantObjects[16] = OBJECT_GROUP_WAR_BOAT;
+        this->importantObjects[17] = OBJECT_GROUP_TRANSPORT_BOAT;
+        this->importantObjects[18] = OBJECT_GROUP_TRADE_BOAT;
+        this->importantObjects[19] = OBJECT_GROUP_FISHING_BOAT;
         this->importantObjects[20] = 0x27;
     }
 }
@@ -2323,7 +2323,7 @@ TribeBuildingUnitAIModule::TribeBuildingUnitAIModule(RGE_Static_Object* o, int i
 
 int TribeBuildingUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     switch (nEvent->mType) {
-    case 0x1f4:
+    case UNIT_AI_NOTIFY_ATTACKED:
         if (nEvent->p2 <= 0) {
             RGE_Static_Object* object = this->objectValue;
             object->owner->notify(object->id, object->id, 0x209, nEvent->caller, 0, 0);
@@ -2349,7 +2349,7 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
         this->objectValue->setUnderAttack(1);
         return 2;
 
-    case 0x258:
+    case UNIT_AI_ACTION_ATTACK:
         this->attackingUnitsValue.add(nEvent->caller);
         this->objectValue->setUnderAttack(1);
         return 2;

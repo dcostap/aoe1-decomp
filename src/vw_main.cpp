@@ -344,7 +344,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
 
             case 15:
                 if (this->pick1(0x29, 0, x, y, &pick_info, this->player->selected_obj, 1) == 0x34) {
-                    if (pick_info.object->master_obj->object_group != 0x22) {
+                    if (pick_info.object->master_obj->object_group != OBJECT_GROUP_CLIFF) {
                         unsigned char draw_level;
                         if (pick_info.object->sprite_list != 0) {
                             draw_level = pick_info.object->sprite_list

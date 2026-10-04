@@ -20,7 +20,7 @@
 
 RGE_Action_Gather::RGE_Action_Gather(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 5;
+    this->action_type = RGE_ACTION_TYPE_GATHER;
     rge_read(infile, &this->targetType, 4);
 }
 
@@ -31,7 +31,7 @@ RGE_Action_Gather::~RGE_Action_Gather() {
 RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 5;
+    this->action_type = RGE_ACTION_TYPE_GATHER;
     this->set_target_obj(target_obj_in);
     if (target_obj_in != 0) {
         this->target_x = target_obj_in->world_x;
@@ -44,7 +44,7 @@ RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in, RGE_Task* task_i
 RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 5;
+    this->action_type = RGE_ACTION_TYPE_GATHER;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -99,7 +99,7 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 3:
-        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x261, this->targetType, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_GATHER, this->targetType, 0);
         this->timer = -10.0f;
         this->obj->new_sprite(this->get_wait_sprite());
         return;
@@ -198,7 +198,7 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
                 return;
             }
 
-            this->obj->notify(this->obj->id, this->obj->id, 0x203, 0x261, 0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, 0x203, UNIT_AI_ACTION_GATHER, 0, 0);
             this->set_state(13);
             return;
         }
@@ -239,7 +239,7 @@ unsigned char RGE_Action_Gather::update() {
 
     if (this->target_obj != 0 && this->target_obj->owner->id != 0 && this->target_obj->owner->id != this->obj->owner->id) {
         this->set_state(1);
-        this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x261, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_GATHER, 0, 0);
         return 4;
     }
 
@@ -249,7 +249,7 @@ unsigned char RGE_Action_Gather::update() {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
             if (this->timer > 0.0) {
                 this->timer = -10.0f;
-                this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x261, this->targetType, 0);
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_GATHER, this->targetType, 0);
                 return 0;
             }
         }
@@ -439,7 +439,7 @@ unsigned char RGE_Action_Gather::update() {
         return 1;
 
     case 13:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x261, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_GATHER, 0, 0);
         if (this->obj->owner->computerPlayer() == 1) {
             this->set_state(1);
         } else {

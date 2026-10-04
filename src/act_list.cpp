@@ -86,19 +86,19 @@ void RGE_Action_List::delete_list() {
 
 RGE_Action* RGE_Action_List::create_action(int infile, short action_type) {
     switch (action_type) {
-    case 9:
+    case RGE_ACTION_TYPE_ATTACK:
         return new RGE_Action_Attack(infile, this->obj);
-    case 10:
+    case RGE_ACTION_TYPE_BIRD:
         return new RGE_Action_Bird(infile, this->obj);
-    case 4:
+    case RGE_ACTION_TYPE_EXPLORE:
         return new RGE_Action_Explore(infile, this->obj);
-    case 5:
+    case RGE_ACTION_TYPE_GATHER:
         return new RGE_Action_Gather(infile, this->obj);
-    case 8:
+    case RGE_ACTION_TYPE_MISSILE:
         return new RGE_Action_Missile(infile, this->obj);
-    case 1:
+    case RGE_ACTION_TYPE_MOVE:
         return new RGE_Action_Move_To(infile, this->obj);
-    case 21:
+    case RGE_ACTION_TYPE_MAKE:
         return new RGE_Action_Make(infile, this->obj);
     default:
         return 0;
@@ -114,7 +114,7 @@ RGE_Action* RGE_Action_List::create_task_action(
     RGE_Action_Make* make_action;
 
     switch (task->action_type) {
-    case 10:
+    case RGE_ACTION_TYPE_BIRD:
         bird_action = new RGE_Action_Bird(this->obj, task, target_x, target_y, target_z);
         if (bird_action == 0) {
             return 0;
@@ -123,7 +123,7 @@ RGE_Action* RGE_Action_List::create_task_action(
 
     case 7:
         if (this->obj->unitAI() != 0) {
-            this->obj->unitAI()->setCurrentAction(600);
+            this->obj->unitAI()->setCurrentAction(UNIT_AI_ACTION_ATTACK);
             if (target_obj != 0) {
                 this->obj->unitAI()->setCurrentTarget(target_obj->id, target_obj->world_x, target_obj->world_y,
                                                       target_obj->world_z);
@@ -148,14 +148,14 @@ RGE_Action* RGE_Action_List::create_task_action(
         }
         return attack_action;
 
-    case 4:
+    case RGE_ACTION_TYPE_EXPLORE:
         explore_action = new RGE_Action_Explore(this->obj, task, target_x, target_y, target_z);
         if (explore_action == 0) {
             return 0;
         }
         return explore_action;
 
-    case 5:
+    case RGE_ACTION_TYPE_GATHER:
         if (target_obj != 0) {
             gather_action = new RGE_Action_Gather(this->obj, task, target_obj);
         } else {
@@ -166,7 +166,7 @@ RGE_Action* RGE_Action_List::create_task_action(
         }
         return gather_action;
 
-    case 21:
+    case RGE_ACTION_TYPE_MAKE:
         make_action = new RGE_Action_Make(this->obj, task);
         if (make_action == 0) {
             return 0;
@@ -406,35 +406,35 @@ void RGE_Action_List::get_action_name(char* action_name) {
     }
 
     switch (this->list->action->action_type) {
-    case 1:
+    case RGE_ACTION_TYPE_MOVE:
         name = "MoveTo";
         strcpy(action_name, name);
         return;
-    case 4:
+    case RGE_ACTION_TYPE_EXPLORE:
         name = "Explore";
         strcpy(action_name, name);
         return;
-    case 5:
+    case RGE_ACTION_TYPE_GATHER:
         name = "Gather";
         strcpy(action_name, name);
         return;
-    case 8:
+    case RGE_ACTION_TYPE_MISSILE:
         name = "Missile";
         strcpy(action_name, name);
         return;
-    case 9:
+    case RGE_ACTION_TYPE_ATTACK:
         name = "Attack";
         strcpy(action_name, name);
         return;
-    case 10:
+    case RGE_ACTION_TYPE_BIRD:
         name = "Bird";
         strcpy(action_name, name);
         return;
-    case 20:
+    case RGE_ACTION_TYPE_RUN_AWAY:
         name = "RunAway";
         strcpy(action_name, name);
         return;
-    case 21:
+    case RGE_ACTION_TYPE_MAKE:
         name = "Make";
         strcpy(action_name, name);
         return;

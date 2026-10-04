@@ -392,8 +392,8 @@ void RGE_Command::do_command_move(RGE_Command_Order* order) {
 
                     UnitAIModule* ai = object->unitAI();
                     if (ai) {
-                        object->unitAI()->setCurrentOrder(0x2c6);
-                        object->unitAI()->setCurrentAction(0x262);
+                        object->unitAI()->setCurrentOrder(UNIT_AI_ORDER_MOVE);
+                        object->unitAI()->setCurrentAction(UNIT_AI_ACTION_MOVE);
                         if (target != 0 && (target->master_obj->radius_x > g_command_zero_coordinate ||
                              target->master_obj->radius_y > g_command_zero_coordinate))
                             object->unitAI()->setCurrentTarget(target->id, target->master_obj->object_group,
@@ -430,8 +430,8 @@ simple:
                 object->move_to(target, order->location_x, order->location_y, 0);
                 UnitAIModule* ai = object->unitAI();
                 if (ai) {
-                    object->unitAI()->setCurrentOrder(0x2c6);
-                    object->unitAI()->setCurrentAction(0x262);
+                    object->unitAI()->setCurrentOrder(UNIT_AI_ORDER_MOVE);
+                    object->unitAI()->setCurrentAction(UNIT_AI_ACTION_MOVE);
                     if (target != 0 && (target->master_obj->radius_x > g_command_zero_coordinate ||
                          target->master_obj->radius_y > g_command_zero_coordinate))
                         object->unitAI()->setCurrentTarget(target->id, target->master_obj->object_group,

@@ -20,7 +20,7 @@
 
 TRIBE_Action_Heal::TRIBE_Action_Heal(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 0x69;
+    this->action_type = TRIBE_ACTION_TYPE_HEAL;
 }
 
 //     RGE_Action_Object*, RGE_Task*, RGE_Static_Object*)
@@ -28,7 +28,7 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(
     RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x69;
+    this->action_type = TRIBE_ACTION_TYPE_HEAL;
     set_target_obj(target_obj_in);
     target_x = target_obj_in->world_x;
     target_y = target_obj_in->world_y;
@@ -40,7 +40,7 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(
     RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
-    this->action_type = 0x69;
+    this->action_type = TRIBE_ACTION_TYPE_HEAL;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -49,7 +49,7 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(
 void TRIBE_Action_Heal::first_in_stack(unsigned char first_time) {
     if (this->target_obj != 0) {
         short kind = this->target_obj->master_obj->object_group;
-        if (kind == 0x15 || kind == 2 || kind == 0x14 || kind == 0x16) {
+        if (kind == OBJECT_GROUP_FISHING_BOAT || kind == OBJECT_GROUP_TRADE_BOAT || kind == OBJECT_GROUP_TRANSPORT_BOAT || kind == OBJECT_GROUP_WAR_BOAT) {
             return;
         }
         this->set_state(4);
@@ -64,7 +64,7 @@ void TRIBE_Action_Heal::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 3:
-        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x25B, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HEAL, 0, 0);
         this->obj->new_sprite(this->obj->master_obj->sprite);
         return;
 
@@ -138,7 +138,7 @@ unsigned char TRIBE_Action_Heal::update() {
 
     if (this->target_obj != 0 && this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {
         this->set_state(1);
-        this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x25B, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_HEAL, 0, 0);
         return 4;
     }
 
@@ -219,7 +219,7 @@ unsigned char TRIBE_Action_Heal::update() {
             return 0;
         }
         if (result == 2) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x25B, 0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_HEAL, 0, 0);
             this->set_state(2);
             return 0;
         }
@@ -230,7 +230,7 @@ unsigned char TRIBE_Action_Heal::update() {
         return 1;
 
     case 0x0D:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x25B, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_HEAL, 0, 0);
         this->set_state(2);
         return 3;
     }

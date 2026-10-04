@@ -316,7 +316,7 @@ void TRIBE_Panel_Object::draw() {
         }
 
         if (level == 9) {
-            if (this->game_obj->attribute_type_held == 0x11 || this->game_obj->attribute_type_held == 0)
+            if (this->game_obj->attribute_type_held == 0x11 || this->game_obj->attribute_type_held == RGE_RESOURCE_FOOD)
                 cur_val = (short)(int)(this->game_obj->attribute_amount_held - g_tactical_panel_rounding_offset);
             else
                 cur_val = 0;

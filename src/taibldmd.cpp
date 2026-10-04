@@ -324,7 +324,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
             if (order == 1 && numGranaries == 0 && numStoragePits == 0) {
                 canBuild = 0;
             }
-            if (order == 2 && this->md->resourceAI.resource(1) < 250 && numStoragePits == 0) {
+            if (order == 2 && this->md->resourceAI.resource(RGE_RESOURCE_WOOD) < 250 && numStoragePits == 0) {
                 canBuild = 0;
             }
             if (order == 3 && numGranaries == 0) {

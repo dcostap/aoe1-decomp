@@ -16,7 +16,7 @@
 
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
-    this->action_type = 0x66;
+    this->action_type = TRIBE_ACTION_TYPE_MAKE_OBJECT;
     rge_read(infile, &this->obj_id, 2);
     rge_read(infile, &this->work_done, 4);
     rge_read(infile, &this->unique_id, 4);
@@ -30,7 +30,7 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int infile, RGE_Action_Object* obj_
 
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj_in, short id, int uniqueID, unsigned char paid)
     : RGE_Action(obj_in, 1), unique_id(uniqueID) {
-    this->action_type = 0x66;
+    this->action_type = TRIBE_ACTION_TYPE_MAKE_OBJECT;
     this->obj_id = id;
     this->work_done = 0.0f;
     this->pre_paid = paid;
@@ -71,7 +71,7 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar first_time) {
                                                                              (int)this->obj_id, (int)this->obj->id, this->unique_id);
                     static_cast<TRIBE_Player*>(this->obj->owner)->cancelTrain(
                         0, (int)this->obj_id, (int)this->obj->id, this->unique_id);
-                    this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1F9, (long)0x26B, (long)0, (long)0);
+                    this->obj->notify((int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long)UNIT_AI_ACTION_TRAIN, (long)0, (long)0);
                     this->set_state(1);
                     return;
                 }
@@ -116,14 +116,14 @@ unsigned char TRIBE_Action_Make_Obj::update() {
                                                                          (int)this->obj_id, (int)this->obj->id, this->unique_id);
                 static_cast<TRIBE_Player*>(this->obj->owner)->cancelTrain(
                     0, (int)this->obj_id, (int)this->obj->id, this->unique_id);
-                this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1F9, (long)0x26B, (long)0, (long)0);
+                this->obj->notify((int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long)UNIT_AI_ACTION_TRAIN, (long)0, (long)0);
                 return 1;
             } else {
                 rge_base_game->notification(0x66, static_cast<TRIBE_Player*>(this->obj->owner)->id,
                                             (int)this->obj_id, (long)this->obj->world_x, (long)this->obj->world_y);
                 static_cast<TRIBE_Player*>(this->obj->owner)->registerTrain(
                     (int)this->obj_id, (int)this->obj->id, this->unique_id, (int)newObject->id);
-                this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1FA, (long)0x26B, (long)0, (long)0);
+                this->obj->notify((int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, (long)UNIT_AI_ACTION_TRAIN, (long)0, (long)0);
                 return 1;
             }
         }
@@ -215,7 +215,7 @@ int TRIBE_Action_Make_Obj::stop() {
     }
 
     rge_base_game->notification(0x67, static_cast<TRIBE_Player*>(this->obj->owner)->id, (int)this->obj_id, 0, 0);
-    this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1F9, (long)0x26B, (long)0, (long)0);
+    this->obj->notify((int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long)UNIT_AI_ACTION_TRAIN, (long)0, (long)0);
 
     return 1;
 }

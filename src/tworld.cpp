@@ -767,36 +767,36 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     switch (static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel()) {
     case TRIBE_Game::LowResources:
         for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->attributes[0] = 200.0f;
-            this->players[i]->attributes[1] = 200.0f;
-            this->players[i]->attributes[3] = 0.0f;
-            this->players[i]->attributes[2] = 100.0f;
+            this->players[i]->attributes[RGE_RESOURCE_FOOD] = 200.0f;
+            this->players[i]->attributes[RGE_RESOURCE_WOOD] = 200.0f;
+            this->players[i]->attributes[RGE_RESOURCE_GOLD] = 0.0f;
+            this->players[i]->attributes[RGE_RESOURCE_STONE] = 100.0f;
         }
         break;
     case TRIBE_Game::MediumResources:
         for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->attributes[0] = 500.0f;
-            this->players[i]->attributes[1] = 500.0f;
-            this->players[i]->attributes[3] = 0.0f;
-            this->players[i]->attributes[2] = 250.0f;
+            this->players[i]->attributes[RGE_RESOURCE_FOOD] = 500.0f;
+            this->players[i]->attributes[RGE_RESOURCE_WOOD] = 500.0f;
+            this->players[i]->attributes[RGE_RESOURCE_GOLD] = 0.0f;
+            this->players[i]->attributes[RGE_RESOURCE_STONE] = 250.0f;
         }
         break;
     case TRIBE_Game::HighResources:
         for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->attributes[0] = 1000.0f;
-            this->players[i]->attributes[1] = 1000.0f;
-            this->players[i]->attributes[3] = 0.0f;
-            this->players[i]->attributes[2] = 750.0f;
+            this->players[i]->attributes[RGE_RESOURCE_FOOD] = 1000.0f;
+            this->players[i]->attributes[RGE_RESOURCE_WOOD] = 1000.0f;
+            this->players[i]->attributes[RGE_RESOURCE_GOLD] = 0.0f;
+            this->players[i]->attributes[RGE_RESOURCE_STONE] = 750.0f;
         }
         break;
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch()) {
         for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->attributes[0] = 20000.0f;
-            this->players[i]->attributes[1] = 20000.0f;
-            this->players[i]->attributes[3] = 10000.0f;
-            this->players[i]->attributes[2] = 5000.0f;
+            this->players[i]->attributes[RGE_RESOURCE_FOOD] = 20000.0f;
+            this->players[i]->attributes[RGE_RESOURCE_WOOD] = 20000.0f;
+            this->players[i]->attributes[RGE_RESOURCE_GOLD] = 10000.0f;
+            this->players[i]->attributes[RGE_RESOURCE_STONE] = 5000.0f;
         }
     }
 
@@ -872,10 +872,10 @@ unsigned char TRIBE_World::new_scenario(RGE_Player_Info& info, int random_seed_i
     if (this->player_num > 1) {
         do {
             ++i;
-            this->players[i - 1]->attributes[0] = 200.0f;
-            this->players[i - 1]->attributes[1] = 200.0f;
-            this->players[i - 1]->attributes[3] = 0;
-            this->players[i - 1]->attributes[2] = 100.0f;
+            this->players[i - 1]->attributes[RGE_RESOURCE_FOOD] = 200.0f;
+            this->players[i - 1]->attributes[RGE_RESOURCE_WOOD] = 200.0f;
+            this->players[i - 1]->attributes[RGE_RESOURCE_GOLD] = 0;
+            this->players[i - 1]->attributes[RGE_RESOURCE_STONE] = 100.0f;
         } while (i < this->player_num);
     }
     return result;
@@ -1165,7 +1165,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
                         RGE_Object_Node* node = this->players[i]->objects->list;
                         while (node != 0) {
                             RGE_Static_Object* object = node->node;
-                            if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != 1)
+                            if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != OBJECT_GROUP_ARTIFACT)
                                 object->die_die_die();
                             node = node->next;
                         }
@@ -1179,7 +1179,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             RGE_Object_Node* node = this->players[player]->objects->list;
             while (node != 0) {
                 RGE_Static_Object* object = node->node;
-                if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != 1)
+                if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != OBJECT_GROUP_ARTIFACT)
                     object->die_die_die();
                 node = node->next;
             }
@@ -1208,7 +1208,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
                 RGE_Object_Node* node = this->players[other_player]->objects->list;
                 while (node != 0) {
                     RGE_Static_Object* object = node->node;
-                    if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != 1)
+                    if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != OBJECT_GROUP_ARTIFACT)
                         object->die_die_die();
                     node = node->next;
                 }

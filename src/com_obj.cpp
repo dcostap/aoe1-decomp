@@ -209,7 +209,7 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target,
                                                      s * combat_master->weapon_offset_x, this->world_y + s * combat_master->weapon_offset_y +
                                                      c * combat_master->weapon_offset_x, this->world_z + combat_master->weapon_offset_z);
         missile->init_missile(attacker, target, rangeDistance);
-        this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
+        this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, target->id, 0);
 
         if (static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->weapon_range > g_combat_attack_modifier_one &&
             target->owner->computerPlayer() == 1) {
@@ -249,7 +249,7 @@ unsigned char RGE_Combat_Object::attack(float target_x, float target_y, float ta
                                                      s * combat_master->weapon_offset_x, this->world_y + (s * combat_master->weapon_offset_y +
                 c * combat_master->weapon_offset_x), this->world_z + combat_master->weapon_offset_z);
         missile->init_missile(attacker, target_x, target_y, target_z, rangeDistance);
-        this->notify(this->id, this->id, 0x200, 0x258, -1, 0);
+        this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, -1, 0);
         return 1;
     }
     return 0;
@@ -266,7 +266,7 @@ unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat
         return 1;
     }
 
-    this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
+    this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, target->id, 0);
     int r = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 379);
     int chance = (r * 100) / 0x7fff;
     if (chance <= (int)static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
@@ -281,7 +281,7 @@ unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat
 void RGE_Combat_Object::damage(int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player, RGE_Static_Object* attackingObject) {
     hp -= calculateDamage(weapon_num, damage, attack_modifier, attacking_player, attackingObject);
     if (attackingObject != 0) {
-        notify(attackingObject->id, id, 0x1F4, attackingObject->id, (int)hp, master_obj->hp);
+        notify(attackingObject->id, id, UNIT_AI_NOTIFY_ATTACKED, attackingObject->id, (int)hp, master_obj->hp);
     }
     if (hp < 1.0) {
         hp = 0.0f;
@@ -512,7 +512,7 @@ int RGE_Combat_Object::attack(int targetID, int unconditional) {
     if (unconditional == 0) {
         if (this->actions->have_action() == 1) {
             if (this->actions->get_action()->get_target_obj() == target) {
-                if (this->actions->get_action()->type() == 9) {
+                if (this->actions->get_action()->type() == RGE_ACTION_TYPE_ATTACK) {
                     return 1;
                 }
                 if (this->actions->get_action()->type() == 7) {
@@ -524,14 +524,14 @@ int RGE_Combat_Object::attack(int targetID, int unconditional) {
 
     if (this->actions->have_action() == 1) {
         if (this->actions->get_action()->get_target_obj() == target) {
-            if (this->actions->get_action()->type() == 9) {
+            if (this->actions->get_action()->type() == RGE_ACTION_TYPE_ATTACK) {
                 this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
                 return 1;
             }
         }
     }
 
-    if (this->master_obj->object_group == 4) {
+    if (this->master_obj->object_group == OBJECT_GROUP_CIVILIAN) {
         RGE_Master_Static_Object* transform_master =
             this->owner->master_objects[0x53];
         if (transform_master != 0) {
@@ -558,7 +558,7 @@ int RGE_Combat_Object::attack(float x, float y, float z, int unconditional) {
             if (this->actions->get_action()->targetX() == x) {
                 if (this->actions->get_action()->targetX() == y) {
                     if (this->actions->get_action()->targetX() == z) {
-                        if (this->actions->get_action()->type() == 9) {
+                        if (this->actions->get_action()->type() == RGE_ACTION_TYPE_ATTACK) {
                             return 1;
                         }
                         if (this->actions->get_action()->type() == 7) {
@@ -691,11 +691,11 @@ int RGE_Combat_Object::gather(int targetID, int unconditional) {
     }
 
     if (unconditional == 0 && this->actions->have_action() == 1 &&
-        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == 5) {
+        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == RGE_ACTION_TYPE_GATHER) {
         goto success;
     }
 
-    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == 5) {
+    if (this->actions->have_action() == 1 && this->actions->get_action()->type() == RGE_ACTION_TYPE_GATHER) {
         this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         goto success;
     }
@@ -759,7 +759,7 @@ int RGE_Combat_Object::enter(int targetID, int unconditional) {
     if (unconditional == 0) {
         if (this->actions->have_action() == 1) {
             if (this->actions->get_action()->get_target_obj() == obj) {
-                if (this->actions->get_action()->type() == 3)
+                if (this->actions->get_action()->type() == RGE_ACTION_TYPE_ENTER)
                     goto success;
             }
         }
