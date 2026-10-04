@@ -1,5 +1,8 @@
 # Review of eight local-name findings
 
+The approved changes are now [applied and checked](local_name_audit_fixes.md).
+This review records the pre-edit source spellings and the evidence for each mapping.
+
 ## Scope and evidence
 
 This is a sequential source review, not a source edit or a new build validation.
