@@ -48,11 +48,11 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                     if (create_drop_down(this, &difficultyDrop, 130, 100, 20, 390, 130, 24,
                                                          RGE_FONT_STANDARD)) {
                                         difficultyDrop->empty_list();
-                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASIEST, 4);
-                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASY, 3);
-                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_MODERATE, 2);
-                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARD, 1);
-                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARDEST, 0);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASIEST, RGE_DIFFICULTY_EASIEST);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASY, RGE_DIFFICULTY_EASY);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_MODERATE, RGE_DIFFICULTY_MODERATE);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARD, RGE_DIFFICULTY_HARD);
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARDEST, RGE_DIFFICULTY_HARDEST);
                                         difficultyDrop->set_line(difficultyDrop->get_line(rge_base_game->difficulty()));
                                         if (create_button(this, &okButton, STRING_ID_BUTTON_OK, 0, 70, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
                                             if (create_button(this, &cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440,

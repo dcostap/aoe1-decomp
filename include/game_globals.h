@@ -4,6 +4,12 @@
 #include <windows.h>
 #include <stdio.h>
 
+#define RGE_DIFFICULTY_HARDEST  0
+#define RGE_DIFFICULTY_HARD     1
+#define RGE_DIFFICULTY_MODERATE 2
+#define RGE_DIFFICULTY_EASY     3
+#define RGE_DIFFICULTY_EASIEST  4
+
 class RGE_Base_Game;
 class RGE_Static_Object;
 class TDrawArea;

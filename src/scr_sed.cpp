@@ -191,8 +191,8 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
     this->set_curr_child(this->bottom_panel);
     this->position_panels();
     this->set_panel_info();
-    this->set_map_type(static_cast<MapType>(1), 0);
-    this->set_mp_victory_type(static_cast<VictoryType>(1), 0);
+    this->set_map_type(static_cast<MapType>(MapTypeBlankValue), 0);
+    this->set_mp_victory_type(static_cast<VictoryType>(VictoryTypeStandardValue), 0);
     this->set_brush_size(BrushSizeVerySmall);
     this->set_paint_type(static_cast<PaintType>(1), 0);
     this->set_player(1, 0, 0);
@@ -330,27 +330,27 @@ create:
 
     list = &this->map_size_drop;
     if (drop_panel == list) {
-        (*list)->append_line(STRING_ID_MAP_SIZE_BASE, 0);
-        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 1, 0);
-        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 2, 0);
-        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 3, 0);
-        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 4, 0);
-        (*list)->append_line(STRING_ID_MAP_SIZE_BASE + 5, 0);
-        (*list)->set_line(3);
+        (*list)->append_line(STRING_ID_MAP_SIZE_TINY, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_SMALL, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_MEDIUM, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_LARGE, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_HUGE, 0);
+        (*list)->append_line(STRING_ID_MAP_SIZE_HUMONGOUS, 0);
+        (*list)->set_line(TRIBE_Game::Large);
         goto done;
     } else {
         list = &this->map_style_drop;
         if (drop_panel == list) {
-            (*list)->append_line(STRING_ID_MAP_TYPE_BASE, 0);
-            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 1, 0);
-            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 2, 0);
-            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 3, 0);
-            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 4, 0);
-            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 5, 0);
-            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 6, 0);
-            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 7, 0);
-            (*list)->append_line(STRING_ID_MAP_TYPE_BASE + 8, 0);
-            (*list)->set_line(3);
+            (*list)->append_line(STRING_ID_MAP_TYPE_ALL_WATER, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_MOSTLY_WATER, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_WATER_AND_LAND, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_MOSTLY_LAND, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_ALL_LAND, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_CONTINENTAL, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_LAKE, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_HILLY, 0);
+            (*list)->append_line(STRING_ID_MAP_TYPE_ISTHMAS, 0);
+            (*list)->set_line(TRIBE_Game::MostlyLand);
             goto done;
         } else {
             list = &this->player_number_list;
@@ -388,15 +388,15 @@ create:
                     } else {
                         list = &this->default_terrain_drop;
                         if (drop_panel == list) {
-                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE, 0);
-                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 1, 0);
-                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 2, 0);
-                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 3, 0);
-                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 4, 0);
-                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 5, 0);
-                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 6, 0);
-                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 7, 0);
-                            (*list)->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 8, 0);
+                            (*list)->append_line(STRING_ID_TERRAIN_GRASS, 0);
+                            (*list)->append_line(STRING_ID_TERRAIN_DESERT, 0);
+                            (*list)->append_line(STRING_ID_TERRAIN_FOREST, 0);
+                            (*list)->append_line(STRING_ID_TERRAIN_WATER, 0);
+                            (*list)->append_line(STRING_ID_TERRAIN_PALM_DESERT, 0);
+                            (*list)->append_line(STRING_ID_TERRAIN_JUNGLE, 0);
+                            (*list)->append_line(STRING_ID_TERRAIN_SHALLOWS, 0);
+                            (*list)->append_line(STRING_ID_TERRAIN_PINE_FOREST, 0);
+                            (*list)->append_line(STRING_ID_TERRAIN_DEEP_WATER, 0);
                             (*list)->set_line(0);
                             goto done;
                         } else {
@@ -409,24 +409,24 @@ create:
                             } else {
                                 list = &this->victory_drop_down;
                                 if (drop_panel == list) {
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 1, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 2, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 3, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 4, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 5, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 6, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 7, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 8, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 9, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 10, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 11, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 12, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 13, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 14, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 15, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 16, 0);
-                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OPTION_BASE + 17, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_NONE, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_BRING_OBJECT_TO_OBJECT, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_BRING_OBJECT_TO_AREA, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_CREATE_OBJECT_COUNT, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_CREATE_OBJECTS_IN_AREA, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_DESTROY_OBJECT_COUNT, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_DESTROY_SPECIFIC_OBJECT, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_DESTROY_ALL_OBJECTS, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_DESTROY_PLAYER, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_CAPTURE_OBJECT, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_GOLD_STOCKPILE, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_FOOD_STOCKPILE, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_WOOD_STOCKPILE, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_STONE_STOCKPILE, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_POPULATION, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_AGE, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_EXPLORATION, 0);
+                                    (*list)->append_line(STRING_ID_VICTORY_CONDITION_OTHER_ATTRIBUTES, 0);
                                     (*list)->append_line(STRING_ID_TECHNOLOGIES_LABEL, 0);
                                     (*list)->set_line(0);
                                     goto done;
@@ -454,10 +454,10 @@ create:
                                     } else {
                                         list = &this->victory_ages_list;
                                         if (drop_panel == list) {
-                                            (*list)->append_line(STRING_ID_HELP_AGE_STONE, 0);
-                                            (*list)->append_line(STRING_ID_HELP_AGE_TOOL, 0);
-                                            (*list)->append_line(STRING_ID_HELP_AGE_BRONZE, 0);
-                                            (*list)->append_line(STRING_ID_HELP_AGE_IRON, 0);
+                                            (*list)->append_line(STRING_ID_AGE_STONE, 0);
+                                            (*list)->append_line(STRING_ID_AGE_TOOL, 0);
+                                            (*list)->append_line(STRING_ID_AGE_BRONZE, 0);
+                                            (*list)->append_line(STRING_ID_AGE_IRON, 0);
                                             (*list)->set_line(0);
                                             goto done;
                                         } else {
@@ -567,15 +567,15 @@ done:
 
 int TRIBE_Screen_Sed::SetupListOfTerrain(TListPanel *list) {
     list->empty_list();
-    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE, 0);
-    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 1, 0);
-    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 2, 0);
-    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 3, 0);
-    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 4, 0);
-    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 5, 0);
-    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 6, 0);
-    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 7, 0);
-    list->append_line(STRING_ID_DEFAULT_TERRAIN_BASE + 8, 0);
+    list->append_line(STRING_ID_TERRAIN_GRASS, 0);
+    list->append_line(STRING_ID_TERRAIN_DESERT, 0);
+    list->append_line(STRING_ID_TERRAIN_FOREST, 0);
+    list->append_line(STRING_ID_TERRAIN_WATER, 0);
+    list->append_line(STRING_ID_TERRAIN_PALM_DESERT, 0);
+    list->append_line(STRING_ID_TERRAIN_JUNGLE, 0);
+    list->append_line(STRING_ID_TERRAIN_SHALLOWS, 0);
+    list->append_line(STRING_ID_TERRAIN_PINE_FOREST, 0);
+    list->append_line(STRING_ID_TERRAIN_DEEP_WATER, 0);
     return 8;
 }
 
@@ -825,7 +825,7 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode new_mode
             if (active) {
                 this->set_map_type(static_cast<MapType>(this->map_type), 1);
             } else {
-                this->set_map_type(static_cast<MapType>(ScenarioModeNone), 0);
+                this->set_map_type(static_cast<MapType>(MapTypeNone), 0);
             }
             break;
 
@@ -953,7 +953,7 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode new_mode
             } else {
                 this->save_multi_victory_cond_in_scenario();
                 this->map_view->set_active(1);
-                this->set_mp_victory_type(static_cast<VictoryType>(0), 0);
+                this->set_mp_victory_type(static_cast<VictoryType>(VictoryTypeNone), 0);
             }
             break;
 
@@ -2075,23 +2075,23 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
                 i = this->map_size_drop->currentLineNumber();
                 int map_style = this->map_style_drop->currentLineNumber();
                 switch (i) {
-                case 0:
-                    map_size = 72;
+                case TRIBE_Game::Tiny:
+                    map_size = TRIBE_MAP_DIMENSION_TINY;
                     break;
-                case 1:
-                    map_size = 96;
+                case TRIBE_Game::Small:
+                    map_size = TRIBE_MAP_DIMENSION_SMALL;
                     break;
-                case 2:
-                    map_size = 120;
+                case TRIBE_Game::Medium:
+                    map_size = TRIBE_MAP_DIMENSION_MEDIUM;
                     break;
-                case 3:
-                    map_size = 144;
+                case TRIBE_Game::Large:
+                    map_size = TRIBE_MAP_DIMENSION_LARGE;
                     break;
-                case 4:
-                    map_size = 200;
+                case TRIBE_Game::Huge:
+                    map_size = TRIBE_MAP_DIMENSION_HUGE;
                     break;
-                case 5:
-                    map_size = 250;
+                case TRIBE_Game::Humongous:
+                    map_size = TRIBE_MAP_DIMENSION_HUMONGOUS;
                     break;
                 default:
                     map_size = map_style;

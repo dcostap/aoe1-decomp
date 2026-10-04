@@ -3,6 +3,10 @@
 
 #include <windows.h>
 
+#define RGE_PATH_FINDING_DEFAULT 0
+#define RGE_PATH_FINDING_MEDIUM  1
+#define RGE_PATH_FINDING_HIGH    2
+
 class RGE_Base_Game;
 class RGE_Action_Gather;
 class RGE_Campaign;

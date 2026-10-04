@@ -261,7 +261,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
         val = rge_base_game->mpPathFinding();
     else
         val = rge_base_game->pathFinding();
-    if (val <= 2)
+    if (val <= RGE_PATH_FINDING_HIGH)
         this->pathFindingButton[val]->set_radio_button();
 
     if (!this->create_button(this, &this->okButton, STRING_ID_BUTTON_OK, 0, 120, 345, 170, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
@@ -420,13 +420,13 @@ long TribeConfigDialog::action(TPanel* fromPanel, long actionIn, unsigned long a
 
                 if (rge_base_game->singlePlayerGame() != 0) {
                     if (this->pathFindingButton[0]->get_state() != 0) {
-                        rge_base_game->setPathFinding(0);
+                        rge_base_game->setPathFinding(RGE_PATH_FINDING_DEFAULT);
                         numberPathingIterations = 2500;
                     } else if (this->pathFindingButton[1]->get_state() != 0) {
-                        rge_base_game->setPathFinding(1);
+                        rge_base_game->setPathFinding(RGE_PATH_FINDING_MEDIUM);
                         numberPathingIterations = 5000;
                     } else if (this->pathFindingButton[2]->get_state() != 0) {
-                        rge_base_game->setPathFinding(2);
+                        rge_base_game->setPathFinding(RGE_PATH_FINDING_HIGH);
                         numberPathingIterations = 7500;
                     }
                 }

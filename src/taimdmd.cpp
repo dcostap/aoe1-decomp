@@ -384,31 +384,31 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
 
                 int resAmount = 2000;
                 switch (rge_base_game->difficulty()) {
-                case 0:
+                case RGE_DIFFICULTY_HARDEST:
                     resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 622) %
                             500 +
                         1400;
                     break;
-                case 1:
+                case RGE_DIFFICULTY_HARD:
                     resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 623) %
                             400 +
                         1000;
                     break;
-                case 2:
+                case RGE_DIFFICULTY_MODERATE:
                     resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 624) %
                             300 +
                         700;
                     break;
-                case 3:
+                case RGE_DIFFICULTY_EASY:
                     resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 625) %
                             200 +
                         450;
                     break;
-                case 4:
+                case RGE_DIFFICULTY_EASIEST:
                     resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 626) %
                             100 +
@@ -713,7 +713,7 @@ int TribeMainDecisionAIModule::processAICommand(int caller, int mType, int p1, i
         case 2:
             this->diplomacyAI.setStance(p1, 2, 100);
             this->diplomacyAI.setRelation(p1, 0);
-            if (rge_base_game->difficulty() == 4) {
+            if (rge_base_game->difficulty() == RGE_DIFFICULTY_EASIEST) {
                 if (this->player->world->players[p1]->computerPlayer() == 0) {
                     static_cast<TRIBE_Command*>(this->player->world->commands)
                         ->command_allied_victory(this->player->id, 1);

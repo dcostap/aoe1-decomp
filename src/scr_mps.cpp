@@ -393,9 +393,9 @@ void TribeMPSetupScreen::init_vars() {
         rge_base_game->setSavedGame(0);
         rge_base_game->setScenarioGame(0);
         rge_base_game->setScenarioName("");
-        static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(static_cast<TRIBE_Game::MapSize>(3));
-        static_cast<TRIBE_Game*>(rge_base_game)->setMapType(static_cast<TRIBE_Game::MapType>(3));
-        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(static_cast<TRIBE_Game::VictoryType>(0), 0);
+        static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(static_cast<TRIBE_Game::MapSize>(TRIBE_Game::Large));
+        static_cast<TRIBE_Game*>(rge_base_game)->setMapType(static_cast<TRIBE_Game::MapType>(TRIBE_Game::MostlyLand));
+        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(static_cast<TRIBE_Game::VictoryType>(TRIBE_Game::VictoryDefault), 0);
         static_cast<TRIBE_Game*>(rge_base_game)->setAnimals(1);
         static_cast<TRIBE_Game*>(rge_base_game)->setPredators(1);
         rge_base_game->setNumberPlayers(8);
@@ -406,8 +406,8 @@ void TribeMPSetupScreen::init_vars() {
         static_cast<TRIBE_Game*>(rge_base_game)->setLongCombat(0);
         static_cast<TRIBE_Game*>(rge_base_game)->setAllowTrading(1);
         static_cast<TRIBE_Game*>(rge_base_game)->setFullTechTree(0);
-        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(static_cast<TRIBE_Game::ResourceLevel>(0));
-        static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(static_cast<TRIBE_Game::Age>(0));
+        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(static_cast<TRIBE_Game::ResourceLevel>(TRIBE_Game::DefaultResources));
+        static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(static_cast<TRIBE_Game::Age>(TRIBE_Game::DefaultAge));
         static_cast<TRIBE_Game*>(rge_base_game)->setStartingUnits(0);
         rge_base_game->setDifficulty(rge_base_game->get_single_player_difficulty());
         static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(0);
@@ -435,18 +435,18 @@ void TribeMPSetupScreen::init_vars() {
         }
     } else {
         if (rge_base_game->scenarioGame() == 0) {
-            static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(static_cast<TRIBE_Game::MapSize>(3));
+            static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(static_cast<TRIBE_Game::MapSize>(TRIBE_Game::Large));
             int random_map = debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 618) %
                               10;
             int map_type;
             if (random_map < 2) {
-                map_type = 4;
+                map_type = TRIBE_Game::AllLand;
             } else if (random_map == 2) {
-                map_type = 3;
+                map_type = TRIBE_Game::MostlyLand;
             } else if (random_map == 3) {
-                map_type = 2;
+                map_type = TRIBE_Game::WaterAndLand;
             } else if (random_map == 4) {
-                map_type = 1;
+                map_type = TRIBE_Game::MostlyWater;
             } else if (random_map == 5) {
                 map_type = random_map;
             } else if (random_map == 6) {
@@ -454,11 +454,11 @@ void TribeMPSetupScreen::init_vars() {
             } else if (random_map == 7) {
                 map_type = random_map;
             } else {
-                map_type = (random_map == 8) ? 8 : 0;
+                map_type = (random_map == 8) ? TRIBE_Game::Isthmas : TRIBE_Game::AllWater;
             }
             static_cast<TRIBE_Game*>(rge_base_game)->setMapType(static_cast<TRIBE_Game::MapType>(map_type));
         }
-        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(static_cast<TRIBE_Game::VictoryType>(0), 0);
+        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(static_cast<TRIBE_Game::VictoryType>(TRIBE_Game::VictoryDefault), 0);
         rge_base_game->setNumberPlayers(4);
         rge_base_game->setCampaignGame(0);
         rge_base_game->setSavedGame(0);
@@ -471,8 +471,8 @@ void TribeMPSetupScreen::init_vars() {
         static_cast<TRIBE_Game*>(rge_base_game)->setLongCombat(0);
         static_cast<TRIBE_Game*>(rge_base_game)->setAllowTrading(1);
         static_cast<TRIBE_Game*>(rge_base_game)->setFullTechTree(0);
-        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(static_cast<TRIBE_Game::ResourceLevel>(0));
-        static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(static_cast<TRIBE_Game::Age>(0));
+        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(static_cast<TRIBE_Game::ResourceLevel>(TRIBE_Game::DefaultResources));
+        static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(static_cast<TRIBE_Game::Age>(TRIBE_Game::DefaultAge));
         static_cast<TRIBE_Game*>(rge_base_game)->setStartingUnits(0);
         rge_base_game->setDifficulty(rge_base_game->get_single_player_difficulty());
         static_cast<TRIBE_Game*>(rge_base_game)->setQuickStartGame(0);
@@ -1864,12 +1864,12 @@ void TribeMPSetupScreen::updateSummary() {
 
     if (rge_base_game->randomGame()) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
-        case 0: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_BASE)); break;
-        case 1: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_BASE + 1)); break;
-        case 2: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_BASE + 2)); break;
-        case 3: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_BASE + 3)); break;
-        case 4: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_BASE + 4)); break;
-        case 5: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_BASE + 5)); break;
+        case TRIBE_Game::Tiny: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_TINY)); break;
+        case TRIBE_Game::Small: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_SMALL)); break;
+        case TRIBE_Game::Medium: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_MEDIUM)); break;
+        case TRIBE_Game::Large: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_LARGE)); break;
+        case TRIBE_Game::Huge: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_HUGE)); break;
+        case TRIBE_Game::Humongous: strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_HUMONGOUS)); break;
         }
         sprintf(str2, this->get_string(STRING_ID_MAP_SIZE_FORMAT), str1);
         this->settingText[setting]->set_text(str2);
@@ -1877,15 +1877,15 @@ void TribeMPSetupScreen::updateSummary() {
         ++setting;
 
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case 0: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_BASE)); break;
-        case 1: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_BASE + 1)); break;
-        case 2: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_BASE + 2)); break;
-        case 3: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_BASE + 3)); break;
-        case 4: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_BASE + 4)); break;
-        case 5: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_BASE + 5)); break;
-        case 6: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_BASE + 6)); break;
-        case 7: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_BASE + 7)); break;
-        case 8: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_BASE + 8)); break;
+        case TRIBE_Game::AllWater: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_ALL_WATER)); break;
+        case TRIBE_Game::MostlyWater: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_MOSTLY_WATER)); break;
+        case TRIBE_Game::WaterAndLand: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_WATER_AND_LAND)); break;
+        case TRIBE_Game::MostlyLand: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_MOSTLY_LAND)); break;
+        case TRIBE_Game::AllLand: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_ALL_LAND)); break;
+        case TRIBE_Game::Continental: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_CONTINENTAL)); break;
+        case TRIBE_Game::Lake: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_LAKE)); break;
+        case TRIBE_Game::Hilly: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_HILLY)); break;
+        case TRIBE_Game::Isthmas: strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_ISTHMAS)); break;
         }
         sprintf(str2, this->get_string(STRING_ID_MAP_TYPE_FORMAT), str1);
         this->settingText[setting]->set_text(str2);
@@ -1907,13 +1907,13 @@ void TribeMPSetupScreen::updateSummary() {
     ++setting;
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
-    case 1:
+    case TRIBE_Game::VictoryConquest:
         strcpy(str1, this->get_string(STRING_ID_VICTORY_CONQUEST));
         goto victory_plain;
-    case 7:
+    case TRIBE_Game::VictoryTime:
         strcpy(str1, this->get_string(STRING_ID_VICTORY_TIME_LIMIT));
         goto victory_amount;
-    case 8:
+    case TRIBE_Game::VictoryScore:
         strcpy(str1, this->get_string(STRING_ID_VICTORY_SCORE));
     victory_amount:
         sprintf(str2, this->get_string(STRING_ID_VICTORY_AMOUNT_FORMAT), str1,
@@ -1926,7 +1926,7 @@ void TribeMPSetupScreen::updateSummary() {
             strcpy(str1, this->get_string(STRING_ID_OPTION_DEFAULT));
         }
         goto victory_plain;
-    case 9:
+    case TRIBE_Game::VictoryStandard:
         strcpy(str1, this->get_string(STRING_ID_VICTORY_STANDARD));
     victory_plain:
         sprintf(str2, this->get_string(STRING_ID_VICTORY_FORMAT), str1);
@@ -1938,9 +1938,9 @@ void TribeMPSetupScreen::updateSummary() {
     ++setting;
 
     int age = static_cast<TRIBE_Game*>(rge_base_game)->startingAge();
-    if (age == 0) {
+    if (age == TRIBE_Game::DefaultAge) {
         this->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
-    } else if (age == 1) {
+    } else if (age == TRIBE_Game::NomadAge) {
         this->get_string(STRING_ID_AGE_NOMAD, str1, 256);
     } else {
         this->get_string(age + STRING_ID_AGE_NAME_BASE, str1, 256);
@@ -1951,7 +1951,7 @@ void TribeMPSetupScreen::updateSummary() {
     ++setting;
 
     int resources = static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel();
-    if (resources == 0) {
+    if (resources == TRIBE_Game::DefaultResources) {
         this->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
     } else {
         this->get_string(resources + STRING_ID_RESOURCE_LEVEL_BASE, str1, 256);
@@ -2057,22 +2057,22 @@ void TribeMPSetupScreen::handleKickedPlayer(int really_kicked) {
 
 void TribeMPSetupScreen::activateVictoryPanels() {
     int id = victoryTypeDrop->get_id();
-    if (id == 1 || victoryTypeDrop->get_id() == 0) {
+    if (id == TRIBE_Game::VictoryConquest || victoryTypeDrop->get_id() == TRIBE_Game::VictoryDefault) {
         victoryAmountLabel->set_active(0);
         victoryAmountInput->set_active(0);
     } else {
         victoryAmountLabel->set_active(1);
         victoryAmountInput->set_active(1);
         switch (victoryTypeDrop->get_id()) {
-        case 2:
+        case TRIBE_VICTORY_TYPE_EXPLORATION:
             victoryAmountLabel->set_text(STRING_ID_VICTORY_PERCENT_LABEL);
             return;
-        case 3:
-        case 4:
-        case 5:
+        case TRIBE_VICTORY_TYPE_RUINS:
+        case TRIBE_VICTORY_TYPE_ARTIFACTS:
+        case TRIBE_VICTORY_TYPE_DISCOVERIES:
             victoryAmountLabel->set_text(STRING_ID_VICTORY_COUNT_LABEL);
             return;
-        case 6:
+        case TRIBE_VICTORY_TYPE_GOLD:
             victoryAmountLabel->set_text(STRING_ID_VICTORY_QUANTITY_LABEL);
             return;
         }
@@ -2325,12 +2325,12 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
 
     if (rge_base_game->randomGame()) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
-        case 0: strcpy(str1, get_string(STRING_ID_MAP_SIZE_BASE)); break;       // Tiny
-        case 1: strcpy(str1, get_string(STRING_ID_MAP_SIZE_BASE + 1)); break;   // Small
-        case 2: strcpy(str1, get_string(STRING_ID_MAP_SIZE_BASE + 2)); break;   // Medium
-        case 3: strcpy(str1, get_string(STRING_ID_MAP_SIZE_BASE + 3)); break;   // Large
-        case 4: strcpy(str1, get_string(STRING_ID_MAP_SIZE_BASE + 4)); break;   // Huge
-        case 5: strcpy(str1, get_string(STRING_ID_MAP_SIZE_BASE + 5)); break;   // Gigantic
+        case TRIBE_Game::Tiny: strcpy(str1, get_string(STRING_ID_MAP_SIZE_TINY)); break;
+        case TRIBE_Game::Small: strcpy(str1, get_string(STRING_ID_MAP_SIZE_SMALL)); break;
+        case TRIBE_Game::Medium: strcpy(str1, get_string(STRING_ID_MAP_SIZE_MEDIUM)); break;
+        case TRIBE_Game::Large: strcpy(str1, get_string(STRING_ID_MAP_SIZE_LARGE)); break;
+        case TRIBE_Game::Huge: strcpy(str1, get_string(STRING_ID_MAP_SIZE_HUGE)); break;
+        case TRIBE_Game::Humongous: strcpy(str1, get_string(STRING_ID_MAP_SIZE_HUMONGOUS)); break;
         }
         sprintf(str2, get_string(STRING_ID_MAP_SIZE_FORMAT), str1);              // "Map Size: %s"
         this->settingText[i]->set_text(str2);
@@ -2338,15 +2338,15 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
         i++;
 
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case 0: strcpy(str1, get_string(STRING_ID_MAP_TYPE_BASE)); break;       // All Water
-        case 1: strcpy(str1, get_string(STRING_ID_MAP_TYPE_BASE + 1)); break;   // Mostly Water
-        case 2: strcpy(str1, get_string(STRING_ID_MAP_TYPE_BASE + 2)); break;   // Water & Land
-        case 3: strcpy(str1, get_string(STRING_ID_MAP_TYPE_BASE + 3)); break;   // Mostly Land
-        case 4: strcpy(str1, get_string(STRING_ID_MAP_TYPE_BASE + 4)); break;   // All Land
-        case 5: strcpy(str1, get_string(STRING_ID_MAP_TYPE_BASE + 5)); break;   // Continental
-        case 6: strcpy(str1, get_string(STRING_ID_MAP_TYPE_BASE + 6)); break;   // Lake
-        case 7: strcpy(str1, get_string(STRING_ID_MAP_TYPE_BASE + 7)); break;   // Hilly
-        case 8: strcpy(str1, get_string(STRING_ID_MAP_TYPE_BASE + 8)); break;   // Narrows
+        case TRIBE_Game::AllWater: strcpy(str1, get_string(STRING_ID_MAP_TYPE_ALL_WATER)); break;
+        case TRIBE_Game::MostlyWater: strcpy(str1, get_string(STRING_ID_MAP_TYPE_MOSTLY_WATER)); break;
+        case TRIBE_Game::WaterAndLand: strcpy(str1, get_string(STRING_ID_MAP_TYPE_WATER_AND_LAND)); break;
+        case TRIBE_Game::MostlyLand: strcpy(str1, get_string(STRING_ID_MAP_TYPE_MOSTLY_LAND)); break;
+        case TRIBE_Game::AllLand: strcpy(str1, get_string(STRING_ID_MAP_TYPE_ALL_LAND)); break;
+        case TRIBE_Game::Continental: strcpy(str1, get_string(STRING_ID_MAP_TYPE_CONTINENTAL)); break;
+        case TRIBE_Game::Lake: strcpy(str1, get_string(STRING_ID_MAP_TYPE_LAKE)); break;
+        case TRIBE_Game::Hilly: strcpy(str1, get_string(STRING_ID_MAP_TYPE_HILLY)); break;
+        case TRIBE_Game::Isthmas: strcpy(str1, get_string(STRING_ID_MAP_TYPE_ISTHMAS)); break;
         }
         sprintf(str2, get_string(STRING_ID_MAP_TYPE_FORMAT), str1);              // "Map Type: %s"
         this->settingText[i]->set_text(str2);
@@ -2356,13 +2356,13 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     i++;
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
-    case 1:                            // Conquest
+    case TRIBE_Game::VictoryConquest:
         strcpy(str1, get_string(STRING_ID_VICTORY_CONQUEST));
         goto victory_plain_wait;
-    case 7:                            // Time
+    case TRIBE_Game::VictoryTime:
         strcpy(str1, get_string(STRING_ID_VICTORY_TIME_LIMIT));
         goto victory_amount_wait;
-    case 8:                            // Score
+    case TRIBE_Game::VictoryScore:
         strcpy(str1, get_string(STRING_ID_VICTORY_SCORE));
     victory_amount_wait:
         sprintf(str2, get_string(STRING_ID_VICTORY_AMOUNT_FORMAT), str1,
@@ -2375,7 +2375,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
             strcpy(str1, get_string(STRING_ID_OPTION_DEFAULT));
         }
         goto victory_plain_wait;
-    case 9:                            // Standard
+    case TRIBE_Game::VictoryStandard:
         strcpy(str1, get_string(STRING_ID_VICTORY_STANDARD));
     victory_plain_wait:
         sprintf(str2, get_string(STRING_ID_VICTORY_FORMAT), str1); // "Victory: %s"
@@ -2387,9 +2387,9 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     i++;
 
     int age = static_cast<TRIBE_Game*>(rge_base_game)->startingAge();
-    if (age == 0) {
+    if (age == TRIBE_Game::DefaultAge) {
         get_string(STRING_ID_OPTION_DEFAULT, str1, 256);        // Default
-    } else if (age == 1) {
+    } else if (age == TRIBE_Game::NomadAge) {
         get_string(STRING_ID_AGE_NOMAD, str1, 256);              // Nomad
     } else {
         get_string(age + STRING_ID_AGE_NAME_BASE, str1, 256);
@@ -2400,7 +2400,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     i++;
 
     int level = static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel();
-    if (level == 0) {
+    if (level == TRIBE_Game::DefaultResources) {
         get_string(STRING_ID_OPTION_DEFAULT, str1, 256);        // Default
     } else {
         get_string(level + STRING_ID_RESOURCE_LEVEL_BASE, str1, 256);

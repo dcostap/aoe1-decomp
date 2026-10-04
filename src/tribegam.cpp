@@ -779,13 +779,13 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
     case RGE_STRING_TYPE_AGE:
         switch (id) {
         case 1:
-            return this->get_string(STRING_ID_HELP_AGE_STONE, str, max_len);
+            return this->get_string(STRING_ID_AGE_STONE, str, max_len);
         case 2:
-            return this->get_string(STRING_ID_HELP_AGE_TOOL, str, max_len);
+            return this->get_string(STRING_ID_AGE_TOOL, str, max_len);
         case 3:
-            return this->get_string(STRING_ID_HELP_AGE_BRONZE, str, max_len);
+            return this->get_string(STRING_ID_AGE_BRONZE, str, max_len);
         case 4:
-            return this->get_string(STRING_ID_HELP_AGE_IRON, str, max_len);
+            return this->get_string(STRING_ID_AGE_IRON, str, max_len);
         }
         break;
     case RGE_STRING_TYPE_CIVILIZATION:
@@ -2364,10 +2364,10 @@ int TRIBE_Game::load_game(char* fileName) {
     this->setNumberPlayers(this->world->player_num - 1);
 
     switch (this->pathFinding()) {
-    case 1:
+    case RGE_PATH_FINDING_MEDIUM:
         numberPathingIterations = 5000;
         break;
-    case 2:
+    case RGE_PATH_FINDING_HIGH:
         numberPathingIterations = 7500;
         break;
     default:
@@ -3031,9 +3031,9 @@ int TRIBE_Game::create_game(int not_used) {
     } else {
         path_finding_val = this->pathFinding();
     }
-    if (path_finding_val == 1) {
+    if (path_finding_val == RGE_PATH_FINDING_MEDIUM) {
         numberPathingIterations = 5000;
-    } else if (path_finding_val == 2) {
+    } else if (path_finding_val == RGE_PATH_FINDING_HIGH) {
         numberPathingIterations = 0x1D4C;
     } else {
         numberPathingIterations = 0x9C4;
@@ -3317,25 +3317,25 @@ void TRIBE_Game::let_game_begin() {
 
     switch (this->mapType()) {
     case TRIBE_Game::AllWater:
-        this->get_string(STRING_ID_MAP_TYPE_BASE, map_type_str, 20);
+        this->get_string(STRING_ID_MAP_TYPE_ALL_WATER, map_type_str, 20);
         break;
     case TRIBE_Game::MostlyWater:
-        this->get_string(STRING_ID_MAP_TYPE_BASE + 1, map_type_str, 20);
+        this->get_string(STRING_ID_MAP_TYPE_MOSTLY_WATER, map_type_str, 20);
         break;
     case TRIBE_Game::WaterAndLand:
-        this->get_string(STRING_ID_MAP_TYPE_BASE + 2, map_type_str, 20);
+        this->get_string(STRING_ID_MAP_TYPE_WATER_AND_LAND, map_type_str, 20);
         break;
     case TRIBE_Game::MostlyLand:
-        this->get_string(STRING_ID_MAP_TYPE_BASE + 3, map_type_str, 20);
+        this->get_string(STRING_ID_MAP_TYPE_MOSTLY_LAND, map_type_str, 20);
         break;
     case TRIBE_Game::AllLand:
-        this->get_string(STRING_ID_MAP_TYPE_BASE + 4, map_type_str, 20);
+        this->get_string(STRING_ID_MAP_TYPE_ALL_LAND, map_type_str, 20);
         break;
     case TRIBE_Game::Continental:
-        this->get_string(STRING_ID_MAP_TYPE_BASE + 5, map_type_str, 20);
+        this->get_string(STRING_ID_MAP_TYPE_CONTINENTAL, map_type_str, 20);
         break;
     case TRIBE_Game::Lake:
-        this->get_string(STRING_ID_MAP_TYPE_BASE + 6, map_type_str, 20);
+        this->get_string(STRING_ID_MAP_TYPE_LAKE, map_type_str, 20);
         break;
     default:
         this->get_string(STRING_ID_MAP_UNKNOWN, map_type_str, 20);
@@ -3343,23 +3343,23 @@ void TRIBE_Game::let_game_begin() {
     }
 
     switch (this->mapSize()) {
-    case 0:
-        this->get_string(STRING_ID_MAP_SIZE_BASE, map_size_str, 20);
+    case TRIBE_Game::Tiny:
+        this->get_string(STRING_ID_MAP_SIZE_TINY, map_size_str, 20);
         break;
-    case 1:
-        this->get_string(STRING_ID_MAP_SIZE_BASE + 1, map_size_str, 20);
+    case TRIBE_Game::Small:
+        this->get_string(STRING_ID_MAP_SIZE_SMALL, map_size_str, 20);
         break;
-    case 2:
-        this->get_string(STRING_ID_MAP_SIZE_BASE + 2, map_size_str, 20);
+    case TRIBE_Game::Medium:
+        this->get_string(STRING_ID_MAP_SIZE_MEDIUM, map_size_str, 20);
         break;
-    case 3:
-        this->get_string(STRING_ID_MAP_SIZE_BASE + 3, map_size_str, 20);
+    case TRIBE_Game::Large:
+        this->get_string(STRING_ID_MAP_SIZE_LARGE, map_size_str, 20);
         break;
-    case 4:
-        this->get_string(STRING_ID_MAP_SIZE_BASE + 4, map_size_str, 20);
+    case TRIBE_Game::Huge:
+        this->get_string(STRING_ID_MAP_SIZE_HUGE, map_size_str, 20);
         break;
-    case 5:
-        this->get_string(STRING_ID_MAP_SIZE_BASE + 5, map_size_str, 20);
+    case TRIBE_Game::Humongous:
+        this->get_string(STRING_ID_MAP_SIZE_HUMONGOUS, map_size_str, 20);
         break;
     default:
         this->get_string(STRING_ID_MAP_UNKNOWN, map_size_str, 20);
@@ -3606,22 +3606,22 @@ void TRIBE_Game::setMapSize(MapSize v) {
     this->tribe_game_options.mapSizeValue = v;
     switch (v) {
     case Tiny:
-        this->RGE_Base_Game::setMapSize(72, 72, 8);
+        this->RGE_Base_Game::setMapSize(TRIBE_MAP_DIMENSION_TINY, TRIBE_MAP_DIMENSION_TINY, 8);
         break;
     case Small:
-        this->RGE_Base_Game::setMapSize(96, 96, 8);
+        this->RGE_Base_Game::setMapSize(TRIBE_MAP_DIMENSION_SMALL, TRIBE_MAP_DIMENSION_SMALL, 8);
         break;
     case Medium:
-        this->RGE_Base_Game::setMapSize(120, 120, 8);
+        this->RGE_Base_Game::setMapSize(TRIBE_MAP_DIMENSION_MEDIUM, TRIBE_MAP_DIMENSION_MEDIUM, 8);
         break;
     case Large:
-        this->RGE_Base_Game::setMapSize(144, 144, 8);
+        this->RGE_Base_Game::setMapSize(TRIBE_MAP_DIMENSION_LARGE, TRIBE_MAP_DIMENSION_LARGE, 8);
         break;
     case Huge:
-        this->RGE_Base_Game::setMapSize(200, 200, 8);
+        this->RGE_Base_Game::setMapSize(TRIBE_MAP_DIMENSION_HUGE, TRIBE_MAP_DIMENSION_HUGE, 8);
         break;
     case Humongous:
-        this->RGE_Base_Game::setMapSize(250, 250, 8);
+        this->RGE_Base_Game::setMapSize(TRIBE_MAP_DIMENSION_HUMONGOUS, TRIBE_MAP_DIMENSION_HUMONGOUS, 8);
         break;
     }
 }

@@ -1166,7 +1166,7 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
     if (!(this->create_drop_down(this->bottom_panel, &this->victory_time))) goto fail;
     (this->victory_time)->set_help_info(STRING_ID_HELP_EDITOR_TIME_LIMIT_INPUT, -1);
     this->victory_time->empty_list();
-    this->victory_time->append_line(STRING_ID_TIME_LIMIT_BASE, 15000);
+    this->victory_time->append_line(STRING_ID_TIME_LIMIT_15000, 15000);
     this->victory_time->append_line(STRING_ID_TIME_LIMIT_13000, 13000);
     this->victory_time->append_line(STRING_ID_TIME_LIMIT_11000, 11000);
     this->victory_time->append_line(STRING_ID_TIME_LIMIT_9000, 9000);
@@ -1643,11 +1643,11 @@ int TRIBE_Screen_Sed::MakeFileList(TDropDownPanel* drop_down, char* dir,
 
 int TRIBE_Screen_Sed::Set_player_advance_civilization_text(int newmode) {
     this->player_advance_civilization_drop->empty_list();
-    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_STONE, 0);
-    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_TOOL, 1);
-    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_BRONZE, 2);
-    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_IRON, 3);
-    this->player_advance_civilization_drop->append_line(STRING_ID_HELP_AGE_POST_IRON, 4);
+    this->player_advance_civilization_drop->append_line(STRING_ID_AGE_STONE, 0);
+    this->player_advance_civilization_drop->append_line(STRING_ID_AGE_TOOL, 1);
+    this->player_advance_civilization_drop->append_line(STRING_ID_AGE_BRONZE, 2);
+    this->player_advance_civilization_drop->append_line(STRING_ID_AGE_IRON, 3);
+    this->player_advance_civilization_drop->append_line(STRING_ID_AGE_POST_IRON, 4);
     this->player_advance_civilization_drop->setCurrentLineNumber(0);
     this->player_advance_civilization_drop->set_active(0);
     return 1;

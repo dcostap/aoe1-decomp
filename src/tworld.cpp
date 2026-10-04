@@ -95,8 +95,8 @@ void TRIBE_World::logStatus(FILE* out, int firstTime) {
             static_cast<TRIBE_Game*>(rge_base_game)->mapType() + STRING_ID_MAP_TYPE_BASE, tempString, 256);
         fprintf(out, "Map Type:                %s\n", tempString);
 
-        // This victory-description resource range is not verified.
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(static_cast<TRIBE_Game*>(rge_base_game)->victoryType() + 0x28A6,
+        // The checked resource files contain no text for this legacy log range.
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(static_cast<TRIBE_Game*>(rge_base_game)->victoryType() + STRING_ID_VICTORY_LOG_BASE,
                                                             tempString, 256);
         fprintf(out, "Victory Condition:       %s\n", tempString);
     }
@@ -438,27 +438,27 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     }
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
-    case TRIBE_Game::Tiny: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE)); break;
-    case TRIBE_Game::Small: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 1)); break;
-    case TRIBE_Game::Medium: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 2)); break;
-    case TRIBE_Game::Large: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 3)); break;
-    case TRIBE_Game::Huge: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 4)); break;
-    case TRIBE_Game::Humongous: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_BASE + 5)); break;
+    case TRIBE_Game::Tiny: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_TINY)); break;
+    case TRIBE_Game::Small: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_SMALL)); break;
+    case TRIBE_Game::Medium: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_MEDIUM)); break;
+    case TRIBE_Game::Large: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_LARGE)); break;
+    case TRIBE_Game::Huge: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_HUGE)); break;
+    case TRIBE_Game::Humongous: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_HUMONGOUS)); break;
     }
     sprintf(str2, rge_base_game->get_string(STRING_ID_MAP_SIZE_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case TRIBE_Game::AllWater: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE)); break;
-        case TRIBE_Game::MostlyWater: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 1)); break;
-        case TRIBE_Game::WaterAndLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 2)); break;
-        case TRIBE_Game::MostlyLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 3)); break;
-        case TRIBE_Game::AllLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 4)); break;
-        case TRIBE_Game::Continental: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 5)); break;
-        case TRIBE_Game::Lake: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 6)); break;
-        case TRIBE_Game::Hilly: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 7)); break;
-        case TRIBE_Game::Isthmas: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_BASE + 8)); break;
+        case TRIBE_Game::AllWater: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_ALL_WATER)); break;
+        case TRIBE_Game::MostlyWater: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_MOSTLY_WATER)); break;
+        case TRIBE_Game::WaterAndLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_WATER_AND_LAND)); break;
+        case TRIBE_Game::MostlyLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_MOSTLY_LAND)); break;
+        case TRIBE_Game::AllLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_ALL_LAND)); break;
+        case TRIBE_Game::Continental: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_CONTINENTAL)); break;
+        case TRIBE_Game::Lake: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_LAKE)); break;
+        case TRIBE_Game::Hilly: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_HILLY)); break;
+        case TRIBE_Game::Isthmas: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_ISTHMAS)); break;
         }
         sprintf(str2, rge_base_game->get_string(STRING_ID_MAP_TYPE_FORMAT), str1);
         sprintf(description, newline_join_format, description, str2);
@@ -565,19 +565,19 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                 this->victory_type = 3;
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
                 break;
-            case 3:
+            case TRIBE_VICTORY_TYPE_RUINS:
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Ruins(victoryAmount);
                 break;
-            case 4:
+            case TRIBE_VICTORY_TYPE_ARTIFACTS:
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Artifacts(victoryAmount);
                 break;
-            case 5:
+            case TRIBE_VICTORY_TYPE_DISCOVERIES:
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Discoveries(victoryAmount);
                 break;
-            case 2:
+            case TRIBE_VICTORY_TYPE_EXPLORATION:
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Exploration(victoryAmount);
                 break;
-            case 6:
+            case TRIBE_VICTORY_TYPE_GOLD:
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Gold(victoryAmount);
                 break;
             }

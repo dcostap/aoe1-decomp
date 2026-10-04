@@ -1366,8 +1366,7 @@ void TRIBE_Player::kickAI(int m) {
 
 
 int TRIBE_Player::strategicNumber(int sN) {
-    TribeMainDecisionAIModule* ai =
-        this->playerAI;
+    TribeMainDecisionAIModule* ai = this->playerAI;
     if (ai) {
         return ai->tacticalAI.strategicNumber(sN);
     }
@@ -1390,8 +1389,7 @@ void __cdecl TRIBE_Player::logMessage(char* textIn, ...) {
 
 
 int TRIBE_Player::sendAICommand(int caller, int mType, int p1, int p2, int p3) {
-    TribeMainDecisionAIModule* ai =
-        this->playerAI;
+    TribeMainDecisionAIModule* ai = this->playerAI;
     if (!ai) return 0;
     return ai->processAICommand(caller, mType, p1, p2, p3);
 }
@@ -1464,8 +1462,7 @@ void TRIBE_Player::trainUnit(int uType, int bID, int uniqueID) {
 
 
 void TRIBE_Player::cancelTrain(int reason, int uType, int location, int uniqueID) {
-    TribeMainDecisionAIModule* ai =
-        this->playerAI;
+    TribeMainDecisionAIModule* ai = this->playerAI;
     if (!ai) {
         return;
     }
@@ -1474,8 +1471,7 @@ void TRIBE_Player::cancelTrain(int reason, int uType, int location, int uniqueID
 
 
 void TRIBE_Player::registerTrain(int uType, int location, int uniqueID, int gameID) {
-    TribeMainDecisionAIModule* ai =
-        this->playerAI;
+    TribeMainDecisionAIModule* ai = this->playerAI;
     if (!ai) {
         return;
     }
@@ -1547,11 +1543,11 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
 
     if (this->playerAI) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case 0: this->playerAI->logCommonHistory("We have an all water map."); break;
-        case 1: this->playerAI->logCommonHistory("We have a mostly water map."); break;
-        case 2: this->playerAI->logCommonHistory("We have a land and water map."); break;
-        case 3: this->playerAI->logCommonHistory("We have a mostly land map."); break;
-        case 4: this->playerAI->logCommonHistory("We have an all land map."); break;
+        case TRIBE_Game::AllWater: this->playerAI->logCommonHistory("We have an all water map."); break;
+        case TRIBE_Game::MostlyWater: this->playerAI->logCommonHistory("We have a mostly water map."); break;
+        case TRIBE_Game::WaterAndLand: this->playerAI->logCommonHistory("We have a land and water map."); break;
+        case TRIBE_Game::MostlyLand: this->playerAI->logCommonHistory("We have a mostly land map."); break;
+        case TRIBE_Game::AllLand: this->playerAI->logCommonHistory("We have an all land map."); break;
         default: this->playerAI->logCommonHistory("We don't have a specific map type (i.e. this is a scenario)."); break;
         }
         rge_base_game->get_string(STRING_ID_FILE_NONE, noneString, 256);
@@ -1564,7 +1560,9 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
             if (strcmp(bL, randomString) == 0) {
                 do {
                     this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
-                                                                static_cast<TRIBE_Game*>(rge_base_game)->mapType(), static_cast<TRIBE_Game*>(rge_base_game)->victoryType(), static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
+                                                                static_cast<TRIBE_Game*>(rge_base_game)->mapType(),
+                                                                static_cast<TRIBE_Game*>(rge_base_game)->victoryType(),
+                                                                 static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
                     this->playerAI->logCommonHistory("Loading random game selected build list=%s.", buildListName);
                 } while (this->playerAI->buildAI.loadBuildList(buildListName, this) == 0);
             } else {
@@ -1574,7 +1572,9 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
         } else {
             do {
                 this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
-                                                            static_cast<TRIBE_Game*>(rge_base_game)->mapType(), static_cast<TRIBE_Game*>(rge_base_game)->victoryType(), static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
+                                                            static_cast<TRIBE_Game*>(rge_base_game)->mapType(),
+                                                            static_cast<TRIBE_Game*>(rge_base_game)->victoryType(),
+                                                            static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
                 this->playerAI->logCommonHistory("Loading default build list=%s.", buildListName);
             } while (this->playerAI->buildAI.loadBuildList(buildListName, this) == 0);
         }
@@ -1798,7 +1798,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
             civ == (CIVILIZATION_SUMERIAN - 1) || civ == (CIVILIZATION_YAMATO - 1)) {
             int aggressiveSelections = tplayer_globals::aggressiveBuildListCount;
             int selectedBuildLists = tplayer_globals::selectedBuildListCount;
-            if (mapType == 0) {
+            if (mapType == TRIBE_Game::AllWater) {
                 if (selectedBuildLists > 0) {
                     if (aggressiveSelections == 0) {
                         buildLists[(0x0E) - 1] += 300;
@@ -1812,7 +1812,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
                     buildLists[(0x0F) - 1] = 0;
                 }
             }
-            if (mapType == 1) {
+            if (mapType == TRIBE_Game::MostlyWater) {
                 if (selectedBuildLists > 0) {
                     if (aggressiveSelections == 0) {
                         buildLists[(0x0E) - 1] += 250;
@@ -1826,7 +1826,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
                     buildLists[(0x0F) - 1] = 0;
                 }
             }
-            if (mapType == 2 || mapType == 6 || mapType == 8) {
+            if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas) {
                 if (selectedBuildLists > 0) {
                     if (aggressiveSelections == 0) {
                         buildLists[(0x0E) - 1] += 200;
@@ -2166,15 +2166,15 @@ selectedCountersDone:
 
     int workingMapType = mapType;
     switch (gameType) {
-    case 0:
-    case 1:
+    case TRIBE_Game::VictoryDefault:
+    case TRIBE_Game::VictoryConquest:
         this->playerAI->strategyAI.setRule(0x36, 5);
         this->playerAI->strategyAI.setRule(0x37, 5);
         break;
-    case 2:
-    case 3:
-    case 4:
-    case 5:
+    case TRIBE_VICTORY_TYPE_EXPLORATION:
+    case TRIBE_VICTORY_TYPE_RUINS:
+    case TRIBE_VICTORY_TYPE_ARTIFACTS:
+    case TRIBE_VICTORY_TYPE_DISCOVERIES:
         workingMapType = this->playerAI->strategyAI.rule(1);
         if (workingMapType > 0) {
             this->playerAI->strategyAI.setRule(0, 0x32);
@@ -2184,21 +2184,21 @@ selectedCountersDone:
             this->playerAI->strategyAI.setRule(0, 0x32);
             this->playerAI->strategyAI.setRule(2, 0x32);
         }
-        if (mapType > 1) {
+        if (mapType > TRIBE_Game::MostlyWater) {
             this->playerAI->strategyAI.setRule(3, 5);
         }
         this->playerAI->strategyAI.setRule(0x2A, 2);
         this->playerAI->strategyAI.setRule(0x3D, 2);
         workingMapType = mapType;
-        if (gameType != 2) {
+        if (gameType != TRIBE_VICTORY_TYPE_EXPLORATION) {
             this->playerAI->strategyAI.setRule(0x26, mapSize + 1);
             this->playerAI->strategyAI.setRule(0x24, 1);
-            if (gameType == 3) {
+            if (gameType == TRIBE_VICTORY_TYPE_RUINS) {
                 this->playerAI->strategyAI.setRule(0x36, 1);
             } else {
                 this->playerAI->strategyAI.setRule(0x36, 5);
             }
-            if (gameType == 4) {
+            if (gameType == TRIBE_VICTORY_TYPE_ARTIFACTS) {
                 this->playerAI->strategyAI.setRule(0x37, 1);
             } else {
                 this->playerAI->strategyAI.setRule(0x37, 5);
@@ -2263,7 +2263,7 @@ selectedCountersDone:
     }
 
     int difficultyCopy = gameDifficulty;
-    if (gameDifficulty == 0 && debug_rand(tplayerSourceName, 3699) % 3 == 0) {
+    if (gameDifficulty == RGE_DIFFICULTY_HARDEST && debug_rand(tplayerSourceName, 3699) % 3 == 0) {
         attackTime -= 300;
     }
     this->playerAI->strategyAI.setRule(0x68, attackTime);
@@ -2284,9 +2284,9 @@ selectedCountersDone:
     this->playerAI->strategyAI.setRule(0xA1, 4);
 
     randomValue = mapSize;
-    if (workingMapType == 0) {
+    if (workingMapType == TRIBE_Game::AllWater) {
         randomValue -= 2;
-    } else if (workingMapType == 1) {
+    } else if (workingMapType == TRIBE_Game::MostlyWater) {
         randomValue -= 1;
     }
 
@@ -2326,22 +2326,22 @@ selectedCountersDone:
     this->playerAI->strategyAI.setRule(0xD2, 1);
     this->playerAI->strategyAI.setRule(0xDF, 1);
 
-    if (workingMapType == 0) {
+    if (workingMapType == TRIBE_Game::AllWater) {
         this->playerAI->strategyAI.setRule(0xD4, 3);
         this->playerAI->strategyAI.setRule(0xD5, 6);
         this->playerAI->strategyAI.setRule(0xD6, 2);
         this->playerAI->strategyAI.setRule(0xE0, 6);
-    } else if (workingMapType == 1) {
+    } else if (workingMapType == TRIBE_Game::MostlyWater) {
         this->playerAI->strategyAI.setRule(0xD4, 2);
         this->playerAI->strategyAI.setRule(0xD5, 5);
         this->playerAI->strategyAI.setRule(0xD6, 2);
         this->playerAI->strategyAI.setRule(0xE0, 4);
-    } else if (workingMapType == 2 || workingMapType == 6 || workingMapType == 5 || workingMapType == 8) {
+    } else if (workingMapType == TRIBE_Game::WaterAndLand || workingMapType == TRIBE_Game::Lake || workingMapType == TRIBE_Game::Continental || workingMapType == TRIBE_Game::Isthmas) {
         this->playerAI->strategyAI.setRule(0xD4, 1);
         this->playerAI->strategyAI.setRule(0xD5, 4);
         this->playerAI->strategyAI.setRule(0xD6, 1);
         this->playerAI->strategyAI.setRule(0xE0, 3);
-    } else if (workingMapType == 3 || workingMapType == 4 || workingMapType == 7) {
+    } else if (workingMapType == TRIBE_Game::MostlyLand || workingMapType == TRIBE_Game::AllLand || workingMapType == TRIBE_Game::Hilly) {
         this->playerAI->strategyAI.setRule(0xD4, 0);
         this->playerAI->strategyAI.setRule(0xD5, 0);
         this->playerAI->strategyAI.setRule(0xD6, 0);
@@ -2353,7 +2353,7 @@ selectedCountersDone:
         int cheatGold = 0;
         int cheatWood = 0;
         int cheatStone = 0;
-        if (difficultyCopy == 0) {
+        if (difficultyCopy == RGE_DIFFICULTY_HARDEST) {
             cheatFood = 2000;
             cheatWood = 2000;
             cheatStone = 2000;
@@ -2368,7 +2368,7 @@ selectedCountersDone:
 
     this->playerAI->strategyAI.setRule(0xA8, 0);
     this->playerAI->strategyAI.setRule(0xA2, 0);
-    if (gameDifficulty < 3) {
+    if (gameDifficulty < RGE_DIFFICULTY_EASY) {
         this->playerAI->strategyAI.setRule(0xC2, 1);
         this->playerAI->strategyAI.setRule(0x2F, 2);
     } else {
@@ -2376,16 +2376,16 @@ selectedCountersDone:
         this->playerAI->strategyAI.setRule(0x2F, 1);
     }
 
-    if (gameDifficulty == 0) {
+    if (gameDifficulty == RGE_DIFFICULTY_HARDEST) {
         this->playerAI->strategyAI.setRule(0xBA, 0xB4);
         this->playerAI->strategyAI.setRule(0xBA, 200);
-    } else if (gameDifficulty == 1) {
+    } else if (gameDifficulty == RGE_DIFFICULTY_HARD) {
         this->playerAI->strategyAI.setRule(0xBA, 0xB4);
         this->playerAI->strategyAI.setRule(0xBA, 0x96);
-    } else if (gameDifficulty == 2) {
+    } else if (gameDifficulty == RGE_DIFFICULTY_MODERATE) {
         this->playerAI->strategyAI.setRule(0xBA, 0xB4);
         this->playerAI->strategyAI.setRule(0xBA, 100);
-    } else if (gameDifficulty == 3) {
+    } else if (gameDifficulty == RGE_DIFFICULTY_EASY) {
         this->playerAI->strategyAI.setRule(0xBA, 0xB4);
         this->playerAI->strategyAI.setRule(0xBA, 0x32);
     }
@@ -2408,18 +2408,18 @@ void TRIBE_Player::setupEgyptian(int* b, int mapType, int gameType, int mapSize)
     this->playerAI->logCommonHistory("Setting up as Egyptians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x3F] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x19] = 0x3C;
             b[0x3F] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x19] = 0x50;
             b[0x3F] = 0x14;
         } else {
             b[0x19] = 100;
         }
-    } else if (rge_base_game->difficulty() < 1) {
+    } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
         b[0x23] = 100;
     } else {
         b[3] = 10;
@@ -2435,9 +2435,9 @@ void TRIBE_Player::setupEgyptian(int* b, int mapType, int gameType, int mapSize)
         b[0x51] = 0x1E;
         b[0x52] = 0x14;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x53] = 200;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x53] = 100;
         }
     }
@@ -2449,18 +2449,18 @@ void TRIBE_Player::setupGreek(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Greeks.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x40] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x1A] = 0x3C;
             b[0x40] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x1A] = 0x50;
             b[0x40] = 0x14;
         } else {
             b[0x1A] = 100;
         }
-    } else if (rge_base_game->difficulty() < 1) {
+    } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
         b[0x24] = 100;
     } else {
         b[6] = 0x1E;
@@ -2475,10 +2475,10 @@ void TRIBE_Player::setupGreek(int* b, int mapType, int gameType, int mapSize) {
         b[0x30] = 100;
         b[0x54] = 100;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x55] = 200;
             b[0x56] = 200;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x55] = 100;
             b[0x56] = 100;
         }
@@ -2491,12 +2491,12 @@ void TRIBE_Player::setupBabylonian(int* b, int mapType, int gameType, int mapSiz
     this->playerAI->logCommonHistory("Setting up as Babylonians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[61] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[23] = 60;
             b[61] = 40;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[23] = 80;
             b[61] = 20;
         } else {
@@ -2516,9 +2516,9 @@ void TRIBE_Player::setupBabylonian(int* b, int mapType, int gameType, int mapSiz
         b[3] = 20;
         b[10] = 20;
 
-        if (mapType == 0 || mapType == 1)
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater)
             b[77] = 60;
-        else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5)
+        else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental)
             b[77] = 30;
     }
 }
@@ -2529,18 +2529,18 @@ void TRIBE_Player::setupAssyrian(int* b, int mapType, int gameType, int mapSize)
     this->playerAI->logCommonHistory("Setting up as Assyrians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x3C] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x16] = 0x3C;
             b[0x3C] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x16] = 0x50;
             b[0x3C] = 0x14;
         } else {
             b[0x16] = 100;
         }
-    } else if (rge_base_game->difficulty() < 1) {
+    } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
         b[0x22] = 100;
     } else {
         b[3] = 10;
@@ -2558,10 +2558,10 @@ void TRIBE_Player::setupAssyrian(int* b, int mapType, int gameType, int mapSize)
         b[0x28] = 100;
         b[0x29] = 100;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x4B] = 100;
             b[0x4C] = 100;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x4B] = 0x32;
             b[0x4C] = 0x32;
         }
@@ -2574,18 +2574,18 @@ void TRIBE_Player::setupMinoan(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Minoans.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x42] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x1C] = 0x3C;
             b[0x42] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x1C] = 0x50;
             b[0x42] = 0x14;
         } else {
             b[0x1C] = 100;
         }
-    } else if (rge_base_game->difficulty() < 1) {
+    } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
         b[0x25] = 100;
     } else {
         b[4] = 10;
@@ -2598,10 +2598,10 @@ void TRIBE_Player::setupMinoan(int* b, int mapType, int gameType, int mapSize) {
         b[3] = 0x14;
         b[0x33] = 100;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x58] = 200;
             b[0x59] = 200;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x58] = 100;
             b[0x59] = 100;
         }
@@ -2614,12 +2614,12 @@ void TRIBE_Player::setupHittite(int* b, int mapType, int gameType, int mapSize) 
     this->playerAI->logCommonHistory("Setting up as Hittites.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x41] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x1B] = 60;
             b[0x41] = 40;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x1B] = 80;
             b[0x41] = 20;
         } else {
@@ -2639,10 +2639,10 @@ void TRIBE_Player::setupHittite(int* b, int mapType, int gameType, int mapSize) 
         b[11] = 10;
         b[0x11] = 0x14;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x57] = 0xA0;
             b[0] = 0x14;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x57] = 0x50;
             b[0] = 10;
         }
@@ -2655,12 +2655,12 @@ void TRIBE_Player::setupPhoenician(int* b, int mapType, int gameType, int mapSiz
     this->playerAI->logCommonHistory("Setting up as Phoenicians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x44] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x1E] = 60;
             b[0x44] = 40;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x1E] = 80;
             b[0x44] = 20;
         } else {
@@ -2681,9 +2681,9 @@ void TRIBE_Player::setupPhoenician(int* b, int mapType, int gameType, int mapSiz
         b[0x14] = 30;
         b[0x35] = 100;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x5C] = 200;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x5C] = 100;
         }
     }
@@ -2695,18 +2695,18 @@ void TRIBE_Player::setupSumerian(int* b, int mapType, int gameType, int mapSize)
     this->playerAI->logCommonHistory("Setting up as Sumerians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x46] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x20] = 0x3C;
             b[0x46] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x20] = 0x50;
             b[0x46] = 0x14;
         } else {
             b[0x20] = 100;
         }
-    } else if (rge_base_game->difficulty() < 1) {
+    } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
         b[0x26] = 100;
     } else {
         b[0x10] = 0x1E;
@@ -2719,10 +2719,10 @@ void TRIBE_Player::setupSumerian(int* b, int mapType, int gameType, int mapSize)
         b[0x39] = 100;
         b[0x3A] = 100;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x5E] = 200;
             b[0x5F] = 200;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x5E] = 100;
             b[0x5F] = 100;
         }
@@ -2735,12 +2735,12 @@ void TRIBE_Player::setupPersian(int* b, int mapType, int gameType, int mapSize) 
     this->playerAI->logCommonHistory("Setting up as Persians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x43] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x1D] = 0x3C;
             b[0x43] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x1D] = 0x50;
             b[0x43] = 0x14;
         } else {
@@ -2761,10 +2761,10 @@ void TRIBE_Player::setupPersian(int* b, int mapType, int gameType, int mapSize) 
         b[0x13] = 0x14;
         b[0x34] = 0x64;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x5A] = 0xC8;
             b[0x5B] = 0xC8;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x5A] = 0x64;
             b[0x5B] = 0x64;
         }
@@ -2776,12 +2776,12 @@ void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Shang.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x45] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x1F] = 0x3C;
             b[0x45] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x1F] = 0x50;
             b[0x45] = 0x14;
         } else {
@@ -2804,9 +2804,9 @@ void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize) {
         b[0x36] = 100;
         b[0x37] = 100;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x5D] = 0xA0;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x5D] = 0x50;
         }
     }
@@ -2818,23 +2818,23 @@ void TRIBE_Player::setupYamato(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Yamato.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x47] = 100;
             return;
         }
-        if (mapType == 2 || mapType == 6) {
+        if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x21] = 60;
             b[0x47] = 40;
             return;
         }
-        if (mapType == 5 || mapType == 8) {
+        if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x21] = 80;
             b[0x47] = 20;
             return;
         }
         b[0x21] = 100;
         return;
-    } else if (rge_base_game->difficulty() < 1) {
+    } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
         b[0x27] = 100;
     } else {
         b[3] = 10;
@@ -2849,10 +2849,10 @@ void TRIBE_Player::setupYamato(int* b, int mapType, int gameType, int mapSize) {
         b[0x0B] = 20;
         b[0x3B] = 100;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x60] = 200;
             b[0x61] = 200;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x60] = 100;
             b[0x61] = 100;
         }
@@ -2865,12 +2865,12 @@ void TRIBE_Player::setupChoson(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Choson.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x3E] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x18] = 0x3C;
             b[0x3E] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x18] = 0x50;
             b[0x3E] = 0x14;
         } else {
@@ -2891,10 +2891,10 @@ void TRIBE_Player::setupChoson(int* b, int mapType, int gameType, int mapSize) {
         b[0x2C] = 100;
         b[0x2D] = 100;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x4E] = 200;
             b[0x4F] = 200;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x4E] = 100;
             b[0x4F] = 100;
         }
@@ -2907,12 +2907,12 @@ void TRIBE_Player::setupRoman(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Roman.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x7C] = 0x64;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x78] = 0x3C;
             b[0x7C] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x78] = 0x50;
             b[0x7C] = 0x14;
         } else {
@@ -2932,10 +2932,10 @@ void TRIBE_Player::setupRoman(int* b, int mapType, int gameType, int mapSize) {
         b[0x71] = 0x3C;
         b[0x72] = 0x50;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x73] = 0xC8;
             b[0x74] = 0xC8;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x73] = 0x64;
             b[0x74] = 0x64;
         }
@@ -2948,12 +2948,12 @@ void TRIBE_Player::setupCarthaginian(int* b, int mapType, int gameType, int mapS
     this->playerAI->logCommonHistory("Setting up as Carthaginian.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x79] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x75] = 0x3C;
             b[0x79] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x75] = 0x50;
             b[0x79] = 0x14;
         } else {
@@ -2975,10 +2975,10 @@ void TRIBE_Player::setupCarthaginian(int* b, int mapType, int gameType, int mapS
         b[4] = 0x32;
         b[6] = 0x1E;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[100] = 200;
             b[101] = 200;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[100] = 100;
             b[101] = 100;
         }
@@ -2991,12 +2991,12 @@ void TRIBE_Player::setupPalmyran(int* b, int mapType, int gameType, int mapSize)
     this->playerAI->logCommonHistory("Setting up as Palmyran.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x7B] = 0x64;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x77] = 0x3C;
             b[0x7B] = 0x28;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x77] = 0x50;
             b[0x7B] = 0x14;
         } else {
@@ -3018,10 +3018,10 @@ void TRIBE_Player::setupPalmyran(int* b, int mapType, int gameType, int mapSize)
         b[4] = 0x14;
         b[0x11] = 0x3C;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x6E] = 0xC8;
             b[0x6F] = 0xC8;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x6E] = 0x64;
             b[0x6F] = 0x64;
         }
@@ -3034,12 +3034,12 @@ void TRIBE_Player::setupMacedonian(int* b, int mapType, int gameType, int mapSiz
     this->playerAI->logCommonHistory("Setting up as Macedonian.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x7A] = 100;
-        } else if (mapType == 2 || mapType == 6) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
             b[0x76] = 60;
             b[0x7A] = 40;
-        } else if (mapType == 5 || mapType == 8) {
+        } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
             b[0x76] = 80;
             b[0x7A] = 20;
         } else {
@@ -3058,10 +3058,10 @@ void TRIBE_Player::setupMacedonian(int* b, int mapType, int gameType, int mapSiz
         b[1] = 0x0A;
         b[0x10] = 0x14;
 
-        if (mapType == 0 || mapType == 1) {
+        if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x69] = 0xC8;
             b[0x6A] = 0xC8;
-        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
             b[0x69] = 100;
             b[0x6A] = 100;
         }

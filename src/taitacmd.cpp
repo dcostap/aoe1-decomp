@@ -2594,7 +2594,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* bo) {
             if (objectGroup != 2 && objectGroup != 0x14 && objectGroup != 0x16 && objectGroup != 0x15) {
                 if (objectToAdd->master_obj->id != 0x9F)
                     return;
-                if (this->md->player->world->difficultyLevel() >= 4)
+                if (this->md->player->world->difficultyLevel() >= RGE_DIFFICULTY_EASIEST)
                     return;
                 (this->artifacts.*add)(objectToAdd->id);
                 return;
@@ -4820,9 +4820,9 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
         }
 
         if (adjustAttack != 0) {
-            if (this->md->player->world->difficultyLevel() == 3)
+            if (this->md->player->world->difficultyLevel() == RGE_DIFFICULTY_EASY)
                 this->sn[0x68] -= 2;
-            else if (this->md->player->world->difficultyLevel() == 4)
+            else if (this->md->player->world->difficultyLevel() == RGE_DIFFICULTY_EASIEST)
                 this->sn[0x68]--;
             else
                 this->md->tacticalAI.enableAttack(3);

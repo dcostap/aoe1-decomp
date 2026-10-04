@@ -2343,16 +2343,16 @@ void TRIBE_Screen_Game::age_changed() {
 
         switch (this->save_age) {
         case 1:
-            this->age_panel->set_help_info(STRING_ID_HELP_AGE_STONE, -1);
+            this->age_panel->set_help_info(STRING_ID_AGE_STONE, -1);
             break;
         case 2:
-            this->age_panel->set_help_info(STRING_ID_HELP_AGE_TOOL, -1);
+            this->age_panel->set_help_info(STRING_ID_AGE_TOOL, -1);
             break;
         case 3:
-            this->age_panel->set_help_info(STRING_ID_HELP_AGE_BRONZE, -1);
+            this->age_panel->set_help_info(STRING_ID_AGE_BRONZE, -1);
             break;
         case 4:
-            this->age_panel->set_help_info(STRING_ID_HELP_AGE_IRON, -1);
+            this->age_panel->set_help_info(STRING_ID_AGE_IRON, -1);
             break;
         }
     }

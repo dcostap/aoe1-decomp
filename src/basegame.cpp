@@ -92,7 +92,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* prog_info_in, int do_setup)
     this->setFogOfWar(1);
     this->setColoredChat(1);
     this->setGameDeveloperMode(0);
-    this->setDifficulty(0);
+    this->setDifficulty(RGE_DIFFICULTY_HARDEST);
 
     for (i = 0; i < 9; i++) {
         this->setPlayerCDAndVersion(i, 0);
@@ -101,8 +101,8 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* prog_info_in, int do_setup)
         this->setPlayerTeam(i, 1);
     }
 
-    this->setPathFinding(0);
-    this->setMpPathFinding(0);
+    this->setPathFinding(RGE_PATH_FINDING_DEFAULT);
+    this->setMpPathFinding(RGE_PATH_FINDING_DEFAULT);
     this->setNumberPlayers(4);
     this->setScenarioName("");
 

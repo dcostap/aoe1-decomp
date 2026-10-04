@@ -31,6 +31,20 @@ struct RGE_Prog_Info;
 // Count the playable civilizations only. Gaia is not included.
 #define CIVILIZATION_COUNT       16
 
+// Square map dimensions, in tiles. MapSize stores a separate option index.
+#define TRIBE_MAP_DIMENSION_TINY      72
+#define TRIBE_MAP_DIMENSION_SMALL     96
+#define TRIBE_MAP_DIMENSION_MEDIUM    120
+#define TRIBE_MAP_DIMENSION_LARGE     144
+#define TRIBE_MAP_DIMENSION_HUGE      200
+#define TRIBE_MAP_DIMENSION_HUMONGOUS 250
+
+#define TRIBE_VICTORY_TYPE_EXPLORATION 2
+#define TRIBE_VICTORY_TYPE_RUINS       3
+#define TRIBE_VICTORY_TYPE_ARTIFACTS   4
+#define TRIBE_VICTORY_TYPE_DISCOVERIES 5
+#define TRIBE_VICTORY_TYPE_GOLD        6
+
 struct MouseClickInfo {
     int object_group;
     int self_action;

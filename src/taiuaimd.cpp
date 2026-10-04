@@ -352,8 +352,8 @@ int TribeLionUnitAIModule::processIdle(int doSearch) {
     int difficulty = objectValue->owner->world->difficultyLevel();
 
     float maxReactDistance;
-    if (rge_base_game->scenarioGame() == 1 && rge_base_game->singlePlayerGame() == 1 && difficulty >= 3) {
-        float factor = (difficulty == 3) ? 0.75f : 0.5f;
+    if (rge_base_game->scenarioGame() == 1 && rge_base_game->singlePlayerGame() == 1 && difficulty >= RGE_DIFFICULTY_EASY) {
+        float factor = (difficulty == RGE_DIFFICULTY_EASY) ? 0.75f : 0.5f;
         maxReactDistance = factor * objectValue->master_obj->los;
         if (maxReactDistance < 1.0f) {
             maxReactDistance = 1.0f;
@@ -600,7 +600,7 @@ typedef unsigned long ulong;
 int TribeCivilianUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     switch (nEvent->mType) {
     case 0x20f:
-        if (this->objectValue->owner->world->difficultyLevel() >= 3)
+        if (this->objectValue->owner->world->difficultyLevel() >= RGE_DIFFICULTY_EASY)
             return 2;
         // Fall through.
 

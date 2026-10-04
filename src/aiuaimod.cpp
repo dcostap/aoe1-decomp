@@ -1261,18 +1261,18 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
     difficulty = this->objectValue->owner->world->difficultyLevel();
 
     if (((rge_base_game->scenarioGame() == 1) && (rge_base_game->singlePlayerGame() == 1) &&
-         (difficulty >= 3) && (this->objectValue->owner->id != 1)) || ((rge_base_game->singlePlayerGame() == 1) &&
-         (difficulty >= 3) && (this->objectValue->owner->type == 3) &&
+         (difficulty >= RGE_DIFFICULTY_EASY) && (this->objectValue->owner->id != 1)) || ((rge_base_game->singlePlayerGame() == 1) &&
+         (difficulty >= RGE_DIFFICULTY_EASY) && (this->objectValue->owner->type == 3) &&
          ((this->objectValue->owner->strategicNumber(0xDB) != 100) ||
           (this->objectValue->owner->strategicNumber(0xDA) != 100)))) {
         if (this->objectValue->owner->id > 1) {
-            if (difficulty == 3) {
+            if (difficulty == RGE_DIFFICULTY_EASY) {
                 maxReactDistance = this->objectValue->owner->strategicNumber(0xDB);
             } else {
                 maxReactDistance = this->objectValue->owner->strategicNumber(0xDA);
             }
         } else {
-            maxReactDistance = difficulty == 3 ? 75 : 50;
+            maxReactDistance = difficulty == RGE_DIFFICULTY_EASY ? 75 : 50;
         }
         modifier = (int)((float)maxReactDistance * this->objectValue->master_obj->los * g_unit_ai_reaction_distance_scale);
         if (modifier < 1) {

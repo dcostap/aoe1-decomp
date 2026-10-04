@@ -1181,13 +1181,13 @@ void Time_Line_Panel::draw_icon(Special_Events* event_ptr, short icon_number, uc
 
     switch (event_ptr->event) {
     case 0:
-        if (this->get_string(STRING_ID_HELP_AGE_TOOL, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(STRING_ID_AGE_TOOL, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 1:
-        if (this->get_string(STRING_ID_HELP_AGE_BRONZE, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(STRING_ID_AGE_BRONZE, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 2:
-        if (this->get_string(STRING_ID_HELP_AGE_IRON, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(STRING_ID_AGE_IRON, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 8:
         sprintf(temp_str + 4, "%ld/%1d", event_ptr->integer_value_1, event_ptr->integer_value_2);

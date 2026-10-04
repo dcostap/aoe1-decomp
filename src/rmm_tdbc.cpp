@@ -34,33 +34,33 @@ uchar TRIBE_RMM_Database_Controller::init(RGE_Map* in_map, RGE_Game_World* in_wo
         long base_cliff_size;
         long base_cliff_length;
         long width = this->map_width;
-        if (width <= 72) {
+        if (width <= TRIBE_MAP_DIMENSION_TINY) {
             base_cliff_size = 3;
             base_cliff_length = 10;
-        } else if (width <= 96) {
+        } else if (width <= TRIBE_MAP_DIMENSION_SMALL) {
             base_cliff_size = 4;
             base_cliff_length = 12;
-        } else if (width <= 120) {
+        } else if (width <= TRIBE_MAP_DIMENSION_MEDIUM) {
             base_cliff_size = 6;
             base_cliff_length = 14;
-        } else if (width <= 144) {
+        } else if (width <= TRIBE_MAP_DIMENSION_LARGE) {
             base_cliff_size = 8;
             base_cliff_length = 16;
-        } else if (width <= 200) {
+        } else if (width <= TRIBE_MAP_DIMENSION_HUGE) {
             base_cliff_size = 18;
             base_cliff_length = 20;
-        } else if (width <= 250) {
+        } else if (width <= TRIBE_MAP_DIMENSION_HUMONGOUS) {
             base_cliff_size = 28;
             base_cliff_length = 20;
         }
 
         switch (this->map_type) {
-        case 0: base_cliff_size = 0; base_cliff_length = 0; break;
-        case 1: base_cliff_size -= 5; base_cliff_length -= 6; break;
-        case 2: base_cliff_size -= 3; base_cliff_length -= 2; break;
-        case 5:
-        case 6:
-        case 8: base_cliff_length -= 4; break;
+        case TRIBE_Game::AllWater: base_cliff_size = 0; base_cliff_length = 0; break;
+        case TRIBE_Game::MostlyWater: base_cliff_size -= 5; base_cliff_length -= 6; break;
+        case TRIBE_Game::WaterAndLand: base_cliff_size -= 3; base_cliff_length -= 2; break;
+        case TRIBE_Game::Continental:
+        case TRIBE_Game::Lake:
+        case TRIBE_Game::Isthmas: base_cliff_length -= 4; break;
         }
         if (base_cliff_length < 3)
             base_cliff_length = 3;
@@ -104,7 +104,7 @@ uchar TRIBE_RMM_Database_Controller::de_init() {
 void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
     long original_edge =
         this->map_info.maps[this->map_type].land_info.land_placement_edge;
-    if ((this->map_type == 5 || this->map_type == 8) && this->map_width < 100) {
+    if ((this->map_type == TRIBE_Game::Continental || this->map_type == TRIBE_Game::Isthmas) && this->map_width < 100) {
         int edge = this->map_width >= 80 ? 0 : -1;
         edge &= -5;
         this->map_info.maps[this->map_type].land_info.land_placement_edge =
@@ -116,7 +116,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
         original_edge;
 
     int minus_one = -1;
-    if (this->map_type < 5) {
+    if (this->map_type < TRIBE_Game::Continental) {
         if (debug_rand(s_rmm_tdbc_path, 185) < 0x3fff) {
             this->land_info.wall_1_avoidance_line = minus_one;
             for (int i = 0; i < this->land_info.land_num; ++i)
@@ -139,7 +139,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
         }
     }
 
-    if (this->map_type == 8) {
+    if (this->map_type == TRIBE_Game::Isthmas) {
         if (debug_rand(s_rmm_tdbc_path, 216) < 0x3fff) {
             this->land_info.wall_1_avoidance_line = minus_one;
             this->land_info.wall_3_avoidance_line = this->map_width;
@@ -157,7 +157,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
         }
     }
 
-    if ((this->map_type >= 2 && this->map_type <= 6) || this->map_type == 8) {
+    if ((this->map_type >= TRIBE_Game::WaterAndLand && this->map_type <= TRIBE_Game::Lake) || this->map_type == TRIBE_Game::Isthmas) {
         if (debug_rand(s_rmm_tdbc_path, 241) < 0x3fff) {
             if (debug_rand(s_rmm_tdbc_path, 247) < 0x3fff) {
                 for (int i = 0; i < this->land_info.land_num; i += 2)
@@ -174,17 +174,17 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
                     this->land_info.land[i].zone = (uchar)i;
             }
             this->add_shallows_module();
-        } else if (this->map_type == 4) {
+        } else if (this->map_type == TRIBE_Game::AllLand) {
             for (int i = 0; i < this->land_info.land_num; ++i)
                 this->land_info.land[i].zone = 0;
             this->land_info.base_terrain = 0;
-        } else if (this->map_type >= 5) {
+        } else if (this->map_type >= TRIBE_Game::Continental) {
             for (int i = 0; i < this->land_info.land_num; ++i)
                 this->land_info.land[i].zone = 0;
         }
     }
 
-    if (this->map_type == 5 || this->map_type == 8) {
+    if (this->map_type == TRIBE_Game::Continental || this->map_type == TRIBE_Game::Isthmas) {
         int edge = 20;
         if (this->map_width < 100) {
             edge = this->map_width >= 80 ? 0 : -1;
@@ -283,7 +283,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
         }
     }
 
-    if (this->map_type == 6) {
+    if (this->map_type == TRIBE_Game::Lake) {
         for (index = this->land_info.land_num; index > 0; --index)
             this->land_info.land[index] = this->land_info.land[index - 1];
 
@@ -306,7 +306,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
         ++this->land_info.land_num;
     }
 
-    if (this->map_type < 2) {
+    if (this->map_type < TRIBE_Game::WaterAndLand) {
         long count = debug_rand(s_rmm_tdbc_path, 451) * 4 / 0x7fff + 1;
         if (count + this->number_of_players > 10)
             count = 10 - this->number_of_players;
@@ -440,7 +440,7 @@ void TRIBE_RMM_Database_Controller::add_elevation_module() {
     this->RGE_RMM_Database_Controller::add_elevation_module();
     int random = debug_rand(s_rmm_tdbc_path, 579);
     float scale = (g_rmm_elevation_random_base - (float)random * g_rmm_elevation_random_offset) * g_rmm_elevation_random_scale;
-    if (this->map_type == 7) scale *= g_rmm_elevation_map_type_factor;
+    if (this->map_type == TRIBE_Game::Hilly) scale *= g_rmm_elevation_map_type_factor;
     for (int i = 0; i < this->elevation_info.elevation_num; ++i)
         this->elevation_info.elevation[i].elevation_size =
             (long)((float)this->elevation_info.elevation[i].elevation_size * scale);
