@@ -35,10 +35,6 @@
 #include <string.h>
 #include <io.h>
 
-
-
-
-
 TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     char str[256];
     char* setup_file;
@@ -305,9 +301,6 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     L->Log("$$$ CHAT SCREEN: CONSTRUCTOR DONE");
 }
 
-
-
-
 void TribeMPSetupScreen::init_vars() {
     int i;
 
@@ -482,9 +475,6 @@ void TribeMPSetupScreen::init_vars() {
     }
 }
 
-
-
-
 TribeMPSetupScreen::~TribeMPSetupScreen() {
     if (this->scenarioInfo != 0) {
         delete this->scenarioInfo;
@@ -553,9 +543,6 @@ TribeMPSetupScreen::~TribeMPSetupScreen() {
     this->delete_panel((TPanel**)&this->help_button);
 }
 
-
-
-
 long TribeMPSetupScreen::handle_idle() {
     if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
@@ -574,12 +561,9 @@ long TribeMPSetupScreen::handle_idle() {
     return TPanel::handle_idle();
 }
 
-
 long TribeMPSetupScreen::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     return 0;
 }
-
-
 
 long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     if (fromPanel != 0) {
@@ -833,9 +817,6 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
     return this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-
-
-
 int TribeMPSetupScreen::startGame() {
     int send_options = 0;
 
@@ -1055,9 +1036,6 @@ int TribeMPSetupScreen::startGame() {
     return 1;
 }
 
-
-
-
 void TribeMPSetupScreen::calcRandomPositions() {
     int selected_position;
     int position_used[9];
@@ -1135,9 +1113,6 @@ void TribeMPSetupScreen::calcRandomPositions() {
     }
 }
 
-
-
-
 void TribeMPSetupScreen::showNetInfo() {
     char message[1024];
     char temp_str[256];
@@ -1168,9 +1143,6 @@ void TribeMPSetupScreen::showNetInfo() {
         delete addresses;
     }
 }
-
-
-
 
 void TribeMPSetupScreen::cancelScreen(int lobbyTimeout) {
     if (rge_base_game->singlePlayerGame() != 0) {
@@ -1205,9 +1177,6 @@ void TribeMPSetupScreen::cancelScreen(int lobbyTimeout) {
 
     panel_system.destroyPanel("MP Setup Screen");
 }
-
-
-
 
 long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
     char message[256];
@@ -1482,13 +1451,9 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
     }
 }
 
-
 long TribeMPSetupScreen::handle_timer_command(unsigned int wParam, long lParam) {
     return 1;
 }
-
-
-
 
 void TribeMPSetupScreen::fillPlayers() {
     if (rge_base_game->multiplayerGame() && comm->IsHost()) {
@@ -1716,9 +1681,6 @@ void TribeMPSetupScreen::fillPlayers() {
     this->fillPlayerColors();
 }
 
-
-
-
 void TribeMPSetupScreen::fillChat(int line_no) {
     if (!rge_base_game->singlePlayerGame()) {
         int lines = this->chatBox->numberLines();
@@ -1732,9 +1694,6 @@ void TribeMPSetupScreen::fillChat(int line_no) {
         }
     }
 }
-
-
-
 
 void TribeMPSetupScreen::updateSummary() {
     int changed = 0;
@@ -2076,8 +2035,6 @@ void TribeMPSetupScreen::updateSummary() {
     this->fillPlayers();
 }
 
-
-
 void TribeMPSetupScreen::kickPlayer(int p) {
     char text[256];
 
@@ -2086,9 +2043,6 @@ void TribeMPSetupScreen::kickPlayer(int p) {
     this->popupYesNoDialog(text, "Kick Dialog", TEASY_POPUP_WIDTH, TEASY_POPUP_HEIGHT);
 }
 
-
-
-
 void TribeMPSetupScreen::handleKickedPlayer(int really_kicked) {
     this->cancelScreen(0);
     TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
@@ -2096,9 +2050,6 @@ void TribeMPSetupScreen::handleKickedPlayer(int really_kicked) {
         panel->popupOKDialog(STRING_ID_GAME_CANCELED_NOTICE + (really_kicked != 0 ? -1 : 0), 0, TEASY_POPUP_WIDTH, 100);
     }
 }
-
-
-
 
 void TribeMPSetupScreen::activateVictoryPanels() {
     int id = victoryTypeDrop->get_id();
@@ -2123,9 +2074,6 @@ void TribeMPSetupScreen::activateVictoryPanels() {
         }
     }
 }
-
-
-
 
 void TribeMPSetupScreen::setupTabOrder() {
     TPanel* tabList[4];
@@ -2154,9 +2102,6 @@ void TribeMPSetupScreen::setupTabOrder() {
     set_tab_order(tabList, 3);
     set_curr_child(chatInput);
 }
-
-
-
 
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     int first_any_civ;
@@ -2243,10 +2188,6 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     this->fillNumberPlayers();
 }
 
-
-
-
-
 void TribeMPSetupScreen::fillNumberPlayers() {
     this->numberPlayersDrop->empty_list();
 
@@ -2265,10 +2206,6 @@ void TribeMPSetupScreen::fillNumberPlayers() {
     int line = this->numberPlayersDrop->get_line(num);
     this->numberPlayersDrop->set_line(line);
 }
-
-
-
-
 
 void TribeMPSetupScreen::fillPlayerColors() {
     TButtonPanel** buttons = this->playerColor;
@@ -2322,9 +2259,6 @@ void TribeMPSetupScreen::fillPlayerColors() {
         buttons++;
     } while (--remaining != 0);
 }
-
-
-
 
 TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen") {
     char str1[0x100];
@@ -2537,7 +2471,6 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     this->settingText[i]->set_active(1);
 }
 
-
 TRIBE_Screen_Wait::~TRIBE_Screen_Wait() {
     this->delete_panel((TPanel**)&this->message);
     this->delete_panel((TPanel**)&this->close_button);
@@ -2547,16 +2480,13 @@ TRIBE_Screen_Wait::~TRIBE_Screen_Wait() {
     }
 }
 
-
 void TRIBE_Screen_Wait::set_text(char* message_in) {
     this->message->set_text(message_in);
 }
 
-
 void TRIBE_Screen_Wait::set_text(long message_in) {
     this->message->set_text(message_in);
 }
-
 
 long TRIBE_Screen_Wait::action(TPanel* from_panel, long action_in, unsigned long val1, unsigned long val2) {
     if ((from_panel != 0) && (from_panel == this->close_button) && (action_in == 1)) {
@@ -2566,16 +2496,11 @@ long TRIBE_Screen_Wait::action(TPanel* from_panel, long action_in, unsigned long
     return this->TScreenPanel::action(from_panel, action_in, val1, val2);
 }
 
-
 long TRIBE_Screen_Wait::handle_idle() {
     if (!rge_base_game->input_enabled)
         rge_base_game->enable_input();
     return TPanel::handle_idle();
 }
-
-
-
-
 
 TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode_in) : TScreenPanel("Multiplayer Disconnect Screen") {
     this->mode = mode_in;
@@ -2591,23 +2516,17 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode_in) : TScreenPanel("Mu
     }
 }
 
-
 TRIBE_Screen_Disconnect::~TRIBE_Screen_Disconnect() {
     this->delete_panel((TPanel**)&this->message);
 }
-
 
 void TRIBE_Screen_Disconnect::set_text(char* message_in) {
     this->message->set_text(message_in);
 }
 
-
 void TRIBE_Screen_Disconnect::set_text(long message_in) {
     this->message->set_text(message_in);
 }
-
-
-
 
 long TRIBE_Screen_Disconnect::action(TPanel* from_panel, long action_in, unsigned long val1, unsigned long val2) {
     if (from_panel != 0) {
@@ -2624,6 +2543,5 @@ long TRIBE_Screen_Disconnect::action(TPanel* from_panel, long action_in, unsigne
     }
     return TEasy_Panel::action(from_panel, action_in, val1, val2);
 }
-
 
 long TRIBE_Screen_Disconnect::handle_idle() { return TPanel::handle_idle(); }
