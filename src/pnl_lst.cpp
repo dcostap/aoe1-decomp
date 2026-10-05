@@ -13,7 +13,7 @@ TListPanel::TListPanel() : drawHighlightBar(1) {
     mouse_scroll_down = 0;
     auto_track = 0;
     panel_type = 4;
-    bevel_type = 1;
+    bevel_type = TEXT_PANEL_BEVEL_OUTLINE;
     mouse_scroll_interval = 0x32;
     handle_mouse_input = 1;
     spacer_size = 1;
@@ -29,17 +29,17 @@ void TListPanel::set_auto_track(int auto_track_in) {
 
 void TListPanel::set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c4, int c5, int c6) {
     switch (bevel_type_in) {
-        case 3:
-        case 6:
+        case TEXT_PANEL_BEVEL_DOUBLE:
+        case TEXT_PANEL_BEVEL_DOUBLE_REVERSED:
             this->spacer_size = 2;
             break;
-        case 4:
-        case 7:
+        case TEXT_PANEL_BEVEL_TRIPLE:
+        case TEXT_PANEL_BEVEL_TRIPLE_REVERSED:
             this->spacer_size = 3;
             break;
-        case 1:
-        case 2:
-        case 5:
+        case TEXT_PANEL_BEVEL_OUTLINE:
+        case TEXT_PANEL_BEVEL_SINGLE:
+        case TEXT_PANEL_BEVEL_SINGLE_REVERSED:
             this->spacer_size = 1;
             break;
         default:
@@ -67,14 +67,14 @@ long TListPanel::handle_idle() {
 
     if (this->mouse_scroll_up != 0) {
         if (this->cur_line != this->top_line)
-            this->scroll_cur_line(1, this->top_line, 1);
-        this->scroll_cur_line(3, 0, 1);
+            this->scroll_cur_line(TEXT_PANEL_SCROLL_SET_LINE, this->top_line, 1);
+        this->scroll_cur_line(TEXT_PANEL_SCROLL_UP, 0, 1);
         return 0;
     }
 
     if (this->cur_line != this->bot_line)
-        this->scroll_cur_line(1, this->bot_line, 1);
-    this->scroll_cur_line(2, 0, 1);
+        this->scroll_cur_line(TEXT_PANEL_SCROLL_SET_LINE, this->bot_line, 1);
+    this->scroll_cur_line(TEXT_PANEL_SCROLL_DOWN, 0, 1);
     return 0;
 }
 
@@ -170,30 +170,30 @@ short TListPanel::item_at(long x, long y) {
 }
 
 void TListPanel::goto_item(long x, long y) {
-    scroll_cur_line(1, item_at(x, y), 1);
+    scroll_cur_line(TEXT_PANEL_SCROLL_SET_LINE, item_at(x, y), 1);
 }
 
 long TListPanel::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     switch (key) {
-        case 0x28:
-            this->scroll_cur_line(2, 0, 1);
+        case VK_DOWN:
+            this->scroll_cur_line(TEXT_PANEL_SCROLL_DOWN, 0, 1);
             return 1;
-        case 0x26:
-            this->scroll_cur_line(3, 0, 1);
+        case VK_UP:
+            this->scroll_cur_line(TEXT_PANEL_SCROLL_UP, 0, 1);
             return 1;
-        case 0x22:
-            this->scroll_cur_line(4, 0, 1);
+        case VK_NEXT:
+            this->scroll_cur_line(TEXT_PANEL_SCROLL_PAGE_DOWN, 0, 1);
             return 1;
-        case 0x21:
-            this->scroll_cur_line(5, 0, 1);
+        case VK_PRIOR:
+            this->scroll_cur_line(TEXT_PANEL_SCROLL_PAGE_UP, 0, 1);
             return 1;
-        case 0x24:
-            this->scroll_cur_line(6, 0, 1);
+        case VK_HOME:
+            this->scroll_cur_line(TEXT_PANEL_SCROLL_FIRST_LINE, 0, 1);
             return 1;
-        case 0x23:
-            this->scroll_cur_line(7, 0, 1);
+        case VK_END:
+            this->scroll_cur_line(TEXT_PANEL_SCROLL_LAST_LINE, 0, 1);
             return 1;
-        case 0x0D:
+        case VK_RETURN:
             if (this->parent_panel != 0 && this->cur_line > -1 && this->cur_line < this->num_lines) {
                 this->parent_panel->action(this, 3, this->cur_line, 0);
             }
@@ -232,7 +232,7 @@ long TListPanel::char_action(long key, short count) {
     return 0;
 
 found:
-    this->scroll_cur_line(1, (short) i, 1);
+    this->scroll_cur_line(TEXT_PANEL_SCROLL_SET_LINE, (short) i, 1);
     return 1;
 }
 
@@ -244,7 +244,7 @@ void TListPanel::scroll_cur_line(unsigned char scroll_type, short scroll_val, in
     short old_cur = this->cur_line;
 
     switch (scroll_type) {
-        case 1: {
+        case TEXT_PANEL_SCROLL_SET_LINE: {
             short new_cur = scroll_val;
             this->cur_line = new_cur;
             if (new_cur < 0) {
@@ -253,13 +253,13 @@ void TListPanel::scroll_cur_line(unsigned char scroll_type, short scroll_val, in
                 this->cur_line = this->num_lines - 1;
             }
             if (this->cur_line < this->top_line) {
-                this->scroll(1, this->cur_line, update_scrollbar);
+                this->scroll(TEXT_PANEL_SCROLL_SET_LINE, this->cur_line, update_scrollbar);
             } else if (this->cur_line > this->bot_line) {
-                this->scroll(0, this->cur_line - this->bot_line, update_scrollbar);
+                this->scroll(TEXT_PANEL_SCROLL_RELATIVE, this->cur_line - this->bot_line, update_scrollbar);
             }
             break;
         }
-        case 2: {
+        case TEXT_PANEL_SCROLL_DOWN: {
             short cur = this->cur_line;
             if (cur < this->top_line || cur > this->bot_line) {
                 this->cur_line = this->bot_line;
@@ -271,11 +271,11 @@ void TListPanel::scroll_cur_line(unsigned char scroll_type, short scroll_val, in
             } else if (cur < this->num_lines - 1) {
                 cur++;
                 this->cur_line = cur;
-                this->scroll(2, 0, update_scrollbar);
+                this->scroll(TEXT_PANEL_SCROLL_DOWN, 0, update_scrollbar);
             }
             break;
         }
-        case 3: {
+        case TEXT_PANEL_SCROLL_UP: {
             short cur = this->cur_line;
             if (cur < this->top_line || cur > this->bot_line) {
                 this->cur_line = this->top_line;
@@ -287,42 +287,42 @@ void TListPanel::scroll_cur_line(unsigned char scroll_type, short scroll_val, in
             } else if (cur > 0) {
                 cur--;
                 this->cur_line = cur;
-                this->scroll(3, 0, update_scrollbar);
+                this->scroll(TEXT_PANEL_SCROLL_UP, 0, update_scrollbar);
             }
             break;
         }
-        case 4: {
+        case TEXT_PANEL_SCROLL_PAGE_DOWN: {
             short cur = this->cur_line;
             if (cur < this->top_line || cur > this->bot_line) {
                 this->cur_line = this->bot_line;
             }
             if (this->cur_line == this->bot_line) {
-                this->scroll(4, 0, update_scrollbar);
+                this->scroll(TEXT_PANEL_SCROLL_PAGE_DOWN, 0, update_scrollbar);
                 this->cur_line = this->bot_line;
             } else {
                 this->cur_line = this->bot_line;
             }
             break;
         }
-        case 5: {
+        case TEXT_PANEL_SCROLL_PAGE_UP: {
             short cur = this->cur_line;
             if (cur < this->top_line || cur > this->bot_line) {
                 this->cur_line = this->top_line;
             }
             if (this->cur_line == this->top_line) {
-                this->scroll(5, 0, update_scrollbar);
+                this->scroll(TEXT_PANEL_SCROLL_PAGE_UP, 0, update_scrollbar);
                 this->cur_line = this->top_line;
             } else {
                 this->cur_line = this->top_line;
             }
             break;
         }
-        case 6:
-            this->scroll(6, 0, update_scrollbar);
+        case TEXT_PANEL_SCROLL_FIRST_LINE:
+            this->scroll(TEXT_PANEL_SCROLL_FIRST_LINE, 0, update_scrollbar);
             this->cur_line = this->top_line;
             break;
-        case 7:
-            this->scroll(7, 0, update_scrollbar);
+        case TEXT_PANEL_SCROLL_LAST_LINE:
+            this->scroll(TEXT_PANEL_SCROLL_LAST_LINE, 0, update_scrollbar);
             this->cur_line = this->bot_line;
             break;
     }
@@ -395,35 +395,35 @@ void TListPanel::draw_highlight_bar() {
             long bottom = r.bottom + this->spacer_size;
 
             switch (this->bevel_type) {
-                case 0:
-                case 1:
+                case TEXT_PANEL_BEVEL_NONE:
+                case TEXT_PANEL_BEVEL_OUTLINE:
                     this->render_area->DrawRect(left, top, right, bottom, 0xFF);
                     break;
-                case 5:
+                case TEXT_PANEL_BEVEL_SINGLE_REVERSED:
                     this->render_area->DrawBevel(left, top, right, bottom, this->bevel_color6, this->bevel_color1);
                     break;
-                case 6:
+                case TEXT_PANEL_BEVEL_DOUBLE_REVERSED:
                     this->render_area->DrawBevel2(
                         left, top, right, bottom, this->bevel_color6, this->bevel_color5, this->bevel_color2,
                         this->bevel_color1
                     );
                     break;
-                case 7:
+                case TEXT_PANEL_BEVEL_TRIPLE_REVERSED:
                     this->render_area->DrawBevel3(
                         left, top, right, bottom, this->bevel_color6, this->bevel_color5, this->bevel_color4,
                         this->bevel_color3, this->bevel_color2, this->bevel_color1
                     );
                     break;
-                case 2:
+                case TEXT_PANEL_BEVEL_SINGLE:
                     this->render_area->DrawBevel(left, top, right, bottom, this->bevel_color1, this->bevel_color6);
                     break;
-                case 3:
+                case TEXT_PANEL_BEVEL_DOUBLE:
                     this->render_area->DrawBevel2(
                         left, top, right, bottom, this->bevel_color1, this->bevel_color2, this->bevel_color5,
                         this->bevel_color6
                     );
                     break;
-                case 4:
+                case TEXT_PANEL_BEVEL_TRIPLE:
                     this->render_area->DrawBevel3(
                         left, top, right, bottom, this->bevel_color1, this->bevel_color2, this->bevel_color3,
                         this->bevel_color4, this->bevel_color5, this->bevel_color6

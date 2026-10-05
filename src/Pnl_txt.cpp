@@ -21,8 +21,8 @@ TTextPanel::TTextPanel() :
     text_color1(0xFFFFFF), text_color2(0), highlightTextColor1(0xFFFF), highlightTextColor2(0), scbar_panel(0),
     auto_scbar(0), fixed_len(0), text_wid(0), text_hgt(0), back_pic(0), back_pic_wid(0), back_pic_hgt(0), fill_back(0),
     back_color(0xFF), outline(0), outline_color(0), sorted(0), second_column_pos(0), full_width(0), scbar_width(0),
-    scbar_active(0), bevel_type(0), bevel_color1(0), bevel_color2(0), bevel_color3(0), bevel_color4(0), bevel_color5(0),
-    bevel_color6(0), clip_rgn2(0), border_size(0), spacer_size(0) {
+    scbar_active(0), bevel_type(TEXT_PANEL_BEVEL_NONE), bevel_color1(0), bevel_color2(0), bevel_color3(0),
+    bevel_color4(0), bevel_color5(0), bevel_color6(0), clip_rgn2(0), border_size(0), spacer_size(0) {
     this->handle_mouse_input = 0;
     this->panel_type = 1;
 }
@@ -47,7 +47,7 @@ long TTextPanel::setup(
     outline_color = outline_color_in;
     fixed_len = fixed_len_in;
     if (outline_in != 0) {
-        bevel_type = 1;
+        bevel_type = TEXT_PANEL_BEVEL_OUTLINE;
     }
     set_text(text_in);
     set_font(font_in, font_wid_in, font_hgt_in);
@@ -70,7 +70,7 @@ long TTextPanel::setup(
     outline_color = outline_color_in;
     fixed_len = fixed_len_in;
     if (outline_in != 0) {
-        bevel_type = 1;
+        bevel_type = TEXT_PANEL_BEVEL_OUTLINE;
     }
     set_font(font_in, font_wid_in, font_hgt_in);
     set_alignment(AlignCenter, AlignCenter);
@@ -92,7 +92,7 @@ long TTextPanel::setup(
     this->outline_color = outline_color_in;
     this->fixed_len = fixed_len_in;
     if (outline_in != 0) {
-        this->bevel_type = 1;
+        this->bevel_type = TEXT_PANEL_BEVEL_OUTLINE;
     }
     this->set_text(text_in, num_lines_in);
     this->set_font(font_in, font_wid_in, font_hgt_in);
@@ -468,9 +468,9 @@ void TTextPanel::set_back_pic(char* back_pic_in) {
 void TTextPanel::set_outline(int outline_in, unsigned char outline_color_in) {
     this->outline = outline_in;
     if (outline_in != 0) {
-        this->bevel_type = 1;
+        this->bevel_type = TEXT_PANEL_BEVEL_OUTLINE;
     } else {
-        this->bevel_type = 0;
+        this->bevel_type = TEXT_PANEL_BEVEL_NONE;
     }
     this->outline_color = outline_color_in;
     this->set_redraw(TPanel::RedrawNormal);
@@ -485,17 +485,17 @@ void TTextPanel::set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c
     bevel_color6 = (unsigned char) c6;
 
     switch (bevel_type_in) {
-        case 1:
-        case 2:
-        case 5:
+        case TEXT_PANEL_BEVEL_OUTLINE:
+        case TEXT_PANEL_BEVEL_SINGLE:
+        case TEXT_PANEL_BEVEL_SINGLE_REVERSED:
             border_size = 1;
             break;
-        case 3:
-        case 6:
+        case TEXT_PANEL_BEVEL_DOUBLE:
+        case TEXT_PANEL_BEVEL_DOUBLE_REVERSED:
             border_size = 2;
             break;
-        case 4:
-        case 7:
+        case TEXT_PANEL_BEVEL_TRIPLE:
+        case TEXT_PANEL_BEVEL_TRIPLE_REVERSED:
             border_size = 3;
             break;
         default:
@@ -610,34 +610,34 @@ void TTextPanel::calc_draw_info(int update_scbar) {
 
 void TTextPanel::scroll(unsigned char scroll_type, short scroll_val, int update_scbar) {
     switch (scroll_type) {
-        case 0:
+        case TEXT_PANEL_SCROLL_RELATIVE:
             this->top_line += scroll_val;
             break;
-        case 1:
+        case TEXT_PANEL_SCROLL_SET_LINE:
             this->top_line = scroll_val;
             break;
-        case 2:
+        case TEXT_PANEL_SCROLL_DOWN:
             this->top_line++;
             break;
-        case 3:
+        case TEXT_PANEL_SCROLL_UP:
             this->top_line--;
             break;
-        case 4: {
+        case TEXT_PANEL_SCROLL_PAGE_DOWN: {
             short dx = this->draw_lines;
             dx--;
             this->top_line += dx;
             break;
         }
-        case 5: {
+        case TEXT_PANEL_SCROLL_PAGE_UP: {
             short ax = 1;
             ax -= this->draw_lines;
             this->top_line += ax;
             break;
         }
-        case 6:
+        case TEXT_PANEL_SCROLL_FIRST_LINE:
             this->top_line = 0;
             break;
-        case 7: {
+        case TEXT_PANEL_SCROLL_LAST_LINE: {
             short cx = this->num_lines;
             cx--;
             this->top_line = cx;
@@ -651,37 +651,37 @@ void TTextPanel::scroll(unsigned char scroll_type, short scroll_val, int update_
 
 long TTextPanel::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     switch (key) {
-        case 0x28:
-            this->scroll(2, 0, 1);
+        case VK_DOWN:
+            this->scroll(TEXT_PANEL_SCROLL_DOWN, 0, 1);
             if (this->parent_panel != 0 && this->tab_stop != 0) {
                 this->parent_panel->key_down_action(key, count, alt_key, ctrl_key, shift_key);
                 return 1;
             }
             return 1;
-        case 0x26:
-            this->scroll(3, 0, 1);
+        case VK_UP:
+            this->scroll(TEXT_PANEL_SCROLL_UP, 0, 1);
             if (this->parent_panel != 0 && this->tab_stop != 0) {
                 this->parent_panel->key_down_action(key, count, alt_key, ctrl_key, shift_key);
                 return 1;
             }
             return 1;
-        case 0x22:
-            this->scroll(4, 0, 1);
+        case VK_NEXT:
+            this->scroll(TEXT_PANEL_SCROLL_PAGE_DOWN, 0, 1);
             if (this->parent_panel != 0 && this->tab_stop != 0) {
                 this->parent_panel->key_down_action(key, count, alt_key, ctrl_key, shift_key);
             }
             return 1;
-        case 0x21:
-            this->scroll(5, 0, 1);
+        case VK_PRIOR:
+            this->scroll(TEXT_PANEL_SCROLL_PAGE_UP, 0, 1);
             if (this->parent_panel != 0 && this->tab_stop != 0) {
                 this->parent_panel->key_down_action(key, count, alt_key, ctrl_key, shift_key);
             }
             return 1;
-        case 0x24:
-            this->scroll(6, 0, 1);
+        case VK_HOME:
+            this->scroll(TEXT_PANEL_SCROLL_FIRST_LINE, 0, 1);
             return 1;
-        case 0x23:
-            this->scroll(7, 0, 1);
+        case VK_END:
+            this->scroll(TEXT_PANEL_SCROLL_LAST_LINE, 0, 1);
             return 1;
         default:
             return 0;
@@ -692,19 +692,19 @@ long TTextPanel::action(TPanel* from_panel, long action_in, unsigned long action
     if (this->scbar_panel && from_panel == this->scbar_panel) {
         switch (action_in) {
             case 0:
-                this->scroll(3, 0, 1);
+                this->scroll(TEXT_PANEL_SCROLL_UP, 0, 1);
                 return 1;
             case 1:
-                this->scroll(2, 0, 1);
+                this->scroll(TEXT_PANEL_SCROLL_DOWN, 0, 1);
                 return 1;
             case 2:
-                this->scroll(5, 0, 1);
+                this->scroll(TEXT_PANEL_SCROLL_PAGE_UP, 0, 1);
                 return 1;
             case 3:
-                this->scroll(4, 0, 1);
+                this->scroll(TEXT_PANEL_SCROLL_PAGE_DOWN, 0, 1);
                 return 1;
             case 4:
-                this->scroll(1, action_val1, 0);
+                this->scroll(TEXT_PANEL_SCROLL_SET_LINE, action_val1, 0);
                 return 1;
         }
     }
@@ -804,7 +804,7 @@ void TTextPanel::draw_background() {
     }
 
     if (this->parent_panel != 0) {
-        if (this->bevel_type >= 2 && this->bevel_type <= 7) {
+        if (this->bevel_type >= TEXT_PANEL_BEVEL_SINGLE && this->bevel_type <= TEXT_PANEL_BEVEL_TRIPLE_REVERSED) {
             this->parent_panel->draw_rect2(&this->clip_rect);
             return;
         }
@@ -815,47 +815,47 @@ void TTextPanel::draw_background() {
 }
 
 void TTextPanel::draw_border() {
-    if (this->bevel_type != 0) {
+    if (this->bevel_type != TEXT_PANEL_BEVEL_NONE) {
         if (this->render_area->Lock("pnl_txt::draw_border", 1) != 0) {
             switch (this->bevel_type) {
-                case 1:
+                case TEXT_PANEL_BEVEL_OUTLINE:
                     this->render_area->DrawRect(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
                         this->outline_color
                     );
                     break;
-                case 2:
+                case TEXT_PANEL_BEVEL_SINGLE:
                     this->render_area->DrawBevel(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
                         this->bevel_color6, this->bevel_color1
                     );
                     break;
-                case 3:
+                case TEXT_PANEL_BEVEL_DOUBLE:
                     this->render_area->DrawBevel2(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
                         this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1
                     );
                     break;
-                case 4:
+                case TEXT_PANEL_BEVEL_TRIPLE:
                     this->render_area->DrawBevel3(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
                         this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3,
                         this->bevel_color2, this->bevel_color1
                     );
                     break;
-                case 5:
+                case TEXT_PANEL_BEVEL_SINGLE_REVERSED:
                     this->render_area->DrawBevel(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
                         this->bevel_color1, this->bevel_color6
                     );
                     break;
-                case 6:
+                case TEXT_PANEL_BEVEL_DOUBLE_REVERSED:
                     this->render_area->DrawBevel2(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
                         this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6
                     );
                     break;
-                case 7:
+                case TEXT_PANEL_BEVEL_TRIPLE_REVERSED:
                     this->render_area->DrawBevel3(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
                         this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,

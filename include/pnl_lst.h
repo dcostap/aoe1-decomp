@@ -8,6 +8,26 @@
 
 class TScrollBarPanel;
 
+// Reversed bevels reverse the border colors, not a fixed light or shadow palette.
+#define TEXT_PANEL_BEVEL_NONE            0
+#define TEXT_PANEL_BEVEL_OUTLINE         1
+#define TEXT_PANEL_BEVEL_SINGLE          2
+#define TEXT_PANEL_BEVEL_DOUBLE          3
+#define TEXT_PANEL_BEVEL_TRIPLE          4
+#define TEXT_PANEL_BEVEL_SINGLE_REVERSED 5
+#define TEXT_PANEL_BEVEL_DOUBLE_REVERSED 6
+#define TEXT_PANEL_BEVEL_TRIPLE_REVERSED 7
+
+// Relative scrolling applies only to TTextPanel::scroll(), not list current-line selection.
+#define TEXT_PANEL_SCROLL_RELATIVE       0
+#define TEXT_PANEL_SCROLL_SET_LINE       1
+#define TEXT_PANEL_SCROLL_DOWN           2
+#define TEXT_PANEL_SCROLL_UP             3
+#define TEXT_PANEL_SCROLL_PAGE_DOWN      4
+#define TEXT_PANEL_SCROLL_PAGE_UP        5
+#define TEXT_PANEL_SCROLL_FIRST_LINE     6
+#define TEXT_PANEL_SCROLL_LAST_LINE      7
+
 class TTextPanel : public TPanel {
   public:
     class TextNode {
