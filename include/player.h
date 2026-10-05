@@ -7,6 +7,15 @@
 #define RGE_RESOURCE_STONE  2
 #define RGE_RESOURCE_GOLD   3
 
+// Visual cultures select building and interface art, not civilization IDs.
+// These cleanup names describe shared styles; several civilizations can use one culture.
+#define RGE_CULTURE_EGYPTIAN   0
+#define RGE_CULTURE_GREEK      1
+#define RGE_CULTURE_BABYLONIAN 2
+#define RGE_CULTURE_EAST_ASIAN 3
+#define RGE_CULTURE_ROMAN     4
+#define RGE_CULTURE_COUNT     5
+
 #include <stdio.h>
 
 class RGE_Color_Table;

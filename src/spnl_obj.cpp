@@ -25,7 +25,7 @@ TRIBE_Scenario_Editor_Panel_Object::TRIBE_Scenario_Editor_Panel_Object(
         render_area_in, parent_panel_in, font_in, font_wid_in, font_hgt_in, unit_pics_in, bldg_pics_in, player_in
     ) {
     master_game_obj = 0;
-    master_culture_id = 0;
+    master_culture_id = RGE_CULTURE_EGYPTIAN;
 }
 
 // spnl_obj.cpp line 58.
@@ -39,7 +39,7 @@ void TRIBE_Scenario_Editor_Panel_Object::set_master_info(
     master_game_obj = master_game_object_in;
     this->player = master_player_in;
     if (master_player_in == 0) {
-        master_culture_id = 0;
+        master_culture_id = RGE_CULTURE_EGYPTIAN;
         return;
     }
     master_culture_id = master_player_in->culture;

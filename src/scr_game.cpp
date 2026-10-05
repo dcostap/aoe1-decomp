@@ -45,7 +45,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game() : TScreenPanel(s_Game_Screen) {
     this->button_tech_pic = 0;
     this->button_unit_pic = 0;
     this->more_cancel_pic = 0;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < RGE_CULTURE_COUNT; i++) {
         this->button_bldg_pics[i] = 0;
     }
     this->main_view = 0;
@@ -162,9 +162,9 @@ TRIBE_Screen_Game::TRIBE_Screen_Game() : TScreenPanel(s_Game_Screen) {
         return;
     }
 
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < RGE_CULTURE_COUNT; i++) {
         sprintf(str, s_btnbldg_d_shp, i);
-        if (i < 4) {
+        if (i < RGE_CULTURE_ROMAN) {
             this->button_bldg_pics[i] = new TShape(str, i + 0xc610);
         } else {
             this->button_bldg_pics[i] = new TShape(str, 0xcf0d);
@@ -596,7 +596,7 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
     }
 
     int i;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < RGE_CULTURE_COUNT; i++) {
         if (this->button_bldg_pics[i] != 0) {
             delete this->button_bldg_pics[i];
             this->button_bldg_pics[i] = 0;
@@ -2183,13 +2183,13 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
             this->save_culture = player->culture;
             this->save_screen_width = this->pnl_wid;
 
-            if (culture >= 5) {
-                culture = 0;
+            if (culture >= RGE_CULTURE_COUNT) {
+                culture = RGE_CULTURE_EGYPTIAN;
             }
 
             sprintf(str, s_dlg6_format, culture);
 
-            if (culture == 4) {
+            if (culture == RGE_CULTURE_ROMAN) {
                 this->set_info_file(str, 0xCF08);
                 this->set_popup_info_file(str, 0xCF08);
             } else {
@@ -2199,26 +2199,26 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
 
             sprintf(str, s_btn6_format, culture);
 
-            if (culture == 4) {
+            if (culture == RGE_CULTURE_ROMAN) {
                 this->set_button_pics(str, 0xCF0C);
             } else {
                 this->set_button_pics(str, culture + 0xC5AD);
             }
 
             switch (culture) {
-                case 0:
+                case RGE_CULTURE_EGYPTIAN:
                     this->set_bevel_colors(0x7E, 0x6D, 0x6F, 0x6F, 0xEE, 0x38);
                     break;
-                case 1:
+                case RGE_CULTURE_GREEK:
                     this->set_bevel_colors(0x72, 0x73, 0x74, 0x74, 0xB7, 0xB8);
                     break;
-                case 2:
+                case RGE_CULTURE_BABYLONIAN:
                     this->set_bevel_colors(0xB9, 0x77, 0x78, 0x78, 0x78, 0x79);
                     break;
-                case 3:
+                case RGE_CULTURE_EAST_ASIAN:
                     this->set_bevel_colors(0x8A, 0xED, 0xEE, 0xEE, 0x38, 0x95);
                     break;
-                case 4:
+                case RGE_CULTURE_ROMAN:
                     this->set_bevel_colors(0x73, 0x74, 0x75, 0x75, 0x76, 0x77);
                     break;
             }
@@ -2248,7 +2248,7 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
                 delete this->button_border1_pic;
             }
             sprintf(str, s_button_border_a_format, culture);
-            if (culture == 4) {
+            if (culture == RGE_CULTURE_ROMAN) {
                 this->button_border1_pic = new TShape(str, 0xCF0E);
             } else {
                 this->button_border1_pic = new TShape(str, culture + 0xC619);
@@ -2258,7 +2258,7 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
                 delete this->button_other_pic;
             }
             sprintf(str, s_button_other_format, culture);
-            if (culture == 4) {
+            if (culture == RGE_CULTURE_ROMAN) {
                 this->button_other_pic = new TShape(str, 0xCF11);
             } else {
                 this->button_other_pic = new TShape(str, culture + 0xC625);
@@ -2268,7 +2268,7 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
                 delete this->button_border2_pic;
             }
             sprintf(str, s_button_border_b_format, culture);
-            if (culture == 4) {
+            if (culture == RGE_CULTURE_ROMAN) {
                 this->button_border2_pic = new TShape(str, 0xCF0F);
             } else {
                 this->button_border2_pic = new TShape(str, culture + 0xC61D);
@@ -2278,7 +2278,7 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
                 delete this->button_border3_pic;
             }
             sprintf(str, s_button_border_c_format, culture);
-            if (culture == 4) {
+            if (culture == RGE_CULTURE_ROMAN) {
                 this->button_border3_pic = new TShape(str, 0xCF10);
             } else {
                 this->button_border3_pic = new TShape(str, culture + 0xC63B);
@@ -2291,21 +2291,21 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
             int game_pic_id;
             if (this->pnl_wid >= 1024 && this->pnl_hgt >= 768) {
                 sprintf(str, s_game_c_format, culture);
-                if (culture == 4) {
+                if (culture == RGE_CULTURE_ROMAN) {
                     game_pic_id = 0xCF14;
                 } else {
                     game_pic_id = culture + 0xC635;
                 }
             } else if (this->pnl_wid >= 800 && this->pnl_hgt >= 600) {
                 sprintf(str, s_game_b_format, culture);
-                if (culture == 4) {
+                if (culture == RGE_CULTURE_ROMAN) {
                     game_pic_id = 0xCF13;
                 } else {
                     game_pic_id = culture + 0xC631;
                 }
             } else {
                 sprintf(str, s_game_a_format, culture);
-                if (culture == 4) {
+                if (culture == RGE_CULTURE_ROMAN) {
                     game_pic_id = 0xCF12;
                 } else {
                     game_pic_id = culture + 0xC62D;
@@ -2330,7 +2330,8 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
                 this->button_panel[11]->set_picture(0, this->more_cancel_pic, this->cancel_frame);
             }
 
-            if (culture == 2 || culture == 3 || culture == 4) {
+            if (culture == RGE_CULTURE_BABYLONIAN || culture == RGE_CULTURE_EAST_ASIAN
+                || culture == RGE_CULTURE_ROMAN) {
                 this->inven_panel->set_text_color(0xFFFFFF, 0);
                 this->age_panel->set_text_color(0xFFFFFF, 0);
                 this->button_panel[12]->set_text_color(0, 0xFFFFFF, 0);
@@ -2462,8 +2463,8 @@ void TRIBE_Screen_Game::setup_buttons() {
         bool set_final_button = false;
         player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
         culture = player->culture;
-        if (culture > 5) {
-            culture = 0;
+        if (culture > RGE_CULTURE_COUNT) {
+            culture = RGE_CULTURE_EGYPTIAN;
         }
         if ((rge_base_game->game_mode == 6) && (rge_base_game->sub_game_mode == 1)) {
             short building_count;

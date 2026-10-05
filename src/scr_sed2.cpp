@@ -813,7 +813,7 @@ void TRIBE_Screen_Sed::init_module_variables() {
     this->unit_scrollbar = (TScrollBarPanel*) 0;
     this->unit_list_info = (List_Info*) 0;
     this->button_unit_pics = (TShape*) 0;
-    for (index = 0; index < 5; ++index)
+    for (index = 0; index < RGE_CULTURE_COUNT; ++index)
         this->button_bldg_pics[index] = (TShape*) 0;
     this->object_panel = (TRIBE_Scenario_Editor_Panel_Object*) 0;
     this->unit_list_size = 0;
@@ -1123,10 +1123,10 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
     if (!this->button_unit_pics->is_loaded())
         goto bad;
 
-    for (i = 0; i < 5; ++i) {
+    for (i = 0; i < RGE_CULTURE_COUNT; ++i) {
         int idx = i;
-        if (idx == 4)
-            idx = 1;
+        if (idx == RGE_CULTURE_ROMAN)
+            idx = RGE_CULTURE_GREEK;
         sprintf(str, s_btnbldg_d_shp, idx);
         this->button_bldg_pics[idx] = new TShape(str, idx + 0xC610);
         if (!this->button_bldg_pics[idx])

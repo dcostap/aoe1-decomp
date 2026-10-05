@@ -724,7 +724,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
     }
     {
         TShape** pp = this->button_bldg_pics;
-        int count = 5;
+        int count = RGE_CULTURE_COUNT;
         do {
             TShape* p = *pp;
             if (p != 0) {
