@@ -240,15 +240,15 @@ TRIBE_Screen_Game::TRIBE_Screen_Game() : TScreenPanel(s_Game_Screen) {
         this->button_panel[i]->set_sound_number(1);
     }
 
-    this->button_panel[12]->set_id(0, 0x0d, 0);
+    this->button_panel[12]->set_id(0, TRIBE_UI_COMMAND_CHAT, 0);
     this->button_panel[12]->set_help_info(STRING_ID_HELP_GAME_CHAT, -1);
-    this->button_panel[13]->set_id(0, 0x0e, 0);
+    this->button_panel[13]->set_id(0, TRIBE_UI_COMMAND_DIPLOMACY, 0);
     this->button_panel[13]->set_help_info(STRING_ID_HELP_GAME_DIPLOMACY, -1);
-    this->button_panel[14]->set_id(0, 0x0f, 0);
+    this->button_panel[14]->set_id(0, TRIBE_UI_COMMAND_MENU, 0);
     this->button_panel[14]->set_help_info(STRING_ID_HELP_GAME_MENU, -1);
-    this->button_panel[15]->set_id(0, 0x15, 0);
+    this->button_panel[15]->set_id(0, TRIBE_UI_COMMAND_HELP, 0);
     this->button_panel[15]->set_help_info(STRING_ID_HELP_GAME_HELP, -1);
-    this->button_panel[16]->set_id(0, 0x18, 0);
+    this->button_panel[16]->set_id(0, TRIBE_UI_COMMAND_SCORE, 0);
     this->button_panel[16]->set_help_info(STRING_ID_HELP_GAME_SCORE, -1);
 
     for (i = 12; i < 15; ++i) {
@@ -2018,100 +2018,100 @@ named_base_action:
 void TRIBE_Screen_Game::do_button_action(int action_in, int action2_in, int right_btn) {
     if (allow_user_commands != 0) {
         switch (action_in) {
-            case 1:
+            case TRIBE_UI_COMMAND_WORK:
                 this->command_work();
                 return;
-            case 2:
+            case TRIBE_UI_COMMAND_MOVE:
                 this->command_move();
                 return;
-            case 3:
+            case TRIBE_UI_COMMAND_BUILD:
                 this->command_build();
                 return;
-            case 4:
+            case TRIBE_UI_COMMAND_TRADE:
                 this->command_trade();
                 return;
-            case 5:
+            case TRIBE_UI_COMMAND_STOP:
                 this->command_stop();
                 return;
-            case 6:
+            case TRIBE_UI_COMMAND_UNSELECT:
                 this->command_unselect();
                 return;
-            case 7:
+            case TRIBE_UI_COMMAND_UNLOAD:
                 this->command_unload();
                 return;
-            case 8:
+            case TRIBE_UI_COMMAND_GROUP:
                 this->command_group();
                 return;
-            case 9:
+            case TRIBE_UI_COMMAND_UNGROUP:
                 this->command_ungroup();
                 return;
-            case 0xB:
+            case TRIBE_UI_COMMAND_CANCEL:
                 this->command_cancel();
                 return;
-            case 0xC:
+            case TRIBE_UI_COMMAND_MORE:
                 this->command_more();
                 return;
-            case 0xD:
+            case TRIBE_UI_COMMAND_CHAT:
                 this->command_chat();
                 return;
-            case 0xE:
+            case TRIBE_UI_COMMAND_DIPLOMACY:
                 this->command_diplomacy();
                 return;
-            case 0xF:
+            case TRIBE_UI_COMMAND_MENU:
                 this->command_menu();
                 return;
-            case 0x10:
+            case TRIBE_UI_COMMAND_TRADE_WITH:
                 this->command_trade_with(action2_in);
                 return;
-            case 0x11:
+            case TRIBE_UI_COMMAND_RESEARCH:
                 this->command_research(action2_in);
                 return;
-            case 0x12:
+            case TRIBE_UI_COMMAND_TRAIN:
                 this->command_train(action2_in, right_btn ? -1 : 1);
                 return;
-            case 0x13:
+            case TRIBE_UI_COMMAND_PLACE_BUILDING:
                 this->command_building(action2_in);
                 return;
-            case 0x14:
+            case TRIBE_UI_COMMAND_CANCEL_CONSTRUCTION:
                 this->command_cancel_building();
                 return;
-            case 0x15:
+            case TRIBE_UI_COMMAND_HELP:
                 this->setup_popup_help();
                 return;
-            case 0x16:
+            case TRIBE_UI_COMMAND_STAND_GROUND:
                 this->command_stand_ground();
                 return;
-            case 0x17:
+            case TRIBE_UI_COMMAND_ATTACK_GROUND:
                 this->command_attack_ground();
                 return;
-            case 0x18:
+            case TRIBE_UI_COMMAND_SCORE:
                 this->command_score(this->world->score_displayed == 0);
                 return;
-            case 0x19:
-                this->command_trade_attribute(0);
+            case TRIBE_UI_COMMAND_TRADE_FOOD_FOR_GOLD:
+                this->command_trade_attribute(RGE_RESOURCE_FOOD);
                 return;
-            case 0x1A:
-                this->command_trade_attribute(1);
+            case TRIBE_UI_COMMAND_TRADE_WOOD_FOR_GOLD:
+                this->command_trade_attribute(RGE_RESOURCE_WOOD);
                 return;
-            case 0x1B:
-                this->command_trade_attribute(2);
+            case TRIBE_UI_COMMAND_TRADE_STONE_FOR_GOLD:
+                this->command_trade_attribute(RGE_RESOURCE_STONE);
                 return;
-            case 0x1C:
+            case TRIBE_UI_COMMAND_HEAL:
                 this->command_heal();
                 return;
-            case 0x1D:
+            case TRIBE_UI_COMMAND_CONVERT:
                 this->command_convert();
                 return;
-            case 0x1E:
+            case TRIBE_UI_COMMAND_ATTACK:
                 this->command_attack();
                 return;
-            case 0x1F:
+            case TRIBE_UI_COMMAND_REPAIR:
                 this->command_repair();
                 return;
-            case 0x20:
+            case TRIBE_UI_COMMAND_INCREMENT_QUEUE:
                 this->command_train(action2_in, 1);
                 return;
-            case 0x21:
+            case TRIBE_UI_COMMAND_DECREMENT_QUEUE:
                 this->command_train(action2_in, -1);
                 return;
             default:
@@ -2120,34 +2120,34 @@ void TRIBE_Screen_Game::do_button_action(int action_in, int action2_in, int righ
     }
 
     switch (action_in) {
-        case 6:
+        case TRIBE_UI_COMMAND_UNSELECT:
             this->command_unselect();
             return;
-        case 8:
+        case TRIBE_UI_COMMAND_GROUP:
             this->command_group();
             return;
-        case 9:
+        case TRIBE_UI_COMMAND_UNGROUP:
             this->command_ungroup();
             return;
-        case 0xB:
+        case TRIBE_UI_COMMAND_CANCEL:
             this->command_cancel();
             return;
-        case 0xC:
+        case TRIBE_UI_COMMAND_MORE:
             this->command_more();
             return;
-        case 0xD:
+        case TRIBE_UI_COMMAND_CHAT:
             this->command_chat();
             return;
-        case 0xE:
+        case TRIBE_UI_COMMAND_DIPLOMACY:
             this->command_diplomacy();
             return;
-        case 0xF:
+        case TRIBE_UI_COMMAND_MENU:
             this->command_menu();
             return;
-        case 0x15:
+        case TRIBE_UI_COMMAND_HELP:
             this->setup_popup_help();
             return;
-        case 0x18:
+        case TRIBE_UI_COMMAND_SCORE:
             this->command_score(this->world->score_displayed == 0);
             return;
         default:
@@ -2504,23 +2504,27 @@ void TRIBE_Screen_Game::setup_buttons() {
                 }
 
                 rge_base_game->get_string(master->string_id, name + 4, 512);
-                this->calc_text_msg(msg_str + 4, &this->bldg_list[item_index], 0x13, master->string_id2);
+                this->calc_text_msg(
+                    msg_str + 4, &this->bldg_list[item_index], TRIBE_UI_COMMAND_PLACE_BUILDING, master->string_id2
+                );
                 short button = this->calc_button_loc(btn_loc);
                 Item_Avail* item = &this->bldg_list[item_index];
                 this->set_button(
                     this->button_bldg_pics[culture], button, static_cast<short>(master->building_facet + item->pict),
-                    0x13, item->id, master->string_id2 + 100000, item->help_page_id, master->hotkey_id,
-                    player->color_table->table, name + 4, msg_str + 4, 0
+                    TRIBE_UI_COMMAND_PLACE_BUILDING, item->id, master->string_id2 + 100000, item->help_page_id,
+                    master->hotkey_id, player->color_table->table, name + 4, msg_str + 4, 0
                 );
             }
 
             if (any_more != 0) {
-                this->set_button(this->more_cancel_pic, 5, this->more_frame, 0x0C, 0, 0x1D4D7, -1, 0, 0, 0, 0, 0);
+                this->set_button(
+                    this->more_cancel_pic, 5, this->more_frame, TRIBE_UI_COMMAND_MORE, 0, 0x1D4D7, -1, 0, 0, 0, 0, 0
+                );
             }
 
             final_pic = this->more_cancel_pic;
             final_frame = this->cancel_frame;
-            final_type = 0x0B;
+            final_type = TRIBE_UI_COMMAND_CANCEL;
             set_final_button = 1;
         } else if ((rge_base_game->game_mode == 0) && (rge_base_game->prog_mode != ProgModeGameOver)) {
             if (this->game_obj->owner == player) {
@@ -2528,38 +2532,55 @@ void TRIBE_Screen_Game::setup_buttons() {
                 int continue_setup = 1;
 
                 if (level == 3) {
-                    this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 1, 0, 0x1F, 0, 0x1D4F6, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 0, 2, TRIBE_UI_COMMAND_BUILD, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
+                    this->set_button(
+                        this->button_cmd_pic, 1, 0, TRIBE_UI_COMMAND_REPAIR, 0, 0x1D4F6, -1, 0, 0, 0, 0, 0
+                    );
                     if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, 2, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 2, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0
+                        );
                     }
 
                     if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
                         this->set_button(
-                            this->button_cmd_pic, 7, 8, 9, 0, STRING_ID_HELP_UNGROUP_BUTTON, -1, 0, 0, 0, 0, 0
+                            this->button_cmd_pic, 6, 7, TRIBE_UI_COMMAND_GROUP, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0
+                        );
+                        this->set_button(
+                            this->button_cmd_pic, 7, 8, TRIBE_UI_COMMAND_UNGROUP, 0, STRING_ID_HELP_UNGROUP_BUTTON, -1,
+                            0, 0, 0, 0, 0
                         );
                     } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
-                    final_type = 6;
+                    final_type = TRIBE_UI_COMMAND_UNSELECT;
                     set_final_button = 1;
                     continue_setup = 0;
                 } else if (level == 9) {
                     if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 0, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 7, TRIBE_UI_COMMAND_GROUP, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0
+                        );
+                        this->set_button(
+                            this->button_cmd_pic, 7, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
-                    final_type = 6;
+                    final_type = TRIBE_UI_COMMAND_UNSELECT;
                     set_final_button = 1;
                     continue_setup = 0;
                 } else if (level == 4) {
@@ -2582,45 +2603,68 @@ void TRIBE_Screen_Game::setup_buttons() {
                         ++i;
                     }
 
-                    this->set_button(this->button_cmd_pic, 0, 4, 0x16, 0, 0x1D4EA, -1, 0, 0, 0, 0, 0);
+                    this->set_button(
+                        this->button_cmd_pic, 0, 4, TRIBE_UI_COMMAND_STAND_GROUND, 0, 0x1D4EA, -1, 0, 0, 0, 0, 0
+                    );
                     short command_index = 1;
                     if (movable) {
-                        this->set_button(this->button_cmd_pic, 1, 0x0C, 0x17, 0, 0x1D4EB, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 1, 0x0C, TRIBE_UI_COMMAND_ATTACK_GROUND, 0, 0x1D4EB, -1, 0, 0, 0, 0, 0
+                        );
                         command_index = 2;
                     }
                     if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, command_index, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, command_index, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0
+                        );
                     }
 
                     if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 7, TRIBE_UI_COMMAND_GROUP, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0
+                        );
+                        this->set_button(
+                            this->button_cmd_pic, 7, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
-                    final_type = 6;
+                    final_type = TRIBE_UI_COMMAND_UNSELECT;
                     set_final_button = 1;
                     continue_setup = 0;
                 } else if (level == 6) {
-                    this->set_button(this->button_cmd_pic, 0, 0x0D, 0x1C, 0, 0x1D4F1, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 1, 0x0E, 0x1D, 0, 0x1D4F2, -1, 0, 0, 0, 0, 0);
+                    this->set_button(
+                        this->button_cmd_pic, 0, 0x0D, TRIBE_UI_COMMAND_HEAL, 0, 0x1D4F1, -1, 0, 0, 0, 0, 0
+                    );
+                    this->set_button(
+                        this->button_cmd_pic, 1, 0x0E, TRIBE_UI_COMMAND_CONVERT, 0, 0x1D4F2, -1, 0, 0, 0, 0, 0
+                    );
                     if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, 2, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 2, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0
+                        );
                     }
 
                     if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
                         this->set_button(
-                            this->button_cmd_pic, 7, 8, 9, 0, STRING_ID_HELP_UNGROUP_BUTTON, -1, 0, 0, 0, 0, 0
+                            this->button_cmd_pic, 6, 7, TRIBE_UI_COMMAND_GROUP, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0
+                        );
+                        this->set_button(
+                            this->button_cmd_pic, 7, 8, TRIBE_UI_COMMAND_UNGROUP, 0, STRING_ID_HELP_UNGROUP_BUTTON, -1,
+                            0, 0, 0, 0, 0
                         );
                     } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
-                    final_type = 6;
+                    final_type = TRIBE_UI_COMMAND_UNSELECT;
                     set_final_button = 1;
                     continue_setup = 0;
                 } else if (level == 7) {
@@ -2633,7 +2677,9 @@ void TRIBE_Screen_Game::setup_buttons() {
                         if (object != 0) {
                             ++selected;
                             if (object->objects->number_of_objects > 0) {
-                                this->set_button(this->button_cmd_pic, 0, 5, 7, 0, 0x1D4E9, -1, 0, 0, 0, 0, 0);
+                                this->set_button(
+                                    this->button_cmd_pic, 0, 5, TRIBE_UI_COMMAND_UNLOAD, 0, 0x1D4E9, -1, 0, 0, 0, 0, 0
+                                );
                                 found = 1;
                                 break;
                             }
@@ -2642,35 +2688,60 @@ void TRIBE_Screen_Game::setup_buttons() {
                     }
 
                     if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, found, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, found, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 7, TRIBE_UI_COMMAND_GROUP, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0
+                        );
+                        this->set_button(
+                            this->button_cmd_pic, 7, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
-                    final_type = 6;
+                    final_type = TRIBE_UI_COMMAND_UNSELECT;
                     set_final_button = 1;
                     continue_setup = 0;
                 } else if (level == 5) {
-                    this->set_button(this->button_tech_pic, 1, 0x57, 0x19, 0, 0x1A25C, 0x265AF, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_tech_pic, 2, 0x56, 0x1A, 0, 0x1A25D, 0x265AF, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_tech_pic, 3, 0x58, 0x1B, 0, 0x1A25E, 0x265AF, 0, 0, 0, 0, 0);
+                    this->set_button(
+                        this->button_tech_pic, 1, 0x57, TRIBE_UI_COMMAND_TRADE_FOOD_FOR_GOLD, 0, 0x1A25C, 0x265AF, 0, 0,
+                        0, 0, 0
+                    );
+                    this->set_button(
+                        this->button_tech_pic, 2, 0x56, TRIBE_UI_COMMAND_TRADE_WOOD_FOR_GOLD, 0, 0x1A25D, 0x265AF, 0, 0,
+                        0, 0, 0
+                    );
+                    this->set_button(
+                        this->button_tech_pic, 3, 0x58, TRIBE_UI_COMMAND_TRADE_STONE_FOR_GOLD, 0, 0x1A25E, 0x265AF, 0,
+                        0, 0, 0, 0
+                    );
                     if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 0, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 7, TRIBE_UI_COMMAND_GROUP, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0
+                        );
+                        this->set_button(
+                            this->button_cmd_pic, 7, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
-                    final_type = 6;
+                    final_type = TRIBE_UI_COMMAND_UNSELECT;
                     set_final_button = 1;
                     continue_setup = 0;
                 } else if ((level == 2) && (this->game_obj->master_obj->master_type == 'P')) {
@@ -2686,24 +2757,29 @@ void TRIBE_Screen_Game::setup_buttons() {
 
                     unsigned char object_state = building->object_state;
                     if (object_state < RGE_OBJECT_STATE_ACTIVE) {
-                        this->set_button(this->button_cmd_pic, 0, 3, 0x14, 0, 0x1D4E5, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 0, 3, TRIBE_UI_COMMAND_CANCEL_CONSTRUCTION, 0, 0x1D4E5, -1, 0, 0, 0,
+                            0, 0
+                        );
                         final_pic = this->more_cancel_pic;
                         final_frame = this->unselect_frame;
-                        final_type = 6;
+                        final_type = TRIBE_UI_COMMAND_UNSELECT;
                         set_final_button = 1;
                         continue_setup = 0;
                     } else if (object_state > RGE_OBJECT_STATE_ACTIVE) {
                         final_pic = this->more_cancel_pic;
                         final_frame = this->unselect_frame;
-                        final_type = 6;
+                        final_type = TRIBE_UI_COMMAND_UNSELECT;
                         set_final_button = 1;
                         continue_setup = 0;
                     } else if ((object_state == RGE_OBJECT_STATE_ACTIVE)
                                && ((work_type == 0x67) || ((work_type == 0x66) && (production_queues_is_use == 0)))) {
-                        this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 0, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0
+                        );
                         final_pic = this->more_cancel_pic;
                         final_frame = this->unselect_frame;
-                        final_type = 6;
+                        final_type = TRIBE_UI_COMMAND_UNSELECT;
                         set_final_button = 1;
                         continue_setup = 0;
                     } else if ((object_state == RGE_OBJECT_STATE_ACTIVE)
@@ -2716,7 +2792,9 @@ void TRIBE_Screen_Game::setup_buttons() {
 
                         bool queue_active = (production_queues_is_use != 0) && (building->production_queue_count > 0);
                         if (queue_active) {
-                            this->set_button(this->button_cmd_pic, 6, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                            this->set_button(
+                                this->button_cmd_pic, 6, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0
+                            );
                         }
 
                         for (short make_index = 0; make_index < make_cnt; ++make_index) {
@@ -2742,7 +2820,8 @@ void TRIBE_Screen_Game::setup_buttons() {
                             if ((!queue_active) || (queued > 0)) {
                                 rge_base_game->get_string(master->string_id, name + 4, 512);
                                 this->calc_text_msg(
-                                    msg_str + 4, &this->make_list[make_index], 0x12, master->string_id2
+                                    msg_str + 4, &this->make_list[make_index], TRIBE_UI_COMMAND_TRAIN,
+                                    master->string_id2
                                 );
                                 //! @bug Slot writes run with no collision check, and two location ranges map to one slot.
                                 //! When a player owns both fire galley and catapult trireme, one icon overwrites the other.
@@ -2750,7 +2829,7 @@ void TRIBE_Screen_Game::setup_buttons() {
                                 short button = this->calc_button_loc(master->button_location);
                                 Item_Avail* item = &this->make_list[make_index];
                                 this->set_button(
-                                    this->button_unit_pic, button, item->pict, 0x12, item->id,
+                                    this->button_unit_pic, button, item->pict, TRIBE_UI_COMMAND_TRAIN, item->id,
                                     master->string_id2 + 100000, item->help_page_id, master->hotkey_id,
                                     player->color_table->table, name + 4, msg_str + 4, 0
                                 );
@@ -2810,7 +2889,9 @@ void TRIBE_Screen_Game::setup_buttons() {
                                 short string_id = player->tech_tree->get_string_id(item_id);
                                 rge_base_game->get_string(string_id, name + 4, 512);
                                 short string_id2 = player->tech_tree->get_string_id2(this->tech_list[tech_index].id);
-                                this->calc_text_msg(msg_str + 4, &this->tech_list[tech_index], 0x11, string_id2);
+                                this->calc_text_msg(
+                                    msg_str + 4, &this->tech_list[tech_index], TRIBE_UI_COMMAND_RESEARCH, string_id2
+                                );
                                 unsigned char btn_loc =
                                     player->tech_tree->get_button_location(this->tech_list[tech_index].id);
                                 short button = this->calc_button_loc(btn_loc);
@@ -2818,25 +2899,32 @@ void TRIBE_Screen_Game::setup_buttons() {
                                 unsigned char* color_table = player->color_table->table;
                                 long hotkey = player->tech_tree->get_hotkey(item->id);
                                 this->set_button(
-                                    this->button_tech_pic, button, item->pict, 0x11, item->id, item->help_string_id,
-                                    item->help_page_id, hotkey, color_table, name + 4, msg_str + 4, make_disabled
+                                    this->button_tech_pic, button, item->pict, TRIBE_UI_COMMAND_RESEARCH, item->id,
+                                    item->help_string_id, item->help_page_id, hotkey, color_table, name + 4,
+                                    msg_str + 4, make_disabled
                                 );
                             }
 
                             if ((make_cnt == 0) && (tech_cnt == 0)) {
                                 if (player->sel_count > 1) {
-                                    this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
                                     this->set_button(
-                                        this->button_cmd_pic, 7, 8, 9, 0, STRING_ID_HELP_UNGROUP_BUTTON, -1, 0, 0, 0, 0,
+                                        this->button_cmd_pic, 6, 7, TRIBE_UI_COMMAND_GROUP, 0, 0x1D4E1, -1, 0, 0, 0, 0,
                                         0
                                     );
+                                    this->set_button(
+                                        this->button_cmd_pic, 7, 8, TRIBE_UI_COMMAND_UNGROUP, 0,
+                                        STRING_ID_HELP_UNGROUP_BUTTON, -1, 0, 0, 0, 0, 0
+                                    );
                                 } else if (this->game_obj->selected_group != 0) {
-                                    this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                                    this->set_button(
+                                        this->button_cmd_pic, 6, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0,
+                                        0, 0
+                                    );
                                 }
                             }
                             final_pic = this->more_cancel_pic;
                             final_frame = this->unselect_frame;
-                            final_type = 6;
+                            final_type = TRIBE_UI_COMMAND_UNSELECT;
                             set_final_button = 1;
                             continue_setup = 0;
                         }
@@ -2872,45 +2960,59 @@ void TRIBE_Screen_Game::setup_buttons() {
                     if (special_known) {
                         group = player->is_group_selected(4);
                         if (group != 0) {
-                            this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
+                            this->set_button(
+                                this->button_cmd_pic, 0, 2, TRIBE_UI_COMMAND_BUILD, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0
+                            );
                         }
                         if (have_action) {
-                            this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                            this->set_button(
+                                this->button_cmd_pic, group != 0, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0,
+                                0
+                            );
                         }
                     } else {
                         group = player->is_group_selected(4);
                         if (group != 0) {
-                            this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
+                            this->set_button(
+                                this->button_cmd_pic, 0, 2, TRIBE_UI_COMMAND_BUILD, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0
+                            );
                         }
                         if (this->any_selected_have_action()) {
-                            this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                            this->set_button(
+                                this->button_cmd_pic, group != 0, 3, TRIBE_UI_COMMAND_STOP, 0, 0x1D4DD, -1, 0, 0, 0, 0,
+                                0
+                            );
                         }
                     }
                     if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
                         this->set_button(
-                            this->button_cmd_pic, 7, 8, 9, 0, special_known ? 0x1D4E3 : STRING_ID_HELP_UNGROUP_BUTTON,
-                            -1, 0, 0, 0, 0, 0
+                            this->button_cmd_pic, 6, 7, TRIBE_UI_COMMAND_GROUP, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0
+                        );
+                        this->set_button(
+                            this->button_cmd_pic, 7, 8, TRIBE_UI_COMMAND_UNGROUP, 0,
+                            special_known ? 0x1D4E3 : STRING_ID_HELP_UNGROUP_BUTTON, -1, 0, 0, 0, 0, 0
                         );
                     } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                        this->set_button(
+                            this->button_cmd_pic, 6, 8, TRIBE_UI_COMMAND_UNGROUP, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0
+                        );
                     }
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
-                    final_type = special_known ? 6 : 0x0B;
+                    final_type = special_known ? TRIBE_UI_COMMAND_UNSELECT : TRIBE_UI_COMMAND_CANCEL;
                     set_final_button = 1;
                 }
             } else {
                 final_pic = this->more_cancel_pic;
                 final_frame = this->unselect_frame;
-                final_type = 6;
+                final_type = TRIBE_UI_COMMAND_UNSELECT;
                 set_final_button = 1;
             }
 
         } else {
             final_pic = this->more_cancel_pic;
             final_frame = this->cancel_frame;
-            final_type = 0x0B;
+            final_type = TRIBE_UI_COMMAND_CANCEL;
             set_final_button = 1;
         }
 
@@ -3029,53 +3131,53 @@ void TRIBE_Screen_Game::set_button(
             button_panel->set_text_msg(text1);
         }
 
-        if (id == 0x11) {
+        if (id == TRIBE_UI_COMMAND_RESEARCH) {
             button_panel->border_frame = 2;
         } else {
             button_panel->border_frame = 0;
         }
 
         switch (id) {
-            case 3:
+            case TRIBE_UI_COMMAND_BUILD:
                 hotkey = STRING_ID_HOTKEY_BUILD;
                 break;
-            case 5:
+            case TRIBE_UI_COMMAND_STOP:
                 hotkey = STRING_ID_HOTKEY_STOP;
                 break;
-            case 8:
+            case TRIBE_UI_COMMAND_GROUP:
                 hotkey = STRING_ID_HOTKEY_GROUP;
                 break;
-            case 9:
+            case TRIBE_UI_COMMAND_UNGROUP:
                 hotkey = STRING_ID_HOTKEY_UNGROUP;
                 break;
-            case 0x0C:
+            case TRIBE_UI_COMMAND_MORE:
                 hotkey = STRING_ID_HOTKEY_MORE;
                 break;
-            case 0x16:
+            case TRIBE_UI_COMMAND_STAND_GROUND:
                 hotkey = STRING_ID_HOTKEY_STAND_GROUND;
                 break;
-            case 0x17:
+            case TRIBE_UI_COMMAND_ATTACK_GROUND:
                 hotkey = STRING_ID_HOTKEY_ATTACK_GROUND;
                 break;
-            case 0x1C:
+            case TRIBE_UI_COMMAND_HEAL:
                 hotkey = STRING_ID_HOTKEY_HEAL;
                 break;
-            case 0x1D:
+            case TRIBE_UI_COMMAND_CONVERT:
                 hotkey = STRING_ID_HOTKEY_CONVERT;
                 break;
-            case 1:
+            case TRIBE_UI_COMMAND_WORK:
                 hotkey = STRING_ID_HOTKEY_WORK;
                 break;
-            case 2:
+            case TRIBE_UI_COMMAND_MOVE:
                 hotkey = STRING_ID_HOTKEY_MOVE;
                 break;
-            case 0x1E:
+            case TRIBE_UI_COMMAND_ATTACK:
                 hotkey = STRING_ID_HOTKEY_ATTACK;
                 break;
-            case 0x1F:
+            case TRIBE_UI_COMMAND_REPAIR:
                 hotkey = STRING_ID_HOTKEY_REPAIR;
                 break;
-            case 7:
+            case TRIBE_UI_COMMAND_UNLOAD:
                 hotkey = STRING_ID_HOTKEY_UNLOAD;
                 break;
         }
@@ -3083,7 +3185,7 @@ void TRIBE_Screen_Game::set_button(
         if (hotkey != 0) {
             hotkey = static_cast<int>(*this->get_string(hotkey));
         }
-        if (id == 6 || id == 0x0B) {
+        if (id == TRIBE_UI_COMMAND_UNSELECT || id == TRIBE_UI_COMMAND_CANCEL) {
             hotkey = VK_ESCAPE;
         }
 

@@ -45,6 +45,42 @@ struct RGE_Prog_Info;
 #define TRIBE_VICTORY_TYPE_DISCOVERIES 5
 #define TRIBE_VICTORY_TYPE_GOLD        6
 
+// Game-button command IDs also select RGE_STRING_TYPE_COMMAND text.
+// These cleanup names are not button notifications or network command IDs.
+#define TRIBE_UI_COMMAND_WORK                 1
+#define TRIBE_UI_COMMAND_MOVE                 2
+#define TRIBE_UI_COMMAND_BUILD                3
+#define TRIBE_UI_COMMAND_TRADE                4
+#define TRIBE_UI_COMMAND_STOP                 5
+#define TRIBE_UI_COMMAND_UNSELECT             6
+#define TRIBE_UI_COMMAND_UNLOAD               7
+#define TRIBE_UI_COMMAND_GROUP                8
+#define TRIBE_UI_COMMAND_UNGROUP              9
+#define TRIBE_UI_COMMAND_FORMATION            0x0A
+#define TRIBE_UI_COMMAND_CANCEL               0x0B
+#define TRIBE_UI_COMMAND_MORE                 0x0C
+#define TRIBE_UI_COMMAND_CHAT                 0x0D
+#define TRIBE_UI_COMMAND_DIPLOMACY            0x0E
+#define TRIBE_UI_COMMAND_MENU                 0x0F
+#define TRIBE_UI_COMMAND_TRADE_WITH           0x10
+#define TRIBE_UI_COMMAND_RESEARCH             0x11
+#define TRIBE_UI_COMMAND_TRAIN                0x12
+#define TRIBE_UI_COMMAND_PLACE_BUILDING       0x13
+#define TRIBE_UI_COMMAND_CANCEL_CONSTRUCTION  0x14
+#define TRIBE_UI_COMMAND_HELP                 0x15
+#define TRIBE_UI_COMMAND_STAND_GROUND         0x16
+#define TRIBE_UI_COMMAND_ATTACK_GROUND        0x17
+#define TRIBE_UI_COMMAND_SCORE                0x18
+#define TRIBE_UI_COMMAND_TRADE_FOOD_FOR_GOLD   0x19
+#define TRIBE_UI_COMMAND_TRADE_WOOD_FOR_GOLD   0x1A
+#define TRIBE_UI_COMMAND_TRADE_STONE_FOR_GOLD  0x1B
+#define TRIBE_UI_COMMAND_HEAL                 0x1C
+#define TRIBE_UI_COMMAND_CONVERT              0x1D
+#define TRIBE_UI_COMMAND_ATTACK               0x1E
+#define TRIBE_UI_COMMAND_REPAIR               0x1F
+#define TRIBE_UI_COMMAND_INCREMENT_QUEUE      0x20
+#define TRIBE_UI_COMMAND_DECREMENT_QUEUE      0x21
+
 struct MouseClickInfo {
     int object_group;
     int self_action;

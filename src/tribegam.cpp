@@ -852,69 +852,69 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
             break;
         case RGE_STRING_TYPE_COMMAND:
             switch (id) {
-                case 1:
+                case TRIBE_UI_COMMAND_WORK:
                     return this->get_string(STRING_ID_COMMAND_WORK, str, max_len);
-                case 2:
+                case TRIBE_UI_COMMAND_MOVE:
                     return this->get_string(STRING_ID_COMMAND_MOVE, str, max_len);
-                case 3:
+                case TRIBE_UI_COMMAND_BUILD:
                     return this->get_string(STRING_ID_COMMAND_BUILD, str, max_len);
-                case 4:
+                case TRIBE_UI_COMMAND_TRADE:
                     return this->get_string(STRING_ID_COMMAND_TRADE, str, max_len);
-                case 5:
+                case TRIBE_UI_COMMAND_STOP:
                     return this->get_string(STRING_ID_COMMAND_STOP, str, max_len);
-                case 6:
+                case TRIBE_UI_COMMAND_UNSELECT:
                     return this->get_string(STRING_ID_COMMAND_UNSELECT, str, max_len);
-                case 7:
+                case TRIBE_UI_COMMAND_UNLOAD:
                     return this->get_string(STRING_ID_COMMAND_UNLOAD, str, max_len);
-                case 8:
+                case TRIBE_UI_COMMAND_GROUP:
                     return this->get_string(STRING_ID_COMMAND_GROUP, str, max_len);
-                case 9:
+                case TRIBE_UI_COMMAND_UNGROUP:
                     return this->get_string(STRING_ID_COMMAND_UNGROUP, str, max_len);
-                case 10:
+                case TRIBE_UI_COMMAND_FORMATION:
                     return this->get_string(STRING_ID_COMMAND_FORMATION, str, max_len);
-                case 11:
+                case TRIBE_UI_COMMAND_CANCEL:
                     return this->get_string(STRING_ID_COMMAND_CANCEL, str, max_len);
-                case 12:
+                case TRIBE_UI_COMMAND_MORE:
                     return this->get_string(STRING_ID_COMMAND_NEXT, str, max_len);
-                case 13:
+                case TRIBE_UI_COMMAND_CHAT:
                     return this->get_string(STRING_ID_COMMAND_CHAT, str, max_len);
-                case 14:
+                case TRIBE_UI_COMMAND_DIPLOMACY:
                     return this->get_string(STRING_ID_COMMAND_DIPLOMACY, str, max_len);
-                case 15:
+                case TRIBE_UI_COMMAND_MENU:
                     return this->get_string(STRING_ID_COMMAND_MENU, str, max_len);
-                case 16:
+                case TRIBE_UI_COMMAND_TRADE_WITH:
                     return this->get_string(STRING_ID_COMMAND_TRADE_WITH, str, max_len);
-                case 17:
+                case TRIBE_UI_COMMAND_RESEARCH:
                     return this->get_string(STRING_ID_COMMAND_RESEARCH, str, max_len);
-                case 18:
+                case TRIBE_UI_COMMAND_TRAIN:
                     return this->get_string(STRING_ID_COMMAND_CREATE, str, max_len);
-                case 19:
+                case TRIBE_UI_COMMAND_PLACE_BUILDING:
                     return this->get_string(STRING_ID_COMMAND_BUILD_ALT, str, max_len);
-                case 20:
+                case TRIBE_UI_COMMAND_CANCEL_CONSTRUCTION:
                     return this->get_string(STRING_ID_COMMAND_CANCEL_CONSTRUCTION, str, max_len);
-                case 21:
+                case TRIBE_UI_COMMAND_HELP:
                     return this->get_string(STRING_ID_COMMAND_HELP, str, max_len);
-                case 22:
+                case TRIBE_UI_COMMAND_STAND_GROUND:
                     return this->get_string(STRING_ID_COMMAND_STAND_GROUND, str, max_len);
-                case 23:
+                case TRIBE_UI_COMMAND_ATTACK_GROUND:
                     return this->get_string(STRING_ID_COMMAND_ATTACK_GROUND, str, max_len);
-                case 0x1C:
+                case TRIBE_UI_COMMAND_HEAL:
                     return this->get_string(STRING_ID_COMMAND_HEAL, str, max_len);
-                case 0x1D:
+                case TRIBE_UI_COMMAND_CONVERT:
                     return this->get_string(STRING_ID_COMMAND_CONVERT, str, max_len);
-                case 0x1E:
+                case TRIBE_UI_COMMAND_ATTACK:
                     return this->get_string(STRING_ID_COMMAND_ATTACK, str, max_len);
-                case 0x1F:
+                case TRIBE_UI_COMMAND_REPAIR:
                     return this->get_string(STRING_ID_COMMAND_REPAIR, str, max_len);
-                case 0x19:
+                case TRIBE_UI_COMMAND_TRADE_FOOD_FOR_GOLD:
                     return this->get_string(STRING_ID_COMMAND_TRADE_FOOD_FOR_GOLD, str, max_len);
-                case 0x1A:
+                case TRIBE_UI_COMMAND_TRADE_WOOD_FOR_GOLD:
                     return this->get_string(STRING_ID_COMMAND_TRADE_WOOD_FOR_GOLD, str, max_len);
-                case 0x1B:
+                case TRIBE_UI_COMMAND_TRADE_STONE_FOR_GOLD:
                     return this->get_string(STRING_ID_COMMAND_TRADE_STONE_FOR_GOLD, str, max_len);
-                case 0x20:
+                case TRIBE_UI_COMMAND_INCREMENT_QUEUE:
                     return this->get_string(STRING_ID_COMMAND_INCREMENT_QUEUE, str, max_len);
-                case 0x21:
+                case TRIBE_UI_COMMAND_DECREMENT_QUEUE:
                     return this->get_string(STRING_ID_COMMAND_DECREMENT_QUEUE, str, max_len);
             }
             break;
