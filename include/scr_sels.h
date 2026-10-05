@@ -12,7 +12,7 @@ class TScrollBarPanel;
 class TButtonPanel;
 
 class TribeSelectScenarioScreen : public TScreenPanel {
-public:
+  public:
     TTextPanel* title;
     TTextPanel* scenarioTitle;
     TTextPanel* scenarioPlayersTitle;
@@ -42,7 +42,7 @@ public:
     virtual ~TribeSelectScenarioScreen();
     virtual long handle_idle();
 
-protected:
+  protected:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     void init_vars();
     void fillScenarios();
@@ -52,7 +52,6 @@ protected:
     void activatePanels();
 };
 
-typedef char scr_sels_screen_size_check[
-    (sizeof(TribeSelectScenarioScreen) == 0x4D8) ? 1 : -1];
+typedef char scr_sels_screen_size_check[(sizeof(TribeSelectScenarioScreen) == 0x4D8) ? 1 : -1];
 
 #endif

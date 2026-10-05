@@ -2,7 +2,7 @@
 #define AOE1_POINT_H
 
 class XYZ {
-public:
+  public:
     int xValue;
     int yValue;
     int zValue;
@@ -10,8 +10,7 @@ public:
     XYZ();
     XYZ(int a, int b, int c);
 
-    void rotateXYByFacet(const XYZ& refPoint, XYZ& rPoint,
-                         unsigned char facet);
+    void rotateXYByFacet(const XYZ& refPoint, XYZ& rPoint, unsigned char facet);
 
     XYZ& operator=(const XYZ& p);
     XYZ operator+(const XYZ& p) const;

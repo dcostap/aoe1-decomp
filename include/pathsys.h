@@ -8,7 +8,6 @@ class RGE_Game_World;
 class RGE_Map;
 class RGE_Moving_Object;
 
-
 typedef unsigned char uchar;
 typedef unsigned int uint;
 
@@ -21,15 +20,13 @@ struct PathTileWork {
     XYPoint copied;
 };
 
-typedef char pathsys_tile_work_size_check[
-    (sizeof(PathTileWork) == 0x18) ? 1 : -1];
-typedef char pathsys_managed_array_size_check[
-    (sizeof(ManagedArray<int>) == 0x10) ? 1 : -1];
+typedef char pathsys_tile_work_size_check[(sizeof(PathTileWork) == 0x18) ? 1 : -1];
+typedef char pathsys_managed_array_size_check[(sizeof(ManagedArray<int>) == 0x10) ? 1 : -1];
 
 class PathingSystem {
-public:
+  public:
     class MGP_FloatHeap {
-    public:
+      public:
         uchar x;
         uchar y;
         unsigned short next;
@@ -96,26 +93,27 @@ public:
     unsigned char obstruction(int x, int y);
     void incrementObstruction(int x, int y);
     void decrementObstruction(int x, int y);
-    int findTilePath(int startX, int startY, int goalX, int goalY, RGE_Moving_Object* unit,
-                     float actionRange, int cTargetID, int copyPathWhenDone, float* pathLength,
-                     int checkPathingIterations, int checkTerrainFirstTime, int checkCollisions,
-                     int stepSize, int unobstructiblePlayerID, int unobstructibleGroupID);
+    int findTilePath(
+        int startX, int startY, int goalX, int goalY, RGE_Moving_Object* unit, float actionRange, int cTargetID,
+        int copyPathWhenDone, float* pathLength, int checkPathingIterations, int checkTerrainFirstTime,
+        int checkCollisions, int stepSize, int unobstructiblePlayerID, int unobstructibleGroupID
+    );
     void incrementInitialPaths();
     void incrementContinuePaths();
     void incrementCanPaths();
     int passable(RGE_Moving_Object* obj, float newX, float newY, int checkTerrain);
     long checksum(void);
-protected:
+
+  protected:
     void printState(RGE_Moving_Object* unit);
     int copyPath(int stepSize);
-public:
+
+  public:
     void copyUnobstructibles(ManagedArray<int>& d);
     void printToFile(char* filename);
 };
 
-typedef char pathsys_size_check[
-    (sizeof(PathingSystem) == 0x11DCF8) ? 1 : -1];
-typedef char pathsys_mgp_float_heap_size_check[
-    (sizeof(PathingSystem::MGP_FloatHeap) == 0x08) ? 1 : -1];
+typedef char pathsys_size_check[(sizeof(PathingSystem) == 0x11DCF8) ? 1 : -1];
+typedef char pathsys_mgp_float_heap_size_check[(sizeof(PathingSystem::MGP_FloatHeap) == 0x08) ? 1 : -1];
 
 #endif

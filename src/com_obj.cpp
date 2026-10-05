@@ -23,16 +23,16 @@
 
 int __cdecl debug_rand(char*, int);
 
-
-RGE_Combat_Object::RGE_Combat_Object(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup)
-    : RGE_Action_Object(tobj, obj_owner, x, y, z, 0) {
+RGE_Combat_Object::RGE_Combat_Object(
+    RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup
+) : RGE_Action_Object(tobj, obj_owner, x, y, z, 0) {
     if (do_setup != 0) {
         setup(tobj, obj_owner, x, y, z);
     }
 }
 
-RGE_Combat_Object::RGE_Combat_Object(int infile, RGE_Game_World* gworld, int do_setup)
-    : RGE_Action_Object(infile, gworld, 0) {
+RGE_Combat_Object::RGE_Combat_Object(int infile, RGE_Game_World* gworld, int do_setup) :
+    RGE_Action_Object(infile, gworld, 0) {
     if (do_setup != 0) {
         setup(infile, gworld);
     }
@@ -40,11 +40,15 @@ RGE_Combat_Object::RGE_Combat_Object(int infile, RGE_Game_World* gworld, int do_
 
 RGE_Combat_Object::~RGE_Combat_Object() {
     if (id >= 0) {
-        VisibleUnitManager->Update_Unit_Info(id, owner->id, (int)world_x, (int)world_y, master_obj->object_group, Unified_Map_Value, 0, VUR_Ptrs);
+        VisibleUnitManager->Update_Unit_Info(
+            id, owner->id, (int) world_x, (int) world_y, master_obj->object_group, Unified_Map_Value, 0, VUR_Ptrs
+        );
     }
 }
 
-void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z) {
+void RGE_Combat_Object::recycle_in_to_game(
+    RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z
+) {
     int i;
     float attack_timer_local;
     RGE_Master_Combat_Object* combat_master;
@@ -113,61 +117,76 @@ float RGE_Combat_Object::calc_attack_modifier(RGE_Static_Object* target) {
     return 1.0f;
 }
 
-unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignore_object) {
+unsigned char RGE_Combat_Object::area_attack(
+    float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignore_object
+) {
     float attack_modifier;
     RGE_Map* map = this->owner->world->map;
-    float radius =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_range;
-    short maxx = (short)(map->map_width - 1);
-    short maxy = (short)(map->map_height - 1);
+    float radius = static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_range;
+    short maxx = (short) (map->map_width - 1);
+    short maxy = (short) (map->map_height - 1);
     float r2 = radius * radius;
     //! This early-out also tests blast radius where blast level is the criterion.
-    if (!(radius > g_combat_area_zero_range)) return 0;
+    if (!(radius > g_combat_area_zero_range))
+        return 0;
 
     short x0;
-    x0 = (short)((long)(x - radius));
+    x0 = (short) ((long) (x - radius));
     x0 = x0 - 2;
     short x1;
-    x1 = (short)((long)(x + radius));
+    x1 = (short) ((long) (x + radius));
     x1 = x1 + 2;
     short y0;
-    y0 = (short)((long)(y - radius));
+    y0 = (short) ((long) (y - radius));
     y0 = y0 - 2;
     short y1;
-    y1 = (short)((long)(y + radius));
+    y1 = (short) ((long) (y + radius));
     y1 = y1 + 2;
-    if (x0 < 0) x0 = 0;
-    if (x1 > maxx + 1) x1 = maxx + 1;
-    if (y0 < 0) y0 = 0;
-    if (y1 > maxy + 1) y1 = maxy + 1;
+    if (x0 < 0)
+        x0 = 0;
+    if (x1 > maxx + 1)
+        x1 = maxx + 1;
+    if (y0 < 0)
+        y0 = 0;
+    if (y1 > maxy + 1)
+        y1 = maxy + 1;
 
     for (short yy = y0; yy < y1; yy++) {
         for (short xx = x0; xx < x1; xx++) {
             RGE_Object_Node* link = map->map_row_offset[yy][xx].objects.list;
             while (link != 0) {
-                RGE_Combat_Object* obj =
-                    static_cast<RGE_Combat_Object*>(link->node);
-                if (obj != this && obj->master_obj->area_effect_object_level >=
-                    static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_level &&
-                    obj != static_cast<RGE_Combat_Object*>(ignore_object)) {
+                RGE_Combat_Object* obj = static_cast<RGE_Combat_Object*>(link->node);
+                if (obj != this
+                    && obj->master_obj->area_effect_object_level
+                           >= static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_level
+                    && obj != static_cast<RGE_Combat_Object*>(ignore_object)) {
                     float dx = obj->world_x - x;
                     float dy = obj->world_y - y;
-                    if (dx < g_combat_area_zero_float) dx = -dx;
-                    if (dy < g_combat_area_zero_float) dy = -dy;
+                    if (dx < g_combat_area_zero_float)
+                        dx = -dx;
+                    if (dy < g_combat_area_zero_float)
+                        dy = -dy;
                     float radius_x = obj->master_obj->radius_x;
                     float radius_y = obj->master_obj->radius_y;
-                    if (dx > radius_x) dx -= radius_x;
-                    else dx = g_combat_area_zero_float;
-                    if (dy > radius_y) dy -= radius_y;
-                    else dy = g_combat_area_zero_float;
+                    if (dx > radius_x)
+                        dx -= radius_x;
+                    else
+                        dx = g_combat_area_zero_float;
+                    if (dy > radius_y)
+                        dy -= radius_y;
+                    else
+                        dy = g_combat_area_zero_float;
                     if (r2 > dx * dx + dy * dy) {
                         int rnd = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 250) * 100;
                         int chance = rnd / 0x7fff;
-                        if ((short)chance <= static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
+                        if ((short) chance
+                            <= static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
                             attack_modifier = this->calc_attack_modifier(obj);
-                            obj->damage((int)static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_num,
-                                        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon,
-                                        attack_modifier, this->owner, attacker);
+                            obj->damage(
+                                (int) static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_num,
+                                static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon, attack_modifier,
+                                this->owner, attacker
+                            );
                         }
                     }
                 }
@@ -178,8 +197,7 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
     return 1;
 }
 
-unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target,
-                                        RGE_Combat_Object* attacker) {
+unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Object* attacker) {
     float c;
     float s;
     float rangeDistance;
@@ -188,32 +206,31 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target,
         return 0;
     }
 
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    RGE_Master_Combat_Object* combat_master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     short missile_id = combat_master->missile_id;
     if (missile_id >= 0) {
         float radius_y = combat_master->radius_y;
         float radius_x = combat_master->radius_x;
-        rangeDistance =
-            (float)sqrt(radius_x * radius_x + radius_y * radius_y) +
-            combat_master->weapon_range - g_combat_missile_range_adjustment;
+        rangeDistance = (float) sqrt(radius_x * radius_x + radius_y * radius_y) + combat_master->weapon_range
+                        - g_combat_missile_range_adjustment;
         float angle1 = this->angle;
         float angle2 = this->angle;
-        c = (float)cos(angle1);
+        c = (float) cos(angle1);
         RGE_Player* owner = this->owner;
         RGE_Master_Static_Object* entry = owner->master_objects[missile_id];
-        s = (float)sin(angle2);
+        s = (float) sin(angle2);
 
-        RGE_Missile_Object* missile =
-            (RGE_Missile_Object*)entry->make_new_obj(owner, this->world_x + c * combat_master->weapon_offset_y -
-                                                     s * combat_master->weapon_offset_x, this->world_y + s * combat_master->weapon_offset_y +
-                                                     c * combat_master->weapon_offset_x, this->world_z + combat_master->weapon_offset_z);
+        RGE_Missile_Object* missile = (RGE_Missile_Object*) entry->make_new_obj(
+            owner, this->world_x + c * combat_master->weapon_offset_y - s * combat_master->weapon_offset_x,
+            this->world_y + s * combat_master->weapon_offset_y + c * combat_master->weapon_offset_x,
+            this->world_z + combat_master->weapon_offset_z
+        );
         missile->init_missile(attacker, target, rangeDistance);
         this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, target->id, 0);
 
-        if (static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->weapon_range > g_combat_attack_modifier_one &&
-            target->owner->computerPlayer() == 1) {
-            target->notify(this->id, target->id, 0x20F, this->id, (long)target->hp, target->master_obj->hp);
+        if (static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_range > g_combat_attack_modifier_one
+            && target->owner->computerPlayer() == 1) {
+            target->notify(this->id, target->id, 0x20F, this->id, (long) target->hp, target->master_obj->hp);
         }
     } else {
         this->do_attack(target, attacker, this->world_x, this->world_y, this->world_z);
@@ -222,32 +239,30 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target,
     return 1;
 }
 
-unsigned char RGE_Combat_Object::attack(float target_x, float target_y, float target_z,
-                                        RGE_Combat_Object* attacker) {
+unsigned char RGE_Combat_Object::attack(float target_x, float target_y, float target_z, RGE_Combat_Object* attacker) {
     float c;
     float s;
     float rangeDistance;
 
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    RGE_Master_Combat_Object* combat_master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     short missile_id = combat_master->missile_id;
     if (missile_id >= 0) {
         float radius_y = combat_master->radius_y;
         float radius_x = combat_master->radius_x;
-        rangeDistance =
-            (float)sqrt(radius_x * radius_x + radius_y * radius_y) +
-            combat_master->weapon_range - g_combat_missile_range_adjustment;
+        rangeDistance = (float) sqrt(radius_x * radius_x + radius_y * radius_y) + combat_master->weapon_range
+                        - g_combat_missile_range_adjustment;
         float angle1 = this->angle;
         float angle2 = this->angle;
-        c = (float)cos(angle1);
+        c = (float) cos(angle1);
         RGE_Player* owner = this->owner;
         RGE_Master_Static_Object* entry = owner->master_objects[missile_id];
-        s = (float)sin(angle2);
+        s = (float) sin(angle2);
 
-        RGE_Missile_Object* missile =
-            (RGE_Missile_Object*)entry->make_new_obj(owner, this->world_x + c * combat_master->weapon_offset_y -
-                                                     s * combat_master->weapon_offset_x, this->world_y + (s * combat_master->weapon_offset_y +
-                c * combat_master->weapon_offset_x), this->world_z + combat_master->weapon_offset_z);
+        RGE_Missile_Object* missile = (RGE_Missile_Object*) entry->make_new_obj(
+            owner, this->world_x + c * combat_master->weapon_offset_y - s * combat_master->weapon_offset_x,
+            this->world_y + (s * combat_master->weapon_offset_y + c * combat_master->weapon_offset_x),
+            this->world_z + combat_master->weapon_offset_z
+        );
         missile->init_missile(attacker, target_x, target_y, target_z, rangeDistance);
         this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, -1, 0);
         return 1;
@@ -255,7 +270,9 @@ unsigned char RGE_Combat_Object::attack(float target_x, float target_y, float ta
     return 0;
 }
 
-unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat_Object* attacker, float x, float y, float z) {
+unsigned char RGE_Combat_Object::do_attack(
+    RGE_Static_Object* target, RGE_Combat_Object* attacker, float x, float y, float z
+) {
     if (target == 0) {
         return 0;
     }
@@ -269,29 +286,34 @@ unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat
     this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, target->id, 0);
     int r = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 379);
     int chance = (r * 100) / 0x7fff;
-    if (chance <= (int)static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
+    if (chance <= (int) static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
         float attack_modifier = this->calc_attack_modifier(target);
-        target->damage((int)static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_num,
-                       static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon, attack_modifier, this->owner,
-                       attacker);
+        target->damage(
+            (int) static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_num,
+            static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon, attack_modifier, this->owner, attacker
+        );
     }
     return 1;
 }
 
-void RGE_Combat_Object::damage(int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player, RGE_Static_Object* attackingObject) {
+void RGE_Combat_Object::damage(
+    int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player,
+    RGE_Static_Object* attackingObject
+) {
     hp -= calculateDamage(weapon_num, damage, attack_modifier, attacking_player, attackingObject);
     if (attackingObject != 0) {
-        notify(attackingObject->id, id, UNIT_AI_NOTIFY_ATTACKED, attackingObject->id, (int)hp, master_obj->hp);
+        notify(attackingObject->id, id, UNIT_AI_NOTIFY_ATTACKED, attackingObject->id, (int) hp, master_obj->hp);
     }
     if (hp < 1.0) {
         hp = 0.0f;
     }
 }
 
-float RGE_Combat_Object::calculateDamage(int weapon_num, RGE_Armor_Weapon_Info* damage,
-                                         float attack_modifier, RGE_Player* attacking_player, RGE_Static_Object* attackingObject) {
-    RGE_Master_Combat_Object* obj =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+float RGE_Combat_Object::calculateDamage(
+    int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player,
+    RGE_Static_Object* attackingObject
+) {
+    RGE_Master_Combat_Object* obj = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     float mult = g_combat_attack_modifier_one;
     short weaponKind = obj->defense_terrain_bonus;
     RGE_Armor_Weapon_Info* armorTbl = obj->armor;
@@ -326,7 +348,7 @@ float RGE_Combat_Object::calculateDamage(int weapon_num, RGE_Armor_Weapon_Info* 
                 } while (n != 0);
             }
 
-            float d = (float)weapon->value - (float)attack;
+            float d = (float) weapon->value - (float) attack;
             float dmg = d * mult * attack_modifier;
 
             if (dmg > g_combat_area_zero_range) {
@@ -349,8 +371,7 @@ unsigned char RGE_Combat_Object::can_attack() {
 }
 
 void RGE_Combat_Object::reset_attack_timer() {
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    RGE_Master_Combat_Object* combat_master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     float timer = combat_master->speed_of_attack;
     this->attack_timer = timer;
 }
@@ -400,7 +421,9 @@ void RGE_Combat_Object::enter_obj(RGE_Static_Object* target) {
     RGE_Static_Object::enter_obj(target);
     if (inside_obj != 0) {
         if (id >= 0) {
-            VisibleUnitManager->Update_Unit_Info(id, owner->id, (int)world_x, (int)world_y, master_obj->object_group, Unified_Map_Value, 0, VUR_Ptrs);
+            VisibleUnitManager->Update_Unit_Info(
+                id, owner->id, (int) world_x, (int) world_y, master_obj->object_group, Unified_Map_Value, 0, VUR_Ptrs
+            );
             Unified_Map_Value = 0;
         }
     }
@@ -410,8 +433,7 @@ unsigned char RGE_Combat_Object::update(void) {
     long sighted_by_player = -1;
 
     if (this->attack_timer > 0.0f) {
-        this->attack_timer = this->attack_timer -
-            this->owner->world->world_time_delta_seconds;
+        this->attack_timer = this->attack_timer - this->owner->world->world_time_delta_seconds;
         if (this->attack_timer < 0.0f) {
             this->attack_timer = 0.0f;
         }
@@ -421,8 +443,8 @@ unsigned char RGE_Combat_Object::update(void) {
 
     int object_id = this->id;
     if (object_id >= 0 && this->inside_obj == 0) {
-        int x = (int)this->world_x;
-        int y = (int)this->world_y;
+        int x = (int) this->world_x;
+        int y = (int) this->world_y;
         unsigned long new_value = unified_map_offsets[y][x];
         unsigned long old_value = this->Unified_Map_Value;
         this->Unified_Map_Value = new_value;
@@ -430,8 +452,10 @@ unsigned char RGE_Combat_Object::update(void) {
         //! A unit that moves under continuous vision keeps its first-seen position in every record.
         //! GetVisibleUnits() then filters by that stale position and drops the unit from AI scans.
         if (new_value != old_value) {
-            VisibleUnitManager->Update_Unit_Info(object_id, (int)this->owner->id, x, y, (int)this->master_obj->object_group,
-                                                 old_value, new_value, this->VUR_Ptrs);
+            VisibleUnitManager->Update_Unit_Info(
+                object_id, (int) this->owner->id, x, y, (int) this->master_obj->object_group, old_value, new_value,
+                this->VUR_Ptrs
+            );
             if (this->capture_flag) {
                 RGE_Game_World* world = this->owner->world;
                 int player = 1;
@@ -465,8 +489,8 @@ unsigned char RGE_Combat_Object::update(void) {
     }
 
     if (this->unitAIValue != 0) {
-        if (this->owner->world->is_player_turn((int)this->owner->id)) {
-            this->unitAIValue->update(this->owner->world->get_accum_time_delta((int)this->owner->id));
+        if (this->owner->world->is_player_turn((int) this->owner->id)) {
+            this->unitAIValue->update(this->owner->world->get_accum_time_delta((int) this->owner->id));
         }
     }
 
@@ -475,10 +499,8 @@ unsigned char RGE_Combat_Object::update(void) {
 
 void RGE_Combat_Object::copy_obj(RGE_Master_Static_Object* source2) {
     RGE_Sprite* sound;
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
-    RGE_Master_Combat_Object* source_master =
-        static_cast<RGE_Master_Combat_Object*>(source2);
+    RGE_Master_Combat_Object* combat_master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    RGE_Master_Combat_Object* source_master = static_cast<RGE_Master_Combat_Object*>(source2);
 
     sound = 0;
     if (sprite == combat_master->fight_sprite) {
@@ -532,18 +554,18 @@ int RGE_Combat_Object::attack(int targetID, int unconditional) {
     }
 
     if (this->master_obj->object_group == OBJECT_GROUP_CIVILIAN) {
-        RGE_Master_Static_Object* transform_master =
-            this->owner->master_objects[0x53];
+        RGE_Master_Static_Object* transform_master = this->owner->master_objects[0x53];
         if (transform_master != 0) {
             this->transform(transform_master);
         }
     }
 
-    RGE_Action_Attack* action = new RGE_Action_Attack(this, target, 0, 0, 0,
-                                                      static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_range,
-                                                      static_cast<RGE_Master_Combat_Object*>(this->master_obj)->minimum_weapon_range,
-                                                      static_cast<RGE_Master_Combat_Object*>(this->master_obj)->missile_id,
-                                                      static_cast<RGE_Master_Combat_Object*>(this->master_obj)->fire_missile_at_frame);
+    RGE_Action_Attack* action = new RGE_Action_Attack(
+        this, target, 0, 0, 0, static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_range,
+        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->minimum_weapon_range,
+        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->missile_id,
+        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->fire_missile_at_frame
+    );
     if (action == 0) {
         return 0;
     }
@@ -570,11 +592,12 @@ int RGE_Combat_Object::attack(float x, float y, float z, int unconditional) {
         }
     }
 
-    RGE_Action_Attack* action = new RGE_Action_Attack(this, x, y, z, 0, 0, 0,
-                                                      static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_range,
-                                                      static_cast<RGE_Master_Combat_Object*>(this->master_obj)->minimum_weapon_range,
-                                                      static_cast<RGE_Master_Combat_Object*>(this->master_obj)->missile_id,
-                                                      static_cast<RGE_Master_Combat_Object*>(this->master_obj)->fire_missile_at_frame);
+    RGE_Action_Attack* action = new RGE_Action_Attack(
+        this, x, y, z, 0, 0, 0, static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_range,
+        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->minimum_weapon_range,
+        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->missile_id,
+        static_cast<RGE_Master_Combat_Object*>(this->master_obj)->fire_missile_at_frame
+    );
     if (action == 0) {
         return 0;
     }
@@ -604,9 +627,9 @@ int RGE_Combat_Object::moveTo(int targetID, float minRange, int unconditional) {
 
     if (unconditional == 0) {
         if (this->actions->have_action() == 1) {
-            action = (RGE_Action*)this->actions->get_action();
+            action = (RGE_Action*) this->actions->get_action();
             if (action->get_target_obj() == obj) {
-                action = (RGE_Action*)this->actions->get_action();
+                action = (RGE_Action*) this->actions->get_action();
                 if (action->type() == 1)
                     goto success;
             }
@@ -638,13 +661,13 @@ int RGE_Combat_Object::moveTo(float x, float y, float z, float minRange, int unc
 
     if (unconditional == 0) {
         if (this->actions->have_action() == 1) {
-            action = (RGE_Action*)this->actions->get_action();
+            action = (RGE_Action*) this->actions->get_action();
             if (action->targetX() == x) {
-                action = (RGE_Action*)this->actions->get_action();
+                action = (RGE_Action*) this->actions->get_action();
                 if (action->targetY() == y) {
-                    action = (RGE_Action*)this->actions->get_action();
+                    action = (RGE_Action*) this->actions->get_action();
                     if (action->targetZ() == z) {
-                        action = (RGE_Action*)this->actions->get_action();
+                        action = (RGE_Action*) this->actions->get_action();
                         if (action->type() == 1) {
                             goto success;
                         }
@@ -655,7 +678,7 @@ int RGE_Combat_Object::moveTo(float x, float y, float z, float minRange, int unc
     }
 
     if (this->actions->have_action() == 1) {
-        action = (RGE_Action*)this->actions->get_action();
+        action = (RGE_Action*) this->actions->get_action();
         if (action->move_to(this, x, y, z) == 1) {
             goto success;
         }
@@ -678,7 +701,9 @@ success:
     return 1;
 }
 
-int RGE_Combat_Object::moveAwayFrom(int targetID, int unconditional) { return 0; }
+int RGE_Combat_Object::moveAwayFrom(int targetID, int unconditional) {
+    return 0;
+}
 
 int RGE_Combat_Object::gather(int targetID, int unconditional) {
     RGE_Static_Object* target;
@@ -690,8 +715,9 @@ int RGE_Combat_Object::gather(int targetID, int unconditional) {
         return 0;
     }
 
-    if (unconditional == 0 && this->actions->have_action() == 1 &&
-        this->actions->get_action()->get_target_obj() == target && this->actions->get_action()->type() == RGE_ACTION_TYPE_GATHER) {
+    if (unconditional == 0 && this->actions->have_action() == 1
+        && this->actions->get_action()->get_target_obj() == target
+        && this->actions->get_action()->type() == RGE_ACTION_TYPE_GATHER) {
         goto success;
     }
 
@@ -719,23 +745,23 @@ success:
 int RGE_Combat_Object::explore(int tX, int tY, int unconditional) {
     if (unconditional == 0) {
         if (actions->have_action() == 1) {
-            RGE_Action* action = (RGE_Action*)actions->get_action();
+            RGE_Action* action = (RGE_Action*) actions->get_action();
             if (action->type() == 4)
                 goto done;
         }
     }
 
     if (actions->have_action() == 1) {
-        RGE_Action* action = (RGE_Action*)actions->get_action();
+        RGE_Action* action = (RGE_Action*) actions->get_action();
         if (action->type() == 4) {
-            action = (RGE_Action*)actions->get_action();
-            action->work(0, (float)tX, (float)tY, this->world_z);
+            action = (RGE_Action*) actions->get_action();
+            action->work(0, (float) tX, (float) tY, this->world_z);
             goto done;
         }
     }
 
     {
-        RGE_Action_Explore* explore_action = new RGE_Action_Explore(this, 0, (float)tX, (float)tY, this->world_z);
+        RGE_Action_Explore* explore_action = new RGE_Action_Explore(this, 0, (float) tX, (float) tY, this->world_z);
         if (explore_action == 0)
             return 0;
 
@@ -782,17 +808,18 @@ success:
 
 int RGE_Combat_Object::transport(float tX, float tY, float tZ, int unconditional) {
     if (actions->have_action() == 1) {
-        RGE_Action* action = (RGE_Action*)actions->get_action();
+        RGE_Action* action = (RGE_Action*) actions->get_action();
         if (action->type() == 0x0C) {
             // Call get_action() AGAIN (original does this)
-            RGE_Action* action2 = (RGE_Action*)actions->get_action();
+            RGE_Action* action2 = (RGE_Action*) actions->get_action();
             action2->work(0, tX, tY, tZ);
             return 1;
         }
     }
 
     RGE_Action_Transport* transport = new RGE_Action_Transport(this, 0, tX, tY, tZ);
-    if (transport == 0) return 0;
+    if (transport == 0)
+        return 0;
 
     actions->delete_list();
     this->set_only_action(transport);
@@ -802,11 +829,11 @@ int RGE_Combat_Object::transport(float tX, float tY, float tZ, int unconditional
 
 int RGE_Combat_Object::unload(int unconditional, float x, float y, float z) {
     if (actions->have_action() == 1) {
-        RGE_Action* action = (RGE_Action*)actions->get_action();
+        RGE_Action* action = (RGE_Action*) actions->get_action();
         if (action->type() == 0x0C) {
             // Call get_action() again. The original does this.
-            RGE_Action* action2 = (RGE_Action*)actions->get_action();
-            action2->work((RGE_Static_Object*)this, world_x, world_y, world_z);
+            RGE_Action* action2 = (RGE_Action*) actions->get_action();
+            action2->work((RGE_Static_Object*) this, world_x, world_y, world_z);
             return 1;
         }
     }
@@ -818,7 +845,7 @@ int RGE_Combat_Object::unload(int unconditional, float x, float y, float z) {
 
     actions->delete_list();
     this->set_only_action(transport);
-    transport->work((RGE_Static_Object*)this, x, y, z);
+    transport->work((RGE_Static_Object*) this, x, y, z);
     return 1;
 }
 
@@ -834,8 +861,7 @@ int RGE_Combat_Object::pause() {
 }
 
 float RGE_Combat_Object::rateOfFire() {
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    RGE_Master_Combat_Object* combat_master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     return combat_master->speed_of_attack;
 }
 
@@ -843,16 +869,15 @@ float RGE_Combat_Object::damageCapability() {
     float total;
     short* value;
     int count;
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(master_obj);
+    RGE_Master_Combat_Object* combat_master = static_cast<RGE_Master_Combat_Object*>(master_obj);
 
     total = 0.0f;
     count = combat_master->weapon_num;
     if (count > 0) {
         value = &combat_master->weapon[0].value;
         do {
-            if ((float)(int)*value > 0.0f) {
-                total = total + (float)(int)*value;
+            if ((float) (int) *value > 0.0f) {
+                total = total + (float) (int) *value;
             }
             value = value + 2;
             count = count - 1;
@@ -864,10 +889,12 @@ float RGE_Combat_Object::damageCapability() {
 float RGE_Combat_Object::damageCapability(RGE_Static_Object* attackingUnit) {
     float attackModifier;
 
-    attackModifier = attackingUnit->calc_attack_modifier((RGE_Static_Object*)this);
-    return calculateDamage(((RGE_Master_Combat_Object*)attackingUnit->master_obj)->weapon_num,
-                           ((RGE_Master_Combat_Object*)attackingUnit->master_obj)->weapon,
-                           attackModifier, attackingUnit->owner, attackingUnit);
+    attackModifier = attackingUnit->calc_attack_modifier((RGE_Static_Object*) this);
+    return calculateDamage(
+        ((RGE_Master_Combat_Object*) attackingUnit->master_obj)->weapon_num,
+        ((RGE_Master_Combat_Object*) attackingUnit->master_obj)->weapon, attackModifier, attackingUnit->owner,
+        attackingUnit
+    );
 }
 
 int RGE_Combat_Object::inAttackRange(RGE_Static_Object* target) {
@@ -879,7 +906,7 @@ int RGE_Combat_Object::inAttackRange(RGE_Static_Object* target) {
     range_x = master_obj->radius_x;
     range_y = master_obj->radius_y;
     radiusDistance = range_x * range_x + range_y * range_y;
-    radiusDistance = (float)sqrt((double)radiusDistance);
+    radiusDistance = (float) sqrt((double) radiusDistance);
     rangeDistance = weaponRange() + radiusDistance + 0.3f;
     if (distance_to_object(target) <= rangeDistance) {
         return 1;
@@ -888,14 +915,12 @@ int RGE_Combat_Object::inAttackRange(RGE_Static_Object* target) {
 }
 
 float RGE_Combat_Object::weaponRange() {
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    RGE_Master_Combat_Object* combat_master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     return combat_master->weapon_range;
 }
 
 float RGE_Combat_Object::minimumWeaponRange() {
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    RGE_Master_Combat_Object* combat_master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     return combat_master->minimum_weapon_range;
 }
 
@@ -939,19 +964,19 @@ float RGE_Combat_Object::teleport(float x, float y, float z) {
     int new_y;
     int i;
 
-    old_x = (int)world_x;
-    old_y = (int)world_y;
+    old_x = (int) world_x;
+    old_y = (int) world_y;
     result = RGE_Moving_Object::teleport(x, y, z);
     if (id >= 0) {
-        new_x = (int)world_x;
-        new_y = (int)world_y;
+        new_x = (int) world_x;
+        new_y = (int) world_y;
         if (new_x != old_x || new_y != old_y) {
             vur = VUR_Ptrs;
             for (i = 0; i < 9; ++i) {
                 rec = *vur;
                 if (rec != 0) {
-                    rec->pos_x = (unsigned char)new_x;
-                    rec->pos_y = (unsigned char)new_y;
+                    rec->pos_x = (unsigned char) new_x;
+                    rec->pos_y = (unsigned char) new_y;
                 }
                 ++vur;
             }

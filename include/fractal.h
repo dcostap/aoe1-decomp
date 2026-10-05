@@ -12,7 +12,7 @@ struct PtToPt {
 };
 
 class PointMaker {
-public:
+  public:
     PrimaryPt Prime;                 // +0x0000
     PtToPt Point[500];               // +0x0008
     char* Mask_2x2;                  // +0x0FA8
@@ -89,7 +89,7 @@ public:
     char* RetrieveMap();
     char* RetrieveProbMap();
 
-protected:
+  protected:
     void CreateMasks();
     void DeleteMasks();
     void DrawMask(int x, int y, int size);
@@ -110,4 +110,4 @@ protected:
 
 typedef char point_maker_size_check[(sizeof(PointMaker) == 0x1058) ? 1 : -1];
 
-#endif  // AOE1_FRACTAL_H
+#endif // AOE1_FRACTAL_H

@@ -5,25 +5,23 @@ extern "C" int __cdecl open(const char* path, int mode, ...);
 extern "C" int __cdecl lseek(int file, int offset, int origin);
 extern "C" int __cdecl tell(int file);
 extern "C" int __cdecl read(int file, void* buffer, unsigned int size);
-extern "C" int __cdecl write(int file, const void* buffer,
-                              unsigned int size);
+extern "C" int __cdecl write(int file, const void* buffer, unsigned int size);
 extern "C" int __cdecl close(int file);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* pointer);
-extern "C" void* __cdecl memcpy(void* destination, const void* source,
-                                unsigned int size);
+extern "C" void* __cdecl memcpy(void* destination, const void* source, unsigned int size);
 #pragma intrinsic(memcpy)
 
 extern "C" int __cdecl Inf32BufSize();
-extern "C" int __cdecl Inf32Decode(void* compressed, int offset,
-                                    void* file_size, void* buffer, int zero,
-                                    void* buffer_size, void* state, int one);
+extern "C" int __cdecl Inf32Decode(
+    void* compressed, int offset, void* file_size, void* buffer, int zero, void* buffer_size, void* state, int one
+);
 extern "C" int __cdecl deflate_buf_size();
 extern "C" int __cdecl deflate_init(
-    void* state, int level, int method, int window_bits, void* buffer,
-    int size, int (__cdecl *callback)(unsigned char*, int));
-extern "C" int __cdecl deflate_data(void* state, void* source, int size,
-                                    int flush);
+    void* state, int level, int method, int window_bits, void* buffer, int size,
+    int(__cdecl* callback)(unsigned char*, int)
+);
+extern "C" int __cdecl deflate_data(void* state, void* source, int size, int flush);
 extern "C" void __cdecl deflate_deinit(void* state);
 
 static int compression_point;
@@ -42,7 +40,7 @@ int __cdecl rge_fake_open(int file_handle, int fake_size) {
     if (file_handle >= 0) {
         flags = 2;
         point = 0;
-        buffers = (unsigned char*)calloc(65536, 1);
+        buffers = (unsigned char*) calloc(65536, 1);
         current = buffers;
         file_buffers = 0;
         compression_buffers = 0;
@@ -57,7 +55,7 @@ int __cdecl rge_open(char* filename, int flag) {
     if (file_handle >= 0) {
         flags = 2;
         point = 0;
-        buffers = (unsigned char*)calloc(65536, 1);
+        buffers = (unsigned char*) calloc(65536, 1);
         current = buffers;
         file_buffers = 0;
         compression_buffers = 0;
@@ -75,7 +73,7 @@ int __cdecl rge_open(char* filename, int flag, int pmode) {
     if (file_handle >= 0) {
         flags = 2;
         point = 0;
-        buffers = (unsigned char*)calloc(65536, 1);
+        buffers = (unsigned char*) calloc(65536, 1);
         current = buffers;
         file_buffers = 0;
         compression_buffers = 0;
@@ -164,8 +162,8 @@ void __cdecl rge_read(int handle, void* data, int size) {
     } else if (handle >= 0 && handle == current_handle) {
         if (flags != 0) {
             int state_size = Inf32BufSize();
-            compression_buffers = (unsigned char*)calloc(state_size, 1);
-            file_buffers = (unsigned char*)calloc(file_size, 1);
+            compression_buffers = (unsigned char*) calloc(state_size, 1);
+            file_buffers = (unsigned char*) calloc(file_size, 1);
             read(handle, file_buffers, file_size);
             temp_size = file_size;
             compression_point = 0;
@@ -191,7 +189,7 @@ void __cdecl rge_read(int handle, void* data, int size) {
 
                 remaining -= copy;
                 point = 0;
-                temp = (char*)temp + copy;
+                temp = (char*) temp + copy;
                 current = buffers;
                 ptr = buffers;
                 total = remaining;
@@ -227,7 +225,7 @@ void __cdecl rge_write(int handle, void* data, int size) {
             if (flags != 1) {
                 flags = 1;
                 int state_size = deflate_buf_size();
-                compression_buffers = (unsigned char*)calloc(state_size, 1);
+                compression_buffers = (unsigned char*) calloc(state_size, 1);
                 deflate_init(compression_buffers, 0x4B, 2, 1, buffers, 0x10000, rge_buffer_full);
             }
             int result = deflate_data(compression_buffers, data, size, 0);

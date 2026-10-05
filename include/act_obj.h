@@ -9,14 +9,12 @@ class RGE_Master_Action_Object;
 class RGE_Task;
 
 class RGE_Action_Object : public RGE_Moving_Object {
-public:
-    RGE_Action_Object(RGE_Master_Action_Object* tobj, RGE_Player* obj_owner, float x, float y,
-                      float z, int do_setup);
+  public:
+    RGE_Action_Object(RGE_Master_Action_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
     RGE_Action_Object(int infile, RGE_Game_World* gworld, int do_setup);
 
     virtual ~RGE_Action_Object();
-    virtual void recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner,
-                                    float x, float y, float z);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     virtual void recycle_out_of_game();
     virtual void rehook();
     virtual void save(int outfile);
@@ -43,12 +41,12 @@ public:
     virtual RGE_Static_Object* get_target_obj();
     virtual RGE_Task* getTask(RGE_Static_Object* target, float targetX, float targetY, float targetZ);
 
-protected:
+  protected:
     virtual int setup(RGE_Master_Action_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     virtual int setup(int infile, RGE_Game_World* gworld);
     virtual RGE_Action_List* create_action_list();
 
-public:
+  public:
     virtual unsigned char actionState() const;
     virtual long get_action_checksum();
 
@@ -61,7 +59,6 @@ public:
     unsigned char have_action();
 };
 
-typedef char rge_action_object_size_check[
-    (sizeof(RGE_Action_Object) == 0x194) ? 1 : -1];
+typedef char rge_action_object_size_check[(sizeof(RGE_Action_Object) == 0x194) ? 1 : -1];
 
 #endif

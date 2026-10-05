@@ -4,7 +4,7 @@
 #include "aibitm.h"
 
 class BuildItem : public BaseItem {
-public:
+  public:
     BuildItem* next;
     BuildItem* prev;
     int buildCategoryValue;
@@ -23,7 +23,10 @@ public:
     unsigned char permanentSkipValue;
 
     BuildItem();
-    BuildItem(int bc, int ti, int bi, int n, int p, int bf, char* name, float x, float y, float z, int tSet, int tOne, int tTwo, int pEle);
+    BuildItem(
+        int bc, int ti, int bi, int n, int p, int bf, char* name, float x, float y, float z, int tSet, int tOne,
+        int tTwo, int pEle
+    );
     BuildItem(BuildItem* bi);
     BuildItem(const BuildItem& bi);
     virtual ~BuildItem();
@@ -61,8 +64,7 @@ int __cdecl operator<(const BuildItem& one, const BuildItem& two);
 int __cdecl operator>(const BuildItem& one, const BuildItem& two);
 
 typedef char aiblditm_build_item_size[(sizeof(BuildItem) == 0xB0) ? 1 : -1];
-typedef char aiblditm_terrain_values_offset[
-    (sizeof(BaseItem) + sizeof(BuildItem*) + sizeof(BuildItem*) +
-     sizeof(int) * 7 == 0x90) ? 1 : -1];
+typedef char aiblditm_terrain_values_offset
+    [(sizeof(BaseItem) + sizeof(BuildItem*) + sizeof(BuildItem*) + sizeof(int) * 7 == 0x90) ? 1 : -1];
 
 #endif

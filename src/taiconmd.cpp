@@ -11,12 +11,10 @@
 
 extern int useInfluencePlacement;
 
-TribeConstructionAIModule::TribeConstructionAIModule(void* pW, int pID)
-    : ConstructionAIModule(pW, pID), md(0) {
+TribeConstructionAIModule::TribeConstructionAIModule(void* pW, int pID) : ConstructionAIModule(pW, pID), md(0) {
 }
 
-TribeConstructionAIModule::TribeConstructionAIModule(int pID, int infile)
-    : ConstructionAIModule(pID, infile), md(0) {
+TribeConstructionAIModule::TribeConstructionAIModule(int pID, int infile) : ConstructionAIModule(pID, infile), md(0) {
 }
 
 TribeConstructionAIModule::~TribeConstructionAIModule() {
@@ -27,9 +25,9 @@ void TribeConstructionAIModule::setMainDecisionAI(TribeMainDecisionAIModule* m) 
 }
 
 int TribeConstructionAIModule::canPlace(BuildItem* bi) {
-    if (this->xReferencePointValue <= 0.0 || this->yReferencePointValue <= 0.0 ||
-        (float)this->mapXSizeValue <= this->xReferencePointValue ||
-        (float)this->mapYSizeValue <= this->yReferencePointValue) {
+    if (this->xReferencePointValue <= 0.0 || this->yReferencePointValue <= 0.0
+        || (float) this->mapXSizeValue <= this->xReferencePointValue
+        || (float) this->mapYSizeValue <= this->yReferencePointValue) {
         return this->md->informationAI.influenceCanPlaceStructure(bi);
     }
 
@@ -48,8 +46,8 @@ int TribeConstructionAIModule::canPlace(BuildItem* bi) {
     ConstructionItem* current = this->constructionLots.next;
     ConstructionItem* end = &this->constructionLots;
     while (current != end && current != 0) {
-        if (current->typeID() == bi->typeID() || (current->xSize() == bi->xSize() && current->ySize() == bi->ySize() &&
-             current->typeID() == -1)) {
+        if (current->typeID() == bi->typeID()
+            || (current->xSize() == bi->xSize() && current->ySize() == bi->ySize() && current->typeID() == -1)) {
             if (!current->built() && !current->inProgress()) {
                 return 1;
             }
@@ -59,12 +57,15 @@ int TribeConstructionAIModule::canPlace(BuildItem* bi) {
     return 0;
 }
 
-ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int builder, PlacementState& placementState, unsigned long startTime) {
-    if (this->xReferencePointValue <= 0.0 || this->yReferencePointValue <= 0.0 ||
-        (float)this->mapXSizeValue <= this->xReferencePointValue ||
-        (float)this->mapYSizeValue <= this->yReferencePointValue) {
-        return this->md->informationAI.influencePlaceStructure(bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState,
-                                                               startTime);
+ConstructionItem* TribeConstructionAIModule::placeStructure(
+    BuildItem* bi, int builder, PlacementState& placementState, unsigned long startTime
+) {
+    if (this->xReferencePointValue <= 0.0 || this->yReferencePointValue <= 0.0
+        || (float) this->mapXSizeValue <= this->xReferencePointValue
+        || (float) this->mapYSizeValue <= this->yReferencePointValue) {
+        return this->md->informationAI.influencePlaceStructure(
+            bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState, startTime
+        );
     }
 
     if (bi->typeID() == 0x2d) {
@@ -75,11 +76,12 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int b
         return 0;
     }
 
-    if (bi->typeID() == 0x67 || bi->typeID() == 0x44 || bi->typeID() == 0x4f || bi->typeID() == 0xc7 ||
-        bi->typeID() == 0x45 || bi->typeID() == 0x48 || bi->typeID() == 0x75 || bi->typeID() == 0x9b ||
-        useInfluencePlacement == 1 || this->numberConstructionLotsValue == 0) {
-        return this->md->informationAI.influencePlaceStructure(bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState,
-                                                               startTime);
+    if (bi->typeID() == 0x67 || bi->typeID() == 0x44 || bi->typeID() == 0x4f || bi->typeID() == 0xc7
+        || bi->typeID() == 0x45 || bi->typeID() == 0x48 || bi->typeID() == 0x75 || bi->typeID() == 0x9b
+        || useInfluencePlacement == 1 || this->numberConstructionLotsValue == 0) {
+        return this->md->informationAI.influencePlaceStructure(
+            bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState, startTime
+        );
     }
 
     RGE_Static_Object* protoBuilder = this->md->object(-1, -1, 4, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
@@ -102,12 +104,12 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int b
     int minBuildAttempts = -1;
 
     while (current != &this->constructionLots && current != 0) {
-        if ((bi->typeID() == current->typeID() || current->typeID() == -1) && current->xSize() == bi->xSize() &&
-            current->ySize() == bi->ySize() && current->built() != 1 && current->inProgress() != 1) {
-            int minX = (int)(current->x() - current->xSize());
-            int minY = (int)(current->y() - current->ySize());
-            int maxX = minX + (int)current->xSize();
-            int maxY = minY + (int)current->ySize();
+        if ((bi->typeID() == current->typeID() || current->typeID() == -1) && current->xSize() == bi->xSize()
+            && current->ySize() == bi->ySize() && current->built() != 1 && current->inProgress() != 1) {
+            int minX = (int) (current->x() - current->xSize());
+            int minY = (int) (current->y() - current->ySize());
+            int maxX = minX + (int) current->xSize();
+            int maxY = minY + (int) current->ySize();
 
             if (minX >= 0 && minY >= 0 && maxX < this->mapXSizeValue && maxY < this->mapYSizeValue) {
                 int i = minX;
@@ -117,7 +119,7 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int b
                         if (builderObj != 0 && builderObj->lookupZone(i, j) != builderZone) {
                             goto next_lot;
                         }
-                        if (protoBuilder->passableTile((float)i + 0.5f, (float)j + 0.5f, 1) == 0) {
+                        if (protoBuilder->passableTile((float) i + 0.5f, (float) j + 0.5f, 1) == 0) {
                             goto next_lot;
                         }
                     }
@@ -141,9 +143,9 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int b
     }
 
     if (minBuildAttempts >= 2 || minBuildAttempts == -1) {
-        ConstructionItem* result =
-            this->md->informationAI.influencePlaceStructure(bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState,
-                                                            startTime);
+        ConstructionItem* result = this->md->informationAI.influencePlaceStructure(
+            bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState, startTime
+        );
         if (result != 0) {
             return result;
         }
@@ -190,7 +192,8 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int b
 }
 
 ConstructionItem* TribeConstructionAIModule::placeDock(BuildItem* bi) {
-    ConstructionItem* result = this->md->informationAI.placeDock(bi, this->xReferencePointValue, this->yReferencePointValue, 1, 2);
+    ConstructionItem* result =
+        this->md->informationAI.placeDock(bi, this->xReferencePointValue, this->yReferencePointValue, 1, 2);
     if (result != 0) {
         result->next = &this->randomConstructionLots;
         ConstructionItem* tail = this->randomConstructionLots.prev;
@@ -216,7 +219,7 @@ void TribeConstructionAIModule::setBuilt(RGE_Static_Object* bo, int v) {
         item = item->next;
     }
 
-    this->md->informationAI.storeLot(bo->master_obj->id, (unsigned char)bo->world_x, (unsigned char)bo->world_y, 1);
+    this->md->informationAI.storeLot(bo->master_obj->id, (unsigned char) bo->world_x, (unsigned char) bo->world_y, 1);
 }
 
 ConstructionItem* TribeConstructionAIModule::compare(ConstructionItem* one, ConstructionItem* two) {

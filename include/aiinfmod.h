@@ -4,12 +4,11 @@
 #include "aimodule.h"
 
 class InformationAIModule : public AIModule {
-public:
+  public:
     InformationAIModule(void* pW, int playerID);
     virtual ~InformationAIModule();
 };
 
-typedef char aiinfmod_information_ai_module_size[
-    (sizeof(InformationAIModule) == 0xF0) ? 1 : -1];
+typedef char aiinfmod_information_ai_module_size[(sizeof(InformationAIModule) == 0xF0) ? 1 : -1];
 
 #endif

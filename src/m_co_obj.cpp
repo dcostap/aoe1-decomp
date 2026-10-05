@@ -11,20 +11,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 // m_co_obj.cpp lines 27-30.
-RGE_Master_Combat_Object::RGE_Master_Combat_Object(
-    RGE_Master_Combat_Object* other_object, int do_setup)
-    : RGE_Master_Action_Object(other_object, 0) {
+RGE_Master_Combat_Object::RGE_Master_Combat_Object(RGE_Master_Combat_Object* other_object, int do_setup) :
+    RGE_Master_Action_Object(other_object, 0) {
     if (do_setup != 0) {
         setup(other_object);
     }
 }
 
 // m_co_obj.cpp lines 36-39.
-RGE_Master_Combat_Object::RGE_Master_Combat_Object(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
-    : RGE_Master_Action_Object(infile, sprites, sounds, 0) {
+RGE_Master_Combat_Object::RGE_Master_Combat_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) :
+    RGE_Master_Action_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
         setup(infile, sprites, sounds);
     }
@@ -32,9 +29,8 @@ RGE_Master_Combat_Object::RGE_Master_Combat_Object(
 
 // m_co_obj.cpp lines 45-48.
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(
-    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id,
-    int do_setup)
-    : RGE_Master_Action_Object(infile, sprites, sounds, in_id, 0) {
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup
+) : RGE_Master_Action_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup != 0) {
         setup(infile, sprites, sounds, in_id);
     }
@@ -50,18 +46,18 @@ int RGE_Master_Combat_Object::setup(RGE_Master_Combat_Object* other_object) {
 
     weapon_num = other_object->weapon_num;
     if (weapon_num > 0) {
-        weapon = (RGE_Armor_Weapon_Info*)calloc(weapon_num, 4);
+        weapon = (RGE_Armor_Weapon_Info*) calloc(weapon_num, 4);
         memcpy(weapon, other_object->weapon, weapon_num * 4);
     } else {
-        weapon = (RGE_Armor_Weapon_Info*)0;
+        weapon = (RGE_Armor_Weapon_Info*) 0;
     }
 
     armor_num = other_object->armor_num;
     if (armor_num > 0) {
-        armor = (RGE_Armor_Weapon_Info*)calloc(armor_num, 4);
+        armor = (RGE_Armor_Weapon_Info*) calloc(armor_num, 4);
         memcpy(armor, other_object->armor, armor_num * 4);
     } else {
-        armor = (RGE_Armor_Weapon_Info*)0;
+        armor = (RGE_Armor_Weapon_Info*) 0;
     }
 
     defense_terrain_bonus = other_object->defense_terrain_bonus;
@@ -95,18 +91,18 @@ int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     rge_read(infile, &base_armor, 1);
     rge_read(infile, &weapon_num, 2);
     if (weapon_num > 0) {
-        weapon = (RGE_Armor_Weapon_Info*)calloc((int)weapon_num, 4);
-        rge_read(infile, weapon, (int)weapon_num << 2);
+        weapon = (RGE_Armor_Weapon_Info*) calloc((int) weapon_num, 4);
+        rge_read(infile, weapon, (int) weapon_num << 2);
     } else {
-        weapon = (RGE_Armor_Weapon_Info*)0;
+        weapon = (RGE_Armor_Weapon_Info*) 0;
     }
 
     rge_read(infile, &armor_num, 2);
     if (armor_num > 0) {
-        armor = (RGE_Armor_Weapon_Info*)calloc((int)armor_num, 4);
-        rge_read(infile, armor, (int)armor_num << 2);
+        armor = (RGE_Armor_Weapon_Info*) calloc((int) armor_num, 4);
+        rge_read(infile, armor, (int) armor_num << 2);
     } else {
-        armor = (RGE_Armor_Weapon_Info*)0;
+        armor = (RGE_Armor_Weapon_Info*) 0;
     }
 
     rge_read(infile, &defense_terrain_bonus, 2);
@@ -129,7 +125,7 @@ int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     if (temp_fight_sprite >= 0)
         selected_sprite = sprites[temp_fight_sprite];
     else
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     fight_sprite = selected_sprite;
 
     if (save_game_version >= g_master_combat_save_version_7_01) {
@@ -140,8 +136,8 @@ int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
         return 1;
     }
 
-    orig_armor = (unsigned char)base_armor;
-    count = (int)armor_num;
+    orig_armor = (unsigned char) base_armor;
+    count = (int) armor_num;
     if (count > 0) {
         short* value = &armor->value;
         int left = count;
@@ -154,7 +150,7 @@ int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     }
 
     orig_weapon = 0;
-    count = (int)weapon_num;
+    count = (int) weapon_num;
     if (count > 0) {
         short* value = &weapon->value;
         int left = count;
@@ -185,16 +181,17 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     master_type = 0x32;
 
     // These outputs reuse the original parameter homes.
-    fscanf(input, "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f",
-           &in_id, &infile, &armor_num, &weapon_num, &defense_terrain_bonus,
-           &weapon_range, &area_effect_range, &speed_of_attack, &missile_id, &base_hit_chance, &temp_break_off_combat,
-           &temp_fire_missile_at_frame, &weapon_offset_x, &weapon_offset_y,
-           &weapon_offset_z, &sounds, &minimum_weapon_range);
+    fscanf(
+        input, "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f", &in_id, &infile, &armor_num, &weapon_num,
+        &defense_terrain_bonus, &weapon_range, &area_effect_range, &speed_of_attack, &missile_id, &base_hit_chance,
+        &temp_break_off_combat, &temp_fire_missile_at_frame, &weapon_offset_x, &weapon_offset_y, &weapon_offset_z,
+        &sounds, &minimum_weapon_range
+    );
 
     armor_count_value = &armor_num;
     index = 0;
     if (*armor_count_value > 0) {
-        armor = (RGE_Armor_Weapon_Info*)calloc((int)*armor_count_value, 4);
+        armor = (RGE_Armor_Weapon_Info*) calloc((int) *armor_count_value, 4);
         if (0 < armor_num) {
             do {
                 fscanf(input, "%hd %hd", &armor[index].type, &armor[index].value);
@@ -202,12 +199,12 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
             } while (index < *armor_count_value);
         }
     } else {
-        armor = (RGE_Armor_Weapon_Info*)0;
+        armor = (RGE_Armor_Weapon_Info*) 0;
     }
 
     index = 0;
     if (weapon_num > 0) {
-        weapon = (RGE_Armor_Weapon_Info*)calloc((int)weapon_num, 4);
+        weapon = (RGE_Armor_Weapon_Info*) calloc((int) weapon_num, 4);
         if (0 < weapon_num) {
             do {
                 fscanf(input, "%hd %hd", &weapon[index].type, &weapon[index].value);
@@ -215,21 +212,21 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
             } while (index < weapon_num);
         }
     } else {
-        weapon = (RGE_Armor_Weapon_Info*)0;
+        weapon = (RGE_Armor_Weapon_Info*) 0;
     }
 
     if (in_id >= 0)
         selected_sprite = sprites[in_id];
     else
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     fight_sprite = selected_sprite;
-    break_off_combat = (unsigned char)temp_break_off_combat;
-    area_effect_level = (unsigned char)(unsigned long)sounds;
-    base_armor = (unsigned char)(unsigned long)infile;
+    break_off_combat = (unsigned char) temp_break_off_combat;
+    area_effect_level = (unsigned char) (unsigned long) sounds;
+    base_armor = (unsigned char) (unsigned long) infile;
     // the shipped parser stores the low byte of this value.
-    fire_missile_at_frame = (unsigned char)temp_fire_missile_at_frame;
-    orig_armor = (unsigned char)base_armor;
-    value_count = (int)armor_num;
+    fire_missile_at_frame = (unsigned char) temp_fire_missile_at_frame;
+    orig_armor = (unsigned char) base_armor;
+    value_count = (int) armor_num;
     if (value_count > 0) {
         short* value = &armor->value;
         int left = value_count;
@@ -242,7 +239,7 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     }
 
     orig_weapon = 0;
-    value_count = (int)weapon_num;
+    value_count = (int) weapon_num;
     if (value_count > 0) {
         short* value = &weapon->value;
         int left = value_count;
@@ -263,27 +260,25 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
 RGE_Master_Combat_Object::~RGE_Master_Combat_Object() {
     if (weapon != 0) {
         free(weapon);
-        weapon = (RGE_Armor_Weapon_Info*)0;
+        weapon = (RGE_Armor_Weapon_Info*) 0;
     }
     if (armor != 0) {
         free(armor);
-        armor = (RGE_Armor_Weapon_Info*)0;
+        armor = (RGE_Armor_Weapon_Info*) 0;
     }
 }
 
 // m_co_obj.cpp lines 285-299.
-RGE_Static_Object* RGE_Master_Combat_Object::make_new_obj(
-    RGE_Player* owner, float x, float y, float z) {
+RGE_Static_Object* RGE_Master_Combat_Object::make_new_obj(RGE_Player* owner, float x, float y, float z) {
     if (recyclable) {
-        RGE_Static_Object* recycled =
-            owner->world->recycle_object_in_to_game(master_type);
+        RGE_Static_Object* recycled = owner->world->recycle_object_in_to_game(master_type);
         if (recycled) {
             recycled->recycle_in_to_game(this, owner, x, y, z);
             return recycled;
         }
     }
 
-    return (RGE_Static_Object*)new RGE_Combat_Object(this, owner, x, y, z, 1);
+    return (RGE_Static_Object*) new RGE_Combat_Object(this, owner, x, y, z, 1);
 }
 
 // m_co_obj.cpp lines 304-306.
@@ -295,7 +290,7 @@ RGE_Master_Static_Object* RGE_Master_Combat_Object::make_new_master() {
 void RGE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Action_Object::copy_obj(source);
 
-    RGE_Master_Combat_Object* other = (RGE_Master_Combat_Object*)source;
+    RGE_Master_Combat_Object* other = (RGE_Master_Combat_Object*) source;
     fight_sprite = other->fight_sprite;
     base_armor = other->base_armor;
 
@@ -303,20 +298,20 @@ void RGE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source) {
     if (weapon != 0)
         free(weapon);
     if (weapon_num > 0) {
-        weapon = (RGE_Armor_Weapon_Info*)calloc(weapon_num, 4);
+        weapon = (RGE_Armor_Weapon_Info*) calloc(weapon_num, 4);
         memcpy(weapon, other->weapon, weapon_num * 4);
     } else {
-        weapon = (RGE_Armor_Weapon_Info*)0;
+        weapon = (RGE_Armor_Weapon_Info*) 0;
     }
 
     armor_num = other->armor_num;
     if (armor != 0)
         free(armor);
     if (armor_num > 0) {
-        armor = (RGE_Armor_Weapon_Info*)calloc(armor_num, 4);
+        armor = (RGE_Armor_Weapon_Info*) calloc(armor_num, 4);
         memcpy(armor, other->armor, armor_num * 4);
     } else {
-        armor = (RGE_Armor_Weapon_Info*)0;
+        armor = (RGE_Armor_Weapon_Info*) 0;
     }
 
     defense_terrain_bonus = other->defense_terrain_bonus;
@@ -344,49 +339,49 @@ void RGE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source) {
 //! The add form (modify_delta) searches by type, which is the correct identity.
 void RGE_Master_Combat_Object::modify(float amount, unsigned char flag) {
     switch (flag) {
-    case 8: {
-        long packed = (long)amount;
-        unsigned short index = (unsigned short)((packed >> 8) & 0xff);
-        RGE_Armor_Weapon_Info* entries = armor;
-        if (entries != 0) {
-            if ((int)index < (int)armor_num) {
-                entries[index].value = (short)(packed & 0xff);
+        case 8: {
+            long packed = (long) amount;
+            unsigned short index = (unsigned short) ((packed >> 8) & 0xff);
+            RGE_Armor_Weapon_Info* entries = armor;
+            if (entries != 0) {
+                if ((int) index < (int) armor_num) {
+                    entries[index].value = (short) (packed & 0xff);
+                }
             }
+            break;
         }
-        break;
-    }
-    case 9: {
-        long packed = (long)amount;
-        unsigned short index = (unsigned short)((packed >> 8) & 0xff);
-        RGE_Armor_Weapon_Info* entries = weapon;
-        if (entries != 0) {
-            if ((int)index < (int)weapon_num) {
-                entries[index].value = (short)(packed & 0xff);
+        case 9: {
+            long packed = (long) amount;
+            unsigned short index = (unsigned short) ((packed >> 8) & 0xff);
+            RGE_Armor_Weapon_Info* entries = weapon;
+            if (entries != 0) {
+                if ((int) index < (int) weapon_num) {
+                    entries[index].value = (short) (packed & 0xff);
+                }
             }
+            break;
         }
-        break;
-    }
-    case 10:
-        speed_of_attack = amount;
-        break;
-    case 11:
-        base_hit_chance = (short)amount;
-        break;
-    case 12:
-        weapon_range = amount;
-        break;
-    case 15:
-        base_armor = (unsigned char)amount;
-        break;
-    case 16:
-        missile_id = (short)(unsigned char)amount;
-        break;
-    case 18:
-        defense_terrain_bonus = (short)amount;
-        break;
-    default:
-        RGE_Master_Action_Object::modify(amount, flag);
-        break;
+        case 10:
+            speed_of_attack = amount;
+            break;
+        case 11:
+            base_hit_chance = (short) amount;
+            break;
+        case 12:
+            weapon_range = amount;
+            break;
+        case 15:
+            base_armor = (unsigned char) amount;
+            break;
+        case 16:
+            missile_id = (short) (unsigned char) amount;
+            break;
+        case 18:
+            defense_terrain_bonus = (short) amount;
+            break;
+        default:
+            RGE_Master_Action_Object::modify(amount, flag);
+            break;
     }
 }
 
@@ -396,96 +391,96 @@ void RGE_Master_Combat_Object::modify(float amount, unsigned char flag) {
 //! The set form (modify) also fails when the class index is out of range.
 void RGE_Master_Combat_Object::modify_delta(float amount, unsigned char flag) {
     switch (flag) {
-    case 8: {
-        int encoded = (int)amount;
-        unsigned short type = (unsigned short)((encoded >> 8) & 0xff);
-        RGE_Armor_Weapon_Info* entries = armor;
-        if (entries != 0) {
-            int count = armor_num;
-            unsigned short index = 0;
-            for (; index < count; ++index) {
-                if ((int)entries[index].type == type) {
-                    entries[index].value += (short)(encoded & 0xff);
-                    return;
+        case 8: {
+            int encoded = (int) amount;
+            unsigned short type = (unsigned short) ((encoded >> 8) & 0xff);
+            RGE_Armor_Weapon_Info* entries = armor;
+            if (entries != 0) {
+                int count = armor_num;
+                unsigned short index = 0;
+                for (; index < count; ++index) {
+                    if ((int) entries[index].type == type) {
+                        entries[index].value += (short) (encoded & 0xff);
+                        return;
+                    }
                 }
             }
+            break;
         }
-        break;
-    }
-    case 9: {
-        int encoded = (int)amount;
-        unsigned short type = (unsigned short)((encoded >> 8) & 0xff);
-        RGE_Armor_Weapon_Info* entries = weapon;
-        if (entries != 0) {
-            int count = weapon_num;
-            unsigned short index = 0;
-            for (; index < count; ++index) {
-                if ((int)entries[index].type == type) {
-                    entries[index].value += (short)(encoded & 0xff);
-                    return;
+        case 9: {
+            int encoded = (int) amount;
+            unsigned short type = (unsigned short) ((encoded >> 8) & 0xff);
+            RGE_Armor_Weapon_Info* entries = weapon;
+            if (entries != 0) {
+                int count = weapon_num;
+                unsigned short index = 0;
+                for (; index < count; ++index) {
+                    if ((int) entries[index].type == type) {
+                        entries[index].value += (short) (encoded & 0xff);
+                        return;
+                    }
                 }
             }
+            break;
         }
-        break;
-    }
-    case 6:
-        turn_speed = (float)((double)amount + (double)turn_speed);
-        break;
-    case 10:
-        speed_of_attack = (float)((double)amount + (double)speed_of_attack);
-        break;
-    case 11:
-        base_hit_chance += (short)(long)amount;
-        break;
-    case 12:
-        weapon_range = (float)((double)amount + (double)weapon_range);
-        break;
-    case 15:
-        base_armor += (unsigned char)(long)amount;
-        break;
-    case 16:
-        missile_id += (short)(long)amount;
-        break;
-    case 18:
-        defense_terrain_bonus = (short)(long)amount;
-        break;
-    default:
-        RGE_Master_Action_Object::modify_delta(amount, flag);
-        break;
+        case 6:
+            turn_speed = (float) ((double) amount + (double) turn_speed);
+            break;
+        case 10:
+            speed_of_attack = (float) ((double) amount + (double) speed_of_attack);
+            break;
+        case 11:
+            base_hit_chance += (short) (long) amount;
+            break;
+        case 12:
+            weapon_range = (float) ((double) amount + (double) weapon_range);
+            break;
+        case 15:
+            base_armor += (unsigned char) (long) amount;
+            break;
+        case 16:
+            missile_id += (short) (long) amount;
+            break;
+        case 18:
+            defense_terrain_bonus = (short) (long) amount;
+            break;
+        default:
+            RGE_Master_Action_Object::modify_delta(amount, flag);
+            break;
     }
 }
 
 // m_co_obj.cpp lines 472-504.
 void RGE_Master_Combat_Object::modify_percent(float amount, unsigned char flag) {
     switch (flag) {
-    case 8:
-    case 9:
-        break;
-    case 6:
-        turn_speed = (float)((double)amount * (double)turn_speed);
-        break;
-    case 10:
-        speed_of_attack = (float)((double)amount * (double)speed_of_attack);
-        break;
-    case 11:
-        base_hit_chance = (short)((float)base_hit_chance * amount);
-        break;
-    case 12:
-        weapon_range = (float)((double)amount * (double)weapon_range);
-        break;
-    case 15:
-        // the shipped case 15 path uses missile_id as its source.
-        base_armor = (unsigned char)((float)missile_id * amount);
-        break;
-    case 16:
-        missile_id = (short)((float)missile_id * amount);
-        break;
-    case 18:
-        defense_terrain_bonus = (short)amount;
-        break;
-    default:
-        RGE_Master_Action_Object::modify_percent(amount, flag);
-        break;
+        case 8:
+        case 9:
+            break;
+        case 6:
+            turn_speed = (float) ((double) amount * (double) turn_speed);
+            break;
+        case 10:
+            speed_of_attack = (float) ((double) amount * (double) speed_of_attack);
+            break;
+        case 11:
+            base_hit_chance = (short) ((float) base_hit_chance * amount);
+            break;
+        case 12:
+            weapon_range = (float) ((double) amount * (double) weapon_range);
+            break;
+        case 15:
+            // the shipped case 15 path uses missile_id as its source.
+            base_armor = (unsigned char) ((float) missile_id * amount);
+            break;
+        case 16:
+            missile_id = (short) ((float) missile_id * amount);
+            break;
+        case 18:
+            defense_terrain_bonus = (short) amount;
+            break;
+        default:
+            RGE_Master_Action_Object::modify_percent(amount, flag);
+            break;
     }
 }
 
@@ -502,10 +497,10 @@ void RGE_Master_Combat_Object::save(int outfile) {
     rge_write(outfile, &base_armor, 1);
     rge_write(outfile, &weapon_num, 2);
     if (weapon != 0)
-        rge_write(outfile, weapon, (int)weapon_num * 4);
+        rge_write(outfile, weapon, (int) weapon_num * 4);
     rge_write(outfile, &armor_num, 2);
     if (armor != 0)
-        rge_write(outfile, armor, (int)armor_num * 4);
+        rge_write(outfile, armor, (int) armor_num * 4);
     rge_write(outfile, &defense_terrain_bonus, 2);
     rge_write(outfile, &weapon_range, 4);
     rge_write(outfile, &area_effect_range, 4);
@@ -527,8 +522,7 @@ void RGE_Master_Combat_Object::save(int outfile) {
 }
 
 // m_co_obj.cpp lines 549-577.
-long RGE_Master_Combat_Object::calc_base_damage_ability(
-    RGE_Master_Combat_Object* attacker) {
+long RGE_Master_Combat_Object::calc_base_damage_ability(RGE_Master_Combat_Object* attacker) {
     float total = g_damage_ability_initial_total;
     int count = attacker->weapon_num;
     RGE_Armor_Weapon_Info* weapon = attacker->weapon;
@@ -555,8 +549,8 @@ long RGE_Master_Combat_Object::calc_base_damage_ability(
             }
 
             int attack = weapon->value;
-            float diff = (float)attack - (float)tot_armor;
-            if ((double)diff > g_damage_ability_positive_difference_threshold) {
+            float diff = (float) attack - (float) tot_armor;
+            if ((double) diff > g_damage_ability_positive_difference_threshold) {
                 total += diff;
             }
             ++weapon;
@@ -564,8 +558,8 @@ long RGE_Master_Combat_Object::calc_base_damage_ability(
         } while (remaining != 0);
     }
 
-    if ((double)total < g_damage_ability_minimum_total_threshold) {
+    if ((double) total < g_damage_ability_minimum_total_threshold) {
         total = g_damage_ability_minimum_total;
     }
-    return (long)total;
+    return (long) total;
 }

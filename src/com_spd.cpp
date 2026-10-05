@@ -58,7 +58,9 @@ RGE_Communications_Speed::~RGE_Communications_Speed() {
     }
 }
 
-void RGE_Communications_Speed::SetPlayerTurnSpeed(unsigned int PlayerNo, unsigned char AvgFramesMsec, unsigned char HiLatencyCenti) {
+void RGE_Communications_Speed::SetPlayerTurnSpeed(
+    unsigned int PlayerNo, unsigned char AvgFramesMsec, unsigned char HiLatencyCenti
+) {
     if (PlayerNo < 1 || PlayerNo > 9) {
         return;
     }
@@ -76,7 +78,9 @@ void RGE_Communications_Speed::SetActualLatency(unsigned int PlayerNo, unsigned 
     }
 }
 
-void RGE_Communications_Speed::SetFutureSpeedChange(unsigned int BuffCount, unsigned int BuffGran, unsigned long ExecTurn) {
+void RGE_Communications_Speed::SetFutureSpeedChange(
+    unsigned int BuffCount, unsigned int BuffGran, unsigned long ExecTurn
+) {
     if (this->NextLatencyChangeTurn)
         return;
     this->FutureBufferFrames = BuffCount;
@@ -158,13 +162,11 @@ unsigned int RGE_Communications_Speed::BufferTimeToUse(unsigned long current_tur
     this->RealTimePassed = this->TurnTSLC->Get();
     if (this->Comm->AllPlayersAcknowledged() != 0) {
         this->AllAcknowledgedBuffersRemaining =
-            this->AllAcknowledgedBuffersRemaining +
-            this->TotalBufferFramesRemaining;
+            this->AllAcknowledgedBuffersRemaining + this->TotalBufferFramesRemaining;
     }
 
     this->BufferTimePassed =
-        (this->CurrentBufferFrames - this->TotalBufferFramesRemaining) *
-        this->CurrentBufferGranularity;
+        (this->CurrentBufferFrames - this->TotalBufferFramesRemaining) * this->CurrentBufferGranularity;
     if (this->OverheadFactor + this->RealTimePassed < this->BufferTimePassed) {
         if (current_turn > 6) {
             this->DroppedFrames = this->DroppedFrames + 1;
@@ -239,8 +241,10 @@ char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr() {
 
     frames = this->GetRecommendedBufferFrames();
     granularity = this->GetRecommendedBufferGranularity();
-    sprintf(buf, "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d", frames, granularity,
-            1000 / static_cast<int>(granularity), granularity * frames);
+    sprintf(
+        buf, "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d", frames, granularity,
+        1000 / static_cast<int>(granularity), granularity * frames
+    );
     return buf;
 }
 
@@ -256,8 +260,10 @@ char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int PlayerNo) {
     granularity = this->CurrentBufferGranularity;
     frames = this->CurrentBufferFrames;
     hi_lo_info = this->FrameTSLC->GetHiLoInfo(50);
-    sprintf(speedstr, "Buf=%3d / %3d * Gran=%3dms = turn %4dms  %s", this->TotalBufferFramesRemaining, frames, granularity,
-            frames * granularity, hi_lo_info);
+    sprintf(
+        speedstr, "Buf=%3d / %3d * Gran=%3dms = turn %4dms  %s", this->TotalBufferFramesRemaining, frames, granularity,
+        frames * granularity, hi_lo_info
+    );
     return speedstr;
 }
 
@@ -322,8 +328,8 @@ unsigned int RGE_Communications_Speed::GetRecommendedBufferGranularity() {
 }
 
 int RGE_Communications_Speed::AnalyzeGameSpeed(
-    unsigned int* NewGranularity, unsigned int* NewBufferFrames,
-    int ChangeAlso) {
+    unsigned int* NewGranularity, unsigned int* NewBufferFrames, int ChangeAlso
+) {
     unsigned long SyncTurn;
     unsigned int AvgFramesMsec;
     unsigned int HighLatencyMsec;
@@ -340,8 +346,7 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(
         return 0;
     }
 
-    SyncTurn = this->Comm->current_turn +
-               this->Comm->PlayerOptions.CommandTurnIncrement;
+    SyncTurn = this->Comm->current_turn + this->Comm->PlayerOptions.CommandTurnIncrement;
     if (SyncTurn < 20) {
         return 0;
     }
@@ -369,7 +374,7 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(
         Granularity = 150;
     }
 
-    Difference = abs((int)(Granularity - this->CurrentBufferGranularity));
+    Difference = abs((int) (Granularity - this->CurrentBufferGranularity));
     if (Difference < 10) {
         Granularity = this->CurrentBufferGranularity;
     }
@@ -385,10 +390,9 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(
         BufferFrames = 250 / Granularity + 1;
     }
 
-    CurrentTurnMsec =
-        this->CurrentBufferFrames * this->CurrentBufferGranularity;
+    CurrentTurnMsec = this->CurrentBufferFrames * this->CurrentBufferGranularity;
     NewTurnMsec = Granularity * BufferFrames;
-    Difference = abs((int)(NewTurnMsec - CurrentTurnMsec));
+    Difference = abs((int) (NewTurnMsec - CurrentTurnMsec));
     if (Difference <= 10) {
         return 0;
     }

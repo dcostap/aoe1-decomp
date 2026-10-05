@@ -169,24 +169,18 @@ struct RGE_Command_Group_Waypoint {
     unsigned char y;
 };
 
-typedef char rge_command_order_size_check[
-    (sizeof(RGE_Command_Order) == 0x14) ? 1 : -1];
-typedef char rge_command_stop_size_check[
-    (sizeof(RGE_Command_Stop) == 0x02) ? 1 : -1];
-typedef char rge_command_pause_size_check[
-    (sizeof(RGE_Command_Pause) == 0x02) ? 1 : -1];
-typedef char rge_command_group_ai_order_size_check[
-    (sizeof(RGE_Command_Group_AI_Order) == 0x24) ? 1 : -1];
-typedef char rge_command_formation_size_check[
-    (sizeof(RGE_Command_Formation) == 0x0C) ? 1 : -1];
-typedef char rge_command_group_waypoint_size_check[
-    (sizeof(RGE_Command_Group_Waypoint) == 0x04) ? 1 : -1];
+typedef char rge_command_order_size_check[(sizeof(RGE_Command_Order) == 0x14) ? 1 : -1];
+typedef char rge_command_stop_size_check[(sizeof(RGE_Command_Stop) == 0x02) ? 1 : -1];
+typedef char rge_command_pause_size_check[(sizeof(RGE_Command_Pause) == 0x02) ? 1 : -1];
+typedef char rge_command_group_ai_order_size_check[(sizeof(RGE_Command_Group_AI_Order) == 0x24) ? 1 : -1];
+typedef char rge_command_formation_size_check[(sizeof(RGE_Command_Formation) == 0x0C) ? 1 : -1];
+typedef char rge_command_group_waypoint_size_check[(sizeof(RGE_Command_Group_Waypoint) == 0x04) ? 1 : -1];
 
 class RGE_Command {
-protected:
+  protected:
     virtual void do_command_give_attribute(RGE_Command_Give_Attribute* order);
 
-public:
+  public:
     virtual ~RGE_Command();
     virtual void do_command(void* order);
     virtual void command_give_attribute(int player_id, int to_player_id, int attr_id, float attr_amount);
@@ -201,7 +195,7 @@ public:
     void reset_communications(TCommunications_Handler* com_hand_in);
     void do_commands();
 
-protected:
+  protected:
     RGE_Static_Object* get_obj(RGE_Obj_Info info);
     void do_command_group_waypoint(RGE_Command_Group_Waypoint* order);
     void do_command_add_attribute(RGE_Command_Add_Attribute* order);
@@ -226,23 +220,25 @@ protected:
     unsigned char check_for_duplicate_orders(unsigned char* order, long order_size);
     void submit(void* order, long order_size);
 
-public:
-    void command_order(RGE_Static_Object** unit, short unit_count,
-                       RGE_Static_Object* target, float location_x,
-                       float location_y);
+  public:
+    void command_order(
+        RGE_Static_Object** unit, short unit_count, RGE_Static_Object* target, float location_x, float location_y
+    );
     void command_stop(RGE_Static_Object** unit, short unit_count);
     void command_stop(int playerID, int* unitID, int numUnits);
     void command_pause(int playerID, int* unitID, int numUnits);
-    void command_work(RGE_Static_Object** unit, short unit_count,
-                      RGE_Static_Object* target, float location_x,
-                      float location_y);
-    void command_work(int playerID, int* unitID, int numUnits, int targetID,
-                      int targetPlayerID, float xLoc, float yLoc);
-    void command_move(RGE_Static_Object** unit, short unit_count,
-                      RGE_Static_Object* target, float location_x,
-                      float location_y);
-    void command_move(int playerID, int* unitID, int numUnits, int targetID,
-                      int targetPlayerID, float xLoc, float yLoc);
+    void command_work(
+        RGE_Static_Object** unit, short unit_count, RGE_Static_Object* target, float location_x, float location_y
+    );
+    void command_work(
+        int playerID, int* unitID, int numUnits, int targetID, int targetPlayerID, float xLoc, float yLoc
+    );
+    void command_move(
+        RGE_Static_Object** unit, short unit_count, RGE_Static_Object* target, float location_x, float location_y
+    );
+    void command_move(
+        int playerID, int* unitID, int numUnits, int targetID, int targetPlayerID, float xLoc, float yLoc
+    );
     void command_create(short obj_catagory, short player_id, float location_x, float location_y, float location_z);
     void command_add_attribute(int player_id, int attr_id, float attr_amount);
     void command_formation(RGE_Static_Object** unit, int unitCount, int formationID);
@@ -251,26 +247,24 @@ public:
     void command_add_to_group(int, int, int, int);
     void command_remove_from_group(int playerID, int commander, int unit);
     void command_destroy_group(int playerID, int groupCommander);
-    void command_ai_order(int playerID, int issuer, int recipient,
-                          int orderType, int target, int targetOwner,
-                          float targetX, float targetY, float targetZ,
-                          float range, unsigned char immediate,
-                          unsigned char inFront, unsigned char priority);
+    void command_ai_order(
+        int playerID, int issuer, int recipient, int orderType, int target, int targetOwner, float targetX,
+        float targetY, float targetZ, float range, unsigned char immediate, unsigned char inFront,
+        unsigned char priority
+    );
     void command_group_ai_order(
-        int playerID, int issuer, RGE_Static_Object** recipient,
-        short recipient_count, int orderType, int target, int targetOwner,
-        float targetX, float targetY, float targetZ, float range,
-        unsigned char immediate, unsigned char inFront,
-        unsigned char priority);
+        int playerID, int issuer, RGE_Static_Object** recipient, short recipient_count, int orderType, int target,
+        int targetOwner, float targetX, float targetY, float targetZ, float range, unsigned char immediate,
+        unsigned char inFront, unsigned char priority
+    );
     void command_resign(int player_id, int comm_player_id, int dropped);
     void command_add_waypoint(int playerID, int recipient, unsigned char x, unsigned char y, unsigned char z);
     void command_add_waypoint(int playerID, int recipient, XYZBYTEPoint* waypoint, int numWaypoints);
-    void command_group_waypoint(RGE_Static_Object** unit, short unit_count,
-                                unsigned char location_x,
-                                unsigned char location_y);
+    void command_group_waypoint(
+        RGE_Static_Object** unit, short unit_count, unsigned char location_x, unsigned char location_y
+    );
 };
 
-typedef char rge_command_size_check[
-    (sizeof(RGE_Command) == 0x18) ? 1 : -1];
+typedef char rge_command_size_check[(sizeof(RGE_Command) == 0x18) ? 1 : -1];
 
 #endif

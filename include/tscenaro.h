@@ -1,7 +1,6 @@
 #ifndef AOE1_TSCENARO_H
 #define AOE1_TSCENARO_H
 
-
 #include "scenario.h"
 
 typedef unsigned char uchar;
@@ -49,10 +48,10 @@ struct SP_Victory_Info {
 };
 
 class T_Scenario : public RGE_Scenario {
-private:
+  private:
     virtual RGE_Static_Object* get_object_pointer(int obj_ID);
 
-public:
+  public:
     virtual void rehook();
     virtual void save(int outfile);
 
@@ -144,7 +143,7 @@ public:
     void set_player_tech(TRIBE_Player* player);
     void update();
 
-private:
+  private:
     void ClearDisabledTechnologies();
     void SaveAttributesIntoPlayers();
     int get_object_ID(RGE_Static_Object* obj);
@@ -152,7 +151,7 @@ private:
 };
 
 class TRIBE_Scenario_Header : public RGE_Scenario_Header {
-public:
+  public:
     int any_sp_victory;
     int active_player_count;
 
@@ -162,7 +161,6 @@ public:
     virtual void save(int outfile);
 };
 
-typedef char t_scenario_size_check[
-    (sizeof(T_Scenario) == 0x514C) ? 1 : -1];
+typedef char t_scenario_size_check[(sizeof(T_Scenario) == 0x514C) ? 1 : -1];
 
 #endif

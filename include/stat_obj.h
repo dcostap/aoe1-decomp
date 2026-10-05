@@ -103,7 +103,7 @@ struct RGE_Check_Node {
 };
 
 class RGE_Check_List {
-public:
+  public:
     RGE_Check_Node* list;
     RGE_Check_List();
     ~RGE_Check_List();
@@ -111,12 +111,11 @@ public:
 };
 
 class RGE_Static_Object {
-public:
+  public:
     virtual ~RGE_Static_Object();
     RGE_Static_Object(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
     RGE_Static_Object(int infile, RGE_Game_World* gworld, int do_setup);
-    virtual void recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner,
-                                    float x, float y, float z);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     virtual void recycle_out_of_game();
     virtual void draw(TDrawArea* render_area, short x, short y, RGE_Color_Table* draw_color);
     virtual void shadow_draw(TDrawArea* render_area, short x, short y, unsigned char flag);
@@ -152,26 +151,43 @@ public:
     virtual void create_doppleganger_when_dying();
     virtual void destroy_obj();
     virtual void die_die_die();
-    virtual void damage(int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier,
-                        RGE_Player* attacking_player, RGE_Static_Object* attackingObject);
-    virtual float calculateDamage(int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier,
-                                  RGE_Player* attacking_player, RGE_Static_Object* attackingObject);
+    virtual void damage(
+        int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player,
+        RGE_Static_Object* attackingObject
+    );
+    virtual float calculateDamage(
+        int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player,
+        RGE_Static_Object* attackingObject
+    );
     virtual void rotate(long amount);
-    virtual unsigned char can_attack() { return 0; }
+    virtual unsigned char can_attack() {
+        return 0;
+    }
     virtual void set_attribute(short attr_type, float attr_amount);
     virtual void set_attribute_amount(float attr_amount, unsigned char delta, unsigned char check_max);
     // VC5 emits this overload group in reverse declaration order.
     virtual unsigned char heal(float healing);
-    virtual int heal(int, int) { return 0; }
-    virtual int canRepair() { return 0; }
+    virtual int heal(int, int) {
+        return 0;
+    }
+    virtual int canRepair() {
+        return 0;
+    }
     virtual void notify_of_relation(long player_id, unsigned char relation);
-    virtual void do_command(RGE_Static_Object*, float, float, float) {}
-    virtual void move_to(RGE_Static_Object*, float, float, float) {}
-    virtual void work(RGE_Static_Object*, float, float, float) {}
-    virtual void stop() {}
-    virtual void set_attack(RGE_Static_Object*) {}
-    virtual void play_command_sound() {}
-    virtual void play_move_sound() {}
+    virtual void do_command(RGE_Static_Object*, float, float, float) {
+    }
+    virtual void move_to(RGE_Static_Object*, float, float, float) {
+    }
+    virtual void work(RGE_Static_Object*, float, float, float) {
+    }
+    virtual void stop() {
+    }
+    virtual void set_attack(RGE_Static_Object*) {
+    }
+    virtual void play_command_sound() {
+    }
+    virtual void play_move_sound() {
+    }
     virtual void new_angle(float new_angle);
     virtual RGE_Static_Object* spawn_death_obj();
     virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float) {
@@ -181,87 +197,192 @@ public:
     virtual void release_being_worked_on(RGE_Static_Object* caller);
     virtual unsigned char is_moving();
     unsigned char is_dying();
-    virtual RGE_Static_Object* get_target_obj() { return 0; }
+    virtual RGE_Static_Object* get_target_obj() {
+        return 0;
+    }
     virtual void enter_obj(RGE_Static_Object* target);
     virtual void exit_obj();
     virtual int explore_terrain(RGE_Player* whos, unsigned char explore_type, int Override_LOS);
     virtual void unexplore_terrain(RGE_Player* whos, unsigned char explore_type, int Override_LOS);
     virtual LOSTBL* get_los_table();
-    virtual int inAttackRange(RGE_Static_Object*) { return 0; }
+    virtual int inAttackRange(RGE_Static_Object*) {
+        return 0;
+    }
     virtual unsigned char underAttack() const;
     virtual void setUnderAttack(unsigned char v);
     virtual float calc_attack_modifier(RGE_Static_Object*) {
         return 1.0f;
     }
-    virtual float getSpeed() const { return 0.0f; }
-    virtual float getAngle() const { return 0.0f; }
-    virtual float maximumSpeed() { return 0.0f; }
-    virtual float rateOfFire() { return 0.0f; }
-    virtual float damageCapability() { return 0.0f; }
-    virtual float damageCapability(RGE_Static_Object*) { return 0.0f; }
-    virtual float weaponRange() { return 0.0f; }
-    virtual float minimumWeaponRange() { return 0.0f; }
-    virtual int passableTile(float, float, int) { return 0; }
-    virtual unsigned char facetToNextWaypoint() const { return 0xFF; }
-    virtual int currentTargetID() const { return -1; }
-    virtual float currentTargetX() const { return -1.0f; }
-    virtual float currentTargetY() const { return -1.0f; }
-    virtual float currentTargetZ() const { return -1.0f; }
-    virtual void setWaitingToMove(unsigned char) {}
-    virtual unsigned char waitingToMove() const { return 0; }
-    virtual unsigned char actionState() const { return 0; }
-    virtual unsigned char keepGatheringWhenObjectIsOut(int) const { return 0; }
-    virtual unsigned char produceWhenKilledBy(int) const { return 1; }
-    virtual unsigned char useSameZoneDropsite() const { return 1; }
+    virtual float getSpeed() const {
+        return 0.0f;
+    }
+    virtual float getAngle() const {
+        return 0.0f;
+    }
+    virtual float maximumSpeed() {
+        return 0.0f;
+    }
+    virtual float rateOfFire() {
+        return 0.0f;
+    }
+    virtual float damageCapability() {
+        return 0.0f;
+    }
+    virtual float damageCapability(RGE_Static_Object*) {
+        return 0.0f;
+    }
+    virtual float weaponRange() {
+        return 0.0f;
+    }
+    virtual float minimumWeaponRange() {
+        return 0.0f;
+    }
+    virtual int passableTile(float, float, int) {
+        return 0;
+    }
+    virtual unsigned char facetToNextWaypoint() const {
+        return 0xFF;
+    }
+    virtual int currentTargetID() const {
+        return -1;
+    }
+    virtual float currentTargetX() const {
+        return -1.0f;
+    }
+    virtual float currentTargetY() const {
+        return -1.0f;
+    }
+    virtual float currentTargetZ() const {
+        return -1.0f;
+    }
+    virtual void setWaitingToMove(unsigned char) {
+    }
+    virtual unsigned char waitingToMove() const {
+        return 0;
+    }
+    virtual unsigned char actionState() const {
+        return 0;
+    }
+    virtual unsigned char keepGatheringWhenObjectIsOut(int) const {
+        return 0;
+    }
+    virtual unsigned char produceWhenKilledBy(int) const {
+        return 1;
+    }
+    virtual unsigned char useSameZoneDropsite() const {
+        return 1;
+    }
     virtual void __cdecl logDebug(char* textIn, ...);
-    virtual void notify(int, int, int, long, long, long) {}
-    virtual int attack(int, int) { return 0; }
-    virtual int attack(float, float, float, int) { return 0; }
-    virtual int moveTo(int, int) { return 0; }
-    virtual int moveTo(int, float, int) { return 0; }
-    virtual int moveTo(float, float, float, float, int) { return 0; }
-    virtual int moveAwayFrom(int, int) { return 0; }
-    virtual int hunt(int, int) { return 0; }
-    virtual int gather(int, int) { return 0; }
-    virtual int convert(int, int) { return 0; }
-    virtual int repair(int, int) { return 0; }
-    virtual int build(int, int) { return 0; }
-    virtual int trade(int, int) { return 0; }
-    virtual int explore(int, int, int) { return 0; }
-    virtual int enter(int, int) { return 0; }
-    virtual int unload(int, float, float, float) { return 0; }
-    virtual int transport(float, float, float, int) { return 0; }
-    virtual int stopAction() { return 0; }
-    virtual int pause() { return 0; }
+    virtual void notify(int, int, int, long, long, long) {
+    }
+    virtual int attack(int, int) {
+        return 0;
+    }
+    virtual int attack(float, float, float, int) {
+        return 0;
+    }
+    virtual int moveTo(int, int) {
+        return 0;
+    }
+    virtual int moveTo(int, float, int) {
+        return 0;
+    }
+    virtual int moveTo(float, float, float, float, int) {
+        return 0;
+    }
+    virtual int moveAwayFrom(int, int) {
+        return 0;
+    }
+    virtual int hunt(int, int) {
+        return 0;
+    }
+    virtual int gather(int, int) {
+        return 0;
+    }
+    virtual int convert(int, int) {
+        return 0;
+    }
+    virtual int repair(int, int) {
+        return 0;
+    }
+    virtual int build(int, int) {
+        return 0;
+    }
+    virtual int trade(int, int) {
+        return 0;
+    }
+    virtual int explore(int, int, int) {
+        return 0;
+    }
+    virtual int enter(int, int) {
+        return 0;
+    }
+    virtual int unload(int, float, float, float) {
+        return 0;
+    }
+    virtual int transport(float, float, float, int) {
+        return 0;
+    }
+    virtual int stopAction() {
+        return 0;
+    }
+    virtual int pause() {
+        return 0;
+    }
     // VC5 reverses this adjacent overload pair in the original vtable.
-    virtual int canPath(XYZPoint, float, int, float*, int, int, int) { return 0; }
-    virtual int canPath(int, float, float* = 0, int = 1, int = -1, int = -1) { return 0; }
-    virtual int canBidirectionPath(int, int, float, float*, int, int, int) { return 0; }
-    virtual int canPathWithObstructions(int, float, float*, int, int, int,
-                                        ManagedArray<int>&) { return 0; }
-    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int,
-                                                 int, int, int, int) { return 0; }
-    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*) { return 0; }
-    virtual int canLinePath(const XYPoint&, const XYPoint&, float, XYPoint&, int) { return 0; }
-    virtual int canLinePath(int, int, int, int, float, int) { return 0; }
-    virtual int firstTileAlongLine(const XYPoint&, const XYPoint&, XYPoint&, int,
-                                   int, int) { return 0; }
-    virtual XYZBYTEPoint* userDefinedWaypoint(int) { return 0; }
-    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int) { return 0; }
-    virtual void removeAllUserDefinedWaypoints(int) {}
-    virtual void removeUserDefinedWaypoint(int) {}
-    virtual int numberUserDefinedWaypoints() const { return 0; }
-    virtual Path* findAvoidancePath(XYZPoint&, float, int) { return 0; }
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int) {
+        return 0;
+    }
+    virtual int canPath(int, float, float* = 0, int = 1, int = -1, int = -1) {
+        return 0;
+    }
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int) {
+        return 0;
+    }
+    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArray<int>&) {
+        return 0;
+    }
+    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int) {
+        return 0;
+    }
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*) {
+        return 0;
+    }
+    virtual int canLinePath(const XYPoint&, const XYPoint&, float, XYPoint&, int) {
+        return 0;
+    }
+    virtual int canLinePath(int, int, int, int, float, int) {
+        return 0;
+    }
+    virtual int firstTileAlongLine(const XYPoint&, const XYPoint&, XYPoint&, int, int, int) {
+        return 0;
+    }
+    virtual XYZBYTEPoint* userDefinedWaypoint(int) {
+        return 0;
+    }
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int) {
+        return 0;
+    }
+    virtual void removeAllUserDefinedWaypoints(int) {
+    }
+    virtual void removeUserDefinedWaypoint(int) {
+    }
+    virtual int numberUserDefinedWaypoints() const {
+        return 0;
+    }
+    virtual Path* findAvoidancePath(XYZPoint&, float, int) {
+        return 0;
+    }
     virtual long get_action_checksum();
     virtual long get_waypoint_checksum();
     // overload at +0x1D8 and the master overload at +0x1DC.
-protected:
+  protected:
     virtual int setup(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     virtual int setup(int infile, RGE_Game_World* gworld);
     virtual RGE_Object_List* create_object_list();
     virtual RGE_Active_Sprite_List* create_sprite_list();
 
-public:
+  public:
     void release_from_holder();
     unsigned char more_room();
     float distance_to_position(float x, float y, float z);
@@ -359,12 +480,12 @@ public:
     void capture_frame(TDrawArea* render_area, short x, short y);
     RGE_Static_Object* get_object_pointer(long obj_id);
     unsigned char drop_held_objects(int dropZone);
-    unsigned char find_drop_location(int dropZone, float& x, float& y, RGE_Master_Static_Object* m_obj,
-                                     RGE_Static_Object* obj, float drop_x, float drop_y,
-                                     float radius_x, float radius_y);
+    unsigned char find_drop_location(
+        int dropZone, float& x, float& y, RGE_Master_Static_Object* m_obj, RGE_Static_Object* obj, float drop_x,
+        float drop_y, float radius_x, float radius_y
+    );
 };
 
-typedef char rge_static_object_size_check[
-    (sizeof(RGE_Static_Object) == 0x88) ? 1 : -1];
+typedef char rge_static_object_size_check[(sizeof(RGE_Static_Object) == 0x88) ? 1 : -1];
 
 #endif

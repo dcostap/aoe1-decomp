@@ -70,7 +70,7 @@ void TDebuggingLog::Time() {
     time_t ltime;
     time(&ltime);
     struct tm* timeinfo = localtime(&ltime);
-    float fTicksElapsed = (float)(ticks - LogStartTickCount) * 0.001f;
+    float fTicksElapsed = (float) (ticks - LogStartTickCount) * 0.001f;
     const char* timestr;
 
     if (timeinfo == 0) {
@@ -78,7 +78,7 @@ void TDebuggingLog::Time() {
     } else {
         timestr = asctime(timeinfo);
     }
-    Log(">>>TIME>>>  %s   [%7.1f sec. elapsed]", timestr, (double)fTicksElapsed);
+    Log(">>>TIME>>>  %s   [%7.1f sec. elapsed]", timestr, (double) fTicksElapsed);
 }
 
 void TDebuggingLog::FlushToDisk(int DoFlush) {
@@ -176,12 +176,12 @@ void __cdecl TDebuggingLog::Log(char* fmt, ...) {
     char s4[32];
     char s1[32];
 
-    float elapsed = ((float)ticks - (float)LogStartTickCount) * 0.001f;
+    float elapsed = ((float) ticks - (float) LogStartTickCount) * 0.001f;
 
     s1[0] = s2[0] = s4[0] = s3[0] = 0;
 
     if (Timestamp != 0) {
-        sprintf(s1, "%.2f |", (double)elapsed);
+        sprintf(s1, "%.2f |", (double) elapsed);
     }
 
     if (DateTimestamp != 0) {

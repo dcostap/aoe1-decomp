@@ -5,7 +5,7 @@ class TSound_Driver;
 class TDigital;
 
 class TTaunt {
-public:
+  public:
     TDigital* Audio[4];
     int LastAudioPlayed;
     char TBuff[255];

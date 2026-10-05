@@ -13,8 +13,7 @@ typedef unsigned char uchar;
 
 extern int __cdecl debug_rand(char*, int);
 
-TRIBE_Map::TRIBE_Map(int infile, RGE_Sound** sound, unsigned char setup)
-    : RGE_Map(infile, sound, 0) {
+TRIBE_Map::TRIBE_Map(int infile, RGE_Sound** sound, unsigned char setup) : RGE_Map(infile, sound, 0) {
     if (setup != 0) {
         this->data_load_random_map(infile);
     }
@@ -38,32 +37,32 @@ TRIBE_Map::TRIBE_Map(int infile, RGE_Sound** sound, unsigned char setup)
         cliff.facet2 = -1;
     }
 
-    setup_cliff_type(1,0,0,0,0x108,0x10,-1,-1,1.5f,1.5f);
-    setup_cliff_type(0,1,0,0,0x108,0x12,-1,-1,1.5f,1.5f);
-    setup_cliff_type(0,0,1,0,0x108,0x11,-1,-1,1.5f,1.5f);
-    setup_cliff_type(0,0,0,1,0x108,0x13,-1,-1,1.5f,1.5f);
-    setup_cliff_type(-1,0,0,0,0x10a,0x14,-1,-1,1.5f,1.5f);
-    setup_cliff_type(0,-1,0,0,0x109,0x16,-1,-1,1.5f,1.5f);
-    setup_cliff_type(0,0,-1,0,0x10a,0x15,-1,-1,1.5f,1.5f);
-    setup_cliff_type(0,0,0,-1,0x109,0x17,-1,-1,1.5f,1.5f);
-    setup_cliff_type(-1,1,0,0,0x10e,0,-1,-1,1.5f,2.0f);
-    setup_cliff_type(0,-1,-1,0,0x110,9,-1,-1,1.0f,2.0f);
-    setup_cliff_type(0,0,1,-1,0x10c,6,-1,-1,1.0f,1.5f);
-    setup_cliff_type(1,0,0,1,0x108,3,-1,-1,1.5f,1.5f);
-    setup_cliff_type(1,-1,0,0,0x10b,0xc,-1,-1,2.0f,1.5f);
-    setup_cliff_type(0,1,1,0,0x108,0xf,-1,-1,1.5f,1.5f);
-    setup_cliff_type(0,0,-1,1,0x10d,0xe,-1,-1,1.5f,1.0f);
-    setup_cliff_type(-1,0,0,-1,0x10f,0xd,-1,-1,2.0f,1.0f);
-    setup_cliff_type(1,0,1,0,0x108,4,0x108,5,1.5f,1.5f);
-    setup_cliff_type(0,1,0,1,0x108,1,0x108,2,1.5f,1.5f);
-    setup_cliff_type(-1,0,-1,0,0x10a,0xb,0x10a,10,1.5f,1.5f);
-    setup_cliff_type(0,-1,0,-1,0x109,8,0x109,7,1.5f,1.5f);
+    setup_cliff_type(1, 0, 0, 0, 0x108, 0x10, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(0, 1, 0, 0, 0x108, 0x12, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(0, 0, 1, 0, 0x108, 0x11, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(0, 0, 0, 1, 0x108, 0x13, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(-1, 0, 0, 0, 0x10a, 0x14, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(0, -1, 0, 0, 0x109, 0x16, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(0, 0, -1, 0, 0x10a, 0x15, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(0, 0, 0, -1, 0x109, 0x17, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(-1, 1, 0, 0, 0x10e, 0, -1, -1, 1.5f, 2.0f);
+    setup_cliff_type(0, -1, -1, 0, 0x110, 9, -1, -1, 1.0f, 2.0f);
+    setup_cliff_type(0, 0, 1, -1, 0x10c, 6, -1, -1, 1.0f, 1.5f);
+    setup_cliff_type(1, 0, 0, 1, 0x108, 3, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(1, -1, 0, 0, 0x10b, 0xc, -1, -1, 2.0f, 1.5f);
+    setup_cliff_type(0, 1, 1, 0, 0x108, 0xf, -1, -1, 1.5f, 1.5f);
+    setup_cliff_type(0, 0, -1, 1, 0x10d, 0xe, -1, -1, 1.5f, 1.0f);
+    setup_cliff_type(-1, 0, 0, -1, 0x10f, 0xd, -1, -1, 2.0f, 1.0f);
+    setup_cliff_type(1, 0, 1, 0, 0x108, 4, 0x108, 5, 1.5f, 1.5f);
+    setup_cliff_type(0, 1, 0, 1, 0x108, 1, 0x108, 2, 1.5f, 1.5f);
+    setup_cliff_type(-1, 0, -1, 0, 0x10a, 0xb, 0x10a, 10, 1.5f, 1.5f);
+    setup_cliff_type(0, -1, 0, -1, 0x109, 8, 0x109, 7, 1.5f, 1.5f);
 }
 
-TRIBE_Map::TRIBE_Map(char* border_tbl, char* overlay_tbl, char* terrain_tbl,
-                     char* map_tbl, short TileWid, short TileHgt,
-                     short ElevHgt, RGE_Sound** sound)
-    : RGE_Map(border_tbl, terrain_tbl, map_tbl, TileWid, TileHgt, ElevHgt, sound) {
+TRIBE_Map::TRIBE_Map(
+    char* border_tbl, char* overlay_tbl, char* terrain_tbl, char* map_tbl, short TileWid, short TileHgt, short ElevHgt,
+    RGE_Sound** sound
+) : RGE_Map(border_tbl, terrain_tbl, map_tbl, TileWid, TileHgt, ElevHgt, sound) {
 }
 
 TRIBE_Map::~TRIBE_Map() {
@@ -73,9 +72,9 @@ void TRIBE_Map::save(int outfile) {
     RGE_Map::save(outfile);
 }
 
-void TRIBE_Map::map_generate(RGE_Player* owner, RGE_Game_World* gworld,
-                             RGE_Player_Info* player_info,
-                             unsigned char* zone_terrain) {
+void TRIBE_Map::map_generate(
+    RGE_Player* owner, RGE_Game_World* gworld, RGE_Player_Info* player_info, unsigned char* zone_terrain
+) {
     // The shipped wrapper stores player at +0x8DD4 and world at
     // +0x8DD8 before it delegates to the one-argument overload.
     this->rge_player = owner;
@@ -92,12 +91,12 @@ void TRIBE_Map::data_load_random_map(int infile) {
 }
 
 void TRIBE_Map::load_random_map(char* rmm_map_file, char* rmm_land_file, char* rmm_terr_file, char* rmm_obj_file) {
-    TRIBE_RMM_Database_Controller* ctrl = new TRIBE_RMM_Database_Controller(rmm_land_file, rmm_terr_file, rmm_obj_file, rmm_map_file);
+    TRIBE_RMM_Database_Controller* ctrl =
+        new TRIBE_RMM_Database_Controller(rmm_land_file, rmm_terr_file, rmm_obj_file, rmm_map_file);
     this->random_map = ctrl;
 }
 
-void TRIBE_Map::check_tile_for_forest_change(short x, short y,
-                                              RGE_Game_World* world) {
+void TRIBE_Map::check_tile_for_forest_change(short x, short y, RGE_Game_World* world) {
     RGE_Tile* tile = this->map_row_offset[y] + x;
     short x0 = x - 1;
     short y0 = y - 1;
@@ -111,15 +110,14 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     if (y0 < 0)
         y0 = 0;
     if (x1 >= this->map_width)
-        x1 = (short)this->map_width - 1;
+        x1 = (short) this->map_width - 1;
     if (y1 >= this->map_height)
-        y1 = (short)this->map_height - 1;
+        y1 = (short) this->map_height - 1;
 
     if (tile->terrain_type == 10) {
         for (short row = y0; row <= y1; ++row) {
             for (short col = x0; col <= x1; ++col) {
-                unsigned char terrain =
-                    this->map_row_offset[row][col].terrain_type;
+                unsigned char terrain = this->map_row_offset[row][col].terrain_type;
                 if (terrain != 10 && terrain != 18)
                     success = 1;
             }
@@ -130,7 +128,8 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     } else if (tile->terrain_type == 18) {
         RGE_Object_Node* node = tile->objects.list;
         while (node != 0) {
-            if (node->node->master_obj->object_group == OBJECT_GROUP_TREE && node->node->object_state < RGE_OBJECT_STATE_READY_TO_REMOVE)
+            if (node->node->master_obj->object_group == OBJECT_GROUP_TREE
+                && node->node->object_state < RGE_OBJECT_STATE_READY_TO_REMOVE)
                 forest_object = 1;
             node = node->next;
         }
@@ -189,8 +188,8 @@ void TRIBE_Map::change_terrain(short map_col, short map_row, unsigned char new_t
             unsigned char save_border_shape = tile->border_shape;
             this->get_border_type(col2, row);
 
-            if (player != 0 && (tile->border_type != old_border || tile->border_shape != save_border_shape) &&
-                world->game_state != 3) {
+            if (player != 0 && (tile->border_type != old_border || tile->border_shape != save_border_shape)
+                && world->game_state != 3) {
                 player->diam_tile_list.add_node(col2, row);
             }
         }
@@ -217,7 +216,7 @@ unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long brush_size, unsig
         for (long cy = start_y; cy <= y2; cy++) {
             for (long cx = x1; cx <= end_x; cx++) {
                 if (do_terrain_brush_check(cx, cy)) {
-                    set_terrain(this->game_world, (short)cx, (short)cy, terrain_id, 0, 0);
+                    set_terrain(this->game_world, (short) cx, (short) cy, terrain_id, 0, 0);
                 }
             }
         }
@@ -226,15 +225,15 @@ unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long brush_size, unsig
 
     for (long cy = start_y; cy <= y2; cy++) {
         for (long cx = x1; cx <= end_x; cx++) {
-            set_terrain(this->game_world, (short)cx, (short)cy, terrain_id, 0, 0);
+            set_terrain(this->game_world, (short) cx, (short) cy, terrain_id, 0, 0);
         }
     }
     return 1;
 }
 
-unsigned char TRIBE_Map::do_terrain_brush_stroke(long x1, long y1, long x2,
-                                                 long y2, long brush_size,
-                                                 unsigned char terrain_id) {
+unsigned char TRIBE_Map::do_terrain_brush_stroke(
+    long x1, long y1, long x2, long y2, long brush_size, unsigned char terrain_id
+) {
     RGE_Map::do_terrain_brush_stroke(x1, y1, x2, y2, brush_size, terrain_id);
 
     if (x1 < x2) {
@@ -259,11 +258,10 @@ unsigned char TRIBE_Map::do_terrain_brush_stroke(long x1, long y1, long x2,
     return 1;
 }
 
-unsigned char TRIBE_Map::do_elevation_brush_stroke(long x1, long y1, long x2,
-                                                   long y2, long brush_size,
-                                                   unsigned char elevation_height) {
-    RGE_Map::do_elevation_brush_stroke(x1, y1, x2, y2, brush_size,
-                                       elevation_height);
+unsigned char TRIBE_Map::do_elevation_brush_stroke(
+    long x1, long y1, long x2, long y2, long brush_size, unsigned char elevation_height
+) {
+    RGE_Map::do_elevation_brush_stroke(x1, y1, x2, y2, brush_size, elevation_height);
 
     if (x1 < x2) {
         x1 -= brush_size + elevation_height;
@@ -292,9 +290,9 @@ unsigned char TRIBE_Map::do_elevation_brush_stroke(long x1, long y1, long x2,
     return 1;
 }
 
-void TRIBE_Map::setup_cliff_type(long r, long d, long l, long u, long id,
-                                 long facet, long id2, long facet2,
-                                 float offset_x, float offset_y) {
+void TRIBE_Map::setup_cliff_type(
+    long r, long d, long l, long u, long id, long facet, long id2, long facet2, float offset_x, float offset_y
+) {
     int info_index;
     int cliff_index;
 
@@ -358,16 +356,16 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 }
 
 TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* cliff) {
-    TRIBE_Cliff_Info ret = {0, 0, 0, 0};
+    TRIBE_Cliff_Info ret = { 0, 0, 0, 0 };
 
     if (cliff == 0)
         return ret;
 
-    int facet = (int)cliff->facet;
-    int master_obj_id = (int)cliff->master_obj->id;
+    int facet = (int) cliff->facet;
+    int master_obj_id = (int) cliff->master_obj->id;
     for (int i = 0; i < 0x100; ++i) {
-        if ((cliff_master_table[i].id == master_obj_id && cliff_master_table[i].facet == facet) ||
-            (cliff_master_table[i].id2 == master_obj_id && cliff_master_table[i].facet2 == facet)) {
+        if ((cliff_master_table[i].id == master_obj_id && cliff_master_table[i].facet == facet)
+            || (cliff_master_table[i].id2 == master_obj_id && cliff_master_table[i].facet2 == facet)) {
             return cliff_master_table[i].info;
         }
     }
@@ -382,22 +380,19 @@ unsigned char TRIBE_Map::check_cliff_valid(TRIBE_Cliff_Info info) {
     return this->cliff_master_table[temp + 0x55].id >= 0;
 }
 
-RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
-                                              TRIBE_Cliff_Info info) {
+RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y, TRIBE_Cliff_Info info) {
     long info0 = info.info[0];
     long info1 = info.info[1];
     int i = info0 * 16 + info1 * 4 + info.info[2];
     int cliff_index = i * 4 + info.info[3] + 0x55;
     long facet;
-    float world_x = (float)(x * 3) +
-        this->cliff_master_table[cliff_index].offset_x;
-    float world_y = (float)(y * 3) +
-        this->cliff_master_table[cliff_index].offset_y;
+    float world_x = (float) (x * 3) + this->cliff_master_table[cliff_index].offset_x;
+    float world_y = (float) (y * 3) + this->cliff_master_table[cliff_index].offset_y;
     RGE_Static_Object* new_cliff;
     long id;
 
-    if (this->cliff_master_table[cliff_index].id2 > -1 &&
-        debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tmap.cpp", 545) * 2 > 0x7fff) {
+    if (this->cliff_master_table[cliff_index].id2 > -1
+        && debug_rand((char*) "C:\\msdev\\work\\age1_x1\\tmap.cpp", 545) * 2 > 0x7fff) {
         id = this->cliff_master_table[cliff_index].id2;
         facet = this->cliff_master_table[cliff_index].facet2;
     } else {
@@ -410,15 +405,16 @@ RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
 
         for (long tile_offset = -1; tile_offset < 2; ++tile_offset) {
             for (long j = -1; j < 2; ++j) {
-                this->game_world->players[this->game_world->curr_player]
-                    ->diam_tile_list.add_node((int)(tile_offset + (long)(world_x)), (int)(j + (long)(world_y)));
+                this->game_world->players[this->game_world->curr_player]->diam_tile_list.add_node(
+                    (int) (tile_offset + (long) (world_x)), (int) (j + (long) (world_y))
+                );
             }
         }
 
         if (new_cliff != 0)
-            new_cliff->facet = (unsigned char)facet;
+            new_cliff->facet = (unsigned char) facet;
 
-        static_cast<TRIBE_World*>(this->game_world)->check_destructables(0, (short)id, world_x, world_y, 1);
+        static_cast<TRIBE_World*>(this->game_world)->check_destructables(0, (short) id, world_x, world_y, 1);
     } else {
         new_cliff = 0;
     }
@@ -430,26 +426,26 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long direction) {
     TRIBE_Cliff_Info cliff_info;
 
     switch (direction) {
-    case 0:
-        ++x;
-        if (x >= this->map_width)
-            return;
-        break;
-    case 2:
-        if (x <= 0)
-            return;
-        --x;
-        break;
-    case 3:
-        if (y <= 0)
-            return;
-        --y;
-        break;
-    case 1:
-        ++y;
-        if (y >= this->map_height)
-            return;
-        break;
+        case 0:
+            ++x;
+            if (x >= this->map_width)
+                return;
+            break;
+        case 2:
+            if (x <= 0)
+                return;
+            --x;
+            break;
+        case 3:
+            if (y <= 0)
+                return;
+            --y;
+            break;
+        case 1:
+            ++y;
+            if (y >= this->map_height)
+                return;
+            break;
     }
 
     RGE_Static_Object* cliff = this->find_cliff(x, y);
@@ -460,8 +456,9 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long direction) {
         do {
             int inner = -1;
             do {
-                this->game_world->players[this->game_world->curr_player]
-                    ->diam_tile_list.add_node(outer + (long)cliff->world_x, inner + (long)cliff->world_y);
+                this->game_world->players[this->game_world->curr_player]->diam_tile_list.add_node(
+                    outer + (long) cliff->world_x, inner + (long) cliff->world_y
+                );
                 ++inner;
             } while (inner < 2);
             ++outer;
@@ -481,8 +478,7 @@ long TRIBE_Map::reverse_cliff_direction(long direction) {
     return result;
 }
 
-long TRIBE_Map::add_cliff_edge(long x, long y, long direction, long facing,
-                               long save_direction) {
+long TRIBE_Map::add_cliff_edge(long x, long y, long direction, long facing, long save_direction) {
     RGE_Static_Object* cliff = this->find_cliff(x, y);
     TRIBE_Cliff_Info cliff_info = this->get_cliff_info(cliff);
     long possible_direction1 = 0;
@@ -502,8 +498,9 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long direction, long facing,
     if (cliff != 0) {
         for (long i = -1; i < 2; ++i) {
             for (long j = -1; j < 2; ++j) {
-                this->game_world->players[this->game_world->curr_player]
-                    ->diam_tile_list.add_node(i + (long)cliff->world_x, j + (long)cliff->world_y);
+                this->game_world->players[this->game_world->curr_player]->diam_tile_list.add_node(
+                    i + (long) cliff->world_x, j + (long) cliff->world_y
+                );
             }
         }
         delete cliff;
@@ -613,8 +610,7 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long direction, long facing,
                 if (!valid) {
                     valid = 0;
                     if (possible_facing2 > -1) {
-                        cliff_info.info[possible_facing2] =
-                            possible_direction2;
+                        cliff_info.info[possible_facing2] = possible_direction2;
                         if (!this->check_cliff_valid(cliff_info)) {
                             cliff_info.info[possible_facing2] = 0;
                         } else {
@@ -663,8 +659,9 @@ void TRIBE_Map::delete_cliff(long x, long y) {
             int inner = -1;
             do {
                 RGE_Game_World* world = this->game_world;
-                world->players[world->curr_player]->diam_tile_list.add_node(y + (long)cliff->world_x,
-                                                                            inner + (long)cliff->world_y);
+                world->players[world->curr_player]->diam_tile_list.add_node(
+                    y + (long) cliff->world_x, inner + (long) cliff->world_y
+                );
                 inner++;
             } while (inner < 2);
             y++;
@@ -739,9 +736,9 @@ unsigned char TRIBE_Map::do_cliff_brush(long x, long y, unsigned char cliff_id, 
     return 1;
 }
 
-unsigned char TRIBE_Map::do_cliff_brush_stroke(long x1, long y1, long x2,
-                                               long y2, unsigned char cliff_id,
-                                               unsigned char delete_cliff) {
+unsigned char TRIBE_Map::do_cliff_brush_stroke(
+    long x1, long y1, long x2, long y2, unsigned char cliff_id, unsigned char delete_cliff
+) {
     if (this->safe_cliff_x != x1 / 3 || this->safe_cliff_y != y1 / 3) {
         this->old_cliff_x = -1;
         this->old_cliff_y = -1;
@@ -763,8 +760,7 @@ unsigned char TRIBE_Map::water(unsigned char terrain) {
     return 0;
 }
 
-void TRIBE_Map::clean_borders(long x1, long y1, long x2, long y2,
-                              unsigned char terrain_id) {
+void TRIBE_Map::clean_borders(long x1, long y1, long x2, long y2, unsigned char terrain_id) {
     long max_y = this->map_height - 1;
     long max_x = this->map_width - 1;
 
@@ -783,44 +779,43 @@ void TRIBE_Map::clean_borders(long x1, long y1, long x2, long y2,
             for (; x <= x2; ++x) {
                 if (this->map_row_offset[y1][x].terrain_type == 2) {
                     bool border = false;
-                    if ((y1 > 0 && this->water(this->map_row_offset[y1 - 1][x].terrain_type)) ||
-                        (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x].terrain_type)))
+                    if ((y1 > 0 && this->water(this->map_row_offset[y1 - 1][x].terrain_type))
+                        || (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x].terrain_type)))
                         border = true;
                     if (x > 0) {
-                        if (this->water(this->map_row_offset[y1][x - 1].terrain_type) ||
-                            (y1 > 0 && this->water(this->map_row_offset[y1 - 1][x - 1].terrain_type)) ||
-                            (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x - 1].terrain_type)))
+                        if (this->water(this->map_row_offset[y1][x - 1].terrain_type)
+                            || (y1 > 0 && this->water(this->map_row_offset[y1 - 1][x - 1].terrain_type))
+                            || (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x - 1].terrain_type)))
                             border = true;
                     }
                     if (x < max_x) {
-                        if (this->water(this->map_row_offset[y1][x + 1].terrain_type) ||
-                            (y1 > 0 && this->water(this->map_row_offset[y1 - 1][x + 1].terrain_type)) ||
-                            (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x + 1].terrain_type)))
+                        if (this->water(this->map_row_offset[y1][x + 1].terrain_type)
+                            || (y1 > 0 && this->water(this->map_row_offset[y1 - 1][x + 1].terrain_type))
+                            || (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x + 1].terrain_type)))
                             border = 1;
                     }
                     if (border == 1)
                         continue;
-                    RGE_Map::set_terrain(this->game_world, (short)x,
-                                         (short)y1, terrain_id, 0, 0);
+                    RGE_Map::set_terrain(this->game_world, (short) x, (short) y1, terrain_id, 0, 0);
                 } else if (!this->water(this->map_row_offset[y1][x].terrain_type)) {
                     bool border = false;
-                    if ((y1 > 0 && this->water(this->map_row_offset[y1 - 1][x].terrain_type)) ||
-                        (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x].terrain_type)))
+                    if ((y1 > 0 && this->water(this->map_row_offset[y1 - 1][x].terrain_type))
+                        || (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x].terrain_type)))
                         border = true;
                     if (x > 0) {
-                        if (this->water(this->map_row_offset[y1][x - 1].terrain_type) ||
-                            (y1 > 0 && this->water(this->map_row_offset[y1 - 1][x - 1].terrain_type)) ||
-                            (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x - 1].terrain_type)))
+                        if (this->water(this->map_row_offset[y1][x - 1].terrain_type)
+                            || (y1 > 0 && this->water(this->map_row_offset[y1 - 1][x - 1].terrain_type))
+                            || (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x - 1].terrain_type)))
                             border = true;
                     }
                     if (x < max_x) {
-                        if (this->water(this->map_row_offset[y1][x + 1].terrain_type) ||
-                            (y1 > 0 && this->water(this->map_row_offset[y1 - 1][x + 1].terrain_type)) ||
-                            (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x + 1].terrain_type)))
+                        if (this->water(this->map_row_offset[y1][x + 1].terrain_type)
+                            || (y1 > 0 && this->water(this->map_row_offset[y1 - 1][x + 1].terrain_type))
+                            || (y1 < max_y && this->water(this->map_row_offset[y1 + 1][x + 1].terrain_type)))
                             border = 1;
                     }
                     if (border == 1)
-                        this->set_terrain(this->game_world, (short)x, (short)y1, 2, 0, 0);
+                        this->set_terrain(this->game_world, (short) x, (short) y1, 2, 0, 0);
                 }
             }
         }
@@ -871,23 +866,22 @@ void TRIBE_Map::tribe_clean_elevation(long x1, long y1, long x2, long y2) {
         for (long x = x1; x <= x2; ++x) {
             if (water(map_row_offset[y1][x].terrain_type)) {
                 if (!do_terrain_brush_check(x, y1)) {
-                    RGE_Map::set_terrain(game_world, (short)x,
-                                         (short)y1, 0, 0, 0);
+                    RGE_Map::set_terrain(game_world, (short) x, (short) y1, 0, 0, 0);
                 }
             }
         }
     }
 }
 
-void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
-                                     unsigned char check_terrain,
-                                     unsigned char replacement_terrain) {
-    short map_width = (short)this->map_width;
-    short offset1 = (short)(-1 - map_width);
-    short offset2 = (short)-map_width;
-    short offset3 = (short)(1 - map_width);
-    short offset5 = (short)(map_width + 1);
-    short offset7 = (short)(map_width - 1);
+void TRIBE_Map::tribe_clean_terrain(
+    long x1, long y1, long x2, long y2, unsigned char check_terrain, unsigned char replacement_terrain
+) {
+    short map_width = (short) this->map_width;
+    short offset1 = (short) (-1 - map_width);
+    short offset2 = (short) -map_width;
+    short offset3 = (short) (1 - map_width);
+    short offset5 = (short) (map_width + 1);
+    short offset7 = (short) (map_width - 1);
 
     if (x1 < 0)
         x1 = 0;
@@ -912,9 +906,9 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
 
         int pass_index = 0;
         do {
-            for (int row = (int)y1; row <= y2; ++row) {
+            for (int row = (int) y1; row <= y2; ++row) {
                 RGE_Tile* til = this->map_row_offset[row] + x1;
-                for (int col = (int)x1; col <= x2; ++til, ++col) {
+                for (int col = (int) x1; col <= x2; ++til, ++col) {
                     if (this->water(til->terrain_type & 0x1f))
                         continue;
 
@@ -984,8 +978,8 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
                         continue;
 
                     if (!this->water(replacement_terrain)) {
-                        short srow = (short)row;
-                        short scol = (short)col;
+                        short srow = (short) row;
+                        short scol = (short) col;
                         if (place2)
                             RGE_Map::set_terrain(this->game_world, scol - 1, srow - 1, replacement_terrain, 0, 0);
                         if (place3)
@@ -1005,7 +999,7 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
                     } else {
                         if (!this->do_terrain_brush_check(col, row))
                             continue;
-                        RGE_Map::set_terrain(this->game_world, (short)col, (short)row, replacement_terrain, 0, 0);
+                        RGE_Map::set_terrain(this->game_world, (short) col, (short) row, replacement_terrain, 0, 0);
                     }
                     change_flag = 1;
                 }
@@ -1015,7 +1009,5 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
     } while (change_flag != 0);
 
     this->clean_borders(x1, y1, x2, y2, replacement_terrain);
-    RGE_Map::set_terrain((RGE_Player*)0, (RGE_Game_World*)0,
-                         (short)x1, (short)y1, (short)x2, (short)y2,
-                         0, 0, 0);
+    RGE_Map::set_terrain((RGE_Player*) 0, (RGE_Game_World*) 0, (short) x1, (short) y1, (short) x2, (short) y2, 0, 0, 0);
 }

@@ -5,10 +5,9 @@ char* __cdecl strcpy(char* dest, const char* src);
 void __cdecl rge_read(int handle, void* buf, int size);
 void __cdecl rge_write(int file, void* data, int size);
 
-EmotionalAIModule::EmotionalAIModule(void* pW, int playerID)
-    : AIModule("Emotional AI", 0x3EC, playerID, pW)
-    , md(0) {
-    for (int i = 0; i < 6; i++) stateValue[i] = 49;
+EmotionalAIModule::EmotionalAIModule(void* pW, int playerID) : AIModule("Emotional AI", 0x3EC, playerID, pW), md(0) {
+    for (int i = 0; i < 6; i++)
+        stateValue[i] = 49;
     strcpy(stateNameValue[0], "Aggressive");
     strcpy(stateNameValue[1], "Compassionate");
     strcpy(stateNameValue[2], "Defensive");
@@ -17,9 +16,7 @@ EmotionalAIModule::EmotionalAIModule(void* pW, int playerID)
     strcpy(stateNameValue[5], "Vengeful");
 }
 
-EmotionalAIModule::EmotionalAIModule(int playerID, int infile)
-    : AIModule("Emotional AI", 0x3EC, playerID, 0)
-    , md(0) {
+EmotionalAIModule::EmotionalAIModule(int playerID, int infile) : AIModule("Emotional AI", 0x3EC, playerID, 0), md(0) {
     int* ptr = stateValue;
     int count = 6;
     do {
@@ -63,12 +60,14 @@ char* EmotionalAIModule::stateName(int s) {
 }
 
 int EmotionalAIModule::state(int s) const {
-    if (s < 0 || s >= 6) return -1;
+    if (s < 0 || s >= 6)
+        return -1;
     return this->stateValue[s];
 }
 
 void EmotionalAIModule::setState(int s, int value) {
-    if (s < 0 || s >= 6) return;
+    if (s < 0 || s >= 6)
+        return;
     this->stateValue[s] = value;
 }
 
@@ -103,54 +102,54 @@ int EmotionalAIModule::overallState(void) const {
 
 void EmotionalAIModule::setOverallState(int s) {
     switch (s) {
-    case 0:
-        stateValue[0] = 100;
-        stateValue[4] = 10;
-        stateValue[1] = 10;
-        stateValue[3] = 10;
-        stateValue[2] = 0;
-        stateValue[5] = 70;
-        break;
-    case 4:
-        stateValue[0] = 20;
-        stateValue[4] = 100;
-        stateValue[1] = 70;
-        stateValue[3] = 50;
-        stateValue[2] = 60;
-        stateValue[5] = 0;
-        break;
-    case 1:
-        stateValue[0] = 10;
-        stateValue[4] = 50;
-        stateValue[1] = 100;
-        stateValue[3] = 80;
-        stateValue[2] = 50;
-        stateValue[5] = 0;
-        break;
-    case 3:
-        stateValue[0] = 10;
-        stateValue[4] = 50;
-        stateValue[1] = 70;
-        stateValue[3] = 100;
-        stateValue[2] = 50;
-        stateValue[5] = 20;
-        break;
-    case 2:
-        stateValue[0] = 20;
-        stateValue[4] = 60;
-        stateValue[1] = 50;
-        stateValue[3] = 50;
-        stateValue[2] = 100;
-        stateValue[5] = 10;
-        break;
-    case 5:
-        stateValue[0] = 90;
-        stateValue[4] = 10;
-        stateValue[1] = 0;
-        stateValue[3] = 30;
-        stateValue[2] = 50;
-        stateValue[5] = 100;
-        break;
+        case 0:
+            stateValue[0] = 100;
+            stateValue[4] = 10;
+            stateValue[1] = 10;
+            stateValue[3] = 10;
+            stateValue[2] = 0;
+            stateValue[5] = 70;
+            break;
+        case 4:
+            stateValue[0] = 20;
+            stateValue[4] = 100;
+            stateValue[1] = 70;
+            stateValue[3] = 50;
+            stateValue[2] = 60;
+            stateValue[5] = 0;
+            break;
+        case 1:
+            stateValue[0] = 10;
+            stateValue[4] = 50;
+            stateValue[1] = 100;
+            stateValue[3] = 80;
+            stateValue[2] = 50;
+            stateValue[5] = 0;
+            break;
+        case 3:
+            stateValue[0] = 10;
+            stateValue[4] = 50;
+            stateValue[1] = 70;
+            stateValue[3] = 100;
+            stateValue[2] = 50;
+            stateValue[5] = 20;
+            break;
+        case 2:
+            stateValue[0] = 20;
+            stateValue[4] = 60;
+            stateValue[1] = 50;
+            stateValue[3] = 50;
+            stateValue[2] = 100;
+            stateValue[5] = 10;
+            break;
+        case 5:
+            stateValue[0] = 90;
+            stateValue[4] = 10;
+            stateValue[1] = 0;
+            stateValue[3] = 30;
+            stateValue[2] = 50;
+            stateValue[5] = 100;
+            break;
     }
 }
 

@@ -6,22 +6,16 @@
 
 #include "../include/rge_fio.h"
 
-ResearchAIModule::ResearchAIModule(void* pW, int playerID)
-    : AIModule((char*)"Research AI", 0x3ee, playerID, pW),
-      md(0),
-      techTree(),
-      techTreeLengthValue(0) {
+ResearchAIModule::ResearchAIModule(void* pW, int playerID) :
+    AIModule((char*) "Research AI", 0x3ee, playerID, pW), md(0), techTree(), techTreeLengthValue(0) {
     TechnologyItem* head = &this->techTree;
     this->techTree.next = head;
     this->techTree.prev = head;
     strcpy(this->techTreeNameValue, "");
 }
 
-ResearchAIModule::ResearchAIModule(int playerID, int infile)
-    : AIModule((char*)"Research AI", 0x3ee, playerID, 0),
-      md(0),
-      techTree(),
-      techTreeLengthValue(0) {
+ResearchAIModule::ResearchAIModule(int playerID, int infile) :
+    AIModule((char*) "Research AI", 0x3ee, playerID, 0), md(0), techTree(), techTreeLengthValue(0) {
     TechnologyItem* head = &this->techTree;
     int i;
     int tempInt;
@@ -138,11 +132,13 @@ int ResearchAIModule::loadTechnologyTree(char* lName) {
     strcpy(this->techTreeNameValue, lName);
     id = this->techTreeNameValue;
     if (strcmp(id, "NONE") != 0) {
-        if (id == 0) goto no_tree;
+        if (id == 0)
+            goto no_tree;
         this->logCommonHistory("Loading tech tree in file '%s'.", lName);
         sprintf(temp, "%s", id);
         fp = fopen(temp, "r");
-        if (fp == 0) return 0;
+        if (fp == 0)
+            return 0;
         if (fgets(temp, 0x100, fp) != 0) {
             tail = &this->techTree;
             do {
@@ -164,7 +160,7 @@ int ResearchAIModule::loadTechnologyTree(char* lName) {
         }
     } else {
         if (id == 0) {
-no_tree:
+        no_tree:
             strcpy(0, "NULL");
         }
         this->logCommonHistory("There is no tech tree to load.");

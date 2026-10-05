@@ -2,39 +2,34 @@
 
 #include <string.h>
 
-BaseItem::BaseItem()
-    : typeIDValue(-1), gameIDValue(-1), uniqueIDValue(-1),
-      xValue(0), yValue(0), zValue(0),
-      xSizeValue(0), ySizeValue(0), zSizeValue(0), skipValue(0) {
+BaseItem::BaseItem() :
+    typeIDValue(-1), gameIDValue(-1), uniqueIDValue(-1), xValue(0), yValue(0), zValue(0), xSizeValue(0), ySizeValue(0),
+    zSizeValue(0), skipValue(0) {
     strcpy(nameValue, "");
 }
 
-BaseItem::BaseItem(int tid, int gid, int uid, char* n, float x, float y, float z, float xs, float ys, float zs)
-    : typeIDValue(tid), gameIDValue(gid), uniqueIDValue(uid),
-      xValue(x), yValue(y), zValue(z),
-      xSizeValue(xs), ySizeValue(ys), zSizeValue(zs), skipValue(0) {
+BaseItem::BaseItem(int tid, int gid, int uid, char* n, float x, float y, float z, float xs, float ys, float zs) :
+    typeIDValue(tid), gameIDValue(gid), uniqueIDValue(uid), xValue(x), yValue(y), zValue(z), xSizeValue(xs),
+    ySizeValue(ys), zSizeValue(zs), skipValue(0) {
     strncpy(this->nameValue, n, 63);
 }
 
-BaseItem::BaseItem(BaseItem* bi)
-    : typeIDValue(bi->typeIDValue), gameIDValue(bi->gameIDValue),
-      uniqueIDValue(bi->uniqueIDValue), xValue(bi->xValue),
-      yValue(bi->yValue), zValue(bi->zValue),
-      xSizeValue(bi->xSizeValue), ySizeValue(bi->ySizeValue),
-      zSizeValue(bi->zSizeValue), skipValue(bi->skipValue) {
+BaseItem::BaseItem(BaseItem* bi) :
+    typeIDValue(bi->typeIDValue), gameIDValue(bi->gameIDValue), uniqueIDValue(bi->uniqueIDValue), xValue(bi->xValue),
+    yValue(bi->yValue), zValue(bi->zValue), xSizeValue(bi->xSizeValue), ySizeValue(bi->ySizeValue),
+    zSizeValue(bi->zSizeValue), skipValue(bi->skipValue) {
     strcpy(this->nameValue, bi->nameValue);
 }
 
-BaseItem::BaseItem(const BaseItem& bi)
-    : typeIDValue(bi.typeIDValue), gameIDValue(bi.gameIDValue),
-      uniqueIDValue(bi.uniqueIDValue), xValue(bi.xValue),
-      yValue(bi.yValue), zValue(bi.zValue),
-      xSizeValue(bi.xSizeValue), ySizeValue(bi.ySizeValue),
-      zSizeValue(bi.zSizeValue), skipValue(bi.skipValue) {
+BaseItem::BaseItem(const BaseItem& bi) :
+    typeIDValue(bi.typeIDValue), gameIDValue(bi.gameIDValue), uniqueIDValue(bi.uniqueIDValue), xValue(bi.xValue),
+    yValue(bi.yValue), zValue(bi.zValue), xSizeValue(bi.xSizeValue), ySizeValue(bi.ySizeValue),
+    zSizeValue(bi.zSizeValue), skipValue(bi.skipValue) {
     strcpy(this->nameValue, bi.nameValue);
 }
 
-BaseItem::~BaseItem() {}
+BaseItem::~BaseItem() {
+}
 
 int __cdecl operator==(const BaseItem& one, const BaseItem& two) {
     if (one.gameIDValue == two.gameIDValue) {

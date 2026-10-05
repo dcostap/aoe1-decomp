@@ -4,7 +4,7 @@
 class TRIBE_Player;
 
 class VictoryConditionRuleSystem {
-public:
+  public:
     virtual ~VictoryConditionRuleSystem();
 
     VictoryConditionRuleSystem();
@@ -20,7 +20,6 @@ public:
     int sn[226];
 };
 
-typedef char aivcrule_victory_condition_rule_system_size[
-    (sizeof(VictoryConditionRuleSystem) == 0x38C) ? 1 : -1];
+typedef char aivcrule_victory_condition_rule_system_size[(sizeof(VictoryConditionRuleSystem) == 0x38C) ? 1 : -1];
 
 #endif

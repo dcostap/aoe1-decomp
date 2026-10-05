@@ -46,12 +46,15 @@ struct NotifyEvent {
 };
 
 class UnitAIModule {
-public:
+  public:
     virtual ~UnitAIModule();
     virtual void save(int outfile);
     virtual void load(int infile);
     virtual RGE_Player* owner() const;
-    virtual int order(int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ, float range, int immediate, int inFront, int priority);
+    virtual int order(
+        int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ,
+        float range, int immediate, int inFront, int priority
+    );
     virtual int notify(int callerID, int recipientID, int mType, long p1, long p2, long p3);
     // VC5 reverses this adjacent overload pair in the vtable.
     virtual int notifyCommander(NotifyEvent* nEvent);
@@ -97,9 +100,11 @@ public:
     virtual int exploreAndDestroy(int tX, int tY, int unconditional);
     virtual int importantObject(int unitType);
     virtual int convertToLOSResourceType(int type);
-    virtual int canConvert(int) { return 0; }
+    virtual int canConvert(int) {
+        return 0;
+    }
 
-protected:
+  protected:
     virtual int processOrder(OrderEvent* oEvent, int orderNumber);
     virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
     virtual void processGroupNotify(NotifyEvent* nEvent);
@@ -114,7 +119,7 @@ protected:
     int call64(int, int);
     int call68(int, int);
 
-public:
+  public:
     RGE_Static_Object* objectValue;
     int moodValue;
     int objectCategoryValue;
@@ -171,14 +176,17 @@ public:
     OrderEvent* orderQueueElement(int v) const;
     void purgeOrderQueue();
 
-protected:
+  protected:
     int addToOrderQueue(OrderEvent* oEvent, int inFront);
-    int addToOrderQueue(int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ, float range, int inFront, int priority);
+    int addToOrderQueue(
+        int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ,
+        float range, int inFront, int priority
+    );
     int addToNotifyQueue(NotifyEvent* nEvent);
     int addToNotifyQueue(int callerID, int recipientID, int mType, long p1, long p2, long p3);
     RGE_Static_Object* lookupObject(int id);
 
-public:
+  public:
     int currentOrder() const;
     void setCurrentOrder(int v);
     int currentOrderPriority() const;
@@ -220,14 +228,10 @@ public:
     void lookAround();
 };
 
-typedef char verify_aiuaimod_UnitAIModule_size[
-    (sizeof(UnitAIModule) == 0x134) ? 1 : -1];
-typedef char verify_aiuaimod_OrderEvent_size[
-    (sizeof(OrderEvent) == 0x24) ? 1 : -1];
-typedef char verify_aiuaimod_NotifyEvent_size[
-    (sizeof(NotifyEvent) == 0x18) ? 1 : -1];
+typedef char verify_aiuaimod_UnitAIModule_size[(sizeof(UnitAIModule) == 0x134) ? 1 : -1];
+typedef char verify_aiuaimod_OrderEvent_size[(sizeof(OrderEvent) == 0x24) ? 1 : -1];
+typedef char verify_aiuaimod_NotifyEvent_size[(sizeof(NotifyEvent) == 0x18) ? 1 : -1];
 
-typedef char verify_aiuaimod_VisibleUnitRecord_size[
-    (sizeof(VISIBLE_UNIT_REC) == 0x08) ? 1 : -1];
+typedef char verify_aiuaimod_VisibleUnitRecord_size[(sizeof(VISIBLE_UNIT_REC) == 0x08) ? 1 : -1];
 
 #endif

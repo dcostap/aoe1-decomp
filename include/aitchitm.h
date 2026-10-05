@@ -6,7 +6,7 @@
 extern char s_empty_string[];
 
 class TechnologyItem {
-public:
+  public:
     virtual ~TechnologyItem();
 
     TechnologyItem();

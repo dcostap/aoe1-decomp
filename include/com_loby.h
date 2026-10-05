@@ -7,7 +7,7 @@
 #include "../third_party/directplay/include/dplobby.h"
 
 class RGE_Lobby {
-protected:
+  protected:
     void* HostHWND;
     IDirectPlayLobby* glpDPL;
     IDirectPlayLobby2* glpDPL2;
@@ -16,7 +16,7 @@ protected:
     unsigned char lobby_game;
     RGE_Comm_Error* Err;
 
-public:
+  public:
     RGE_Lobby(void* Host);
     ~RGE_Lobby();
     void ClearLobbyInfo(void);

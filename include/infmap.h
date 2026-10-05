@@ -6,7 +6,7 @@
 // InfluenceMap. The vptr is compiler-owned.
 
 class InfluenceMap {
-public:
+  public:
     virtual ~InfluenceMap();
 
     InfluenceMap(int x, int y, unsigned char initialValue);
@@ -27,17 +27,17 @@ public:
     int decrementValue(int minX, int minY, int maxX, int maxY, unsigned char v);
 
     int setCoverageCount(const XYPoint& min, const XYPoint& max, int valueLevel);
-    int setConnectionCount(const XYPoint& min, const XYPoint& max, int valueLevel,
-                           int countOrthogonalEdgesAsConnections,
-                           int countDiagonalEdgesAsConnections,
-                           int countDiagonalConnections);
-    int coverageIncluding(const XYPoint& min, const XYPoint& max,
-                          unsigned char valueLevel, unsigned char newValueLevel);
-    int connectionsIncluding(const XYPoint& min, const XYPoint& max,
-                             unsigned char valueLevel, unsigned char newValueLevel,
-                             int countOrthogonalEdgesAsConnections,
-                             int countDiagonalEdgesAsConnections,
-                             int countDiagonalConnections);
+    int setConnectionCount(
+        const XYPoint& min, const XYPoint& max, int valueLevel, int countOrthogonalEdgesAsConnections,
+        int countDiagonalEdgesAsConnections, int countDiagonalConnections
+    );
+    int coverageIncluding(
+        const XYPoint& min, const XYPoint& max, unsigned char valueLevel, unsigned char newValueLevel
+    );
+    int connectionsIncluding(
+        const XYPoint& min, const XYPoint& max, unsigned char valueLevel, unsigned char newValueLevel,
+        int countOrthogonalEdgesAsConnections, int countDiagonalEdgesAsConnections, int countDiagonalConnections
+    );
 
     void setUnchangeableLimit(unsigned char uL);
     int maxValue();

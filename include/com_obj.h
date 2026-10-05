@@ -19,7 +19,7 @@ struct VISIBLE_UNIT_REC;
 
 // The combat object owns the combat additions to RGE_Action_Object.
 class RGE_Combat_Object : public RGE_Action_Object {
-public:
+  public:
     RGE_Combat_Object(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
     RGE_Combat_Object(int infile, RGE_Game_World* gworld, int do_setup);
     virtual ~RGE_Combat_Object();
@@ -32,9 +32,10 @@ public:
     virtual uchar attack(RGE_Static_Object* target, RGE_Combat_Object* attacker);
     virtual uchar attack(float target_x, float target_y, float target_z, RGE_Combat_Object* attacker);
     virtual uchar do_attack(RGE_Static_Object* target, RGE_Combat_Object* attacker, float x, float y, float z);
-    virtual void damage(int weapon_num, RGE_Armor_Weapon_Info* damage,
-                        float attack_modifier, RGE_Player* attacking_player,
-                        RGE_Static_Object* attackingObject);
+    virtual void damage(
+        int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player,
+        RGE_Static_Object* attackingObject
+    );
     virtual uchar can_attack();
     virtual void get_armor(short& cur_armor_in, short& orig_armor_in);
     virtual void get_weapon(short& cur_weapon_in, short& orig_weapon_in);
@@ -76,19 +77,18 @@ public:
     void calc_attack_modifier();
     void set_something(int);
     void play_move_sound(RGE_Sound*);
-    virtual float calculateDamage(int weapon_num,
-                                  RGE_Armor_Weapon_Info* damage,
-                                  float attack_modifier,
-                                  RGE_Player* attacking_player,
-                                  RGE_Static_Object* attackingObject);
+    virtual float calculateDamage(
+        int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player,
+        RGE_Static_Object* attackingObject
+    );
 
-protected:
+  protected:
     virtual int setup(int infile, RGE_Game_World* gworld);
     virtual int setup(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     float base_teleport(float, float, float);
     uchar attack(RGE_Static_Object*, float, RGE_Combat_Object*, float, float);
 
-public:
+  public:
     // The base class ends at +0x194. These fields end the 0x1C4 object.
     VISIBLE_UNIT_REC* VUR_Ptrs[9];
     unsigned long Unified_Map_Value;
@@ -96,9 +96,7 @@ public:
     uchar capture_flag;
 };
 
-typedef char rge_combat_object_vur_offset_check[
-    (offsetof(RGE_Combat_Object, VUR_Ptrs) == 0x194) ? 1 : -1];
-typedef char rge_combat_object_size_check[
-    (sizeof(RGE_Combat_Object) == 0x1C4) ? 1 : -1];
+typedef char rge_combat_object_vur_offset_check[(offsetof(RGE_Combat_Object, VUR_Ptrs) == 0x194) ? 1 : -1];
+typedef char rge_combat_object_size_check[(sizeof(RGE_Combat_Object) == 0x1C4) ? 1 : -1];
 
-#endif  // AOE1_COM_OBJ_H
+#endif // AOE1_COM_OBJ_H

@@ -38,10 +38,18 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    if (this->create_text(this, &this->screenTitle, STRING_ID_SAVED_GAMES_TITLE, 20, 10, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0) == 0) {
+    if (this->create_text(
+            this, &this->screenTitle, STRING_ID_SAVED_GAMES_TITLE, 20, 10, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0,
+            0
+        )
+        == 0) {
         return;
     }
-    if (this->create_text(this, &this->listTitle, STRING_ID_SELECT_SAVED_GAME_TITLE, 20, 45, 600, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0) == 0) {
+    if (this->create_text(
+            this, &this->listTitle, STRING_ID_SELECT_SAVED_GAME_TITLE, 20, 45, 600, 20,
+            RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+        )
+        == 0) {
         return;
     }
     if (this->create_list(this, &this->list, 20, 65, 600, 352, RGE_FONT_STANDARD) == 0) {
@@ -54,13 +62,22 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
     this->scrollbar->set_help_info(STRING_ID_HELP_SAVED_GAME_NAME, -1);
 
     TButtonPanel** ok_button = &this->okButton;
-    if (this->create_button(this, ok_button, STRING_ID_BUTTON_OK, 0, 30, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0) {
+    if (this->create_button(
+            this, ok_button, STRING_ID_BUTTON_OK, 0, 30, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        )
+        == 0) {
         return;
     }
-    if (this->create_button(this, &this->deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0) {
+    if (this->create_button(
+            this, &this->deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        )
+        == 0) {
         return;
     }
-    if (this->create_button(this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0) {
+    if (this->create_button(
+            this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        )
+        == 0) {
         return;
     }
 
@@ -81,7 +98,7 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
 
     long line = this->list->get_line(static_cast<TRIBE_Game*>(rge_base_game)->get_save_game_name());
     if (line != -1) {
-        this->list->scroll_cur_line(1, (short)line, 1);
+        this->list->scroll_cur_line(1, (short) line, 1);
     }
 
     this->set_curr_child(this->list);
@@ -93,13 +110,13 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
 }
 
 TribeLoadSavedGameScreen::~TribeLoadSavedGameScreen() {
-    this->delete_panel((TPanel**)&this->screenTitle);
-    this->delete_panel((TPanel**)&this->listTitle);
-    this->delete_panel((TPanel**)&this->list);
-    this->delete_panel((TPanel**)&this->scrollbar);
-    this->delete_panel((TPanel**)&this->okButton);
-    this->delete_panel((TPanel**)&this->cancelButton);
-    this->delete_panel((TPanel**)&this->deleteButton);
+    this->delete_panel((TPanel**) &this->screenTitle);
+    this->delete_panel((TPanel**) &this->listTitle);
+    this->delete_panel((TPanel**) &this->list);
+    this->delete_panel((TPanel**) &this->scrollbar);
+    this->delete_panel((TPanel**) &this->okButton);
+    this->delete_panel((TPanel**) &this->cancelButton);
+    this->delete_panel((TPanel**) &this->deleteButton);
 }
 
 void TribeLoadSavedGameScreen::fillList() {

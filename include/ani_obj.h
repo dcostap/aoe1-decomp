@@ -5,19 +5,22 @@
 #include "m_an_obj.h"
 
 class RGE_Animated_Object : public RGE_Static_Object {
-public:
-    RGE_Animated_Object(RGE_Master_Animated_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
+  public:
+    RGE_Animated_Object(
+        RGE_Master_Animated_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup
+    );
     RGE_Animated_Object(int infile, RGE_Game_World* gworld, int do_setup);
 
-    virtual float getSpeed() const { return this->speed; }
+    virtual float getSpeed() const {
+        return this->speed;
+    }
 
-protected:
+  protected:
     virtual int setup(RGE_Master_Animated_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     virtual int setup(int infile, RGE_Game_World* gworld);
 
-public:
-    virtual void recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner,
-                                    float x, float y, float z);
+  public:
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     virtual unsigned char update();
     virtual void save(int outfile);
     virtual void transform(RGE_Master_Static_Object* obj);
@@ -27,7 +30,6 @@ public:
     float speed;
 };
 
-typedef char rge_animated_object_size_check[
-    (sizeof(RGE_Animated_Object) == 0x8C) ? 1 : -1];
+typedef char rge_animated_object_size_check[(sizeof(RGE_Animated_Object) == 0x8C) ? 1 : -1];
 
 #endif

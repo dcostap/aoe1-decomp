@@ -6,7 +6,7 @@
 #define CHAT_RECEIVED 0x17D5
 
 class TChat {
-public:
+  public:
     void* HostWnd;
     int chatGroupPlayers[10];
     char* Chat[51];

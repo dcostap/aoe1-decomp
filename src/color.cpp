@@ -13,7 +13,10 @@ extern "C" void __cdecl free(void* ptr);
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern "C" long __cdecl _ftol();
 
-void __cdecl RGE_translate_palette(tagPALETTEENTRY* palette1, tagPALETTEENTRY* palette2, tagPALETTEENTRY color, long amount, int ignore_color1, int ignore_color2) {
+void __cdecl RGE_translate_palette(
+    tagPALETTEENTRY* palette1, tagPALETTEENTRY* palette2, tagPALETTEENTRY color, long amount, int ignore_color1,
+    int ignore_color2
+) {
     long index1;
     long intense[3];
 
@@ -38,25 +41,23 @@ void __cdecl RGE_translate_palette(tagPALETTEENTRY* palette1, tagPALETTEENTRY* p
                 }
             }
 
-            long intensity = intense[0]
-                           + (intense[1] + intense[2])
-                           * (255 - intense[0]) / 512;
+            long intensity = intense[0] + (intense[1] + intense[2]) * (255 - intense[0]) / 512;
 
-            palette2[index1].peRed = palette1[index1].peRed
-                + ((color.peRed * intensity / 255
-                    - palette1[index1].peRed) * amount / 100);
+            palette2[index1].peRed =
+                palette1[index1].peRed + ((color.peRed * intensity / 255 - palette1[index1].peRed) * amount / 100);
             palette2[index1].peGreen = palette1[index1].peGreen
-                + ((color.peGreen * intensity / 255
-                    - palette1[index1].peGreen) * amount / 100);
-            palette2[index1].peBlue = palette1[index1].peBlue
-                + ((color.peBlue * intensity / 255
-                    - palette1[index1].peBlue) * amount / 100);
+                                       + ((color.peGreen * intensity / 255 - palette1[index1].peGreen) * amount / 100);
+            palette2[index1].peBlue =
+                palette1[index1].peBlue + ((color.peBlue * intensity / 255 - palette1[index1].peBlue) * amount / 100);
             palette2[index1].peFlags = palette1[index1].peFlags;
         }
     }
 }
 
-void __cdecl RGE_fade_palette(TDrawArea* surface, tagPALETTEENTRY color, float fade_time, unsigned char direction, tagPALETTEENTRY* new_palette, int ignore_color1, int ignore_color2) {
+void __cdecl RGE_fade_palette(
+    TDrawArea* surface, tagPALETTEENTRY color, float fade_time, unsigned char direction, tagPALETTEENTRY* new_palette,
+    int ignore_color1, int ignore_color2
+) {
     float delta_time;
     unsigned char done;
     long old_time;
@@ -99,11 +100,11 @@ void __cdecl RGE_fade_palette(TDrawArea* surface, tagPALETTEENTRY color, float f
         do {
             long pct;
             long cur_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 112);
-            delta_time = (float)(cur_time - old_time) * 0.001f;
+            delta_time = (float) (cur_time - old_time) * 0.001f;
             if (fade_time <= 0.0 || delta_time > fade_time || delta_time < 0.0f) {
                 pct = 100;
             } else {
-                pct = (long)((delta_time * delta_time / fade_time2) * 100.0f);
+                pct = (long) ((delta_time * delta_time / fade_time2) * 100.0f);
             }
             if (pct >= 100) {
                 pct = 100;
@@ -116,11 +117,11 @@ void __cdecl RGE_fade_palette(TDrawArea* surface, tagPALETTEENTRY color, float f
         do {
             long pct;
             long cur_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 136);
-            delta_time = fade_time - ((float)(cur_time - old_time) * 0.001f);
+            delta_time = fade_time - ((float) (cur_time - old_time) * 0.001f);
             if (fade_time <= 0.0 || delta_time > fade_time || delta_time < 0.0f) {
                 pct = 0;
             } else {
-                pct = (long)((delta_time * delta_time / fade_time2) * 100.0f);
+                pct = (long) ((delta_time * delta_time / fade_time2) * 100.0f);
             }
             if (pct <= 0) {
                 pct = 0;
@@ -151,7 +152,7 @@ RGE_Color_Table::RGE_Color_Table(int infile) {
     if (fp) {
         for (int i = 0; i < 256; i++) {
             fscanf(fp, "%hd", &scratch.temp_color);
-            this->table[i] = (unsigned char)scratch.temp_color;
+            this->table[i] = (unsigned char) scratch.temp_color;
         }
         fclose(fp);
     }
@@ -163,8 +164,8 @@ RGE_Color_Table::RGE_Color_Table(FILE* infile, short id_val) {
     memset(this->table, 0, 256);
 
     fscanf(infile, "%hd %s %hd %hd", &this->resource_id, this->color_table_name, &id_val, &infile);
-    this->map_color = (unsigned char)id_val;
-    this->type = (unsigned char)infile;
+    this->map_color = (unsigned char) id_val;
+    this->type = (unsigned char) infile;
     addstring(&file_name, this->color_table_name, ".col");
     strcpy(this->color_table_name, file_name);
     if (file_name != 0) {
@@ -188,13 +189,15 @@ RGE_Color_Table::RGE_Color_Table(char* filename) {
     if (fp) {
         for (int i = 0; i < 256; i++) {
             fscanf(fp, "%hd", &temp_color);
-            this->table[i] = (unsigned char)temp_color;
+            this->table[i] = (unsigned char) temp_color;
         }
         fclose(fp);
     }
 }
 
-RGE_Color_Table::RGE_Color_Table(TDrawArea* surface, long amount, tagPALETTEENTRY* in_color, tagPALETTEENTRY* palette1) {
+RGE_Color_Table::RGE_Color_Table(
+    TDrawArea* surface, long amount, tagPALETTEENTRY* in_color, tagPALETTEENTRY* palette1
+) {
     long temp_color;
     tagPALETTEENTRY palette[256];
     tagPALETTEENTRY temp_palette[256];
@@ -244,16 +247,15 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* surface, long amount, tagPALETTEENTR
             int red_difference = red - palette[i].peRed;
             int green_difference = green - palette[i].peGreen;
             int blue_difference = blue - palette[i].peBlue;
-            int distance = red_difference * red_difference
-                         + green_difference * green_difference
-                         + blue_difference * blue_difference;
+            int distance = red_difference * red_difference + green_difference * green_difference
+                           + blue_difference * blue_difference;
             if (distance < best_distance) {
                 best_distance = distance;
                 temp_color = i;
             }
         }
 
-        this->table[index1] = (unsigned char)temp_color;
+        this->table[index1] = (unsigned char) temp_color;
         index1++;
     } while (index1 <= 0xff);
 }

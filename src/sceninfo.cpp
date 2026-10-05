@@ -23,7 +23,7 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* in_filename) {
         i = 0;
 
         if (this->scenario_num > 0) {
-            this->scenarios = (RGE_Scenario_File_Entry*)calloc(this->scenario_num, sizeof(RGE_Scenario_File_Entry));
+            this->scenarios = (RGE_Scenario_File_Entry*) calloc(this->scenario_num, sizeof(RGE_Scenario_File_Entry));
             for (i = 0; i < this->scenario_num; i++) {
                 rge_read_uncompressed(fd, &this->scenarios[i].time, 4);
                 rge_read_uncompressed(fd, this->scenarios[i].name, 260);
@@ -125,7 +125,7 @@ void RGE_Scenario_File_Info::reload_scenarios() {
     if (handle == -1)
         return;
 
-    new_scenarios = (RGE_Scenario_File_Entry*)calloc(count, sizeof(RGE_Scenario_File_Entry));
+    new_scenarios = (RGE_Scenario_File_Entry*) calloc(count, sizeof(RGE_Scenario_File_Entry));
     current = new_scenarios;
 
     do {
@@ -186,11 +186,13 @@ void RGE_Scenario_File_Info::reload_scenarios() {
 }
 
 char* RGE_Scenario_File_Info::get_scenario_name(long id) {
-    if (id >= this->scenario_num || id < 0) return 0;
+    if (id >= this->scenario_num || id < 0)
+        return 0;
     return this->scenarios[id].name;
 }
 
 RGE_Scenario_Header* RGE_Scenario_File_Info::get_scenario_info(long id) {
-    if (id >= this->scenario_num || id < 0) return 0;
+    if (id >= this->scenario_num || id < 0)
+        return 0;
     return this->scenarios[id].scenario_header;
 }

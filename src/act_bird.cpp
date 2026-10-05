@@ -15,13 +15,12 @@
 
 extern int __cdecl debug_rand(char*, int);
 
-RGE_Action_Bird::RGE_Action_Bird(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1) {
+RGE_Action_Bird::RGE_Action_Bird(int infile, RGE_Action_Object* obj_in) : RGE_Action(infile, obj_in, 1) {
     this->action_type = RGE_ACTION_TYPE_BIRD;
 }
 
-RGE_Action_Bird::RGE_Action_Bird(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
-    : RGE_Action(obj_in, 1) {
+RGE_Action_Bird::RGE_Action_Bird(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z) :
+    RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = RGE_ACTION_TYPE_BIRD;
     this->target_x = x;
@@ -47,19 +46,21 @@ void RGE_Action_Bird::set_state(unsigned char new_state) {
 
     this->state = new_state;
     switch (new_state) {
-    case 6:
-        this->timer = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\act_bird.cpp", 76) * 10) / 0x7FFF + 5);
-        sprite = this->task->work_sprite;
-        break;
+        case 6:
+            this->timer =
+                (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 76) * 10) / 0x7FFF + 5);
+            sprite = this->task->work_sprite;
+            break;
 
-    case 4:
-        this->timer = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\act_bird.cpp", 68) * 10) / 0x7FFF + 5);
-        sprite = this->task->move_sprite;
-        break;
+        case 4:
+            this->timer =
+                (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 68) * 10) / 0x7FFF + 5);
+            sprite = this->task->move_sprite;
+            break;
 
-    default:
-        this->sub_actions->delete_list();
-        return;
+        default:
+            this->sub_actions->delete_list();
+            return;
     }
 
     if (sprite != 0) {
@@ -80,44 +81,48 @@ unsigned char RGE_Action_Bird::update(void) {
     }
 
     switch (this->state) {
-    case 4:
-        if (this->timer <= bird_update_zero) {
-            this->set_state(6);
-        }
-        if ((((int)this->sub_actions->update()) & 0xFF) - RGE_ACTION_UPDATE_REMOVE != 0) {
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        this->set_state(3);
-        return RGE_ACTION_UPDATE_CONTINUE;
-
-    case 6:
-        if (this->timer <= bird_update_zero) {
-            this->set_state(4);
-        }
-        if ((((int)this->sub_actions->update()) & 0xFF) - RGE_ACTION_UPDATE_REMOVE != 0) {
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        this->set_state(3);
-        return RGE_ACTION_UPDATE_CONTINUE;
-
-    case 3:
-        {
-            RGE_Map* map = this->obj->owner->world->map;
-            this->target_x = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\act_bird.cpp", 132) * map->map_width) / 0x7FFF);
-            this->target_y = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\act_bird.cpp", 133) * map->map_height) / 0x7FFF);
-        }
-        this->target_z = this->obj->world_z;
-        move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range, this->obj->sprite);
-        if (move_to == 0) {
+        case 4:
+            if (this->timer <= bird_update_zero) {
+                this->set_state(6);
+            }
+            if ((((int) this->sub_actions->update()) & 0xFF) - RGE_ACTION_UPDATE_REMOVE != 0) {
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
             this->set_state(3);
             return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        this->sub_actions->add_action(move_to);
-        this->set_state(4);
-        return RGE_ACTION_UPDATE_CONTINUE;
 
-    case 1:
-        return RGE_ACTION_UPDATE_REMOVE;
+        case 6:
+            if (this->timer <= bird_update_zero) {
+                this->set_state(4);
+            }
+            if ((((int) this->sub_actions->update()) & 0xFF) - RGE_ACTION_UPDATE_REMOVE != 0) {
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            this->set_state(3);
+            return RGE_ACTION_UPDATE_CONTINUE;
+
+        case 3: {
+            RGE_Map* map = this->obj->owner->world->map;
+            this->target_x =
+                (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 132) * map->map_width) / 0x7FFF);
+            this->target_y =
+                (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 133) * map->map_height)
+                         / 0x7FFF);
+        }
+            this->target_z = this->obj->world_z;
+            move_to = new RGE_Action_Move_To(
+                this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range, this->obj->sprite
+            );
+            if (move_to == 0) {
+                this->set_state(3);
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            this->sub_actions->add_action(move_to);
+            this->set_state(4);
+            return RGE_ACTION_UPDATE_CONTINUE;
+
+        case 1:
+            return RGE_ACTION_UPDATE_REMOVE;
     }
 
     return RGE_ACTION_UPDATE_CONTINUE;

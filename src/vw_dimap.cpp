@@ -7,7 +7,9 @@ RGE_Diamond_Map_View::RGE_Diamond_Map_View() : RGE_Diamond_Map() {
     this->mouse_move_tolerance = 0;
 }
 
-long RGE_Diamond_Map_View::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
+long RGE_Diamond_Map_View::handle_mouse_down(
+    unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key
+) {
     short col;
     short row;
     RGE_Tile* tile;
@@ -20,14 +22,13 @@ long RGE_Diamond_Map_View::handle_mouse_down(unsigned char mouse_button_in, long
 long RGE_Diamond_Map_View::mouse_left_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (rge_base_game->get_paused() == 0) {
         int mode = rge_base_game->prog_mode;
-        if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
-            mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
+        if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor
+            || mode == ProgModeGameOver) {
             if (rge_base_game->prog_info->interface_style == 2) {
                 this->start_scroll_view(x, y);
                 return 1;
             }
-            if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
-                mode == ProgModeScenarioEditor) {
+            if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor) {
                 this->capture_mouse();
             }
             return 1;
@@ -38,7 +39,8 @@ long RGE_Diamond_Map_View::mouse_left_down_action(long x, long y, int ctrl_key, 
 
 long RGE_Diamond_Map_View::mouse_left_move_action(long x, long y, int ctrl_key, int shift_key) {
     int prog_mode = rge_base_game->prog_mode;
-    if (prog_mode == ProgModeGame || prog_mode == ProgModeGameTempPaused || prog_mode == ProgModeScenarioEditor || prog_mode == ProgModeGameOver) {
+    if (prog_mode == ProgModeGame || prog_mode == ProgModeGameTempPaused || prog_mode == ProgModeScenarioEditor
+        || prog_mode == ProgModeGameOver) {
         if (rge_base_game->get_paused()) {
             if (this->scrolling) {
                 this->end_scroll_view();
@@ -58,8 +60,8 @@ long RGE_Diamond_Map_View::mouse_left_move_action(long x, long y, int ctrl_key, 
 long RGE_Diamond_Map_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
 
-    if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
-        mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor
+        || mode == ProgModeGameOver) {
         if (this->scrolling) {
             this->end_scroll_view();
             return 1;
@@ -103,11 +105,10 @@ long RGE_Diamond_Map_View::mouse_left_up_action(long x, long y, int ctrl_key, in
 long RGE_Diamond_Map_View::mouse_right_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (rge_base_game->get_paused() == 0) {
         int mode = rge_base_game->prog_mode;
-        if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
-            mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
+        if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor
+            || mode == ProgModeGameOver) {
             if (rge_base_game->prog_info->interface_style == 2) {
-                if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
-                    mode == ProgModeScenarioEditor) {
+                if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor) {
                     this->capture_mouse();
                     return 1;
                 }
@@ -122,8 +123,8 @@ long RGE_Diamond_Map_View::mouse_right_down_action(long x, long y, int ctrl_key,
 
 long RGE_Diamond_Map_View::mouse_right_move_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
-    if (mode == ProgModeGame || mode == ProgModeGameTempPaused ||
-        mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor
+        || mode == ProgModeGameOver) {
         if (rge_base_game->get_paused()) {
             if (this->scrolling) {
                 this->end_scroll_view();
@@ -143,8 +144,8 @@ long RGE_Diamond_Map_View::mouse_right_move_action(long x, long y, int ctrl_key,
 long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int ctrl_key, int shift_key) {
     RGE_Tile* tile;
     int mode = rge_base_game->prog_mode;
-    if (mode != ProgModeGame && mode != ProgModeGameTempPaused &&
-        mode != ProgModeScenarioEditor && mode != ProgModeGameOver) {
+    if (mode != ProgModeGame && mode != ProgModeGameTempPaused && mode != ProgModeScenarioEditor
+        && mode != ProgModeGameOver) {
         return 0;
     }
 
@@ -175,7 +176,7 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int ctrl_key, i
         short col;
         short row;
         if (this->pick_tile(x, y, &col, &row, &tile) != 0) {
-            this->player->command_add_waypoint((float)col + 0.5f, (float)row + 0.5f, 1.0f);
+            this->player->command_add_waypoint((float) col + 0.5f, (float) row + 0.5f, 1.0f);
         }
         return 1;
     }
@@ -206,11 +207,12 @@ int RGE_Diamond_Map_View::command_make_do(long x, long y) {
     short col;
     short row;
     RGE_Tile* tile;
-    if (allow_user_commands == 0) return 0;
+    if (allow_user_commands == 0)
+        return 0;
     result = 0;
     if (this->pick_tile(x, y, &col, &row, &tile) != 0) {
-        float world_y = (float)row + 0.5f;
-        float world_x = (float)col + 0.5f;
+        float world_y = (float) row + 0.5f;
+        float world_x = (float) col + 0.5f;
         result = this->player->command_make_do(0, world_x, world_y) & 0xff;
     }
     return result;
@@ -223,11 +225,12 @@ int RGE_Diamond_Map_View::command_make_move(long x, long y) {
     short col;
     short row;
     RGE_Tile* tile;
-    if (allow_user_commands == 0) return 0;
+    if (allow_user_commands == 0)
+        return 0;
     result = 0;
     if (this->pick_tile(x, y, &col, &row, &tile) != 0) {
-        float world_y = (float)row + 0.5f;
-        float world_x = (float)col + 0.5f;
+        float world_y = (float) row + 0.5f;
+        float world_x = (float) col + 0.5f;
         result = this->player->command_make_move(0, world_x, world_y) & 0xff;
     }
     rge_base_game->set_game_mode(0, 0);
@@ -241,11 +244,12 @@ int RGE_Diamond_Map_View::command_make_work(long x, long y) {
     short col;
     short row;
     RGE_Tile* tile;
-    if (allow_user_commands == 0) return 0;
+    if (allow_user_commands == 0)
+        return 0;
     result = 0;
     if (this->pick_tile(x, y, &col, &row, &tile) != 0) {
-        float world_y = (float)row + 0.5f;
-        float world_x = (float)col + 0.5f;
+        float world_y = (float) row + 0.5f;
+        float world_x = (float) col + 0.5f;
         result = this->player->command_make_work(0, world_x, world_y) & 0xff;
     }
     rge_base_game->set_game_mode(0, 0);

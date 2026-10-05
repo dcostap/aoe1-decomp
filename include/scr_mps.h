@@ -13,7 +13,7 @@ class TScrollBarPanel;
 class T_Scenario;
 
 class TribeMPSetupScreen : public TScreenPanel {
-protected:
+  protected:
     TTextPanel* title;
     TTextPanel* playerTitle;
     TTextPanel* civTitle;
@@ -83,11 +83,11 @@ protected:
     unsigned long last_send_shared;
     int resend_game_options;
 
-public:
+  public:
     TribeMPSetupScreen();
     virtual ~TribeMPSetupScreen();
 
-protected:
+  protected:
     void init_vars();
     int startGame();
     void calcRandomPositions();
@@ -102,7 +102,7 @@ protected:
     void fillNumberPlayers();
     void fillPlayerColors();
 
-public:
+  public:
     virtual long handle_idle();
     virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
@@ -112,11 +112,10 @@ public:
     void updateSummary();
 };
 
-typedef char scr_mps_setup_screen_size_check[
-    (sizeof(TribeMPSetupScreen) == 0x890) ? 1 : -1];
+typedef char scr_mps_setup_screen_size_check[(sizeof(TribeMPSetupScreen) == 0x890) ? 1 : -1];
 
 class TRIBE_Screen_Wait : public TScreenPanel {
-public:
+  public:
     TTextPanel* message;
     TButtonPanel* cancel_button;
     TButtonPanel* close_button;
@@ -131,11 +130,10 @@ public:
     virtual long handle_idle();
 };
 
-typedef char scr_mps_wait_screen_size_check[
-    (sizeof(TRIBE_Screen_Wait) == 0x4D8) ? 1 : -1];
+typedef char scr_mps_wait_screen_size_check[(sizeof(TRIBE_Screen_Wait) == 0x4D8) ? 1 : -1];
 
 class TRIBE_Screen_Disconnect : public TScreenPanel {
-public:
+  public:
     int mode;
     TTextPanel* message;
     TButtonPanel* cancel_button;
@@ -149,7 +147,6 @@ public:
     virtual long handle_idle();
 };
 
-typedef char scr_mps_disconnect_screen_size_check[
-    (sizeof(TRIBE_Screen_Disconnect) == 0x488) ? 1 : -1];
+typedef char scr_mps_disconnect_screen_size_check[(sizeof(TRIBE_Screen_Disconnect) == 0x488) ? 1 : -1];
 
 #endif

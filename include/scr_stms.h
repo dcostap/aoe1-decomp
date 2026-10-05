@@ -7,7 +7,7 @@
 class TTextPanel;
 
 class TRIBE_Screen_Status_Message : public TScreenPanel {
-public:
+  public:
     TTextPanel* message;
 
     TRIBE_Screen_Status_Message(char* name, char* message_in, char* info_file_in, long info_id_in);
@@ -17,7 +17,6 @@ public:
     void set_text(long message_in);
 };
 
-typedef char scr_stms_screen_size_check[
-    (sizeof(TRIBE_Screen_Status_Message) == 0x47C) ? 1 : -1];
+typedef char scr_stms_screen_size_check[(sizeof(TRIBE_Screen_Status_Message) == 0x47C) ? 1 : -1];
 
 #endif

@@ -13,7 +13,7 @@ extern unsigned char sound_file_first;
 class TDigital;
 
 class TSound_Driver {
-public:
+  public:
     unsigned char ready;
     unsigned char mute;
     void* main_wnd;
@@ -57,7 +57,7 @@ public:
 };
 
 class TDigital {
-public:
+  public:
     TSound_Driver* sound_system;
     TDigital* owner;
     unsigned char loaded;
@@ -90,13 +90,9 @@ public:
     int add_to_play_list();
 };
 
-typedef char sounddrv_tsound_driver_size_check[
-    (sizeof(TSound_Driver) == 0x69C) ? 1 : -1];
-typedef char sounddrv_tdigital_size_check[
-    (sizeof(TDigital) == 0x3C) ? 1 : -1];
-typedef char sounddrv_tsound_driver_main_wnd_offset_check[
-    (offsetof(TSound_Driver, main_wnd) == 0x04) ? 1 : -1];
-typedef char sounddrv_tdigital_resource_id_offset_check[
-    (offsetof(TDigital, resource_id) == 0x18) ? 1 : -1];
+typedef char sounddrv_tsound_driver_size_check[(sizeof(TSound_Driver) == 0x69C) ? 1 : -1];
+typedef char sounddrv_tdigital_size_check[(sizeof(TDigital) == 0x3C) ? 1 : -1];
+typedef char sounddrv_tsound_driver_main_wnd_offset_check[(offsetof(TSound_Driver, main_wnd) == 0x04) ? 1 : -1];
+typedef char sounddrv_tdigital_resource_id_offset_check[(offsetof(TDigital, resource_id) == 0x18) ? 1 : -1];
 
 #endif

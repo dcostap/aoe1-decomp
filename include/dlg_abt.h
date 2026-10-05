@@ -10,7 +10,7 @@ class TScreenPanel;
 class TTextPanel;
 
 class TribeAboutDialog : public TDialogPanel {
-public:
+  public:
     TTextPanel* title_text;
     TTextPanel* version_text;
     TTextPanel* ms_copy_text1;
@@ -28,14 +28,13 @@ public:
     TribeAboutDialog(TScreenPanel* parentPanel);
     virtual ~TribeAboutDialog();
 
-protected:
+  protected:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 
-public:
+  public:
     virtual void draw();
 };
 
-typedef char dlg_abt_dialog_size_check[
-    (sizeof(TribeAboutDialog) == 0x4C4) ? 1 : -1];
+typedef char dlg_abt_dialog_size_check[(sizeof(TribeAboutDialog) == 0x4C4) ? 1 : -1];
 
 #endif

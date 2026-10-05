@@ -8,11 +8,11 @@
 #include <string.h>
 
 int __cdecl compareFilenameStrings(const void* e1, const void* e2) {
-    return strcmp((const char*)e1, (const char*)e2);
+    return strcmp((const char*) e1, (const char*) e2);
 }
 
 char driveAsLetter(int d) {
-    return (char)(d + 0x40);
+    return (char) (d + 0x40);
 }
 
 int driveAsInt(char d) {
@@ -34,7 +34,7 @@ int DriveInformation::initialDrive() const {
 }
 
 char DriveInformation::initialDriveAsLetter() const {
-    return (char)(this->initialDriveValue + 0x40);
+    return (char) (this->initialDriveValue + 0x40);
 }
 
 char* DriveInformation::initialDirectory() {
@@ -46,7 +46,7 @@ int DriveInformation::currentDrive() const {
 }
 
 char DriveInformation::currentDriveAsLetter() const {
-    return (char)(this->currentDriveValue + '@');
+    return (char) (this->currentDriveValue + '@');
 }
 
 char* DriveInformation::currentDirectory() {

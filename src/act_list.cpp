@@ -86,27 +86,28 @@ void RGE_Action_List::delete_list() {
 
 RGE_Action* RGE_Action_List::create_action(int infile, short action_type) {
     switch (action_type) {
-    case RGE_ACTION_TYPE_ATTACK:
-        return new RGE_Action_Attack(infile, this->obj);
-    case RGE_ACTION_TYPE_BIRD:
-        return new RGE_Action_Bird(infile, this->obj);
-    case RGE_ACTION_TYPE_EXPLORE:
-        return new RGE_Action_Explore(infile, this->obj);
-    case RGE_ACTION_TYPE_GATHER:
-        return new RGE_Action_Gather(infile, this->obj);
-    case RGE_ACTION_TYPE_MISSILE:
-        return new RGE_Action_Missile(infile, this->obj);
-    case RGE_ACTION_TYPE_MOVE:
-        return new RGE_Action_Move_To(infile, this->obj);
-    case RGE_ACTION_TYPE_MAKE:
-        return new RGE_Action_Make(infile, this->obj);
-    default:
-        return 0;
+        case RGE_ACTION_TYPE_ATTACK:
+            return new RGE_Action_Attack(infile, this->obj);
+        case RGE_ACTION_TYPE_BIRD:
+            return new RGE_Action_Bird(infile, this->obj);
+        case RGE_ACTION_TYPE_EXPLORE:
+            return new RGE_Action_Explore(infile, this->obj);
+        case RGE_ACTION_TYPE_GATHER:
+            return new RGE_Action_Gather(infile, this->obj);
+        case RGE_ACTION_TYPE_MISSILE:
+            return new RGE_Action_Missile(infile, this->obj);
+        case RGE_ACTION_TYPE_MOVE:
+            return new RGE_Action_Move_To(infile, this->obj);
+        case RGE_ACTION_TYPE_MAKE:
+            return new RGE_Action_Make(infile, this->obj);
+        default:
+            return 0;
     }
 }
 
 RGE_Action* RGE_Action_List::create_task_action(
-    RGE_Task* task, RGE_Static_Object* target_obj, float target_x, float target_y, float target_z) {
+    RGE_Task* task, RGE_Static_Object* target_obj, float target_x, float target_y, float target_z
+) {
     RGE_Action_Bird* bird_action;
     RGE_Action_Attack* attack_action;
     RGE_Action_Explore* explore_action;
@@ -114,67 +115,72 @@ RGE_Action* RGE_Action_List::create_task_action(
     RGE_Action_Make* make_action;
 
     switch (task->action_type) {
-    case RGE_ACTION_TYPE_BIRD:
-        bird_action = new RGE_Action_Bird(this->obj, task, target_x, target_y, target_z);
-        if (bird_action == 0) {
-            return 0;
-        }
-        return bird_action;
-
-    case 7:
-        if (this->obj->unitAI() != 0) {
-            this->obj->unitAI()->setCurrentAction(UNIT_AI_ACTION_ATTACK);
-            if (target_obj != 0) {
-                this->obj->unitAI()->setCurrentTarget(target_obj->id, target_obj->world_x, target_obj->world_y,
-                                                      target_obj->world_z);
-            } else {
-                this->obj->unitAI()->setCurrentTarget(-1, target_x, target_y, target_z);
+        case RGE_ACTION_TYPE_BIRD:
+            bird_action = new RGE_Action_Bird(this->obj, task, target_x, target_y, target_z);
+            if (bird_action == 0) {
+                return 0;
             }
-        }
+            return bird_action;
 
-        if (target_obj != 0) {
-            attack_action = new RGE_Action_Attack(this->obj, target_obj, task->move_sprite, task->work_sprite, 0,
-                                                  task->work_range, static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->minimum_weapon_range,
-                                                  static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->missile_id,
-                                                  static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->fire_missile_at_frame);
-        } else {
-            attack_action = new RGE_Action_Attack(this->obj, target_x, target_y, target_z, task->move_sprite,
-                                                  task->work_sprite, 0, task->work_range, static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                                                  ->minimum_weapon_range, static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->missile_id,
-                                                  static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->fire_missile_at_frame);
-        }
-        if (attack_action == 0) {
+        case 7:
+            if (this->obj->unitAI() != 0) {
+                this->obj->unitAI()->setCurrentAction(UNIT_AI_ACTION_ATTACK);
+                if (target_obj != 0) {
+                    this->obj->unitAI()->setCurrentTarget(
+                        target_obj->id, target_obj->world_x, target_obj->world_y, target_obj->world_z
+                    );
+                } else {
+                    this->obj->unitAI()->setCurrentTarget(-1, target_x, target_y, target_z);
+                }
+            }
+
+            if (target_obj != 0) {
+                attack_action = new RGE_Action_Attack(
+                    this->obj, target_obj, task->move_sprite, task->work_sprite, 0, task->work_range,
+                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
+                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
+                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame
+                );
+            } else {
+                attack_action = new RGE_Action_Attack(
+                    this->obj, target_x, target_y, target_z, task->move_sprite, task->work_sprite, 0, task->work_range,
+                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
+                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
+                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame
+                );
+            }
+            if (attack_action == 0) {
+                return 0;
+            }
+            return attack_action;
+
+        case RGE_ACTION_TYPE_EXPLORE:
+            explore_action = new RGE_Action_Explore(this->obj, task, target_x, target_y, target_z);
+            if (explore_action == 0) {
+                return 0;
+            }
+            return explore_action;
+
+        case RGE_ACTION_TYPE_GATHER:
+            if (target_obj != 0) {
+                gather_action = new RGE_Action_Gather(this->obj, task, target_obj);
+            } else {
+                gather_action = new RGE_Action_Gather(this->obj, task, target_x, target_y, target_z);
+            }
+            if (gather_action == 0) {
+                return 0;
+            }
+            return gather_action;
+
+        case RGE_ACTION_TYPE_MAKE:
+            make_action = new RGE_Action_Make(this->obj, task);
+            if (make_action == 0) {
+                return 0;
+            }
+            return make_action;
+
+        default:
             return 0;
-        }
-        return attack_action;
-
-    case RGE_ACTION_TYPE_EXPLORE:
-        explore_action = new RGE_Action_Explore(this->obj, task, target_x, target_y, target_z);
-        if (explore_action == 0) {
-            return 0;
-        }
-        return explore_action;
-
-    case RGE_ACTION_TYPE_GATHER:
-        if (target_obj != 0) {
-            gather_action = new RGE_Action_Gather(this->obj, task, target_obj);
-        } else {
-            gather_action = new RGE_Action_Gather(this->obj, task, target_x, target_y, target_z);
-        }
-        if (gather_action == 0) {
-            return 0;
-        }
-        return gather_action;
-
-    case RGE_ACTION_TYPE_MAKE:
-        make_action = new RGE_Action_Make(this->obj, task);
-        if (make_action == 0) {
-            return 0;
-        }
-        return make_action;
-
-    default:
-        return 0;
     }
 }
 
@@ -387,8 +393,7 @@ void RGE_Action_List::copy_obj(RGE_Master_Action_Object* source) {
     }
 }
 
-void RGE_Action_List::copy_obj_sprites(
-    RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task) {
+void RGE_Action_List::copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task) {
     RGE_Action_Node* node = this->list;
     while (node != 0) {
         node->action->copy_obj_sprites(source, task, new_task);
@@ -406,41 +411,41 @@ void RGE_Action_List::get_action_name(char* action_name) {
     }
 
     switch (this->list->action->action_type) {
-    case RGE_ACTION_TYPE_MOVE:
-        name = "MoveTo";
-        strcpy(action_name, name);
-        return;
-    case RGE_ACTION_TYPE_EXPLORE:
-        name = "Explore";
-        strcpy(action_name, name);
-        return;
-    case RGE_ACTION_TYPE_GATHER:
-        name = "Gather";
-        strcpy(action_name, name);
-        return;
-    case RGE_ACTION_TYPE_MISSILE:
-        name = "Missile";
-        strcpy(action_name, name);
-        return;
-    case RGE_ACTION_TYPE_ATTACK:
-        name = "Attack";
-        strcpy(action_name, name);
-        return;
-    case RGE_ACTION_TYPE_BIRD:
-        name = "Bird";
-        strcpy(action_name, name);
-        return;
-    case RGE_ACTION_TYPE_RUN_AWAY:
-        name = "RunAway";
-        strcpy(action_name, name);
-        return;
-    case RGE_ACTION_TYPE_MAKE:
-        name = "Make";
-        strcpy(action_name, name);
-        return;
-    default:
-        name = "Unknown";
-        break;
+        case RGE_ACTION_TYPE_MOVE:
+            name = "MoveTo";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_EXPLORE:
+            name = "Explore";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_GATHER:
+            name = "Gather";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_MISSILE:
+            name = "Missile";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_ATTACK:
+            name = "Attack";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_BIRD:
+            name = "Bird";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_RUN_AWAY:
+            name = "RunAway";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_MAKE:
+            name = "Make";
+            strcpy(action_name, name);
+            return;
+        default:
+            name = "Unknown";
+            break;
     }
 
     strcpy(action_name, name);

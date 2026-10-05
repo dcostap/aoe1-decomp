@@ -6,7 +6,7 @@
 class AIModuleMessage;
 
 class AIModuleID {
-public:
+  public:
     virtual ~AIModuleID();
     AIModuleID(char* n, int i);
     void setID(int i, char* n);
@@ -16,7 +16,7 @@ public:
 };
 
 class AIModuleMessage {
-public:
+  public:
     virtual ~AIModuleMessage();
     AIModuleMessage();
     AIModuleMessage(int s, int r, int i, int p, long d1, long d2, long d3, AIModuleMessage* c, int t);
@@ -42,7 +42,7 @@ public:
 typedef char aimodule_message_size_check[(sizeof(AIModuleMessage) == 0x138) ? 1 : -1];
 
 class AIModule {
-public:
+  public:
     virtual ~AIModule();
     virtual int loggingHistory() const;
     virtual void setLogHistory(int v);
@@ -51,9 +51,15 @@ public:
     virtual int loggingCommonHistory() const;
     virtual void setLogCommonHistory(int v);
     virtual void toggleLogCommonHistory();
-    virtual int loadState(char*) { return 0; }
-    virtual int saveState(char*) { return 0; }
-    virtual int gleanState(int) { return 0; }
+    virtual int loadState(char*) {
+        return 0;
+    }
+    virtual int saveState(char*) {
+        return 0;
+    }
+    virtual int gleanState(int) {
+        return 0;
+    }
     virtual int processMessage(AIModuleMessage* m);
     virtual int update(int timeLimit);
     virtual void setCallbackMessage(AIModuleMessage* m);
@@ -98,7 +104,7 @@ public:
     void logCommonHistory(char* textIn, ...);
     void logDebug(char* textIn, ...);
 
-protected:
+  protected:
     virtual int filterOutMessage(AIModuleMessage* m);
     void checkMessageLimit();
     void checkCallbackLimit();

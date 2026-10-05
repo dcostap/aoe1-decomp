@@ -26,7 +26,7 @@ class TRIBE_World;
 extern char scenario_default_file_name[260];
 
 class TRIBE_Screen_Sed : public TScreenPanel {
-public:
+  public:
     TRIBE_Screen_Sed(char* scenario_name_in, int is_multi_player_in);
 
     enum ScenarioMode {
@@ -43,18 +43,8 @@ public:
         ScenarioModeCinematics = 10,
         ScenarioModeSave = 11
     };
-    enum SelectRegionMode {
-        SelectOff = 0,
-        SelectObject = 1,
-        SelectDestinationObject = 2,
-        SelectArea = 3
-    };
-    enum MapType {
-        MapTypeNone = 0,
-        MapTypeBlankValue = 1,
-        MapTypeRandomValue = 2,
-        MapTypeSeedValue = 3
-    };
+    enum SelectRegionMode { SelectOff = 0, SelectObject = 1, SelectDestinationObject = 2, SelectArea = 3 };
+    enum MapType { MapTypeNone = 0, MapTypeBlankValue = 1, MapTypeRandomValue = 2, MapTypeSeedValue = 3 };
     enum VictoryType {
         VictoryTypeNone = 0,
         VictoryTypeStandardValue = 1,
@@ -77,15 +67,10 @@ public:
         BrushSizeLarge = 4,
         BrushSizeVeryLarge = 5
     };
-    enum MessageType {
-        MessageTypeNone = 0,
-        MessageTypeNormal = 1,
-        MessageTypeWarning = 2,
-        MessageTypeError = 3
-    };
+    enum MessageType { MessageTypeNone = 0, MessageTypeNormal = 1, MessageTypeWarning = 2, MessageTypeError = 3 };
 
     class List_Info {
-    public:
+      public:
         char text[100];
         short id;
     };
@@ -244,19 +229,26 @@ public:
     virtual long handle_idle();
     virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
     virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
-protected:
+
+  protected:
     virtual void set_focus(int have_focus_in);
-public:
+
+  public:
     void position_panels();
-protected:
+
+  protected:
     int create_button(TPanel* parent, TButtonPanel** button, long text_id, int ButtonSelectFlag);
     int create_button(TPanel* parent, TButtonPanel** button, char* text1, char* text2, char* text3, char* text4);
     int create_text(TPanel* parent, TTextPanel** text_panel, long text_id);
     int create_text(TPanel* parent, TTextPanel** text_panel, char* text);
     int create_drop_down(TPanel* parent, TDropDownPanel** drop_panel);
-    int create_input(TPanel* parent, TInputPanel** input_panel, char* value, short max_len, TInputPanel::FormatType format_type);
-    int create_edit(TPanel* parent, TEditPanel** edit_panel, char* value, short max_len,
-                    TEditPanel::FormatType format_type, int enable_ime, int turn_ime_on);
+    int create_input(
+        TPanel* parent, TInputPanel** input_panel, char* value, short max_len, TInputPanel::FormatType format_type
+    );
+    int create_edit(
+        TPanel* parent, TEditPanel** edit_panel, char* value, short max_len, TEditPanel::FormatType format_type,
+        int enable_ime, int turn_ime_on
+    );
     int create_list(TPanel* parent, TListPanel** list_panel, TScrollBarPanel** scrollbar_panel);
     int create_radio_button(TPanel* parent, TButtonPanel** button);
     int create_check_box(TPanel* parent, TButtonPanel** button);
@@ -265,7 +257,8 @@ protected:
     void LoadDisabledItemsFromScenario();
     void save_info_in_scenario();
     void save_multi_victory_cond_in_scenario();
-protected:
+
+  protected:
     void save_victory_cond_in_scenario(int which);
     void load_victory_cond_from_scenario(int which);
     void load_multi_victory_cond_from_scenario();
@@ -276,17 +269,22 @@ protected:
     void create_all_buttons_etc();
     int SetupListOfTerrain(TListPanel* list);
     void activate_victory_panel(int activate);
-    int MakeFileList(TDropDownPanel* drop_down, char* dir, char* extension, unsigned char append_none, unsigned char append_random);
+    int MakeFileList(
+        TDropDownPanel* drop_down, char* dir, char* extension, unsigned char append_none, unsigned char append_random
+    );
     void SavePlayerActiveStatus();
-protected:
+
+  protected:
     void set_player(short val, unsigned char save_player, unsigned char load_player);
     void set_map_type(MapType new_val, int activate_panels);
     void set_mp_victory_type(VictoryType new_val, int activate_panels);
     void set_paint_type(PaintType new_val, int activate_panels);
     void set_unit_player(short val);
-public:
+
+  public:
     void set_scenario_mode(ScenarioMode new_mode);
-protected:
+
+  protected:
     void set_panel_info();
     void set_string(char* text, long text_id, int max_size);
     void set_brush_size(BrushSize new_val);
@@ -296,8 +294,11 @@ protected:
     void set_unit(short val);
     void set_message_type(MessageType new_val, int activate_panels);
     void set_paint_object_mode();
-public:
-    int command_new_map(char* scenario_name_in, int is_multi_player_in, int random_seed_in, int width, int height, int display_in);
+
+  public:
+    int command_new_map(
+        char* scenario_name_in, int is_multi_player_in, int random_seed_in, int width, int height, int display_in
+    );
     void command_cancel();
     int command_menu();
     void command_new();
@@ -313,7 +314,6 @@ public:
     char* scenario_save_defaulted();
 };
 
-typedef char scr_sed_screen_size_check[
-    (sizeof(TRIBE_Screen_Sed) == 0x948) ? 1 : -1];
+typedef char scr_sed_screen_size_check[(sizeof(TRIBE_Screen_Sed) == 0x948) ? 1 : -1];
 
 #endif

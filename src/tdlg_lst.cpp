@@ -9,25 +9,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-TRIBE_Dialog_List::TRIBE_Dialog_List(char* name)
-    : RGE_Dialog_List(name) {
+TRIBE_Dialog_List::TRIBE_Dialog_List(char* name) : RGE_Dialog_List(name) {
 }
 
 int TRIBE_Dialog_List::create_list() {
     switch (this->list_type) {
-    case 100:
-        return this->create_build_list();
-    case 101:
-        return this->create_train_list();
-    case 102:
-        return this->create_research_list();
-    default:
-        return RGE_Dialog_List::create_list();
+        case 100:
+            return this->create_build_list();
+        case 101:
+            return this->create_train_list();
+        case 102:
+            return this->create_research_list();
+        default:
+            return RGE_Dialog_List::create_list();
     }
 }
 
 int TRIBE_Dialog_List::create_build_list() {
-    TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
+    TRIBE_Player* player = (TRIBE_Player*) rge_base_game->get_player();
     short i = 0;
     if (player == 0) {
         return 0;
@@ -44,7 +43,7 @@ int TRIBE_Dialog_List::create_build_list() {
     }
 
     list_size = item_num;
-    list_info = (rdlg_list_info*)calloc(item_num, sizeof(rdlg_list_info));
+    list_info = (rdlg_list_info*) calloc(item_num, sizeof(rdlg_list_info));
     if (list_info == 0) {
         return 0;
     }
@@ -62,7 +61,7 @@ int TRIBE_Dialog_List::create_build_list() {
 int TRIBE_Dialog_List::create_train_list() {
     Item_Avail* item_list;
     short item_num;
-    TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
+    TRIBE_Player* player = (TRIBE_Player*) rge_base_game->get_player();
     short i = 0;
 
     if (player != 0 && player->selected_obj != 0) {
@@ -72,7 +71,7 @@ int TRIBE_Dialog_List::create_train_list() {
             player->interface_item_avail(&item_list, &item_num, player->selected_obj->master_obj->id);
             if (item_num != 0) {
                 list_size = item_num;
-                list_info = (rdlg_list_info*)calloc(item_num, sizeof(rdlg_list_info));
+                list_info = (rdlg_list_info*) calloc(item_num, sizeof(rdlg_list_info));
                 if (list_info != 0) {
                     if (list_size > 0) {
                         do {
@@ -92,7 +91,7 @@ int TRIBE_Dialog_List::create_train_list() {
 int TRIBE_Dialog_List::create_research_list() {
     Item_Avail* item_list;
     short item_num;
-    TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
+    TRIBE_Player* player = (TRIBE_Player*) rge_base_game->get_player();
     short i = 0;
 
     if (player != 0 && player->selected_obj != 0) {
@@ -102,7 +101,7 @@ int TRIBE_Dialog_List::create_research_list() {
             player->interface_tech_avail(&item_list, &item_num, player->selected_obj->master_obj->id);
             if (item_num != 0) {
                 list_size = item_num;
-                list_info = (rdlg_list_info*)calloc(item_num, sizeof(rdlg_list_info));
+                list_info = (rdlg_list_info*) calloc(item_num, sizeof(rdlg_list_info));
                 if (list_info != 0) {
                     if (list_size > 0) {
                         do {
@@ -121,13 +120,13 @@ int TRIBE_Dialog_List::create_research_list() {
 
 short TRIBE_Dialog_List::get_cur_id() {
     switch (this->list_type) {
-    case 100:
-        return -1;
-    case 101:
-        return -1;
-    case 102:
-        return -1;
-    default:
-        return RGE_Dialog_List::get_cur_id();
+        case 100:
+            return -1;
+        case 101:
+            return -1;
+        case 102:
+            return -1;
+        default:
+            return RGE_Dialog_List::get_cur_id();
     }
 }

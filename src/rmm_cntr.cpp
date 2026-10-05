@@ -9,9 +9,8 @@
 extern int __cdecl debug_rand(char* file, int line);
 static char s_rmm_cntr_path[] = "C:\\msdev\\work\\age1_x1\\rmm_cntr.cpp";
 
-RGE_RMM_Controller::RGE_RMM_Controller(RGE_Map* in_map, RGE_Game_World* world,
-    uchar type, long player_num)
-    : RGE_Random_Map_Module(in_map, 0, 1) {
+RGE_RMM_Controller::RGE_RMM_Controller(RGE_Map* in_map, RGE_Game_World* world, uchar type, long player_num) :
+    RGE_Random_Map_Module(in_map, 0, 1) {
     int map_type = type;
     RGE_Terrain_Info terrain_info;
     RGE_Land_Info land_info;
@@ -24,8 +23,7 @@ uchar RGE_RMM_Controller::generate() {
     return RGE_Random_Map_Module::generate();
 }
 
-void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
-    long type, long player_num) {
+void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type, long player_num) {
     long land_percent;
     long index;
     long previous;
@@ -36,61 +34,59 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
     info.land_num = player_num;
 
     switch (type) {
-    default:
-        info.base_terrain = 0;
-        info.wall_1_avoidance_line = 0;
-        info.wall_2_avoidance_line = 0;
-        info.wall_3_avoidance_line = 0;
-        info.wall_4_avoidance_line = 0;
-        info.wall_fade = 0;
-        land_percent = 0;
-        break;
-    case 3:
-        info.base_terrain = 1;
-        info.wall_1_avoidance_line = 0;
-        info.wall_2_avoidance_line = 0;
-        info.wall_3_avoidance_line = 0;
-        info.wall_4_avoidance_line = 0;
-        info.wall_fade = 0;
-        land_percent = 90;
-        break;
-    case 2:
-        info.base_terrain = 1;
-        info.wall_1_avoidance_line = 4;
-        info.wall_2_avoidance_line = 4;
-        info.wall_3_avoidance_line = this->map_width - 5;
-        info.wall_4_avoidance_line = this->map_height - 5;
-        info.wall_fade = 34;
-        land_percent = 70;
-        break;
-    case 1:
-        info.base_terrain = 1;
-        info.wall_1_avoidance_line = 6;
-        info.wall_2_avoidance_line = 6;
-        info.wall_3_avoidance_line = this->map_width - 7;
-        info.wall_4_avoidance_line = this->map_height - 7;
-        info.wall_fade = 20;
-        land_percent = 50;
-        break;
-    case 0:
-        info.base_terrain = 1;
-        info.wall_1_avoidance_line = 8;
-        info.wall_2_avoidance_line = 8;
-        info.wall_3_avoidance_line = this->map_width - 9;
-        info.wall_4_avoidance_line = this->map_height - 9;
-        info.wall_fade = 20;
-        land_percent = 30;
+        default:
+            info.base_terrain = 0;
+            info.wall_1_avoidance_line = 0;
+            info.wall_2_avoidance_line = 0;
+            info.wall_3_avoidance_line = 0;
+            info.wall_4_avoidance_line = 0;
+            info.wall_fade = 0;
+            land_percent = 0;
+            break;
+        case 3:
+            info.base_terrain = 1;
+            info.wall_1_avoidance_line = 0;
+            info.wall_2_avoidance_line = 0;
+            info.wall_3_avoidance_line = 0;
+            info.wall_4_avoidance_line = 0;
+            info.wall_fade = 0;
+            land_percent = 90;
+            break;
+        case 2:
+            info.base_terrain = 1;
+            info.wall_1_avoidance_line = 4;
+            info.wall_2_avoidance_line = 4;
+            info.wall_3_avoidance_line = this->map_width - 5;
+            info.wall_4_avoidance_line = this->map_height - 5;
+            info.wall_fade = 34;
+            land_percent = 70;
+            break;
+        case 1:
+            info.base_terrain = 1;
+            info.wall_1_avoidance_line = 6;
+            info.wall_2_avoidance_line = 6;
+            info.wall_3_avoidance_line = this->map_width - 7;
+            info.wall_4_avoidance_line = this->map_height - 7;
+            info.wall_fade = 20;
+            land_percent = 50;
+            break;
+        case 0:
+            info.base_terrain = 1;
+            info.wall_1_avoidance_line = 8;
+            info.wall_2_avoidance_line = 8;
+            info.wall_3_avoidance_line = this->map_width - 9;
+            info.wall_4_avoidance_line = this->map_height - 9;
+            info.wall_fade = 20;
+            land_percent = 30;
     }
 
-    long land_tile_num =
-        land_percent * this->map_height * this->map_width / 100;
-    float bound =
-        (float)(this->map_width - 16) / sqrt((float)player_num) * .8;
+    long land_tile_num = land_percent * this->map_height * this->map_width / 100;
+    float bound = (float) (this->map_width - 16) / sqrt((float) player_num) * .8;
     float bound_square = bound * bound;
-    long minimum_x = (long)(this->map_width / 2 - bound * .9);
-    long minimum_y = (long)(this->map_height / 2 - bound * .9);
-    long maximum_x = (long)(this->map_width / 2 - bound * -.9);
-    long maximum_y = (long)(this->map_height / 2 - bound * -.9);
+    long minimum_x = (long) (this->map_width / 2 - bound * .9);
+    long minimum_y = (long) (this->map_height / 2 - bound * .9);
+    long maximum_x = (long) (this->map_width / 2 - bound * -.9);
+    long maximum_y = (long) (this->map_height / 2 - bound * -.9);
 
     if (minimum_x <= 8)
         minimum_x = 9;
@@ -105,33 +101,31 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
     if (0 < player_num) {
         do {
             switch (type) {
-            case 2:
-            case 3:
-            case 4:
-                info.land[index].terrain_type = 0;
-                info.land[index].area = 3;
-                info.land[index].base_size = 5;
-                info.land[index].zone = 0;
-                break;
-            case 1:
-                info.land[index].terrain_type = 0;
-                info.land[index].area = 4;
-                info.land[index].base_size = 5;
-                info.land[index].zone = (uchar)index;
-                break;
-            case 0:
-                info.land[index].terrain_type = 0;
-                info.land[index].area = 7;
-                info.land[index].base_size = 5;
-                info.land[index].zone = (uchar)index;
+                case 2:
+                case 3:
+                case 4:
+                    info.land[index].terrain_type = 0;
+                    info.land[index].area = 3;
+                    info.land[index].base_size = 5;
+                    info.land[index].zone = 0;
+                    break;
+                case 1:
+                    info.land[index].terrain_type = 0;
+                    info.land[index].area = 4;
+                    info.land[index].base_size = 5;
+                    info.land[index].zone = (uchar) index;
+                    break;
+                case 0:
+                    info.land[index].terrain_type = 0;
+                    info.land[index].area = 7;
+                    info.land[index].base_size = 5;
+                    info.land[index].zone = (uchar) index;
             }
 
             do {
                 not_done = false;
-                x = debug_rand(s_rmm_cntr_path, 209) *
-                    (this->map_width - 16) / 0x7FFF + 8;
-                y = debug_rand(s_rmm_cntr_path, 210) *
-                    (this->map_height - 16) / 0x7FFF + 8;
+                x = debug_rand(s_rmm_cntr_path, 209) * (this->map_width - 16) / 0x7FFF + 8;
+                y = debug_rand(s_rmm_cntr_path, 210) * (this->map_height - 16) / 0x7FFF + 8;
 
                 if (x > minimum_x && x < maximum_x && y > minimum_y && y < maximum_y) {
                     not_done = true;
@@ -145,7 +139,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
                             long delta_y = y - info.land[previous].y;
                             if (delta_y < 0)
                                 delta_y = -delta_y;
-                            if ((float)(delta_x * delta_x + delta_y * delta_y) <= bound_square) {
+                            if ((float) (delta_x * delta_x + delta_y * delta_y) <= bound_square) {
                                 if (!not_done && previous == index - 1) {
                                     info.land[previous].y = y;
                                     info.land[previous].x = x;
@@ -168,59 +162,54 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
     new RGE_RMM_Land_Generator(this->map, this, &info);
 }
 
-void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& info,
-    RGE_Land_Info& land_info, long type) {
+void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& info, RGE_Land_Info& land_info, long type) {
     info.terrain_num = 2;
     switch (type) {
-    case 3:
-    case 4:
-        info.terrain[0].terrain_size =
-            this->map_width * this->map_height * 20 / 100;
-        info.terrain[0].terrain_type = 10;
-        info.terrain[0].clumps = 30;
-        info.terrain[0].base_terrain_type = 0;
-        info.terrain[0].terrain_generated = 0;
-        info.terrain[0].spacing = 2;
+        case 3:
+        case 4:
+            info.terrain[0].terrain_size = this->map_width * this->map_height * 20 / 100;
+            info.terrain[0].terrain_type = 10;
+            info.terrain[0].clumps = 30;
+            info.terrain[0].base_terrain_type = 0;
+            info.terrain[0].terrain_generated = 0;
+            info.terrain[0].spacing = 2;
 
-        info.terrain[1].terrain_size =
-            this->map_width * this->map_height * 30 / 100;
-        info.terrain[1].terrain_type = 6;
-        info.terrain[1].clumps = 17;
-        goto terrain_defaults;
-    case 0:
-    case 1:
-    case 2:
-        info.terrain[0].terrain_size =
-            this->map_width * this->map_height * 20 / 100;
-        info.terrain[0].terrain_type = 10;
-        info.terrain[0].clumps = 20;
-        info.terrain[0].base_terrain_type = 0;
-        info.terrain[0].terrain_generated = 0;
-        info.terrain[0].spacing = 2;
+            info.terrain[1].terrain_size = this->map_width * this->map_height * 30 / 100;
+            info.terrain[1].terrain_type = 6;
+            info.terrain[1].clumps = 17;
+            goto terrain_defaults;
+        case 0:
+        case 1:
+        case 2:
+            info.terrain[0].terrain_size = this->map_width * this->map_height * 20 / 100;
+            info.terrain[0].terrain_type = 10;
+            info.terrain[0].clumps = 20;
+            info.terrain[0].base_terrain_type = 0;
+            info.terrain[0].terrain_generated = 0;
+            info.terrain[0].spacing = 2;
 
-        info.terrain[1].terrain_size =
-            this->map_width * this->map_height * 30 / 100;
-        info.terrain[1].terrain_type = 6;
-        info.terrain[1].clumps = 7;
-    terrain_defaults:
-        info.terrain[1].base_terrain_type = 0;
-        info.terrain[1].terrain_generated = 0;
-        info.terrain[1].spacing = 0;
+            info.terrain[1].terrain_size = this->map_width * this->map_height * 30 / 100;
+            info.terrain[1].terrain_type = 6;
+            info.terrain[1].clumps = 7;
+        terrain_defaults:
+            info.terrain[1].base_terrain_type = 0;
+            info.terrain[1].terrain_generated = 0;
+            info.terrain[1].spacing = 0;
 
-    default:
-        long i = 0;
-        info.hot_spot_num = land_info.land_num;
-        if (info.hot_spot_num > 0) {
-            do {
-                info.hot_spots[i].x = land_info.land[i].x;
-                info.hot_spots[i].y = land_info.land[i].y;
-                info.hot_spots[i].radius = 12;
-                info.hot_spots[i].fade = 20;
-                ++i;
-            } while (i < info.hot_spot_num);
-        }
+        default:
+            long i = 0;
+            info.hot_spot_num = land_info.land_num;
+            if (info.hot_spot_num > 0) {
+                do {
+                    info.hot_spots[i].x = land_info.land[i].x;
+                    info.hot_spots[i].y = land_info.land[i].y;
+                    info.hot_spots[i].radius = 12;
+                    info.hot_spots[i].fade = 20;
+                    ++i;
+                } while (i < info.hot_spot_num);
+            }
 
-        new RGE_RMM_Terrain_Generator(this->map, this, &info);
+            new RGE_RMM_Terrain_Generator(this->map, this, &info);
     }
 }
 
@@ -228,8 +217,7 @@ long RGE_RMM_Controller::count_map_tiles(uchar terrain) {
     return this->map_width * this->map_height;
 }
 
-void RGE_RMM_Controller::add_object_module(RGE_Game_World* world,
-    RGE_Land_Info& land_info) {
+void RGE_RMM_Controller::add_object_module(RGE_Game_World* world, RGE_Land_Info& land_info) {
     RGE_Object_Info object_info;
     object_info.object_num = 6;
 

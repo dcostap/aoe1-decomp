@@ -7,7 +7,7 @@ class RGE_Action_Object;
 class RGE_Task;
 
 class RGE_Action_Explore : public RGE_Action {
-public:
+  public:
     RGE_Action_Explore(int infile, RGE_Action_Object* obj_in);
     RGE_Action_Explore(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z);
 
@@ -15,11 +15,10 @@ public:
     virtual unsigned char update();
     virtual int work(RGE_Static_Object* obj_in, float x, float y, float z);
 
-protected:
+  protected:
     virtual void set_state(unsigned char new_state);
 };
 
-typedef char rge_action_explore_size_check[
-    (sizeof(RGE_Action_Explore) == 0x40) ? 1 : -1];
+typedef char rge_action_explore_size_check[(sizeof(RGE_Action_Explore) == 0x40) ? 1 : -1];
 
-#endif  // AOE1_ACT_EXPL_H
+#endif // AOE1_ACT_EXPL_H

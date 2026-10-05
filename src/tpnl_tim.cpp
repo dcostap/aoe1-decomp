@@ -4,8 +4,7 @@
 #include "../include/tplayer.h"
 #include "../include/tworld.h"
 
-TRIBE_Panel_Time::TRIBE_Panel_Time(TDrawArea* render_area_in, TPanel* parent_in)
-    : TPanel() {
+TRIBE_Panel_Time::TRIBE_Panel_Time(TDrawArea* render_area_in, TPanel* parent_in) : TPanel() {
     this->handle_mouse_input = 0;
     this->font = rge_base_game->get_font(RGE_FONT_STANDARD)->font;
     this->color1 = 0xFFFFFF;
@@ -119,42 +118,42 @@ void TRIBE_Panel_Time::set_clock_type(int clock_type_in, int player_id_in) {
 
     if (this->player != 0) {
         switch (this->player->color_table->id) {
-        case 0:
-            this->color1 = 0x00FF0000;
-            this->color2 = 0x00B3B3B3;
-            break;
-        case 1:
-            this->color1 = 0x002139C6;
-            this->color2 = 0;
-            break;
-        case 2:
-            this->color1 = 0x0000FFFF;
-            this->color2 = 0;
-            break;
-        case 3:
-            this->color1 = 0x004F73A3;
-            this->color2 = 0;
-            break;
-        case 4:
-            this->color1 = 0x000F77F3;
-            this->color2 = 0;
-            break;
-        case 5:
-            this->color1 = 0x0000C700;
-            this->color2 = 0;
-            break;
-        case 6:
-            this->color1 = 0x007B90A2;
-            this->color2 = 0;
-            break;
-        case 7:
-            this->color1 = 0x00ADAD00;
-            this->color2 = 0;
-            break;
-        default:
-            this->color1 = 0x00FFFFFF;
-            this->color2 = 0;
-            break;
+            case 0:
+                this->color1 = 0x00FF0000;
+                this->color2 = 0x00B3B3B3;
+                break;
+            case 1:
+                this->color1 = 0x002139C6;
+                this->color2 = 0;
+                break;
+            case 2:
+                this->color1 = 0x0000FFFF;
+                this->color2 = 0;
+                break;
+            case 3:
+                this->color1 = 0x004F73A3;
+                this->color2 = 0;
+                break;
+            case 4:
+                this->color1 = 0x000F77F3;
+                this->color2 = 0;
+                break;
+            case 5:
+                this->color1 = 0x0000C700;
+                this->color2 = 0;
+                break;
+            case 6:
+                this->color1 = 0x007B90A2;
+                this->color2 = 0;
+                break;
+            case 7:
+                this->color1 = 0x00ADAD00;
+                this->color2 = 0;
+                break;
+            default:
+                this->color1 = 0x00FFFFFF;
+                this->color2 = 0;
+                break;
         }
     } else {
         this->color1 = 0x00FFFFFF;
@@ -194,9 +193,12 @@ void TRIBE_Panel_Time::draw() {
     tagRECT rect;
     int text_flags;
 
-    if (this->render_area == 0) return;
-    if (this->visible == 0) return;
-    if (this->active == 0) return;
+    if (this->render_area == 0)
+        return;
+    if (this->visible == 0)
+        return;
+    if (this->active == 0)
+        return;
 
     this->display_changed_count++;
     this->draw_setup(0);
@@ -208,8 +210,8 @@ void TRIBE_Panel_Time::draw() {
     }
 
     if (this->ImageBuffer != 0) {
-        if (this->display_time != this->last_display_time || this->clock_type != this->old_clock_type ||
-            this->clock_format != this->old_clock_format || this->need_restore) {
+        if (this->display_time != this->last_display_time || this->clock_type != this->old_clock_type
+            || this->clock_format != this->old_clock_format || this->need_restore) {
             this->render_to_image_buffer();
             if (this->need_restore) {
                 this->need_restore = 0;
@@ -220,8 +222,9 @@ void TRIBE_Panel_Time::draw() {
 
     if (this->ImageTextActive != 0 && this->ImageBuffer != 0) {
         this->ImageBuffer->SetTrans(1, 1);
-        this->ImageBuffer->Copy(this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top,
-                                &this->UsedImageRect, 1);
+        this->ImageBuffer->Copy(
+            this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top, &this->UsedImageRect, 1
+        );
         this->ImageBuffer->SetTrans(0, 1);
         goto finish;
     }
@@ -255,18 +258,18 @@ void TRIBE_Panel_Time::draw() {
     } else {
         int rounded_time = ((this->game_time + 4) / 5) * 5;
         switch (this->clock_type) {
-        case 4:
-            sprintf(str, this->get_string(STRING_ID_WONDER_YEARS_FORMAT), rounded_time);
-            break;
-        case 5:
-            sprintf(str, this->get_string(STRING_ID_ARTIFACTS_YEARS_FORMAT), rounded_time);
-            break;
-        case 6:
-            sprintf(str, this->get_string(STRING_ID_RUINS_YEARS_FORMAT), rounded_time);
-            break;
-        default:
-            sprintf(str, this->get_string(STRING_ID_COUNTDOWN_YEARS_FORMAT), rounded_time);
-            break;
+            case 4:
+                sprintf(str, this->get_string(STRING_ID_WONDER_YEARS_FORMAT), rounded_time);
+                break;
+            case 5:
+                sprintf(str, this->get_string(STRING_ID_ARTIFACTS_YEARS_FORMAT), rounded_time);
+                break;
+            case 6:
+                sprintf(str, this->get_string(STRING_ID_RUINS_YEARS_FORMAT), rounded_time);
+                break;
+            default:
+                sprintf(str, this->get_string(STRING_ID_COUNTDOWN_YEARS_FORMAT), rounded_time);
+                break;
         }
         text_flags = DT_SINGLELINE | DT_RIGHT;
     }
@@ -316,41 +319,41 @@ long TRIBE_Panel_Time::handle_idle() {
     this->TPanel::handle_idle();
 
     switch (this->clock_type) {
-    case 0:
-        break;
-    case 1:
-        this->game_time =
-            (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 394) - this->start_real_time) / 1000;
-        break;
-    case 2:
-        this->game_time = this->world->world_time / 1000;
-        break;
-    case 3:
-        this->game_time = this->world->countdown_clock;
-        break;
-    case 4:
-        if (this->player != 0) {
-            long countdown_timer;
-            rge_base_game->get_countdown_timer(this->player->id, countdown_timer);
-            this->game_time = countdown_timer;
+        case 0:
             break;
-        }
-        this->game_time = 0;
-        break;
-    case 5:
-        if (this->player != 0 && this->player->artifact_held_time != -1.0f) {
-            this->game_time = this->player->artifact_held_time;
+        case 1:
+            this->game_time =
+                (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 394) - this->start_real_time) / 1000;
             break;
-        }
-        this->game_time = 0;
-        break;
-    case 6:
-        if (this->player != 0 && this->player->ruin_held_time != -1.0f) {
-            this->game_time = this->player->ruin_held_time;
+        case 2:
+            this->game_time = this->world->world_time / 1000;
             break;
-        }
-        this->game_time = 0;
-        break;
+        case 3:
+            this->game_time = this->world->countdown_clock;
+            break;
+        case 4:
+            if (this->player != 0) {
+                long countdown_timer;
+                rge_base_game->get_countdown_timer(this->player->id, countdown_timer);
+                this->game_time = countdown_timer;
+                break;
+            }
+            this->game_time = 0;
+            break;
+        case 5:
+            if (this->player != 0 && this->player->artifact_held_time != -1.0f) {
+                this->game_time = this->player->artifact_held_time;
+                break;
+            }
+            this->game_time = 0;
+            break;
+        case 6:
+            if (this->player != 0 && this->player->ruin_held_time != -1.0f) {
+                this->game_time = this->player->ruin_held_time;
+                break;
+            }
+            this->game_time = 0;
+            break;
     }
 
     if (this->game_time != this->last_game_time) {
@@ -368,11 +371,13 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
     char str[256];
     int text_flags;
 
-    if (this->ImageBuffer == 0) return 0;
+    if (this->ImageBuffer == 0)
+        return 0;
 
     this->ImageBuffer->PtrClear(&this->ImageRect, 1);
     old_font = this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer");
-    if (old_font == 0) return 0;
+    if (old_font == 0)
+        return 0;
 
     this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
@@ -399,18 +404,18 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
     } else {
         int rounded_time = ((this->game_time + 4) / 5) * 5;
         switch (this->clock_type) {
-        case 4:
-            sprintf(str, this->get_string(STRING_ID_WONDER_YEARS_FORMAT), rounded_time);
-            break;
-        case 5:
-            sprintf(str, this->get_string(STRING_ID_ARTIFACTS_YEARS_FORMAT), rounded_time);
-            break;
-        case 6:
-            sprintf(str, this->get_string(STRING_ID_RUINS_YEARS_FORMAT), rounded_time);
-            break;
-        default:
-            sprintf(str, this->get_string(STRING_ID_COUNTDOWN_YEARS_FORMAT), rounded_time);
-            break;
+            case 4:
+                sprintf(str, this->get_string(STRING_ID_WONDER_YEARS_FORMAT), rounded_time);
+                break;
+            case 5:
+                sprintf(str, this->get_string(STRING_ID_ARTIFACTS_YEARS_FORMAT), rounded_time);
+                break;
+            case 6:
+                sprintf(str, this->get_string(STRING_ID_RUINS_YEARS_FORMAT), rounded_time);
+                break;
+            default:
+                sprintf(str, this->get_string(STRING_ID_COUNTDOWN_YEARS_FORMAT), rounded_time);
+                break;
         }
         text_flags = DT_SINGLELINE | DT_RIGHT;
     }

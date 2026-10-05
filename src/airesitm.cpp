@@ -1,7 +1,6 @@
 #include "../include/airesitm.h"
 
-ResourceItem::ResourceItem()
-    : next(0), prev(0), numberValue(0) {
+ResourceItem::ResourceItem() : next(0), prev(0), numberValue(0) {
     for (int i = 0; i < 8; ++i) {
         valueValue[i] = -1;
         sortedValue[i] = -1;
@@ -9,8 +8,7 @@ ResourceItem::ResourceItem()
     }
 }
 
-ResourceItem::ResourceItem(int n)
-    : next(0), prev(0), numberValue(n) {
+ResourceItem::ResourceItem(int n) : next(0), prev(0), numberValue(n) {
     int i = 0;
 
     while (i < numberValue) {
@@ -30,8 +28,7 @@ ResourceItem::ResourceItem(int n)
     }
 }
 
-ResourceItem::ResourceItem(int n, int* v)
-    : next(0), prev(0), numberValue(n) {
+ResourceItem::ResourceItem(int n, int* v) : next(0), prev(0), numberValue(n) {
     int i = 0;
 
     while (i < numberValue) {
@@ -51,8 +48,7 @@ ResourceItem::ResourceItem(int n, int* v)
     }
 }
 
-ResourceItem::ResourceItem(const ResourceItem& ri)
-    : next(0), prev(0), numberValue(ri.numberValue) {
+ResourceItem::ResourceItem(const ResourceItem& ri) : next(0), prev(0), numberValue(ri.numberValue) {
     for (int i = 0; i < numberValue && i < 8; ++i) {
         valueValue[i] = ri.valueValue[i];
         sortedValue[i] = ri.sortedValue[i];
@@ -60,8 +56,7 @@ ResourceItem::ResourceItem(const ResourceItem& ri)
     }
 }
 
-ResourceItem::ResourceItem(ResourceItem* ri)
-    : next(0), prev(0), numberValue(ri->numberValue) {
+ResourceItem::ResourceItem(ResourceItem* ri) : next(0), prev(0), numberValue(ri->numberValue) {
     for (int i = 0; i < numberValue && i < 8; ++i) {
         valueValue[i] = ri->valueValue[i];
         sortedValue[i] = ri->sortedValue[i];
@@ -69,7 +64,8 @@ ResourceItem::ResourceItem(ResourceItem* ri)
     }
 }
 
-ResourceItem::~ResourceItem() {}
+ResourceItem::~ResourceItem() {
+}
 
 ResourceItem& ResourceItem::operator+=(const ResourceItem& ri) {
     if (numberValue == ri.numberValue) {

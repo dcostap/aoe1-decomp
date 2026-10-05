@@ -39,10 +39,8 @@ struct Selection_Locals {
     RGE_Static_Object** list;
 };
 
-RGE_Player::RGE_Player(int infile, RGE_Game_World* gworld,
-                       unsigned char this_id)
-    : computerPlayerValue(0), pathingAttemptCapValue(5),
-      pathingDelayCapValue(10), tile_list(400), diam_tile_list(400) {
+RGE_Player::RGE_Player(int infile, RGE_Game_World* gworld, unsigned char this_id) :
+    computerPlayerValue(0), pathingAttemptCapValue(5), pathingDelayCapValue(10), tile_list(400), diam_tile_list(400) {
     int* pathing = &this->pathingAttemptCapValue;
     int pathing_cap = pathingCapValue;
 
@@ -51,11 +49,10 @@ RGE_Player::RGE_Player(int infile, RGE_Game_World* gworld,
     this->world = gworld;
     this->reset_selected();
 
-    this->doppleganger_creator =
-        new RGE_Doppleganger_Creator(this, 100);
+    this->doppleganger_creator = new RGE_Doppleganger_Creator(this, 100);
 
-    this->relations = (unsigned char*)calloc(1, (int)this->world->player_num);
-    rge_read(infile, this->relations, (int)this->world->player_num);
+    this->relations = (unsigned char*) calloc(1, (int) this->world->player_num);
+    rge_read(infile, this->relations, (int) this->world->player_num);
     rge_read(infile, this->unitDiplomacy, 36);
 
     if (save_game_version >= g_player_save_version_4_01) {
@@ -69,16 +66,16 @@ RGE_Player::RGE_Player(int infile, RGE_Game_World* gworld,
     short index;
     rge_read(infile, &index, 2);
     if (index > 0) {
-        this->name = (char*)calloc((int)index, 1);
-        rge_read(infile, this->name, (int)index);
+        this->name = (char*) calloc((int) index, 1);
+        rge_read(infile, this->name, (int) index);
     } else {
         this->name = 0;
     }
 
     rge_read(infile, &this->attribute_num, 2);
     if (this->attribute_num > 0) {
-        this->attributes = (float*)calloc((int)this->attribute_num, 4);
-        rge_read(infile, this->attributes, (int)this->attribute_num << 2);
+        this->attributes = (float*) calloc((int) this->attribute_num, 4);
+        rge_read(infile, this->attributes, (int) this->attribute_num << 2);
     } else {
         this->attributes = 0;
     }
@@ -103,13 +100,10 @@ RGE_Player::RGE_Player(int infile, RGE_Game_World* gworld,
     this->checksum = 0;
 }
 
-RGE_Player::RGE_Player(RGE_Game_World* gworld,
-                       RGE_Master_Player* prototype,
-                       unsigned char this_id, char* new_name,
-                       unsigned char m_player_id,
-                       unsigned char flag)
-    : computerPlayerValue(0), pathingAttemptCapValue(5),
-      pathingDelayCapValue(10), tile_list(400), diam_tile_list(400) {
+RGE_Player::RGE_Player(
+    RGE_Game_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name,
+    unsigned char m_player_id, unsigned char flag
+) : computerPlayerValue(0), pathingAttemptCapValue(5), pathingDelayCapValue(10), tile_list(400), diam_tile_list(400) {
     this->pathingAttemptCapValue = pathingCapValue;
     this->master_player_id = m_player_id;
     this->type = 0;
@@ -122,7 +116,7 @@ RGE_Player::RGE_Player(RGE_Game_World* gworld,
         getstring(&this->name, new_name);
     }
 
-    this->relations = (unsigned char*)calloc(1, (int)this->world->player_num);
+    this->relations = (unsigned char*) calloc(1, (int) this->world->player_num);
     memset(this->unitDiplomacy, -1, sizeof(this->unitDiplomacy));
     for (short i = 0; i < this->world->player_num; ++i) {
         this->relations[i] = 1;
@@ -143,11 +137,10 @@ RGE_Player::RGE_Player(RGE_Game_World* gworld,
 
     this->master_object_num = prototype->master_object_num;
     if (this->master_object_num > 0) {
-        this->master_objects = (RGE_Master_Static_Object**)calloc((int)this->master_object_num, 4);
+        this->master_objects = (RGE_Master_Static_Object**) calloc((int) this->master_object_num, 4);
         for (short i = 0; i < this->master_object_num; ++i) {
             if (prototype->master_objects[i] != 0) {
-                this->master_objects[i] =
-                    prototype->master_objects[i]->make_new_master();
+                this->master_objects[i] = prototype->master_objects[i]->make_new_master();
             }
         }
     }
@@ -166,27 +159,26 @@ RGE_Player::RGE_Player(RGE_Game_World* gworld,
         this->visible = 0;
     }
 
-    this->doppleganger_creator =
-        new RGE_Doppleganger_Creator(this, 100);
+    this->doppleganger_creator = new RGE_Doppleganger_Creator(this, 100);
 
     this->attribute_num = prototype->attribute_num;
     if (this->attribute_num > 0) {
-        this->attributes = (float*)calloc((int)this->attribute_num, 4);
-        memcpy(this->attributes, prototype->attributes, (int)this->attribute_num * 4);
+        this->attributes = (float*) calloc((int) this->attribute_num, 4);
+        memcpy(this->attributes, prototype->attributes, (int) this->attribute_num * 4);
     } else {
         this->attributes = 0;
     }
     this->culture = prototype->culture;
 
-    this->set_view_loc((float)(this->world->map->map_width / 2), (float)(this->world->map->map_height / 2));
-    this->set_map_loc((short)(this->world->map->map_width / 2), (short)(this->world->map->map_height / 2));
+    this->set_view_loc((float) (this->world->map->map_width / 2), (float) (this->world->map->map_height / 2));
+    this->set_map_loc((short) (this->world->map->map_width / 2), (short) (this->world->map->map_height / 2));
 
     this->game_status = 0;
     this->resigned = 0;
     this->color_table = 0;
-    this->tribe_effect = (long)prototype->tribe_effect;
+    this->tribe_effect = (long) prototype->tribe_effect;
     if (flag != 0 && this->tribe_effect >= 0) {
-        this->world->effects->do_effect((short)this->tribe_effect, this);
+        this->world->effects->do_effect((short) this->tribe_effect, this);
     }
 
     this->checksum = 0;
@@ -255,8 +247,10 @@ RGE_Player::~RGE_Player() {
 
 void RGE_Player::set_game_status(unsigned char new_status) {
     RGE_Player* player = this;
-    if (new_status == player->game_status) return;
-    if (player->resigned && new_status != 2) return;
+    if (new_status == player->game_status)
+        return;
+    if (player->resigned && new_status != 2)
+        return;
     player->game_status = new_status;
     if (new_status == 2 && !player->resigned) {
         rge_base_game->notification(6, player->id, 0, 0, 0);
@@ -285,7 +279,8 @@ int RGE_Player::computerPlayer() const {
 }
 
 int RGE_Player::isEnemy(int playerNum) {
-    if ((((playerNum != this->id) && (playerNum > 0)) && (playerNum < this->world->player_num)) && (this->relations[playerNum] == 3)) {
+    if ((((playerNum != this->id) && (playerNum > 0)) && (playerNum < this->world->player_num))
+        && (this->relations[playerNum] == 3)) {
         return 1;
     }
     return 0;
@@ -302,7 +297,8 @@ int RGE_Player::isAlly(int playerNum) {
 }
 
 int RGE_Player::isNeutral(int playerNum) {
-    if ((((playerNum != this->id) && (playerNum > 0)) && (playerNum < this->world->player_num)) && (this->relations[playerNum] == 1)) {
+    if ((((playerNum != this->id) && (playerNum > 0)) && (playerNum < this->world->player_num))
+        && (this->relations[playerNum] == 1)) {
         return 1;
     }
     return 0;
@@ -323,22 +319,23 @@ int RGE_Player::isAllNeutral(void) {
 void RGE_Player::setDiplomaticStance(int playerNum, int rType) {
 }
 
-void RGE_Player::loadAIInformation(char* bL, char* cP, char* rS,
-                                   int mood, int mapType) {
+void RGE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int mapType) {
 }
 
-void RGE_Player::sendUnitAIOrder(int issuer, int recipient, int orderType,
-                                 int target, int targetOwner, float targetX,
-                                 float targetY, float targetZ, float range,
-                                 int immediate, int inFront, int priority) {
-    this->world->commands->command_ai_order(issuer, issuer, recipient, orderType, target, targetOwner,
-                                            targetX, targetY, targetZ, range, immediate, inFront, priority);
+void RGE_Player::sendUnitAIOrder(
+    int issuer, int recipient, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ,
+    float range, int immediate, int inFront, int priority
+) {
+    this->world->commands->command_ai_order(
+        issuer, issuer, recipient, orderType, target, targetOwner, targetX, targetY, targetZ, range, immediate, inFront,
+        priority
+    );
 }
 
-void RGE_Player::processAIOrder(int issuer, int recipient, int orderType,
-                                int target, int targetOwner, float targetX,
-                                float targetY, float targetZ, float range,
-                                int immediate, int inFront, int priority) {
+void RGE_Player::processAIOrder(
+    int issuer, int recipient, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ,
+    float range, int immediate, int inFront, int priority
+) {
     RGE_Static_Object* obj;
     UnitAIModule* ai;
 
@@ -356,24 +353,19 @@ void RGE_Player::processAIOrder(int issuer, int recipient, int orderType,
     ai->order(issuer, orderType, target, targetOwner, targetX, targetY, targetZ, range, immediate, inFront, priority);
 }
 
-void RGE_Player::sendGameOrder(RGE_Static_Object* unit,
-                               RGE_Static_Object* target, float targetX,
-                               float targetY) {
+void RGE_Player::sendGameOrder(RGE_Static_Object* unit, RGE_Static_Object* target, float targetX, float targetY) {
     RGE_Static_Object* units;
 
     units = unit;
     this->world->commands->command_order(&units, 1, target, targetX, targetY);
 }
 
-void RGE_Player::sendAddWaypointCommand(int recipient, XYZBYTEPoint* waypoint,
-                                         int numWaypoints) {
-    int player_id = (int)this->id;
+void RGE_Player::sendAddWaypointCommand(int recipient, XYZBYTEPoint* waypoint, int numWaypoints) {
+    int player_id = (int) this->id;
     this->world->commands->command_add_waypoint(player_id, recipient, waypoint, numWaypoints);
 }
 
-void RGE_Player::processAddWaypointCommand(int recipient,
-                                            XYZBYTEPoint* waypoint,
-                                            int numWaypoints) {
+void RGE_Player::processAddWaypointCommand(int recipient, XYZBYTEPoint* waypoint, int numWaypoints) {
     RGE_Static_Object* object;
 
     object = this->world->object(recipient);
@@ -395,7 +387,9 @@ void RGE_Player::sendPlayCommand(int recipient, int target, int playID) {
 
     this->command_destroy_group(recipient);
     if (this->world->playbook->play(playID) == 0) {
-        this->sendUnitAIOrder((int)this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
+        this->sendUnitAIOrder(
+            (int) this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100
+        );
         return;
     }
 
@@ -413,21 +407,26 @@ void RGE_Player::sendPlayCommand(int recipient, int target, int playID) {
 
     if (selectedCount != 0) {
         this->command_create_group(recipient, selectedUnits, selectedCount, 2.0f);
-        this->sendUnitAIOrder((int)this->id, recipient, UNIT_AI_ORDER_START_PLAY, target, playID, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
+        this->sendUnitAIOrder(
+            (int) this->id, recipient, UNIT_AI_ORDER_START_PLAY, target, playID, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100
+        );
     }
 }
 
-void RGE_Player::sendPlayCommand(int recipient, int* groupUnits, int groupCount,
-                                 int target, int playID) {
+void RGE_Player::sendPlayCommand(int recipient, int* groupUnits, int groupCount, int target, int playID) {
     this->command_destroy_group(recipient);
     AIPlay* play = this->world->playbook->play(playID);
     if (play == 0) {
-        this->sendUnitAIOrder((int)this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
+        this->sendUnitAIOrder(
+            (int) this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100
+        );
         return;
     }
     if (groupCount != 0) {
         this->command_create_group(recipient, groupUnits, groupCount, 2.0f);
-        this->sendUnitAIOrder((int)this->id, recipient, UNIT_AI_ORDER_START_PLAY, target, playID, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
+        this->sendUnitAIOrder(
+            (int) this->id, recipient, UNIT_AI_ORDER_START_PLAY, target, playID, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100
+        );
     }
 }
 
@@ -465,12 +464,11 @@ void RGE_Player::incrementPathingAttempts() {
     this->currentUpdatePathingAttemptsValue++;
 }
 
-void __cdecl RGE_Player::sendChatMessage(int playerID, int copySelf,
-                                         char* textIn, ...) {
+void __cdecl RGE_Player::sendChatMessage(int playerID, int copySelf, char* textIn, ...) {
     char textOut[1025];
 
     // The cdecl varargs begin after textIn on the stack.
-    vsprintf(textOut, textIn, (char*)(&textIn + 1));
+    vsprintf(textOut, textIn, (char*) (&textIn + 1));
 
     int i;
 
@@ -494,14 +492,13 @@ void __cdecl RGE_Player::sendChatMessage(int playerID, int copySelf,
 }
 
 //! Same defect as TRIBE_Player::make_scenario_obj(): the status byte is dropped here too.
-RGE_Static_Object* RGE_Player::make_scenario_obj(float world_x, float world_y,
-                                                  float world_z, short master_id,
-                                                  unsigned char state,
-                                                  float new_angle) {
+RGE_Static_Object* RGE_Player::make_scenario_obj(
+    float world_x, float world_y, float world_z, short master_id, unsigned char state, float new_angle
+) {
     RGE_Static_Object* obj = 0;
     RGE_Master_Static_Object* master = this->master_objects[master_id];
     if (master != 0) {
-        obj = (RGE_Static_Object*)master->make_new_obj(this, world_x, world_y, world_z);
+        obj = (RGE_Static_Object*) master->make_new_obj(this, world_x, world_y, world_z);
         if (state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
             obj->destroy_obj();
         } else if (state > RGE_OBJECT_STATE_ACTIVE) {
@@ -527,8 +524,8 @@ void RGE_Player::scenario_load(int infile, long* player_id_hash, float version) 
         rge_read(infile, &name_length, 2);
         if (name_length > 0) {
             char* name_buffer;
-            name_buffer = (char*)calloc((int)name_length, 1);
-            rge_read(file_handle, name_buffer, (int)name_length);
+            name_buffer = (char*) calloc((int) name_length, 1);
+            rge_read(file_handle, name_buffer, (int) name_length);
             if (this->name == 0) {
                 this->name = name_buffer;
             } else {
@@ -544,8 +541,9 @@ void RGE_Player::scenario_load(int infile, long* player_id_hash, float version) 
         has_team = 0;
         if (rge_base_game->prog_mode != ProgModeScenarioEditor) {
             for (int player = 1; player < 9; player++) {
-                if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == ME_HUMAN ||
-                     comm->GetPlayerHumanity(player) == ME_COMPUTER)) {
+                if (rge_base_game->playerID(player) == this->id
+                    && (comm->GetPlayerHumanity(player) == ME_HUMAN
+                        || comm->GetPlayerHumanity(player) == ME_COMPUTER)) {
                     if (rge_base_game->playerTeam(player - 1) > 1) {
                         has_team = 1;
                     }
@@ -622,8 +620,7 @@ void RGE_Player::scenario_postsave(int outfile) {
     this->victory_conditions->save(outfile);
 }
 
-void RGE_Player::scenario_postload(int infile, long* player_id_hash,
-                                   float version) {
+void RGE_Player::scenario_postload(int infile, long* player_id_hash, float version) {
     int file_handle = infile;
     short name_length;
     short count;
@@ -633,8 +630,8 @@ void RGE_Player::scenario_postload(int infile, long* player_id_hash,
 
     rge_read(file_handle, &name_length, 2);
     if (name_length > 0) {
-        char* name = (char*)calloc((int)name_length, 1);
-        rge_read(file_handle, name, (int)name_length);
+        char* name = (char*) calloc((int) name_length, 1);
+        rge_read(file_handle, name, (int) name_length);
         if (this->name == 0) {
             this->name = name;
         } else {
@@ -650,8 +647,8 @@ void RGE_Player::scenario_postload(int infile, long* player_id_hash,
     has_team = 0;
     if (rge_base_game->prog_mode != ProgModeScenarioEditor) {
         for (int player = 1; player < 9; ++player) {
-            if (rge_base_game->playerID(player) == this->id && (comm->GetPlayerHumanity(player) == ME_HUMAN ||
-                 comm->GetPlayerHumanity(player) == ME_COMPUTER)) {
+            if (rge_base_game->playerID(player) == this->id
+                && (comm->GetPlayerHumanity(player) == ME_HUMAN || comm->GetPlayerHumanity(player) == ME_COMPUTER)) {
                 if (rge_base_game->playerTeam(player - 1) > 1) {
                     has_team = 1;
                 }
@@ -680,7 +677,7 @@ void RGE_Player::scenario_postload(int infile, long* player_id_hash,
             if (has_team == 0) {
                 short player_id;
                 if (player_id_hash != 0) {
-                    player_id = (short)player_id_hash[i];
+                    player_id = (short) player_id_hash[i];
                 } else {
                     player_id = i;
                 }
@@ -723,8 +720,8 @@ void RGE_Player::load(int infile) {
     rge_read(infile, &this->master_object_num, 2);
 
     if (this->master_object_num > 0) {
-        this->master_objects = (RGE_Master_Static_Object**)calloc((int)this->master_object_num, 4);
-        rge_read(infile, this->master_objects, (int)this->master_object_num * 4);
+        this->master_objects = (RGE_Master_Static_Object**) calloc((int) this->master_object_num, 4);
+        rge_read(infile, this->master_objects, (int) this->master_object_num * 4);
 
         for (short i = 0; i < this->master_object_num; ++i) {
             if (this->master_objects[i] != 0) {
@@ -750,37 +747,38 @@ void RGE_Player::load(int infile) {
     }
 }
 
-void RGE_Player::load_master_object(int infile, short index, unsigned char type,
-                                     RGE_Sprite** sprites, RGE_Sound** sounds) {
+void RGE_Player::load_master_object(
+    int infile, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds
+) {
     RGE_Master_Static_Object* object;
 
     switch (type) {
-    case 10:
-        object = new RGE_Master_Static_Object(infile, sprites, sounds, 1);
-        break;
-    case 20:
-        object = new RGE_Master_Animated_Object(infile, sprites, sounds, 1);
-        this->master_objects[index] = object;
-        return;
-    case 30:
-        object = new RGE_Master_Moving_Object(infile, sprites, sounds, 1);
-        break;
-    case 60:
-        object = new RGE_Master_Missile_Object(infile, sprites, sounds, 1);
-        this->master_objects[index] = object;
-        return;
-    case 40:
-        object = new RGE_Master_Action_Object(infile, sprites, sounds, 1);
-        break;
-    case 50:
-        object = new RGE_Master_Combat_Object(infile, sprites, sounds, 1);
-        this->master_objects[index] = object;
-        return;
-    case 25:
-        object = new RGE_Master_Doppleganger_Object(infile, sprites, sounds, 1);
-        break;
-    default:
-        return;
+        case 10:
+            object = new RGE_Master_Static_Object(infile, sprites, sounds, 1);
+            break;
+        case 20:
+            object = new RGE_Master_Animated_Object(infile, sprites, sounds, 1);
+            this->master_objects[index] = object;
+            return;
+        case 30:
+            object = new RGE_Master_Moving_Object(infile, sprites, sounds, 1);
+            break;
+        case 60:
+            object = new RGE_Master_Missile_Object(infile, sprites, sounds, 1);
+            this->master_objects[index] = object;
+            return;
+        case 40:
+            object = new RGE_Master_Action_Object(infile, sprites, sounds, 1);
+            break;
+        case 50:
+            object = new RGE_Master_Combat_Object(infile, sprites, sounds, 1);
+            this->master_objects[index] = object;
+            return;
+        case 25:
+            object = new RGE_Master_Doppleganger_Object(infile, sprites, sounds, 1);
+            break;
+        default:
+            return;
     }
 
     this->master_objects[index] = object;
@@ -800,9 +798,7 @@ long RGE_Player::get_checksum(void) {
     return this->checksum;
 }
 
-unsigned char RGE_Player::get_checksums(long& new_checksum,
-                                        long& new_position_checksum,
-                                        long& new_action_checksum) {
+unsigned char RGE_Player::get_checksums(long& new_checksum, long& new_position_checksum, long& new_action_checksum) {
     if (!this->checksum_created_this_update) {
         this->create_checksum();
     }
@@ -821,18 +817,15 @@ long RGE_Player::create_checksum() {
 
     this->checksum_created_this_update = 1;
     this->action_checksum = 0;
-    num4 = this->id + this->sleeping_objects->number_of_objects +
-        this->doppleganger_objects->number_of_objects;
+    num4 = this->id + this->sleeping_objects->number_of_objects + this->doppleganger_objects->number_of_objects;
 
     for (int i = 0; i < this->attribute_num; ++i) {
-        num1 += (long)this->attributes[i];
+        num1 += (long) this->attributes[i];
     }
 
     RGE_Object_Node* list = this->objects->list;
     while (list != 0) {
-        num2 += list->node->object_state +
-            (long)list->node->attribute_amount_held +
-            list->node->master_obj->id;
+        num2 += list->node->object_state + (long) list->node->attribute_amount_held + list->node->master_obj->id;
         num2 += list->node->get_waypoint_checksum();
         ++num3;
         temp_position_checksum += list->node->world_x;
@@ -842,9 +835,8 @@ long RGE_Player::create_checksum() {
         list = list->next;
     }
 
-    this->checksum = (((num4 * 0x100 + num3) * 0x100 + num2) * 0x100) +
-        num1;
-    this->position_checksum = (long)temp_position_checksum;
+    this->checksum = (((num4 * 0x100 + num3) * 0x100 + num2) * 0x100) + num1;
+    this->position_checksum = (long) temp_position_checksum;
     return this->checksum;
 }
 
@@ -855,14 +847,15 @@ void RGE_Player::new_attribute_num(short attribute, float amount) {
     if (attribute >= this->attribute_num) {
         return;
     }
-    this->attributes[(int)attribute] = amount;
+    this->attributes[(int) attribute] = amount;
 }
 
-void RGE_Player::add_attribute_num(short attribute, float amount,
-                                   unsigned char earned) {
-    if (attribute < 0) return;
-    if (attribute >= this->attribute_num) return;
-    this->attributes[(int)attribute] = amount + this->attributes[(int)attribute];
+void RGE_Player::add_attribute_num(short attribute, float amount, unsigned char earned) {
+    if (attribute < 0)
+        return;
+    if (attribute >= this->attribute_num)
+        return;
+    this->attributes[(int) attribute] = amount + this->attributes[(int) attribute];
 }
 
 void RGE_Player::make_available(short obj_category, unsigned char on_off_flag) {
@@ -909,21 +902,21 @@ void RGE_Player::save(int outfile) {
 
     color_log(0x32, 0x32, 3);
     rge_write(outfile, &this->type, 1);
-    rge_write(outfile, this->relations, (int)this->world->player_num);
+    rge_write(outfile, this->relations, (int) this->world->player_num);
     rge_write(outfile, this->unitDiplomacy, 36);
     rge_write(outfile, &this->allied_LOS_Enable, 4);
     rge_write(outfile, &this->allied_victory, 1);
 
     name_length = strlen(this->name) + 1;
     rge_write(outfile, &name_length, 2);
-    if ((short)name_length > 0) {
-        rge_write(outfile, this->name, (short)name_length);
+    if ((short) name_length > 0) {
+        rge_write(outfile, this->name, (short) name_length);
     }
 
     rge_write(outfile, &this->attribute_num, 2);
     short index = this->attribute_num;
     if (index > 0) {
-        rge_write(outfile, this->attributes, (int)index << 2);
+        rge_write(outfile, this->attributes, (int) index << 2);
     }
 
     rge_write(outfile, &this->view_x, 4);
@@ -936,7 +929,7 @@ void RGE_Player::save(int outfile) {
     rge_write(outfile, &this->resigned, 1);
 
     if (this->color_table != 0) {
-        table = (unsigned char)this->color_table->id;
+        table = (unsigned char) this->color_table->id;
     } else {
         table = 0;
     }
@@ -958,7 +951,7 @@ void RGE_Player::save2(int outfile) {
     if (0 < *master_object_count) {
         int i = 0;
         while (i < *master_object_count) {
-            outfile = (int)this->master_objects[i];
+            outfile = (int) this->master_objects[i];
             if (outfile != 0) {
                 outfile = 1;
             }
@@ -1003,13 +996,13 @@ void RGE_Player::set_view_loc(float x, float y) {
 
     if (x < 0.0f)
         this->view_x = 0.0f;
-    else if (x > (float)(this->world->map->map_width - 1))
-        this->view_x = (float)(this->world->map->map_width - 1);
+    else if (x > (float) (this->world->map->map_width - 1))
+        this->view_x = (float) (this->world->map->map_width - 1);
 
     if (y < 0.0f)
         this->view_y = 0.0f;
-    else if (y > (float)(this->world->map->map_height - 1))
-        this->view_y = (float)(this->world->map->map_height - 1);
+    else if (y > (float) (this->world->map->map_height - 1))
+        this->view_y = (float) (this->world->map->map_height - 1);
 }
 
 void RGE_Player::random_start() {
@@ -1047,7 +1040,8 @@ void RGE_Player::win_game_now() {
         if (i != this->id) {
             if (this->allied_victory) {
                 if (!this->relation(i)) {
-                    if (!this->world->players[i]->relation((long)this->id) && this->world->players[i]->allied_victory) {
+                    if (!this->world->players[i]->relation((long) this->id)
+                        && this->world->players[i]->allied_victory) {
                         this->world->players[i]->victory_if_game_on();
                         continue;
                     }
@@ -1075,9 +1069,8 @@ unsigned char RGE_Player::check_ally_group(long& count) {
         int i = 1;
         if (world->player_num > 1) {
             do {
-                if (this->relations[i] == 0 &&
-                    (world->players[i]->relation(this->id) != 0 ||
-                     this->world->players[i]->allied_victory == 0)) {
+                if (this->relations[i] == 0
+                    && (world->players[i]->relation(this->id) != 0 || this->world->players[i]->allied_victory == 0)) {
                     ok = 0;
                     break;
                 }
@@ -1101,14 +1094,16 @@ unsigned char RGE_Player::check_victory(void) {
         unsigned char found = 0;
         if (this->allied_victory) {
             for (int i = 1; i < this->world->player_num; i++) {
-                if ((i == this->id || this->relations[i] == 0) && this->world->players[i]->check_ally_group(count) == 0) {
+                if ((i == this->id || this->relations[i] == 0)
+                    && this->world->players[i]->check_ally_group(count) == 0) {
                     found = 1;
                     break;
                 }
             }
         }
         if (this->allied_victory) {
-            if (found) return this->game_status;
+            if (found)
+                return this->game_status;
             for (int i = 1; i < this->world->player_num; i++) {
                 if (this->relations[i] == 0 && this->world->players[i]->check_victory_conditions() == 0) {
                     found = 1;
@@ -1124,8 +1119,7 @@ unsigned char RGE_Player::check_victory(void) {
     return this->game_status;
 }
 
-void RGE_Player::modify_tobj(short obj_id, short group,
-                             float amount, unsigned char flag) {
+void RGE_Player::modify_tobj(short obj_id, short group, float amount, unsigned char flag) {
     if (obj_id >= 0) {
         short index = obj_id;
         if (master_objects[index] != 0) {
@@ -1162,8 +1156,7 @@ void RGE_Player::modify_tobj(short obj_id, short group,
     }
 }
 
-void RGE_Player::modify_tobj_delta(short obj_id, short group,
-                                   float amount, unsigned char flag) {
+void RGE_Player::modify_tobj_delta(short obj_id, short group, float amount, unsigned char flag) {
     if (obj_id >= 0) {
         short index = obj_id;
         if (master_objects[index] != 0) {
@@ -1200,8 +1193,7 @@ void RGE_Player::modify_tobj_delta(short obj_id, short group,
     }
 }
 
-void RGE_Player::modify_tobj_percent(short obj_id, short group,
-                                     float amount, unsigned char flag) {
+void RGE_Player::modify_tobj_percent(short obj_id, short group, float amount, unsigned char flag) {
     if (obj_id >= 0) {
         short index = obj_id;
         if (master_objects[index] != 0) {
@@ -1239,8 +1231,10 @@ void RGE_Player::modify_tobj_percent(short obj_id, short group,
 }
 
 void RGE_Player::copy_obj(short dest, short source) {
-    if (this->master_objects[dest] == 0) return;
-    if (this->master_objects[source] == 0) return;
+    if (this->master_objects[dest] == 0)
+        return;
+    if (this->master_objects[source] == 0)
+        return;
     if (this->objects != 0) {
         RGE_Object_Node* node = this->objects->list;
         while (node != 0) {
@@ -1288,8 +1282,7 @@ void RGE_Player::set_relation(long player_id, unsigned char relation) {
     }
 }
 
-RGE_Static_Object* RGE_Player::make_new_object(long obj_id, float x, float y,
-                                               float z, int build_all_the_way) {
+RGE_Static_Object* RGE_Player::make_new_object(long obj_id, float x, float y, float z, int build_all_the_way) {
     if ((obj_id >= 0) && (this->master_objects[obj_id] != 0)) {
         return this->master_objects[obj_id]->make_new_obj(this, x, y, z);
     }
@@ -1470,7 +1463,7 @@ int RGE_Player::group_objects(int id) {
             if (groups_used[i]) {
                 continue;
             }
-            group = (unsigned char)i;
+            group = (unsigned char) i;
             groups_used[i] = 1;
             break;
         }
@@ -1494,7 +1487,7 @@ int RGE_Player::group_objects(int id) {
                 if (groups_used[i]) {
                     continue;
                 }
-                group = (unsigned char)i;
+                group = (unsigned char) i;
                 groups_used[i] = 1;
                 break;
             }
@@ -1504,10 +1497,10 @@ int RGE_Player::group_objects(int id) {
             }
         }
     } else {
-        group = (unsigned char)id;
+        group = (unsigned char) id;
         RGE_Object_Node* node = objects->list;
         while (node) {
-            if (node->node->selected_group == (unsigned char)id) {
+            if (node->node->selected_group == (unsigned char) id) {
                 node->node->selected_group = 0;
             }
             node = node->next;
@@ -1536,12 +1529,14 @@ int RGE_Player::select_group(int id) {
     RGE_Object_Node* node = this->objects->list;
     while (node != 0) {
         RGE_Static_Object* obj = node->node;
-        if (obj->selected_group == (unsigned char)id) {
+        if (obj->selected_group == (unsigned char) id) {
             if (first) {
-                if (this->select_one_object(obj, 1) == 0) break;
+                if (this->select_one_object(obj, 1) == 0)
+                    break;
                 first = 0;
             } else {
-                if (this->select_one_object(obj, 0) == 0) break;
+                if (this->select_one_object(obj, 0) == 0)
+                    break;
             }
         }
         node = node->next;
@@ -1613,10 +1608,12 @@ unsigned char RGE_Player::unit_level_selected() {
     unsigned char level = 0;
     short index = 0, count = 0;
     for (; index < 25; index++) {
-        if (count >= sel_count) return level;
+        if (count >= sel_count)
+            return level;
         RGE_Static_Object* object = sel_list[index];
         if (object != 0) {
-            if (count != 0 && object->master_obj->unit_level != level) return 0;
+            if (count != 0 && object->master_obj->unit_level != level)
+                return 0;
             count++;
             level = object->master_obj->unit_level;
         }
@@ -1631,7 +1628,8 @@ unsigned char RGE_Player::get_select_level() {
     short matches = 0;
 
     for (; i < 25; i++) {
-        if (matches >= count) break;
+        if (matches >= count)
+            break;
         RGE_Static_Object* entry = this->sel_list[i];
         if (entry != 0) {
             unsigned char level = entry->master_obj->select_level;
@@ -1648,9 +1646,9 @@ unsigned char RGE_Player::get_select_level() {
 }
 
 unsigned char RGE_Player::get_selected_objects_to_command(
-    RGE_Static_Object*** list_in, short* list_num_in,
-    short min_select_level, short object_group, short object_id,
-    short unit_level) {
+    RGE_Static_Object*** list_in, short* list_num_in, short min_select_level, short object_group, short object_id,
+    short unit_level
+) {
     RGE_Player* player = this;
     long j;
     RGE_Static_Object** list;
@@ -1666,7 +1664,7 @@ unsigned char RGE_Player::get_selected_objects_to_command(
         return 0;
     }
 
-    locals.list = (RGE_Static_Object**)calloc(4, (unsigned int)player->sel_count);
+    locals.list = (RGE_Static_Object**) calloc(4, (unsigned int) player->sel_count);
     if (min_select_level == -1) {
         min_select_level = 4;
     }
@@ -1683,9 +1681,9 @@ unsigned char RGE_Player::get_selected_objects_to_command(
             if (object->object_state == RGE_OBJECT_STATE_ACTIVE && object->owner == player) {
                 master = object->master_obj;
                 if (master->select_level >= min_select_level || player->id == 0) {
-                    if (object_group == -1 || master->object_group == (unsigned char)object_group) {
-                        if (object_id == -1 || master->id == (unsigned char)object_id) {
-                            if (unit_level == -1 || master->unit_level == (unsigned char)unit_level) {
+                    if (object_group == -1 || master->object_group == (unsigned char) object_group) {
+                        if (object_id == -1 || master->id == (unsigned char) object_id) {
+                            if (unit_level == -1 || master->unit_level == (unsigned char) unit_level) {
                                 if (master->master_type >= 0x28 && master->master_type != 0x5A) {
                                     locals.list[count] = object;
                                     ++count;
@@ -1714,7 +1712,8 @@ unsigned char RGE_Player::get_selected_objects_to_command(
 void RGE_Player::update_selected() {
     RGE_Player* player = this;
     for (short index = 0, selected = 0; index < 25; index++) {
-        if (selected >= player->sel_count) return;
+        if (selected >= player->sel_count)
+            return;
         RGE_Static_Object* obj = player->sel_list[index];
         if (obj != 0) {
             if (obj->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL && obj->inside_obj == 0)
@@ -1759,15 +1758,13 @@ void RGE_Player::ungroup_objects(void) {
 void RGE_Player::analyize_selected_objects() {
 }
 
-int RGE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet,
-                                              int& text_id) {
+int RGE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& text_id) {
     newFacet = 0;
     text_id = 0;
     return 0;
 }
 
-unsigned char RGE_Player::command_make_move(RGE_Static_Object* obj, float x,
-                                            float y) {
+unsigned char RGE_Player::command_make_move(RGE_Static_Object* obj, float x, float y) {
     RGE_Static_Object** list;
     short list_num;
     if (get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1)) {
@@ -1779,8 +1776,7 @@ unsigned char RGE_Player::command_make_move(RGE_Static_Object* obj, float x,
     return 0;
 }
 
-unsigned char RGE_Player::command_make_work(RGE_Static_Object* obj, float x,
-                                             float y) {
+unsigned char RGE_Player::command_make_work(RGE_Static_Object* obj, float x, float y) {
     RGE_Static_Object** list;
     short list_num;
     int i;
@@ -1795,8 +1791,10 @@ unsigned char RGE_Player::command_make_work(RGE_Static_Object* obj, float x,
             i = 0;
             if (list_num > 0) {
                 do {
-                    this->sendUnitAIOrder((int)this->id, list[i]->id, UNIT_AI_ORDER_DEFEND, obj->id, (int)obj->owner->id,
-                                          obj->world_x, obj->world_y, 1.0f, obj->master_obj->los * 0.5f, 0, 0, 100);
+                    this->sendUnitAIOrder(
+                        (int) this->id, list[i]->id, UNIT_AI_ORDER_DEFEND, obj->id, (int) obj->owner->id, obj->world_x,
+                        obj->world_y, 1.0f, obj->master_obj->los * 0.5f, 0, 0, 100
+                    );
                     ++i;
                 } while (i < list_num);
             }
@@ -1807,8 +1805,7 @@ unsigned char RGE_Player::command_make_work(RGE_Static_Object* obj, float x,
     return 0;
 }
 
-unsigned char RGE_Player::command_make_do(RGE_Static_Object* obj, float x,
-                                           float y) {
+unsigned char RGE_Player::command_make_do(RGE_Static_Object* obj, float x, float y) {
     RGE_Static_Object** list;
     short list_num;
     if (get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1)) {
@@ -1837,8 +1834,7 @@ unsigned char RGE_Player::command_stop(void) {
     return 0;
 }
 
-unsigned char RGE_Player::command_place_object(short obj_id, float x, float y,
-                                               float z) {
+unsigned char RGE_Player::command_place_object(short obj_id, float x, float y, float z) {
     if (obj_id != -1 && this->master_objects[obj_id] != 0) {
         this->world->commands->command_create(obj_id, this->id, x, y, z);
         return 1;
@@ -1848,16 +1844,17 @@ unsigned char RGE_Player::command_place_object(short obj_id, float x, float y,
 
 unsigned char RGE_Player::command_add_attribute(int attr_id, float attr_amount) {
     if ((attr_id != -1) && (attr_amount != 0.0f)) {
-        this->world->commands->command_add_attribute((int)this->id, attr_id, attr_amount);
+        this->world->commands->command_add_attribute((int) this->id, attr_id, attr_amount);
         return 1;
     }
     return 0;
 }
 
-unsigned char RGE_Player::command_give_attribute(int to_player_id, int attr_id,
-                                                 float attr_amount) {
-    if (attr_id == -1) return 0;
-    if (attr_amount == g_player_zero_attribute_amount) return 0;
+unsigned char RGE_Player::command_give_attribute(int to_player_id, int attr_id, float attr_amount) {
+    if (attr_id == -1)
+        return 0;
+    if (attr_amount == g_player_zero_attribute_amount)
+        return 0;
     if (attr_amount <= this->attributes[attr_id]) {
         this->world->commands->command_give_attribute(this->id, to_player_id, attr_id, attr_amount);
         return 1;
@@ -1888,7 +1885,9 @@ unsigned char RGE_Player::command_stand_ground() {
 
     if (get_selected_objects_to_command(&list, &listNum, -1, -1, -1, -1)) {
         list[0]->play_command_sound();
-        this->world->commands->command_group_ai_order(this->id, this->id, list, listNum, UNIT_AI_ORDER_STAND_GROUND, -1, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
+        this->world->commands->command_group_ai_order(
+            this->id, this->id, list, listNum, UNIT_AI_ORDER_STAND_GROUND, -1, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100
+        );
         free(list);
         return 1;
     }
@@ -1896,34 +1895,32 @@ unsigned char RGE_Player::command_stand_ground() {
     return 0;
 }
 
-unsigned char RGE_Player::command_create_group(int commander, int* groupList,
-                                               int groupLength, float range) {
-    int player_id = (int)this->id;
+unsigned char RGE_Player::command_create_group(int commander, int* groupList, int groupLength, float range) {
+    int player_id = (int) this->id;
     this->world->commands->command_create_group(player_id, commander, groupList, groupLength, range);
     return 1;
 }
 
-unsigned char RGE_Player::command_add_to_group(int commander, int unitID,
-                                               float range) {
-    int player_id = (int)this->id;
+unsigned char RGE_Player::command_add_to_group(int commander, int unitID, float range) {
+    int player_id = (int) this->id;
     this->world->commands->command_add_to_group(player_id, commander, unitID, range);
     return 1;
 }
 
 unsigned char RGE_Player::command_remove_from_group(int commander, int unitID) {
-    int player_id = (int)this->id;
+    int player_id = (int) this->id;
     this->world->commands->command_remove_from_group(player_id, commander, unitID);
     return 1;
 }
 
 unsigned char RGE_Player::command_destroy_group(int unitID) {
-    this->world->commands->command_destroy_group((int)this->id, unitID);
+    this->world->commands->command_destroy_group((int) this->id, unitID);
     return 1;
 }
 
 unsigned char RGE_Player::command_resign(int comm_player_id, int dropped) {
     if (!this->game_status) {
-        this->world->commands->command_resign((int)this->id, comm_player_id, dropped);
+        this->world->commands->command_resign((int) this->id, comm_player_id, dropped);
         return 1;
     }
     return 0;
@@ -1935,15 +1932,14 @@ unsigned char RGE_Player::command_add_waypoint(float x, float y, float z) {
 
     if (this->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1)) {
         list[0]->play_command_sound();
-        this->world->commands->command_group_waypoint(list, list_num, (int)x, (int)y);
+        this->world->commands->command_group_waypoint(list, list_num, (int) x, (int) y);
         free(list);
         return 1;
     }
     return 0;
 }
 
-RGE_Object_Node* RGE_Player::addObject(RGE_Static_Object* obj, int sleep_flag,
-                                       int dopple_flag) {
+RGE_Object_Node* RGE_Player::addObject(RGE_Static_Object* obj, int sleep_flag, int dopple_flag) {
     RGE_Object_Node* node;
 
     if (sleep_flag != 0) {
@@ -1958,8 +1954,7 @@ RGE_Object_Node* RGE_Player::addObject(RGE_Static_Object* obj, int sleep_flag,
     return node;
 }
 
-void RGE_Player::removeObject(RGE_Static_Object* obj, int sleep_flag,
-                              int dopple_flag, RGE_Object_Node* node) {
+void RGE_Player::removeObject(RGE_Static_Object* obj, int sleep_flag, int dopple_flag, RGE_Object_Node* node) {
     if (sleep_flag != 0) {
         this->sleeping_objects->remove_node(obj, node);
     } else if (dopple_flag != 0) {
@@ -1974,8 +1969,7 @@ void RGE_Player::removeObject(RGE_Static_Object* obj, int sleep_flag,
 void __cdecl RGE_Player::logMessage(char* in, ...) {
 }
 
-void RGE_Player::notify(int caller, int recipient, int mType, long p1, long p2,
-                        long p3) {
+void RGE_Player::notify(int caller, int recipient, int mType, long p1, long p2, long p3) {
 }
 
 void RGE_Player::set_map_visible() {
@@ -1989,10 +1983,8 @@ void RGE_Player::remake_visible_map() {
     this->visible = new RGE_Visible_Map(this->world->map, this);
 }
 
-void RGE_Player::load_victory(int infile, long* player_id_hash,
-                              unsigned char version_control) {
-    RGE_Victory_Conditions* victory =
-        new RGE_Victory_Conditions(this, infile, player_id_hash, version_control);
+void RGE_Player::load_victory(int infile, long* player_id_hash, unsigned char version_control) {
+    RGE_Victory_Conditions* victory = new RGE_Victory_Conditions(this, infile, player_id_hash, version_control);
     this->victory_conditions = victory;
 }
 
@@ -2004,7 +1996,7 @@ void RGE_Player::new_victory() {
 void RGE_Tile_List::add_node(int col, int row) {
     if (this->num_active >= this->list_size) {
         RGE_Tile_List_Node* new_list;
-        new_list = (RGE_Tile_List_Node*)calloc(this->list_size * 2, sizeof(RGE_Tile_List_Node));
+        new_list = (RGE_Tile_List_Node*) calloc(this->list_size * 2, sizeof(RGE_Tile_List_Node));
         memcpy(new_list, this->list, this->list_size * sizeof(RGE_Tile_List_Node));
         free(this->list);
         this->list = new_list;
@@ -2024,13 +2016,13 @@ void RGE_Tile_List::del_list(void) {
     if (this->collapse_list != 0) {
         free(this->list);
         this->list_size = 8;
-        this->list = (RGE_Tile_List_Node*)calloc(8, 8);
+        this->list = (RGE_Tile_List_Node*) calloc(8, 8);
         this->collapse_list = 0;
     }
 }
 
 RGE_Tile_List::RGE_Tile_List(int Initial_Size) {
-    this->list = (RGE_Tile_List_Node*)calloc(Initial_Size, 8);
+    this->list = (RGE_Tile_List_Node*) calloc(Initial_Size, 8);
     this->list_size = Initial_Size;
     this->num_active = 0;
     this->new_count = 0;
@@ -2043,8 +2035,7 @@ RGE_Tile_List::~RGE_Tile_List() {
     }
 }
 
-void RGE_Tile_List::get_list_info(RGE_Tile_List_Node*& theList,
-                                  int& list_size) {
+void RGE_Tile_List::get_list_info(RGE_Tile_List_Node*& theList, int& list_size) {
     theList = this->list;
     list_size = this->num_active;
 }

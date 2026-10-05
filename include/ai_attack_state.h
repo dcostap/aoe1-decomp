@@ -15,7 +15,6 @@ struct AttackState {
     int active;
 };
 
-typedef char ai_attack_state_size_check[
-    (sizeof(AttackState) == 0x2C) ? 1 : -1];
+typedef char ai_attack_state_size_check[(sizeof(AttackState) == 0x2C) ? 1 : -1];
 
 #endif

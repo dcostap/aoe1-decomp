@@ -7,8 +7,8 @@
 #include "../include/scr_sed.h"
 #include "../include/scr_sedo.h"
 
-TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after_save_in)
-    : TScreenPanel("Save Game Screen"), modeValue(m) {
+TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after_save_in) :
+    TScreenPanel("Save Game Screen"), modeValue(m) {
     TPanel* from_panel;
     TPanel* tabList[5];
     char info_file[260];
@@ -39,8 +39,10 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     this->set_ideal_size(640, 480);
 
     TTextPanel** title_ptr = &this->title;
-    if (!this->create_text(this, title_ptr, (this->modeValue != SaveGame) + STRING_ID_SAVE_GAME_TITLE_BASE,
-                           20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0)) {
+    if (!this->create_text(
+            this, title_ptr, (this->modeValue != SaveGame) + STRING_ID_SAVE_GAME_TITLE_BASE, 20, 20, 600, 30,
+            RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
+        )) {
         return;
     }
 
@@ -51,8 +53,10 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
         width = 0x7A - strlen(rge_base_game->work_dir);
     }
 
-    if (!this->create_edit(this, &this->input, file_name, static_cast<short>(width), TEditPanel::FormatFileNoExt,
-                           20, 70, 600, 23, RGE_FONT_STANDARD, 1, 1)) {
+    if (!this->create_edit(
+            this, &this->input, file_name, static_cast<short>(width), TEditPanel::FormatFileNoExt, 20, 70, 600, 23,
+            RGE_FONT_STANDARD, 1, 1
+        )) {
         return;
     }
     this->input->set_help_info(STRING_ID_HELP_SAVED_GAME_NAME, -1);
@@ -65,13 +69,19 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     }
     this->scrollbar->set_help_info(STRING_ID_HELP_SELECT_SAVED_GAME, -1);
 
-    if (!this->create_button(this, &this->okButton, STRING_ID_BUTTON_OK, 0, 30, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
+    if (!this->create_button(
+            this, &this->okButton, STRING_ID_BUTTON_OK, 0, 30, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        )) {
         return;
     }
-    if (!this->create_button(this, &this->deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
+    if (!this->create_button(
+            this, &this->deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        )) {
         return;
     }
-    if (!this->create_button(this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
+    if (!this->create_button(
+            this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        )) {
         return;
     }
 
@@ -100,13 +110,13 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
 }
 
 TribeSaveGameScreen::~TribeSaveGameScreen() {
-    this->delete_panel((TPanel**)&this->title);
-    this->delete_panel((TPanel**)&this->input);
-    this->delete_panel((TPanel**)&this->list);
-    this->delete_panel((TPanel**)&this->scrollbar);
-    this->delete_panel((TPanel**)&this->okButton);
-    this->delete_panel((TPanel**)&this->cancelButton);
-    this->delete_panel((TPanel**)&this->deleteButton);
+    this->delete_panel((TPanel**) &this->title);
+    this->delete_panel((TPanel**) &this->input);
+    this->delete_panel((TPanel**) &this->list);
+    this->delete_panel((TPanel**) &this->scrollbar);
+    this->delete_panel((TPanel**) &this->okButton);
+    this->delete_panel((TPanel**) &this->cancelButton);
+    this->delete_panel((TPanel**) &this->deleteButton);
 }
 
 void TribeSaveGameScreen::fillList() {
@@ -211,8 +221,8 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
             }
         }
 
-        if ((fromPanel == this->okButton && actionIn == 1) || (fromPanel == this->input && actionIn == 0) ||
-            (fromPanel == this->list && actionIn == 3)) {
+        if ((fromPanel == this->okButton && actionIn == 1) || (fromPanel == this->input && actionIn == 0)
+            || (fromPanel == this->list && actionIn == 3)) {
             this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
             if (strlen(this->fileNameNoExt) == 0) {
                 if (this->modeValue == SaveGame) {

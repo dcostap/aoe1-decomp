@@ -26,15 +26,14 @@ static char s_X[] = "X";
 
 extern "C" int __cdecl stricmp(const char* str1, const char* str2);
 
-TEasy_Panel::TEasy_Panel(char* name)
-    : TPanel(name) {
+TEasy_Panel::TEasy_Panel(char* name) : TPanel(name) {
     init_vars();
 }
 
-long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
-                        char* info_file_name_in, long resource_file_id,
-                        int full_screen, long x_in, long y_in, long wid_in,
-                        long hgt_in, int allow_shadow_area_in) {
+long TEasy_Panel::setup(
+    TDrawArea* render_area_in, TPanel* parent_in, char* info_file_name_in, long resource_file_id, int full_screen,
+    long x_in, long y_in, long wid_in, long hgt_in, int allow_shadow_area_in
+) {
     int own_mem = -1;
     int f1g;
     int f2r;
@@ -118,7 +117,7 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
 
     this->set_ideal_size(wid_in, hgt_in);
     if (full_screen != 0) {
-        this->set_positioning((TPanel::PositionMode)1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->set_positioning((TPanel::PositionMode) 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
     info_data = 0;
@@ -133,7 +132,7 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
         if (file_handle != -1) {
             lseek(file_handle, 0, 2);
             resDataSize = tell(file_handle);
-            info_data = (unsigned char*)malloc(resDataSize);
+            info_data = (unsigned char*) malloc(resDataSize);
             if (info_data != 0) {
                 lseek(file_handle, 0, 0);
                 read(file_handle, info_data, resDataSize);
@@ -152,18 +151,35 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
         }
     }
 
-    if (sscanf((char*)info_data, "%s %s %s %d %d   " "%s %s %s %d %d   " "%s %s %s %d %d   " "%s %s %d   " "%s %s %d   "
-               "%s %s %d   " "%s %s %d   " "%s %s %d   " "%s %d   " "%s %d   " "%s %d %d %d %d %d %d   " "%s %d %d %d   "
-               "%s %d %d %d   " "%s %d %d %d   " "%s %d %d %d   " "%s %d %d %d   " "%s %d %d %d",
-               temp_label, background_pic_file_name_a1, background_pic_file_name_a2, &back_pic_id_a1,
-               &back_pic_id_a2, temp_label, background_pic_file_name_b1, background_pic_file_name_b2,
-               &back_pic_id_b1, &back_pic_id_b2, temp_label, background_pic_file_name_c1, background_pic_file_name_c2,
-               &back_pic_id_c1, &back_pic_id_c2, temp_label, palette_file_name, &pal_id, temp_label, cursor_file_name,
-               &cursor_id, temp_label, temp_label, &shad_amt, temp_label, button_pics_file_name, &button_pic_id, temp_label,
-               popup_info_file_name_in, &popup_info_id, temp_label, &background_pos_in, temp_label, &background_color1_in,
-               temp_label, &bc1, &bc2, &bc3, &bc4, &bc5, &bc6, temp_label, &t1r, &t1g, &t1b, temp_label, &t2r, &t2g,
-               &t2b, temp_label, &f1r, &f1g, &f1b, temp_label, &f2r, &f2g, &f2b, temp_label, &s1r, &s1g, &s1b, temp_label,
-               &s2r, &s2g, &s2b) != -1) {
+    if (sscanf(
+            (char*) info_data,
+            "%s %s %s %d %d   "
+            "%s %s %s %d %d   "
+            "%s %s %s %d %d   "
+            "%s %s %d   "
+            "%s %s %d   "
+            "%s %s %d   "
+            "%s %s %d   "
+            "%s %s %d   "
+            "%s %d   "
+            "%s %d   "
+            "%s %d %d %d %d %d %d   "
+            "%s %d %d %d   "
+            "%s %d %d %d   "
+            "%s %d %d %d   "
+            "%s %d %d %d   "
+            "%s %d %d %d   "
+            "%s %d %d %d",
+            temp_label, background_pic_file_name_a1, background_pic_file_name_a2, &back_pic_id_a1, &back_pic_id_a2,
+            temp_label, background_pic_file_name_b1, background_pic_file_name_b2, &back_pic_id_b1, &back_pic_id_b2,
+            temp_label, background_pic_file_name_c1, background_pic_file_name_c2, &back_pic_id_c1, &back_pic_id_c2,
+            temp_label, palette_file_name, &pal_id, temp_label, cursor_file_name, &cursor_id, temp_label, temp_label,
+            &shad_amt, temp_label, button_pics_file_name, &button_pic_id, temp_label, popup_info_file_name_in,
+            &popup_info_id, temp_label, &background_pos_in, temp_label, &background_color1_in, temp_label, &bc1, &bc2,
+            &bc3, &bc4, &bc5, &bc6, temp_label, &t1r, &t1g, &t1b, temp_label, &t2r, &t2g, &t2b, temp_label, &f1r, &f1g,
+            &f1b, temp_label, &f2r, &f2g, &f2b, temp_label, &s1r, &s1g, &s1b, temp_label, &s2r, &s2g, &s2b
+        )
+        != -1) {
         this->set_use_bevels(1);
 
         if (this->render_area->Width < 800 || stricmp(background_pic_file_name_b1, "none") == 0) {
@@ -183,12 +199,18 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
         this->set_background_pos(background_pos_in);
         this->set_background_colors(background_color1_in, background_color1_in);
         this->set_bevel_colors(bc1, bc2, bc3, bc4, bc5, bc6);
-        this->set_text_colors(((t1b & 0xFF) << 16) | ((t1g & 0xFF) << 8) | (t1r & 0xFF), ((t2b & 0xFF) << 16) |
-                              ((t2g & 0xFF) << 8) | (t2r & 0xFF));
-        this->set_focus_colors(((f1b & 0xFF) << 16) | ((f1g & 0xFF) << 8) | (f1r & 0xFF), ((f2b & 0xFF) << 16) |
-                               ((f2g & 0xFF) << 8) | (f2r & 0xFF));
-        this->set_state_colors(((s1b & 0xFF) << 16) | ((s1g & 0xFF) << 8) | (s1r & 0xFF), ((s2b & 0xFF) << 16) |
-                               ((s2g & 0xFF) << 8) | (s2r & 0xFF));
+        this->set_text_colors(
+            ((t1b & 0xFF) << 16) | ((t1g & 0xFF) << 8) | (t1r & 0xFF),
+            ((t2b & 0xFF) << 16) | ((t2g & 0xFF) << 8) | (t2r & 0xFF)
+        );
+        this->set_focus_colors(
+            ((f1b & 0xFF) << 16) | ((f1g & 0xFF) << 8) | (f1r & 0xFF),
+            ((f2b & 0xFF) << 16) | ((f2g & 0xFF) << 8) | (f2r & 0xFF)
+        );
+        this->set_state_colors(
+            ((s1b & 0xFF) << 16) | ((s1g & 0xFF) << 8) | (s1r & 0xFF),
+            ((s2b & 0xFF) << 16) | ((s2g & 0xFF) << 8) | (s2r & 0xFF)
+        );
         this->set_button_pics(button_pics_file_name, button_pic_id);
         this->set_popup_info_file(popup_info_file_name_in, popup_info_id);
     }
@@ -331,7 +353,9 @@ void TEasy_Panel::setup_shadow_area(int force_redraw) {
     }
 }
 
-void TEasy_Panel::draw_setup(int clear) { this->TPanel::draw_setup(clear); }
+void TEasy_Panel::draw_setup(int clear) {
+    this->TPanel::draw_setup(clear);
+}
 
 void TEasy_Panel::draw() {
     if (this->need_restore != 0) {
@@ -364,31 +388,31 @@ void TEasy_Panel::draw_background(int use_background2) {
         int tile_w = this->shadow_area->Width;
         pic_hgt = this->shadow_area->Height;
         switch (this->background_pos) {
-        case 0:
-            this->shadow_area->Copy(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
-            break;
-        case 1: {
-            short yy = this->pnl_y + this->pnl_hgt / 2 - pic_hgt / 2;
-            short xx = this->pnl_x + this->pnl_wid / 2 - tile_w / 2;
-            this->shadow_area->Copy(this->render_area, (long)xx, (long)yy, 0, 0);
-            break;
-        }
-        case 2: {
-            long yy = 0;
-            if (this->pnl_hgt >= 0) {
-                do {
-                    long xx = 0;
-                    if (this->pnl_wid >= 0) {
-                        do {
-                            this->shadow_area->Copy(this->render_area, this->pnl_x + xx, this->pnl_y + yy, 0, 0);
-                            xx += tile_w;
-                        } while (xx <= this->pnl_wid);
-                    }
-                    yy += pic_hgt;
-                } while (yy <= this->pnl_hgt);
+            case 0:
+                this->shadow_area->Copy(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
+                break;
+            case 1: {
+                short yy = this->pnl_y + this->pnl_hgt / 2 - pic_hgt / 2;
+                short xx = this->pnl_x + this->pnl_wid / 2 - tile_w / 2;
+                this->shadow_area->Copy(this->render_area, (long) xx, (long) yy, 0, 0);
+                break;
             }
-            break;
-        }
+            case 2: {
+                long yy = 0;
+                if (this->pnl_hgt >= 0) {
+                    do {
+                        long xx = 0;
+                        if (this->pnl_wid >= 0) {
+                            do {
+                                this->shadow_area->Copy(this->render_area, this->pnl_x + xx, this->pnl_y + yy, 0, 0);
+                                xx += tile_w;
+                            } while (xx <= this->pnl_wid);
+                        }
+                        yy += pic_hgt;
+                    } while (yy <= this->pnl_hgt);
+                }
+                break;
+            }
         }
         goto bevels;
     }
@@ -412,43 +436,47 @@ void TEasy_Panel::draw_background(int use_background2) {
         long pic_w = x_max - x_min + 1;
         pic_hgt = y_max - y_min + 1;
         switch (this->background_pos) {
-        case 1: {
-            long pic_x = (short)((short)this->pnl_x + (short)(this->pnl_wid / 2) - (short)(pic_w / 2));
-            long pic_y = (short)((short)this->pnl_y + (short)(this->pnl_hgt / 2) - (short)(pic_hgt / 2));
-            pic->shape_draw(this->render_area, pic_x, pic_y, 0, 0, 0);
-            if (use_background2 && this->shadow_color_table) {
-                this->render_area->SetShadowTable(this->shadow_color_table);
-                this->render_area->DrawShadowBox(pic_x, pic_y, pic_x + pic_w - 1, pic_y + pic_hgt - 1);
+            case 1: {
+                long pic_x = (short) ((short) this->pnl_x + (short) (this->pnl_wid / 2) - (short) (pic_w / 2));
+                long pic_y = (short) ((short) this->pnl_y + (short) (this->pnl_hgt / 2) - (short) (pic_hgt / 2));
+                pic->shape_draw(this->render_area, pic_x, pic_y, 0, 0, 0);
+                if (use_background2 && this->shadow_color_table) {
+                    this->render_area->SetShadowTable(this->shadow_color_table);
+                    this->render_area->DrawShadowBox(pic_x, pic_y, pic_x + pic_w - 1, pic_y + pic_hgt - 1);
+                }
+                break;
             }
-            break;
-        }
-        case 2: {
-            long yy = 0;
-            if (this->pnl_hgt >= 0) {
-                do {
-                    long xx = 0;
-                    if (this->pnl_wid >= 0) {
-                        do {
-                            pic->shape_draw(this->render_area, this->pnl_x + xx, this->pnl_y + yy, 0, 0, 0);
-                            xx += pic_w;
-                        } while (xx <= this->pnl_wid);
-                    }
-                    yy += pic_hgt;
-                } while (yy <= this->pnl_hgt);
+            case 2: {
+                long yy = 0;
+                if (this->pnl_hgt >= 0) {
+                    do {
+                        long xx = 0;
+                        if (this->pnl_wid >= 0) {
+                            do {
+                                pic->shape_draw(this->render_area, this->pnl_x + xx, this->pnl_y + yy, 0, 0, 0);
+                                xx += pic_w;
+                            } while (xx <= this->pnl_wid);
+                        }
+                        yy += pic_hgt;
+                    } while (yy <= this->pnl_hgt);
+                }
+                if (use_background2 && this->shadow_color_table) {
+                    this->render_area->SetShadowTable(this->shadow_color_table);
+                    this->render_area->DrawShadowBox(
+                        this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1
+                    );
+                }
+                break;
             }
-            if (use_background2 && this->shadow_color_table) {
-                this->render_area->SetShadowTable(this->shadow_color_table);
-                this->render_area->DrawShadowBox(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1);
-            }
-            break;
-        }
-        default:
-            pic->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, 0);
-            if (use_background2 && this->shadow_color_table) {
-                this->render_area->SetShadowTable(this->shadow_color_table);
-                this->render_area->DrawShadowBox(this->pnl_x, this->pnl_y, this->pnl_x + pic_w - 1, this->pnl_y + pic_hgt - 1);
-            }
-            break;
+            default:
+                pic->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, 0);
+                if (use_background2 && this->shadow_color_table) {
+                    this->render_area->SetShadowTable(this->shadow_color_table);
+                    this->render_area->DrawShadowBox(
+                        this->pnl_x, this->pnl_y, this->pnl_x + pic_w - 1, this->pnl_y + pic_hgt - 1
+                    );
+                }
+                break;
         }
         this->render_area->Unlock("panel_ez::draw_background");
     }
@@ -456,17 +484,18 @@ void TEasy_Panel::draw_background(int use_background2) {
 bevels:
     if (this->use_bevels) {
         if (this->render_area->Lock("panel_ez::draw_background2", 1)) {
-            this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                                          this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                                          this->bevel_color4, this->bevel_color5, this->bevel_color6);
+            this->render_area->DrawBevel3(
+                this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
+                this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5,
+                this->bevel_color6
+            );
             this->render_area->Unlock("panel_ez::draw_background2");
         }
     }
     this->draw_finish();
 }
 
-long TEasy_Panel::handle_mouse_down(unsigned char mouse_button_in, long x, long y,
-                                    int ctrl_key, int shift_key) {
+long TEasy_Panel::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     if (this->command_do_popup_help(mouse_button_in, x, y) != 0) {
         return 1;
     }
@@ -585,7 +614,7 @@ int TEasy_Panel::set_palette(char* file_name, long resource_file_id) {
 
     tagPALETTEENTRY palette_entries[256];
     if (GetPaletteEntries(p, 0, 256, palette_entries) != 0) {
-            this->shadow_color_table = new RGE_Color_Table(this->render_area, this->shadow_amount, 0, palette_entries);
+        this->shadow_color_table = new RGE_Color_Table(this->render_area, this->shadow_amount, 0, palette_entries);
     }
     return 1;
 }
@@ -596,12 +625,17 @@ int TEasy_Panel::set_cursor(char* file_name, long resource_id) {
     return 1;
 }
 
-void TEasy_Panel::set_use_bevels(int use_bevels_in) { this->use_bevels = use_bevels_in; }
+void TEasy_Panel::set_use_bevels(int use_bevels_in) {
+    this->use_bevels = use_bevels_in;
+}
 
-void TEasy_Panel::set_background_pos(int background_pos_in) { this->background_pos = background_pos_in; }
+void TEasy_Panel::set_background_pos(int background_pos_in) {
+    this->background_pos = background_pos_in;
+}
 
-void TEasy_Panel::set_bevel_colors(unsigned char c1, unsigned char c2, unsigned char c3,
-                                   unsigned char c4, unsigned char c5, unsigned char c6) {
+void TEasy_Panel::set_bevel_colors(
+    unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5, unsigned char c6
+) {
     this->bevel_color1 = c1;
     this->bevel_color2 = c2;
     this->bevel_color3 = c3;
@@ -699,23 +733,41 @@ void TEasy_Panel::set_enable_ime(int enable_ime_in) {
     }
 }
 
-char* TEasy_Panel::get_info_file() { return this->info_file_name; }
+char* TEasy_Panel::get_info_file() {
+    return this->info_file_name;
+}
 
-long TEasy_Panel::get_info_id() { return this->info_id; }
+long TEasy_Panel::get_info_id() {
+    return this->info_id;
+}
 
-TShape* TEasy_Panel::get_background() { return this->background_pic; }
+TShape* TEasy_Panel::get_background() {
+    return this->background_pic;
+}
 
-TShape* TEasy_Panel::get_background2() { return this->background_pic2; }
+TShape* TEasy_Panel::get_background2() {
+    return this->background_pic2;
+}
 
-void* TEasy_Panel::get_palette() { return this->palette; }
+void* TEasy_Panel::get_palette() {
+    return this->palette;
+}
 
-char* TEasy_Panel::get_cursor() { return this->cursor_file; }
+char* TEasy_Panel::get_cursor() {
+    return this->cursor_file;
+}
 
-int TEasy_Panel::get_use_bevels() { return this->use_bevels; }
+int TEasy_Panel::get_use_bevels() {
+    return this->use_bevels;
+}
 
-int TEasy_Panel::get_background_pos() { return this->background_pos; }
+int TEasy_Panel::get_background_pos() {
+    return this->background_pos;
+}
 
-void TEasy_Panel::get_bevel_colors(unsigned char& c1, unsigned char& c2, unsigned char& c3, unsigned char& c4, unsigned char& c5, unsigned char& c6) {
+void TEasy_Panel::get_bevel_colors(
+    unsigned char& c1, unsigned char& c2, unsigned char& c3, unsigned char& c4, unsigned char& c5, unsigned char& c6
+) {
     c1 = this->bevel_color1;
     c2 = this->bevel_color2;
     c3 = this->bevel_color3;
@@ -734,27 +786,39 @@ void TEasy_Panel::get_focus_colors(unsigned long& c1, unsigned long& c2) {
     c2 = this->focus_color2;
 }
 
-long TEasy_Panel::get_shadow_amount() { return this->shadow_amount; }
+long TEasy_Panel::get_shadow_amount() {
+    return this->shadow_amount;
+}
 
 void TEasy_Panel::get_state_colors(unsigned long& c1, unsigned long& c2) {
     c1 = this->state_color1;
     c2 = this->state_color2;
 }
 
-char* TEasy_Panel::get_popup_info_file() { return this->popup_info_file_name; }
+char* TEasy_Panel::get_popup_info_file() {
+    return this->popup_info_file_name;
+}
 
-long TEasy_Panel::get_popup_info_id() { return this->popup_info_id; }
+long TEasy_Panel::get_popup_info_id() {
+    return this->popup_info_id;
+}
 
-TShape* TEasy_Panel::get_button_pics() { return this->button_pics; }
+TShape* TEasy_Panel::get_button_pics() {
+    return this->button_pics;
+}
 
-RGE_Color_Table* TEasy_Panel::get_shadow_color_table() { return this->shadow_color_table; }
+RGE_Color_Table* TEasy_Panel::get_shadow_color_table() {
+    return this->shadow_color_table;
+}
 
-int TEasy_Panel::get_enable_ime() { return this->enable_ime; }
+int TEasy_Panel::get_enable_ime() {
+    return this->enable_ime;
+}
 
-int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
-                               long text_id1, long text_id2, long x, long y,
-                               long width, long height, long font_num,
-                               long sound_num, long action_id) {
+int TEasy_Panel::create_button(
+    TPanel* parent, TButtonPanel** button, long text_id1, long text_id2, long x, long y, long width, long height,
+    long font_num, long sound_num, long action_id
+) {
     char text2[120];
     char text1[120];
 
@@ -763,10 +827,10 @@ int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
     return this->create_button(parent, button, text1, text2, x, y, width, height, font_num, sound_num, action_id);
 }
 
-int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
-                               char* text1, char* text2, long x, long y,
-                               long width, long height, long font_num,
-                               long sound_num, long action_id) {
+int TEasy_Panel::create_button(
+    TPanel* parent, TButtonPanel** button, char* text1, char* text2, long x, long y, long width, long height,
+    long font_num, long sound_num, long action_id
+) {
     TDigital* sound;
     long ideal_x;
     long sy;
@@ -787,8 +851,11 @@ int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
             sound = rge_base_game->get_sound(sound_num);
         }
 
-        if ((*button)->setup(this->render_area, parent, ideal_x, sy, sw, sh, TButtonPanel::DrawText, sound,
-                             TButtonPanel::NotifyAction, action_id) != 0) {
+        if ((*button)->setup(
+                this->render_area, parent, ideal_x, sy, sw, sh, TButtonPanel::DrawText, sound,
+                TButtonPanel::NotifyAction, action_id
+            )
+            != 0) {
             (*button)->set_sound_number(sound_num);
             RGE_Font* font;
             if (font_num >= 0) {
@@ -801,7 +868,10 @@ int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
                 (*button)->set_text(1, text2);
             }
             if (this->use_bevels != 0) {
-                (*button)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                (*button)->set_bevel_info(
+                    4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                    this->bevel_color5, this->bevel_color6
+                );
             }
             i = 0;
             do {
@@ -823,9 +893,9 @@ int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
     return i;
 }
 
-int TEasy_Panel::create_check_box(TPanel* parent, TButtonPanel** button,
-                                 long x, long y, long width, long height,
-                                 long sound_num, long action_id) {
+int TEasy_Panel::create_check_box(
+    TPanel* parent, TButtonPanel** button, long x, long y, long width, long height, long sound_num, long action_id
+) {
     TDigital* sound;
     long ideal_x;
     long sy;
@@ -840,9 +910,12 @@ int TEasy_Panel::create_check_box(TPanel* parent, TButtonPanel** button,
     TButtonPanel* button_panel = new TButtonPanel;
     *button = button_panel;
     if (button_panel != 0 && button_panel->error_code == 0) {
-        if (sound_num >= 0) sound = rge_base_game->get_sound(sound_num);
-        if ((*button)->setup(this->render_area, parent, ideal_x, sy, sw, sh, TButtonPanel::DrawBevelPicture, sound,
-                             TButtonPanel::NotifyAction, action_id)) {
+        if (sound_num >= 0)
+            sound = rge_base_game->get_sound(sound_num);
+        if ((*button)->setup(
+                this->render_area, parent, ideal_x, sy, sw, sh, TButtonPanel::DrawBevelPicture, sound,
+                TButtonPanel::NotifyAction, action_id
+            )) {
             (*button)->set_sound_number(sound_num);
             (*button)->set_state_info(2);
             if (this->button_pics) {
@@ -856,7 +929,10 @@ int TEasy_Panel::create_check_box(TPanel* parent, TButtonPanel** button,
                 (*button)->setDrawType(TButtonPanel::DrawText);
             }
             if (this->use_bevels) {
-                (*button)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                (*button)->set_bevel_info(
+                    4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                    this->bevel_color5, this->bevel_color6
+                );
             }
             (*button)->set_text_color(0, this->text_color1, this->text_color2);
             (*button)->set_highlight_text_color(0, this->focus_color1, this->focus_color2);
@@ -869,9 +945,9 @@ int TEasy_Panel::create_check_box(TPanel* parent, TButtonPanel** button,
     return 0;
 }
 
-int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** button,
-                                     long x, long y, long width, long height,
-                                     long sound_num, long action_id) {
+int TEasy_Panel::create_radio_button(
+    TPanel* parent, TButtonPanel** button, long x, long y, long width, long height, long sound_num, long action_id
+) {
     long ideal_x = x;
     TButtonPanel* button_panel;
     TDigital* sound;
@@ -893,8 +969,10 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** button,
             sound = rge_base_game->get_sound(sound_num);
         }
 
-        if ((*button)->setup(this->render_area, parent, sx, sy, sw, sh, TButtonPanel::DrawPicture, sound,
-                             TButtonPanel::NotifyAction, action_id)) {
+        if ((*button)->setup(
+                this->render_area, parent, sx, sy, sw, sh, TButtonPanel::DrawPicture, sound, TButtonPanel::NotifyAction,
+                action_id
+            )) {
             (*button)->set_sound_number(sound_num);
 
             if (this->button_pics != 0) {
@@ -910,7 +988,10 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** button,
             }
 
             if (this->use_bevels != 0) {
-                (*button)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                (*button)->set_bevel_info(
+                    4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                    this->bevel_color5, this->bevel_color6
+                );
             }
             (*button)->set_text_color(0, this->text_color1, this->text_color2);
             (*button)->set_highlight_text_color(0, this->focus_color1, this->focus_color2);
@@ -923,20 +1004,22 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** button,
     return 0;
 }
 
-int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
-                             int text_id, long x, long y, long width,
-                             long height, long font_num, int horz_center,
-                             int vert_center, int word_wrap) {
+int TEasy_Panel::create_text(
+    TPanel* parent, TTextPanel** text_panel, int text_id, long x, long y, long width, long height, long font_num,
+    int horz_center, int vert_center, int word_wrap
+) {
     char text[256];
 
     this->get_string(text_id, text, 256);
-    return this->create_text(parent, text_panel, text, x, y, width, height, font_num, horz_center, vert_center, word_wrap);
+    return this->create_text(
+        parent, text_panel, text, x, y, width, height, font_num, horz_center, vert_center, word_wrap
+    );
 }
 
-int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
-                             char* text, long x, long y, long width,
-                             long height, long font_num, int horz_center,
-                             int vert_center, int word_wrap) {
+int TEasy_Panel::create_text(
+    TPanel* parent, TTextPanel** text_panel, char* text, long x, long y, long width, long height, long font_num,
+    int horz_center, int vert_center, int word_wrap
+) {
     long ideal_x = (x * this->pnl_wid) / this->ideal_width;
     long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
     long ideal_w = (width * this->pnl_wid) / this->ideal_width;
@@ -950,8 +1033,12 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
         } else {
             font = rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
         }
-        if ((*text_panel)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, font->font, font->font_wid,
-                                 font->font_hgt, 0, 0, 0, 0, 0, 0, (char*)0) != 0) {
+        if ((*text_panel)
+                ->setup(
+                    this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, font->font, font->font_wid,
+                    font->font_hgt, 0, 0, 0, 0, 0, 0, (char*) 0
+                )
+            != 0) {
             if (horz_center != 0 && vert_center != 0) {
                 (*text_panel)->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
             } else if (horz_center != 0) {
@@ -972,10 +1059,10 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
     return 0;
 }
 
-int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
-                             char** text, long line_num, long x, long y,
-                             long width, long height, long font_num,
-                             int horz_center, int vert_center) {
+int TEasy_Panel::create_text(
+    TPanel* parent, TTextPanel** text_panel, char** text, long line_num, long x, long y, long width, long height,
+    long font_num, int horz_center, int vert_center
+) {
     long ideal_x = (x * this->pnl_wid) / this->ideal_width;
     long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
     long ideal_w = (width * this->pnl_wid) / this->ideal_width;
@@ -990,8 +1077,12 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
         } else {
             font = rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
         }
-        if ((*text_panel)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, font->font, font->font_wid,
-                                 font->font_hgt, 0, 0, 0, 0, 0, 0, (char*)0) != 0) {
+        if ((*text_panel)
+                ->setup(
+                    this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, font->font, font->font_wid,
+                    font->font_hgt, 0, 0, 0, 0, 0, 0, (char*) 0
+                )
+            != 0) {
             (*text_panel)->set_text(text, line_num);
             (*text_panel)->scroll(6, 0, 1);
             if (horz_center != 0 && vert_center != 0) {
@@ -1012,10 +1103,10 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
     return 0;
 }
 
-int TEasy_Panel::create_input(TPanel* parent, TInputPanel** input_panel,
-                              char* value, short max_len,
-                              TInputPanel::FormatType format_type, long x,
-                              long y, long width, long height, long font_num) {
+int TEasy_Panel::create_input(
+    TPanel* parent, TInputPanel** input_panel, char* value, short max_len, TInputPanel::FormatType format_type, long x,
+    long y, long width, long height, long font_num
+) {
     long ideal_x = (x * this->pnl_wid) / this->ideal_width;
     long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
     long ideal_w = (width * this->pnl_wid) / this->ideal_width;
@@ -1029,12 +1120,18 @@ int TEasy_Panel::create_input(TPanel* parent, TInputPanel** input_panel,
         } else {
             font = rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
         }
-        if ((*input_panel)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h,
-                                  font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xff, 0xff, max_len, 0, value,
-                                  format_type) != 0) {
+        if ((*input_panel)
+                ->setup(
+                    this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, font->font, font->font_wid,
+                    font->font_hgt, 0, 0, 0, 1, 0xff, 0xff, max_len, 0, value, format_type
+                )
+            != 0) {
             if (this->use_bevels != 0) {
-                (*input_panel)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
-                                               this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                (*input_panel)
+                    ->set_bevel_info(
+                        3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                        this->bevel_color5, this->bevel_color6
+                    );
             }
             (*input_panel)->set_text_color(this->text_color1, this->text_color2);
             (*input_panel)->set_highlight_text_color(this->focus_color1, this->focus_color2);
@@ -1046,11 +1143,10 @@ int TEasy_Panel::create_input(TPanel* parent, TInputPanel** input_panel,
     return 0;
 }
 
-int TEasy_Panel::create_edit(TPanel* parent, TEditPanel** edit_panel,
-                             char* value, short max_len,
-                             TEditPanel::FormatType format_type, long x,
-                             long y, long width, long height, long font_num,
-                             int enable_ime, int turn_ime_on) {
+int TEasy_Panel::create_edit(
+    TPanel* parent, TEditPanel** edit_panel, char* value, short max_len, TEditPanel::FormatType format_type, long x,
+    long y, long width, long height, long font_num, int enable_ime, int turn_ime_on
+) {
     int scaled_x = (x * this->pnl_wid) / this->ideal_width;
     int scaled_y = (this->pnl_hgt * y) / this->ideal_height;
     int scaled_width = (width * this->pnl_wid) / this->ideal_width;
@@ -1066,12 +1162,18 @@ int TEasy_Panel::create_edit(TPanel* parent, TEditPanel** edit_panel,
 
         int multiline = (format_type != 7) ? 1 : 0;
 
-        if ((*edit_panel)->setup(this->render_area, parent, scaled_x, scaled_y,
-                                 scaled_width, height, font->font, max_len, value, format_type, multiline)) {
+        if ((*edit_panel)
+                ->setup(
+                    this->render_area, parent, scaled_x, scaled_y, scaled_width, height, font->font, max_len, value,
+                    format_type, multiline
+                )) {
 
             if (this->use_bevels) {
-                (*edit_panel)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
-                                              this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                (*edit_panel)
+                    ->set_bevel_info(
+                        3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                        this->bevel_color5, this->bevel_color6
+                    );
             }
 
             (*edit_panel)->set_text_color(this->text_color1, this->text_color2);
@@ -1087,9 +1189,10 @@ int TEasy_Panel::create_edit(TPanel* parent, TEditPanel** edit_panel,
     return 0;
 }
 
-int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** drop_panel,
-                                  long list_width, long list_height, long x,
-                                  long y, long width, long height, long font_num) {
+int TEasy_Panel::create_drop_down(
+    TPanel* parent, TDropDownPanel** drop_panel, long list_width, long list_height, long x, long y, long width,
+    long height, long font_num
+) {
     long ideal_x = x * this->pnl_wid / this->ideal_width;
     long ideal_y = y * this->pnl_hgt / this->ideal_height;
     long ideal_w = width * this->pnl_wid / this->ideal_width;
@@ -1101,44 +1204,64 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** drop_panel,
         rge_base_game->get_font(font_num);
     else
         rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
-    char** list = (char**)calloc(1,4);
-    if (list == 0) { this->error_code = 1; return 0; }
-    list[0] = (char*)calloc(20,1);
-    if (list[0] == 0) return 0;
+    char** list = (char**) calloc(1, 4);
+    if (list == 0) {
+        this->error_code = 1;
+        return 0;
+    }
+    list[0] = (char*) calloc(20, 1);
+    if (list[0] == 0)
+        return 0;
     strcpy(list[0], " ");
     if (this->error_code == 0) {
         *drop_panel = new TDropDownPanel;
         if (*drop_panel != 0 && (*drop_panel)->error_code == 0) {
             RGE_Font* font = rge_base_game->get_font(font_num);
-            if ((*drop_panel)->setup(this->render_area,parent,font->font,font->font_wid,font->font_hgt,0,0,1,0xff,ideal_x,ideal_y,ideal_w,ideal_h,0,0,button_size,ideal_h,0,list_w,list_h,list,1,button_size,0,0,0,0,button_size,button_size)) {
-                if (this->button_pics) (*drop_panel)->set_buttons(this->button_pics,0xe,-1,8,10,0xc);
-                if (this->use_bevels) (*drop_panel)->set_bevel_info(3,bevel_color1,bevel_color2,bevel_color3,bevel_color4,bevel_color5,bevel_color6);
-                (*drop_panel)->set_val_text_color(text_color1,text_color2);
+            if ((*drop_panel)
+                    ->setup(
+                        this->render_area, parent, font->font, font->font_wid, font->font_hgt, 0, 0, 1, 0xff, ideal_x,
+                        ideal_y, ideal_w, ideal_h, 0, 0, button_size, ideal_h, 0, list_w, list_h, list, 1, button_size,
+                        0, 0, 0, 0, button_size, button_size
+                    )) {
+                if (this->button_pics)
+                    (*drop_panel)->set_buttons(this->button_pics, 0xe, -1, 8, 10, 0xc);
+                if (this->use_bevels)
+                    (*drop_panel)
+                        ->set_bevel_info(
+                            3, bevel_color1, bevel_color2, bevel_color3, bevel_color4, bevel_color5, bevel_color6
+                        );
+                (*drop_panel)->set_val_text_color(text_color1, text_color2);
                 TListPanel* lp = (*drop_panel)->list_panel;
-                lp->set_text_color(text_color1,text_color2);
-                lp->set_highlight_text_color(focus_color1,focus_color2);
-                (*drop_panel)->val_panel->set_bevel_info(3,bevel_color1,bevel_color2,bevel_color3,bevel_color4,bevel_color5,bevel_color6);
+                lp->set_text_color(text_color1, text_color2);
+                lp->set_highlight_text_color(focus_color1, focus_color2);
+                (*drop_panel)
+                    ->val_panel->set_bevel_info(
+                        3, bevel_color1, bevel_color2, bevel_color3, bevel_color4, bevel_color5, bevel_color6
+                    );
                 goto cleanup;
             }
         }
         this->error_code = 1;
     }
 cleanup: {
-        char** p = list;
-        int count = 1;
-        do {
-            if (*p) { free(*p); *p = 0; }
-            ++p;
-            --count;
-        } while (count != 0);
-        free(list);
-    }
+    char** p = list;
+    int count = 1;
+    do {
+        if (*p) {
+            free(*p);
+            *p = 0;
+        }
+        ++p;
+        --count;
+    } while (count != 0);
+    free(list);
+}
     return this->error_code == 0;
 }
 
-int TEasy_Panel::create_list(TPanel* parent, TListPanel** list_panel,
-                             long x, long y, long width, long height,
-                             long font_num) {
+int TEasy_Panel::create_list(
+    TPanel* parent, TListPanel** list_panel, long x, long y, long width, long height, long font_num
+) {
     struct ScaledPoint {
         long y;
         long x;
@@ -1158,12 +1281,12 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** list_panel,
         rge_base_game->get_font(RGE_FONT_ARIAL_10_NORMAL_ALT);
     }
 
-    list_items = (char**)calloc(1, sizeof(char*));
+    list_items = (char**) calloc(1, sizeof(char*));
     if (list_items == 0) {
         this->error_code = 1;
         return 0;
     }
-    list_items[0] = (char*)calloc(20, 1);
+    list_items[0] = (char*) calloc(20, 1);
     if (list_items[0] == 0) {
         goto cleanup_fail;
     }
@@ -1174,7 +1297,12 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** list_panel,
         *list_panel = list_panel_instance;
         if (list_panel_instance != 0 && list_panel_instance->error_code == 0) {
             font = rge_base_game->get_font(font_num);
-            if ((*list_panel)->setup(this->render_area, parent, ideal.x, ideal.y, width, ideal_h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xFF, 0, list_items, 1) != 0) {
+            if ((*list_panel)
+                    ->setup(
+                        this->render_area, parent, ideal.x, ideal.y, width, ideal_h, font->font, font->font_wid,
+                        font->font_hgt, 0, 0, 0, 1, 0xFF, 0, list_items, 1
+                    )
+                != 0) {
                 (*list_panel)->scroll_cur_line(1, 0, 1);
                 goto cleanup_success;
             }
@@ -1183,21 +1311,24 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** list_panel,
     }
 
 cleanup_success: {
-        int n = 1;
-        char** p = list_items;
-        do {
-            if (*p != 0) {
-                free(*p);
-                *p = 0;
-            }
-            ++p;
-            --n;
-        } while (n != 0);
-    }
+    int n = 1;
+    char** p = list_items;
+    do {
+        if (*p != 0) {
+            free(*p);
+            *p = 0;
+        }
+        ++p;
+        --n;
+    } while (n != 0);
+}
     free(list_items);
     if (this->use_bevels != 0) {
         TListPanel* list_panel_instance = *list_panel;
-        list_panel_instance->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+        list_panel_instance->set_bevel_info(
+            3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5,
+            this->bevel_color6
+        );
     }
     (*list_panel)->set_text_color(this->text_color1, this->text_color2);
     (*list_panel)->set_highlight_text_color(this->focus_color1, this->focus_color2);
@@ -1207,10 +1338,10 @@ cleanup_fail:
     return 0;
 }
 
-int TEasy_Panel::create_scrollbar(TPanel* parent,
-                                  TScrollBarPanel** scrollbar_panel,
-                                  TTextPanel* list_panel, long list_size,
-                                  long x, long y, long width, long height) {
+int TEasy_Panel::create_scrollbar(
+    TPanel* parent, TScrollBarPanel** scrollbar_panel, TTextPanel* list_panel, long list_size, long x, long y,
+    long width, long height
+) {
     long scaled_x = (this->pnl_wid * x) / this->ideal_width;
     long scaled_y = (y * this->pnl_hgt) / this->ideal_height;
     long h = (height * this->pnl_hgt) / this->ideal_height;
@@ -1219,7 +1350,11 @@ int TEasy_Panel::create_scrollbar(TPanel* parent,
 
     if (sb != 0) {
         if (sb->error_code == 0) {
-            if (sb->setup(this->render_area, parent, scaled_x, scaled_y, width, h, 0, 0, 0, 0, width, width, list_panel, list_size, TScrollBarPanel::Vertical) != 0) {
+            if (sb->setup(
+                    this->render_area, parent, scaled_x, scaled_y, width, h, 0, 0, 0, 0, width, width, list_panel,
+                    list_size, TScrollBarPanel::Vertical
+                )
+                != 0) {
                 if (list_panel != 0) {
                     list_panel->set_scrollbar(*scrollbar_panel, 0);
                 }
@@ -1229,7 +1364,11 @@ int TEasy_Panel::create_scrollbar(TPanel* parent,
                 }
 
                 if (this->use_bevels != 0) {
-                    (*scrollbar_panel)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                    (*scrollbar_panel)
+                        ->set_bevel_info(
+                            3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                            this->bevel_color5, this->bevel_color6
+                        );
                 }
 
                 return 1;
@@ -1240,8 +1379,7 @@ int TEasy_Panel::create_scrollbar(TPanel* parent,
     return 0;
 }
 
-int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** scrollbar_panel,
-                                       TTextPanel* list_panel, long width) {
+int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** scrollbar_panel, TTextPanel* list_panel, long width) {
     if (this->create_scrollbar(list_panel->parent_panel, scrollbar_panel, list_panel, 0, 0, 0, width, 0) == 0) {
         return 0;
     }
@@ -1250,24 +1388,33 @@ int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** scrollbar_panel,
     return 1;
 }
 
-int TEasy_Panel::create_vert_slider(TPanel* parent,
-                                    TVerticalSliderPanel** slider_panel,
-                                    long scale, long one_step, long page_step,
-                                    long x, long y, long width, long height) {
+int TEasy_Panel::create_vert_slider(
+    TPanel* parent, TVerticalSliderPanel** slider_panel, long scale, long one_step, long page_step, long x, long y,
+    long width, long height
+) {
     long ideal_x = (x * this->pnl_wid) / this->ideal_width;
     long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
     long ideal_w = (width * this->pnl_wid) / this->ideal_width;
     long ideal_h = (height * this->pnl_hgt) / this->ideal_height;
 
     *slider_panel = new TVerticalSliderPanel;
-    if (*slider_panel != 0 && (*slider_panel)->error_code == 0 &&
-        (*slider_panel)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, scale, one_step, page_step, 1, 0) != 0) {
+    if (*slider_panel != 0 && (*slider_panel)->error_code == 0
+        && (*slider_panel)
+                   ->setup(
+                       this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, scale, one_step,
+                       page_step, 1, 0
+                   )
+               != 0) {
         if (this->button_pics != 0) {
             (*slider_panel)->set_buttons(this->button_pics, -1, 8, 10, 12);
         }
 
         if (this->use_bevels != 0) {
-            (*slider_panel)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+            (*slider_panel)
+                ->set_bevel_info(
+                    3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                    this->bevel_color5, this->bevel_color6
+                );
         }
 
         return 1;
@@ -1276,10 +1423,10 @@ int TEasy_Panel::create_vert_slider(TPanel* parent,
     return 0;
 }
 
-int TEasy_Panel::create_horz_slider(TPanel* parent,
-                                    THorizontalSliderPanel** slider_panel,
-                                    long scale, long one_step, long page_step,
-                                    long x, long y, long width, long height) {
+int TEasy_Panel::create_horz_slider(
+    TPanel* parent, THorizontalSliderPanel** slider_panel, long scale, long one_step, long page_step, long x, long y,
+    long width, long height
+) {
     long ideal_x = (x * this->pnl_wid) / this->ideal_width;
     long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
     long ideal_w = (width * this->pnl_wid) / this->ideal_width;
@@ -1287,14 +1434,23 @@ int TEasy_Panel::create_horz_slider(TPanel* parent,
 
     int result;
     *slider_panel = new THorizontalSliderPanel;
-    if (*slider_panel != 0 && (*slider_panel)->error_code == 0 &&
-        (*slider_panel)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, scale, one_step, page_step, 1, 0) != 0) {
+    if (*slider_panel != 0 && (*slider_panel)->error_code == 0
+        && (*slider_panel)
+                   ->setup(
+                       this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, scale, one_step,
+                       page_step, 1, 0
+                   )
+               != 0) {
         if (this->button_pics != 0) {
             (*slider_panel)->set_buttons(this->button_pics, -1, 8, 10, 12);
         }
 
         if (this->use_bevels != 0) {
-            (*slider_panel)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+            (*slider_panel)
+                ->set_bevel_info(
+                    3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                    this->bevel_color5, this->bevel_color6
+                );
         }
         result = 1;
     } else {
@@ -1304,8 +1460,10 @@ int TEasy_Panel::create_horz_slider(TPanel* parent,
 }
 
 void TEasy_Panel::position_panel(TPanel* panel, long x, long y, long width, long height) {
-    panel->set_fixed_position((x * this->pnl_wid) / this->ideal_width, (y * this->pnl_hgt) / this->ideal_height,
-                              (width * this->pnl_wid) / this->ideal_width, (height * this->pnl_hgt) / this->ideal_height);
+    panel->set_fixed_position(
+        (x * this->pnl_wid) / this->ideal_width, (y * this->pnl_hgt) / this->ideal_height,
+        (width * this->pnl_wid) / this->ideal_width, (height * this->pnl_hgt) / this->ideal_height
+    );
 }
 
 void TEasy_Panel::set_focus(int have_focus_in) {
@@ -1400,8 +1558,7 @@ void TEasy_Panel::popupYesNoCancelDialog(char* text, char* panel_title, int wid,
     dialog->setup(this, this->popup_info_file_name, this->popup_info_id, wid, hgt, 4, text, 120, 25);
 }
 
-void TEasy_Panel::command_help(char* in_parent_panel, long help_string,
-                               long help_page, long x, long y) {
+void TEasy_Panel::command_help(char* in_parent_panel, long help_string, long help_page, long x, long y) {
     if (help_string >= 0) {
         char* text = this->get_string(help_string);
         if (text || *text != 0) {
@@ -1410,8 +1567,7 @@ void TEasy_Panel::command_help(char* in_parent_panel, long help_string,
     }
 }
 
-void TEasy_Panel::command_help(char* in_parent_panel, char* help_string,
-                               long help_page, long x, long y) {
+void TEasy_Panel::command_help(char* in_parent_panel, char* help_string, long help_page, long x, long y) {
     if (help_string != 0 && *help_string != 0) {
         new THelpDialog(this, in_parent_panel, help_string, help_page, x, y);
     }
@@ -1432,8 +1588,7 @@ void TEasy_Panel::clear_popup_help(void) {
     rge_base_game->mouse_pointer->set_game_enable(this->saved_mouse_mode);
 }
 
-long TEasy_Panel::command_do_popup_help(unsigned char mouse_button_in,
-                                        long mouse_x, long mouse_y) {
+long TEasy_Panel::command_do_popup_help(unsigned char mouse_button_in, long mouse_x, long mouse_y) {
     long help_page;
     char* temp;
     char help_string2[1000];

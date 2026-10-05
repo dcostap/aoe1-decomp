@@ -7,7 +7,7 @@ class TRIBE_Player;
 class TRIBE_World;
 
 class TRIBE_Panel_Pop : public TPanel {
-public:
+  public:
     void* font;
     unsigned long color1;
     unsigned long color2;
@@ -37,11 +37,10 @@ public:
     virtual void get_true_render_rect(tagRECT& drawRect);
     virtual long handle_idle();
 
-protected:
+  protected:
     int render_to_image_buffer();
 };
 
-typedef char tpnl_pop_panel_size_check[
-    (sizeof(TRIBE_Panel_Pop) == 0x164) ? 1 : -1];
+typedef char tpnl_pop_panel_size_check[(sizeof(TRIBE_Panel_Pop) == 0x164) ? 1 : -1];
 
 #endif

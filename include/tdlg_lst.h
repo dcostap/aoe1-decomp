@@ -5,10 +5,10 @@
 #include "rdlg_lst.h"
 
 class TRIBE_Dialog_List : public RGE_Dialog_List {
-public:
+  public:
     TRIBE_Dialog_List(char* name);
 
-protected:
+  protected:
     virtual int create_list();
     int create_build_list();
     int create_train_list();
@@ -16,7 +16,6 @@ protected:
     virtual short get_cur_id();
 };
 
-typedef char tdlg_lst_dialog_size_check[
-    (sizeof(TRIBE_Dialog_List) == 0x4BC) ? 1 : -1];
+typedef char tdlg_lst_dialog_size_check[(sizeof(TRIBE_Dialog_List) == 0x4BC) ? 1 : -1];
 
 #endif

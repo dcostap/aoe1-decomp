@@ -20,7 +20,10 @@ TPicturePanel::~TPicturePanel() {
     this->free_pic();
 }
 
-long TPicturePanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, char* pic_name_in, long res_id_in, int size_from_pic_in, int keep_loaded_in) {
+long TPicturePanel::setup(
+    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
+    char* pic_name_in, long res_id_in, int size_from_pic_in, int keep_loaded_in
+) {
     short shape_wid, shape_hgt;
 
     if (pic_name_in) {
@@ -125,9 +128,12 @@ void TPicturePanel::free_pic() {
 }
 
 void TPicturePanel::draw() {
-    if (!this->render_area) return;
-    if (!this->visible) return;
-    if (!this->active) return;
+    if (!this->render_area)
+        return;
+    if (!this->visible)
+        return;
+    if (!this->active)
+        return;
 
     this->draw_setup(0);
 

@@ -12,7 +12,7 @@ struct LOSTBL {
 };
 
 class RGE_Visible_Map {
-public:
+  public:
     unsigned char** map_offsets;
     RGE_Game_World* world;
     RGE_Player* player;
@@ -49,7 +49,7 @@ public:
 };
 
 class RGE_Unified_Visible_Map {
-public:
+  public:
     int mapWidth;
     int mapHeight;
     unsigned long* UnifiedVisibleMap;
@@ -62,15 +62,15 @@ public:
     void save(int outfile);
     void reset(void);
 
-private:
+  private:
     void Set_Map_Offsets(void);
 
-public:
+  public:
     void suppress_updates(int mode);
 };
 
 class VC_LOG {
-public:
+  public:
     int world_time;
     int player_id;
     int action;
@@ -82,13 +82,9 @@ public:
     int supress;
 };
 
-typedef char rge_lostbl_size_check[
-    (sizeof(LOSTBL) == 0x0C) ? 1 : -1];
-typedef char rge_visible_map_size_check[
-    (sizeof(RGE_Visible_Map) == 0x38) ? 1 : -1];
-typedef char rge_unified_visible_map_size_check[
-    (sizeof(RGE_Unified_Visible_Map) == 0x0C) ? 1 : -1];
-typedef char vc_log_size_check[
-    (sizeof(VC_LOG) == 0x24) ? 1 : -1];
+typedef char rge_lostbl_size_check[(sizeof(LOSTBL) == 0x0C) ? 1 : -1];
+typedef char rge_visible_map_size_check[(sizeof(RGE_Visible_Map) == 0x38) ? 1 : -1];
+typedef char rge_unified_visible_map_size_check[(sizeof(RGE_Unified_Visible_Map) == 0x0C) ? 1 : -1];
+typedef char vc_log_size_check[(sizeof(VC_LOG) == 0x24) ? 1 : -1];
 
 #endif

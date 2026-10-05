@@ -7,11 +7,8 @@
 class BuildItem;
 
 class ConstructionAIModule : public AIModule {
-public:
-    enum PlacementResult {
-        PlacementOk = 0,
-        PlacementFailed = 5
-    };
+  public:
+    enum PlacementResult { PlacementOk = 0, PlacementFailed = 5 };
 
     virtual ~ConstructionAIModule();
     virtual int save(int outfile);
@@ -46,7 +43,7 @@ public:
     ConstructionItem* lot(float x, float y);
     ConstructionItem* randomLot(float x, float y);
 
-protected:
+  protected:
     void removeOldLots();
 };
 

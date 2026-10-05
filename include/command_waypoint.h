@@ -8,7 +8,6 @@ struct XYZBYTEPoint {
     unsigned char z;
 };
 
-typedef char command_xyzbytepoint_size_check[
-    (sizeof(XYZBYTEPoint) == 0x03) ? 1 : -1];
+typedef char command_xyzbytepoint_size_check[(sizeof(XYZBYTEPoint) == 0x03) ? 1 : -1];
 
 #endif

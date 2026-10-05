@@ -13,7 +13,7 @@ class TScrollBarPanel;
 class TribeMPSetupScreen;
 
 class TribeGameSettingsScreen : public TScreenPanel {
-public:
+  public:
     TTextPanel* title;
     int state;
     TTextPanel* mapSizeLabel;
@@ -71,7 +71,8 @@ public:
     virtual ~TribeGameSettingsScreen();
     virtual long handle_idle();
     virtual long handle_user_command(unsigned int wParam, long lParam);
-protected:
+
+  protected:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     void init_vars();
     void fillScenarios();

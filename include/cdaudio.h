@@ -5,7 +5,7 @@
 #include <mmsystem.h>
 
 class CCDAudio {
-public:
+  public:
     void* m_Wnd;
     int m_bOpened;
     unsigned int m_nDeviceID;
@@ -27,7 +27,7 @@ public:
     unsigned long GetTrackLength(unsigned char nTrack, unsigned char& nMinutes, unsigned char& nSeconds);
     unsigned long GetPosition(unsigned char& nTrack, unsigned char& nMinutes, unsigned char& nSeconds);
 
-private:
+  private:
     unsigned long DisplayErrorMsg(unsigned long dwError);
 };
 

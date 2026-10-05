@@ -16,8 +16,7 @@ static char s_Scenario_Editor_Menu[] = "Scenario Editor Menu";
 extern char s_Scenario_Editor_Open[];
 extern TPanelSystem panel_system;
 
-TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
-    : TScreenPanel(s_Scenario_Editor_Menu) {
+TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu() : TScreenPanel(s_Scenario_Editor_Menu) {
     title = 0;
     for (int j = 0; j < 4; j++)
         button[j] = 0;
@@ -30,11 +29,15 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
 
     set_ideal_size(640, 480);
 
-    if (!create_text(this, &title, STRING_ID_SCENARIO_EDITOR_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0))
+    if (!create_text(
+            this, &title, STRING_ID_SCENARIO_EDITOR_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
+        ))
         return;
 
     for (int i = 0; i < 4; i++) {
-        if (!create_button(this, &button[i], s_empty_string, 0, 170, 170 + i * 50, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
+        if (!create_button(
+                this, &button[i], s_empty_string, 0, 170, 170 + i * 50, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+            ))
             return;
     }
 

@@ -13,55 +13,53 @@ class OrderEvent;
 struct RGE_Visible_Map;
 
 class UnitAIModule {
-public:
+  public:
     virtual ~UnitAIModule();
     virtual void save(int fd);
     virtual void load(int fd);
     virtual RGE_Player* owner() const;
-    virtual int order(int, int, int, int, float, float, float, float,
-                      int, int, int);
+    virtual int order(int, int, int, int, float, float, float, float, int, int, int);
     virtual int notify(int, int, int, long, long, long);
 
-    RGE_Static_Object* objectValue;                     // +0x04
-    int moodValue;                                      // +0x08
-    int objectCategoryValue;                            // +0x0C
-    int orderQueueSizeValue;                            // +0x10
-    int orderQueueMaxSizeValue;                         // +0x14
-    void* orderQueueValue;                              // +0x18
-    int notifyQueueSizeValue;                           // +0x1C
-    int notifyQueueMaxSizeValue;                        // +0x20
-    void* notifyQueueValue;                             // +0x24
-    int currentOrderValue;                              // +0x28
-    int currentOrderPriorityValue;                      // +0x2C
-    int currentActionValue;                             // +0x30
-    int currentTargetValue;                             // +0x34
-    int currentTargetTypeValue;                         // +0x38
-    float currentTargetXValue;                          // +0x3C
-    float currentTargetYValue;                          // +0x40
-    float currentTargetZValue;                          // +0x44
-    float desiredTargetDistanceValue;                   // +0x48
-    int defendTargetValue;                              // +0x4C
-    int lastOrderValue;                                 // +0x50
-    int lastActionValue;                                // +0x54
-    int lastTargetValue;                                // +0x58
-    int lastTargetTypeValue;                            // +0x5C
-    ManagedArray<int> attackingUnitsValue;              // +0x60
-    Waypoint waypointQueue[8];                          // +0x70
-    int waypointQueueSizeValue;                         // +0xF0
-    unsigned long lastUpdateTimeValue;                  // +0xF4
-    unsigned long idleTimerValue;                       // +0xF8
-    unsigned long adjustedIdleTimeoutValue;             // +0xFC
-    unsigned long idleTimeoutValue;                     // +0x100
-    unsigned long secondaryTimerValue;                  // +0x104
-    unsigned long lookAroundTimerValue;                 // +0x108
-    unsigned long lookAroundTimeoutValue;               // +0x10C
-    Waypoint lastWorldPositionValue;                    // +0x110
-    float defenseBufferValue;                           // +0x120
-    int* importantObjects;                              // +0x124
-    int numberImportantObjects;                         // +0x128
-    AIPlayStatus* playStatus;                           // +0x12C
-    unsigned char stopAfterTargetKilledValue;           // +0x130
-
+    RGE_Static_Object* objectValue;           // +0x04
+    int moodValue;                            // +0x08
+    int objectCategoryValue;                  // +0x0C
+    int orderQueueSizeValue;                  // +0x10
+    int orderQueueMaxSizeValue;               // +0x14
+    void* orderQueueValue;                    // +0x18
+    int notifyQueueSizeValue;                 // +0x1C
+    int notifyQueueMaxSizeValue;              // +0x20
+    void* notifyQueueValue;                   // +0x24
+    int currentOrderValue;                    // +0x28
+    int currentOrderPriorityValue;            // +0x2C
+    int currentActionValue;                   // +0x30
+    int currentTargetValue;                   // +0x34
+    int currentTargetTypeValue;               // +0x38
+    float currentTargetXValue;                // +0x3C
+    float currentTargetYValue;                // +0x40
+    float currentTargetZValue;                // +0x44
+    float desiredTargetDistanceValue;         // +0x48
+    int defendTargetValue;                    // +0x4C
+    int lastOrderValue;                       // +0x50
+    int lastActionValue;                      // +0x54
+    int lastTargetValue;                      // +0x58
+    int lastTargetTypeValue;                  // +0x5C
+    ManagedArray<int> attackingUnitsValue;    // +0x60
+    Waypoint waypointQueue[8];                // +0x70
+    int waypointQueueSizeValue;               // +0xF0
+    unsigned long lastUpdateTimeValue;        // +0xF4
+    unsigned long idleTimerValue;             // +0xF8
+    unsigned long adjustedIdleTimeoutValue;   // +0xFC
+    unsigned long idleTimeoutValue;           // +0x100
+    unsigned long secondaryTimerValue;        // +0x104
+    unsigned long lookAroundTimerValue;       // +0x108
+    unsigned long lookAroundTimeoutValue;     // +0x10C
+    Waypoint lastWorldPositionValue;          // +0x110
+    float defenseBufferValue;                 // +0x120
+    int* importantObjects;                    // +0x124
+    int numberImportantObjects;               // +0x128
+    AIPlayStatus* playStatus;                 // +0x12C
+    unsigned char stopAfterTargetKilledValue; // +0x130
 
     int actionRequiresLiveTarget(int actionId);
     int addToNotifyQueue(NotifyEvent* event);
@@ -139,8 +137,7 @@ public:
     void setCurrentAction(int value);
     void setCurrentOrder(int value);
     void setCurrentOrderPriority(int v);
-    void setCurrentTarget(int target, int target_type, float x, float y,
-                          float z);
+    void setCurrentTarget(int target, int target_type, float x, float y, float z);
     void setCurrentTarget(int target, float x, float y, float z);
     void setDefenseBuffer(float v);
     void setPlayStatus(AIPlayStatus* status);
@@ -159,5 +156,4 @@ public:
     void processMisc();
     void setTaskedByPlayer();
 };
-typedef char unit_ai_module_size_check[
-    (sizeof(UnitAIModule) == 0x134) ? 1 : -1];
+typedef char unit_ai_module_size_check[(sizeof(UnitAIModule) == 0x134) ? 1 : -1];

@@ -4,13 +4,12 @@
 class RGE_Sprite;
 
 class RGE_Damage_Sprite_Info {
-public:
+  public:
     RGE_Sprite* sprite;
     unsigned char damage_percent;
     unsigned char flag;
 };
 
-typedef char rge_damage_sprite_info_size_check[
-    (sizeof(RGE_Damage_Sprite_Info) == 0x8) ? 1 : -1];
+typedef char rge_damage_sprite_info_size_check[(sizeof(RGE_Damage_Sprite_Info) == 0x8) ? 1 : -1];
 
 #endif

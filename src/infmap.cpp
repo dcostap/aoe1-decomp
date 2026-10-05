@@ -21,15 +21,13 @@ static const char print_row[] = "R%03d: ";
 static const char print_row_end[] = ":R%03d\n";
 static const char print_row_end_last[] = ":R%03d\n\n";
 
-InfluenceMap::InfluenceMap(int x, int y, unsigned char initialValue)
-    : xSizeValue(x),
-      xReferencePointValue(0),
-      yReferencePointValue(0) {
+InfluenceMap::InfluenceMap(int x, int y, unsigned char initialValue) :
+    xSizeValue(x), xReferencePointValue(0), yReferencePointValue(0) {
     this->ySizeValue = y;
     int total = y * x;
-    this->valueValue = (unsigned char*)::operator new(total);
+    this->valueValue = (unsigned char*) ::operator new(total);
     memset(this->valueValue, initialValue, total);
-    this->rowValue = (unsigned char**)::operator new(this->ySizeValue * 4);
+    this->rowValue = (unsigned char**) ::operator new(this->ySizeValue * 4);
     if (this->rowValue) {
         int i = 0;
         int offset = 0;
@@ -195,8 +193,7 @@ void InfluenceMap::setReferencePoint(int x, int y) {
 }
 
 int InfluenceMap::lookupValue(int x, int y) {
-    return this->rowValue[y - this->yReferencePointValue]
-                       [x - this->xReferencePointValue];
+    return this->rowValue[y - this->yReferencePointValue][x - this->xReferencePointValue];
 }
 
 int InfluenceMap::setValue(int x, int y, unsigned char v) {
@@ -209,15 +206,14 @@ int InfluenceMap::setValue(int x, int y, unsigned char v) {
     return 1;
 }
 
-int InfluenceMap::setValue(int minX, int minY, int maxX, int maxY,
-                           unsigned char v) {
+int InfluenceMap::setValue(int minX, int minY, int maxX, int maxY, unsigned char v) {
     minX -= this->xReferencePointValue;
     maxX -= this->xReferencePointValue;
     minY -= this->yReferencePointValue;
     maxY -= this->yReferencePointValue;
 
-    if (minX < 0 || minY < 0 || minX >= this->xSizeValue || minY >= this->ySizeValue ||
-        maxX < 0 || maxY < 0 || maxX >= this->xSizeValue || maxY >= this->ySizeValue)
+    if (minX < 0 || minY < 0 || minX >= this->xSizeValue || minY >= this->ySizeValue || maxX < 0 || maxY < 0
+        || maxX >= this->xSizeValue || maxY >= this->ySizeValue)
         return 0;
 
     for (int j = minY; j <= maxY; j++) {
@@ -238,17 +234,16 @@ int InfluenceMap::incrementValue(int x, int y, unsigned char v) {
     if (this->rowValue[ry][rx] >= this->unchangeableLimitValue)
         return 1;
 
-    int sum = (int)(unsigned char)this->rowValue[ry][rx] + (int)(unsigned char)v;
-    if (sum >= (int)(unsigned char)this->unchangeableLimitValue) {
-        this->rowValue[ry][rx] = (unsigned char)((int)(unsigned char)this->unchangeableLimitValue - 1);
+    int sum = (int) (unsigned char) this->rowValue[ry][rx] + (int) (unsigned char) v;
+    if (sum >= (int) (unsigned char) this->unchangeableLimitValue) {
+        this->rowValue[ry][rx] = (unsigned char) ((int) (unsigned char) this->unchangeableLimitValue - 1);
         return 1;
     }
-    this->rowValue[ry][rx] = (unsigned char)sum;
+    this->rowValue[ry][rx] = (unsigned char) sum;
     return 1;
 }
 
-int InfluenceMap::incrementValue(int minX, int minY, int maxX, int maxY,
-                                 unsigned char v) {
+int InfluenceMap::incrementValue(int minX, int minY, int maxX, int maxY, unsigned char v) {
     minX -= this->xReferencePointValue;
     maxX -= this->xReferencePointValue;
     minY -= this->yReferencePointValue;
@@ -280,11 +275,11 @@ int InfluenceMap::incrementValue(int minX, int minY, int maxX, int maxY,
         for (int y = minY; y <= maxY; y++) {
             for (int x = minX; x <= maxX; x++) {
                 if (this->rowValue[y][x] < this->unchangeableLimitValue) {
-                    int value = (int)this->rowValue[y][x] + (int)v;
+                    int value = (int) this->rowValue[y][x] + (int) v;
                     if (value >= this->unchangeableLimitValue)
                         this->rowValue[y][x] = this->unchangeableLimitValue - 1;
                     else
-                        this->rowValue[y][x] = (unsigned char)value;
+                        this->rowValue[y][x] = (unsigned char) value;
                 }
             }
         }
@@ -307,18 +302,17 @@ int InfluenceMap::decrementValue(int x, int y, unsigned char v) {
         return 1;
     }
 
-    int diff = (int)*cell - (int)v;
+    int diff = (int) *cell - (int) v;
     if (diff < 0) {
         *cell = 0;
     } else {
-        *cell = (unsigned char)diff;
+        *cell = (unsigned char) diff;
     }
 
     return 1;
 }
 
-int InfluenceMap::decrementValue(int minX, int minY, int maxX, int maxY,
-                                 unsigned char v) {
+int InfluenceMap::decrementValue(int minX, int minY, int maxX, int maxY, unsigned char v) {
     minX -= this->xReferencePointValue;
     maxX -= this->xReferencePointValue;
     minY -= this->yReferencePointValue;
@@ -350,11 +344,11 @@ int InfluenceMap::decrementValue(int minX, int minY, int maxX, int maxY,
         for (int y = minY; y <= maxY; y++) {
             for (int x = minX; x <= maxX; x++) {
                 if (this->rowValue[y][x] < this->unchangeableLimitValue) {
-                    int value = (int)this->rowValue[y][x] - (int)v;
+                    int value = (int) this->rowValue[y][x] - (int) v;
                     if (value < 0)
                         this->rowValue[y][x] = 0;
                     else
-                        this->rowValue[y][x] = (unsigned char)value;
+                        this->rowValue[y][x] = (unsigned char) value;
                 }
             }
         }
@@ -363,12 +357,11 @@ int InfluenceMap::decrementValue(int minX, int minY, int maxX, int maxY,
     return 1;
 }
 
-int InfluenceMap::setCoverageCount(const XYPoint& min, const XYPoint& max,
-                                   int valueLevel) {
+int InfluenceMap::setCoverageCount(const XYPoint& min, const XYPoint& max, int valueLevel) {
     this->coverageCountValue = 0;
 
-    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue || min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
-        max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
+    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue || min.y >= this->ySizeValue || max.x < 0 || max.y < 0
+        || max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
         return 0;
     }
 
@@ -385,15 +378,15 @@ int InfluenceMap::setCoverageCount(const XYPoint& min, const XYPoint& max,
 }
 
 int InfluenceMap::setConnectionCount(
-    const XYPoint& min, const XYPoint& max, int valueLevel,
-    int countOrthogonalEdgesAsConnections, int countDiagonalEdgesAsConnections,
-    int countDiagonalConnections) {
+    const XYPoint& min, const XYPoint& max, int valueLevel, int countOrthogonalEdgesAsConnections,
+    int countDiagonalEdgesAsConnections, int countDiagonalConnections
+) {
     InfluenceMap* self = this;
 
     self->connectionCountValue = 0;
 
-    if (min.x < 0 || min.y < 0 || min.x >= self->xSizeValue || min.y >= self->ySizeValue || max.x < 0 || max.y < 0 ||
-        max.x >= self->xSizeValue || max.y >= self->ySizeValue) {
+    if (min.x < 0 || min.y < 0 || min.x >= self->xSizeValue || min.y >= self->ySizeValue || max.x < 0 || max.y < 0
+        || max.x >= self->xSizeValue || max.y >= self->ySizeValue) {
         return 0;
     }
 
@@ -409,36 +402,36 @@ int InfluenceMap::setConnectionCount(
 
                     for (int direction = 0; direction < 8; ++direction) {
                         switch (direction) {
-                        case 0:
-                            --neighborX;
-                            --neighborY;
-                            break;
-                        case 1:
-                        case 2:
-                            ++neighborX;
-                            break;
-                        case 3:
-                        case 4:
-                            ++neighborY;
-                            break;
-                        case 5:
-                        case 6:
-                            --neighborX;
-                            break;
-                        case 7:
-                            --neighborY;
-                            break;
+                            case 0:
+                                --neighborX;
+                                --neighborY;
+                                break;
+                            case 1:
+                            case 2:
+                                ++neighborX;
+                                break;
+                            case 3:
+                            case 4:
+                                ++neighborY;
+                                break;
+                            case 5:
+                            case 6:
+                                --neighborX;
+                                break;
+                            case 7:
+                                --neighborY;
+                                break;
                         }
 
                         if (countDiagonalConnections || (direction % 2) != 0) {
-                            if (neighborX >= 0 && neighborX < self->xSizeValue &&
-                                neighborY >= 0 && neighborY < self->ySizeValue) {
-                                if (rows[neighborY - self->yReferencePointValue]
-                                    [neighborX - self->xReferencePointValue] >= valueLevel) {
+                            if (neighborX >= 0 && neighborX < self->xSizeValue && neighborY >= 0
+                                && neighborY < self->ySizeValue) {
+                                if (rows[neighborY - self->yReferencePointValue][neighborX - self->xReferencePointValue]
+                                    >= valueLevel) {
                                     ++self->connectionCountValue;
                                 }
-                            } else if ((countOrthogonalEdgesAsConnections == 1 && (direction % 2) == 1) ||
-                                       (countDiagonalEdgesAsConnections == 1 && (direction % 2) == 0)) {
+                            } else if ((countOrthogonalEdgesAsConnections == 1 && (direction % 2) == 1)
+                                       || (countDiagonalEdgesAsConnections == 1 && (direction % 2) == 0)) {
                                 ++self->connectionCountValue;
                             }
                         }
@@ -452,21 +445,21 @@ int InfluenceMap::setConnectionCount(
     return self->connectionCountValue;
 }
 
-int InfluenceMap::coverageIncluding(const XYPoint& min, const XYPoint& max,
-                                    unsigned char valueLevel,
-                                    unsigned char newValueLevel) {
+int InfluenceMap::coverageIncluding(
+    const XYPoint& min, const XYPoint& max, unsigned char valueLevel, unsigned char newValueLevel
+) {
     int rVal = this->coverageCountValue;
 
-    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue || min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
-        max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
+    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue || min.y >= this->ySizeValue || max.x < 0 || max.y < 0
+        || max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
         return 0;
     }
 
     for (int i = min.x; i <= max.x; ++i) {
         for (int j = min.y; j <= max.y; ++j) {
             int xr = i - this->xReferencePointValue;
-            if (this->rowValue[j - this->yReferencePointValue] [xr] < valueLevel) {
-                if (this->rowValue[j - this->yReferencePointValue] [xr] + newValueLevel >= valueLevel) {
+            if (this->rowValue[j - this->yReferencePointValue][xr] < valueLevel) {
+                if (this->rowValue[j - this->yReferencePointValue][xr] + newValueLevel >= valueLevel) {
                     ++rVal;
                 }
             }
@@ -476,18 +469,16 @@ int InfluenceMap::coverageIncluding(const XYPoint& min, const XYPoint& max,
     return rVal;
 }
 
-int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
-                                       unsigned char valueLevel,
-                                       unsigned char newValueLevel,
-                                       int countOrthogonalEdgesAsConnections,
-                                       int countDiagonalEdgesAsConnections,
-                                       int countDiagonalConnections) {
+int InfluenceMap::connectionsIncluding(
+    const XYPoint& min, const XYPoint& max, unsigned char valueLevel, unsigned char newValueLevel,
+    int countOrthogonalEdgesAsConnections, int countDiagonalEdgesAsConnections, int countDiagonalConnections
+) {
     int rVal = this->connectionCountValue;
     int i;
     int j;
 
-    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue || min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
-        max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
+    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue || min.y >= this->ySizeValue || max.x < 0 || max.y < 0
+        || max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
         return 0;
     }
 
@@ -505,32 +496,32 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
 
                         for (int direction = 0; direction < 8; ++direction) {
                             switch (direction) {
-                            case 0:
-                                --neighborX;
-                                goto first_direction_case_7;
-                            case 1:
-                            case 2:
-                                ++neighborX;
-                                break;
-                            case 3:
-                            case 4:
-                                ++neighborY;
-                                break;
-                            case 5:
-                            case 6:
-                                --neighborX;
-                                break;
-                            case 7:
-                            first_direction_case_7:
-                                --neighborY;
-                                break;
+                                case 0:
+                                    --neighborX;
+                                    goto first_direction_case_7;
+                                case 1:
+                                case 2:
+                                    ++neighborX;
+                                    break;
+                                case 3:
+                                case 4:
+                                    ++neighborY;
+                                    break;
+                                case 5:
+                                case 6:
+                                    --neighborX;
+                                    break;
+                                case 7:
+                                first_direction_case_7:
+                                    --neighborY;
+                                    break;
                             }
 
                             if (countDiagonalConnections || direction % 2 != 0) {
-                                if (neighborX < 0 || neighborX >= this->xSizeValue ||
-                                    neighborY < 0 || neighborY >= this->ySizeValue) {
-                                    if ((countOrthogonalEdgesAsConnections == 1 && direction % 2 == 1) ||
-                                        (countDiagonalEdgesAsConnections == 1 && direction % 2 == 0)) {
+                                if (neighborX < 0 || neighborX >= this->xSizeValue || neighborY < 0
+                                    || neighborY >= this->ySizeValue) {
+                                    if ((countOrthogonalEdgesAsConnections == 1 && direction % 2 == 1)
+                                        || (countDiagonalEdgesAsConnections == 1 && direction % 2 == 0)) {
                                         --rVal;
                                     }
                                 }
@@ -544,36 +535,37 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
                     int neighborY = j;
                     for (int direction = 0; direction < 8; ++direction) {
                         switch (direction) {
-                        case 0:
-                            --neighborX;
-                            goto direction_case_7;
-                        case 1:
-                        case 2:
-                            ++neighborX;
-                            break;
-                        case 3:
-                        case 4:
-                            ++neighborY;
-                            break;
-                        case 5:
-                        case 6:
-                            --neighborX;
-                            break;
-                        case 7:
-                        direction_case_7:
-                            --neighborY;
-                            break;
+                            case 0:
+                                --neighborX;
+                                goto direction_case_7;
+                            case 1:
+                            case 2:
+                                ++neighborX;
+                                break;
+                            case 3:
+                            case 4:
+                                ++neighborY;
+                                break;
+                            case 5:
+                            case 6:
+                                --neighborX;
+                                break;
+                            case 7:
+                            direction_case_7:
+                                --neighborY;
+                                break;
                         }
 
                         if (countDiagonalConnections || direction % 2 != 0) {
-                            if (neighborX < 0 || neighborX >= this->xSizeValue ||
-                                neighborY < 0 || neighborY >= this->ySizeValue) {
-                                if ((countOrthogonalEdgesAsConnections == 1 && direction % 2 == 1) ||
-                                    (countDiagonalEdgesAsConnections == 1 && direction % 2 == 0)) {
+                            if (neighborX < 0 || neighborX >= this->xSizeValue || neighborY < 0
+                                || neighborY >= this->ySizeValue) {
+                                if ((countOrthogonalEdgesAsConnections == 1 && direction % 2 == 1)
+                                    || (countDiagonalEdgesAsConnections == 1 && direction % 2 == 0)) {
                                     --rVal;
                                 }
                             } else if (rowsMap[neighborY - this->yReferencePointValue]
-                                       [neighborX - this->xReferencePointValue] >= valueLevel) {
+                                              [neighborX - this->xReferencePointValue]
+                                       >= valueLevel) {
                                 rVal += 2;
                             }
                         }
@@ -594,11 +586,11 @@ void InfluenceMap::setUnchangeableLimit(unsigned char uL) {
 
 int InfluenceMap::maxValue() {
     int total = this->xSizeValue * this->ySizeValue;
-    int maxVal = (unsigned int)this->valueValue[0];
+    int maxVal = (unsigned int) this->valueValue[0];
     int index = 0;
     if (total > 0) {
         do {
-            int val = (unsigned int)this->valueValue[index];
+            int val = (unsigned int) this->valueValue[index];
             if (val <= maxVal) {
                 // keep current max
             } else {

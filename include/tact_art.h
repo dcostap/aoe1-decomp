@@ -11,8 +11,7 @@ class RGE_Static_Object;
 class RGE_Task;
 
 class TRIBE_Action_Artifact : public RGE_Action {
-public:
-
+  public:
     TRIBE_Action_Artifact(int infile, RGE_Action_Object* obj_in);
     TRIBE_Action_Artifact(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in);
     TRIBE_Action_Artifact(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z);
@@ -21,7 +20,7 @@ public:
     virtual unsigned char update();
     void reset_owner();
 
-protected:
+  protected:
     virtual void set_state(unsigned char new_state);
     virtual int stop();
     virtual int move_to(RGE_Static_Object* obj_in, float x, float y, float z);
@@ -29,7 +28,6 @@ protected:
     RGE_Player* check_ownership();
 };
 
-typedef char tact_art_action_size_check[
-    (sizeof(TRIBE_Action_Artifact) == 0x40) ? 1 : -1];
+typedef char tact_art_action_size_check[(sizeof(TRIBE_Action_Artifact) == 0x40) ? 1 : -1];
 
-#endif  // AOE1_TACT_ART_H
+#endif // AOE1_TACT_ART_H

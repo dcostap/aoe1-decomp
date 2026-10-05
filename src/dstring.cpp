@@ -11,7 +11,7 @@ DString::DString() {
     this->numWordsValue = -1;
     this->indexValue = 0;
     this->currentWordValue = 0;
-    this->stringValue = (char*)malloc(1);
+    this->stringValue = (char*) malloc(1);
     strcpy(this->stringValue, "");
 }
 
@@ -21,7 +21,7 @@ DString::DString(const DString& d) {
     this->indexValue = d.indexValue;
     this->currentWordValue = d.currentWordValue;
     if (this->lengthValue > 0) {
-        this->stringValue = (char*)malloc(this->lengthValue + 1);
+        this->stringValue = (char*) malloc(this->lengthValue + 1);
         strcpy(this->stringValue, d.stringValue);
     } else {
         this->stringValue = 0;
@@ -29,12 +29,12 @@ DString::DString(const DString& d) {
 }
 
 DString::DString(const char* s) {
-    this->lengthValue = (int)strlen(s);
+    this->lengthValue = (int) strlen(s);
     this->numWordsValue = -1;
     this->indexValue = 0;
     this->currentWordValue = 0;
     if (this->lengthValue > 0) {
-        this->stringValue = (char*)malloc(this->lengthValue + 1);
+        this->stringValue = (char*) malloc(this->lengthValue + 1);
         strcpy(this->stringValue, s);
     } else {
         this->stringValue = 0;
@@ -61,9 +61,9 @@ DString& DString::operator=(const char* s) {
     this->numWordsValue = -1;
     this->indexValue = 0;
     this->currentWordValue = 0;
-    this->lengthValue = (int)strlen(s);
+    this->lengthValue = (int) strlen(s);
     if (this->lengthValue > 0) {
-        this->stringValue = (char*)malloc(this->lengthValue + 1);
+        this->stringValue = (char*) malloc(this->lengthValue + 1);
         strcpy(this->stringValue, s);
     } else {
         this->stringValue = 0;
@@ -80,7 +80,7 @@ DString& DString::operator=(const DString& d) {
     this->currentWordValue = d.currentWordValue;
     this->lengthValue = d.lengthValue;
     if (this->lengthValue > 0) {
-        this->stringValue = (char*)malloc(this->lengthValue + 1);
+        this->stringValue = (char*) malloc(this->lengthValue + 1);
         strcpy(this->stringValue, d.stringValue);
     } else {
         this->stringValue = 0;
@@ -196,7 +196,7 @@ int DString::numWords() {
         if (cached > 0) {
             do {
                 if (!in_word) {
-                    if (isspace((int)this->stringValue[index])) {
+                    if (isspace((int) this->stringValue[index])) {
                         goto still_in_gap;
                     }
                     cached = this->numWordsValue;
@@ -206,12 +206,12 @@ int DString::numWords() {
                     goto next_index;
                 }
 
-still_in_gap:
-                if (isspace((int)this->stringValue[index])) {
+            still_in_gap:
+                if (isspace((int) this->stringValue[index])) {
                     in_word = 0;
                 }
 
-next_index:
+            next_index:
                 cached = this->lengthValue;
                 index = index + 1;
             } while (index < cached);
@@ -242,26 +242,25 @@ DString DString::word(int num) {
             if (index >= this->lengthValue)
                 break;
             if (!in_word) {
-                if (isspace((int)this->stringValue[index])) {
+                if (isspace((int) this->stringValue[index])) {
                     goto still_in_gap;
                 }
                 word_count = word_count + 1;
                 in_word = 1;
                 goto next_index;
             }
-still_in_gap:
-            if (isspace((int)this->stringValue[index])) {
+        still_in_gap:
+            if (isspace((int) this->stringValue[index])) {
                 in_word = 0;
             }
-next_index:
-            ;
+        next_index:;
         }
 
         if (word_count == num) {
             int start;
 
             start = index - 1;
-            while ((isspace((int)this->stringValue[index]) == 0) && (index < this->lengthValue)) {
+            while ((isspace((int) this->stringValue[index]) == 0) && (index < this->lengthValue)) {
                 index = index + 1;
             }
             DString rStr = this->subString(start, index - start);
@@ -285,11 +284,11 @@ DString DString::nextWord(int incIndex) {
     int start;
 
     i = this->indexValue;
-    while ((isspace((int)this->stringValue[i]) != 0) && (i < this->lengthValue)) {
+    while ((isspace((int) this->stringValue[i]) != 0) && (i < this->lengthValue)) {
         i = i + 1;
     }
     start = i;
-    while ((isspace((int)this->stringValue[i]) == 0) && (i < this->lengthValue)) {
+    while ((isspace((int) this->stringValue[i]) == 0) && (i < this->lengthValue)) {
         i = i + 1;
     }
     if (incIndex != 0) {
@@ -305,11 +304,11 @@ void DString::moveToFirstWord() {
 }
 
 void DString::moveToNextWord() {
-    while ((isspace((int)this->stringValue[this->indexValue]) != 0) && (this->indexValue < this->lengthValue)) {
+    while ((isspace((int) this->stringValue[this->indexValue]) != 0) && (this->indexValue < this->lengthValue)) {
         this->indexValue = this->indexValue + 1;
     }
 
-    while ((isspace((int)this->stringValue[this->indexValue]) == 0) && (this->indexValue < this->lengthValue)) {
+    while ((isspace((int) this->stringValue[this->indexValue]) == 0) && (this->indexValue < this->lengthValue)) {
         this->indexValue = this->indexValue + 1;
     }
 }
@@ -318,7 +317,7 @@ DString DString::subString(int start, int count) {
     char* text;
     int copied;
 
-    text = (char*)malloc(count + 1);
+    text = (char*) malloc(count + 1);
     copied = 0;
     if (start < this->lengthValue) {
         while (1) {
@@ -341,7 +340,7 @@ void DString::append(DString d) {
     int base_len;
     char* text;
 
-    text = (char*)malloc(d.length() + this->lengthValue + 1);
+    text = (char*) malloc(d.length() + this->lengthValue + 1);
     i = 0;
     if (this->lengthValue > 0) {
         do {
@@ -408,7 +407,7 @@ void DString::uppercase() {
     index = 0;
     if (this->length() > 0) {
         do {
-            this->stringValue[index] = (char)toupper((int)this->stringValue[index]);
+            this->stringValue[index] = (char) toupper((int) this->stringValue[index]);
             index = index + 1;
         } while (index < this->length());
     }
@@ -427,7 +426,7 @@ void DString::lowercase() {
     index = 0;
     if (this->length() > 0) {
         do {
-            this->stringValue[index] = (char)tolower((int)this->stringValue[index]);
+            this->stringValue[index] = (char) tolower((int) this->stringValue[index]);
             index = index + 1;
         } while (index < this->length());
     }
@@ -454,12 +453,14 @@ void DString::change(char o, char n) {
     }
 }
 
-DKeyString::DKeyString() : keyValue(""), valueValue("") {}
+DKeyString::DKeyString() : keyValue(""), valueValue("") {
+}
 
-DKeyString::DKeyString(DString k, DString v)
-    : keyValue(k), valueValue(v) {}
+DKeyString::DKeyString(DString k, DString v) : keyValue(k), valueValue(v) {
+}
 
-DKeyString::~DKeyString() {}
+DKeyString::~DKeyString() {
+}
 
 DString DKeyString::key() const {
     return this->keyValue;

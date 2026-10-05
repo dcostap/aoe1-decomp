@@ -11,7 +11,7 @@
 class TScrollBarPanel;
 
 class TDropDownPanel : public TPanel {
-public:
+  public:
     enum DrawStyle { DrawStyleDefault = 0, DrawStyleLeftButton = 1 };
     enum DropdownMode { ModeNone = 0, ModeValue = 1, ModeList = 2 };
 
@@ -47,10 +47,10 @@ public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual void set_rect(long, long, long, long);
     virtual long handle_mouse_move(long, long, int, int);
-    long setup(TDrawArea*, TPanel*, void*, long, long, int, unsigned char, int,
-               unsigned char, long, long, long, long, short, short, long, long,
-               char*, long, long, char**, short, long, char*, char*, char*,
-               char*, long, long);
+    long setup(
+        TDrawArea*, TPanel*, void*, long, long, int, unsigned char, int, unsigned char, long, long, long, long, short,
+        short, long, long, char*, long, long, char**, short, long, char*, char*, char*, char*, long, long
+    );
     void set_val_text_color(unsigned long, unsigned long);
     void set_draw_style(DrawStyle);
     void set_draw_val_rect(int);
@@ -81,17 +81,15 @@ public:
     void empty_list();
 };
 
-typedef char pnl_drop_tdropdownpanel_size_check[
-    (sizeof(TDropDownPanel) == 0x144) ? 1 : -1];
+typedef char pnl_drop_tdropdownpanel_size_check[(sizeof(TDropDownPanel) == 0x144) ? 1 : -1];
 
 class TDropDownButtonPanel : public TButtonPanel {
-public:
+  public:
     TDropDownPanel* drop_down_panel;
     TDropDownButtonPanel(TDropDownPanel*);
     virtual long handle_mouse_move(long, long, int, int);
 };
 
-typedef char pnl_drop_tdropdownbuttonpanel_size_check[
-    (sizeof(TDropDownButtonPanel) == 0x2BC) ? 1 : -1];
+typedef char pnl_drop_tdropdownbuttonpanel_size_check[(sizeof(TDropDownButtonPanel) == 0x2BC) ? 1 : -1];
 
 #endif

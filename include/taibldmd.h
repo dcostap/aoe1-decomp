@@ -11,7 +11,7 @@ class TribeMainDecisionAIModule;
 class ConstructionItem;
 
 class TribeBuildAIModule : public BuildAIModule {
-public:
+  public:
     TribeBuildAIModule(void* pW, int pID);
     TribeBuildAIModule(int pID, int infile);
     virtual ~TribeBuildAIModule();
@@ -42,12 +42,11 @@ public:
     BuildItem* buildItem(int typeID, int category1, int category2);
     int allBuilt(int category1, int category2);
 
-protected:
+  protected:
     // pointer at +0x5BC.
     TribeMainDecisionAIModule* md;
 };
 
-typedef char taibldmd_tribe_build_size[
-    (sizeof(TribeBuildAIModule) == 0x5C0) ? 1 : -1];
+typedef char taibldmd_tribe_build_size[(sizeof(TribeBuildAIModule) == 0x5C0) ? 1 : -1];
 
-#endif  // AOE1_TAIBLDMD_H
+#endif // AOE1_TAIBLDMD_H

@@ -15,7 +15,8 @@ void* __cdecl ReadPalette(char*, long, int);
 
 class TPanelSystem {
     friend class THelpDialog;
-public:
+
+  public:
     TPanel* mouse_owner;
     TPanel* keyboard_owner;
     TPanel* modal_panel;
@@ -56,11 +57,13 @@ public:
     int destroyPanel(char* name);
     int inSystem(char* name);
     int inSystem(TPanel* panel);
-protected:
+
+  protected:
     int setup(void);
     PanelNode* findPanelNode(char* name);
     void setCurrentPanel(TPanel* panel, int mode);
-public:
+
+  public:
     void* get_palette(char* name, long mode);
     void release_palette(void* target_palette);
     void DisableIME(void);
@@ -87,7 +90,7 @@ struct PanelNode {
 };
 
 class TPanel {
-public:
+  public:
     enum PositionMode {
         PositionFixed = 0,
         PositionLeft = 3,
@@ -98,11 +101,7 @@ public:
         PositionRightTop = 9,
         PositionRightBottom = 10
     };
-    enum RedrawMode {
-        RedrawNone = 0,
-        RedrawNormal = 1,
-        RedrawImmediate = 2
-    };
+    enum RedrawMode { RedrawNone = 0, RedrawNormal = 1, RedrawImmediate = 2 };
 
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long, unsigned char);
@@ -110,8 +109,9 @@ public:
     virtual void set_rect(tagRECT);
     virtual void set_color(unsigned char);
     virtual void set_active(int);
-    virtual void set_positioning(PositionMode, long, long, long, long, long, long,
-                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
+    virtual void set_positioning(
+        PositionMode, long, long, long, long, long, long, long, long, TPanel*, TPanel*, TPanel*, TPanel*
+    );
     virtual void set_fixed_position(long, long, long, long);
     virtual void set_redraw(RedrawMode);
     virtual void set_overlapped_redraw(TPanel*, TPanel*, RedrawMode);
@@ -137,19 +137,45 @@ public:
     virtual long handle_mouse_move(long, long, int, int);
     virtual long handle_mouse_up(unsigned char, long, long, int, int);
     virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
-    virtual long mouse_move_action(long, long, int, int) { return 0; }
-    virtual long mouse_left_down_action(long, long, int, int) { return 0; }
-    virtual long mouse_left_hold_action(long, long, int, int) { return 0; }
-    virtual long mouse_left_move_action(long, long, int, int) { return 0; }
-    virtual long mouse_left_up_action(long, long, int, int) { return 0; }
-    virtual long mouse_left_dbl_click_action(long, long, int, int) { return 0; }
-    virtual long mouse_right_down_action(long, long, int, int) { return 0; }
-    virtual long mouse_right_hold_action(long, long, int, int) { return 0; }
-    virtual long mouse_right_move_action(long, long, int, int) { return 0; }
-    virtual long mouse_right_up_action(long, long, int, int) { return 0; }
-    virtual long mouse_right_dbl_click_action(long, long, int, int) { return 0; }
-    virtual long key_down_action(long, short, int, int, int) { return 0; }
-    virtual long char_action(long, short) { return 0; }
+    virtual long mouse_move_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_left_down_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_left_hold_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_left_move_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_left_up_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_left_dbl_click_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_right_down_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_right_hold_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_right_move_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_right_up_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long mouse_right_dbl_click_action(long, long, int, int) {
+        return 0;
+    }
+    virtual long key_down_action(long, short, int, int, int) {
+        return 0;
+    }
+    virtual long char_action(long, short) {
+        return 0;
+    }
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual void get_true_render_rect(tagRECT&);
     virtual int is_inside(long, long);
@@ -159,7 +185,8 @@ public:
     virtual unsigned char get_help_info(char*&, long&, long, long);
     virtual void stop_sound_system();
     virtual int restart_sound_system();
-    virtual void take_snapshot() {}
+    virtual void take_snapshot() {
+    }
     virtual void handle_reactivate();
 
     TPanel(char* name);
@@ -186,8 +213,7 @@ public:
     void set_z_order(unsigned char mode, short order);
     int is_inside_rect(long x, long y, tagRECT* rect);
     int bound_point(long& x, long& y);
-    void get_mouse_info(unsigned int keys, long packed_pos, tagPOINT& point,
-                        int& focus_flag, int& capture_flag);
+    void get_mouse_info(unsigned int keys, long packed_pos, tagPOINT& point, int& focus_flag, int& capture_flag);
     void get_mouse_pos(tagPOINT& point);
     int capture_mouse();
     void release_mouse();

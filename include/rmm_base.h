@@ -24,7 +24,7 @@ struct Map_Stack {
 };
 
 class RGE_Random_Map_Module {
-protected:
+  protected:
     RGE_Random_Map_Module* parent;
     RGE_Random_Map_Module_List* list;
     RGE_Map* map;
@@ -43,8 +43,10 @@ protected:
     void update_resources();
     void update_child_map_info();
     void update_map_info(RGE_Map* new_map);
-    void share_resources(uchar** search_map_pointer, uchar*** search_map_rows_pointer,
-        Map_Stack** stack_array_pointer, Map_Stack*** stack_offsets_pointer);
+    void share_resources(
+        uchar** search_map_pointer, uchar*** search_map_rows_pointer, Map_Stack** stack_array_pointer,
+        Map_Stack*** stack_offsets_pointer
+    );
 
     void init_stack(Map_Stack& stack);
     void deinit_stack(Map_Stack& stack);
@@ -61,16 +63,14 @@ protected:
     uchar remove_module(RGE_Random_Map_Module* module);
     float get_schedule();
 
-public:
+  public:
     RGE_Random_Map_Module();
-    RGE_Random_Map_Module(RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
-        uchar resources_needed);
+    RGE_Random_Map_Module(RGE_Map* in_map, RGE_Random_Map_Module* parent_module, uchar resources_needed);
     ~RGE_Random_Map_Module();
     virtual uchar generate();
 };
 
-typedef char rmm_base_module_size_check[
-    (sizeof(RGE_Random_Map_Module) == 0x30) ? 1 : -1];
+typedef char rmm_base_module_size_check[(sizeof(RGE_Random_Map_Module) == 0x30) ? 1 : -1];
 typedef char rmm_base_stack_size_check[(sizeof(Map_Stack) == 0x18) ? 1 : -1];
 
 #endif

@@ -5,7 +5,7 @@
 // Canonical com_err.cpp surface for the four contiguous owners below.
 
 class RGE_Comm_Error {
-public:
+  public:
     void* HostHWND;
     long LastReportedError;
 

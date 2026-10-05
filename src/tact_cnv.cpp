@@ -19,17 +19,16 @@
 
 typedef unsigned char uchar;
 
-TRIBE_Action_Convert::TRIBE_Action_Convert(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1), requiredRange(1.0f) {
+TRIBE_Action_Convert::TRIBE_Action_Convert(int infile, RGE_Action_Object* obj_in) :
+    RGE_Action(infile, obj_in, 1), requiredRange(1.0f) {
     this->action_type = TRIBE_ACTION_TYPE_CONVERT;
     rge_read(infile, &this->was_same_owner, 1);
     rge_read(infile, &this->requiredRange, 4);
 }
 
-TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj_in,
-                                           RGE_Task* task_in,
-                                           RGE_Static_Object* target_obj_in)
-    : RGE_Action(obj_in, 1), requiredRange(1.0f) {
+TRIBE_Action_Convert::TRIBE_Action_Convert(
+    RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in
+) : RGE_Action(obj_in, 1), requiredRange(1.0f) {
     this->task = task_in;
     this->action_type = TRIBE_ACTION_TYPE_CONVERT;
     RGE_Action::set_target_obj(target_obj_in);
@@ -41,10 +40,8 @@ TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj_in,
     this->was_same_owner = 0;
 }
 
-TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj_in,
-                                           RGE_Task* task_in,
-                                           float x, float y, float z)
-    : RGE_Action(obj_in, 1), requiredRange(1.0f) {
+TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z) :
+    RGE_Action(obj_in, 1), requiredRange(1.0f) {
     this->task = task_in;
     this->action_type = TRIBE_ACTION_TYPE_CONVERT;
     this->target_x = x;
@@ -70,8 +67,8 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             this->was_same_owner = 0;
         }
         short target_id = target->master_obj->id;
-        if (target_id == 0x6d || object_group == OBJECT_GROUP_WALL || target_id == 0x9f ||
-            target_id == 0x9e || target_id == 0xa3 || target_id == 0x114) {
+        if (target_id == 0x6d || object_group == OBJECT_GROUP_WALL || target_id == 0x9f || target_id == 0x9e
+            || target_id == 0xa3 || target_id == 0x114) {
             if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
@@ -79,26 +76,24 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             }
             target_id = this->target_obj->master_obj->id;
             if (target_id == 0x6d) {
-                rge_base_game->notification(0x79, (int)this->obj->owner->id, 0, 0, 0);
+                rge_base_game->notification(0x79, (int) this->obj->owner->id, 0, 0, 0);
                 return;
             }
             if (target_id == 0x114) {
-                rge_base_game->notification(0x7a, (int)this->obj->owner->id, 0, 0, 0);
+                rge_base_game->notification(0x7a, (int) this->obj->owner->id, 0, 0, 0);
                 return;
             }
             return;
         }
         if (object->attribute_amount_held < 100.0) {
             this->set_state(0x0d);
-            rge_base_game->notification(0x76, (int)this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(0x76, (int) this->obj->owner->id, 0, 0, 0);
             return;
         }
         if (object_group == OBJECT_GROUP_BUILDING) {
             this->requiredRange = 1.0f;
         } else {
-            this->requiredRange =
-                static_cast<RGE_Master_Combat_Object*>(object->master_obj)
-                    ->weapon_range;
+            this->requiredRange = static_cast<RGE_Master_Combat_Object*>(object->master_obj)->weapon_range;
         }
         if (object_group == 0x1e) {
             this->set_state(0x0d);
@@ -110,7 +105,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notification(0x77, (int)this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(0x77, (int) this->obj->owner->id, 0, 0, 0);
             return;
         }
         if (object_group == OBJECT_GROUP_BUILDING && object->owner->attributes[0x1c] <= 0.0f) {
@@ -119,7 +114,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notification(0x78, (int)this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(0x78, (int) this->obj->owner->id, 0, 0, 0);
             return;
         }
     }
@@ -139,69 +134,74 @@ void TRIBE_Action_Convert::set_state(uchar new_state) {
     this->sub_actions->delete_list();
     this->state = new_state;
     switch (new_state) {
-    case 3:
-        this->obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_REQUEST_TASK,
-                          static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L);
-        goto master_sprite;
+        case 3:
+            this->obj->notify(
+                static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_REQUEST_TASK,
+                static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L
+            );
+            goto master_sprite;
 
-    case 11: {
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z,
-                                                            this->requiredRange, this->task->move_sprite);
-        if (action == 0) {
-            this->set_state(0x0D);
+        case 11: {
+            RGE_Action_Move_To* action = new RGE_Action_Move_To(
+                this->obj, this->target_x, this->target_y, this->target_z, this->requiredRange, this->task->move_sprite
+            );
+            if (action == 0) {
+                this->set_state(0x0D);
+                return;
+            }
+            action->setSubAction(1);
+            this->sub_actions->add_action(action);
             return;
         }
-        action->setSubAction(1);
-        this->sub_actions->add_action(action);
-        return;
-    }
 
-    case 4: {
-        this->target_x = this->target_obj->world_x;
-        this->target_y = this->target_obj->world_y;
-        this->target_z = this->target_obj->world_z;
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj, this->requiredRange,
-                                                            this->task->move_sprite);
-        if (action == 0) {
-            this->set_state(0x0D);
+        case 4: {
+            this->target_x = this->target_obj->world_x;
+            this->target_y = this->target_obj->world_y;
+            this->target_z = this->target_obj->world_z;
+            RGE_Action_Move_To* action =
+                new RGE_Action_Move_To(this->obj, this->target_obj, this->requiredRange, this->task->move_sprite);
+            if (action == 0) {
+                this->set_state(0x0D);
+                return;
+            }
+            this->sub_actions->add_action(action);
+            action->setSubAction(1);
             return;
         }
-        this->sub_actions->add_action(action);
-        action->setSubAction(1);
-        return;
-    }
 
-    case 5:
-        return;
+        case 5:
+            return;
 
-    case 6:
-        this->obj->new_sprite(this->task->move_sprite);
-        return;
+        case 6:
+            this->obj->new_sprite(this->task->move_sprite);
+            return;
 
-    case 7:
-        this->obj->new_sprite(this->task->work_sprite);
-        if (this->task->work_sound != 0)
-            this->task->work_sound->play(1);
-        if (this->target_obj != 0 && this->target_obj->owner->id > 0) {
-            this->target_obj->owner->make_new_object(0x70, this->obj->world_x, this->obj->world_y, this->obj->world_z, 0);
-        }
-        this->timer = this->task->work_val2;
-        return;
+        case 7:
+            this->obj->new_sprite(this->task->work_sprite);
+            if (this->task->work_sound != 0)
+                this->task->work_sound->play(1);
+            if (this->target_obj != 0 && this->target_obj->owner->id > 0) {
+                this->target_obj->owner->make_new_object(
+                    0x70, this->obj->world_x, this->obj->world_y, this->obj->world_z, 0
+                );
+            }
+            this->timer = this->task->work_val2;
+            return;
 
-    case 8:
-    case 9:
-    case 10:
-    case 12:
-    case 1:
-    case 2:
-    case 13:
-    case 14:
-    master_sprite:
-        this->obj->new_sprite(this->obj->master_obj->sprite);
-        return;
+        case 8:
+        case 9:
+        case 10:
+        case 12:
+        case 1:
+        case 2:
+        case 13:
+        case 14:
+        master_sprite:
+            this->obj->new_sprite(this->obj->master_obj->sprite);
+            return;
 
-    default:
-        return;
+        default:
+            return;
     }
 }
 
@@ -234,112 +234,120 @@ uchar TRIBE_Action_Convert::update() {
             this->obj->set_attribute(0x22, 0);
         }
         this->set_state(1);
-        this->obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_TARGET_INVALID,
-                          static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L);
+        this->obj->notify(
+            static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_TARGET_INVALID,
+            static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L
+        );
         return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
 
     switch (this->state) {
-    // Original table 004CE3FC assigns these handlers to states 11 and 4.
-    case 11:
-        switch (this->sub_actions->update()) {
-        case RGE_ACTION_UPDATE_FAILED:
-            this->set_state(13);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        case RGE_ACTION_UPDATE_TARGET_INVALID:
-            this->set_target_obj(0);
-            this->set_state(11);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        case RGE_ACTION_UPDATE_REMOVE:
-        case RGE_ACTION_UPDATE_COMPLETED:
-        case RGE_ACTION_UPDATE_TARGET_LOST:
-            this->set_state(3);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        break;
-
-    case 4:
-        switch (this->sub_actions->update()) {
-        case RGE_ACTION_UPDATE_TARGET_INVALID:
-        case RGE_ACTION_UPDATE_TARGET_LOST:
-            this->set_target_obj(0);
-            this->set_state(11);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        case RGE_ACTION_UPDATE_FAILED:
-            this->set_state(13);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        case RGE_ACTION_UPDATE_REMOVE:
-        case RGE_ACTION_UPDATE_COMPLETED:
-            this->set_state(6);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        break;
-
-    case 6:
-        if (this->target_obj == 0) {
-            this->set_state(3);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        if (this->obj->turn_towards(this->target_obj, 0, 0)) {
-            this->set_state(7);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        break;
-
-    case 7: {
-        if (this->target_obj == 0) {
-            this->set_state(3);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        this->target_obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->target_obj->id), UNIT_AI_NOTIFY_ATTACKED,
-                                 static_cast<long>(this->obj->id), static_cast<long>(this->target_obj->hp),
-                                 static_cast<long>(this->target_obj->master_obj->hp));
-        this->timer = this->timer -
-                      this->obj->owner->world->world_time_delta_seconds;
-        if (this->timer <= 0.0f) {
-            if (this->target_obj != 0 && this->target_obj->owner->id > 0) {
-                this->target_obj->owner->make_new_object(0x70, this->obj->world_x, this->obj->world_y,
-                                                         this->obj->world_z, 0);
+        // Original table 004CE3FC assigns these handlers to states 11 and 4.
+        case 11:
+            switch (this->sub_actions->update()) {
+                case RGE_ACTION_UPDATE_FAILED:
+                    this->set_state(13);
+                    return RGE_ACTION_UPDATE_CONTINUE;
+                case RGE_ACTION_UPDATE_TARGET_INVALID:
+                    this->set_target_obj(0);
+                    this->set_state(11);
+                    return RGE_ACTION_UPDATE_CONTINUE;
+                case RGE_ACTION_UPDATE_REMOVE:
+                case RGE_ACTION_UPDATE_COMPLETED:
+                case RGE_ACTION_UPDATE_TARGET_LOST:
+                    this->set_state(3);
+                    return RGE_ACTION_UPDATE_CONTINUE;
             }
-            int r = debug_rand("C:\\msdev\\work\\age1_x1\\tact_cnv.cpp", 471);
-            float chance = (float)r * g_conversion_random_scale;
-            RGE_Player* tplayer = this->target_obj->owner;
-//! Conversion resistance is hard-coded here: 4 for Macedonian owners, 2 for boat and priest groups.
-//! Chariot groups get 8; every other class keeps 1. The owner-civ branch preempts the class branches.
-//! RockNROR makes these factors configurable in the dat.
-            if (tplayer->master_player_id == CIVILIZATION_MACEDONIAN) {
-                chance = chance * g_conversion_special_player_factor;
-            } else {
-                short type = this->target_obj->master_obj->object_group;
-                if (type == OBJECT_GROUP_FISHING_BOAT || type == OBJECT_GROUP_TRADE_BOAT || type == OBJECT_GROUP_TRANSPORT_BOAT || type == OBJECT_GROUP_WAR_BOAT || type == OBJECT_GROUP_PRIEST) {
-                    chance = chance + chance;
-                } else if (type == 0x23 || type == 0x17) {
-                    chance = chance * g_conversion_special_group_factor;
-                }
+            break;
+
+        case 4:
+            switch (this->sub_actions->update()) {
+                case RGE_ACTION_UPDATE_TARGET_INVALID:
+                case RGE_ACTION_UPDATE_TARGET_LOST:
+                    this->set_target_obj(0);
+                    this->set_state(11);
+                    return RGE_ACTION_UPDATE_CONTINUE;
+                case RGE_ACTION_UPDATE_FAILED:
+                    this->set_state(13);
+                    return RGE_ACTION_UPDATE_CONTINUE;
+                case RGE_ACTION_UPDATE_REMOVE:
+                case RGE_ACTION_UPDATE_COMPLETED:
+                    this->set_state(6);
+                    return RGE_ACTION_UPDATE_CONTINUE;
             }
-            // Direct field ownership preserves the original x87 order.
-            if (chance <= this->task->work_val1 *
-                static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate) {
-                rge_base_game->notification(0x7b, this->obj->owner->id, this->target_obj->owner->id, 0, 0);
-                this->target_obj->change_ownership(this->obj->owner);
-                this->obj->owner->add_attribute_num(0x29, 1.0f, 0);
-                this->obj->set_attribute(0x22, 0);
+            break;
+
+        case 6:
+            if (this->target_obj == 0) {
                 this->set_state(3);
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
-            this->set_state(4);
-            return RGE_ACTION_UPDATE_CONTINUE;
+            if (this->obj->turn_towards(this->target_obj, 0, 0)) {
+                this->set_state(7);
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            break;
+
+        case 7: {
+            if (this->target_obj == 0) {
+                this->set_state(3);
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            this->target_obj->notify(
+                static_cast<int>(this->obj->id), static_cast<int>(this->target_obj->id), UNIT_AI_NOTIFY_ATTACKED,
+                static_cast<long>(this->obj->id), static_cast<long>(this->target_obj->hp),
+                static_cast<long>(this->target_obj->master_obj->hp)
+            );
+            this->timer = this->timer - this->obj->owner->world->world_time_delta_seconds;
+            if (this->timer <= 0.0f) {
+                if (this->target_obj != 0 && this->target_obj->owner->id > 0) {
+                    this->target_obj->owner->make_new_object(
+                        0x70, this->obj->world_x, this->obj->world_y, this->obj->world_z, 0
+                    );
+                }
+                int r = debug_rand("C:\\msdev\\work\\age1_x1\\tact_cnv.cpp", 471);
+                float chance = (float) r * g_conversion_random_scale;
+                RGE_Player* tplayer = this->target_obj->owner;
+                //! Conversion resistance is hard-coded here: 4 for Macedonian owners, 2 for boat and priest groups.
+                //! Chariot groups get 8; every other class keeps 1. The owner-civ branch preempts the class branches.
+                //! RockNROR makes these factors configurable in the dat.
+                if (tplayer->master_player_id == CIVILIZATION_MACEDONIAN) {
+                    chance = chance * g_conversion_special_player_factor;
+                } else {
+                    short type = this->target_obj->master_obj->object_group;
+                    if (type == OBJECT_GROUP_FISHING_BOAT || type == OBJECT_GROUP_TRADE_BOAT
+                        || type == OBJECT_GROUP_TRANSPORT_BOAT || type == OBJECT_GROUP_WAR_BOAT
+                        || type == OBJECT_GROUP_PRIEST) {
+                        chance = chance + chance;
+                    } else if (type == 0x23 || type == 0x17) {
+                        chance = chance * g_conversion_special_group_factor;
+                    }
+                }
+                // Direct field ownership preserves the original x87 order.
+                if (chance <= this->task->work_val1
+                                  * static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate) {
+                    rge_base_game->notification(0x7b, this->obj->owner->id, this->target_obj->owner->id, 0, 0);
+                    this->target_obj->change_ownership(this->obj->owner);
+                    this->obj->owner->add_attribute_num(0x29, 1.0f, 0);
+                    this->obj->set_attribute(0x22, 0);
+                    this->set_state(3);
+                }
+                this->set_state(4);
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            break;
         }
-        break;
-    }
 
-    case 1:
-        return RGE_ACTION_UPDATE_REMOVE;
+        case 1:
+            return RGE_ACTION_UPDATE_REMOVE;
 
-    case 13:
-        this->obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_ACTION_FAILED,
-                          static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L);
-        this->set_state(2);
-        return RGE_ACTION_UPDATE_FAILED;
+        case 13:
+            this->obj->notify(
+                static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_ACTION_FAILED,
+                static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L
+            );
+            this->set_state(2);
+            return RGE_ACTION_UPDATE_FAILED;
     }
 
     return RGE_ACTION_UPDATE_CONTINUE;

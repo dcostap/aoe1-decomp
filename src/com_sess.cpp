@@ -3,8 +3,7 @@
 
 TCommunications_Handler* g_com_handler;
 
-TCommunications_Sessions::TCommunications_Sessions(
-    TCommunications_Handler* Comm) {
+TCommunications_Sessions::TCommunications_Sessions(TCommunications_Handler* Comm) {
     g_com_handler = Comm;
     glpSERV = Comm->GetDPInterface();
     gServGUID = g_com_handler->ServiceGUID;
@@ -59,11 +58,9 @@ int TCommunications_Sessions::IncSessionCount() {
 }
 
 int TCommunications_Sessions::AddSession(
-    GUID Instance, GUID Application,
-    unsigned long MaxPlayers, unsigned long CurrentPlayers,
-    char* Name, char* Password,
-    unsigned long User1, unsigned long User2,
-    unsigned long User3, unsigned long User4) {
+    GUID Instance, GUID Application, unsigned long MaxPlayers, unsigned long CurrentPlayers, char* Name, char* Password,
+    unsigned long User1, unsigned long User2, unsigned long User3, unsigned long User4
+) {
     this->Session[SessionCount].AppGUID = Application;
     this->Session[SessionCount].SessGUID = Instance;
     this->Session[SessionCount].MaxPlayers = MaxPlayers;
@@ -97,18 +94,18 @@ int TCommunications_Sessions::Refresh() {
     return glpSERV->EnumSessions(&dpDesc, 0, reinterpret_cast<LPDPENUMSESSIONSCALLBACK2>(EnumSessionCallback), this, 1);
 }
 
-int __stdcall EnumSessionCallback(DPSESSIONDESC2* lpDPSessionDesc,
-                                  unsigned long* lpdwTimeOut,
-                                  unsigned long dwFlags,
-                                  void* lpContext) {
+int __stdcall EnumSessionCallback(
+    DPSESSIONDESC2* lpDPSessionDesc, unsigned long* lpdwTimeOut, unsigned long dwFlags, void* lpContext
+) {
     if (dwFlags & 1) {
         return 0;
     }
 
-    static_cast<TCommunications_Sessions*>(lpContext)->AddSession(lpDPSessionDesc->guidInstance,
-                                                                  lpDPSessionDesc->guidApplication, lpDPSessionDesc->dwMaxPlayers, lpDPSessionDesc->dwCurrentPlayers,
-                                                                  lpDPSessionDesc->lpszSessionNameA, lpDPSessionDesc->lpszPasswordA, lpDPSessionDesc->dwUser1,
-                                                                  lpDPSessionDesc->dwUser2, lpDPSessionDesc->dwUser3, lpDPSessionDesc->dwUser4);
+    static_cast<TCommunications_Sessions*>(lpContext)->AddSession(
+        lpDPSessionDesc->guidInstance, lpDPSessionDesc->guidApplication, lpDPSessionDesc->dwMaxPlayers,
+        lpDPSessionDesc->dwCurrentPlayers, lpDPSessionDesc->lpszSessionNameA, lpDPSessionDesc->lpszPasswordA,
+        lpDPSessionDesc->dwUser1, lpDPSessionDesc->dwUser2, lpDPSessionDesc->dwUser3, lpDPSessionDesc->dwUser4
+    );
     return 1;
 }
 

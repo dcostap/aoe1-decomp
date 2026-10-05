@@ -32,11 +32,10 @@ struct RGE_Tile_List_Node {
     int row;
 };
 
-typedef char rge_tile_list_node_size_check[
-    (sizeof(RGE_Tile_List_Node) == 0x08) ? 1 : -1];
+typedef char rge_tile_list_node_size_check[(sizeof(RGE_Tile_List_Node) == 0x08) ? 1 : -1];
 
 class RGE_Tile_List {
-public:
+  public:
     RGE_Tile_List(int Initial_Size);
     ~RGE_Tile_List();
     void add_node(int col, int row);
@@ -51,16 +50,17 @@ public:
     RGE_Tile_List_Node* list;
 };
 
-typedef char rge_tile_list_size_check[
-    (sizeof(RGE_Tile_List) == 0x14) ? 1 : -1];
+typedef char rge_tile_list_size_check[(sizeof(RGE_Tile_List) == 0x14) ? 1 : -1];
 
 class RGE_Player {
-public:
+  public:
     virtual ~RGE_Player();
     virtual void set_game_status(unsigned char new_status);
     virtual void do_resign(int dropped);
-    virtual void changeToHumanPlayer() {}
-    virtual void changeToComputerPlayer() {}
+    virtual void changeToHumanPlayer() {
+    }
+    virtual void changeToComputerPlayer() {
+    }
     virtual char* aiStatus(int sNum);
     virtual int isEnemy(int playerNum);
     virtual int isAlly(int playerNum);
@@ -68,27 +68,35 @@ public:
     virtual int isAllNeutral();
     virtual void setDiplomaticStance(int playerNum, int rType);
     virtual void loadAIInformation(char* bL, char* cP, char* rS, int mood, int mapType);
-    virtual void sendUnitAIOrder(int issuer, int recipient, int orderType,
-                                 int target, int targetOwner, float targetX,
-                                 float targetY, float targetZ, float range,
-                                 int immediate, int inFront, int priority);
-    virtual void processAIOrder(int issuer, int recipient, int orderType,
-                                int target, int targetOwner, float targetX,
-                                float targetY, float targetZ, float range,
-                                int immediate, int inFront, int priority);
-    virtual void kickAI(int) {}
-    virtual int strategicNumber(int) { return -1; }
+    virtual void sendUnitAIOrder(
+        int issuer, int recipient, int orderType, int target, int targetOwner, float targetX, float targetY,
+        float targetZ, float range, int immediate, int inFront, int priority
+    );
+    virtual void processAIOrder(
+        int issuer, int recipient, int orderType, int target, int targetOwner, float targetX, float targetY,
+        float targetZ, float range, int immediate, int inFront, int priority
+    );
+    virtual void kickAI(int) {
+    }
+    virtual int strategicNumber(int) {
+        return -1;
+    }
     virtual void sendGameOrder(RGE_Static_Object* unit, RGE_Static_Object* target, float targetX, float targetY);
     virtual void sendAddWaypointCommand(int recipient, XYZBYTEPoint* waypoint, int numWaypoints);
     virtual void processAddWaypointCommand(int recipient, XYZBYTEPoint* waypoint, int numWaypoints);
     virtual void sendPlayCommand(int recipient, int target, int playID);
     virtual void sendPlayCommand(int recipient, int* groupUnits, int groupCount, int target, int playID);
-    virtual int sendAICommand(int, int, int, int, int) { return 0; }
-    virtual int objectCostByType(int) { return -1; }
-    virtual void trackUnitGather(int, int, int) {}
+    virtual int sendAICommand(int, int, int, int, int) {
+        return 0;
+    }
+    virtual int objectCostByType(int) {
+        return -1;
+    }
+    virtual void trackUnitGather(int, int, int) {
+    }
     virtual RGE_Static_Object* make_scenario_obj(
-        float world_x, float world_y, float world_z, short master_id,
-        unsigned char state, float new_angle);
+        float world_x, float world_y, float world_z, short master_id, unsigned char state, float new_angle
+    );
     virtual void scenario_save(int outfile);
     virtual void scenario_load(int infile, long* player_id_hash, float version);
     virtual void scenario_postsave(int outfile);
@@ -123,16 +131,19 @@ public:
     virtual void removeObject(RGE_Static_Object* obj, int sleep_flag, int dopple_flag, RGE_Object_Node* node);
     virtual void __cdecl logMessage(char* in, ...);
     virtual void notify(int caller, int recipient, int mType, long p1, long p2, long p3);
-    virtual void logStatus(FILE*, int) {}
+    virtual void logStatus(FILE*, int) {
+    }
     virtual void load_victory(int infile, long* player_id_hash, unsigned char version_control);
     virtual void new_victory();
 
-    RGE_Player(RGE_Game_World* gworld, RGE_Master_Player* prototype,
-               unsigned char this_id, char* new_name,
-               unsigned char m_player_id, unsigned char flag);
-    RGE_Player(RGE_Game_World*, RGE_Master_Player*, unsigned char, char*,
-               unsigned char, unsigned char, unsigned char, char*, char*,
-               char*);
+    RGE_Player(
+        RGE_Game_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name,
+        unsigned char m_player_id, unsigned char flag
+    );
+    RGE_Player(
+        RGE_Game_World*, RGE_Master_Player*, unsigned char, char*, unsigned char, unsigned char, unsigned char, char*,
+        char*, char*
+    );
     RGE_Player(int infile, RGE_Game_World* gworld, unsigned char this_id);
 
     unsigned char get_resigned();
@@ -190,12 +201,12 @@ public:
     unsigned char unit_level_selected();
     unsigned char get_select_level();
     unsigned char get_selected_objects_to_command(
-        RGE_Static_Object*** list_in, short* list_num_in,
-        short min_select_level, short object_group, short object_id,
-        short unit_level);
+        RGE_Static_Object*** list_in, short* list_num_in, short min_select_level, short object_group, short object_id,
+        short unit_level
+    );
     void select_area(short col1, short row1, short col2, short row2);
 
-protected:
+  protected:
     int computerPlayerValue;
     int pathingAttemptCapValue;
     int pathingDelayCapValue;
@@ -205,7 +216,7 @@ protected:
     long action_checksum;
     unsigned char checksum_created_this_update;
 
-public:
+  public:
     short master_object_num;
     RGE_Master_Static_Object** master_objects;
     RGE_Object_List* objects;

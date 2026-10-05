@@ -38,8 +38,7 @@ struct TRIBE_Command_Header {
     unsigned char command;
 };
 
-typedef char tribe_command_header_size_check[
-    (sizeof(TRIBE_Command_Header) == 0x01) ? 1 : -1];
+typedef char tribe_command_header_size_check[(sizeof(TRIBE_Command_Header) == 0x01) ? 1 : -1];
 
 struct TRIBE_Command_Make {
     unsigned char command;
@@ -49,8 +48,7 @@ struct TRIBE_Command_Make {
     int unique_id;
 };
 
-typedef char tribe_command_make_size_check[
-    (sizeof(TRIBE_Command_Make) == 0x10) ? 1 : -1];
+typedef char tribe_command_make_size_check[(sizeof(TRIBE_Command_Make) == 0x10) ? 1 : -1];
 
 struct TRIBE_Command_Research {
     unsigned char command;
@@ -60,8 +58,7 @@ struct TRIBE_Command_Research {
     int unique_id;
 };
 
-typedef char tribe_command_research_size_check[
-    (sizeof(TRIBE_Command_Research) == 0x10) ? 1 : -1];
+typedef char tribe_command_research_size_check[(sizeof(TRIBE_Command_Research) == 0x10) ? 1 : -1];
 
 struct TRIBE_Command_Build {
     unsigned char command;
@@ -73,8 +70,7 @@ struct TRIBE_Command_Build {
     int unique_id;
 };
 
-typedef char tribe_command_build_size_check[
-    (sizeof(TRIBE_Command_Build) == 0x14) ? 1 : -1];
+typedef char tribe_command_build_size_check[(sizeof(TRIBE_Command_Build) == 0x14) ? 1 : -1];
 
 struct TRIBE_Command_Build_Wall {
     unsigned char command;
@@ -88,8 +84,7 @@ struct TRIBE_Command_Build_Wall {
     int unique_id;
 };
 
-typedef char tribe_command_build_wall_size_check[
-    (sizeof(TRIBE_Command_Build_Wall) == 0x10) ? 1 : -1];
+typedef char tribe_command_build_wall_size_check[(sizeof(TRIBE_Command_Build_Wall) == 0x10) ? 1 : -1];
 
 struct TRIBE_Command_Explore {
     unsigned char command;
@@ -99,8 +94,7 @@ struct TRIBE_Command_Explore {
     float targetYPosition;
 };
 
-typedef char tribe_command_explore_size_check[
-    (sizeof(TRIBE_Command_Explore) == 0x0C) ? 1 : -1];
+typedef char tribe_command_explore_size_check[(sizeof(TRIBE_Command_Explore) == 0x0C) ? 1 : -1];
 
 struct TRIBE_Command_Game {
     unsigned char command;
@@ -111,16 +105,14 @@ struct TRIBE_Command_Game {
     short var4;
 };
 
-typedef char tribe_command_game_size_check[
-    (sizeof(TRIBE_Command_Game) == 0x10) ? 1 : -1];
+typedef char tribe_command_game_size_check[(sizeof(TRIBE_Command_Game) == 0x10) ? 1 : -1];
 
 struct TRIBE_Command_Cancel_Build {
     unsigned char command;
     int unit_id;
 };
 
-typedef char tribe_command_cancel_build_size_check[
-    (sizeof(TRIBE_Command_Cancel_Build) == 0x08) ? 1 : -1];
+typedef char tribe_command_cancel_build_size_check[(sizeof(TRIBE_Command_Cancel_Build) == 0x08) ? 1 : -1];
 
 struct TRIBE_Command_Attack_Ground {
     unsigned char command;
@@ -129,8 +121,7 @@ struct TRIBE_Command_Attack_Ground {
     float location_y;
 };
 
-typedef char tribe_command_attack_ground_size_check[
-    (sizeof(TRIBE_Command_Attack_Ground) == 0x0C) ? 1 : -1];
+typedef char tribe_command_attack_ground_size_check[(sizeof(TRIBE_Command_Attack_Ground) == 0x0C) ? 1 : -1];
 
 struct TRIBE_Command_Give_Attribute {
     unsigned char command;
@@ -141,8 +132,7 @@ struct TRIBE_Command_Give_Attribute {
     float attr_cost;
 };
 
-typedef char tribe_command_give_attribute_size_check[
-    (sizeof(TRIBE_Command_Give_Attribute) == 0x0C) ? 1 : -1];
+typedef char tribe_command_give_attribute_size_check[(sizeof(TRIBE_Command_Give_Attribute) == 0x0C) ? 1 : -1];
 
 struct TRIBE_Command_Trade_Attribute {
     unsigned char command;
@@ -150,8 +140,7 @@ struct TRIBE_Command_Trade_Attribute {
     long attribute;
 };
 
-typedef char tribe_command_trade_attribute_size_check[
-    (sizeof(TRIBE_Command_Trade_Attribute) == 0x08) ? 1 : -1];
+typedef char tribe_command_trade_attribute_size_check[(sizeof(TRIBE_Command_Trade_Attribute) == 0x08) ? 1 : -1];
 
 struct TRIBE_Command_Repair {
     unsigned char command;
@@ -159,8 +148,7 @@ struct TRIBE_Command_Repair {
     RGE_Obj_Info target;
 };
 
-typedef char tribe_command_repair_size_check[
-    (sizeof(TRIBE_Command_Repair) == 0x08) ? 1 : -1];
+typedef char tribe_command_repair_size_check[(sizeof(TRIBE_Command_Repair) == 0x08) ? 1 : -1];
 
 struct TRIBE_Command_Unload {
     unsigned char command;
@@ -169,8 +157,7 @@ struct TRIBE_Command_Unload {
     float location_y;
 };
 
-typedef char tribe_command_unload_size_check[
-    (sizeof(TRIBE_Command_Unload) == 0x0C) ? 1 : -1];
+typedef char tribe_command_unload_size_check[(sizeof(TRIBE_Command_Unload) == 0x0C) ? 1 : -1];
 
 struct TRIBE_Command_Queue {
     unsigned char command;
@@ -179,14 +166,13 @@ struct TRIBE_Command_Queue {
     short train_count;
 };
 
-typedef char tribe_command_queue_size_check[
-    (sizeof(TRIBE_Command_Queue) == 0x0C) ? 1 : -1];
+typedef char tribe_command_queue_size_check[(sizeof(TRIBE_Command_Queue) == 0x0C) ? 1 : -1];
 
 class TRIBE_Command : public RGE_Command {
-public:
+  public:
     TRIBE_Command(TRIBE_World* world, TCommunications_Handler* com_hand);
 
-private:
+  private:
     virtual void do_command(void* order);
     virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute* order);
     void do_command_tribe_create(RGE_Command_Create* order);
@@ -194,10 +180,10 @@ private:
     void do_command_research(TRIBE_Command_Research* order);
     void do_command_build(TRIBE_Command_Build* order);
     void do_command_build_wall(TRIBE_Command_Build_Wall* order);
-    void place_line_of_walls(TRIBE_Player* player,
-                             TRIBE_Master_Building_Object* master_obj,
-                             int unique_id, int x1, int y1, int x2, int y2,
-                             RGE_Static_Object** first_wall);
+    void place_line_of_walls(
+        TRIBE_Player* player, TRIBE_Master_Building_Object* master_obj, int unique_id, int x1, int y1, int x2, int y2,
+        RGE_Static_Object** first_wall
+    );
     void do_command_explore(TRIBE_Command_Explore* order);
     void do_command_game(TRIBE_Command_Game* order);
     void do_command_cancel_build(TRIBE_Command_Cancel_Build* order);
@@ -207,10 +193,10 @@ private:
     void do_command_unload(TRIBE_Command_Unload* order);
     void do_command_queue(TRIBE_Command_Queue* order);
 
-public:
-    virtual void command_give_attribute(int player_id, int to_player_id,
-                                        int attr_id, float attr_amount,
-                                        float attr_cost);
+  public:
+    virtual void command_give_attribute(
+        int player_id, int to_player_id, int attr_id, float attr_amount, float attr_cost
+    );
     void command_make(RGE_Static_Object* unit, short obj_id);
     void command_make(int playerID, int buildingID, int objID, int uniqueID);
     void command_research(RGE_Static_Object* unit, short tech_id);
@@ -237,7 +223,6 @@ public:
     void command_queue(RGE_Static_Object* bldg_obj, short train_id, short train_count);
 };
 
-typedef char tribe_command_size_check[
-    (sizeof(TRIBE_Command) == 0x18) ? 1 : -1];
+typedef char tribe_command_size_check[(sizeof(TRIBE_Command) == 0x18) ? 1 : -1];
 
-#endif  // AOE1_TCOMMAND_H
+#endif // AOE1_TCOMMAND_H

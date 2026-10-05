@@ -11,18 +11,11 @@ union IntFloat {
     float f;
 };
 
-ConstructionAIModule::ConstructionAIModule(void* pW, int playerID)
-    : AIModule("ConAI", 0x3EA, playerID, pW),
-      numberConstructionLotsValue(0),
-      constructionLots(),
-      numberRandomConstructionLotsValue(0),
-      randomConstructionLots(),
-      xReferencePointValue(-1.0f),
-      yReferencePointValue(-1.0f),
-      zReferencePointValue(-1.0f),
-      mapXSizeValue(-1),
-      mapYSizeValue(-1),
-      lastPlacementReturnCodeValue(PlacementOk) {
+ConstructionAIModule::ConstructionAIModule(void* pW, int playerID) :
+    AIModule("ConAI", 0x3EA, playerID, pW), numberConstructionLotsValue(0), constructionLots(),
+    numberRandomConstructionLotsValue(0), randomConstructionLots(), xReferencePointValue(-1.0f),
+    yReferencePointValue(-1.0f), zReferencePointValue(-1.0f), mapXSizeValue(-1), mapYSizeValue(-1),
+    lastPlacementReturnCodeValue(PlacementOk) {
     this->constructionLots.next = &this->constructionLots;
     this->constructionLots.prev = &this->constructionLots;
     this->randomConstructionLots.next = &this->randomConstructionLots;
@@ -32,18 +25,11 @@ ConstructionAIModule::ConstructionAIModule(void* pW, int playerID)
 }
 
 // Typed wire locals preserve the original serialized read order and raw bits.
-ConstructionAIModule::ConstructionAIModule(int playerID, int infile)
-    : AIModule("ConAI", 0x3ea, playerID, 0),
-      numberConstructionLotsValue(0),
-      constructionLots(),
-      numberRandomConstructionLotsValue(0),
-      randomConstructionLots(),
-      xReferencePointValue(-1.0f),
-      yReferencePointValue(-1.0f),
-      zReferencePointValue(-1.0f),
-      mapXSizeValue(-1),
-      mapYSizeValue(-1),
-      lastPlacementReturnCodeValue(PlacementOk) {
+ConstructionAIModule::ConstructionAIModule(int playerID, int infile) :
+    AIModule("ConAI", 0x3ea, playerID, 0), numberConstructionLotsValue(0), constructionLots(),
+    numberRandomConstructionLotsValue(0), randomConstructionLots(), xReferencePointValue(-1.0f),
+    yReferencePointValue(-1.0f), zReferencePointValue(-1.0f), mapXSizeValue(-1), mapYSizeValue(-1),
+    lastPlacementReturnCodeValue(PlacementOk) {
     char name[257];
     IntFloat x;
     int i;
@@ -155,20 +141,18 @@ int ConstructionAIModule::save(int outfile) {
     float tempFloat;
     ConstructionItem* item;
 
-    rge_write(outfile, (void*)&this->numberConstructionLotsValue, 4);
+    rge_write(outfile, (void*) &this->numberConstructionLotsValue, 4);
     strcpy(tempString, this->constructionPlanNameValue);
     tempInt = strlen(tempString);
     rge_write(outfile, &tempInt, 4);
     rge_write(outfile, tempString, strlen(tempString));
-    rge_write(outfile, (void*)&this->xReferencePointValue, 4);
-    rge_write(outfile, (void*)&this->yReferencePointValue, 4);
-    rge_write(outfile, (void*)&this->zReferencePointValue, 4);
-    rge_write(outfile, (void*)&this->mapXSizeValue, 4);
-    rge_write(outfile, (void*)&this->mapYSizeValue, 4);
+    rge_write(outfile, (void*) &this->xReferencePointValue, 4);
+    rge_write(outfile, (void*) &this->yReferencePointValue, 4);
+    rge_write(outfile, (void*) &this->zReferencePointValue, 4);
+    rge_write(outfile, (void*) &this->mapXSizeValue, 4);
+    rge_write(outfile, (void*) &this->mapYSizeValue, 4);
 
-    for (item = this->constructionLots.next;
-         item != &this->constructionLots && item != 0;
-         item = item->next) {
+    for (item = this->constructionLots.next; item != &this->constructionLots && item != 0; item = item->next) {
         strcpy(tempString, item->name());
         tempInt = strlen(tempString);
         rge_write(outfile, &tempInt, 4);
@@ -201,9 +185,8 @@ int ConstructionAIModule::save(int outfile) {
         rge_write(outfile, &tempBOOL, 4);
     }
 
-    rge_write(outfile, (void*)&this->numberRandomConstructionLotsValue, 4);
-    for (item = this->randomConstructionLots.next;
-         item != &this->randomConstructionLots && item != 0;
+    rge_write(outfile, (void*) &this->numberRandomConstructionLotsValue, 4);
+    for (item = this->randomConstructionLots.next; item != &this->randomConstructionLots && item != 0;
          item = item->next) {
         strcpy(tempString, item->name());
         tempInt = strlen(tempString);
@@ -239,7 +222,9 @@ int ConstructionAIModule::save(int outfile) {
     return 1;
 }
 
-int ConstructionAIModule::loadConstructionPlan(char* pName, int mXSize, int mYSize, float xRef, float yRef, float zRef) {
+int ConstructionAIModule::loadConstructionPlan(
+    char* pName, int mXSize, int mYSize, float xRef, float yRef, float zRef
+) {
     char commentTemp1;
     char commentTemp2;
     float unused_y;
@@ -323,7 +308,7 @@ void ConstructionAIModule::setReferencePoint(int mXSize, int mYSize, float x, fl
     this->yReferencePointValue = y;
     this->zReferencePointValue = z;
 
-    if (x <= 0.0 || y <= 0.0 || (float)mXSize <= x || (float)mYSize <= y) {
+    if (x <= 0.0 || y <= 0.0 || (float) mXSize <= x || (float) mYSize <= y) {
         this->removeOldLots();
         return;
     }
@@ -335,9 +320,9 @@ void ConstructionAIModule::setReferencePoint(int mXSize, int mYSize, float x, fl
         item->setY(item->y() + y);
         item->setZ(item->z() + z);
 
-        if (item->x() - item->xSize() * 0.5f < 0.0f || item->y() - item->ySize() * 0.5f < 0.0f ||
-            item->x() - item->xSize() * -0.5f > (float)(this->mapXSizeValue - 1) ||
-            item->y() - item->ySize() * -0.5f > (float)(this->mapYSizeValue - 1)) {
+        if (item->x() - item->xSize() * 0.5f < 0.0f || item->y() - item->ySize() * 0.5f < 0.0f
+            || item->x() - item->xSize() * -0.5f > (float) (this->mapXSizeValue - 1)
+            || item->y() - item->ySize() * -0.5f > (float) (this->mapYSizeValue - 1)) {
             this->numberConstructionLotsValue--;
             ConstructionItem* next = item->next;
             item->prev->next = next;

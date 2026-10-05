@@ -3,7 +3,6 @@
 #include "../include/debuglog.h"
 #include <string.h>
 
-
 RGE_Communications_Queue::RGE_Communications_Queue(int MaxSize) {
     if (MaxSize < 0x14) {
         MaxSize = 0x14;
@@ -92,9 +91,9 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(unsigned long TurnI
     } while (i <= this->HighQueueDepth);
 
     {
-        unsigned int c = (unsigned int)this;
+        unsigned int c = (unsigned int) this;
         c |= 0xff;
-        if ((unsigned char)c >= seq) {
+        if ((unsigned char) c >= seq) {
             return Count;
         }
         return 0;
@@ -121,8 +120,7 @@ void RGE_Communications_Queue::FlushAll() {
     this->FlushTurnRange(0, 0);
 }
 
-unsigned int RGE_Communications_Queue::FlushTurnRange(
-    unsigned long LowRange, unsigned long HiRange) {
+unsigned int RGE_Communications_Queue::FlushTurnRange(unsigned long LowRange, unsigned long HiRange) {
     unsigned int Count = 0;
     unsigned int i = 0;
 
@@ -158,8 +156,10 @@ void RGE_Communications_Queue::FlushForPlayer(unsigned int p) {
         unsigned int from = Queue[i].From;
         MsgQueue* entry = &Queue[i];
         if (from == p && entry->Size > 0) {
-            L->Log("Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d CtrlCmd=%d",
-                   i, entry->SeqNo, entry->ExecTurn, from, entry->Size, entry->ControlCommand, entry->Code);
+            L->Log(
+                "Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d CtrlCmd=%d", i, entry->SeqNo, entry->ExecTurn,
+                from, entry->Size, entry->ControlCommand, entry->Code
+            );
 
             entry = &Queue[i];
             void* data = entry->msgptr;
@@ -187,8 +187,9 @@ unsigned int RGE_Communications_Queue::FlushThruTurn(unsigned long TurnID) {
 }
 
 int RGE_Communications_Queue::AddItem(
-    unsigned long ExecuteOnTurn, void* command, unsigned long nBytes,
-    unsigned int PFrom, unsigned char InSequence, int ControlCommand) {
+    unsigned long ExecuteOnTurn, void* command, unsigned long nBytes, unsigned int PFrom, unsigned char InSequence,
+    int ControlCommand
+) {
     unsigned int i = 0;
 
     while (this->Queue[i].Size != 0) {
@@ -224,7 +225,7 @@ int RGE_Communications_Queue::AddItem(
     this->Queue[i].SeqNo = InSequence;
     this->Queue[i].ExecTurn = ExecuteOnTurn;
     this->Queue[i].From = PFrom;
-    this->Queue[i].Code = (unsigned int)InSequence + PFrom * 1000;
+    this->Queue[i].Code = (unsigned int) InSequence + PFrom * 1000;
     this->Queue[i].ControlCommand = ControlCommand;
     this->QueueDepth = i;
 
@@ -240,8 +241,8 @@ unsigned int RGE_Communications_Queue::GetHighQueueDepth() {
 }
 
 void* RGE_Communications_Queue::GetSpecificItem(
-    unsigned int FromPlayer, unsigned long ExecuteOnTurn, unsigned char Seq,
-    unsigned int* Size) {
+    unsigned int FromPlayer, unsigned long ExecuteOnTurn, unsigned char Seq, unsigned int* Size
+) {
     static void* retptr;
     unsigned int targetCode = FromPlayer * 1000 + Seq;
     unsigned int idx = 0;

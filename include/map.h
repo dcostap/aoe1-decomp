@@ -42,7 +42,7 @@ struct RGE_Tile {
 };
 
 class RGE_Tile_Set {
-public:
+  public:
     unsigned char loaded;
     unsigned char random;
     char name[13];
@@ -79,7 +79,7 @@ public:
 };
 
 class RGE_Border_Set {
-public:
+  public:
     unsigned char loaded;
     unsigned char random;
     char name[13];
@@ -107,27 +107,34 @@ public:
 };
 
 class RGE_Map {
-public:
+  public:
     RGE_Map(int infile, RGE_Sound** sounds, unsigned char setup);
-    RGE_Map(char* border_tbl, char* terrain_tbl, char* map_tbl, short TileWid,
-            short TileHgt, short ElevHgt, RGE_Sound** sounds);
+    RGE_Map(
+        char* border_tbl, char* terrain_tbl, char* map_tbl, short TileWid, short TileHgt, short ElevHgt,
+        RGE_Sound** sounds
+    );
     RGE_Map(RGE_Game_World*, long, long);
     virtual ~RGE_Map();
     virtual void data_load_random_map(int infile);
     virtual void load_random_map(char* rmm_map_file, char* rmm_land_file, char* rmm_terr_file, char* rmm_obj_file);
     virtual unsigned char do_terrain_brush(long x, long y, long brush_size, unsigned char terrain_id);
-    virtual unsigned char do_terrain_brush_stroke(long x1, long y1, long x2, long y2,
-                                                   long brush_size, unsigned char terrain_id);
+    virtual unsigned char do_terrain_brush_stroke(
+        long x1, long y1, long x2, long y2, long brush_size, unsigned char terrain_id
+    );
     virtual unsigned char do_elevation_brush(long x, long y, long brush_size, unsigned char elevation_height);
-    virtual unsigned char do_elevation_brush_stroke(long x1, long y1, long x2, long y2,
-                                                     long brush_size, unsigned char elevation_height);
+    virtual unsigned char do_elevation_brush_stroke(
+        long x1, long y1, long x2, long y2, long brush_size, unsigned char elevation_height
+    );
     virtual unsigned char do_cliff_brush(long x, long y, unsigned char cliff_id, unsigned char delete_cliff);
-    virtual unsigned char do_cliff_brush_stroke(long x1, long y1, long x2, long y2,
-                                                unsigned char cliff_id, unsigned char delete_cliff);
-    virtual void map_generate(RGE_Player* owner, RGE_Game_World* gworld,
-                              RGE_Player_Info* player_info, unsigned char* zone_terrain);
-    virtual void map_generate2(RGE_Game_World* gworld, long new_width, long new_height,
-                               unsigned char type, long player_num);
+    virtual unsigned char do_cliff_brush_stroke(
+        long x1, long y1, long x2, long y2, unsigned char cliff_id, unsigned char delete_cliff
+    );
+    virtual void map_generate(
+        RGE_Player* owner, RGE_Game_World* gworld, RGE_Player_Info* player_info, unsigned char* zone_terrain
+    );
+    virtual void map_generate2(
+        RGE_Game_World* gworld, long new_width, long new_height, unsigned char type, long player_num
+    );
     virtual void save(int outfile);
 
     RGE_Tile* map;
@@ -184,7 +191,7 @@ public:
     void clean_elevation(long x1, long y1, long x2, long y2, unsigned char elevation_height);
     void clean_terrain(long x1, long y1, long x2, long y2, unsigned char replacement_terrain);
     void clean_borders(long x1, long y1, long x2, long y2);
-    long clean_border_tile(long this_terrain, long other_terrain, long (* const matrix)[32]);
+    long clean_border_tile(long this_terrain, long other_terrain, long (*const matrix)[32]);
     void load_map(int infile);
     void save_map(int outfile);
     void load_terrain_types(char* terrain_table, RGE_Sound** sounds);
@@ -192,15 +199,21 @@ public:
     void load_border_types(char* border_table, RGE_Sound** sounds);
     void load_border_types(RGE_Sound** sounds);
     void load_terrain_obj_types(char* terr_obj_tbl);
-    void delete_objects_on_tile(RGE_Player* obj_owner, RGE_Game_World* gworld, int x, int y,
-                                int no_delete_start, int no_delete_end);
+    void delete_objects_on_tile(
+        RGE_Player* obj_owner, RGE_Game_World* gworld, int x, int y, int no_delete_start, int no_delete_end
+    );
     void delete_all_objects_on_tile(int x, int y);
-    void create_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworld, short row, short col,
-                               short old_terrain, int delete_obj, int no_delete_start, int no_delete_end);
-    int clear_terrain_object(RGE_Game_World* gworld, short row, short col, short old_terrain,
-                             int delete_obj, int no_delete_start, int no_delete_end);
-    void place_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworld, short row, short col,
-                              int obj_type_id, int FillFlag);
+    void create_terrain_object(
+        RGE_Player* obj_owner, RGE_Game_World* gworld, short row, short col, short old_terrain, int delete_obj,
+        int no_delete_start, int no_delete_end
+    );
+    int clear_terrain_object(
+        RGE_Game_World* gworld, short row, short col, short old_terrain, int delete_obj, int no_delete_start,
+        int no_delete_end
+    );
+    void place_terrain_object(
+        RGE_Player* obj_owner, RGE_Game_World* gworld, short row, short col, int obj_type_id, int FillFlag
+    );
     void create_terrain_objects(RGE_Player* obj_owner, RGE_Game_World* gworld);
     void set_tile_size(unsigned char tile_type, short width, short height, short y_delta);
     void tile_map_coords(short x, short y, RGE_Tile* tile, float* offset_x, float* offset_y);
@@ -209,33 +222,35 @@ public:
     unsigned char get_terrain(short mapcol, short maprow);
     unsigned char get_border(short mapcol, short maprow);
     void set_terrain_passablity(short mapcol1, short maprow1, short mapcol2, short maprow2, unsigned char passabilty);
-    void set_elev(short mapcol1, short maprow1, short mapcol2, short maprow2,
-                  unsigned char elev, short delta, unsigned char set_flag);
-    void set_terrain(RGE_Game_World* gworld, short mapcol, short maprow, unsigned char terrain,
-                     int no_delete_start, int no_delete_end);
-    void set_terrain_absolute(RGE_Game_World* gworld, short mapcol, short maprow, unsigned char terrain,
-                              int no_delete_start, int no_delete_end);
+    void set_elev(
+        short mapcol1, short maprow1, short mapcol2, short maprow2, unsigned char elev, short delta,
+        unsigned char set_flag
+    );
+    void set_terrain(
+        RGE_Game_World* gworld, short mapcol, short maprow, unsigned char terrain, int no_delete_start,
+        int no_delete_end
+    );
+    void set_terrain_absolute(
+        RGE_Game_World* gworld, short mapcol, short maprow, unsigned char terrain, int no_delete_start,
+        int no_delete_end
+    );
     // Canonical RMM object-generator overload.
-    void set_terrain(RGE_Player* obj_owner, RGE_Game_World* gworld, short mapcol1, short maprow1,
-                     short mapcol2, short maprow2, unsigned char terrain, unsigned char set_flag,
-                     int delete_obj);
+    void set_terrain(
+        RGE_Player* obj_owner, RGE_Game_World* gworld, short mapcol1, short maprow1, short mapcol2, short maprow2,
+        unsigned char terrain, unsigned char set_flag, int delete_obj
+    );
     unsigned char get_tile_type(short map_col, short map_row);
     void get_border_type(short map_col, short map_row);
     void check_for_border(unsigned char cur_ter, unsigned char& bor_ter);
     void update(unsigned long world_time);
-    void get_point(short& screen_x, short& screen_y, float x, float y, float z,
-                   short x_offset, short y_offset);
+    void get_point(short& screen_x, short& screen_y, float x, float y, float z, short x_offset, short y_offset);
 };
 
-typedef char rge_tob_picts_size_check[
-    (sizeof(RGE_TOB_Picts) == 0x06) ? 1 : -1];
+typedef char rge_tob_picts_size_check[(sizeof(RGE_TOB_Picts) == 0x06) ? 1 : -1];
 typedef char rge_tile_size_check[(sizeof(RGE_Tile_Size) == 0x06) ? 1 : -1];
-typedef char rge_tile_struct_size_check[
-    (sizeof(RGE_Tile) == 0x18) ? 1 : -1];
-typedef char rge_tile_set_size_check[
-    (sizeof(RGE_Tile_Set) == 0x198) ? 1 : -1];
-typedef char rge_border_set_size_check[
-    (sizeof(RGE_Border_Set) == 0x5A0) ? 1 : -1];
+typedef char rge_tile_struct_size_check[(sizeof(RGE_Tile) == 0x18) ? 1 : -1];
+typedef char rge_tile_set_size_check[(sizeof(RGE_Tile_Set) == 0x198) ? 1 : -1];
+typedef char rge_border_set_size_check[(sizeof(RGE_Border_Set) == 0x5A0) ? 1 : -1];
 typedef char rge_map_size_check[(sizeof(RGE_Map) == 0x8DD0) ? 1 : -1];
 
 #endif

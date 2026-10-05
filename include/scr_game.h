@@ -56,7 +56,7 @@ extern const PLAYER_SCORE* score_compare_left;
 extern const PLAYER_SCORE* score_compare_right;
 
 class TRIBE_Screen_Game : public TScreenPanel {
-public:
+  public:
     struct PortInfo {
         short player_id;
         RGE_Player* player;
@@ -70,7 +70,7 @@ public:
         unsigned char blue;
     };
 
-protected:
+  protected:
     TShape* game_screen_pic;
     TShape* button_border1_pic;
     TShape* button_other_pic;
@@ -166,35 +166,41 @@ protected:
     unsigned long last_game_speed_change;
     unsigned long last_pause_change;
 
-public:
-    TPanel* get_view_panel() { return this->main_view; }
-    TPanel* get_map_panel() { return this->map_view; }
-    TMessagePanel* get_text_line_panel() { return this->text_line_panel; }
+  public:
+    TPanel* get_view_panel() {
+        return this->main_view;
+    }
+    TPanel* get_map_panel() {
+        return this->map_view;
+    }
+    TMessagePanel* get_text_line_panel() {
+        return this->text_line_panel;
+    }
 
     TRIBE_Screen_Game();
     virtual ~TRIBE_Screen_Game();
     void draw();
 
-protected:
+  protected:
     void handle_anim_pal();
     void handle_terrain_sound();
 
-public:
+  public:
     long handle_size(long win_wid, long win_hgt);
     void handle_game_update();
     long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
     long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
 
-protected:
+  protected:
     void do_button_action(int action_in, int action2_in, int right_btn);
 
-public:
+  public:
     void setup_buttons();
     void reset_score_display();
     void player_changed(int old_player_id, int new_player_id);
     void reset_clocks();
 
-protected:
+  protected:
     void command_score(int show);
     void command_group_by_number(int id);
     void command_select_group(int id, int unsel_prior);
@@ -224,16 +230,18 @@ protected:
     void age_changed();
     int any_selected_have_action();
 
-public:
+  public:
     void disable_unused_buttons();
 
-protected:
+  protected:
     char* calc_text_msg(char* msg_str, Item_Avail* item, long button_action_id, long message_string_id);
     short calc_button_loc(unsigned char button_loc);
-    void set_button(TShape* buttons, short button, short pic_index, long id, long id2, long help_string_id, long help_page_id,
-                    long hotkey, unsigned char* color_table, char* text2, char* text_msg, int make_disabled);
+    void set_button(
+        TShape* buttons, short button, short pic_index, long id, long id2, long help_string_id, long help_page_id,
+        long hotkey, unsigned char* color_table, char* text2, char* text_msg, int make_disabled
+    );
 
-public:
+  public:
     virtual void set_redraw(TPanel::RedrawMode redraw_mode);
     virtual void set_overlapped_redraw(TPanel* redraw_panel, TPanel* calling_panel, TPanel::RedrawMode redraw_mode);
     void set_map_buttons_redraw(TPanel::RedrawMode redraw_mode);
@@ -246,23 +254,25 @@ public:
     void handle_resume();
     void handleChatReceived(int line_no);
 
-protected:
+  protected:
     void handle_mouse_pointing_at();
 
-public:
+  public:
     void display_system_message(char* msg);
     long char_action(long key, short count);
     void show_timings(char* str1, char* str2);
     void show_comm(char* str, char* str2, char* str3, char* str4, char* str5, char* str6);
     void show_ai(char* str, char* str2, char* str3, char* str4, char* str5, char* str6);
-    void show_message(TMessagePanel::MessageType message_type, char* str, unsigned char font_color_in, unsigned char back_color_in);
+    void show_message(
+        TMessagePanel::MessageType message_type, char* str, unsigned char font_color_in, unsigned char back_color_in
+    );
     void reset_buttons();
     void game_mode_changed(int old_mode, int new_mode);
 
-protected:
+  protected:
     void command_game_speed(int increase_speed);
 
-protected:
+  protected:
     void command_build();
     void command_chat();
     void command_repair();
@@ -290,13 +300,12 @@ protected:
     void stop_sound_system();
     virtual int restart_sound_system();
 
-public:
+  public:
     void add_log(char* text);
     virtual void set_focus(int have_focus_in);
 };
 
-typedef char scr_game_size_check[
-    (sizeof(TRIBE_Screen_Game) == 0x7C4) ? 1 : -1];
+typedef char scr_game_size_check[(sizeof(TRIBE_Screen_Game) == 0x7C4) ? 1 : -1];
 
 extern int disable_terrain_sounds;
 extern int start_paused;
@@ -319,6 +328,5 @@ extern char s_Save_Game_Screen[];
 extern char s_btnunit_shp[];
 extern char s_btnbldg_d_shp[];
 extern char s_empty_string[];
-
 
 #endif

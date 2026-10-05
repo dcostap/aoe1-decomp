@@ -12,50 +12,50 @@ extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
 
 class FlicHead {
-public:
-    long size;                  // +0x00
-    unsigned short type;        // +0x04
-    short frames;               // +0x06
-    short width;                // +0x08
-    short height;               // +0x0A
-    short depth;                // +0x0C
-    short flags;                // +0x0E
-    long speed;                 // +0x10
-    short reserved1;            // +0x14
-    unsigned char pad_16[2];    // +0x16
-    long created;               // +0x18
-    long creator;               // +0x1C
-    long updated;               // +0x20
-    long updater;               // +0x24
-    short aspect_dx;            // +0x28
-    short aspect_dy;            // +0x2A
-    char reserved2[38];         // +0x2C
-    unsigned char pad_52[2];    // +0x52
-    char* oframe1;              // +0x54
-    char* oframe2;              // +0x58
-    char reserved3[40];         // +0x5C
+  public:
+    long size;               // +0x00
+    unsigned short type;     // +0x04
+    short frames;            // +0x06
+    short width;             // +0x08
+    short height;            // +0x0A
+    short depth;             // +0x0C
+    short flags;             // +0x0E
+    long speed;              // +0x10
+    short reserved1;         // +0x14
+    unsigned char pad_16[2]; // +0x16
+    long created;            // +0x18
+    long creator;            // +0x1C
+    long updated;            // +0x20
+    long updater;            // +0x24
+    short aspect_dx;         // +0x28
+    short aspect_dy;         // +0x2A
+    char reserved2[38];      // +0x2C
+    unsigned char pad_52[2]; // +0x52
+    char* oframe1;           // +0x54
+    char* oframe2;           // +0x58
+    char reserved3[40];      // +0x5C
 };
 
 typedef char flic_head_size_check[(sizeof(FlicHead) == 0x84) ? 1 : -1];
 
 class FrameHead {
-public:
-    long size;                  // +0x00
-    short type;                 // +0x04
-    short chunks;               // +0x06
-    char reserved[8];           // +0x08
+  public:
+    long size;        // +0x00
+    short type;       // +0x04
+    short chunks;     // +0x06
+    char reserved[8]; // +0x08
 };
 
 typedef char frame_head_size_check[(sizeof(FrameHead) == 0x10) ? 1 : -1];
 
 class PalettePacket {
-public:
+  public:
     signed char skip;
     signed char count;
 };
 
 class RGE_Flic_Player {
-public:
+  public:
     unsigned char* flic_buffer;   // +0x00
     int flic_handle;              // +0x04
     FlicHead flichead;            // +0x08
@@ -84,7 +84,7 @@ public:
     void reset();
     unsigned char draw(TDrawArea* drawarea_in, long flic_x, long flic_y);
 
-private:
+  private:
     void literal();
     void delta_flc();
     void delta_fli();
@@ -94,4 +94,4 @@ private:
 
 typedef char flic_player_size_check[(sizeof(RGE_Flic_Player) == 0xBC) ? 1 : -1];
 
-#endif  // AOE1_FLICS_H
+#endif // AOE1_FLICS_H

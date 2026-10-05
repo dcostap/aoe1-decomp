@@ -1,7 +1,6 @@
 #ifndef TAIINFMD_H
 #define TAIINFMD_H
 
-
 #include "aiinfmod.h"
 #include "ai_attack_state.h"
 #include "ai_placement_state.h"
@@ -50,7 +49,7 @@ void* operator new(unsigned int size);
 void operator delete(void* pointer);
 
 class TribeInformationAIModule : public InformationAIModule {
-public:
+  public:
     ManagedArray<int> farmsTaskedThisUpdate;
     TribeMainDecisionAIModule* md;
     int mapXSizeValue;
@@ -102,15 +101,13 @@ public:
     virtual int update(int timeLimit);
     int save(int outfile);
     void setMainDecisionAI(TribeMainDecisionAIModule* value);
-    int closestUnexploredTile(int uID, float cX, float cY,
-                              float* uX, float* uY);
+    int closestUnexploredTile(int uID, float cX, float cY, float* uX, float* uY);
     ObjectMemory* addObjectMemory(RGE_Static_Object* obj);
-    ObjectMemory* addObjectMemory(int id, short type, short group,
-                                  unsigned char x, unsigned char y,
-                                  unsigned char z, unsigned char owner,
-                                  short hp, int attempts, unsigned char kills,
-                                  float damage, float rate, float weaponRange,
-                                  RGE_Static_Object* object);
+    ObjectMemory* addObjectMemory(
+        int id, short type, short group, unsigned char x, unsigned char y, unsigned char z, unsigned char owner,
+        short hp, int attempts, unsigned char kills, float damage, float rate, float weaponRange,
+        RGE_Static_Object* object
+    );
     int addImportantObject(RGE_Static_Object* oObj, int addedFromAlliedCP);
     int addImportantObject(int oID);
     int mapBound(XYPoint& pt);
@@ -120,15 +117,13 @@ public:
     int tileUncovered(int x, int y);
     void setTileExplored(int x, int y);
     int ownerOfGameID(int id);
-    int gameIDOfResourceObject(int rType, int gathererID, float& roXPos,
-                               float& roYPos, int& dropsiteID, int* exclusions,
-                               int numExclusions);
-    int gameIDsOfObjectType(int oType, int** objects, int** owners,
-                            int ownerNumber);
+    int gameIDOfResourceObject(
+        int rType, int gathererID, float& roXPos, float& roYPos, int& dropsiteID, int* exclusions, int numExclusions
+    );
+    int gameIDsOfObjectType(int oType, int** objects, int** owners, int ownerNumber);
     int gameIDsOwnedBy(int oType, int** objects, int ownerNumber);
     int numberGameIDsOwnedBy(int oType, int ownerNumber);
-    ConstructionItem* placeDock(BuildItem* bi, float cX, float cY,
-                                 int centerType, int edgeType);
+    ConstructionItem* placeDock(BuildItem* bi, float cX, float cY, int centerType, int edgeType);
     int numberDocksInZone(int zone, RGE_Zone_Map* zoneMap);
     int closestDockDistance(int x, int y);
     int hasAdjacentTileType(int x, int y, int aType);
@@ -143,96 +138,85 @@ public:
     int isTower(RGE_Static_Object* obj);
     int influenceCanPlaceStructure(BuildItem* bi);
     ConstructionItem* influencePlaceStructure(
-        BuildItem* bi, int builderID, int alternateType, float alternateSize,
-        char* alternateName, int alternateMinD, int alternateMaxD,
-        int alternateX, int alternateY, PlacementState& placementState,
-        unsigned long startTime);
+        BuildItem* bi, int builderID, int alternateType, float alternateSize, char* alternateName, int alternateMinD,
+        int alternateMaxD, int alternateX, int alternateY, PlacementState& placementState, unsigned long startTime
+    );
     void addObject(RGE_Static_Object* obj);
     void removeObject(int objID);
-    ObjectMemory* objectToAttackWithPlay(int ownerID, int* soldiers,
-                                         int numSoldiers, int& playToRun,
-                                         int* playUnits, int& numberPlayUnits,
-                                         int& playCommander);
-    ObjectMemory* objectToAttack(int ownerID, int ignoreSiegeTargets,
-                                 int ignoreBoatTargets, int unitID,
-                                 int& validAttack);
-    ObjectMemory* objectToAttack(int ownerID, int ignoreSiegeTargets,
-                                 int ignoreBoatTargets, int unitID,
-                                 int* validAttack);
-    ObjectMemory* objectToAttackByGroup(int ownerID, TacticalAIGroup* group,
-                                        AttackState& attackState,
-                                        unsigned long startTime);
-    ObjectMemory* objectToAttackByGroup2(int ownerID, int* soldiers,
-                                         int numberSoldiers);
+    ObjectMemory* objectToAttackWithPlay(
+        int ownerID, int* soldiers, int numSoldiers, int& playToRun, int* playUnits, int& numberPlayUnits,
+        int& playCommander
+    );
+    ObjectMemory* objectToAttack(
+        int ownerID, int ignoreSiegeTargets, int ignoreBoatTargets, int unitID, int& validAttack
+    );
+    ObjectMemory* objectToAttack(
+        int ownerID, int ignoreSiegeTargets, int ignoreBoatTargets, int unitID, int* validAttack
+    );
+    ObjectMemory* objectToAttackByGroup(
+        int ownerID, TacticalAIGroup* group, AttackState& attackState, unsigned long startTime
+    );
+    ObjectMemory* objectToAttackByGroup2(int ownerID, int* soldiers, int numberSoldiers);
     int isBoatAccessible(RGE_Static_Object* unit, int target);
     int isLandAccessible(RGE_Static_Object* unit, int target);
     int numberItemsToDefend();
-    ObjectMemory* higherPriorityObjectToDefend(int unitID, int oType,
-                                                int oGroup);
+    ObjectMemory* higherPriorityObjectToDefend(int unitID, int oType, int oGroup);
     int checkDefend(RGE_Static_Object* obj);
     ObjectMemory* objectToTradeWith(int unitID);
-    int findGatherPosition(XYPoint& centerPoint, int num, int landTroops,
-                           int desiredDistance, int maximumDistanceVariation,
-                           RGE_Static_Object* testUnit, XYPoint& rPoint);
-    void setupInfluenceMap(int placementType, int buildingType,
-                           XYPoint& centerPoint, XYPoint& minArea,
-                           XYPoint& maxArea);
+    int findGatherPosition(
+        XYPoint& centerPoint, int num, int landTroops, int desiredDistance, int maximumDistanceVariation,
+        RGE_Static_Object* testUnit, XYPoint& rPoint
+    );
+    void setupInfluenceMap(
+        int placementType, int buildingType, XYPoint& centerPoint, XYPoint& minArea, XYPoint& maxArea
+    );
     int groupInfluenceDimension(int dim);
-    ObjectMemory findObjectMemoryLimits(int ownerID, int unitID,
-                                        int& numberNonSiegeTargets,
-                                        int& numberNonBoatTargets);
+    ObjectMemory findObjectMemoryLimits(int ownerID, int unitID, int& numberNonSiegeTargets, int& numberNonBoatTargets);
     int isNextTo(XYPoint& one, XYPoint& two, int countDiagonal);
     int facetTo(XYPoint& one, XYPoint& two);
     int placementCode(int typeID);
     BuildingLot* availableLot(int typeID);
     int invalidLot(int typeID, unsigned char x, unsigned char y);
-    int undesirableLot(int typeID, unsigned char xRange,
-                       unsigned char yRange, int coordOffset);
-    void storeLot(int typeID, unsigned char x, unsigned char y,
-                  unsigned char status);
-    void removeLot(int typeID, unsigned char x, unsigned char y,
-                   unsigned char newStatus);
-    void setupWalls(int x, int y, int minimumDistance, int maximumDistance,
-                    int pattern, int numberGates, int gateSize, int townWalls);
+    int undesirableLot(int typeID, unsigned char xRange, unsigned char yRange, int coordOffset);
+    void storeLot(int typeID, unsigned char x, unsigned char y, unsigned char status);
+    void removeLot(int typeID, unsigned char x, unsigned char y, unsigned char newStatus);
+    void setupWalls(
+        int x, int y, int minimumDistance, int maximumDistance, int pattern, int numberGates, int gateSize,
+        int townWalls
+    );
     int insideGate(int numGates, int x, int y);
-    int storeAttackMemory(unsigned char type, unsigned char x1,
-                          unsigned char y1, unsigned char attackingOwner,
-                          unsigned char targetOwner, short kills,
-                          unsigned char success, unsigned long timeStamp,
-                          int play);
-    int storeAttackMemory(unsigned char type, unsigned char x1,
-                          unsigned char y1, unsigned char x2,
-                          unsigned char y2, unsigned char attackingOwner,
-                          unsigned char targetOwner, short kills,
-                          unsigned char success, unsigned long timeStamp,
-                          int play);
-    int storeAttackMemory(unsigned char p1, unsigned char p2,
-                          unsigned char p3, unsigned char p4,
-                          unsigned char p5, unsigned char p6,
-                          unsigned char p7, short p8, unsigned char p9,
-                          unsigned int p10, int p11);
+    int storeAttackMemory(
+        unsigned char type, unsigned char x1, unsigned char y1, unsigned char attackingOwner, unsigned char targetOwner,
+        short kills, unsigned char success, unsigned long timeStamp, int play
+    );
+    int storeAttackMemory(
+        unsigned char type, unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2,
+        unsigned char attackingOwner, unsigned char targetOwner, short kills, unsigned char success,
+        unsigned long timeStamp, int play
+    );
+    int storeAttackMemory(
+        unsigned char p1, unsigned char p2, unsigned char p3, unsigned char p4, unsigned char p5, unsigned char p6,
+        unsigned char p7, short p8, unsigned char p9, unsigned int p10, int p11
+    );
     void removeAttackMemory(int id);
     AttackMemory* attackMemory(int id);
     void setSaveLearnInformation(int v);
     void loadLearnInfo(char* name);
     int unexploredPlayerLocation(int uID, XYPoint& rPoint);
     int numberUnitsWithinXTiles(int playerID, int x, int y, int numTiles);
-    int withinXTilesOfAttackOnPlayer(RGE_Static_Object* obj, int numTiles,
-                                     int victimID);
+    int withinXTilesOfAttackOnPlayer(RGE_Static_Object* obj, int numTiles, int victimID);
     int withinXTilesOfEnemyTowncenter(RGE_Static_Object* obj, int distance);
-    int withinXTilesOfObject(RGE_Static_Object* obj, int distance,
-                             int oT1, int oT2, int oT3, int oT4);
-    int findStagingPoint(XYPoint startPoint, XYPoint& rPoint, int useTransport,
-                         int landTerrainRequired, int targetID,
-                         int stageDistance, int unitID);
+    int withinXTilesOfObject(RGE_Static_Object* obj, int distance, int oT1, int oT2, int oT3, int oT4);
+    int findStagingPoint(
+        XYPoint startPoint, XYPoint& rPoint, int useTransport, int landTerrainRequired, int targetID, int stageDistance,
+        int unitID
+    );
     int setupLOSMap(int ownerID, int x, int y);
     int setupAttackMap(int ownerID, int x, int y);
     int resourceType(int r, int t);
     int setResourceObjectValid(int rType, int id, int newValid);
     int addResourceObject(RGE_Static_Object* obj);
-    float findClosestDropsite(RGE_Static_Object* resourceObj,
-                              int countTownCenter,
-                              int& dropsiteID);
+    float findClosestDropsite(RGE_Static_Object* resourceObj, int countTownCenter, int& dropsiteID);
     RGE_Static_Object* findClosestReturnDropsite(RGE_Static_Object* unitObj);
     void updateAllResourceDropsites();
     void updateResourceDropsites(int rType);
@@ -246,15 +230,12 @@ public:
     ObjectMemory* ruinToCapture(int playerID);
     ObjectMemory* artifactToCapture(int playerID);
     int resourceTypeToPlaceDropsiteBy(int dropsiteType);
-    int dropsitesWithinRequiredDistance(int& numDS, int rType,
-                                        int maxDistance);
+    int dropsitesWithinRequiredDistance(int& numDS, int rType, int maxDistance);
     int numberAvailableStoragePits(int rType);
     int numberAvailableGranaries();
     void lookAtMap();
-    float damageInflictedPerSecond(TacticalAIGroup* group,
-                                   RGE_Static_Object* obj);
-    float damageInflictedPerSecond(int* group, int groupSize,
-                                   RGE_Static_Object* obj);
+    float damageInflictedPerSecond(TacticalAIGroup* group, RGE_Static_Object* obj);
+    float damageInflictedPerSecond(int* group, int groupSize, RGE_Static_Object* obj);
     float timeToBeKilled(TacticalAIGroup* group, RGE_Static_Object* obj);
     float timeToBeKilled(int* group, int groupSize, RGE_Static_Object* obj);
     int numberStoragePits();
@@ -277,10 +258,8 @@ public:
     void addResourceType(int r, int t);
 };
 
-typedef char taiinfmd_information_size[
-    (sizeof(TribeInformationAIModule) == 0x10090) ? 1 : -1];
+typedef char taiinfmd_information_size[(sizeof(TribeInformationAIModule) == 0x10090) ? 1 : -1];
 
-typedef char taiinfmd_managed_array_size[
-    (sizeof(ManagedArray<int>) == 0x10) ? 1 : -1];
+typedef char taiinfmd_managed_array_size[(sizeof(ManagedArray<int>) == 0x10) ? 1 : -1];
 
 #endif

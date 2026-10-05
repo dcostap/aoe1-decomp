@@ -9,13 +9,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma warning(disable: 4035 4805)
-
+#pragma warning(disable : 4035 4805)
 
 void __cdecl getstring(char** destination, char* source);
 void __cdecl rge_read(int file, void* data, int size);
 void __cdecl rge_write(int file, void* data, int size);
-
 
 TRIBE_Tech::TRIBE_Tech(int file, TRIBE_World* world_arg) {
     short i;
@@ -23,7 +21,7 @@ TRIBE_Tech::TRIBE_Tech(int file, TRIBE_World* world_arg) {
     this->world = world_arg;
     rge_read(file, &this->tech_tree_num, 2);
     if (this->tech_tree_num > 0) {
-        this->tech_tree = (Tech_Tree*)calloc(60, this->tech_tree_num);
+        this->tech_tree = (Tech_Tree*) calloc(60, this->tech_tree_num);
         for (i = 0; i < this->tech_tree_num; i++) {
             short j;
             for (j = 0; j < 4; j++) {
@@ -50,7 +48,7 @@ TRIBE_Tech::TRIBE_Tech(int file, TRIBE_World* world_arg) {
             short name_len;
             rge_read(file, &name_len, 2);
             if (name_len > 0) {
-                this->tech_tree[i].name = (char*)calloc(1, name_len);
+                this->tech_tree[i].name = (char*) calloc(1, name_len);
                 rge_read(file, this->tech_tree[i].name, name_len);
             } else {
                 this->tech_tree[i].name = 0;
@@ -76,16 +74,18 @@ TRIBE_Tech::TRIBE_Tech(char* filename) {
             if (this->tech_tree_num > 0) {
                 char name_buf[0x64];
                 short i;
-                this->tech_tree = (Tech_Tree*)calloc(60, this->tech_tree_num);
+                this->tech_tree = (Tech_Tree*) calloc(60, this->tech_tree_num);
                 for (i = 0; i < file_count; i++) {
                     short j;
                     short tech_id;
 
                     // The original reads a 32-bit value into this short stack slot.
                     fscanf(file, "%d", &j);
-                    fscanf(file, "%s %hd %hd %hd %hd %hd %hd %hd", name_buf, &this->tech_tree[j].pre_reqs_required,
-                           &this->tech_tree[j].research, &this->tech_tree[j].effect, &this->tech_tree[j].track,
-                           &this->tech_tree[j].icon, &button_temp, &this->tech_tree[j].build_obj_id);
+                    fscanf(
+                        file, "%s %hd %hd %hd %hd %hd %hd %hd", name_buf, &this->tech_tree[j].pre_reqs_required,
+                        &this->tech_tree[j].research, &this->tech_tree[j].effect, &this->tech_tree[j].track,
+                        &this->tech_tree[j].icon, &button_temp, &this->tech_tree[j].build_obj_id
+                    );
                     this->tech_tree[j].button_location = button_temp;
                     used_read = strlen(name_buf);
                     for (k = 0; k < used_read; k++) {
@@ -99,14 +99,17 @@ TRIBE_Tech::TRIBE_Tech(char* filename) {
                         fscanf(file, "%hd", &this->tech_tree[j].pre_reqs[tech_id]);
                     }
                     for (tech_id = 0; tech_id < 3; tech_id++) {
-                        fscanf(file, "%hd %hd %hd", &this->tech_tree[j].attribute[tech_id],
-                               &this->tech_tree[j].attribute_cost[tech_id], &len);
-                        this->tech_tree[j].attribute_used[tech_id] =
-                            (unsigned char)len;
+                        fscanf(
+                            file, "%hd %hd %hd", &this->tech_tree[j].attribute[tech_id],
+                            &this->tech_tree[j].attribute_cost[tech_id], &len
+                        );
+                        this->tech_tree[j].attribute_used[tech_id] = (unsigned char) len;
                     }
-                    fscanf(file, "%hd %hd %d %d %d", &this->tech_tree[j].string_id, &this->tech_tree[j].string_id2,
-                           &this->tech_tree[j].help_string_id, &this->tech_tree[j].help_page_id,
-                           &this->tech_tree[j].hotkey_id);
+                    fscanf(
+                        file, "%hd %hd %d %d %d", &this->tech_tree[j].string_id, &this->tech_tree[j].string_id2,
+                        &this->tech_tree[j].help_string_id, &this->tech_tree[j].help_page_id,
+                        &this->tech_tree[j].hotkey_id
+                    );
                 }
             }
         }
@@ -143,7 +146,7 @@ void TRIBE_Tech::save(int file) {
     for (i = 0; i < this->tech_tree_num; i++) {
         short name_len;
         if (this->tech_tree[i].name != 0) {
-            name_len = (short)(strlen(this->tech_tree[i].name) + 1);
+            name_len = (short) (strlen(this->tech_tree[i].name) + 1);
         } else {
             name_len = 0;
         }
@@ -208,8 +211,7 @@ TRIBE_Player_Tech::TRIBE_Player_Tech(int file, TRIBE_Tech* tech, RGE_Player* pla
     this->base_tech = tech;
     this->owner = player;
     if (0 < this->tech_player_tree_num) {
-        this->tech_player_tree =
-            (Tech_Player_Tree*)calloc(8, this->tech_player_tree_num);
+        this->tech_player_tree = (Tech_Player_Tree*) calloc(8, this->tech_player_tree_num);
 
         for (i = 0; i < this->tech_player_tree_num; i++) {
             if (save_game_version <= 7.03f) {
@@ -236,8 +238,7 @@ TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* tech, RGE_Player* player, unsig
     this->owner = player;
     this->tech_player_tree_num = tech->tech_tree_num;
     if (0 < this->tech_player_tree_num) {
-        this->tech_player_tree =
-            (Tech_Player_Tree*)calloc(8, this->tech_player_tree_num);
+        this->tech_player_tree = (Tech_Player_Tree*) calloc(8, this->tech_player_tree_num);
     }
     if (load) {
         check_for_new_tech();
@@ -270,11 +271,11 @@ unsigned char TRIBE_Player_Tech::do_tech(short tech_id) {
         this->base_tech->do_tech(tech_id, this->owner);
         check_for_new_tech();
         if (tech_id == 0x65) {
-            ((TRIBE_Player*)this->owner)->history->add_history_event(0);
+            ((TRIBE_Player*) this->owner)->history->add_history_event(0);
         } else if (tech_id == 0x66) {
-            ((TRIBE_Player*)this->owner)->history->add_history_event(1);
+            ((TRIBE_Player*) this->owner)->history->add_history_event(1);
         } else if (tech_id == 0x67) {
-            ((TRIBE_Player*)this->owner)->history->add_history_event(2);
+            ((TRIBE_Player*) this->owner)->history->add_history_event(2);
         }
         return 1;
     }
@@ -284,7 +285,8 @@ unsigned char TRIBE_Player_Tech::do_tech(short tech_id) {
 unsigned char TRIBE_Player_Tech::research(short tech_id, float amount) {
     if (this->tech_player_tree[tech_id].state == 2) {
         this->tech_player_tree[tech_id].research_done += amount;
-        if (!(this->tech_player_tree[tech_id].research_done < (float)(int)this->base_tech->tech_tree[tech_id].research)) {
+        if (!(this->tech_player_tree[tech_id].research_done
+              < (float) (int) this->base_tech->tech_tree[tech_id].research)) {
             do_tech(tech_id);
             return 0;
         }
@@ -293,7 +295,9 @@ unsigned char TRIBE_Player_Tech::research(short tech_id, float amount) {
     return 0;
 }
 
-void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, short& attr2, short& cost2, short& attr3, short& cost3) {
+void TRIBE_Player_Tech::tech_cost(
+    short tech_id, short& attr1, short& cost1, short& attr2, short& cost2, short& attr3, short& cost3
+) {
     short total;
     Tech_Tree* tech;
     unsigned char can_use_carry;
@@ -316,9 +320,9 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, sho
         attr1 = tech->attribute[0];
         if (attr1 >= 0) {
             cost1 = tech->attribute_cost[0];
-            if (this->owner->attributes[attr1] < (float)(int)cost1 && can_use_carry) {
-                total += (short)(cost1 - (short)this->owner->attributes[attr1]);
-                cost1 = (short)this->owner->attributes[attr1];
+            if (this->owner->attributes[attr1] < (float) (int) cost1 && can_use_carry) {
+                total += (short) (cost1 - (short) this->owner->attributes[attr1]);
+                cost1 = (short) this->owner->attributes[attr1];
             }
         }
     }
@@ -327,9 +331,9 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, sho
         attr2 = tech->attribute[1];
         if (attr2 >= 0) {
             cost2 = tech->attribute_cost[1];
-            if (this->owner->attributes[attr2] < (float)(int)cost2 && can_use_carry) {
-                total += (short)(cost2 - (short)this->owner->attributes[attr2]);
-                cost2 = (short)this->owner->attributes[attr2];
+            if (this->owner->attributes[attr2] < (float) (int) cost2 && can_use_carry) {
+                total += (short) (cost2 - (short) this->owner->attributes[attr2]);
+                cost2 = (short) this->owner->attributes[attr2];
             }
         }
     }
@@ -338,9 +342,9 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, sho
         attr3 = tech->attribute[2];
         if (attr3 >= 0) {
             cost3 = tech->attribute_cost[2];
-            if (this->owner->attributes[attr3] < (float)(int)cost3 && can_use_carry) {
-                total += (short)(cost3 - (short)this->owner->attributes[attr3]);
-                cost3 = (short)this->owner->attributes[attr3];
+            if (this->owner->attributes[attr3] < (float) (int) cost3 && can_use_carry) {
+                total += (short) (cost3 - (short) this->owner->attributes[attr3]);
+                cost3 = (short) this->owner->attributes[attr3];
             }
         }
     }
@@ -389,12 +393,12 @@ unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id, short* missing_a
             int attribute;
             attribute = tech->attribute[i];
             if (attribute >= 0 && tech->attribute_used[i] != 0) {
-                float cost = (float)(int)tech->attribute_cost[i];
+                float cost = (float) (int) tech->attribute_cost[i];
                 if (has_carry && attribute == 3) {
                     carry = carry - cost;
                     if (carry < 0.0f) {
                         if (missing_attribute) {
-                            *missing_attribute = (short)attribute;
+                            *missing_attribute = (short) attribute;
                         }
                         return 0;
                     }
@@ -402,12 +406,11 @@ unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id, short* missing_a
                 if (this->owner->attributes[attribute] < cost) {
                     if (carry + this->owner->attributes[attribute] < cost) {
                         if (missing_attribute) {
-                            *missing_attribute = (short)attribute;
+                            *missing_attribute = (short) attribute;
                         }
                         return 0;
                     }
-                    carry = carry -
-                        (cost - this->owner->attributes[attribute]);
+                    carry = carry - (cost - this->owner->attributes[attribute]);
                 }
             }
         }
@@ -431,15 +434,13 @@ unsigned char TRIBE_Player_Tech::start_research(short tech_id, unsigned char cha
             for (i = 0; i < 3; i++) {
                 attribute = tech->attribute[i];
                 if (attribute >= 0 && tech->attribute_used[i] != 0) {
-                    cost = (float)(int)tech->attribute_cost[i];
+                    cost = (float) (int) tech->attribute_cost[i];
                     if (this->owner->attributes[attribute] < cost) {
                         this->owner->attributes[RGE_RESOURCE_GOLD] =
-                            this->owner->attributes[RGE_RESOURCE_GOLD] -
-                            (cost - this->owner->attributes[attribute]);
+                            this->owner->attributes[RGE_RESOURCE_GOLD] - (cost - this->owner->attributes[attribute]);
                         this->owner->attributes[attribute] = 0.0f;
                     } else {
-                        this->owner->attributes[attribute] =
-                            this->owner->attributes[attribute] - cost;
+                        this->owner->attributes[attribute] = this->owner->attributes[attribute] - cost;
                     }
                 }
             }
@@ -463,8 +464,7 @@ unsigned char TRIBE_Player_Tech::cancel_research(short tech_id, unsigned char re
             for (i = 0; i < 3; i++) {
                 if (tech->attribute[i] >= 0 && tech->attribute_used[i] != 0) {
                     this->owner->attributes[tech->attribute[i]] =
-                        this->owner->attributes[tech->attribute[i]] +
-                        (float)(int)tech->attribute_cost[i];
+                        this->owner->attributes[tech->attribute[i]] + (float) (int) tech->attribute_cost[i];
                 }
             }
         }
@@ -496,9 +496,9 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech() {
                     short prereq_count;
                     prereq_count = 0;
                     for (j = 0; j < 4; j++) {
-//! @bug A zero pre_reqs slot counts as a requirement on research 0; the data uses 0 for "none".
-//! The sentinel here is -1, so a zeroed research opens once research 0 is done and runs its effect.
-//! For example research 29 then adds tower arrows. RockNROR stores -1 for "none" in these fields.
+                        //! @bug A zero pre_reqs slot counts as a requirement on research 0; the data uses 0 for "none".
+                        //! The sentinel here is -1, so a zeroed research opens once research 0 is done and runs its effect.
+                        //! For example research 29 then adds tower arrows. RockNROR stores -1 for "none" in these fields.
                         if (tech[i].pre_reqs[j] >= 0) {
                             prereq_count++;
                             if (this->tech_player_tree[tech[i].pre_reqs[j]].state == 3) {
@@ -507,7 +507,7 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech() {
                         }
                     }
                     if (prereq_done >= tech[i].pre_reqs_required) {
-                        if ((float)(int)tech[i].research <= this->tech_player_tree[i].research_done) {
+                        if ((float) (int) tech[i].research <= this->tech_player_tree[i].research_done) {
                             do_tech(i);
                             active_count--;
                         } else if (this->tech_player_tree[i].state < 1) {
@@ -540,8 +540,8 @@ short TRIBE_Player_Tech::get_progress(short tech_id) {
     short progress;
 
     if (this->tech_player_tree[tech_id].state == 2) {
-        progress = (short)(long)(this->tech_player_tree[tech_id].research_done *
-                                 100.0f / (float)(int)this->base_tech->tech_tree[tech_id].research);
+        progress = (short) (long) (this->tech_player_tree[tech_id].research_done * 100.0f
+                                   / (float) (int) this->base_tech->tech_tree[tech_id].research);
     } else if (this->tech_player_tree[tech_id].state == 3) {
         progress = 100;
     } else {
@@ -577,7 +577,7 @@ void TRIBE_Player_Tech::do_rev_tech(short tech_id) {
         tech = this->base_tech->tech_tree[tech_id].pre_reqs[i];
         if (tech >= 0 && this->tech_player_tree[tech].state < 3) {
             if (this->tech_player_tree[tech].state >= 0) {
-                this->do_rev_tech((short)tech);
+                this->do_rev_tech((short) tech);
             }
         }
     }
@@ -592,7 +592,7 @@ unsigned char TRIBE_Player_Tech::rev_tech(short tech_id) {
     for (i = 0; i < this->tech_player_tree_num; i++) {
         for (j = 0; j < 4; j++) {
             if (this->base_tech->tech_tree[i].pre_reqs[j] == tech_id) {
-                this->do_rev_tech((short)i);
+                this->do_rev_tech((short) i);
             }
         }
     }

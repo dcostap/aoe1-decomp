@@ -16,7 +16,7 @@ RGE_Master_Player::RGE_Master_Player(FILE* infile) {
     fscanf(infile, "%s %hd %hd", name, &tribe_effect, &attribute_num);
 
     if (attribute_num > 0) {
-        attributes = (float*)calloc((int)attribute_num, 4);
+        attributes = (float*) calloc((int) attribute_num, 4);
     } else {
         attributes = 0;
     }
@@ -28,7 +28,7 @@ RGE_Master_Player::RGE_Master_Player(FILE* infile) {
     }
 
     fscanf(infile, "%hd", &temp_culture);
-    culture = (unsigned char)temp_culture;
+    culture = (unsigned char) temp_culture;
     master_object_num = 0;
     master_objects = 0;
 }
@@ -38,7 +38,7 @@ RGE_Master_Player::RGE_Master_Player(int infile) {
     rge_read(infile, &attribute_num, 2);
     rge_read(infile, &tribe_effect, 2);
     if (attribute_num > 0) {
-        attributes = (float*)calloc(attribute_num, 4);
+        attributes = (float*) calloc(attribute_num, 4);
         rge_read(infile, attributes, attribute_num * 4);
     } else {
         attributes = 0;
@@ -69,16 +69,15 @@ RGE_Master_Player::~RGE_Master_Player() {
     }
 }
 
-void RGE_Master_Player::finish_init(int infile, RGE_Sprite** sprites,
-                                    RGE_Sound** sounds) {
+void RGE_Master_Player::finish_init(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     rge_read(infile, &this->master_object_num, 2);
 
     if (this->master_object_num > 0) {
-        this->master_objects = (RGE_Master_Static_Object**)calloc((int)this->master_object_num, 4);
-        rge_read(infile, this->master_objects, (int)this->master_object_num * 4);
+        this->master_objects = (RGE_Master_Static_Object**) calloc((int) this->master_object_num, 4);
+        rge_read(infile, this->master_objects, (int) this->master_object_num * 4);
 
-        for (int i = 0; (short)i < this->master_object_num; i++) {
-            if (this->master_objects[(short)i] != 0) {
+        for (int i = 0; (short) i < this->master_object_num; i++) {
+            if (this->master_objects[(short) i] != 0) {
                 int temp;
                 rge_read(infile, &temp, 1);
                 this->load_master_object(infile, temp, sprites, sounds, i);
@@ -90,36 +89,36 @@ void RGE_Master_Player::finish_init(int infile, RGE_Sprite** sprites,
 }
 
 void RGE_Master_Player::load_master_object(
-    int infile, unsigned char obj_type, RGE_Sprite** sprites,
-    RGE_Sound** sounds, short index) {
+    int infile, unsigned char obj_type, RGE_Sprite** sprites, RGE_Sound** sounds, short index
+) {
     RGE_Master_Static_Object* obj;
     switch (obj_type) {
-    case 10:
-        obj = new RGE_Master_Static_Object(infile, sprites, sounds, 1);
-        break;
-    case 20:
-        obj = new RGE_Master_Animated_Object(infile, sprites, sounds, 1);
-        this->master_objects[index] = obj;
-        return;
-    case 30:
-        obj = new RGE_Master_Moving_Object(infile, sprites, sounds, 1);
-        break;
-    case 60:
-        obj = new RGE_Master_Missile_Object(infile, sprites, sounds, 1);
-        this->master_objects[index] = obj;
-        return;
-    case 40:
-        obj = new RGE_Master_Action_Object(infile, sprites, sounds, 1);
-        break;
-    case 50:
-        obj = new RGE_Master_Combat_Object(infile, sprites, sounds, 1);
-        this->master_objects[index] = obj;
-        return;
-    case 25:
-        obj = new RGE_Master_Doppleganger_Object(infile, sprites, sounds, 1);
-        break;
-    default:
-        return;
+        case 10:
+            obj = new RGE_Master_Static_Object(infile, sprites, sounds, 1);
+            break;
+        case 20:
+            obj = new RGE_Master_Animated_Object(infile, sprites, sounds, 1);
+            this->master_objects[index] = obj;
+            return;
+        case 30:
+            obj = new RGE_Master_Moving_Object(infile, sprites, sounds, 1);
+            break;
+        case 60:
+            obj = new RGE_Master_Missile_Object(infile, sprites, sounds, 1);
+            this->master_objects[index] = obj;
+            return;
+        case 40:
+            obj = new RGE_Master_Action_Object(infile, sprites, sounds, 1);
+            break;
+        case 50:
+            obj = new RGE_Master_Combat_Object(infile, sprites, sounds, 1);
+            this->master_objects[index] = obj;
+            return;
+        case 25:
+            obj = new RGE_Master_Doppleganger_Object(infile, sprites, sounds, 1);
+            break;
+        default:
+            return;
     }
     this->master_objects[index] = obj;
 }
@@ -127,42 +126,41 @@ void RGE_Master_Player::load_master_object(
 void RGE_Master_Player::create_master_object_space(short count) {
     this->master_object_num = count;
     if (count > 0) {
-        this->master_objects =
-            (RGE_Master_Static_Object**)calloc((int)count, 4);
+        this->master_objects = (RGE_Master_Static_Object**) calloc((int) count, 4);
     }
 }
 
 void RGE_Master_Player::load_object(
-    FILE* infile, unsigned char obj_type, RGE_Sprite** sprites,
-    RGE_Sound** sounds, short index) {
+    FILE* infile, unsigned char obj_type, RGE_Sprite** sprites, RGE_Sound** sounds, short index
+) {
     RGE_Master_Static_Object* obj;
     switch (obj_type) {
-    case 10:
-        obj = new RGE_Master_Static_Object(infile, sprites, sounds, index, 1);
-        break;
-    case 20:
-        obj = new RGE_Master_Animated_Object(infile, sprites, sounds, index, 1);
-        this->master_objects[index] = obj;
-        return;
-    case 30:
-        obj = new RGE_Master_Moving_Object(infile, sprites, sounds, index, 1);
-        break;
-    case 60:
-        obj = new RGE_Master_Missile_Object(infile, sprites, sounds, index, 1);
-        this->master_objects[index] = obj;
-        return;
-    case 40:
-        obj = new RGE_Master_Action_Object(infile, sprites, sounds, index, 1);
-        break;
-    case 50:
-        obj = new RGE_Master_Combat_Object(infile, sprites, sounds, index, 1);
-        this->master_objects[index] = obj;
-        return;
-    case 25:
-        obj = new RGE_Master_Doppleganger_Object(infile, sprites, sounds, index, 1);
-        break;
-    default:
-        return;
+        case 10:
+            obj = new RGE_Master_Static_Object(infile, sprites, sounds, index, 1);
+            break;
+        case 20:
+            obj = new RGE_Master_Animated_Object(infile, sprites, sounds, index, 1);
+            this->master_objects[index] = obj;
+            return;
+        case 30:
+            obj = new RGE_Master_Moving_Object(infile, sprites, sounds, index, 1);
+            break;
+        case 60:
+            obj = new RGE_Master_Missile_Object(infile, sprites, sounds, index, 1);
+            this->master_objects[index] = obj;
+            return;
+        case 40:
+            obj = new RGE_Master_Action_Object(infile, sprites, sounds, index, 1);
+            break;
+        case 50:
+            obj = new RGE_Master_Combat_Object(infile, sprites, sounds, index, 1);
+            this->master_objects[index] = obj;
+            return;
+        case 25:
+            obj = new RGE_Master_Doppleganger_Object(infile, sprites, sounds, index, 1);
+            break;
+        default:
+            return;
     }
     this->master_objects[index] = obj;
 }

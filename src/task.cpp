@@ -3,8 +3,6 @@
 #include "../include/sound.h"
 #include "../include/sprite.h"
 
-
-
 RGE_Task::RGE_Task(short id_in) {
     id = id_in;
     task_type = 1;
@@ -37,10 +35,8 @@ RGE_Task::RGE_Task(short id_in) {
     work_sound2 = 0;
 }
 
-
 RGE_Task::~RGE_Task() {
 }
-
 
 void RGE_Task::copy(RGE_Task* other_task) {
     is_default = other_task->is_default;
@@ -72,7 +68,6 @@ void RGE_Task::copy(RGE_Task* other_task) {
     work_sound2 = other_task->work_sound2;
 }
 
-
 void RGE_Task::load(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     short short_val;
     RGE_Sprite* selected_sprite;
@@ -103,47 +98,46 @@ void RGE_Task::load(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
 
     rge_read(infile, &short_val, 2);
     if (short_val == -1)
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     else
         selected_sprite = sprites[short_val];
     move_sprite = selected_sprite;
 
     rge_read(infile, &short_val, 2);
     if (short_val == -1)
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     else
         selected_sprite = sprites[short_val];
     work_sprite = selected_sprite;
 
     rge_read(infile, &short_val, 2);
     if (short_val == -1)
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     else
         selected_sprite = sprites[short_val];
     work_sprite2 = selected_sprite;
 
     rge_read(infile, &short_val, 2);
     if (short_val == -1)
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     else
         selected_sprite = sprites[short_val];
     carry_sprite = selected_sprite;
 
     rge_read(infile, &short_val, 2);
     if (short_val == -1)
-        selected_sound = (RGE_Sound*)0;
+        selected_sound = (RGE_Sound*) 0;
     else
         selected_sound = sounds[short_val];
     work_sound = selected_sound;
 
     rge_read(infile, &short_val, 2);
     if (short_val == -1)
-        selected_sound = (RGE_Sound*)0;
+        selected_sound = (RGE_Sound*) 0;
     else
         selected_sound = sounds[short_val];
     work_sound2 = selected_sound;
 }
-
 
 extern int __cdecl fscanf(FILE* file, const char* format, ...);
 
@@ -164,58 +158,60 @@ void RGE_Task::load(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     RGE_Sprite* selected_sprite;
     RGE_Sound* selected_sound;
 
-    fscanf(infile, "%hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %f %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd",
-           &id, &temp_is_default, &action_type, &object_group, &object_id, &terrain_id,
-           &attribute_type, &attribute_type2, &attribute_type3, &attribute_type4, &work_val1, &work_val2, &work_range,
-           &temp_search_flag, &search_wait_time, &temp_combat_level, &temp_combat_level_flag,
-           &work_flag, &work_flag2, &temp_owner_type, &temp_holding_attr, &temp_state_building,
-           &move_sprite_id, &work_sprite_id, &work_sprite2_id, &carry_sprite_id, &work_sound_id, &work_sound2_id);
+    fscanf(
+        infile,
+        "%hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %f %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd",
+        &id, &temp_is_default, &action_type, &object_group, &object_id, &terrain_id, &attribute_type, &attribute_type2,
+        &attribute_type3, &attribute_type4, &work_val1, &work_val2, &work_range, &temp_search_flag, &search_wait_time,
+        &temp_combat_level, &temp_combat_level_flag, &work_flag, &work_flag2, &temp_owner_type, &temp_holding_attr,
+        &temp_state_building, &move_sprite_id, &work_sprite_id, &work_sprite2_id, &carry_sprite_id, &work_sound_id,
+        &work_sound2_id
+    );
 
-    is_default = (unsigned char)temp_is_default;
-    combat_level = (unsigned char)temp_combat_level;
-    combat_level_flag = (unsigned char)temp_combat_level_flag;
-    search_flag = (unsigned char)temp_search_flag;
-    owner_type = (unsigned char)temp_owner_type;
-    holding_attr = (unsigned char)temp_holding_attr;
-    state_building = (unsigned char)temp_state_building;
+    is_default = (unsigned char) temp_is_default;
+    combat_level = (unsigned char) temp_combat_level;
+    combat_level_flag = (unsigned char) temp_combat_level_flag;
+    search_flag = (unsigned char) temp_search_flag;
+    owner_type = (unsigned char) temp_owner_type;
+    holding_attr = (unsigned char) temp_holding_attr;
+    state_building = (unsigned char) temp_state_building;
 
     if (move_sprite_id == -1)
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     else
         selected_sprite = sprites[move_sprite_id];
     move_sprite = selected_sprite;
 
     if (work_sprite_id == -1)
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     else
         selected_sprite = sprites[work_sprite_id];
     work_sprite = selected_sprite;
 
     if (work_sprite2_id == -1)
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     else
         selected_sprite = sprites[work_sprite2_id];
     work_sprite2 = selected_sprite;
 
     if (carry_sprite_id == -1)
-        selected_sprite = (RGE_Sprite*)0;
+        selected_sprite = (RGE_Sprite*) 0;
     else
         selected_sprite = sprites[carry_sprite_id];
     carry_sprite = selected_sprite;
 
     if (work_sound_id == -1)
-        selected_sound = (RGE_Sound*)0;
+        selected_sound = (RGE_Sound*) 0;
     else
         selected_sound = sounds[work_sound_id];
     work_sound = selected_sound;
 
     if (work_sound2_id == -1)
-        selected_sound = (RGE_Sound*)0;
+        selected_sound = (RGE_Sound*) 0;
     else
         selected_sound = sounds[work_sound2_id];
     work_sound2 = selected_sound;
 }
-
 
 void RGE_Task::save(int outfile) {
     short short_val;

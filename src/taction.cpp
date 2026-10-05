@@ -1,15 +1,13 @@
 
 #include "../include/taction.h"
 
-TRIBE_Action::TRIBE_Action(int infile, RGE_Action_Object* obj_in, int do_setup)
-    : RGE_Action(infile, obj_in, 0) {
+TRIBE_Action::TRIBE_Action(int infile, RGE_Action_Object* obj_in, int do_setup) : RGE_Action(infile, obj_in, 0) {
     if (do_setup != 0) {
         setup(infile, obj_in);
     }
 }
 
-TRIBE_Action::TRIBE_Action(RGE_Action_Object* obj_in, int do_setup)
-    : RGE_Action(obj_in, 0) {
+TRIBE_Action::TRIBE_Action(RGE_Action_Object* obj_in, int do_setup) : RGE_Action(obj_in, 0) {
     if (do_setup != 0) {
         setup(obj_in);
     }

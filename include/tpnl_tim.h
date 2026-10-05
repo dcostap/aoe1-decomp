@@ -7,7 +7,7 @@ class TRIBE_World;
 class TRIBE_Player;
 
 class TRIBE_Panel_Time : public TPanel {
-public:
+  public:
     void* font;
     unsigned int color1;
     unsigned int color2;
@@ -43,11 +43,10 @@ public:
     virtual void get_true_render_rect(tagRECT& drawRect);
     virtual long handle_idle();
 
-protected:
+  protected:
     int render_to_image_buffer();
 };
 
-typedef char tribe_panel_time_size_check[
-    (sizeof(TRIBE_Panel_Time) == 0x174) ? 1 : -1];
+typedef char tribe_panel_time_size_check[(sizeof(TRIBE_Panel_Time) == 0x174) ? 1 : -1];
 
 #endif

@@ -34,7 +34,7 @@ class RGE_Static_Object;
 class TDrawArea;
 
 class RGE_Master_Static_Object {
-public:
+  public:
     virtual ~RGE_Master_Static_Object();
     virtual void copy_obj(RGE_Master_Static_Object* source);
     virtual void modify(float amount, unsigned char flag);
@@ -43,32 +43,37 @@ public:
     virtual void save(int outfile);
     virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
-    virtual unsigned char check_placement(RGE_Player* player, float col, float row, int* obstructionObject,
-                                          unsigned char check_vis, unsigned char check_flat,
-                                          unsigned char check_overlay, unsigned char construction_radius_flag,
-                                          unsigned char can_be_built_on_flag, unsigned char check_objects);
-    virtual unsigned char alignment(float& col, float& row, RGE_Game_World* world,
-                                    unsigned char center_flag);
+    virtual unsigned char check_placement(
+        RGE_Player* player, float col, float row, int* obstructionObject, unsigned char check_vis,
+        unsigned char check_flat, unsigned char check_overlay, unsigned char construction_radius_flag,
+        unsigned char can_be_built_on_flag, unsigned char check_objects
+    );
+    virtual unsigned char alignment(float& col, float& row, RGE_Game_World* world, unsigned char center_flag);
     virtual long calc_base_damage_ability(RGE_Master_Combat_Object* attacker);
-    virtual void play_command_sound() {}
-    virtual void play_move_sound() {}
-    virtual void draw(TDrawArea* render_area, short x, short y, RGE_Color_Table* player_color, long facet, long frame,
-                      int draw_frame, unsigned char frame_color);
+    virtual void play_command_sound() {
+    }
+    virtual void play_move_sound() {
+    }
+    virtual void draw(
+        TDrawArea* render_area, short x, short y, RGE_Color_Table* player_color, long facet, long frame, int draw_frame,
+        unsigned char frame_color
+    );
 
     RGE_Master_Static_Object(RGE_Master_Static_Object* other_object, int do_setup);
     RGE_Master_Static_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup);
     RGE_Master_Static_Object(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup);
 
-protected:
+  protected:
     int setup(RGE_Master_Static_Object* other_object);
     int setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
     int setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id);
 
-public:
+  public:
     void make_available(unsigned char on_off_flag);
-    unsigned char alignment_box(RGE_Game_World* world, float col, float row,
-                                short& x1, short& y1, short& x2, short& y2,
-                                short& x3, short& y3, short& x4, short& y4);
+    unsigned char alignment_box(
+        RGE_Game_World* world, float col, float row, short& x1, short& y1, short& x2, short& y2, short& x3, short& y3,
+        short& x4, short& y4
+    );
     long get_help_message();
     long get_help_page();
     long get_hotkey();
@@ -140,7 +145,6 @@ public:
     float outline_radius_z;
 };
 
-typedef char m_s_obj_master_size_check[
-    (sizeof(RGE_Master_Static_Object) == 0xB8) ? 1 : -1];
+typedef char m_s_obj_master_size_check[(sizeof(RGE_Master_Static_Object) == 0xB8) ? 1 : -1];
 
 #endif

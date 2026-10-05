@@ -8,7 +8,7 @@ class MainDecisionAIModule;
 class BuildItem;
 
 class ResearchAIModule : public AIModule {
-public:
+  public:
     ResearchAIModule(void* pW, int playerID);
     ResearchAIModule(int playerID, int infile);
     virtual ~ResearchAIModule();
@@ -27,7 +27,7 @@ public:
     int numberTechnologyItems() const;
     char* technologyTreeName();
 
-protected:
+  protected:
     void removeOldTechTree();
     TechnologyItem* item(int id);
 };

@@ -1,7 +1,6 @@
 #ifndef AOE1_TIMELINE_H
 #define AOE1_TIMELINE_H
 
-
 class RGE_Game_World;
 class RGE_Static_Object;
 
@@ -21,13 +20,11 @@ struct RGE_Time_Entry {
     RGE_Time_Entry* next;
 };
 
-typedef char timeline_entry_layout[
-    (sizeof(RGE_Time_Entry) == 0x30) ? 1 : -1];
-typedef char timeline_entry_next_offset[
-    ((char*)&((RGE_Time_Entry*)0)->next - (char*)0 == 0x2c) ? 1 : -1];
+typedef char timeline_entry_layout[(sizeof(RGE_Time_Entry) == 0x30) ? 1 : -1];
+typedef char timeline_entry_next_offset[((char*) &((RGE_Time_Entry*) 0)->next - (char*) 0 == 0x2c) ? 1 : -1];
 
 class RGE_Timeline {
-public:
+  public:
     RGE_Timeline(RGE_Game_World* gworld);
     RGE_Timeline(int infile, RGE_Game_World* gworld);
     virtual ~RGE_Timeline();
@@ -49,15 +46,12 @@ public:
     short avail_id;
     float old_time;
 
-private:
+  private:
     short find_id(RGE_Static_Object* obj);
 };
 
-typedef char timeline_object_layout[
-    (sizeof(RGE_Timeline) == 0x14) ? 1 : -1];
-typedef char timeline_world_offset[
-    ((char*)&((RGE_Timeline*)0)->world - (char*)0 == 0x04) ? 1 : -1];
-typedef char timeline_list_offset[
-    ((char*)&((RGE_Timeline*)0)->time_list - (char*)0 == 0x08) ? 1 : -1];
+typedef char timeline_object_layout[(sizeof(RGE_Timeline) == 0x14) ? 1 : -1];
+typedef char timeline_world_offset[((char*) &((RGE_Timeline*) 0)->world - (char*) 0 == 0x04) ? 1 : -1];
+typedef char timeline_list_offset[((char*) &((RGE_Timeline*) 0)->time_list - (char*) 0 == 0x08) ? 1 : -1];
 
 #endif

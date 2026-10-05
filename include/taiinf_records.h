@@ -58,15 +58,10 @@ struct ResourceMemory {
     int dropsiteID;
 };
 
-typedef char taiinf_object_memory_size[
-    (sizeof(ObjectMemory) == 0x24) ? 1 : -1];
-typedef char taiinf_building_lot_size[
-    (sizeof(BuildingLot) == 0x08) ? 1 : -1];
-typedef char taiinf_attack_memory_size[
-    (sizeof(AttackMemory) == 0x18) ? 1 : -1];
-typedef char taiinf_quadrant_log_size[
-    (sizeof(QuadrantLog) == 0x0C) ? 1 : -1];
-typedef char taiinf_resource_memory_size[
-    (sizeof(ResourceMemory) == 0x14) ? 1 : -1];
+typedef char taiinf_object_memory_size[(sizeof(ObjectMemory) == 0x24) ? 1 : -1];
+typedef char taiinf_building_lot_size[(sizeof(BuildingLot) == 0x08) ? 1 : -1];
+typedef char taiinf_attack_memory_size[(sizeof(AttackMemory) == 0x18) ? 1 : -1];
+typedef char taiinf_quadrant_log_size[(sizeof(QuadrantLog) == 0x0C) ? 1 : -1];
+typedef char taiinf_resource_memory_size[(sizeof(ResourceMemory) == 0x14) ? 1 : -1];
 
 #endif

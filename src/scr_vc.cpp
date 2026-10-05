@@ -15,7 +15,8 @@
 #include "../include/rge_base_game_global.h"
 #include "../include/resource_ids.h"
 
-TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_game, TPicture* background_bmp) : TScreenPanel("Mission Dialog") {
+TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_game, TPicture* background_bmp) :
+    TScreenPanel("Mission Dialog") {
     char adjusted_name[260];
     char info_file[260];
     unsigned char starting_description = 0;
@@ -53,15 +54,26 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
     create_auto_scrollbar(&this->scroll_bar, this->list, 20);
 
     if (this->use_bevels) {
-        this->list->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
-                                   this->bevel_color5, this->bevel_color6);
+        this->list->set_bevel_info(
+            3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5,
+            this->bevel_color6
+        );
     }
 
-    create_button(this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 200, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-    create_button(this, &this->text_buttons[0], STRING_ID_MISSION_HISTORY, 0, 325, 316, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0);
+    create_button(
+        this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 200, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
+    create_button(
+        this, &this->text_buttons[0], STRING_ID_MISSION_HISTORY, 0, 325, 316, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1,
+        0
+    );
     TButtonPanel** text_button_1 = &this->text_buttons[1];
-    create_button(this, text_button_1, STRING_ID_MISSION_INSTRUCTIONS, 0, 325, 348, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0);
-    create_button(this, &this->text_buttons[2], STRING_ID_MISSION_HINTS, 0, 325, 380, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0);
+    create_button(
+        this, text_button_1, STRING_ID_MISSION_INSTRUCTIONS, 0, 325, 348, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0
+    );
+    create_button(
+        this, &this->text_buttons[2], STRING_ID_MISSION_HINTS, 0, 325, 380, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0
+    );
 
     for (int i = 0; i < 3; i++) {
         this->text_buttons[i]->set_radio_info(this->text_buttons, 3);

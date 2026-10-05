@@ -10,7 +10,7 @@ class RGE_Task;
 // The rest of the declaration surface comes from the owner headers above.
 // Keep only declarations owned by tact_rep.cpp in this module header.
 class TRIBE_Action_Repair : public RGE_Action {
-public:
+  public:
     TRIBE_Action_Repair(int infile, RGE_Action_Object* obj_in, int do_setup);
     TRIBE_Action_Repair(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in);
     TRIBE_Action_Repair(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z);
@@ -19,23 +19,22 @@ public:
     virtual void save(int outfile);
     virtual void first_in_stack(unsigned char first_time);
 
-protected:
+  protected:
     virtual void set_state(unsigned char new_state);
 
-public:
+  public:
     virtual unsigned char update();
     virtual int stop();
     virtual int move_to(RGE_Static_Object* obj_in, float x, float y, float z);
     virtual int work(RGE_Static_Object* obj_in, float x, float y, float z);
 
-protected:
+  protected:
     void meet_target();
 
-public:
+  public:
     unsigned char save_target_command_flag;
 };
 
-typedef char tact_rep_action_size_check[
-    (sizeof(TRIBE_Action_Repair) == 0x44) ? 1 : -1];
+typedef char tact_rep_action_size_check[(sizeof(TRIBE_Action_Repair) == 0x44) ? 1 : -1];
 
 #endif

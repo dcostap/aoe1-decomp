@@ -7,7 +7,7 @@ class RGE_Sprite;
 class RGE_Sound;
 
 class RGE_Task {
-public:
+  public:
     short task_type;
     short id;
     unsigned char is_default;

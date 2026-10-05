@@ -17,4 +17,4 @@ void __cdecl rge_write(int handle, void* data, int size);
 
 extern int rge_write_error;
 
-#endif  // AOE1_RGE_FIO_H
+#endif // AOE1_RGE_FIO_H

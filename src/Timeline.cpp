@@ -8,7 +8,6 @@
 
 #include <stdlib.h>
 
-
 RGE_Timeline::RGE_Timeline(int infile, RGE_Game_World* gworld) {
     int index;
     RGE_Time_Entry** temp2;
@@ -26,7 +25,7 @@ RGE_Timeline::RGE_Timeline(int infile, RGE_Game_World* gworld) {
     index = 0;
     if (this->list_num > 0) {
         do {
-            RGE_Time_Entry* entry = (RGE_Time_Entry*)calloc(1, sizeof(RGE_Time_Entry));
+            RGE_Time_Entry* entry = (RGE_Time_Entry*) calloc(1, sizeof(RGE_Time_Entry));
             rge_read(infile, &entry->time, 4);
             rge_read(infile, &entry->command, 1);
             rge_read(infile, &entry->obj_type, 2);
@@ -150,34 +149,34 @@ void RGE_Timeline::update() {
 
         for (; event != 0 && event->time <= time; event = event->next) {
             switch (event->command) {
-            case 0:
-                if (event->this_obj != 0 && event->target_obj != 0)
-                    event->this_obj->set_attack(event->target_obj);
-                break;
+                case 0:
+                    if (event->this_obj != 0 && event->target_obj != 0)
+                        event->this_obj->set_attack(event->target_obj);
+                    break;
 
-            case 1:
-                player = this->world->players[event->player];
-                master = player->master_objects[event->obj_type];
-                if (master != 0) {
-                    object = master->make_new_obj(player, event->x, event->y, 0);
-                    for (scan = this->time_list; scan != 0; scan = scan->next) {
-                        if (event->this_obj_id == scan->this_obj_id)
-                            scan->this_obj = object;
-                        if (event->this_obj_id == scan->target_obj_id)
-                            scan->target_obj = object;
+                case 1:
+                    player = this->world->players[event->player];
+                    master = player->master_objects[event->obj_type];
+                    if (master != 0) {
+                        object = master->make_new_obj(player, event->x, event->y, 0);
+                        for (scan = this->time_list; scan != 0; scan = scan->next) {
+                            if (event->this_obj_id == scan->this_obj_id)
+                                scan->this_obj = object;
+                            if (event->this_obj_id == scan->target_obj_id)
+                                scan->target_obj = object;
+                        }
                     }
-                }
-                break;
+                    break;
 
-            case 2:
-                if (event->this_obj != 0)
-                    event->this_obj->move_to(0, event->x, event->y, event->z);
-                break;
+                case 2:
+                    if (event->this_obj != 0)
+                        event->this_obj->move_to(0, event->x, event->y, event->z);
+                    break;
 
-            case 4:
-                if (event->this_obj != 0)
-                    event->this_obj->destroy_obj();
-                break;
+                case 4:
+                    if (event->this_obj != 0)
+                        event->this_obj->destroy_obj();
+                    break;
             }
         }
     }
@@ -203,33 +202,38 @@ void RGE_Timeline::mock_update(float time) {
                 entry = entry->next;
             }
             while (entry != 0) {
-                if (entry->time <= time) break;
+                if (entry->time <= time)
+                    break;
                 if (!(entry->time > old_time)) {
                     switch (entry->command) {
-                    case 1:
-                        object = entry->this_obj;
-                        if (object != 0) {
-                            RGE_Time_Entry* scan_entry = time_list;
-                            for (; scan_entry != 0; scan_entry = scan_entry->next) {
-                                if (object == scan_entry->this_obj) scan_entry->this_obj = 0;
-                                if (object == scan_entry->target_obj) scan_entry->target_obj = 0;
+                        case 1:
+                            object = entry->this_obj;
+                            if (object != 0) {
+                                RGE_Time_Entry* scan_entry = time_list;
+                                for (; scan_entry != 0; scan_entry = scan_entry->next) {
+                                    if (object == scan_entry->this_obj)
+                                        scan_entry->this_obj = 0;
+                                    if (object == scan_entry->target_obj)
+                                        scan_entry->target_obj = 0;
+                                }
                             }
-                        }
-                        if (object != 0) delete object;
-                        break;
-                    case 4:
-                        {
+                            if (object != 0)
+                                delete object;
+                            break;
+                        case 4: {
                             int player_index = entry->player;
-                            RGE_Master_Static_Object* master = world->players[player_index]->master_objects[entry->obj_type];
+                            RGE_Master_Static_Object* master =
+                                world->players[player_index]->master_objects[entry->obj_type];
                             if (master != 0) {
                                 object = master->make_new_obj(world->players[player_index], entry->x, entry->y, 0);
                                 for (next_entry = time_list; next_entry != 0; next_entry = next_entry->next) {
-                                    if (entry->this_obj_id == next_entry->this_obj_id) next_entry->this_obj = object;
-                                    if (entry->this_obj_id == next_entry->target_obj_id) next_entry->target_obj = object;
+                                    if (entry->this_obj_id == next_entry->this_obj_id)
+                                        next_entry->this_obj = object;
+                                    if (entry->this_obj_id == next_entry->target_obj_id)
+                                        next_entry->target_obj = object;
                                 }
                             }
-                        }
-                        break;
+                        } break;
                     }
                 }
                 list = time_list;
@@ -238,7 +242,8 @@ void RGE_Timeline::mock_update(float time) {
                 } else {
                     RGE_Time_Entry* previous_entry = time_list;
                     while (previous_entry != 0) {
-                        if (previous_entry->next == entry) entry = previous_entry;
+                        if (previous_entry->next == entry)
+                            entry = previous_entry;
                         previous_entry = previous_entry->next;
                     }
                 }
@@ -250,29 +255,33 @@ void RGE_Timeline::mock_update(float time) {
         while (entry != 0) {
             if (entry->time > old_time && !(entry->time > time)) {
                 switch (entry->command) {
-                case 1:
-                    {
+                    case 1: {
                         int player_index = entry->player;
-                        RGE_Master_Static_Object* master = world->players[player_index]->master_objects[entry->obj_type];
+                        RGE_Master_Static_Object* master =
+                            world->players[player_index]->master_objects[entry->obj_type];
                         if (master != 0) {
                             object = master->make_new_obj(world->players[player_index], entry->x, entry->y, 0);
                             for (next_entry = time_list; next_entry != 0; next_entry = next_entry->next) {
-                                if (entry->this_obj_id == next_entry->this_obj_id) next_entry->this_obj = object;
-                                if (entry->this_obj_id == next_entry->target_obj_id) next_entry->target_obj = object;
+                                if (entry->this_obj_id == next_entry->this_obj_id)
+                                    next_entry->this_obj = object;
+                                if (entry->this_obj_id == next_entry->target_obj_id)
+                                    next_entry->target_obj = object;
                             }
                         }
-                    }
-                    break;
-                case 4:
-                    object = entry->this_obj;
-                    if (object != 0) {
-                        for (next_entry = time_list; next_entry != 0; next_entry = next_entry->next) {
-                            if (object == next_entry->this_obj) next_entry->this_obj = 0;
-                            if (object == next_entry->target_obj) next_entry->target_obj = 0;
+                    } break;
+                    case 4:
+                        object = entry->this_obj;
+                        if (object != 0) {
+                            for (next_entry = time_list; next_entry != 0; next_entry = next_entry->next) {
+                                if (object == next_entry->this_obj)
+                                    next_entry->this_obj = 0;
+                                if (object == next_entry->target_obj)
+                                    next_entry->target_obj = 0;
+                            }
                         }
-                    }
-                    if (object != 0) delete object;
-                    break;
+                        if (object != 0)
+                            delete object;
+                        break;
                 }
             }
             entry = entry->next;
@@ -283,7 +292,8 @@ void RGE_Timeline::mock_update(float time) {
 
 short RGE_Timeline::find_id(RGE_Static_Object* obj) {
     RGE_Time_Entry* entry = this->time_list;
-    if (entry == 0) return -1;
+    if (entry == 0)
+        return -1;
 
     while (entry != 0) {
         if (entry->command == 1 && entry->this_obj == obj) {
@@ -301,7 +311,7 @@ RGE_Time_Entry* RGE_Timeline::add(float time) {
     node = this->time_list;
     prev = &this->time_list;
     if (node == 0) {
-        node = (RGE_Time_Entry*)calloc(1, 48);
+        node = (RGE_Time_Entry*) calloc(1, 48);
         *prev = node;
         node->time = time;
         this->list_num++;
@@ -310,7 +320,7 @@ RGE_Time_Entry* RGE_Timeline::add(float time) {
 
     while (node != 0) {
         if (node->time > time) {
-            RGE_Time_Entry* new_node = (RGE_Time_Entry*)calloc(1, 48);
+            RGE_Time_Entry* new_node = (RGE_Time_Entry*) calloc(1, 48);
             new_node->time = time;
             new_node->next = node;
             *prev = new_node;
@@ -322,7 +332,7 @@ RGE_Time_Entry* RGE_Timeline::add(float time) {
     }
 
     {
-        node = (RGE_Time_Entry*)calloc(1, 48);
+        node = (RGE_Time_Entry*) calloc(1, 48);
         RGE_Time_Entry** node_next = &node->next;
         node->time = time;
         *node_next = 0;
@@ -332,8 +342,7 @@ RGE_Time_Entry* RGE_Timeline::add(float time) {
     }
 }
 
-RGE_Time_Entry* RGE_Timeline::add_attack(float time, RGE_Static_Object* obj,
-                                          RGE_Static_Object* target) {
+RGE_Time_Entry* RGE_Timeline::add_attack(float time, RGE_Static_Object* obj, RGE_Static_Object* target) {
     RGE_Time_Entry* entry = this->add(time);
     if (entry != 0) {
         entry->this_obj = obj;
@@ -347,8 +356,7 @@ RGE_Time_Entry* RGE_Timeline::add_attack(float time, RGE_Static_Object* obj,
     return entry;
 }
 
-RGE_Time_Entry* RGE_Timeline::add_create(float time, short obj_id,
-                                          unsigned char player, float x, float y, float z) {
+RGE_Time_Entry* RGE_Timeline::add_create(float time, short obj_id, unsigned char player, float x, float y, float z) {
     RGE_Static_Object* obj = 0;
     RGE_Time_Entry* node = this->add(time);
     RGE_Player* player_record = this->world->players[player];
@@ -370,8 +378,7 @@ RGE_Time_Entry* RGE_Timeline::add_create(float time, short obj_id,
     return node;
 }
 
-RGE_Time_Entry* RGE_Timeline::add_move(float time, RGE_Static_Object* obj,
-                                        float x, float y, float z) {
+RGE_Time_Entry* RGE_Timeline::add_move(float time, RGE_Static_Object* obj, float x, float y, float z) {
     RGE_Time_Entry* entry = this->add(time);
     if (entry != 0) {
         entry->player = obj->owner->id;

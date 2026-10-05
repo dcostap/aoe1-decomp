@@ -60,7 +60,7 @@ void TRIBE_History_Info::load(int infile) {
     rge_read(infile, &this->number_of_events, 4);
     rge_read(infile, &this->max_number_of_entries, 4);
 
-    this->history = (TRIBE_History_Entry*)calloc(this->max_number_of_entries, 1);
+    this->history = (TRIBE_History_Entry*) calloc(this->max_number_of_entries, 1);
     rge_read(infile, this->history, this->max_number_of_entries);
 
     int count;
@@ -68,8 +68,7 @@ void TRIBE_History_Info::load(int infile) {
     rge_read(infile, &count, 4);
 
     while (count > 0) {
-        TRIBE_History_Events* step =
-            (TRIBE_History_Events*)calloc(1, 16);
+        TRIBE_History_Events* step = (TRIBE_History_Events*) calloc(1, 16);
         rge_read(infile, step, 16);
         *prev_ptr = step;
         prev_ptr = &step->next;
@@ -81,7 +80,7 @@ void TRIBE_History_Info::add_history_entry(unsigned char history_type, unsigned 
     if (this->number_of_entries >= this->max_number_of_entries) {
         int old_capacity = this->max_number_of_entries;
         this->max_number_of_entries += 0x3C;
-        TRIBE_History_Entry* new_entries = (TRIBE_History_Entry*)calloc(this->max_number_of_entries, 1);
+        TRIBE_History_Entry* new_entries = (TRIBE_History_Entry*) calloc(this->max_number_of_entries, 1);
         if (old_capacity > 0) {
             memcpy(new_entries, this->history, old_capacity);
             free(this->history);
@@ -109,8 +108,7 @@ unsigned char TRIBE_History_Info::get_history_entry(unsigned char history_type, 
 
 void TRIBE_History_Info::add_history_event(unsigned char history_event) {
     if (this->number_of_entries > 0) {
-        TRIBE_History_Events* event_node =
-            (TRIBE_History_Events*)calloc(1, 16);
+        TRIBE_History_Events* event_node = (TRIBE_History_Events*) calloc(1, 16);
         event_node->next = this->events;
         event_node->time = this->number_of_entries;
         event_node->world_time = rge_base_game->world->world_time;

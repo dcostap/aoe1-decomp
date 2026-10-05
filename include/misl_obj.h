@@ -13,15 +13,15 @@ class RGE_Check_List;
 // misl_obj.cpp owns the missile-object extension. All inherited state and
 // virtual slots come from the canonical RGE_Combat_Object owner.
 class RGE_Missile_Object : public RGE_Combat_Object {
-public:
+  public:
     RGE_Missile_Object(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
     RGE_Missile_Object(int infile, RGE_Game_World* gworld, int do_setup);
 
-protected:
+  protected:
     virtual int setup(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     virtual int setup(int infile, RGE_Game_World* gworld);
 
-public:
+  public:
     virtual void rehook();
     virtual void save(int outfile);
     virtual unsigned char update();
@@ -34,9 +34,7 @@ public:
     float max_range;
 };
 
-typedef char rge_missile_object_max_range_offset_check[
-    (offsetof(RGE_Missile_Object, max_range) == 0x1C4) ? 1 : -1];
-typedef char rge_missile_object_size_check[
-    (sizeof(RGE_Missile_Object) == 0x1C8) ? 1 : -1];
+typedef char rge_missile_object_max_range_offset_check[(offsetof(RGE_Missile_Object, max_range) == 0x1C4) ? 1 : -1];
+typedef char rge_missile_object_size_check[(sizeof(RGE_Missile_Object) == 0x1C8) ? 1 : -1];
 
-#endif  // AOE1_MISL_OBJ_H
+#endif // AOE1_MISL_OBJ_H

@@ -1,7 +1,6 @@
 #include "../include/aitacmod.h"
 
-TacticalAIModule::TacticalAIModule(void* pW, int playerID)
-    : AIModule("TacAI", 0x3F1, playerID, pW) {
+TacticalAIModule::TacticalAIModule(void* pW, int playerID) : AIModule("TacAI", 0x3F1, playerID, pW) {
 }
 
 // The derived destructor restores its vptr, then tail-jumps to

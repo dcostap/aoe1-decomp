@@ -4,7 +4,7 @@
 // Shared declarations for the dstring.cpp source module.
 // The executable stores stringValue at offset 0 and four int state fields after it.
 class DString {
-public:
+  public:
     char* stringValue;
     int lengthValue;
     int numWordsValue;
@@ -63,7 +63,7 @@ int __cdecl operator>(const DString& one, const char* two);
 int __cdecl operator>(const char* one, const DString& two);
 
 class DKeyString {
-public:
+  public:
     DString keyValue;
     DString valueValue;
 

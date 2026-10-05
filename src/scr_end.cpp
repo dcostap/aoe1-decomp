@@ -8,8 +8,7 @@
 #include "../include/scr_ach.h"
 #include <string.h>
 
-TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCount)
-    : TScreenPanel("End Screen") {
+TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCount) : TScreenPanel("End Screen") {
     char backgroundName[10];
 
     if (setup(rge_base_game->draw_area, 0, 0, 1) == 0) {
@@ -35,8 +34,10 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
         return;
     }
 
-    background->set_positioning(TPanel::PositionCentered, 0, 0, 0, 0, pnl_wid * 640 / 640, pnl_wid * 640 / 640,
-                                pnl_hgt * 480 / 480, pnl_hgt * 480 / 480, 0, 0, 0, 0);
+    background->set_positioning(
+        TPanel::PositionCentered, 0, 0, 0, 0, pnl_wid * 640 / 640, pnl_wid * 640 / 640, pnl_hgt * 480 / 480,
+        pnl_hgt * 480 / 480, 0, 0, 0, 0
+    );
 
     RGE_Font* font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_21_BOLD);
     title = new TTextPanel;
@@ -44,8 +45,10 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
         error_code = 1;
         return;
     }
-    title->setup(render_area, background, pnl_wid * 20 / 640, pnl_hgt * 20 / 480, pnl_wid * 600 / 640, pnl_hgt * 30 / 480,
-                 font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, titleText);
+    title->setup(
+        render_area, background, pnl_wid * 20 / 640, pnl_hgt * 20 / 480, pnl_wid * 600 / 640, pnl_hgt * 30 / 480,
+        font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, titleText
+    );
 
     text = new TTextPanel;
     if (text == 0) {
@@ -53,8 +56,10 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
         return;
     }
     font = rge_base_game->get_font(RGE_FONT_STANDARD);
-    text->setup(render_area, background, pnl_wid * 20 / 640, pnl_hgt * 70 / 480, pnl_wid * 600 / 640, pnl_hgt * 340 / 480,
-                font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, static_cast<char*>(0));
+    text->setup(
+        render_area, background, pnl_wid * 20 / 640, pnl_hgt * 70 / 480, pnl_wid * 600 / 640, pnl_hgt * 340 / 480,
+        font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, static_cast<char*>(0)
+    );
     text->set_text(textText, static_cast<short>(textLineCount));
     text->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
     text->scroll(6, 0, 1);
@@ -66,8 +71,10 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
         error_code = 1;
         return;
     }
-    okButton->setup(render_area, background, pnl_wid * 170 / 640, pnl_hgt * 430 / 480, pnl_wid * 300 / 640,
-                    pnl_hgt * 40 / 480, TButtonPanel::DrawText, sound, TButtonPanel::NotifyAction, 0);
+    okButton->setup(
+        render_area, background, pnl_wid * 170 / 640, pnl_hgt * 430 / 480, pnl_wid * 300 / 640, pnl_hgt * 40 / 480,
+        TButtonPanel::DrawText, sound, TButtonPanel::NotifyAction, 0
+    );
     okButton->set_text_info("OK", font->font, font->font_wid, font->font_hgt, -1, -1);
 
     set_curr_child(background);

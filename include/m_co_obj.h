@@ -16,17 +16,16 @@ class RGE_Color_Table;
 
 struct RGE_Armor_Weapon_Info;
 class RGE_Armor_Weapon_Info {
-public:
+  public:
     short type;
     short value;
 };
 
-typedef char rge_armor_weapon_info_size_check[
-    (sizeof(RGE_Armor_Weapon_Info) == 0x04) ? 1 : -1];
+typedef char rge_armor_weapon_info_size_check[(sizeof(RGE_Armor_Weapon_Info) == 0x04) ? 1 : -1];
 
 // The combat master owns the fields after RGE_Master_Action_Object.
 class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
-public:
+  public:
     RGE_Master_Combat_Object(RGE_Master_Combat_Object* other_object, int do_setup);
     RGE_Master_Combat_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup);
     RGE_Master_Combat_Object(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup);
@@ -41,12 +40,12 @@ public:
     virtual RGE_Master_Static_Object* make_new_master();
     virtual long calc_base_damage_ability(RGE_Master_Combat_Object* attacker);
 
-protected:
+  protected:
     int setup(RGE_Master_Combat_Object* other_object);
     int setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
     int setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id);
 
-public:
+  public:
     RGE_Sprite* fight_sprite;
     unsigned char base_armor;
     short armor_num;
@@ -72,9 +71,7 @@ public:
     float orig_speed_of_attack;
 };
 
-typedef char m_co_obj_combat_size_check[
-    (sizeof(RGE_Master_Combat_Object) == 0x148) ? 1 : -1];
-typedef char m_co_obj_fight_sprite_offset_check[
-    (offsetof(RGE_Master_Combat_Object, fight_sprite) == 0xFC) ? 1 : -1];
+typedef char m_co_obj_combat_size_check[(sizeof(RGE_Master_Combat_Object) == 0x148) ? 1 : -1];
+typedef char m_co_obj_fight_sprite_offset_check[(offsetof(RGE_Master_Combat_Object, fight_sprite) == 0xFC) ? 1 : -1];
 
-#endif  // AOE1_M_CO_OBJ_H
+#endif // AOE1_M_CO_OBJ_H

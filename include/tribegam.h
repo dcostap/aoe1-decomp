@@ -59,8 +59,7 @@ struct MouseClickInfo {
     int enemy_text_id;
 };
 
-typedef char tribe_mouse_click_info_size_check[
-    (sizeof(MouseClickInfo) == 44) ? 1 : -1];
+typedef char tribe_mouse_click_info_size_check[(sizeof(MouseClickInfo) == 44) ? 1 : -1];
 
 class TRIBE_Screen_Game;
 
@@ -68,17 +67,10 @@ class TRIBE_Game : public RGE_Base_Game {
     friend class TRIBE_Screen_Game;
     friend class TRIBE_Panel_Object;
 
-public:
+  public:
     using RGE_Base_Game::get_string;
 
-    enum MapSize {
-        Tiny = 0,
-        Small,
-        Medium,
-        Large,
-        Huge,
-        Humongous
-    };
+    enum MapSize { Tiny = 0, Small, Medium, Large, Huge, Humongous };
     enum MapType {
         AllWater = 0,
         MostlyWater = 1,
@@ -97,20 +89,8 @@ public:
         VictoryScore = 8,
         VictoryStandard = 9
     };
-    enum ResourceLevel {
-        DefaultResources = 0,
-        LowResources = 1,
-        MediumResources = 2,
-        HighResources = 3
-    };
-    enum Age {
-        DefaultAge = 0,
-        NomadAge = 1,
-        StoneAge = 2,
-        ToolAge = 3,
-        BronzeAge = 4,
-        IronAge = 5
-    };
+    enum ResourceLevel { DefaultResources = 0, LowResources = 1, MediumResources = 2, HighResources = 3 };
+    enum Age { DefaultAge = 0, NomadAge = 1, StoneAge = 2, ToolAge = 3, BronzeAge = 4, IronAge = 5 };
 
     struct TRIBE_Game_Options {
         MapSize mapSizeValue;
@@ -135,21 +115,20 @@ public:
     };
 
     virtual ~TRIBE_Game();
-    virtual long __stdcall wnd_proc(void* wnd, unsigned int msg,
-                                    unsigned int wparam, long lparam);
+    virtual long __stdcall wnd_proc(void* wnd, unsigned int msg, unsigned int wparam, long lparam);
     TRIBE_Game(RGE_Prog_Info* prog_info_in, int do_setup);
     virtual int setup_cmd_options();
 
     void close_game_screens(int close_main_game_screen);
 
-protected:
+  protected:
     virtual int setup();
 
     virtual int setup_palette();
     virtual int setup_sounds();
     virtual RGE_Game_World* create_world();
 
-public:
+  public:
     virtual void set_game_mode(int new_mode, int new_sub_mode);
     virtual void set_player(short new_player_id);
     void set_save_game_name(char* file_name);
@@ -157,12 +136,10 @@ public:
     char* get_save_game_name();
     char* get_load_game_name();
     virtual char* get_string(long string_id, char* str, int max_len);
-    virtual char* get_string2(int string_type, long id, long id2, char* str,
-                              int max_len);
+    virtual char* get_string2(int string_type, long id, long id2, char* str, int max_len);
     virtual TPanel* get_view_panel();
     virtual TPanel* get_map_panel();
-    long video_wnd_proc(void* hwnd, unsigned int msg,
-                        unsigned int wParam, long lParam);
+    long video_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam);
     virtual RGE_Scenario_Header* new_scenario_header(int infile);
     virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario_info);
     virtual RGE_Scenario* new_scenario_info(int infile);
@@ -194,17 +171,17 @@ public:
     RGE_Game_World* createGameWorld();
     void do_game_over();
 
-protected:
+  protected:
     int create_game(int not_used);
 
-public:
+  public:
     int create_game_screen();
     virtual int processCheatCode(int playerID, char* text);
 
-protected:
+  protected:
     void let_game_begin();
 
-public:
+  public:
     int start_scenario_editor(char* scenario_name_in, int is_multi_player_in);
     virtual void send_game_options();
     virtual void receive_game_options();
@@ -253,18 +230,14 @@ public:
     void setRandomStartValue(int val);
     void resetRandomComputerName();
     int randomComputerName(int civ);
-    void SetClickTables(MouseClickInfo* RC, int RCS,
-                        MouseClickInfo* LC, int LCS);
+    void SetClickTables(MouseClickInfo* RC, int RCS, MouseClickInfo* LC, int LCS);
     virtual int action_close();
-    virtual int action_key_down(unsigned long key, int repeat_count, int ctrl_key,
-                                int alt_key, int shift_key);
+    virtual int action_key_down(unsigned long key, int repeat_count, int ctrl_key, int alt_key, int shift_key);
     virtual void set_interface_messages();
     void disconnect_multiplayer_game();
     virtual int handle_idle();
-    virtual int handle_query_new_palette(void* wnd, unsigned int msg,
-                                         unsigned int wparam, long lparam);
-    virtual int handle_activate(void* wnd, unsigned int msg,
-                                unsigned int wparam, long lparam);
+    virtual int handle_query_new_palette(void* wnd, unsigned int msg, unsigned int wparam, long lparam);
+    virtual int handle_activate(void* wnd, unsigned int msg, unsigned int wparam, long lparam);
     virtual int action_user_command(unsigned long val1, unsigned long val2);
     void add_notification_loc(long x, long y);
     virtual void notification(int notify_type, long val1, long val2, long val3, long val4);
@@ -272,7 +245,7 @@ public:
     void goto_notification_loc();
     virtual char* gameSummary();
 
-public:
+  public:
     MouseClickInfo* MouseRightClickTable;
     int MouseRightClickTableSize;
     MouseClickInfo* MouseLeftClickTable;
@@ -280,12 +253,12 @@ public:
     long queue_is_waiting_on_pop_counter[9];
     int random_civ[9];
 
-protected:
+  protected:
     TRIBE_Game_Options tribe_game_options;
     char testing_scenario[260];
     void* video_window;
     int cur_video;
-    int (__stdcall *old_video_wnd_proc)();
+    int(__stdcall* old_video_wnd_proc)();
     int video_paused;
     unsigned long last_video_time;
     int video_setup;
@@ -323,14 +296,10 @@ struct TRIBE_Game_Combined_Options {
     TRIBE_Game::TRIBE_Game_Options tribe;
 };
 
-typedef char tribe_game_combined_options_size_check[
-    (sizeof(TRIBE_Game_Combined_Options) == 0x114) ? 1 : -1];
+typedef char tribe_game_combined_options_size_check[(sizeof(TRIBE_Game_Combined_Options) == 0x114) ? 1 : -1];
 
-typedef char mouse_click_info_size_check[
-    (sizeof(MouseClickInfo) == 0x2C) ? 1 : -1];
-typedef char tribe_game_options_size_check[
-    (sizeof(TRIBE_Game::TRIBE_Game_Options) == 0x6C) ? 1 : -1];
-typedef char tribe_game_size_check[
-    (sizeof(TRIBE_Game) == 0x1254) ? 1 : -1];
+typedef char mouse_click_info_size_check[(sizeof(MouseClickInfo) == 0x2C) ? 1 : -1];
+typedef char tribe_game_options_size_check[(sizeof(TRIBE_Game::TRIBE_Game_Options) == 0x6C) ? 1 : -1];
+typedef char tribe_game_size_check[(sizeof(TRIBE_Game) == 0x1254) ? 1 : -1];
 
 #endif

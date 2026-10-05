@@ -2,38 +2,41 @@
 #define AOE1_AIBOBJ_H
 
 class BaseObject {
-public:
+  public:
     virtual ~BaseObject();
 
     BaseObject();
-    BaseObject(int gri, int ci, int ti, int gi, char* nm, float xs, float ys, float zs, float xp, float yp, float zp, int hp, int minp, int maxp);
+    BaseObject(
+        int gri, int ci, int ti, int gi, char* nm, float xs, float ys, float zs, float xp, float yp, float zp, int hp,
+        int minp, int maxp
+    );
     BaseObject(BaseObject* bo);
     BaseObject(const BaseObject& bo);
 
-    BaseObject* next;                         // +0x04
-    BaseObject* prev;                         // +0x08
-    int numberGroupsValue;                    // +0x0C
-    int* groupIDValue;                        // +0x10
-    int categoryIDValue;                      // +0x14
-    int typeIDValue;                          // +0x18
-    int gameIDValue;                          // +0x1C
-    char nameValue[64];                       // +0x20
-    float xPositionValue;                     // +0x60
-    float yPositionValue;                     // +0x64
-    float zPositionValue;                     // +0x68
-    float xSizeValue;                         // +0x6C
-    float ySizeValue;                         // +0x70
-    float zSizeValue;                         // +0x74
-    int hitPointValue;                        // +0x78
-    int minHitPointValue;                     // +0x7C
-    int maxHitPointValue;                     // +0x80
-    int busyValue;                            // +0x84
-    int currentTaskValue;                     // +0x88
-    int currentTargetValue;                   // +0x8C
-    int currentTargetTypeValue;               // +0x90
-    float currentTargetXPositionValue;        // +0x94
-    float currentTargetYPositionValue;        // +0x98
-    float currentTargetZPositionValue;        // +0x9C
+    BaseObject* next;                  // +0x04
+    BaseObject* prev;                  // +0x08
+    int numberGroupsValue;             // +0x0C
+    int* groupIDValue;                 // +0x10
+    int categoryIDValue;               // +0x14
+    int typeIDValue;                   // +0x18
+    int gameIDValue;                   // +0x1C
+    char nameValue[64];                // +0x20
+    float xPositionValue;              // +0x60
+    float yPositionValue;              // +0x64
+    float zPositionValue;              // +0x68
+    float xSizeValue;                  // +0x6C
+    float ySizeValue;                  // +0x70
+    float zSizeValue;                  // +0x74
+    int hitPointValue;                 // +0x78
+    int minHitPointValue;              // +0x7C
+    int maxHitPointValue;              // +0x80
+    int busyValue;                     // +0x84
+    int currentTaskValue;              // +0x88
+    int currentTargetValue;            // +0x8C
+    int currentTargetTypeValue;        // +0x90
+    float currentTargetXPositionValue; // +0x94
+    float currentTargetYPositionValue; // +0x98
+    float currentTargetZPositionValue; // +0x9C
 
     int numberGroups() const;
     int groupID(int v) const;
@@ -89,4 +92,4 @@ int __cdecl operator!=(const BaseObject& one, const BaseObject& two);
 int __cdecl operator<(const BaseObject& one, const BaseObject& two);
 int __cdecl operator>(const BaseObject& one, const BaseObject& two);
 
-#endif  // AOE1_AIBOBJ_H
+#endif // AOE1_AIBOBJ_H

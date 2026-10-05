@@ -6,7 +6,7 @@ class TRIBE_World;
 
 // CodeView record: struct Tech_Tree, size 0x3C.
 struct Tech_Tree {
-public:
+  public:
     char* name;
     short pre_reqs[4];
     short pre_reqs_required;
@@ -30,16 +30,15 @@ typedef char tech_tree_size_check[(sizeof(Tech_Tree) == 0x3C) ? 1 : -1];
 
 // CodeView record: struct Tech_Player_Tree, size 0x08.
 struct Tech_Player_Tree {
-public:
+  public:
     float research_done;
     short state;
 };
 
-typedef char tech_player_tree_size_check[
-    (sizeof(Tech_Player_Tree) == 0x08) ? 1 : -1];
+typedef char tech_player_tree_size_check[(sizeof(Tech_Player_Tree) == 0x08) ? 1 : -1];
 
 class TRIBE_Tech {
-public:
+  public:
     Tech_Tree* tech_tree;
     short tech_tree_num;
     TRIBE_World* world;
@@ -58,7 +57,7 @@ public:
 typedef char tribe_tech_size_check[(sizeof(TRIBE_Tech) == 0x0C) ? 1 : -1];
 
 class TRIBE_Player_Tech {
-public:
+  public:
     Tech_Player_Tree* tech_player_tree;
     short tech_player_tree_num;
     TRIBE_Tech* base_tech;
@@ -92,7 +91,6 @@ public:
     long get_hotkey(short);
 };
 
-typedef char tribe_player_tech_size_check[
-    (sizeof(TRIBE_Player_Tech) == 0x10) ? 1 : -1];
+typedef char tribe_player_tech_size_check[(sizeof(TRIBE_Player_Tech) == 0x10) ? 1 : -1];
 
 #endif

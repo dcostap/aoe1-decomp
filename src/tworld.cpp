@@ -87,17 +87,19 @@ void TRIBE_World::logStatus(FILE* out, int firstTime) {
             return;
         }
 
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            static_cast<TRIBE_Game*>(rge_base_game)->mapSize() + STRING_ID_MAP_SIZE_BASE, tempString, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)
+            ->get_string(static_cast<TRIBE_Game*>(rge_base_game)->mapSize() + STRING_ID_MAP_SIZE_BASE, tempString, 256);
         fprintf(out, "Map Size:                %s\n", tempString);
 
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            static_cast<TRIBE_Game*>(rge_base_game)->mapType() + STRING_ID_MAP_TYPE_BASE, tempString, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)
+            ->get_string(static_cast<TRIBE_Game*>(rge_base_game)->mapType() + STRING_ID_MAP_TYPE_BASE, tempString, 256);
         fprintf(out, "Map Type:                %s\n", tempString);
 
         // The checked resource files contain no text for this legacy log range.
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(static_cast<TRIBE_Game*>(rge_base_game)->victoryType() + STRING_ID_VICTORY_LOG_BASE,
-                                                            tempString, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)
+            ->get_string(
+                static_cast<TRIBE_Game*>(rge_base_game)->victoryType() + STRING_ID_VICTORY_LOG_BASE, tempString, 256
+            );
         fprintf(out, "Victory Condition:       %s\n", tempString);
     }
 }
@@ -111,13 +113,12 @@ void TRIBE_World::data_load_players_type(short id, short type, FILE* infile) {
     this->master_players[id] = new TRIBE_Master_Player(infile);
 }
 
-void TRIBE_World::data_load_map(char* border_file, char* overlay_file,
-                                char* terrain_file, char* map_file,
-                                short tile_width, short tile_height,
-                                short elev_height, RGE_Sound** sounds,
-                                char* terr_obj_file) {
-    TRIBE_Map* m = new TRIBE_Map(border_file, overlay_file, terrain_file, map_file, tile_width, tile_height,
-                                 elev_height, sounds);
+void TRIBE_World::data_load_map(
+    char* border_file, char* overlay_file, char* terrain_file, char* map_file, short tile_width, short tile_height,
+    short elev_height, RGE_Sound** sounds, char* terr_obj_file
+) {
+    TRIBE_Map* m =
+        new TRIBE_Map(border_file, overlay_file, terrain_file, map_file, tile_width, tile_height, elev_height, sounds);
     this->map = m;
     m->load_terrain_obj_types(terr_obj_file);
 }
@@ -139,14 +140,14 @@ unsigned char TRIBE_World::data_load_world(FILE* infile) {
 
 unsigned char TRIBE_World::init_player_type(int infile, short index, unsigned char type) {
     switch (type) {
-    case 1: {
-        TRIBE_Master_Player* p = new TRIBE_Master_Player(infile);
-        this->master_players[index] = p;
-        this->master_players[index]->finish_init(infile, this->sprites, this->sounds);
-        break;
-    }
-    default:
-        return RGE_Game_World::init_player_type(infile, index, type);
+        case 1: {
+            TRIBE_Master_Player* p = new TRIBE_Master_Player(infile);
+            this->master_players[index] = p;
+            this->master_players[index]->finish_init(infile, this->sprites, this->sounds);
+            break;
+        }
+        default:
+            return RGE_Game_World::init_player_type(infile, index, type);
     }
 
     return 1;
@@ -213,26 +214,25 @@ void TRIBE_World::save(int outfile) {
 
 void TRIBE_World::load_player(int infile, unsigned char type, short index) {
     switch (type) {
-    case 1:
-    case 3:
-        this->players[index] =
-            static_cast<RGE_Player*>(new TRIBE_Player(infile, this, static_cast<unsigned char>(index)));
-        break;
-    case 2:
-        this->players[index] =
-            static_cast<RGE_Player*>(new TRIBE_Gaia(infile, this, static_cast<unsigned char>(index)));
-        break;
-    default:
-        RGE_Game_World::load_player(infile, type, index);
-        return;
+        case 1:
+        case 3:
+            this->players[index] =
+                static_cast<RGE_Player*>(new TRIBE_Player(infile, this, static_cast<unsigned char>(index)));
+            break;
+        case 2:
+            this->players[index] =
+                static_cast<RGE_Player*>(new TRIBE_Gaia(infile, this, static_cast<unsigned char>(index)));
+            break;
+        default:
+            RGE_Game_World::load_player(infile, type, index);
+            return;
     }
 
     static_cast<TRIBE_Player*>(this->players[index])->load(infile);
 }
 
 void TRIBE_World::setup_gaia() {
-    this->players[0] =
-        new TRIBE_Gaia(this, this->master_players[CIVILIZATION_GAIA], 0, "GAIA", CIVILIZATION_GAIA);
+    this->players[0] = new TRIBE_Gaia(this, this->master_players[CIVILIZATION_GAIA], 0, "GAIA", CIVILIZATION_GAIA);
 }
 
 void TRIBE_World::setup_players(RGE_Player_Info& info) {
@@ -244,22 +244,28 @@ void TRIBE_World::setup_players(RGE_Player_Info& info) {
 
             char type = info.type[index - 1];
             switch (type) {
-            case 0:
-                player = new TRIBE_Player(this, this->master_players[info.tribe[index - 1]],
-                                          static_cast<unsigned char>(index), info.name[index - 1], info.tribe[index - 1], 0, 1, 0, 0, 0);
-                break;
-            case 4:
-                if (useComputerPlayers == 0) {
-                    player = new TRIBE_Player(this, this->master_players[info.tribe[index - 1]],
-                                              static_cast<unsigned char>(index), info.name[index - 1], info.tribe[index - 1], 0, 1, 0, 0, 0);
-                } else {
-                    player = new TRIBE_Player(this, this->master_players[info.tribe[index - 1]],
-                                              static_cast<unsigned char>(index), info.name[index - 1], info.tribe[index - 1], 1, 1, 0, 0, 0);
-                }
-                break;
-            default:
-                ++index;
-                continue;
+                case 0:
+                    player = new TRIBE_Player(
+                        this, this->master_players[info.tribe[index - 1]], static_cast<unsigned char>(index),
+                        info.name[index - 1], info.tribe[index - 1], 0, 1, 0, 0, 0
+                    );
+                    break;
+                case 4:
+                    if (useComputerPlayers == 0) {
+                        player = new TRIBE_Player(
+                            this, this->master_players[info.tribe[index - 1]], static_cast<unsigned char>(index),
+                            info.name[index - 1], info.tribe[index - 1], 0, 1, 0, 0, 0
+                        );
+                    } else {
+                        player = new TRIBE_Player(
+                            this, this->master_players[info.tribe[index - 1]], static_cast<unsigned char>(index),
+                            info.name[index - 1], info.tribe[index - 1], 1, 1, 0, 0, 0
+                        );
+                    }
+                    break;
+                default:
+                    ++index;
+                    continue;
             }
 
             this->players[index] = player;
@@ -268,11 +274,8 @@ void TRIBE_World::setup_players(RGE_Player_Info& info) {
     }
 }
 
-void TRIBE_World::check_destructables(short player_id, short obj_id,
-                                      float col, float row,
-                                      unsigned char delete_flag) {
-    RGE_Master_Static_Object* master =
-        players[player_id]->master_objects[obj_id];
+void TRIBE_World::check_destructables(short player_id, short obj_id, float col, float row, unsigned char delete_flag) {
+    RGE_Master_Static_Object* master = players[player_id]->master_objects[obj_id];
 
     if (master != 0) {
         float radius_x = master->radius_x;
@@ -294,8 +297,7 @@ void TRIBE_World::check_destructables(short player_id, short obj_id,
 
             if (y_min <= y_max) {
                 for (short map_row = y_min; map_row <= y_max; ++map_row) {
-                    RGE_Tile* tile =
-                        map->map_row_offset[map_row] + x_min;
+                    RGE_Tile* tile = map->map_row_offset[map_row] + x_min;
                     if (x_min <= x_max) {
                         for (short column = x_min; column <= x_max; ++column) {
                             RGE_Object_Node* node = tile->objects.list;
@@ -334,19 +336,24 @@ void TRIBE_World::check_destructables(short player_id, short obj_id,
     }
 }
 
-void TRIBE_World::scenario_make_player(short index,
-    unsigned char player_type, unsigned char info_type,
-    unsigned char master_player_id, char* name) {
+void TRIBE_World::scenario_make_player(
+    short index, unsigned char player_type, unsigned char info_type, unsigned char master_player_id, char* name
+) {
     if (info_type == 0) {
-        this->players[index] = new TRIBE_Player(this, this->master_players[player_type],
-                                                static_cast<unsigned char>(index), name, player_type, 0, 1, 0, 0, 0);
+        this->players[index] = new TRIBE_Player(
+            this, this->master_players[player_type], static_cast<unsigned char>(index), name, player_type, 0, 1, 0, 0, 0
+        );
     } else {
         if (info_type == 4) {
-            this->players[index] = new TRIBE_Player(this, this->master_players[player_type],
-                                                    static_cast<unsigned char>(index), name, player_type, 1, 1, 0, 0, 0);
+            this->players[index] = new TRIBE_Player(
+                this, this->master_players[player_type], static_cast<unsigned char>(index), name, player_type, 1, 1, 0,
+                0, 0
+            );
         } else {
-            this->players[index] = new TRIBE_Player(this, this->master_players[player_type],
-                                                    static_cast<unsigned char>(index), name, player_type, 0, 1, 0, 0, 0);
+            this->players[index] = new TRIBE_Player(
+                this, this->master_players[player_type], static_cast<unsigned char>(index), name, player_type, 0, 1, 0,
+                0, 0
+            );
         }
     }
 }
@@ -414,122 +421,167 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
         static_cast<TRIBE_Game*>(rge_base_game)->reset_countdown_timer(i);
     }
 
-    if (!((static_cast<TRIBE_Game*>(rge_base_game)->campaignGame() || !static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) && static_cast<TRIBE_Game*>(rge_base_game)->victoryType() == TRIBE_Game::VictoryDefault)) {
-        if (!static_cast<TRIBE_Game*>(rge_base_game)->campaignGame() && static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
-        static_cast<T_Scenario*>(this->scenario)->Set_scenario_name(s_empty_string);
+    if (!((static_cast<TRIBE_Game*>(rge_base_game)->campaignGame()
+           || !static_cast<TRIBE_Game*>(rge_base_game)->randomGame())
+          && static_cast<TRIBE_Game*>(rge_base_game)->victoryType() == TRIBE_Game::VictoryDefault)) {
+        if (!static_cast<TRIBE_Game*>(rge_base_game)->campaignGame()
+            && static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
+            static_cast<T_Scenario*>(this->scenario)->Set_scenario_name(s_empty_string);
         }
 
-    switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
-    case TRIBE_Game::VictoryDefault:
-    case TRIBE_Game::VictoryStandard:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_VICTORY_DESCRIPTION_STANDARD, description, 4096);
-        break;
-    case TRIBE_Game::VictoryConquest:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_VICTORY_DESCRIPTION_CONQUEST, description, 4096);
-        break;
-    case TRIBE_Game::VictoryTime:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_VICTORY_DESCRIPTION_TIME_LIMIT, description, 4096);
-        break;
-    case TRIBE_Game::VictoryScore:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_VICTORY_DESCRIPTION_SCORE, description, 4096);
-        break;
-    default:
-        break;
-    }
-
-    switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
-    case TRIBE_Game::Tiny: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_TINY)); break;
-    case TRIBE_Game::Small: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_SMALL)); break;
-    case TRIBE_Game::Medium: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_MEDIUM)); break;
-    case TRIBE_Game::Large: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_LARGE)); break;
-    case TRIBE_Game::Huge: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_HUGE)); break;
-    case TRIBE_Game::Humongous: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_HUMONGOUS)); break;
-    }
-    sprintf(str2, rge_base_game->get_string(STRING_ID_MAP_SIZE_FORMAT), str1);
-    sprintf(description, newline_join_format, description, str2);
-
-    if (static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
-        switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case TRIBE_Game::AllWater: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_ALL_WATER)); break;
-        case TRIBE_Game::MostlyWater: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_MOSTLY_WATER)); break;
-        case TRIBE_Game::WaterAndLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_WATER_AND_LAND)); break;
-        case TRIBE_Game::MostlyLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_MOSTLY_LAND)); break;
-        case TRIBE_Game::AllLand: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_ALL_LAND)); break;
-        case TRIBE_Game::Continental: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_CONTINENTAL)); break;
-        case TRIBE_Game::Lake: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_LAKE)); break;
-        case TRIBE_Game::Hilly: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_HILLY)); break;
-        case TRIBE_Game::Isthmas: strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_ISTHMAS)); break;
+        switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
+            case TRIBE_Game::VictoryDefault:
+            case TRIBE_Game::VictoryStandard:
+                static_cast<TRIBE_Game*>(rge_base_game)
+                    ->get_string(STRING_ID_VICTORY_DESCRIPTION_STANDARD, description, 4096);
+                break;
+            case TRIBE_Game::VictoryConquest:
+                static_cast<TRIBE_Game*>(rge_base_game)
+                    ->get_string(STRING_ID_VICTORY_DESCRIPTION_CONQUEST, description, 4096);
+                break;
+            case TRIBE_Game::VictoryTime:
+                static_cast<TRIBE_Game*>(rge_base_game)
+                    ->get_string(STRING_ID_VICTORY_DESCRIPTION_TIME_LIMIT, description, 4096);
+                break;
+            case TRIBE_Game::VictoryScore:
+                static_cast<TRIBE_Game*>(rge_base_game)
+                    ->get_string(STRING_ID_VICTORY_DESCRIPTION_SCORE, description, 4096);
+                break;
+            default:
+                break;
         }
-        sprintf(str2, rge_base_game->get_string(STRING_ID_MAP_TYPE_FORMAT), str1);
+
+        switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
+            case TRIBE_Game::Tiny:
+                strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_TINY));
+                break;
+            case TRIBE_Game::Small:
+                strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_SMALL));
+                break;
+            case TRIBE_Game::Medium:
+                strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_MEDIUM));
+                break;
+            case TRIBE_Game::Large:
+                strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_LARGE));
+                break;
+            case TRIBE_Game::Huge:
+                strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_HUGE));
+                break;
+            case TRIBE_Game::Humongous:
+                strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_SIZE_HUMONGOUS));
+                break;
+        }
+        sprintf(str2, rge_base_game->get_string(STRING_ID_MAP_SIZE_FORMAT), str1);
         sprintf(description, newline_join_format, description, str2);
-    }
 
-    age = static_cast<TRIBE_Game*>(rge_base_game)->startingAge();
-    if (age == TRIBE_Game::DefaultAge) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
-    } else if (age == TRIBE_Game::NomadAge) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_AGE_NOMAD, str1, 256);
-    } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(age + STRING_ID_AGE_NAME_BASE, str1, 256);
-    }
-    sprintf(str2, rge_base_game->get_string(STRING_ID_STARTING_AGE_FORMAT), str1);
-    sprintf(description, newline_join_format, description, str2);
+        if (static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
+            switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
+                case TRIBE_Game::AllWater:
+                    strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_ALL_WATER));
+                    break;
+                case TRIBE_Game::MostlyWater:
+                    strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_MOSTLY_WATER));
+                    break;
+                case TRIBE_Game::WaterAndLand:
+                    strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_WATER_AND_LAND));
+                    break;
+                case TRIBE_Game::MostlyLand:
+                    strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_MOSTLY_LAND));
+                    break;
+                case TRIBE_Game::AllLand:
+                    strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_ALL_LAND));
+                    break;
+                case TRIBE_Game::Continental:
+                    strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_CONTINENTAL));
+                    break;
+                case TRIBE_Game::Lake:
+                    strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_LAKE));
+                    break;
+                case TRIBE_Game::Hilly:
+                    strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_HILLY));
+                    break;
+                case TRIBE_Game::Isthmas:
+                    strcpy(str1, rge_base_game->get_string(STRING_ID_MAP_TYPE_ISTHMAS));
+                    break;
+            }
+            sprintf(str2, rge_base_game->get_string(STRING_ID_MAP_TYPE_FORMAT), str1);
+            sprintf(description, newline_join_format, description, str2);
+        }
 
-    res = static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel();
-    if (res == TRIBE_Game::DefaultResources) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
-    } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(res + STRING_ID_RESOURCE_LEVEL_BASE, str1, 256);
-    }
-    sprintf(str2, rge_base_game->get_string(STRING_ID_RESOURCE_LEVEL_FORMAT), str1);
-    sprintf(description, newline_join_format, description, str2);
+        age = static_cast<TRIBE_Game*>(rge_base_game)->startingAge();
+        if (age == TRIBE_Game::DefaultAge) {
+            static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
+        } else if (age == TRIBE_Game::NomadAge) {
+            static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_AGE_NOMAD, str1, 256);
+        } else {
+            static_cast<TRIBE_Game*>(rge_base_game)->get_string(age + STRING_ID_AGE_NAME_BASE, str1, 256);
+        }
+        sprintf(str2, rge_base_game->get_string(STRING_ID_STARTING_AGE_FORMAT), str1);
+        sprintf(description, newline_join_format, description, str2);
 
-    static_cast<TRIBE_Game*>(rge_base_game)->difficulty();
-    static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-        static_cast<TRIBE_Game*>(rge_base_game)->difficulty() + STRING_ID_DIFFICULTY_BASE, str1, 256);
-    static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_DIFFICULTY_FORMAT, str2, 256);
-    sprintf(str3, str2, str1);
-    sprintf(description, newline_join_format, description, str3);
+        res = static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel();
+        if (res == TRIBE_Game::DefaultResources) {
+            static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
+        } else {
+            static_cast<TRIBE_Game*>(rge_base_game)->get_string(res + STRING_ID_RESOURCE_LEVEL_BASE, str1, 256);
+        }
+        sprintf(str2, rge_base_game->get_string(STRING_ID_RESOURCE_LEVEL_FORMAT), str1);
+        sprintf(description, newline_join_format, description, str2);
 
-    if (static_cast<TRIBE_Game*>(rge_base_game)->randomizePositions() == 0) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_YES, str1, 256);
-    } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_NO, str1, 256);
-    }
-    sprintf(str2, rge_base_game->get_string(STRING_ID_FIXED_POSITIONS_FORMAT), str1);
-    sprintf(description, newline_join_format, description, str2);
-    if (static_cast<TRIBE_Game*>(rge_base_game)->fullVisibility() == 0) {
-        strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_NO));
-    } else {
-        strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_YES));
-    }
-    sprintf(str2, rge_base_game->get_string(STRING_ID_REVEAL_MAP_FORMAT), str1);
-    sprintf(description, newline_join_format, description, str2);
-    if (static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() == 0) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_NO, str1, 256);
-    } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_YES, str1, 256);
-    }
-    sprintf(str2, rge_base_game->get_string(STRING_ID_FULL_TECH_TREE_FORMAT), str1);
-    sprintf(description, newline_join_format, description, str2);
+        static_cast<TRIBE_Game*>(rge_base_game)->difficulty();
+        static_cast<TRIBE_Game*>(rge_base_game)
+            ->get_string(static_cast<TRIBE_Game*>(rge_base_game)->difficulty() + STRING_ID_DIFFICULTY_BASE, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_DIFFICULTY_FORMAT, str2, 256);
+        sprintf(str3, str2, str1);
+        sprintf(description, newline_join_format, description, str3);
 
-    if (static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame()) {
-        if (static_cast<TRIBE_Game*>(rge_base_game)->allowCheatCodes() == 0) {
+        if (static_cast<TRIBE_Game*>(rge_base_game)->randomizePositions() == 0) {
+            static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_YES, str1, 256);
+        } else {
+            static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_NO, str1, 256);
+        }
+        sprintf(str2, rge_base_game->get_string(STRING_ID_FIXED_POSITIONS_FORMAT), str1);
+        sprintf(description, newline_join_format, description, str2);
+        if (static_cast<TRIBE_Game*>(rge_base_game)->fullVisibility() == 0) {
             strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_NO));
         } else {
             strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_YES));
         }
-        sprintf(str2, rge_base_game->get_string(STRING_ID_CHEATING_ENABLED_FORMAT), str1);
+        sprintf(str2, rge_base_game->get_string(STRING_ID_REVEAL_MAP_FORMAT), str1);
         sprintf(description, newline_join_format, description, str2);
-    }
+        if (static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() == 0) {
+            static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_NO, str1, 256);
+        } else {
+            static_cast<TRIBE_Game*>(rge_base_game)->get_string(STRING_ID_BUTTON_YES, str1, 256);
+        }
+        sprintf(str2, rge_base_game->get_string(STRING_ID_FULL_TECH_TREE_FORMAT), str1);
+        sprintf(description, newline_join_format, description, str2);
 
-    rge_base_game->get_string((static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame() ? static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() : static_cast<TRIBE_Game*>(rge_base_game)->pathFinding()) + STRING_ID_PATH_FINDING_OPTION_BASE, str1, 256);
-    sprintf(str2, rge_base_game->get_string(STRING_ID_PATH_FINDING_FORMAT), str1);
-    sprintf(description, newline_join_format, description, str2);
+        if (static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame()) {
+            if (static_cast<TRIBE_Game*>(rge_base_game)->allowCheatCodes() == 0) {
+                strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_NO));
+            } else {
+                strcpy(str1, rge_base_game->get_string(STRING_ID_BUTTON_YES));
+            }
+            sprintf(str2, rge_base_game->get_string(STRING_ID_CHEATING_ENABLED_FORMAT), str1);
+            sprintf(description, newline_join_format, description, str2);
+        }
 
-    sprintf(str2, rge_base_game->get_string(STRING_ID_POPULATION_LIMIT_FORMAT),
-            static_cast<int>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit()));
-    sprintf(description, newline_join_format, description, str2);
+        rge_base_game->get_string(
+            (static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame()
+                 ? static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding()
+                 : static_cast<TRIBE_Game*>(rge_base_game)->pathFinding())
+                + STRING_ID_PATH_FINDING_OPTION_BASE,
+            str1, 256
+        );
+        sprintf(str2, rge_base_game->get_string(STRING_ID_PATH_FINDING_FORMAT), str1);
+        sprintf(description, newline_join_format, description, str2);
+
+        sprintf(
+            str2, rge_base_game->get_string(STRING_ID_POPULATION_LIMIT_FORMAT),
+            static_cast<int>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit())
+        );
+        sprintf(description, newline_join_format, description, str2);
         static_cast<T_Scenario*>(this->scenario)->add_description(description);
     }
 
@@ -538,7 +590,9 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
         this->countdown_victory = 0;
         this->countdown_clock = 0.0f;
 
-        if ((!static_cast<TRIBE_Game*>(rge_base_game)->campaignGame() && static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) || static_cast<TRIBE_Game*>(rge_base_game)->victoryType() != TRIBE_Game::VictoryDefault) {
+        if ((!static_cast<TRIBE_Game*>(rge_base_game)->campaignGame()
+             && static_cast<TRIBE_Game*>(rge_base_game)->randomGame())
+            || static_cast<TRIBE_Game*>(rge_base_game)->victoryType() != TRIBE_Game::VictoryDefault) {
             static_cast<T_Scenario*>(this->scenario)->Set_victory_all_flag(0);
             static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(0);
             static_cast<T_Scenario*>(this->scenario)->Set_Multi_Ruins(0);
@@ -548,73 +602,75 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
             static_cast<T_Scenario*>(this->scenario)->Set_Multi_Gold(0);
             victoryAmount = static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount();
             switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
-            case TRIBE_Game::VictoryDefault:
-            case TRIBE_Game::VictoryStandard:
-                this->victory_type = 0;
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
-                break;
-            case TRIBE_Game::VictoryConquest:
-                this->victory_type = 1;
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
-                break;
-            case TRIBE_Game::VictoryTime:
-                this->victory_type = 2;
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
-                break;
-            case TRIBE_Game::VictoryScore:
-                this->victory_type = 3;
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
-                break;
-            case TRIBE_VICTORY_TYPE_RUINS:
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Ruins(victoryAmount);
-                break;
-            case TRIBE_VICTORY_TYPE_ARTIFACTS:
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Artifacts(victoryAmount);
-                break;
-            case TRIBE_VICTORY_TYPE_DISCOVERIES:
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Discoveries(victoryAmount);
-                break;
-            case TRIBE_VICTORY_TYPE_EXPLORATION:
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Exploration(victoryAmount);
-                break;
-            case TRIBE_VICTORY_TYPE_GOLD:
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Gold(victoryAmount);
-                break;
+                case TRIBE_Game::VictoryDefault:
+                case TRIBE_Game::VictoryStandard:
+                    this->victory_type = 0;
+                    static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
+                    break;
+                case TRIBE_Game::VictoryConquest:
+                    this->victory_type = 1;
+                    static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
+                    break;
+                case TRIBE_Game::VictoryTime:
+                    this->victory_type = 2;
+                    static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
+                    break;
+                case TRIBE_Game::VictoryScore:
+                    this->victory_type = 3;
+                    static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
+                    break;
+                case TRIBE_VICTORY_TYPE_RUINS:
+                    static_cast<T_Scenario*>(this->scenario)->Set_Multi_Ruins(victoryAmount);
+                    break;
+                case TRIBE_VICTORY_TYPE_ARTIFACTS:
+                    static_cast<T_Scenario*>(this->scenario)->Set_Multi_Artifacts(victoryAmount);
+                    break;
+                case TRIBE_VICTORY_TYPE_DISCOVERIES:
+                    static_cast<T_Scenario*>(this->scenario)->Set_Multi_Discoveries(victoryAmount);
+                    break;
+                case TRIBE_VICTORY_TYPE_EXPLORATION:
+                    static_cast<T_Scenario*>(this->scenario)->Set_Multi_Exploration(victoryAmount);
+                    break;
+                case TRIBE_VICTORY_TYPE_GOLD:
+                    static_cast<T_Scenario*>(this->scenario)->Set_Multi_Gold(victoryAmount);
+                    break;
             }
             static_cast<T_Scenario*>(this->scenario)->Save_victory_conditions_into_players(0);
             switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
-            case TRIBE_Game::VictoryTime:
-                this->countdown_victory = 1;
-                this->countdown_clock = static_cast<float>(victoryAmount);
-                break;
-            case TRIBE_Game::VictoryScore:
-                for (i = 1; i < this->player_num; ++i) {
-                    this->players[i]->victory_conditions->add_victory_points(0, victoryAmount, 1);
-                }
-                break;
-            }
-        } else {
-            if (static_cast<TRIBE_Game*>(rge_base_game)->campaignGame() || static_cast<TRIBE_Game*>(rge_base_game)->scenarioGame()) {
-                switch (static_cast<T_Scenario*>(this->scenario)->GetMPVictory()) {
-                case 0:
-                    this->victory_type = 0;
-                    break;
-                case 1:
-                    this->victory_type = 1;
-                    break;
-                case 3:
-                    this->victory_type = 2;
+                case TRIBE_Game::VictoryTime:
                     this->countdown_victory = 1;
-                    this->countdown_clock = static_cast<float>(static_cast<T_Scenario*>(this->scenario)->GetVictoryTime());
+                    this->countdown_clock = static_cast<float>(victoryAmount);
                     break;
-                case 2: {
-                    this->victory_type = 3;
-                    victoryAmount = static_cast<T_Scenario*>(this->scenario)->GetVictoryScore();
+                case TRIBE_Game::VictoryScore:
                     for (i = 1; i < this->player_num; ++i) {
                         this->players[i]->victory_conditions->add_victory_points(0, victoryAmount, 1);
                     }
                     break;
-                }
+            }
+        } else {
+            if (static_cast<TRIBE_Game*>(rge_base_game)->campaignGame()
+                || static_cast<TRIBE_Game*>(rge_base_game)->scenarioGame()) {
+                switch (static_cast<T_Scenario*>(this->scenario)->GetMPVictory()) {
+                    case 0:
+                        this->victory_type = 0;
+                        break;
+                    case 1:
+                        this->victory_type = 1;
+                        break;
+                    case 3:
+                        this->victory_type = 2;
+                        this->countdown_victory = 1;
+                        this->countdown_clock =
+                            static_cast<float>(static_cast<T_Scenario*>(this->scenario)->GetVictoryTime());
+                        break;
+                    case 2: {
+                        this->victory_type = 3;
+                        victoryAmount = static_cast<T_Scenario*>(this->scenario)->GetVictoryScore();
+                        for (i = 1; i < this->player_num; ++i) {
+                            this->players[i]->victory_conditions->add_victory_points(0, victoryAmount, 1);
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -640,7 +696,8 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                 } while (player_count != 0);
             }
             missing = want - count;
-            if (missing > 0) generator->add_quick_obj(0x9f, missing, 0);
+            if (missing > 0)
+                generator->add_quick_obj(0x9f, missing, 0);
         }
         want = static_cast<T_Scenario*>(this->scenario)->Get_Multi_Discoveries();
         if (want > 0) {
@@ -661,7 +718,8 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                 } while (player_count != 0);
             }
             missing = want - count;
-            if (missing > 0) generator->add_quick_obj(10, missing, 0);
+            if (missing > 0)
+                generator->add_quick_obj(10, missing, 0);
         }
         want = static_cast<T_Scenario*>(this->scenario)->Get_Multi_Ruins();
         if (want > 0) {
@@ -683,10 +741,12 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                 } while (player_count != 0);
             }
             missing = want - count;
-            if (missing > 0) generator->add_quick_obj(0x9e, missing, 0);
+            if (missing > 0)
+                generator->add_quick_obj(0x9e, missing, 0);
         }
 
-        if (!static_cast<TRIBE_Game*>(rge_base_game)->campaignGame() && static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
+        if (!static_cast<TRIBE_Game*>(rge_base_game)->campaignGame()
+            && static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
             if (this->victory_type == 3 || debug_rand(world_source_file, 909) % 100 < 50) {
                 generator->add_quick_obj(0x9f, 5, this->map->map_width / 5);
                 this->artifact_count = 5;
@@ -753,10 +813,12 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     //! @bug This applies the civ tech-tree effect with no lower-bound guard on tribe_effect.
     //! A civ without a tech tree sends a negative id, and TRIBE_Effects::do_effect reads effects[-1].
     //! RGE_Player and TRIBE_Player check tribe_effect >= 0 before use.
-    if (!static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() && !static_cast<T_Scenario*>(this->scenario)->GetScenarioOption(2)) {
+    if (!static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree()
+        && !static_cast<T_Scenario*>(this->scenario)->GetScenarioOption(2)) {
         for (i = 1; i < this->player_num; ++i) {
-            this->effects->do_effect(static_cast<short>(this->players[i]->tribe_effect),
-                                     static_cast<TRIBE_Player*>(this->players[i]));
+            this->effects->do_effect(
+                static_cast<short>(this->players[i]->tribe_effect), static_cast<TRIBE_Player*>(this->players[i])
+            );
         }
     } else {
         for (i = 1; i < this->player_num; ++i) {
@@ -765,30 +827,30 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     }
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel()) {
-    case TRIBE_Game::LowResources:
-        for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->attributes[RGE_RESOURCE_FOOD] = 200.0f;
-            this->players[i]->attributes[RGE_RESOURCE_WOOD] = 200.0f;
-            this->players[i]->attributes[RGE_RESOURCE_GOLD] = 0.0f;
-            this->players[i]->attributes[RGE_RESOURCE_STONE] = 100.0f;
-        }
-        break;
-    case TRIBE_Game::MediumResources:
-        for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->attributes[RGE_RESOURCE_FOOD] = 500.0f;
-            this->players[i]->attributes[RGE_RESOURCE_WOOD] = 500.0f;
-            this->players[i]->attributes[RGE_RESOURCE_GOLD] = 0.0f;
-            this->players[i]->attributes[RGE_RESOURCE_STONE] = 250.0f;
-        }
-        break;
-    case TRIBE_Game::HighResources:
-        for (i = 1; i < this->player_num; ++i) {
-            this->players[i]->attributes[RGE_RESOURCE_FOOD] = 1000.0f;
-            this->players[i]->attributes[RGE_RESOURCE_WOOD] = 1000.0f;
-            this->players[i]->attributes[RGE_RESOURCE_GOLD] = 0.0f;
-            this->players[i]->attributes[RGE_RESOURCE_STONE] = 750.0f;
-        }
-        break;
+        case TRIBE_Game::LowResources:
+            for (i = 1; i < this->player_num; ++i) {
+                this->players[i]->attributes[RGE_RESOURCE_FOOD] = 200.0f;
+                this->players[i]->attributes[RGE_RESOURCE_WOOD] = 200.0f;
+                this->players[i]->attributes[RGE_RESOURCE_GOLD] = 0.0f;
+                this->players[i]->attributes[RGE_RESOURCE_STONE] = 100.0f;
+            }
+            break;
+        case TRIBE_Game::MediumResources:
+            for (i = 1; i < this->player_num; ++i) {
+                this->players[i]->attributes[RGE_RESOURCE_FOOD] = 500.0f;
+                this->players[i]->attributes[RGE_RESOURCE_WOOD] = 500.0f;
+                this->players[i]->attributes[RGE_RESOURCE_GOLD] = 0.0f;
+                this->players[i]->attributes[RGE_RESOURCE_STONE] = 250.0f;
+            }
+            break;
+        case TRIBE_Game::HighResources:
+            for (i = 1; i < this->player_num; ++i) {
+                this->players[i]->attributes[RGE_RESOURCE_FOOD] = 1000.0f;
+                this->players[i]->attributes[RGE_RESOURCE_WOOD] = 1000.0f;
+                this->players[i]->attributes[RGE_RESOURCE_GOLD] = 0.0f;
+                this->players[i]->attributes[RGE_RESOURCE_STONE] = 750.0f;
+            }
+            break;
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch()) {
@@ -801,18 +863,18 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     }
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->startingAge()) {
-    case TRIBE_Game::ToolAge:
-        for (i = 1; i < this->player_num; ++i)
-            static_cast<TRIBE_Player*>(this->players[i])->rev_tech(0x19);
-        break;
-    case TRIBE_Game::BronzeAge:
-        for (i = 1; i < this->player_num; ++i)
-            static_cast<TRIBE_Player*>(this->players[i])->rev_tech(0x17);
-        break;
-    case TRIBE_Game::IronAge:
-        for (i = 1; i < this->player_num; ++i)
-            static_cast<TRIBE_Player*>(this->players[i])->rev_tech(0x18);
-        break;
+        case TRIBE_Game::ToolAge:
+            for (i = 1; i < this->player_num; ++i)
+                static_cast<TRIBE_Player*>(this->players[i])->rev_tech(0x19);
+            break;
+        case TRIBE_Game::BronzeAge:
+            for (i = 1; i < this->player_num; ++i)
+                static_cast<TRIBE_Player*>(this->players[i])->rev_tech(0x17);
+            break;
+        case TRIBE_Game::IronAge:
+            for (i = 1; i < this->player_num; ++i)
+                static_cast<TRIBE_Player*>(this->players[i])->rev_tech(0x18);
+            break;
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->check_prog_argument(nofoodcap_argument)) {
@@ -829,8 +891,8 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
         }
     } else {
         for (i = 1; i < this->player_num; ++i) {
-            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(
-                0x20, static_cast<float>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit()));
+            static_cast<TRIBE_Player*>(this->players[i])
+                ->new_attribute_num(0x20, static_cast<float>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit()));
             static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x21, 0.0f);
             static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x1e, 500.0f);
             static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x2d, 1.0f);
@@ -860,14 +922,14 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
             this->players[i]->victory_conditions->add_points_attribute_amount(4, 22, 0x2d, 1, 100);
             this->players[i]->victory_conditions->add_points_attribute_amount(4, 23, 0x2a, 1, 100);
             static_cast<TRIBE_Player*>(this->players[i])->add_population_entry();
-        }    }
+        }
+    }
 
     return ret_num;
 }
 
 unsigned char TRIBE_World::new_scenario(RGE_Player_Info& info, int random_seed_in) {
-    unsigned char result =
-        RGE_Game_World::new_scenario(info, random_seed_in);
+    unsigned char result = RGE_Game_World::new_scenario(info, random_seed_in);
     int i = 1;
     if (this->player_num > 1) {
         do {
@@ -894,15 +956,13 @@ unsigned char TRIBE_World::check_game_state() {
 
                 for (i = 1; i < this->player_num; ++i) {
                     int player_count = 1;
-                    team_score[i] =
-                        this->players[i]->victory_conditions->get_victory_points();
+                    team_score[i] = this->players[i]->victory_conditions->get_victory_points();
 
                     if (this->players[i]->allied_victory != 0) {
                         for (int j = 1; j < this->player_num; ++j) {
-                            if (j != i && this->players[i]->relation(j) == 0 && this->players[j]->relation(i) == 0 &&
-                                this->players[j]->allied_victory != 0) {
-                                team_score[i] += this->players[j]
-                                    ->victory_conditions->get_victory_points();
+                            if (j != i && this->players[i]->relation(j) == 0 && this->players[j]->relation(i) == 0
+                                && this->players[j]->allied_victory != 0) {
+                                team_score[i] += this->players[j]->victory_conditions->get_victory_points();
                                 ++player_count;
                             }
                         }
@@ -940,13 +1000,12 @@ unsigned char TRIBE_World::check_game_state() {
             for (i = 1; i < this->player_num; ++i) {
                 if (player_team[i] == -1) {
                     player_team[i] = team_count;
-                    team_player[team_count][team_size[team_count]++] =
-                        static_cast<TRIBE_Player*>(this->players[i]);
+                    team_player[team_count][team_size[team_count]++] = static_cast<TRIBE_Player*>(this->players[i]);
 
                     if (this->players[i]->allied_victory != 0) {
                         for (int j = 1; j < this->player_num; ++j) {
-                            if (player_team[j] == -1 && this->players[j]->allied_victory != 0 &&
-                                this->players[i]->relation(j) == 0 && this->players[j]->relation(i) == 0) {
+                            if (player_team[j] == -1 && this->players[j]->allied_victory != 0
+                                && this->players[i]->relation(j) == 0 && this->players[j]->relation(i) == 0) {
                                 player_team[j] = team_count;
                                 team_player[team_count][team_size[team_count]++] =
                                     static_cast<TRIBE_Player*>(this->players[j]);
@@ -1067,169 +1126,185 @@ void TRIBE_World::send_cheat(short cheat_code) {
 void TRIBE_World::cheat(short player, short cheat_code) {
     if (rge_base_game->allowCheatCodes() != 0) {
         switch (cheat_code) {
-        case 0:
-            if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
-                if (object != 0)
-                    static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x112);
-            }
-            break;
-        case 1:
-            if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
-                if (object != 0)
-                    static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0xf8);
-            }
-            break;
-        case 2:
-            if (player > 0)
-                this->effects->do_effect(0x7f, this->players[player]);
-            break;
-        case 3:
-            if (player > 0)
-                this->effects->do_effect(0x80, this->players[player]);
-            break;
-        case 4:
-            if (player > 0)
-                this->effects->do_effect(0x81, this->players[player]);
-            break;
-        case 5:
-            this->effects->do_effect(0x82, this->players[0]);
-            break;
-        case 6:
-            if (player > 0)
-                this->effects->do_effect(0x83, this->players[player]);
-            break;
-        case 7:
-            if (player > 0)
-                this->effects->do_effect(0x84, this->players[player]);
-            break;
-        case 8:
-            if (player > 0)
-                this->effects->do_effect(0x85, this->players[player]);
-            break;
-        case 9:
-            if (player > 0)
-                this->effects->do_effect(0x86, this->players[player]);
-            break;
-        case 10:
-            if (player > 0)
-                this->effects->do_effect(0x87, this->players[player]);
-            break;
-        case 11:
-            if (player > 0)
-                this->effects->do_effect(0x88, this->players[player]);
-            break;
-        case 12:
-            if (player > 0)
-                this->effects->do_effect(0x89, this->players[player]);
-            break;
-        case 13:
-            if (player > 0)
-                this->effects->do_effect(0x8a, this->players[player]);
-            break;
-        case 14:
-            if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
-                if (object != 0)
-                    static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x182);
-            }
-            break;
-        case 15:
-            if (player > 0)
-                this->effects->do_effect(0xd7, this->players[player]);
-            break;
-        case 16:
-            if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
-                if (object != 0)
-                    static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x18d);
-            }
-            break;
-        case 17:
-            if (player > 0)
-                this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
-            break;
-        case 18:
-            this->effects->do_effect(0xd8, this->players[0]);
-            break;
-        case 19:
-            this->effects->do_effect(0xd9, this->players[0]);
-            break;
-        case 100: {
-            int i = 1;
-            die_die_die = 1;
-            if (this->player_num > 1) {
-                do {
-                    if (i != player || this->players[player]->isAlly(i) == 0 || this->players[i]->isAlly(player) == 0) {
-                        RGE_Object_Node* node = this->players[i]->objects->list;
-                        while (node != 0) {
-                            RGE_Static_Object* object = node->node;
-                            if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != OBJECT_GROUP_ARTIFACT)
-                                object->die_die_die();
-                            node = node->next;
+            case 0:
+                if (player > 0) {
+                    RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
+                        0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0
+                    );
+                    if (object != 0)
+                        static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x112);
+                }
+                break;
+            case 1:
+                if (player > 0) {
+                    RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
+                        0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0
+                    );
+                    if (object != 0)
+                        static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0xf8);
+                }
+                break;
+            case 2:
+                if (player > 0)
+                    this->effects->do_effect(0x7f, this->players[player]);
+                break;
+            case 3:
+                if (player > 0)
+                    this->effects->do_effect(0x80, this->players[player]);
+                break;
+            case 4:
+                if (player > 0)
+                    this->effects->do_effect(0x81, this->players[player]);
+                break;
+            case 5:
+                this->effects->do_effect(0x82, this->players[0]);
+                break;
+            case 6:
+                if (player > 0)
+                    this->effects->do_effect(0x83, this->players[player]);
+                break;
+            case 7:
+                if (player > 0)
+                    this->effects->do_effect(0x84, this->players[player]);
+                break;
+            case 8:
+                if (player > 0)
+                    this->effects->do_effect(0x85, this->players[player]);
+                break;
+            case 9:
+                if (player > 0)
+                    this->effects->do_effect(0x86, this->players[player]);
+                break;
+            case 10:
+                if (player > 0)
+                    this->effects->do_effect(0x87, this->players[player]);
+                break;
+            case 11:
+                if (player > 0)
+                    this->effects->do_effect(0x88, this->players[player]);
+                break;
+            case 12:
+                if (player > 0)
+                    this->effects->do_effect(0x89, this->players[player]);
+                break;
+            case 13:
+                if (player > 0)
+                    this->effects->do_effect(0x8a, this->players[player]);
+                break;
+            case 14:
+                if (player > 0) {
+                    RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
+                        0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0
+                    );
+                    if (object != 0)
+                        static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x182);
+                }
+                break;
+            case 15:
+                if (player > 0)
+                    this->effects->do_effect(0xd7, this->players[player]);
+                break;
+            case 16:
+                if (player > 0) {
+                    RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
+                        0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0
+                    );
+                    if (object != 0)
+                        static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x18d);
+                }
+                break;
+            case 17:
+                if (player > 0)
+                    this->players[player]->objects->find_by_master_id(
+                        0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0
+                    );
+                break;
+            case 18:
+                this->effects->do_effect(0xd8, this->players[0]);
+                break;
+            case 19:
+                this->effects->do_effect(0xd9, this->players[0]);
+                break;
+            case 100: {
+                int i = 1;
+                die_die_die = 1;
+                if (this->player_num > 1) {
+                    do {
+                        if (i != player || this->players[player]->isAlly(i) == 0
+                            || this->players[i]->isAlly(player) == 0) {
+                            RGE_Object_Node* node = this->players[i]->objects->list;
+                            while (node != 0) {
+                                RGE_Static_Object* object = node->node;
+                                if (object->object_state < RGE_OBJECT_STATE_DYING
+                                    && object->master_obj->object_group != OBJECT_GROUP_ARTIFACT)
+                                    object->die_die_die();
+                                node = node->next;
+                            }
                         }
-                    }
-                    ++i;
-                } while (i < this->player_num);
+                        ++i;
+                    } while (i < this->player_num);
+                }
+                break;
             }
-            break;
-        }
-        case 101: {
-            RGE_Object_Node* node = this->players[player]->objects->list;
-            while (node != 0) {
-                RGE_Static_Object* object = node->node;
-                if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != OBJECT_GROUP_ARTIFACT)
-                    object->die_die_die();
-                node = node->next;
-            }
-        }
-            break;
-        case 102:
-            this->players[player]->win_game_now();
-            this->game_end_condition = 0x68;
-            break;
-        case 103:
-            this->players[player]->loss_if_game_on();
-            break;
-        case 200:
-        case 201:
-        case 202:
-        case 203:
-        case 204:
-        case 205:
-        case 206:
-        case 207:
-        case 208:
-        case 209: {
-            int other_player = cheat_code - 200;
-            if ((other_player != player || this->players[player]->isAlly(other_player) == 0 ||
-                 this->players[other_player]->isAlly(player) == 0) && this->players[other_player]->objects->list != 0) {
-                RGE_Object_Node* node = this->players[other_player]->objects->list;
+            case 101: {
+                RGE_Object_Node* node = this->players[player]->objects->list;
                 while (node != 0) {
                     RGE_Static_Object* object = node->node;
-                    if (object->object_state < RGE_OBJECT_STATE_DYING && object->master_obj->object_group != OBJECT_GROUP_ARTIFACT)
+                    if (object->object_state < RGE_OBJECT_STATE_DYING
+                        && object->master_obj->object_group != OBJECT_GROUP_ARTIFACT)
                         object->die_die_die();
                     node = node->next;
                 }
+            } break;
+            case 102:
+                this->players[player]->win_game_now();
+                this->game_end_condition = 0x68;
+                break;
+            case 103:
+                this->players[player]->loss_if_game_on();
+                break;
+            case 200:
+            case 201:
+            case 202:
+            case 203:
+            case 204:
+            case 205:
+            case 206:
+            case 207:
+            case 208:
+            case 209: {
+                int other_player = cheat_code - 200;
+                if ((other_player != player || this->players[player]->isAlly(other_player) == 0
+                     || this->players[other_player]->isAlly(player) == 0)
+                    && this->players[other_player]->objects->list != 0) {
+                    RGE_Object_Node* node = this->players[other_player]->objects->list;
+                    while (node != 0) {
+                        RGE_Static_Object* object = node->node;
+                        if (object->object_state < RGE_OBJECT_STATE_DYING
+                            && object->master_obj->object_group != OBJECT_GROUP_ARTIFACT)
+                            object->die_die_die();
+                        node = node->next;
+                    }
+                }
+                break;
             }
-            break;
-        }
-        case 220: {
-            RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0);
-            if (object != 0)
-                static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x174);
-            break;
-        }
-        case 230:
-            rge_base_game->set_map_visible(1);
-            rge_base_game->get_view_panel()->set_redraw(TPanel::RedrawImmediate);
-            rge_base_game->get_map_panel()->set_redraw(TPanel::RedrawImmediate);
-            break;
-        case 231:
-            rge_base_game->set_map_fog(0);
-            rge_base_game->get_view_panel()->set_redraw(TPanel::RedrawImmediate);
-            break;
+            case 220: {
+                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
+                    0x6d, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0
+                );
+                if (object != 0)
+                    static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x174);
+                break;
+            }
+            case 230:
+                rge_base_game->set_map_visible(1);
+                rge_base_game->get_view_panel()->set_redraw(TPanel::RedrawImmediate);
+                rge_base_game->get_map_panel()->set_redraw(TPanel::RedrawImmediate);
+                break;
+            case 231:
+                rge_base_game->set_map_fog(0);
+                rge_base_game->get_view_panel()->set_redraw(TPanel::RedrawImmediate);
+                break;
         }
     }
 }
@@ -1243,9 +1318,12 @@ void TRIBE_World::fill_in_score(TRIBE_Zone_High_Score_Info& info, long score_gro
         do {
             if (this->players[player]->computerPlayer() == 0) {
                 if (this->players[player]->victory_conditions->get_victory_points_group(
-                        static_cast<unsigned char>(score_group)) > high_score) {
+                        static_cast<unsigned char>(score_group)
+                    )
+                    > high_score) {
                     high_score = this->players[player]->victory_conditions->get_victory_points_group(
-                        static_cast<unsigned char>(score_group));
+                        static_cast<unsigned char>(score_group)
+                    );
                     hi_player = player;
                 }
             }
@@ -1261,8 +1339,8 @@ void TRIBE_World::fill_in_score(TRIBE_Zone_High_Score_Info& info, long score_gro
     player = 1;
     if (1 < this->player_num) {
         do {
-            if ((player != hi_player) && (this->players[player]->relation(hi_player) == 0) &&
-                (this->players[hi_player]->relation(player) == 0)) {
+            if ((player != hi_player) && (this->players[player]->relation(hi_player) == 0)
+                && (this->players[hi_player]->relation(player) == 0)) {
                 count++;
             }
             player++;
@@ -1306,10 +1384,8 @@ void TRIBE_World::send_zone_score_info() {
         if (index < this->player_num) {
             do {
                 strcpy(info.player_info[index - 1].name, this->players[index]->name);
-                info.player_info[index - 1].score =
-                    this->players[index]->victory_conditions->get_victory_points();
-                info.player_info[index - 1].winner =
-                    (this->players[index]->game_status == 1);
+                info.player_info[index - 1].score = this->players[index]->victory_conditions->get_victory_points();
+                info.player_info[index - 1].winner = (this->players[index]->game_status == 1);
                 info.player_info[index - 1].civ_played =
                     static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->civilization(index - 1));
                 info.player_info[index - 1].civ_random =
@@ -1319,25 +1395,23 @@ void TRIBE_World::send_zone_score_info() {
                 info.player_info[index - 1].team_no =
                     static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->playerTeam(index - 1));
                 int game_outcome = comm->WasKicked[index - 1];
-                info.player_info[index - 1].game_outcome =
-                    static_cast<unsigned char>(game_outcome);
+                info.player_info[index - 1].game_outcome = static_cast<unsigned char>(game_outcome);
                 info.player_info[index - 1].tool_time = -1;
                 info.player_info[index - 1].bronze_time = -1;
                 info.player_info[index - 1].iron_time = -1;
 
-                TRIBE_History_Events* event =
-                    static_cast<TRIBE_Player*>(this->players[index])->history->events;
+                TRIBE_History_Events* event = static_cast<TRIBE_Player*>(this->players[index])->history->events;
                 while (event != 0) {
                     switch (event->event) {
-                    case 0:
-                        info.player_info[index - 1].tool_time = event->world_time;
-                        break;
-                    case 1:
-                        info.player_info[index - 1].bronze_time = event->world_time;
-                        break;
-                    case 2:
-                        info.player_info[index - 1].iron_time = event->world_time;
-                        break;
+                        case 0:
+                            info.player_info[index - 1].tool_time = event->world_time;
+                            break;
+                        case 1:
+                            info.player_info[index - 1].bronze_time = event->world_time;
+                            break;
+                        case 2:
+                            info.player_info[index - 1].iron_time = event->world_time;
+                            break;
                     }
                     event = event->next;
                 }
@@ -1347,33 +1421,33 @@ void TRIBE_World::send_zone_score_info() {
 
         info.cheats_enabled = static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->allowCheatCodes());
         switch (this->game_end_condition) {
-        case 0:
-            info.game_end_condition_code = 0;
-            break;
-        case 1:
-            info.game_end_condition_code = 1;
-            break;
-        case 100:
-            info.game_end_condition_code = 2;
-            break;
-        case 101:
-            info.game_end_condition_code = 3;
-            break;
-        case 102:
-            info.game_end_condition_code = 4;
-            break;
-        case 103:
-            info.game_end_condition_code = 5;
-            break;
-        case 2:
-            info.game_end_condition_code = 6;
-            break;
-        case 104:
-            info.game_end_condition_code = 7;
-            break;
-        default:
-            info.game_end_condition_code = 8;
-            break;
+            case 0:
+                info.game_end_condition_code = 0;
+                break;
+            case 1:
+                info.game_end_condition_code = 1;
+                break;
+            case 100:
+                info.game_end_condition_code = 2;
+                break;
+            case 101:
+                info.game_end_condition_code = 3;
+                break;
+            case 102:
+                info.game_end_condition_code = 4;
+                break;
+            case 103:
+                info.game_end_condition_code = 5;
+                break;
+            case 2:
+                info.game_end_condition_code = 6;
+                break;
+            case 104:
+                info.game_end_condition_code = 7;
+                break;
+            default:
+                info.game_end_condition_code = 8;
+                break;
         }
 
         static_cast<TRIBE_Game*>(rge_base_game)->get_tribe_options(&options);
@@ -1384,7 +1458,8 @@ void TRIBE_World::send_zone_score_info() {
         info.map_info.Resources = static_cast<unsigned char>(options.resourceLevelValue);
         info.map_info.Full_Tech = options.fullTechTreeValue;
         info.map_info.Fixed_Pos = options.randomizePositionsValue;
-        info.map_info.Reveal_Map = static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->fullVisibility());
+        info.map_info.Reveal_Map =
+            static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->fullVisibility());
         info.map_info.Death_Match = options.deathMatchValue;
         info.map_info.Pop_Limit = static_cast<short>(options.popLimitValue);
 

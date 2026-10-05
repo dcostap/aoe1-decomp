@@ -16,14 +16,12 @@ extern void rge_read_uncompressed(int file, void* data, int size);
 extern void rge_write_uncompressed(int file, void* data, int size);
 #include "../include/rge_fio.h"
 
-TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario_info)
-    : RGE_Scenario_Header(scenario_info) {
+TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario_info) : RGE_Scenario_Header(scenario_info) {
     any_sp_victory = scenario_info->any_sp_victory();
     active_player_count = scenario_info->active_player_count();
 }
 
-TRIBE_Scenario_Header::TRIBE_Scenario_Header(int infile)
-    : RGE_Scenario_Header(infile) {
+TRIBE_Scenario_Header::TRIBE_Scenario_Header(int infile) : RGE_Scenario_Header(infile) {
     any_sp_victory = 0;
     active_player_count = 0;
     if (error_code == 0) {
@@ -42,8 +40,7 @@ void TRIBE_Scenario_Header::save(int outfile) {
     rge_write_uncompressed(outfile, &this->active_player_count, 4);
 }
 
-T_Scenario::T_Scenario(RGE_Game_World* w)
-    : RGE_Scenario(w) {
+T_Scenario::T_Scenario(RGE_Game_World* w) : RGE_Scenario(w) {
     InitializePlayerValues();
     InitializeVictoryValues();
     InitializeFriendlinessValues();
@@ -83,12 +80,14 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
 
     if (old_version) {
         int i;
-        for (i = 0; i < 16; ++i) rge_read(infile, player_name[i], 256);
+        for (i = 0; i < 16; ++i)
+            rge_read(infile, player_name[i], 256);
     }
 
     if (Version > g_scenario_file_version_1_13) {
         int i;
-        for (i = 0; i < 16; ++i) rge_read(infile, &player_info[i], 16);
+        for (i = 0; i < 16; ++i)
+            rge_read(infile, &player_info[i], 16);
     } else {
         int i;
         for (i = 0; i < 16; ++i) {
@@ -118,15 +117,20 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
     }
 
     rge_read(infile, Opponent, 1024);
-    for (int p = 0; p < 16; ++p) rge_read(infile, sp_victory[p], sizeof(sp_victory[p]));
+    for (int p = 0; p < 16; ++p)
+        rge_read(infile, sp_victory[p], sizeof(sp_victory[p]));
 
-    if (Version > g_scenario_file_version_1_02) rge_read(infile, &checksum, 4);
+    if (Version > g_scenario_file_version_1_02)
+        rge_read(infile, &checksum, 4);
 
     if (Version == 1.01f) {
-        for (int j = 0; j < 16; ++j) rge_read(infile, AlliedVictory, 64);
+        for (int j = 0; j < 16; ++j)
+            rge_read(infile, AlliedVictory, 64);
     }
-    if (Version >= g_scenario_file_version_1_02) rge_read(infile, AlliedVictory, 64);
-    if (Version > g_scenario_file_version_1_03) rge_read(infile, DisabledTechnology, 1280);
+    if (Version >= g_scenario_file_version_1_02)
+        rge_read(infile, AlliedVictory, 64);
+    if (Version > g_scenario_file_version_1_03)
+        rge_read(infile, DisabledTechnology, 1280);
 
     if (Version > g_scenario_file_version_1_04) {
         if (Version < g_scenario_file_version_1_12) {
@@ -137,8 +141,10 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
             rge_read(infile, ScenarioOptions, 12);
         }
     }
-    if (Version > g_scenario_file_version_1_05) rge_read(infile, PlayerAge, 64);
-    if (Version > g_scenario_file_version_1_02) rge_read(infile, &checksum, 4);
+    if (Version > g_scenario_file_version_1_05)
+        rge_read(infile, PlayerAge, 64);
+    if (Version > g_scenario_file_version_1_02)
+        rge_read(infile, &checksum, 4);
 
     victory.MP_Conquest = victory_conquest;
 }
@@ -146,7 +152,7 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
 void T_Scenario::save(int outfile) {
     int checksum;
     Player_Start_Info* player;
-    SP_Victory_Info (*sp_player)[12];
+    SP_Victory_Info(*sp_player)[12];
     int i;
 
     checksum = -99;
@@ -203,7 +209,8 @@ void T_Scenario::InitializePlayerValues() {
 }
 
 void T_Scenario::ClearDisabledTechnologies() {
-    for (int i = 0; i < 320; i++) this->DisabledTechnology[0][i] = 1;
+    for (int i = 0; i < 320; i++)
+        this->DisabledTechnology[0][i] = 1;
 }
 
 void T_Scenario::InitializeAIInformation() {
@@ -211,14 +218,18 @@ void T_Scenario::InitializeAIInformation() {
 
     player = 0;
     do {
-        this->world->players[player]->loadAIInformation(this->Get_BuildList(player, 1), this->Get_CityPlan(player, 1), this->Get_player_AI(player, 1), 4, -1);
+        this->world->players[player]->loadAIInformation(
+            this->Get_BuildList(player, 1), this->Get_CityPlan(player, 1), this->Get_player_AI(player, 1), 4, -1
+        );
         player++;
     } while (player < 16);
 }
 
 void T_Scenario::Set_victory_all_flag(int i) {
-    if (i < 0) i = 0;
-    if (i > 1) i = 1;
+    if (i < 0)
+        i = 0;
+    if (i > 1)
+        i = 1;
     this->victory_all_flag = i;
 }
 
@@ -228,7 +239,8 @@ int T_Scenario::Get_victory_all_flag() {
 
 void T_Scenario::SetMPVictory(int i) {
     this->mp_victory_type = i;
-    if (i != 4) this->victory_conquest = 1;
+    if (i != 4)
+        this->victory_conquest = 1;
 }
 
 int T_Scenario::GetMPVictory() {
@@ -252,8 +264,10 @@ int T_Scenario::GetVictoryTime() {
 }
 
 void T_Scenario::SetSPWhich(int i) {
-    if (i < 0) i = 0;
-    if (i > 16) i = 15;
+    if (i < 0)
+        i = 0;
+    if (i > 16)
+        i = 15;
     this->which_player = i;
 }
 
@@ -291,8 +305,8 @@ void T_Scenario::InitializeFriendlinessValues() {
 }
 
 void T_Scenario::Set_player_attitude(int which, int opponent, int attitude) {
-    if (((attitude == 1) || (attitude == 3) || (attitude == 0)) &&
-        ((which >= 0) && (which < 0x10) && (opponent >= 0) && (opponent < 0x10))) {
+    if (((attitude == 1) || (attitude == 3) || (attitude == 0))
+        && ((which >= 0) && (which < 0x10) && (opponent >= 0) && (opponent < 0x10))) {
         this->Opponent[which].Attitude[opponent] = attitude;
     }
 }
@@ -312,17 +326,20 @@ void T_Scenario::Set_player_Gold(int which, int g) {
 }
 
 void T_Scenario::Set_player_Wood(int which, int w) {
-    if (which < 0 || which >= 16) return;
+    if (which < 0 || which >= 16)
+        return;
     this->player_info[which].Wood = w;
 }
 
 void T_Scenario::Set_player_Food(int which, int f) {
-    if (which < 0 || which >= 16) return;
+    if (which < 0 || which >= 16)
+        return;
     this->player_info[which].Food = f;
 }
 
 void T_Scenario::Set_player_Stone(int which, int s) {
-    if (which < 0 || which >= 16) return;
+    if (which < 0 || which >= 16)
+        return;
     this->player_info[which].Stone = s;
 }
 
@@ -391,15 +408,13 @@ void T_Scenario::SetSPVictoryType(int VicID, int VictoryType) {
 
 void T_Scenario::SetSPObject(int VicID, RGE_Static_Object* obj) {
     if (obj != 0) {
-        this->sp_victory[this->which_player][VicID].obj_ID =
-            this->get_object_ID(obj) + 1;
+        this->sp_victory[this->which_player][VicID].obj_ID = this->get_object_ID(obj) + 1;
     }
 }
 
 void T_Scenario::SetSPDestObjectID(int VicID, RGE_Static_Object* dest_obj) {
     if (dest_obj != 0) {
-        this->sp_victory[this->which_player][VicID].dest_obj_ID =
-            this->get_object_ID(dest_obj) + 1;
+        this->sp_victory[this->which_player][VicID].dest_obj_ID = this->get_object_ID(dest_obj) + 1;
     }
 }
 
@@ -541,23 +556,24 @@ void T_Scenario::SaveAttributesIntoPlayers() {
     int other;
     if (player < this->world->player_num) {
         do {
-            this->world->players[player]->new_attribute_num(0, (float)this->Get_player_Food(player - 1));
-            this->world->players[player]->new_attribute_num(2, (float)this->Get_player_Stone(player - 1));
-            this->world->players[player]->new_attribute_num(3, (float)this->Get_player_Gold(player - 1));
-            this->world->players[player]->new_attribute_num(1, (float)this->Get_player_Wood(player - 1));
+            this->world->players[player]->new_attribute_num(0, (float) this->Get_player_Food(player - 1));
+            this->world->players[player]->new_attribute_num(2, (float) this->Get_player_Stone(player - 1));
+            this->world->players[player]->new_attribute_num(3, (float) this->Get_player_Gold(player - 1));
+            this->world->players[player]->new_attribute_num(1, (float) this->Get_player_Wood(player - 1));
 
             other = 1;
             if (other < this->world->player_num) {
                 do {
                     if (other != player) {
-                        this->world->players[player]->set_relation(other,
-                                                                   (unsigned char)this->Opponent[player - 1].Attitude[other - 1]);
+                        this->world->players[player]->set_relation(
+                            other, (unsigned char) this->Opponent[player - 1].Attitude[other - 1]
+                        );
                     }
                     ++other;
                 } while (other < this->world->player_num);
             }
 
-            this->world->players[player]->set_allied_victory((unsigned char)this->AlliedVictory[player - 1]);
+            this->world->players[player]->set_allied_victory((unsigned char) this->AlliedVictory[player - 1]);
             ++player;
         } while (player < this->world->player_num);
     }
@@ -570,7 +586,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
 
     RGE_Game_World* world = this->world;
     int one = 1;
-    for (int player = one; player < (int)world->player_num; ++player) {
+    for (int player = one; player < (int) world->player_num; ++player) {
         world->players[player]->victory_conditions->destroy_all();
         world = this->world;
     }
@@ -578,7 +594,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
     if (this->mp_victory_type == 4) {
         if (this->victory_all_flag != 0) {
             world = this->world;
-            for (int player = one; player < (int)world->player_num; ++player) {
+            for (int player = one; player < (int) world->player_num; ++player) {
                 TRIBE_Victory_Conditions* conditions =
                     static_cast<TRIBE_Victory_Conditions*>(world->players[player]->victory_conditions);
                 if (this->victory.MP_Exploration != 0) {
@@ -602,7 +618,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
 
         if (this->victory_all_flag == 0) {
             world = this->world;
-            for (int player = one; player < (int)world->player_num; ++player) {
+            for (int player = one; player < (int) world->player_num; ++player) {
                 TRIBE_Victory_Conditions* conditions =
                     static_cast<TRIBE_Victory_Conditions*>(world->players[player]->victory_conditions);
                 if (this->victory.MP_Exploration != 0) {
@@ -627,7 +643,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
 
     int j = 0;
     world = this->world;
-    if ((int)world->player_num - 1 <= 0) {
+    if ((int) world->player_num - 1 <= 0) {
         return;
     }
 
@@ -665,16 +681,22 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
                     conditions->add_capture(1, this->get_object_pointer(condition->obj_ID), 1);
                 } else if (type == 3) {
                     if (this->get_object_pointer(condition->dest_obj_ID) != 0) {
-                        conditions->add_bring(1, this->get_object_pointer(condition->obj_ID),
-                                              this->get_object_pointer(condition->dest_obj_ID));
+                        conditions->add_bring(
+                            1, this->get_object_pointer(condition->obj_ID),
+                            this->get_object_pointer(condition->dest_obj_ID)
+                        );
                     } else {
-                        conditions->add_bring(1, this->get_object_pointer(condition->obj_ID), this->sp_victory[j][i].x1,
-                                              condition->y1, condition->x2, condition->y2);
+                        conditions->add_bring(
+                            1, this->get_object_pointer(condition->obj_ID), this->sp_victory[j][i].x1, condition->y1,
+                            condition->x2, condition->y2
+                        );
                     }
                 } else if (type == 2) {
                     if (condition->x2 > g_scenario_victory_zero_coordinate) {
-                        conditions->add_create(1, condition->ObjType, condition->Amount, this->sp_victory[j][i].x1,
-                                               condition->y1, condition->x2, condition->y2, 0);
+                        conditions->add_create(
+                            1, condition->ObjType, condition->Amount, this->sp_victory[j][i].x1, condition->y1,
+                            condition->x2, condition->y2, 0
+                        );
                     } else {
                         conditions->add_create(1, condition->ObjType, condition->Amount, 0);
                     }
@@ -683,7 +705,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
                 } else if (type == 1) {
                     int object_type = condition->ObjType;
                     if (object_type != 0 && condition->AllFlag != 0) {
-                        conditions->add_destroy(1, object_type, (RGE_Player*)0);
+                        conditions->add_destroy(1, object_type, (RGE_Player*) 0);
                     } else {
                         int player_id = condition->PlayerID;
                         if (player_id != 0 && object_type != 0) {
@@ -702,7 +724,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
         SaveAttributes += 12;
         ++j;
         world = this->world;
-    } while (j < (int)world->player_num - 1);
+    } while (j < (int) world->player_num - 1);
 }
 
 void T_Scenario::rehook() {
@@ -732,34 +754,33 @@ void T_Scenario::WriteDisabledTechnologiesToMainSystem() {
     // The shipped loop reads the low byte of each typed field.
     int* disabled = &this->DisabledTechnology[0][1];
     do {
-        TRIBE_Player* player =
-            static_cast<TRIBE_Player*>(world->players[player_index]);
+        TRIBE_Player* player = static_cast<TRIBE_Player*>(world->players[player_index]);
 
         if (this->ScenarioOptions[0] != 0) {
             world->effects->do_effect(100, player);
         }
 
-        player->tech_abling(0x58, (uchar)disabled[-1]);
-        player->tech_abling(0x59, (uchar)disabled[0]);
-        player->tech_abling(0x5A, (uchar)disabled[1]);
-        player->tech_abling(0x5B, (uchar)disabled[2]);
-        player->tech_abling(0x5E, (uchar)disabled[3]);
-        player->tech_abling(0x5F, (uchar)disabled[4]);
-        player->tech_abling(0x61, (uchar)disabled[5]);
-        player->tech_abling(0x62, (uchar)disabled[6]);
-        player->tech_abling(0x5D, (uchar)disabled[7]);
-        player->tech_abling(0x60, (uchar)disabled[8]);
-        player->tech_abling(0x5C, (uchar)disabled[9]);
-        player->tech_abling(0x65, (uchar)disabled[10]);
-        player->tech_abling(0x66, (uchar)disabled[11]);
-        player->tech_abling(0x67, (uchar)disabled[12]);
-        player->tech_abling(0x73, (uchar)disabled[13]);
-        player->tech_abling(0x74, (uchar)disabled[14]);
+        player->tech_abling(0x58, (uchar) disabled[-1]);
+        player->tech_abling(0x59, (uchar) disabled[0]);
+        player->tech_abling(0x5A, (uchar) disabled[1]);
+        player->tech_abling(0x5B, (uchar) disabled[2]);
+        player->tech_abling(0x5E, (uchar) disabled[3]);
+        player->tech_abling(0x5F, (uchar) disabled[4]);
+        player->tech_abling(0x61, (uchar) disabled[5]);
+        player->tech_abling(0x62, (uchar) disabled[6]);
+        player->tech_abling(0x5D, (uchar) disabled[7]);
+        player->tech_abling(0x60, (uchar) disabled[8]);
+        player->tech_abling(0x5C, (uchar) disabled[9]);
+        player->tech_abling(0x65, (uchar) disabled[10]);
+        player->tech_abling(0x66, (uchar) disabled[11]);
+        player->tech_abling(0x67, (uchar) disabled[12]);
+        player->tech_abling(0x73, (uchar) disabled[13]);
+        player->tech_abling(0x74, (uchar) disabled[14]);
 
         ++player_index;
         world = this->world;
         disabled += 20;
-    } while (player_index < (int)world->player_num);
+    } while (player_index < (int) world->player_num);
 }
 
 int T_Scenario::any_sp_victory() {
@@ -786,22 +807,22 @@ void T_Scenario::set_player_tech(TRIBE_Player* player) {
         return;
     }
 
-    player->tech_abling(0x58, (uchar)this->DisabledTechnology[i][0]);
-    player->tech_abling(0x59, (uchar)this->DisabledTechnology[i][1]);
-    player->tech_abling(0x5A, (uchar)this->DisabledTechnology[i][2]);
-    player->tech_abling(0x5B, (uchar)this->DisabledTechnology[i][3]);
-    player->tech_abling(0x5E, (uchar)this->DisabledTechnology[i][4]);
-    player->tech_abling(0x5F, (uchar)this->DisabledTechnology[i][5]);
-    player->tech_abling(0x61, (uchar)this->DisabledTechnology[i][6]);
-    player->tech_abling(0x62, (uchar)this->DisabledTechnology[i][7]);
-    player->tech_abling(0x5D, (uchar)this->DisabledTechnology[i][8]);
-    player->tech_abling(0x60, (uchar)this->DisabledTechnology[i][9]);
-    player->tech_abling(0x5C, (uchar)this->DisabledTechnology[i][10]);
-    player->tech_abling(0x65, (uchar)this->DisabledTechnology[i][11]);
-    player->tech_abling(0x66, (uchar)this->DisabledTechnology[i][12]);
-    player->tech_abling(0x67, (uchar)this->DisabledTechnology[i][13]);
-    player->tech_abling(0x73, (uchar)this->DisabledTechnology[i][14]);
-    player->tech_abling(0x74, (uchar)this->DisabledTechnology[i][15]);
+    player->tech_abling(0x58, (uchar) this->DisabledTechnology[i][0]);
+    player->tech_abling(0x59, (uchar) this->DisabledTechnology[i][1]);
+    player->tech_abling(0x5A, (uchar) this->DisabledTechnology[i][2]);
+    player->tech_abling(0x5B, (uchar) this->DisabledTechnology[i][3]);
+    player->tech_abling(0x5E, (uchar) this->DisabledTechnology[i][4]);
+    player->tech_abling(0x5F, (uchar) this->DisabledTechnology[i][5]);
+    player->tech_abling(0x61, (uchar) this->DisabledTechnology[i][6]);
+    player->tech_abling(0x62, (uchar) this->DisabledTechnology[i][7]);
+    player->tech_abling(0x5D, (uchar) this->DisabledTechnology[i][8]);
+    player->tech_abling(0x60, (uchar) this->DisabledTechnology[i][9]);
+    player->tech_abling(0x5C, (uchar) this->DisabledTechnology[i][10]);
+    player->tech_abling(0x65, (uchar) this->DisabledTechnology[i][11]);
+    player->tech_abling(0x66, (uchar) this->DisabledTechnology[i][12]);
+    player->tech_abling(0x67, (uchar) this->DisabledTechnology[i][13]);
+    player->tech_abling(0x73, (uchar) this->DisabledTechnology[i][14]);
+    player->tech_abling(0x74, (uchar) this->DisabledTechnology[i][15]);
 
     player->tech_tree->check_for_new_tech();
 
@@ -814,22 +835,22 @@ void T_Scenario::set_player_tech(TRIBE_Player* player) {
         //! Unit upgrades copy source stats now, so upgraded units never receive the civ bonus.
         //! The cascade also completes researches the civ can never use (yamato armored elephants).
         switch (this->PlayerAge[i]) {
-        case 1:
-            player->rev_tech(0x19);
-            break;
-        case 2:
-            player->rev_tech(0x17);
-            break;
-        case 3:
-            player->rev_tech(0x18);
-            break;
-        case 4:
-            player->rev_tech(1);
-            break;
+            case 1:
+                player->rev_tech(0x19);
+                break;
+            case 2:
+                player->rev_tech(0x17);
+                break;
+            case 3:
+                player->rev_tech(0x18);
+                break;
+            case 4:
+                player->rev_tech(1);
+                break;
         }
     }
 
-    if ((float)this->DisabledTechnology[i][14] == 0.0f) {
+    if ((float) this->DisabledTechnology[i][14] == 0.0f) {
         player->attributes[48] = 1.0f;
     }
 }

@@ -6,7 +6,7 @@
 #include "sounddrv.h"
 
 class TMusic_System {
-public:
+  public:
     char path[260];
     unsigned char music_type;
     unsigned char _pad_0[3];
@@ -47,45 +47,55 @@ public:
     void* midi_window;
     unsigned long last_check_time;
 
-    TMusic_System(unsigned char music_type_in, void* instance_in, void* window_in,
-        TSound_Driver* sound_system_in, char* path_in);
+    TMusic_System(
+        unsigned char music_type_in, void* instance_in, void* window_in, TSound_Driver* sound_system_in, char* path_in
+    );
     ~TMusic_System();
     int open_device();
     void close_device();
-protected:
+
+  protected:
     int open_mixer();
     void close_mixer();
-public:
+
+  public:
     int set_music_type(unsigned char music_type_in);
     void set_fade_out(int fade_out_in, unsigned long fade_time_in);
     void set_volume(long volume_in, int permanent);
     int play_track(int track_in, int loop_in, unsigned long set_pos_in);
     int play_file(char* file_name_in, int loop_in, unsigned long set_pos_in);
-    int play_tracks(int start_track_in, int end_track_in, int loop_in,
-        int make_cur_track_in, unsigned long set_pos_in);
-protected:
-    int play(int start_track_in, int end_track_in, char* file_name_in,
-        int make_cur_track_in, unsigned long set_pos_in);
-public:
+    int play_tracks(int start_track_in, int end_track_in, int loop_in, int make_cur_track_in, unsigned long set_pos_in);
+
+  protected:
+    int play(int start_track_in, int end_track_in, char* file_name_in, int make_cur_track_in, unsigned long set_pos_in);
+
+  public:
     int pause_play();
     int resume_play();
     int stop_track();
-protected:
+
+  protected:
     int stop_playing();
-public:
+
+  public:
     int fade_track();
-protected:
+
+  protected:
     void start_fade();
     void do_fade();
     void end_fade();
-public:
+
+  public:
     unsigned int handle_messages(void* wnd, unsigned int msg, unsigned int wparam, long lparam);
-protected:
+
+  protected:
     void after_end_track();
-public:
-    int get_play_info(unsigned char* music_type_in, int* track_from_in,
-        int* track_to_in, int* cur_track_in, char* music_file_in,
-        int* loop_in, unsigned long* pos_in);
+
+  public:
+    int get_play_info(
+        unsigned char* music_type_in, int* track_from_in, int* track_to_in, int* cur_track_in, char* music_file_in,
+        int* loop_in, unsigned long* pos_in
+    );
 };
 
 #endif

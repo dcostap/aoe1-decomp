@@ -16,7 +16,7 @@ RGE_Effects::RGE_Effects(int infile) {
     int index;
     rge_read(input_file, effect_num_ptr, 4);
     if (*effect_num_ptr > 0) {
-        this->effects = (RGE_Effect*)calloc(*effect_num_ptr, 44);
+        this->effects = (RGE_Effect*) calloc(*effect_num_ptr, 44);
         index = 0;
         if (index < *effect_num_ptr) {
             do {
@@ -29,14 +29,12 @@ RGE_Effects::RGE_Effects(int infile) {
                 if (effect_record->effect_list_num > 0) {
                     int command_index;
                     RGE_Effect_Command*& effect_list = effect_record->effect_list;
-                    RGE_Effect_Command* allocated =
-                        (RGE_Effect_Command*)calloc(effect_record->effect_list_num, 12);
+                    RGE_Effect_Command* allocated = (RGE_Effect_Command*) calloc(effect_record->effect_list_num, 12);
                     command_index = 0;
                     effect_list = allocated;
                     if (command_index < effect_record->effect_list_num) {
                         do {
-                            RGE_Effect_Command* command =
-                                &effect_list[command_index];
+                            RGE_Effect_Command* command = &effect_list[command_index];
                             rge_read(input_file, &command->command, 1);
                             rge_read(input_file, &command->change_num1, 2);
                             rge_read(input_file, &command->change_num2, 2);
@@ -67,20 +65,28 @@ RGE_Effects::RGE_Effects(char* effect_file) {
     fp = fopen(effect_file, "r");
     if (fp != 0) {
         if (fscanf(fp, "%d %d", &effect_num, &count) != -1) {
-            effects = (RGE_Effect*)calloc(effect_num, 44);
+            effects = (RGE_Effect*) calloc(effect_num, 44);
             for (index = 0; index < count; index++) {
                 short command_index = 0;
                 fscanf(fp, "%d", &this_effect_num);
-                if (fscanf(fp, "%s %hd", effects[this_effect_num].name, &effects[this_effect_num].effect_list_num) == -1) break;
-                effects[this_effect_num].id = (short)this_effect_num;
+                if (fscanf(fp, "%s %hd", effects[this_effect_num].name, &effects[this_effect_num].effect_list_num)
+                    == -1)
+                    break;
+                effects[this_effect_num].id = (short) this_effect_num;
                 if (effects[this_effect_num].effect_list_num > 0) {
-                    effects[this_effect_num].effect_list = (RGE_Effect_Command*)calloc(effects[this_effect_num].effect_list_num, 12);
+                    effects[this_effect_num].effect_list =
+                        (RGE_Effect_Command*) calloc(effects[this_effect_num].effect_list_num, 12);
                     if (effects[this_effect_num].effect_list_num > 0) {
                         while (effects[this_effect_num].effect_list_num > command_index) {
                             RGE_Effect_Command* command = &effects[this_effect_num].effect_list[command_index];
-                            if (fscanf(fp, "%hd %hd %hd %hd %f", &effect_command, &command->change_num1, &command->change_num2, &command->change_num3, &command->change_amount) == -1) break;
+                            if (fscanf(
+                                    fp, "%hd %hd %hd %hd %f", &effect_command, &command->change_num1,
+                                    &command->change_num2, &command->change_num3, &command->change_amount
+                                )
+                                == -1)
+                                break;
                             command_index++;
-                            command->command = (unsigned char)effect_command;
+                            command->command = (unsigned char) effect_command;
                         }
                     }
                 } else {
@@ -155,46 +161,51 @@ void RGE_Effects::do_effect(short current_effect, RGE_Player* player) {
                 //! The row loads from the data file, then does nothing when the tech runs.
                 //! No default case exists, so the drop is silent.
                 switch (command->command) {
-                case 4: {
-                    short operation = command->change_num3;
-                    float amount = command->change_amount;
-                    player->modify_tobj_delta(command->change_num1, command->change_num2, amount, (unsigned char)operation);
-                    break;
-                }
-                case 5: {
-                    short operation = command->change_num3;
-                    float amount = command->change_amount;
-                    player->modify_tobj_percent(command->change_num1, command->change_num2, amount,
-                                                (unsigned char)operation);
-                    break;
-                }
-                case 0: {
-                    short operation = command->change_num3;
-                    float amount = command->change_amount;
-                    player->modify_tobj(command->change_num1, command->change_num2, amount, (unsigned char)operation);
-                    break;
-                }
-                case 1: {
-                    short attribute = command->change_num1;
-                    short mode = command->change_num2;
-                    float amount = command->change_amount;
-                    if (attribute > -1) {
-                        if (mode == 0) {
-                            player->new_attribute_num(attribute, amount);
-                        } else {
-                            player->add_attribute_num(attribute, amount, 0);
+                    case 4: {
+                        short operation = command->change_num3;
+                        float amount = command->change_amount;
+                        player->modify_tobj_delta(
+                            command->change_num1, command->change_num2, amount, (unsigned char) operation
+                        );
+                        break;
+                    }
+                    case 5: {
+                        short operation = command->change_num3;
+                        float amount = command->change_amount;
+                        player->modify_tobj_percent(
+                            command->change_num1, command->change_num2, amount, (unsigned char) operation
+                        );
+                        break;
+                    }
+                    case 0: {
+                        short operation = command->change_num3;
+                        float amount = command->change_amount;
+                        player->modify_tobj(
+                            command->change_num1, command->change_num2, amount, (unsigned char) operation
+                        );
+                        break;
+                    }
+                    case 1: {
+                        short attribute = command->change_num1;
+                        short mode = command->change_num2;
+                        float amount = command->change_amount;
+                        if (attribute > -1) {
+                            if (mode == 0) {
+                                player->new_attribute_num(attribute, amount);
+                            } else {
+                                player->add_attribute_num(attribute, amount, 0);
+                            }
                         }
+                        break;
                     }
-                    break;
-                }
-                case 2:
-                    if (command->change_num1 > -1) {
-                        player->make_available(command->change_num1, (unsigned char)command->change_num2);
-                    }
-                    break;
-                case 3:
-                    player->copy_obj(command->change_num1, command->change_num2);
-                    break;
+                    case 2:
+                        if (command->change_num1 > -1) {
+                            player->make_available(command->change_num1, (unsigned char) command->change_num2);
+                        }
+                        break;
+                    case 3:
+                        player->copy_obj(command->change_num1, command->change_num2);
+                        break;
                 }
             }
         }

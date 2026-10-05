@@ -24,31 +24,15 @@ extern int startLoggingAI;
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     void* pW, int playerID, char* playerName, TRIBE_Player* aiP, char* buildListName, char* cityPlanName,
-    char* ruleSetName)
-    : MainDecisionAIModule(pW, playerID, aiP),
-      buildAI(pW, playerID),
-      constructionAI(pW, playerID),
-      diplomacyAI(pW, playerID),
-      emotionalAI(pW, playerID),
-      informationAI(pW, playerID),
-      resourceAI(pW, playerID, 4, 500, 0, 1000),
-      strategyAI(pW, playerID),
-      tacticalAI(pW, playerID),
-      tradeAI(pW, playerID),
-      aiPlayer((TRIBE_Player*)aiP),
-      firstUpdate(1),
-      veryFirstUpdate(1),
-      updateDelay(playerID),
-      lastDiplomacyUpdateTime(0),
-      lastTacticalUpdateTime(0),
-      lastTributeChatTime(0),
-      tributeChatTimeout(0),
-      waitingOnTribute(0),
-      tributeExpirationTimeout(0),
-      tributeAddressed(0),
-      tributeAmount(0),
-      decidedInitialDiplomacy(0),
-      requiredDiplomacyTributeAmount(0) {
+    char* ruleSetName
+) :
+    MainDecisionAIModule(pW, playerID, aiP), buildAI(pW, playerID), constructionAI(pW, playerID),
+    diplomacyAI(pW, playerID), emotionalAI(pW, playerID), informationAI(pW, playerID),
+    resourceAI(pW, playerID, 4, 500, 0, 1000), strategyAI(pW, playerID), tacticalAI(pW, playerID),
+    tradeAI(pW, playerID), aiPlayer((TRIBE_Player*) aiP), firstUpdate(1), veryFirstUpdate(1), updateDelay(playerID),
+    lastDiplomacyUpdateTime(0), lastTacticalUpdateTime(0), lastTributeChatTime(0), tributeChatTimeout(0),
+    waitingOnTribute(0), tributeExpirationTimeout(0), tributeAddressed(0), tributeAmount(0), decidedInitialDiplomacy(0),
+    requiredDiplomacyTributeAmount(0) {
     this->setPlayer(playerID, playerName);
     if (startLoggingAI != 0) {
         this->setLogCommonHistory(1);
@@ -86,39 +70,30 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     this->informationAI.addResourceType(0, 0x107);
     this->informationAI.addResourceType(0, 0x32);
     int i;
-    for (i = 0x6f; i <= 0x72; i++) this->informationAI.addResourceType(1, i);
-    for (i = 0x86; i <= 0x99; i++) this->informationAI.addResourceType(1, i);
-    for (i = 0xc0; i <= 0xc5; i++) this->informationAI.addResourceType(1, i);
+    for (i = 0x6f; i <= 0x72; i++)
+        this->informationAI.addResourceType(1, i);
+    for (i = 0x86; i <= 0x99; i++)
+        this->informationAI.addResourceType(1, i);
+    for (i = 0xc0; i <= 0xc5; i++)
+        this->informationAI.addResourceType(1, i);
     this->informationAI.addResourceType(2, 0x66);
     this->informationAI.addResourceType(3, 0x42);
-    for (i = 0x150; i <= 0x153; i++) this->informationAI.addResourceType(3, i);
+    for (i = 0x150; i <= 0x153; i++)
+        this->informationAI.addResourceType(3, i);
 
     this->emotionalAI.setOverallState(0);
     memset(this->tributeGiven, 0, 36);
 }
 
-TribeMainDecisionAIModule::TribeMainDecisionAIModule(
-    int playerID, char* playerName, TRIBE_Player* aiP, int infile)
-    : MainDecisionAIModule(playerID, aiP, infile),
-      buildAI(playerID, infile),
-      constructionAI(playerID, infile),
-      diplomacyAI(playerID, infile),
-      emotionalAI(playerID, infile),
-      informationAI(playerID, infile),
-      resourceAI(playerID, infile),
-      strategyAI(playerID, infile),
-      tacticalAI(playerID, infile),
-      tradeAI(playerID, infile),
-      //! @bug Load forces these flags to 0 ("init done"), but save() never stores them.
-      //! A save before the first AI update therefore skips the one-time init after load.
-      //! No dynamic build items, no learn-file path, and no AI start-resource bonus then.
-      firstUpdate(0),
-      veryFirstUpdate(0),
-      updateDelay(playerID),
-      lastDiplomacyUpdateTime(0),
-      lastTacticalUpdateTime(0),
-      decidedInitialDiplomacy(0),
-      requiredDiplomacyTributeAmount(0) {
+TribeMainDecisionAIModule::TribeMainDecisionAIModule(int playerID, char* playerName, TRIBE_Player* aiP, int infile) :
+    MainDecisionAIModule(playerID, aiP, infile), buildAI(playerID, infile), constructionAI(playerID, infile),
+    diplomacyAI(playerID, infile), emotionalAI(playerID, infile), informationAI(playerID, infile),
+    resourceAI(playerID, infile), strategyAI(playerID, infile), tacticalAI(playerID, infile), tradeAI(playerID, infile),
+    //! @bug Load forces these flags to 0 ("init done"), but save() never stores them.
+    //! A save before the first AI update therefore skips the one-time init after load.
+    //! No dynamic build items, no learn-file path, and no AI start-resource bonus then.
+    firstUpdate(0), veryFirstUpdate(0), updateDelay(playerID), lastDiplomacyUpdateTime(0), lastTacticalUpdateTime(0),
+    decidedInitialDiplomacy(0), requiredDiplomacyTributeAmount(0) {
     this->aiPlayer = aiP;
     this->setPlayer(playerID, playerName);
     if (startLoggingAI != 0) {
@@ -192,8 +167,10 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
         this->firstUpdate = 0;
         this->logCommonHistory("Initial Diplomacy Settings:");
         for (int i = 1; i < this->player->world->player_num; i++) {
-            this->logCommonHistory("  Player #%d: Dislike=%d, Like=%d, Ambivalence=%d.", i, this->diplomacyAI.stance(i, 0),
-                                   this->diplomacyAI.stance(i, 2), this->diplomacyAI.stance(i, 1));
+            this->logCommonHistory(
+                "  Player #%d: Dislike=%d, Like=%d, Ambivalence=%d.", i, this->diplomacyAI.stance(i, 0),
+                this->diplomacyAI.stance(i, 2), this->diplomacyAI.stance(i, 1)
+            );
         }
 
         this->strategyAI.update(0);
@@ -208,16 +185,16 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
 
         int value = tactical->strategicNumber(0x8A);
         if (value != 0)
-            this->player->command_add_attribute(0, (float)value);
+            this->player->command_add_attribute(0, (float) value);
         value = tactical->strategicNumber(0x8B);
         if (value != 0)
-            this->player->command_add_attribute(3, (float)value);
+            this->player->command_add_attribute(3, (float) value);
         value = tactical->strategicNumber(0x8C);
         if (value != 0)
-            this->player->command_add_attribute(2, (float)value);
+            this->player->command_add_attribute(2, (float) value);
         value = tactical->strategicNumber(0x8D);
         if (value != 0)
-            this->player->command_add_attribute(1, (float)value);
+            this->player->command_add_attribute(1, (float) value);
     }
 
     this->updateDelay++;
@@ -232,10 +209,9 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
         this->lastDiplomacyUpdateTime = this->player->world->world_time;
     }
 
-    unsigned long tribute_elapsed =
-        (this->player->world->world_time - this->lastTributeChatTime) / 1000;
+    unsigned long tribute_elapsed = (this->player->world->world_time - this->lastTributeChatTime) / 1000;
     if (tactical->strategicNumber(0x7C) > 0 && this->tributeAddressed == 0) {
-        if (tribute_elapsed >= (unsigned long)this->tributeChatTimeout && tactical->strategicNumber(0x7D) > 0) {
+        if (tribute_elapsed >= (unsigned long) this->tributeChatTimeout && tactical->strategicNumber(0x7D) > 0) {
             if (this->waitingOnTribute == 0) {
                 this->waitingOnTribute = 1;
                 int expiration_timeout = tactical->strategicNumber(0x7F);
@@ -247,28 +223,33 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
             if (tactical->strategicNumber(0x82) == 1) {
                 if (this->tributeAmount > 0) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_MORE_GOLD, tempString, 256);
-                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString,
-                                                  tactical->strategicNumber(0x7C) - this->tributeAmount);
+                    this->player->sendChatMessage(
+                        tactical->strategicNumber(0x80), 0, tempString,
+                        tactical->strategicNumber(0x7C) - this->tributeAmount
+                    );
                 } else {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_GOLD, tempString, 256);
-                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString,
-                                                  tactical->strategicNumber(0x7C));
+                    this->player->sendChatMessage(
+                        tactical->strategicNumber(0x80), 0, tempString, tactical->strategicNumber(0x7C)
+                    );
                 }
             } else if (tactical->strategicNumber(0x81) == 1) {
                 if (this->tributeAmount > 0) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE_GOLD, tempString, 256);
-                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString,
-                                                  tactical->strategicNumber(0x7C));
+                    this->player->sendChatMessage(
+                        tactical->strategicNumber(0x80), 0, tempString, tactical->strategicNumber(0x7C)
+                    );
                 } else {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE_MORE_GOLD, tempString, 256);
-                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString,
-                                                  tactical->strategicNumber(0x7C) - this->tributeAmount);
+                    this->player->sendChatMessage(
+                        tactical->strategicNumber(0x80), 0, tempString,
+                        tactical->strategicNumber(0x7C) - this->tributeAmount
+                    );
                 }
             }
             this->setTributeChat();
         } else if (this->waitingOnTribute == 1) {
-            this->tributeExpirationTimeout -=
-                this->player->world->world_time_delta;
+            this->tributeExpirationTimeout -= this->player->world->world_time_delta;
             if (this->tributeExpirationTimeout <= 0) {
                 if (tactical->strategicNumber(0x82) == 1) {
                     this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 0, 100);
@@ -278,16 +259,13 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                     this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
                     this->tributeAddressed = 1;
-                    this->lastTributeChatTime =
-                        this->player->world->world_time;
+                    this->lastTributeChatTime = this->player->world->world_time;
                 } else if (tactical->strategicNumber(0x81) == 1) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE_MISSED, tempString, 256);
                     this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
-                    this->lastTributeChatTime =
-                        this->player->world->world_time;
-                    this->tributeAddressed =
-                        tactical->strategicNumber(0x84) == 0;
+                    this->lastTributeChatTime = this->player->world->world_time;
+                    this->tributeAddressed = tactical->strategicNumber(0x84) == 0;
                 }
             } else if (this->tributeAmount >= tactical->strategicNumber(0x7C)) {
                 if (tactical->strategicNumber(0x81) == 1) {
@@ -297,18 +275,14 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE, tempString, 256);
                     this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
-                    this->lastTributeChatTime =
-                        this->player->world->world_time;
-                    this->tributeAddressed =
-                        tactical->strategicNumber(0x84) == 0;
+                    this->lastTributeChatTime = this->player->world->world_time;
+                    this->tributeAddressed = tactical->strategicNumber(0x84) == 0;
                 } else if (tactical->strategicNumber(0x82) == 1) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ACCEPTED, tempString, 256);
                     this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
-                    this->lastTributeChatTime =
-                        this->player->world->world_time;
-                    this->tributeAddressed =
-                        tactical->strategicNumber(0x84) == 0;
+                    this->lastTributeChatTime = this->player->world->world_time;
+                    this->tributeAddressed = tactical->strategicNumber(0x84) == 0;
                 }
             }
         }
@@ -319,8 +293,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
     //! Each neutral computer allies with all computers and declares each human enemy.
     if (this->decidedInitialDiplomacy == 0 && this->player->world->world_time > 10000) {
         this->decidedInitialDiplomacy = 1;
-        TRIBE_World* world =
-            static_cast<TRIBE_World*>(this->player->world);
+        TRIBE_World* world = static_cast<TRIBE_World*>(this->player->world);
         int numberComputerPlayers = 0;
         int numberHumanPlayers = 0;
         int numberNeutralCPs = 0;
@@ -341,29 +314,24 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
             }
         }
 
-        if (world->controllingComputerPlayer == (unsigned char)-1) {
+        if (world->controllingComputerPlayer == (unsigned char) -1) {
             if (numberComputerPlayers == 1) {
-                world->controllingComputerPlayer = (unsigned char)this->player->id;
+                world->controllingComputerPlayer = (unsigned char) this->player->id;
             } else {
-                int selection =
-                    debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 566) %
-                        numberComputerPlayers +
-                    1;
+                int selection = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 566) % numberComputerPlayers + 1;
                 for (int i = 1; i < world->player_num; i++) {
                     RGE_Player* other = world->players[i];
                     if (other->computerPlayer() == 1) {
                         selection--;
                         if (selection == 0)
-                            world->controllingComputerPlayer =
-                                (unsigned char)other->id;
+                            world->controllingComputerPlayer = (unsigned char) other->id;
                     }
                 }
             }
         }
 
-        if (world->controllingComputerPlayer == (unsigned char)this->player->id) {
-            int numberSwayable =
-                (numberComputerPlayers - numberHumanPlayers) / 2;
+        if (world->controllingComputerPlayer == (unsigned char) this->player->id) {
+            int numberSwayable = (numberComputerPlayers - numberHumanPlayers) / 2;
             if (numberSwayable < 0)
                 numberSwayable = 0;
             if (numberSwayable > numberNeutralCPs)
@@ -375,45 +343,30 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                 ManagedArray<int> swayableCPs;
                 for (int i = 1; i < world->player_num; i++) {
                     RGE_Player* other = world->players[i];
-                    if (other->computerPlayer() != 0 && neutralList[i] != 0 &&
-                        (unsigned short)world->controllingComputerPlayer != (unsigned short)other->id &&
-                        swayableCPs.number() < numberSwayable) {
+                    if (other->computerPlayer() != 0 && neutralList[i] != 0
+                        && (unsigned short) world->controllingComputerPlayer != (unsigned short) other->id
+                        && swayableCPs.number() < numberSwayable) {
                         swayableCPs.add(i);
                     }
                 }
 
                 int resAmount = 2000;
                 switch (rge_base_game->difficulty()) {
-                case RGE_DIFFICULTY_HARDEST:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 622) %
-                            500 +
-                        1400;
-                    break;
-                case RGE_DIFFICULTY_HARD:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 623) %
-                            400 +
-                        1000;
-                    break;
-                case RGE_DIFFICULTY_MODERATE:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 624) %
-                            300 +
-                        700;
-                    break;
-                case RGE_DIFFICULTY_EASY:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 625) %
-                            200 +
-                        450;
-                    break;
-                case RGE_DIFFICULTY_EASIEST:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 626) %
-                            100 +
-                        300;
-                    break;
+                    case RGE_DIFFICULTY_HARDEST:
+                        resAmount = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 622) % 500 + 1400;
+                        break;
+                    case RGE_DIFFICULTY_HARD:
+                        resAmount = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 623) % 400 + 1000;
+                        break;
+                    case RGE_DIFFICULTY_MODERATE:
+                        resAmount = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 624) % 300 + 700;
+                        break;
+                    case RGE_DIFFICULTY_EASY:
+                        resAmount = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 625) % 200 + 450;
+                        break;
+                    case RGE_DIFFICULTY_EASIEST:
+                        resAmount = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 626) % 100 + 300;
+                        break;
                 }
 
                 for (int neutralPlayer = 1; neutralPlayer < world->player_num; neutralPlayer++) {
@@ -442,11 +395,10 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
     }
 
     if (tactical->strategicNumber(0xD9) == 1) {
-        int diplomacy_start_time =
-            (tactical->strategicNumber(0x68) - 3) * 1000;
+        int diplomacy_start_time = (tactical->strategicNumber(0x68) - 3) * 1000;
         if (diplomacy_start_time < 0)
             diplomacy_start_time = 0;
-        if (this->player->world->world_time > (unsigned long)diplomacy_start_time) {
+        if (this->player->world->world_time > (unsigned long) diplomacy_start_time) {
             tactical->setStrategicNumber(0xD9, 0);
             int newEnemy = -1;
             for (int i = 1; i < this->player->world->player_num; i++) {
@@ -463,8 +415,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                 for (int i = 1; i < this->player->world->player_num; i++) {
                     if (i == this->player->id || i == newEnemy)
                         continue;
-                    RGE_Player* other =
-                        this->player->world->players[i];
+                    RGE_Player* other = this->player->world->players[i];
                     if (other->isEnemy(newEnemy) == 1) {
                         this->player->sendAICommand(this->player->id, 6, i, 2, 0);
                         if (other->computerPlayer() == 1) {
@@ -546,16 +497,16 @@ int TribeMainDecisionAIModule::removeObject(int id) {
 
 int TribeMainDecisionAIModule::objectGroupThatCanPerformAction(int a) {
     switch (a) {
-    case UNIT_AI_ACTION_BUILD:
-    case UNIT_AI_ACTION_EXPLORE:
-    case UNIT_AI_ACTION_GATHER:
-    case UNIT_AI_ACTION_HUNT:
-        return OBJECT_GROUP_CIVILIAN;
-    case UNIT_AI_ACTION_TRAIN:
-    case UNIT_AI_ACTION_RESEARCH:
-        return OBJECT_GROUP_BUILDING;
-    default:
-        return MainDecisionAIModule::objectGroupThatCanPerformAction(a);
+        case UNIT_AI_ACTION_BUILD:
+        case UNIT_AI_ACTION_EXPLORE:
+        case UNIT_AI_ACTION_GATHER:
+        case UNIT_AI_ACTION_HUNT:
+            return OBJECT_GROUP_CIVILIAN;
+        case UNIT_AI_ACTION_TRAIN:
+        case UNIT_AI_ACTION_RESEARCH:
+            return OBJECT_GROUP_BUILDING;
+        default:
+            return MainDecisionAIModule::objectGroupThatCanPerformAction(a);
     }
 }
 
@@ -579,9 +530,9 @@ int TribeMainDecisionAIModule::isMoveable(int o) {
         return 0;
 
     short group = obj->master_obj->object_group;
-    if (group == OBJECT_GROUP_BUILDING || group == OBJECT_GROUP_WALL || group == 0x1E || group == 0x1F ||
-        group == 5 || group == 0x21 || group == 7 || group == OBJECT_GROUP_STONE_SOURCE ||
-        group == OBJECT_GROUP_GOLD_SOURCE || group == 0x10 || group == 0x0E || group == OBJECT_GROUP_TREE)
+    if (group == OBJECT_GROUP_BUILDING || group == OBJECT_GROUP_WALL || group == 0x1E || group == 0x1F || group == 5
+        || group == 0x21 || group == 7 || group == OBJECT_GROUP_STONE_SOURCE || group == OBJECT_GROUP_GOLD_SOURCE
+        || group == 0x10 || group == 0x0E || group == OBJECT_GROUP_TREE)
         return 0;
 
     return 1;
@@ -593,8 +544,10 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
         if (object != 0) {
             this->buildAI.addItem(object, 0);
             if (object->master_obj->id == 0x6d) {
-                this->constructionAI.setReferencePoint(this->player->world->map->map_width,
-                                                       this->player->world->map->map_height, object->world_x, object->world_y, object->world_z);
+                this->constructionAI.setReferencePoint(
+                    this->player->world->map->map_width, this->player->world->map->map_height, object->world_x,
+                    object->world_y, object->world_z
+                );
             }
         }
     }
@@ -603,7 +556,8 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
 void TribeMainDecisionAIModule::tributeNotify(int playerID, int resourceID, int amount) {
     char tempString[256];
 
-    if (this->waitingOnTribute == 1 && playerID == this->tacticalAI.strategicNumber(0x80) && resourceID == RGE_RESOURCE_GOLD) {
+    if (this->waitingOnTribute == 1 && playerID == this->tacticalAI.strategicNumber(0x80)
+        && resourceID == RGE_RESOURCE_GOLD) {
         this->tributeAmount += amount;
         return;
     }
@@ -615,8 +569,8 @@ void TribeMainDecisionAIModule::tributeNotify(int playerID, int resourceID, int 
         this->diplomacyAI.changeStance(playerID, 0, -tribute);
         this->tributeGiven[playerID] += amount;
 
-        if (this->player->isNeutral(playerID) == 1 && tactical->strategicNumber(0xD9) == 1 &&
-            this->tributeGiven[playerID] >= this->requiredDiplomacyTributeAmount) {
+        if (this->player->isNeutral(playerID) == 1 && tactical->strategicNumber(0xD9) == 1
+            && this->tributeGiven[playerID] >= this->requiredDiplomacyTributeAmount) {
             this->player->sendAICommand(this->player->id, 6, playerID, 2, 0);
             rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE_ACCEPTED, tempString, 256);
             this->player->sendChatMessage(playerID, 0, tempString);
@@ -658,12 +612,9 @@ void TribeMainDecisionAIModule::revokeTributeAlliance() {
 void TribeMainDecisionAIModule::setTributeChat() {
     TribeTacticalAIModule* tactical = &this->tacticalAI;
     if (tactical->strategicNumber(0x7E) > 0) {
-        int random_value =
-            debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 1053);
-        this->tributeChatTimeout =
-            random_value % tactical->strategicNumber(0x7E) -
-            tactical->strategicNumber(0x7E) / 2 +
-            tactical->strategicNumber(0x7D);
+        int random_value = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 1053);
+        this->tributeChatTimeout = random_value % tactical->strategicNumber(0x7E) - tactical->strategicNumber(0x7E) / 2
+                                   + tactical->strategicNumber(0x7D);
     } else {
         this->tributeChatTimeout = tactical->strategicNumber(0x7D);
     }
@@ -671,76 +622,77 @@ void TribeMainDecisionAIModule::setTributeChat() {
 
 int TribeMainDecisionAIModule::processAICommand(int caller, int mType, int p1, int p2, int p3) {
     switch (mType) {
-    case 0:
-        this->informationAI.lookAtMap();
-        return 1;
-
-    case 1:
-        if (caller != this->player->id && this->aiPlayer->objects->find_by_master_id(0x54, -1.0f, -1.0f, 0, RGE_OBJECT_STATE_ACTIVE, 0) != 0) {
-            float current = this->aiPlayer->attributes[0x2E];
-            this->aiPlayer->command_give_attribute(caller, p1, (float)p2, current);
-            return 1;
-        }
-        break;
-
-    case 2:
-    case 3:
-        if (caller != this->player->id) {
-            this->tacticalAI.processCoopAttack(caller, p1, p2, p3);
-            return 1;
-        }
-        break;
-
-    case 7:
-        this->requiredDiplomacyTributeAmount = p1;
-        this->tacticalAI.setStrategicNumber(0xD9, 1);
-        return 1;
-
-    case 6: {
-        this->diplomacyAI.setChangeable(p1, 1);
-        switch (p2) {
         case 0:
-            this->diplomacyAI.setStance(p1, 0, 100);
-            this->diplomacyAI.setRelation(p1, 3);
-            break;
+            this->informationAI.lookAtMap();
+            return 1;
 
         case 1:
-            this->diplomacyAI.setStance(p1, 0, 0x31);
-            this->diplomacyAI.setStance(p1, 2, 0x31);
-            this->diplomacyAI.setRelation(p1, 1);
+            if (caller != this->player->id
+                && this->aiPlayer->objects->find_by_master_id(0x54, -1.0f, -1.0f, 0, RGE_OBJECT_STATE_ACTIVE, 0) != 0) {
+                float current = this->aiPlayer->attributes[0x2E];
+                this->aiPlayer->command_give_attribute(caller, p1, (float) p2, current);
+                return 1;
+            }
             break;
 
         case 2:
-            this->diplomacyAI.setStance(p1, 2, 100);
-            this->diplomacyAI.setRelation(p1, 0);
-            if (rge_base_game->difficulty() == RGE_DIFFICULTY_EASIEST) {
-                if (this->player->world->players[p1]->computerPlayer() == 0) {
-                    static_cast<TRIBE_Command*>(this->player->world->commands)
-                        ->command_allied_victory(this->player->id, 1);
-                    this->diplomacyAI.setChangeable(p1, 0);
-                    return 1;
-                } else {
-                    static_cast<TRIBE_Command*>(this->player->world->commands)
-                        ->command_allied_victory(this->player->id, 0);
-                    this->diplomacyAI.setChangeable(p1, 0);
-                    return 1;
-                }
-            } else {
-                static_cast<TRIBE_Command*>(this->player->world->commands)
-                    ->command_allied_victory(this->player->id, 1);
-                this->diplomacyAI.setChangeable(p1, 0);
+        case 3:
+            if (caller != this->player->id) {
+                this->tacticalAI.processCoopAttack(caller, p1, p2, p3);
                 return 1;
             }
+            break;
 
-        default:
+        case 7:
+            this->requiredDiplomacyTributeAmount = p1;
+            this->tacticalAI.setStrategicNumber(0xD9, 1);
+            return 1;
+
+        case 6: {
+            this->diplomacyAI.setChangeable(p1, 1);
+            switch (p2) {
+                case 0:
+                    this->diplomacyAI.setStance(p1, 0, 100);
+                    this->diplomacyAI.setRelation(p1, 3);
+                    break;
+
+                case 1:
+                    this->diplomacyAI.setStance(p1, 0, 0x31);
+                    this->diplomacyAI.setStance(p1, 2, 0x31);
+                    this->diplomacyAI.setRelation(p1, 1);
+                    break;
+
+                case 2:
+                    this->diplomacyAI.setStance(p1, 2, 100);
+                    this->diplomacyAI.setRelation(p1, 0);
+                    if (rge_base_game->difficulty() == RGE_DIFFICULTY_EASIEST) {
+                        if (this->player->world->players[p1]->computerPlayer() == 0) {
+                            static_cast<TRIBE_Command*>(this->player->world->commands)
+                                ->command_allied_victory(this->player->id, 1);
+                            this->diplomacyAI.setChangeable(p1, 0);
+                            return 1;
+                        } else {
+                            static_cast<TRIBE_Command*>(this->player->world->commands)
+                                ->command_allied_victory(this->player->id, 0);
+                            this->diplomacyAI.setChangeable(p1, 0);
+                            return 1;
+                        }
+                    } else {
+                        static_cast<TRIBE_Command*>(this->player->world->commands)
+                            ->command_allied_victory(this->player->id, 1);
+                        this->diplomacyAI.setChangeable(p1, 0);
+                        return 1;
+                    }
+
+                default:
+                    break;
+            }
+            this->diplomacyAI.setChangeable(p1, 0);
             break;
         }
-        this->diplomacyAI.setChangeable(p1, 0);
-        break;
-    }
 
-    default:
-        return 0;
+        default:
+            return 0;
     }
 
     return 1;
@@ -748,7 +700,6 @@ int TribeMainDecisionAIModule::processAICommand(int caller, int mType, int p1, i
 
 int TribeMainDecisionAIModule::currentScore(int playerID) {
     if (playerID >= 1 && playerID <= this->player->world->player_num)
-        return this->player->world->players[playerID]
-            ->victory_conditions->get_victory_points();
+        return this->player->world->players[playerID]->victory_conditions->get_victory_points();
     return -1;
 }

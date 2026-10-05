@@ -17,8 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
-    : TScreenPanel("Campaign Editor Screen") {
+TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen() : TScreenPanel("Campaign Editor Screen") {
     this->title = 0;
     this->scenarios_title = 0;
     this->scenarios = 0;
@@ -46,33 +45,63 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    this->create_text(this, &this->title, STRING_ID_CAMPAIGN_EDITOR_TITLE, 10, 10, 620, 50, RGE_FONT_COPPERPLATE_21_BOLD, 3, 0, 0);
-    this->create_text(this, &this->filename_title, STRING_ID_CAMPAIGN_FILENAME_LABEL, 20, 40, 260, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0);
-    this->create_drop_down(this, &this->filename_drop, 380, 200, 20, 60, 0x17C,
-                           (this->ideal_height * 30) / this->pnl_hgt, RGE_FONT_STANDARD);
+    this->create_text(
+        this, &this->title, STRING_ID_CAMPAIGN_EDITOR_TITLE, 10, 10, 620, 50, RGE_FONT_COPPERPLATE_21_BOLD, 3, 0, 0
+    );
+    this->create_text(
+        this, &this->filename_title, STRING_ID_CAMPAIGN_FILENAME_LABEL, 20, 40, 260, 20,
+        RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+    );
+    this->create_drop_down(
+        this, &this->filename_drop, 380, 200, 20, 60, 0x17C, (this->ideal_height * 30) / this->pnl_hgt,
+        RGE_FONT_STANDARD
+    );
 
-    this->create_edit(this->filename_drop, &this->filename, this->get_string(STRING_ID_DEFAULT_CAMPAIGN_NAME),
-                      100, TEditPanel::FormatFileNoExt, 0, 0, 360, 30, RGE_FONT_STANDARD, 1, 1);
+    this->create_edit(
+        this->filename_drop, &this->filename, this->get_string(STRING_ID_DEFAULT_CAMPAIGN_NAME), 100,
+        TEditPanel::FormatFileNoExt, 0, 0, 360, 30, RGE_FONT_STANDARD, 1, 1
+    );
 
-    this->create_button(this, &this->save_button, STRING_ID_BUTTON_SAVE, 0, 420, 60, 200, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-    this->create_button(this, &this->add_button, STRING_ID_BUTTON_ADD, 0, 280, 260, 160, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-    this->create_button(this, &this->remove_button, STRING_ID_BUTTON_REMOVE, 0, 460, 260, 160, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-    this->create_text(this, &this->scenarios_title, STRING_ID_SCENARIOS_TITLE, 20, 100, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0);
+    this->create_button(
+        this, &this->save_button, STRING_ID_BUTTON_SAVE, 0, 420, 60, 200, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
+    this->create_button(
+        this, &this->add_button, STRING_ID_BUTTON_ADD, 0, 280, 260, 160, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
+    this->create_button(
+        this, &this->remove_button, STRING_ID_BUTTON_REMOVE, 0, 460, 260, 160, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
+    this->create_text(
+        this, &this->scenarios_title, STRING_ID_SCENARIOS_TITLE, 20, 100, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0,
+        0, 0
+    );
     this->create_list(this, &this->scenarios, 20, 120, 600, 130, RGE_FONT_STANDARD);
     this->create_auto_scrollbar(&this->scenarios_bar, this->scenarios, 20);
-    this->create_text(this, &this->campaign_scenarios_title, STRING_ID_CAMPAIGN_SCENARIOS_TITLE, 20, 280, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0);
+    this->create_text(
+        this, &this->campaign_scenarios_title, STRING_ID_CAMPAIGN_SCENARIOS_TITLE, 20, 280, 200, 20,
+        RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+    );
     this->create_list(this, &this->campaign_scenarios, 20, 300, 500, 130, RGE_FONT_STANDARD);
     this->create_auto_scrollbar(&this->campaign_scenarios_bar, this->campaign_scenarios, 20);
 
-    this->create_button(this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 20, 445, 280, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-    this->create_button(this, &this->cancel_button, STRING_ID_BUTTON_CANCEL, 0, 340, 445, 280, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+    this->create_button(
+        this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 20, 445, 280, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
+    this->create_button(
+        this, &this->cancel_button, STRING_ID_BUTTON_CANCEL, 0, 340, 445, 280, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
     TButtonPanel* cancel = this->cancel_button;
     cancel->hotkey = 0x1B;
     cancel->hotkey_shift = 0;
 
-    this->create_button(this, &this->move_scenario_up_button, STRING_ID_BUTTON_MOVE_SCENARIO_UP, 0, 530, 300, 90, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-    this->create_button(this, &this->move_scenario_down_button, STRING_ID_BUTTON_MOVE_SCENARIO_DOWN,
-                        0, 530, 340, 90, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+    this->create_button(
+        this, &this->move_scenario_up_button, STRING_ID_BUTTON_MOVE_SCENARIO_UP, 0, 530, 300, 90, 30,
+        RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
+    this->create_button(
+        this, &this->move_scenario_down_button, STRING_ID_BUTTON_MOVE_SCENARIO_DOWN, 0, 530, 340, 90, 30,
+        RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
 
     TPanel* tabList[8];
     tabList[0] = this->filename_drop;

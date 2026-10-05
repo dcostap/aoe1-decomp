@@ -4,7 +4,7 @@
 #include "effects.h"
 
 class TRIBE_Effects : public RGE_Effects {
-public:
+  public:
     virtual void do_effect(short current_effect, RGE_Player* player);
 
     TRIBE_Effects(int infile);
@@ -12,7 +12,6 @@ public:
     void do_tech_effect(short current_effect, RGE_Player* player);
 };
 
-typedef char teffects_tribe_effects_size_check[
-    (sizeof(TRIBE_Effects) == 0x0C) ? 1 : -1];
+typedef char teffects_tribe_effects_size_check[(sizeof(TRIBE_Effects) == 0x0C) ? 1 : -1];
 
 #endif

@@ -2,11 +2,11 @@
 #define AOE1_TRIG_H
 
 class TRIGONOMETRY {
-private:
+  private:
     int RestrictAngle(int angle);
     int RestrictAngle360(int angle);
 
-public:
+  public:
     float sines[4096];
     float cose[4096];
     float tane[4096];
@@ -28,4 +28,4 @@ public:
     float atan360(int angle);
 };
 
-#endif  // AOE1_TRIG_H
+#endif // AOE1_TRIG_H

@@ -28,7 +28,7 @@ void addstring(char** out, char* first, char* last) {
 
     first_length = strlen(first);
     last_length = strlen(last);
-    dst = (char*)calloc(first_length + last_length + 1, 1);
+    dst = (char*) calloc(first_length + last_length + 1, 1);
     memcpy(dst, first, first_length);
     memcpy(dst + first_length, last, last_length);
 
@@ -44,12 +44,12 @@ void getstring(char** out, char* in) {
     unsigned int len;
     char* dst;
 
-    len = (unsigned int)strlen(in) + 1;
+    len = (unsigned int) strlen(in) + 1;
     if (*out != 0) {
         free(*out);
     }
 
-    dst = (char*)calloc(len, 1);
+    dst = (char*) calloc(len, 1);
     *out = dst;
     memcpy(dst, in, len);
 }

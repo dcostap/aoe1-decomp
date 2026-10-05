@@ -7,7 +7,7 @@
 // object.  The rating table starts at +0x04 and contains 2500 bytes.
 
 class CombatRuleSystem {
-public:
+  public:
     virtual ~CombatRuleSystem();
 
     unsigned char ratingValue[2500];
@@ -18,10 +18,8 @@ public:
     int bestUnitTypeToDefendAgainst(int tType);
 };
 
-typedef char taicrule_combat_rule_system_size[
-    (sizeof(CombatRuleSystem) == 0x9C8) ? 1 : -1];
+typedef char taicrule_combat_rule_system_size[(sizeof(CombatRuleSystem) == 0x9C8) ? 1 : -1];
 
-typedef char taicrule_combat_rule_system_vptr[
-    (sizeof(void*) == 4) ? 1 : -1];
+typedef char taicrule_combat_rule_system_vptr[(sizeof(void*) == 4) ? 1 : -1];
 
 #endif

@@ -15,7 +15,7 @@ class RGE_Scenario_File_Info;
 class TPicture;
 
 class RGE_Scenario_Header {
-public:
+  public:
     virtual long get_size();
     virtual void save(int outfile);
 
@@ -30,14 +30,15 @@ public:
 };
 
 class RGE_Scenario {
-protected:
+  protected:
     virtual RGE_Static_Object* get_object_pointer(int obj_ID) {
         return 0;
     }
 
-public:
+  public:
     virtual ~RGE_Scenario();
-    virtual void rehook() {}
+    virtual void rehook() {
+    }
     virtual void save(int outfile);
 
     RGE_Timeline* time_line;

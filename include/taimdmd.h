@@ -1,7 +1,6 @@
 #ifndef AOE1_TAIMDMD_H
 #define AOE1_TAIMDMD_H
 
-
 #include "aimdmod.h"
 #include "aidipmod.h"
 #include "aiemomod.h"
@@ -16,13 +15,11 @@
 class TribeMainDecisionAIModule;
 class TRIBE_Player;
 
-typedef char taimdmd_information_size[
-    (sizeof(TribeInformationAIModule) == 0x10090) ? 1 : -1];
-typedef char taimdmd_strategy_size[
-    (sizeof(TribeStrategyAIModule) == 0x5F8) ? 1 : -1];
+typedef char taimdmd_information_size[(sizeof(TribeInformationAIModule) == 0x10090) ? 1 : -1];
+typedef char taimdmd_strategy_size[(sizeof(TribeStrategyAIModule) == 0x5F8) ? 1 : -1];
 
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
-public:
+  public:
     TribeBuildAIModule buildAI;
     TribeConstructionAIModule constructionAI;
     DiplomacyAIModule diplomacyAI;
@@ -49,11 +46,11 @@ public:
     int requiredDiplomacyTributeAmount;
     int tributeGiven[9];
 
-    TribeMainDecisionAIModule(void* pW, int playerID, char* playerName,
-                              TRIBE_Player* aiP, char* buildListName,
-                              char* cityPlanName, char* ruleSetName);
-    TribeMainDecisionAIModule(int playerID, char* playerName,
-                              TRIBE_Player* aiP, int infile);
+    TribeMainDecisionAIModule(
+        void* pW, int playerID, char* playerName, TRIBE_Player* aiP, char* buildListName, char* cityPlanName,
+        char* ruleSetName
+    );
+    TribeMainDecisionAIModule(int playerID, char* playerName, TRIBE_Player* aiP, int infile);
     virtual ~TribeMainDecisionAIModule();
     virtual void setLogHistory(int v);
     virtual int update(int timeLimit);
@@ -69,16 +66,15 @@ public:
     void tributeNotify(int playerID, int resourceID, int amount);
     void revokeTributeAlliance();
 
-protected:
+  protected:
     void setTributeChat();
 
-public:
+  public:
     int processAICommand(int caller, int mType, int p1, int p2, int p3);
     int currentScore(int playerID);
     void detask(int uID);
 };
 
-typedef char taimdmd_tribe_main_size[
-    (sizeof(TribeMainDecisionAIModule) == 0x125C8) ? 1 : -1];
+typedef char taimdmd_tribe_main_size[(sizeof(TribeMainDecisionAIModule) == 0x125C8) ? 1 : -1];
 
-#endif  // AOE1_TAIMDMD_H
+#endif // AOE1_TAIMDMD_H

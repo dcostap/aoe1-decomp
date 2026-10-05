@@ -15,14 +15,8 @@ class RGE_Static_Object;
 struct RGE_Object_Node;
 
 class TRIBE_Panel_Object : public TPanel {
-public:
-    enum ValueType {
-        ValueTypeNumber,
-        ValueTypeBonus,
-        ValueTypeCompare,
-        ValueTypePercent,
-        ValueTypeNone
-    };
+  public:
+    enum ValueType { ValueTypeNumber, ValueTypeBonus, ValueTypeCompare, ValueTypePercent, ValueTypeNone };
 
     void* font;
     long font_wid;
@@ -78,15 +72,16 @@ public:
     int save_farm_amt;
 
     virtual ~TRIBE_Panel_Object();
-    TRIBE_Panel_Object(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in,
-                       long font_wid_in, long font_hgt_in, TShape* unit_pics_in,
-                       TShape** bldg_pics_in, TRIBE_Player* player_in);
+    TRIBE_Panel_Object(
+        TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in, long font_wid_in, long font_hgt_in,
+        TShape* unit_pics_in, TShape** bldg_pics_in, TRIBE_Player* player_in
+    );
     virtual void draw();
 
-protected:
+  protected:
     virtual void draw_item(int row, int pic_index, ValueType val_type, int val1, int val2);
 
-public:
+  public:
     virtual long handle_idle();
     virtual long mouse_left_down_action(long x, long y, int ctrl_key, int shift_key);
     virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);
@@ -96,12 +91,11 @@ public:
     void set_mode(unsigned char mode_in);
     unsigned char get_mode();
 
-protected:
+  protected:
     void draw_score();
     void save_object_info();
 };
 
-typedef char tpnl_obj_panel_size_check[
-    (sizeof(TRIBE_Panel_Object) == 0x214) ? 1 : -1];
+typedef char tpnl_obj_panel_size_check[(sizeof(TRIBE_Panel_Object) == 0x214) ? 1 : -1];
 
-#endif  // AOE1_TPNL_OBJ_H
+#endif // AOE1_TPNL_OBJ_H

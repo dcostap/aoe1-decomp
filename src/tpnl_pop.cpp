@@ -47,38 +47,40 @@ TRIBE_Panel_Pop::~TRIBE_Panel_Pop() {
 void TRIBE_Panel_Pop::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
     TPanel::set_rect(x_in, y_in, wid_in, hgt_in);
 
-    if (this->pnl_wid > this->LastIBWidth) goto need_realloc;
-    if (this->pnl_hgt > this->LastIBHeight) goto need_realloc;
-    if (x_in + this->LastIBWidth >= this->render_area->Width) goto need_realloc;
+    if (this->pnl_wid > this->LastIBWidth)
+        goto need_realloc;
+    if (this->pnl_hgt > this->LastIBHeight)
+        goto need_realloc;
+    if (x_in + this->LastIBWidth >= this->render_area->Width)
+        goto need_realloc;
     goto skip_realloc;
 
-need_realloc:
-    {
-        if (this->image_clip_region != 0) {
-            DeleteObject(this->image_clip_region);
-            this->image_clip_region = 0;
-        }
-
-        TDrawArea* buf = this->ImageBuffer;
-        if (buf != 0) {
-            delete buf;
-            this->ImageBuffer = 0;
-        }
-
-        buf = new TDrawArea("time message panel", 0);
-        this->ImageBuffer = buf;
-        buf->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt, 0, 0);
-
-        this->LastIBWidth = this->pnl_wid;
-        this->LastIBHeight = this->pnl_hgt;
-
-        this->ImageRect.left = 0;
-        this->ImageRect.top = 0;
-        this->ImageRect.right = this->pnl_wid - 1;
-        this->ImageRect.bottom = this->pnl_hgt - 1;
-
-        this->image_clip_region = CreateRectRgn(0, 0, this->pnl_wid - 1, this->pnl_hgt - 1);
+need_realloc: {
+    if (this->image_clip_region != 0) {
+        DeleteObject(this->image_clip_region);
+        this->image_clip_region = 0;
     }
+
+    TDrawArea* buf = this->ImageBuffer;
+    if (buf != 0) {
+        delete buf;
+        this->ImageBuffer = 0;
+    }
+
+    buf = new TDrawArea("time message panel", 0);
+    this->ImageBuffer = buf;
+    buf->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt, 0, 0);
+
+    this->LastIBWidth = this->pnl_wid;
+    this->LastIBHeight = this->pnl_hgt;
+
+    this->ImageRect.left = 0;
+    this->ImageRect.top = 0;
+    this->ImageRect.right = this->pnl_wid - 1;
+    this->ImageRect.bottom = this->pnl_hgt - 1;
+
+    this->image_clip_region = CreateRectRgn(0, 0, this->pnl_wid - 1, this->pnl_hgt - 1);
+}
 
 skip_realloc:
     if (this->ImageBuffer != 0) {
@@ -94,8 +96,7 @@ skip_realloc:
 
 void TRIBE_Panel_Pop::startup() {
     this->world = static_cast<TRIBE_World*>(rge_base_game->world);
-    TRIBE_Player* p =
-        static_cast<TRIBE_Player*>(rge_base_game->get_player());
+    TRIBE_Player* p = static_cast<TRIBE_Player*>(rge_base_game->get_player());
     this->player = p;
 
     this->pop = static_cast<int>(p->attributes[0xB]);
@@ -129,13 +130,12 @@ void TRIBE_Panel_Pop::draw() {
     this->display_changed_count++;
     this->draw_setup(0);
 
-    TRIBE_Player* player =
-        static_cast<TRIBE_Player*>(rge_base_game->get_player());
+    TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
     this->player = player;
     changed_mode = 0;
 
     if (this->mode == 0) {
-        if (static_cast<TRIBE_Game*>(rge_base_game) ->queue_is_waiting_on_pop_counter[player->id] > 0) {
+        if (static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[player->id] > 0) {
             this->mode = 1;
             this->timer = 0.0f;
             changed_mode = 1;
@@ -159,8 +159,8 @@ void TRIBE_Panel_Pop::draw() {
         if (max_pop > max_available)
             max_pop = max_available;
 
-        if (this->ImageBuffer != 0 && (changed_mode != 0 || this->need_restore != 0 ||
-             this->pop != pop || this->max_pop != max_pop)) {
+        if (this->ImageBuffer != 0
+            && (changed_mode != 0 || this->need_restore != 0 || this->pop != pop || this->max_pop != max_pop)) {
             this->pop = pop;
             this->max_pop = max_pop;
             this->render_to_image_buffer();
@@ -173,8 +173,9 @@ void TRIBE_Panel_Pop::draw() {
 
     if (this->ImageTextActive != 0 && this->ImageBuffer != 0) {
         this->ImageBuffer->SetTrans(1, 1);
-        this->ImageBuffer->Copy(this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top,
-                                &this->UsedImageRect, 1);
+        this->ImageBuffer->Copy(
+            this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top, &this->UsedImageRect, 1
+        );
         this->ImageBuffer->SetTrans(0, 1);
         goto finish;
     }

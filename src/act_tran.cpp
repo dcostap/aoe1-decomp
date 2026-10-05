@@ -7,15 +7,12 @@
 #include "../include/task.h"
 #include "../include/world.h"
 
-
-
-RGE_Action_Transport::RGE_Action_Transport(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1) {
+RGE_Action_Transport::RGE_Action_Transport(int infile, RGE_Action_Object* obj_in) : RGE_Action(infile, obj_in, 1) {
     this->action_type = RGE_ACTION_TYPE_TRANSPORT;
 }
 
-RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
-    : RGE_Action(obj_in, 1) {
+RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z) :
+    RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = RGE_ACTION_TYPE_TRANSPORT;
     this->target_x = x;
@@ -44,104 +41,108 @@ void RGE_Action_Transport::set_state(unsigned char new_state) {
     this->state = new_state;
 
     switch (new_state) {
-    case 4:
-    case 0x0B:
-        if (this->task != 0) {
-            move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.3f,
-                                             this->task->move_sprite);
-        } else {
-            move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.3f,
-                                             this->obj->master_obj->sprite);
-        }
+        case 4:
+        case 0x0B:
+            if (this->task != 0) {
+                move_to = new RGE_Action_Move_To(
+                    this->obj, this->target_x, this->target_y, this->target_z, 0.3f, this->task->move_sprite
+                );
+            } else {
+                move_to = new RGE_Action_Move_To(
+                    this->obj, this->target_x, this->target_y, this->target_z, 0.3f, this->obj->master_obj->sprite
+                );
+            }
 
-        if (move_to == 0) {
-            this->set_state(2);
+            if (move_to == 0) {
+                this->set_state(2);
+                return;
+            }
+
+            this->sub_actions->add_action(move_to);
+            move_to->setSubAction(1);
             return;
-        }
 
-        this->sub_actions->add_action(move_to);
-        move_to->setSubAction(1);
-        return;
+        case 2:
+            this->obj->new_sprite(this->obj->master_obj->sprite);
+            return;
 
-    case 2:
-        this->obj->new_sprite(this->obj->master_obj->sprite);
-        return;
-
-    default:
-        return;
+        default:
+            return;
     }
 }
 
 unsigned char RGE_Action_Transport::update(void) {
     switch (this->state) {
-    case 0x0B: {
-        unsigned char result = this->sub_actions->update();
-        if (result > RGE_ACTION_UPDATE_CONTINUE && result <= RGE_ACTION_UPDATE_TARGET_LOST) {
-            this->set_state(2);
+        case 0x0B: {
+            unsigned char result = this->sub_actions->update();
+            if (result > RGE_ACTION_UPDATE_CONTINUE && result <= RGE_ACTION_UPDATE_TARGET_LOST) {
+                this->set_state(2);
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
             return RGE_ACTION_UPDATE_CONTINUE;
         }
-        return RGE_ACTION_UPDATE_CONTINUE;
-    }
 
-    case 4: {
-        unsigned char result = this->sub_actions->update();
-        if (result > RGE_ACTION_UPDATE_CONTINUE && result <= RGE_ACTION_UPDATE_TARGET_LOST) {
-            this->set_state(6);
+        case 4: {
+            unsigned char result = this->sub_actions->update();
+            if (result > RGE_ACTION_UPDATE_CONTINUE && result <= RGE_ACTION_UPDATE_TARGET_LOST) {
+                this->set_state(6);
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
             return RGE_ACTION_UPDATE_CONTINUE;
         }
-        return RGE_ACTION_UPDATE_CONTINUE;
-    }
 
-    case 6: {
-        int zone = this->targetZone();
-        if (zone != -1 && this->obj->withinRangeOfZone((unsigned char)zone, 2.0f) == 0) {
-            RGE_Action_Object* object = this->obj;
-            RGE_Player* owner = object->owner;
-            int id = object->id;
-            owner->notify(id, id, 0x207, UNIT_AI_ACTION_TRANSPORT, 0, 0);
+        case 6: {
+            int zone = this->targetZone();
+            if (zone != -1 && this->obj->withinRangeOfZone((unsigned char) zone, 2.0f) == 0) {
+                RGE_Action_Object* object = this->obj;
+                RGE_Player* owner = object->owner;
+                int id = object->id;
+                owner->notify(id, id, 0x207, UNIT_AI_ACTION_TRANSPORT, 0, 0);
+                break;
+            }
+
+            if (this->obj->objects->number_of_objects > 0) {
+                if (this->next_to_drop_off_terrain() != 0) {
+                    zone = this->targetZone();
+                    if (this->obj->drop_held_objects(zone) == 0) {
+                        this->obj->owner->notify(this->obj->id, this->obj->id, 0x207, UNIT_AI_ACTION_TRANSPORT, 0, 0);
+                        break;
+                    }
+                    if (this->obj->objects->number_of_objects > 0) {
+                        this->obj->owner->notify(this->obj->id, this->obj->id, 0x206, UNIT_AI_ACTION_TRANSPORT, 0, 0);
+                    }
+                    break;
+                } else {
+                    RGE_Action_Object* object = this->obj;
+                    RGE_Player* owner = object->owner;
+                    RGE_Map* map = owner->world->map;
+                    if (this->target_x != -1.0f) {
+                        if (map->get_terrain((short) this->target_x, (short) this->target_y) == 1
+                            || map->get_terrain((short) this->target_x, (short) this->target_y) == 0x16) {
+                            break;
+                        }
+                    }
+                }
+                RGE_Player* owner = this->obj->owner;
+                int id = this->obj->id;
+                owner->notify(id, id, 0x207, UNIT_AI_ACTION_TRANSPORT, 0, 0);
+            }
             break;
         }
 
-        if (this->obj->objects->number_of_objects > 0) {
-            if (this->next_to_drop_off_terrain() != 0) {
-                zone = this->targetZone();
-                if (this->obj->drop_held_objects(zone) == 0) {
-                    this->obj->owner->notify(this->obj->id, this->obj->id, 0x207, UNIT_AI_ACTION_TRANSPORT, 0, 0);
-                    break;
-                }
-                if (this->obj->objects->number_of_objects > 0) {
-                    this->obj->owner->notify(this->obj->id, this->obj->id, 0x206, UNIT_AI_ACTION_TRANSPORT, 0, 0);
-                }
-                break;
-            } else {
-                RGE_Action_Object* object = this->obj;
-                RGE_Player* owner = object->owner;
-                RGE_Map* map = owner->world->map;
-                if (this->target_x != -1.0f) {
-                    if (map->get_terrain((short)this->target_x, (short)this->target_y) == 1 ||
-                        map->get_terrain((short)this->target_x, (short)this->target_y) == 0x16) {
-                        break;
-                    }
-                }
-            }
-            RGE_Player* owner = this->obj->owner;
-            int id = this->obj->id;
-            owner->notify(id, id, 0x207, UNIT_AI_ACTION_TRANSPORT, 0, 0);
-        }
-        break;
-    }
+        case 1:
+            return RGE_ACTION_UPDATE_REMOVE;
 
-    case 1:
-        return RGE_ACTION_UPDATE_REMOVE;
+        case 0x0D:
+            // Typed casts select the virtual notify overload here.
+            this->obj->notify(
+                this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_TRANSPORT, 0, 0
+            );
+            this->set_state(2);
+            return RGE_ACTION_UPDATE_FAILED;
 
-    case 0x0D:
-        // Typed casts select the virtual notify overload here.
-        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_TRANSPORT, 0, 0);
-        this->set_state(2);
-        return RGE_ACTION_UPDATE_FAILED;
-
-    default:
-        return RGE_ACTION_UPDATE_CONTINUE;
+        default:
+            return RGE_ACTION_UPDATE_CONTINUE;
     }
 
     this->set_state(2);
@@ -165,11 +166,11 @@ int RGE_Action_Transport::move_to(RGE_Static_Object* obj_in, float x, float y, f
 int RGE_Action_Transport::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target2ID = 1;
 
-    int zone = (int)this->obj->lookupZone((int)x, (int)y);
+    int zone = (int) this->obj->lookupZone((int) x, (int) y);
     float distance = this->obj->distance_to_position(x, y, this->obj->world_z);
 
     if (zone != -1) {
-        if (this->obj->withinRangeOfZone((unsigned char)zone, 2.0f) == 1 && distance <= 2.0f) {
+        if (this->obj->withinRangeOfZone((unsigned char) zone, 2.0f) == 1 && distance <= 2.0f) {
             this->target_x = x;
             this->target_y = y;
             this->target_z = z;
@@ -196,10 +197,10 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
         return 1;
     }
 
-    int x1 = (int)(this->obj->world_x - this->obj->master_obj->radius_x - g_transport_lower_coordinate_adjustment);
-    int y1 = (int)(this->obj->world_y - this->obj->master_obj->radius_y - g_transport_lower_coordinate_adjustment);
-    int x2 = (int)(this->obj->master_obj->radius_x + this->obj->world_x - g_transport_upper_coordinate_adjustment);
-    int y2 = (int)(this->obj->master_obj->radius_y + this->obj->world_y - g_transport_upper_coordinate_adjustment);
+    int x1 = (int) (this->obj->world_x - this->obj->master_obj->radius_x - g_transport_lower_coordinate_adjustment);
+    int y1 = (int) (this->obj->world_y - this->obj->master_obj->radius_y - g_transport_lower_coordinate_adjustment);
+    int x2 = (int) (this->obj->master_obj->radius_x + this->obj->world_x - g_transport_upper_coordinate_adjustment);
+    int y2 = (int) (this->obj->master_obj->radius_y + this->obj->world_y - g_transport_upper_coordinate_adjustment);
 
     RGE_Map* map = this->obj->owner->world->map;
 
@@ -218,13 +219,13 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
 
     int target_zone = this->targetZone();
     if (this->target_x != -1.0f) {
-        target_zone = (int)this->obj->lookupZone((int)this->target_x, (int)this->target_y);
+        target_zone = (int) this->obj->lookupZone((int) this->target_x, (int) this->target_y);
     }
 
     for (int y = y1; y <= y2; ++y) {
         for (int x = x1; x <= x2; ++x) {
             if (target_zone == -1 || this->obj->lookupZone(x, y) == target_zone) {
-                if (map->get_terrain((short)x, (short)y) == 2 || map->get_terrain((short)x, (short)y) == 4) {
+                if (map->get_terrain((short) x, (short) y) == 2 || map->get_terrain((short) x, (short) y) == 4) {
                     return 1;
                 }
             }
@@ -236,7 +237,7 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
 
 int RGE_Action_Transport::targetZone(void) {
     if (this->target_x != -1.0f) {
-        return (int)this->obj->lookupZone((int)this->target_x, (int)this->target_y) & 0xFF;
+        return (int) this->obj->lookupZone((int) this->target_x, (int) this->target_y) & 0xFF;
     }
     return -1;
 }

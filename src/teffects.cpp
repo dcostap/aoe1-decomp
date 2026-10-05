@@ -2,7 +2,6 @@
 #include "../include/teffects.h"
 #include "../include/tplayer.h"
 
-
 TRIBE_Effects::TRIBE_Effects(int infile) : RGE_Effects(infile) {
 }
 
@@ -25,11 +24,11 @@ void TRIBE_Effects::do_effect(short current_effect, RGE_Player* player) {
         do {
             RGE_Effect_Command* effect = &record->effect_list[i];
             switch (effect->command) {
-            case 0x65:
-                break;
-            case 0x66:
-                ((TRIBE_Player*)player)->tech_abling((long)effect->change_amount, 0);
-                break;
+                case 0x65:
+                    break;
+                case 0x66:
+                    ((TRIBE_Player*) player)->tech_abling((long) effect->change_amount, 0);
+                    break;
             }
             i++;
         } while (i < record->effect_list_num);
@@ -47,11 +46,11 @@ void TRIBE_Effects::do_tech_effect(short current_effect, RGE_Player* player) {
         do {
             RGE_Effect_Command* effect = &record->effect_list[i];
             switch (effect->command) {
-            case 0x65:
-                break;
-            case 0x66:
-                ((TRIBE_Player*)player)->tech_abling((long)effect->change_amount, 0);
-                break;
+                case 0x65:
+                    break;
+                case 0x66:
+                    ((TRIBE_Player*) player)->tech_abling((long) effect->change_amount, 0);
+                    break;
             }
             i++;
         } while (i < record->effect_list_num);

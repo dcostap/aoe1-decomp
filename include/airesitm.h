@@ -2,7 +2,7 @@
 #define AOE1_AIRESITM_H
 
 class ResourceItem {
-public:
+  public:
     virtual ~ResourceItem();
 
     ResourceItem();
@@ -26,14 +26,12 @@ public:
     int sortedIndexValue[8];
     int numberValue;
 
-protected:
+  protected:
     int sortLarge();
 };
 
-typedef char airesitm_resource_item_size[
-    (sizeof(ResourceItem) == 0x70) ? 1 : -1];
-typedef char airesitm_resource_item_pointer_width[
-    (sizeof(void*) == 4) ? 1 : -1];
+typedef char airesitm_resource_item_size[(sizeof(ResourceItem) == 0x70) ? 1 : -1];
+typedef char airesitm_resource_item_pointer_width[(sizeof(void*) == 4) ? 1 : -1];
 
 int operator==(const ResourceItem& one, const ResourceItem& two);
 int operator!=(const ResourceItem& one, const ResourceItem& two);

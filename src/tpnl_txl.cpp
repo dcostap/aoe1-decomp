@@ -4,7 +4,8 @@
 
 static char s_tpnl_txl_draw[] = "tpnl_txl::draw";
 
-TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in) : TPanel() {
+TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in) :
+    TPanel() {
     this->font = font_in;
     this->text_type = 0;
     this->text[0] = 0;
@@ -32,7 +33,6 @@ __declspec(dllimport) COLORREF __stdcall SetTextColor(HDC, COLORREF);
 __declspec(dllimport) BOOL __stdcall TextOutA(HDC, int, int, LPCSTR, int);
 }
 
-
 void TRIBE_Panel_Text_Line::draw() {
     if (this->render_area == 0 || this->visible == 0 || this->active == 0)
         return;
@@ -43,7 +43,7 @@ void TRIBE_Panel_Text_Line::draw() {
     this->draw_setup(0);
 
     if (this->render_area->GetDc(s_tpnl_txl_draw)) {
-        HGDIOBJ old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
+        HGDIOBJ old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ) this->font);
         SetBkMode(this->render_area->DrawDc, TRANSPARENT);
         SetTextColor(this->render_area->DrawDc, 0);
 

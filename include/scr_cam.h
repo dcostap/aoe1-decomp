@@ -14,7 +14,7 @@ class TDropDownPanel;
 class RGE_Campaign;
 
 class TRIBE_Campaign_Editor_Screen : public TScreenPanel {
-public:
+  public:
     unsigned char need_to_save;
     TTextPanel* title;
     TTextPanel* filename_title;
@@ -38,7 +38,7 @@ public:
     TRIBE_Campaign_Editor_Screen();
     virtual ~TRIBE_Campaign_Editor_Screen();
 
-protected:
+  protected:
     void fill_campaign_drop();
     void fill_scenario_list();
     void fill_campaign_scenario_list();
@@ -52,7 +52,6 @@ protected:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
-typedef char scr_cam_screen_size_check[
-    (sizeof(TRIBE_Campaign_Editor_Screen) == 0x4C4) ? 1 : -1];
+typedef char scr_cam_screen_size_check[(sizeof(TRIBE_Campaign_Editor_Screen) == 0x4C4) ? 1 : -1];
 
 #endif

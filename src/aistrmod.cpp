@@ -1,8 +1,7 @@
 
 #include "../include/aistrmod.h"
 
-StrategyAIModule::StrategyAIModule(void* pW, int playerID)
-    : AIModule("Strategy AI", 0x3F0, playerID, pW) {
+StrategyAIModule::StrategyAIModule(void* pW, int playerID) : AIModule("Strategy AI", 0x3F0, playerID, pW) {
 }
 
 // The derived destructor restores its vptr, then tail-jumps to

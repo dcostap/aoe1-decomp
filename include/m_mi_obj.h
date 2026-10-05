@@ -14,7 +14,7 @@ class RGE_Static_Object;
 // m_mi_obj.cpp owns the missile-master extension. The inherited fields and
 // virtual slots come from the canonical RGE_Master_Combat_Object owner.
 class RGE_Master_Missile_Object : public RGE_Master_Combat_Object {
-public:
+  public:
     RGE_Master_Missile_Object(RGE_Master_Missile_Object* other_object, int do_setup);
     RGE_Master_Missile_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup);
     RGE_Master_Missile_Object(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup);
@@ -28,12 +28,12 @@ public:
     virtual void modify_percent(float amount, unsigned char flag);
     virtual void save(int outfile);
 
-protected:
+  protected:
     int setup(RGE_Master_Missile_Object* other_object);
     int setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
     int setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id);
 
-public:
+  public:
     unsigned char missile_type;
     unsigned char targetting_type;
     unsigned char missile_hit_info;
@@ -42,9 +42,7 @@ public:
     float ballistics_ratio;
 };
 
-typedef char m_mi_obj_master_missile_size_check[
-    (sizeof(RGE_Master_Missile_Object) == 0x154) ? 1 : -1];
-typedef char m_mi_obj_missile_type_offset_check[
-    (offsetof(RGE_Master_Missile_Object, missile_type) == 0x148) ? 1 : -1];
+typedef char m_mi_obj_master_missile_size_check[(sizeof(RGE_Master_Missile_Object) == 0x154) ? 1 : -1];
+typedef char m_mi_obj_missile_type_offset_check[(offsetof(RGE_Master_Missile_Object, missile_type) == 0x148) ? 1 : -1];
 
-#endif  // AOE1_M_MI_OBJ_H
+#endif // AOE1_M_MI_OBJ_H

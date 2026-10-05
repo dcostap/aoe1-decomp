@@ -49,7 +49,7 @@ int TChat::AddChatMsg(char* PlayerName, char* Text, unsigned char Local) {
         free(Chat[CurrentMsgNo]);
     }
 
-    Chat[CurrentMsgNo] = (char*)calloc(strlen(PlayerName) + strlen(Text) + 3, 1);
+    Chat[CurrentMsgNo] = (char*) calloc(strlen(PlayerName) + strlen(Text) + 3, 1);
     if (Chat[CurrentMsgNo] == 0) {
         return 0;
     }

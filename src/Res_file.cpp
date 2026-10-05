@@ -32,23 +32,25 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
     sprintf(resFile, "%s%s", path, resFileName);
 
     if (open_mode == 0) {
-        fHandle = (int)CreateFileA(resFile, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+        fHandle = (int) CreateFileA(resFile, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
         if (fHandle == -1) {
             sprintf(error_msg, "Error: Open_new_ResFile, mapped file %s not Found.", resFileName);
             MessageBoxA(0, error_msg, "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
 
-        HANDLE mapping = CreateFileMappingA((HANDLE)fHandle, 0, PAGE_READONLY, 0, 0, 0);
-        CloseHandle((HANDLE)fHandle);
+        HANDLE mapping = CreateFileMappingA((HANDLE) fHandle, 0, PAGE_READONLY, 0, 0, 0);
+        CloseHandle((HANDLE) fHandle);
         if (mapping == 0) {
             MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file(1).", "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
 
-        mapped_file_data = (unsigned char*)MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, 0);
+        mapped_file_data = (unsigned char*) MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, 0);
         if (mapped_file_data == 0) {
-            MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file to addr.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
+            MessageBoxA(
+                0, "Error: Open_Mapped_ResFile, Could not map file to addr.", "RESOURCE ERROR", MB_ICONEXCLAMATION
+            );
             return;
         }
         CloseHandle(mapping);
@@ -61,7 +63,7 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
         }
     }
 
-    ResFileHdr* newFile = (ResFileHdr*)malloc(sizeof(ResFileHdr));
+    ResFileHdr* newFile = (ResFileHdr*) malloc(sizeof(ResFileHdr));
     if (newFile == 0) {
         MessageBoxA(0, "Error: Out of memory in Open_resfile.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
         return;
@@ -73,17 +75,19 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
     if (open_mode == 0) {
         newFile->handle = -1;
         newFile->mapped_file = mapped_file_data;
-        newFile->header = (resfile_header*)mapped_file_data;
+        newFile->header = (resfile_header*) mapped_file_data;
     } else {
         newFile->handle = fHandle;
         newFile->mapped_file = 0;
         lseek(fHandle, 0, 1);
         if (read(fHandle, &rHeader, 64) != 0x40) {
+            // clang-format off
             __asm int 3
             MessageBoxA(0, "Error: Reading resfile header.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
+            // clang-format on
             return;
         }
-        newFile->header = (resfile_header*)malloc(rHeader.directory_size);
+        newFile->header = (resfile_header*) malloc(rHeader.directory_size);
         lseek(fHandle, 0, 0);
         if (read(fHandle, newFile->header, rHeader.directory_size) != rHeader.directory_size) {
             MessageBoxA(0, "Error: Reading resfile header data.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
@@ -146,8 +150,9 @@ found:
     free(cur);
 }
 
-int __cdecl RESFILE_locate_resource(unsigned long rType, unsigned long rId,
-    int& file, int& offset, unsigned char*& mapped_file, int& size) {
+int __cdecl RESFILE_locate_resource(
+    unsigned long rType, unsigned long rId, int& file, int& offset, unsigned char*& mapped_file, int& size
+) {
     ResFileHdr* p = Res_Files;
     file = -1;
     offset = 0;
@@ -160,13 +165,11 @@ int __cdecl RESFILE_locate_resource(unsigned long rType, unsigned long rId,
 
     while (p) {
         resfile_header* hdr = p->header;
-        resfile_type_dir_node* dir =
-            (resfile_type_dir_node*)((char*)hdr + 0x40);
+        resfile_type_dir_node* dir = (resfile_type_dir_node*) ((char*) hdr + 0x40);
 
         for (int x = 0; x < hdr->num_res_types; x++) {
             if (dir[x].type == rType) {
-                resfile_id_dir_node* sub =
-                    (resfile_id_dir_node*)((char*)hdr + dir[x].dirOffset);
+                resfile_id_dir_node* sub = (resfile_id_dir_node*) ((char*) hdr + dir[x].dirOffset);
 
                 for (int j = 0; j < dir[x].numID; j++) {
                     if (sub[j].id == rId) {
@@ -186,11 +189,7 @@ int __cdecl RESFILE_locate_resource(unsigned long rType, unsigned long rId,
     return 0;
 }
 
-unsigned char* __cdecl RESFILE_load(
-    unsigned long rType,
-    unsigned long rId,
-    int& rLoadType,
-    int& rDataSize) {
+unsigned char* __cdecl RESFILE_load(unsigned long rType, unsigned long rId, int& rLoadType, int& rDataSize) {
     int infile;
     int offset;
     unsigned char* mapped_file;
@@ -215,7 +214,7 @@ unsigned char* __cdecl RESFILE_load(
     }
 
     rLoadType = 1;
-    unsigned char* data = (unsigned char*)malloc(datalength);
+    unsigned char* data = (unsigned char*) malloc(datalength);
     rDataSize = datalength;
     if (data == 0) {
         MessageBoxA(0, "Error: Out of memory in res_read_bin.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
@@ -231,8 +230,7 @@ unsigned char* __cdecl RESFILE_load(
     return data;
 }
 
-int __cdecl RESFILE_Extract_to_File(unsigned long rType, unsigned long rId,
-    char* file_name, FILE*& file) {
+int __cdecl RESFILE_Extract_to_File(unsigned long rType, unsigned long rId, char* file_name, FILE*& file) {
     int rLoadType;
     int rDataSize;
     char temp_path[260];
@@ -406,7 +404,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
             return 0;
         }
 
-        iq->resData = (unsigned char*)malloc(fileSize);
+        iq->resData = (unsigned char*) malloc(fileSize);
         if (iq->resData == 0) {
             L->Log("Error: out of memory #3");
             return 0;
@@ -428,8 +426,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         return 0;
     }
 
-    dataPos = numResTypes * sizeof(resfile_type_dir_node) +
-        sizeof(resfile_header);
+    dataPos = numResTypes * sizeof(resfile_type_dir_node) + sizeof(resfile_header);
     typeNode = ID_List;
     while (typeNode != 0) {
         typeNode->idOffset = dataPos;

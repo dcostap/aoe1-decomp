@@ -6,24 +6,19 @@
 #include "drawarea.h"
 #include "Shape.h"
 
-
 class TScrollBarPanel;
 
 class TTextPanel : public TPanel {
-public:
+  public:
     class TextNode {
-    public:
+      public:
         char* text;
         char* text2;
         long id;
         TextNode* next_node;
     };
 
-    enum CharType {
-        SingleByteChar = 0,
-        SingleByteKanaChar = 1,
-        DoubleByteChar = 2
-    };
+    enum CharType { SingleByteChar = 0, SingleByteKanaChar = 1, DoubleByteChar = 2 };
     enum Alignment {
         AlignCenter = 0,
         AlignLeft = 1,
@@ -33,11 +28,7 @@ public:
         AlignHorizontalScroll = 5,
         AlignWordwrap = 6
     };
-    enum Style {
-        NormalStyle = 0,
-        BeveledStyle = 1,
-        ChiseledStyle = 2
-    };
+    enum Style { NormalStyle = 0, BeveledStyle = 1, ChiseledStyle = 2 };
 
     TTextPanel();
     virtual ~TTextPanel();
@@ -51,12 +42,18 @@ public:
     virtual void set_text(long);
     virtual void set_text(char**, short);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
-    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
-               char*, int, unsigned char, int, unsigned char, short, char*);
-    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
-               char*, int, unsigned char, int, unsigned char, short, long);
-    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
-               char*, int, unsigned char, int, unsigned char, short, char**, short);
+    long setup(
+        TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char,
+        short, char*
+    );
+    long setup(
+        TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char,
+        short, long
+    );
+    long setup(
+        TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char,
+        short, char**, short
+    );
     void set_font(void*, long, long);
     void set_alignment(Alignment, Alignment);
     void set_word_wrap(int);
@@ -160,13 +157,11 @@ public:
     int spacer_size;
 };
 
-typedef char pnl_lst_textnode_size_check[
-    (sizeof(TTextPanel::TextNode) == 0x10) ? 1 : -1];
-typedef char pnl_lst_ttextpanel_size_check[
-    (sizeof(TTextPanel) == 0x188) ? 1 : -1];
+typedef char pnl_lst_textnode_size_check[(sizeof(TTextPanel::TextNode) == 0x10) ? 1 : -1];
+typedef char pnl_lst_ttextpanel_size_check[(sizeof(TTextPanel) == 0x188) ? 1 : -1];
 
 class TListPanel : public TTextPanel {
-public:
+  public:
     TListPanel();
     virtual ~TListPanel();
     virtual void draw();
@@ -197,7 +192,6 @@ public:
     void draw_highlight_bar();
 };
 
-typedef char pnl_lst_tlistpanel_size_check[
-    (sizeof(TListPanel) == 0x1A0) ? 1 : -1];
+typedef char pnl_lst_tlistpanel_size_check[(sizeof(TListPanel) == 0x1A0) ? 1 : -1];
 
 #endif

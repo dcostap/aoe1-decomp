@@ -12,19 +12,17 @@
 static char scr_cred_draw_context_name[] = "scr_cred::draw";
 
 extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
-    void* hpal, unsigned int start, unsigned int count, tagPALETTEENTRY* entries);
+    void* hpal, unsigned int start, unsigned int count, tagPALETTEENTRY* entries
+);
 
-
-void RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*,
-                           tagPALETTEENTRY, long, int, int);
-void RGE_fade_palette_start(TDrawArea* surface_in, tagPALETTEENTRY color_in,
-                            float fade_time_in, unsigned char direction_in,
-                            tagPALETTEENTRY* new_palette,
-                            int ignore_color1_in, int ignore_color2_in);
+void RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*, tagPALETTEENTRY, long, int, int);
+void RGE_fade_palette_start(
+    TDrawArea* surface_in, tagPALETTEENTRY color_in, float fade_time_in, unsigned char direction_in,
+    tagPALETTEENTRY* new_palette, int ignore_color1_in, int ignore_color2_in
+);
 int RGE_fade_palette_step();
 
-TRIBE_Credits_Screen::TRIBE_Credits_Screen()
-    : TScreenPanel("Credits Screen") {
+TRIBE_Credits_Screen::TRIBE_Credits_Screen() : TScreenPanel("Credits Screen") {
     int zero = 0;
     int one = 1;
 
@@ -55,7 +53,7 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
     if (fd != -1) {
         _lseek(fd, 0, SEEK_END);
         size = _tell(fd);
-        file_buf = (char*)calloc(size + 1, 1024);
+        file_buf = (char*) calloc(size + 1, 1024);
         if (file_buf != 0) {
             _lseek(fd, 0, SEEK_SET);
             _read(fd, file_buf, size);
@@ -63,9 +61,10 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
         _close(fd);
     }
 
-    TScrollTextPanel* scroll_panel = new TScrollTextPanel(this, this->render_area,
-                                                          (this->pnl_wid / 2) - 250, (this->pnl_hgt / 2) - 150, 500, 300, 30,
-                                                          font->font, font->font_wid, font->font_hgt, file_buf);
+    TScrollTextPanel* scroll_panel = new TScrollTextPanel(
+        this, this->render_area, (this->pnl_wid / 2) - 250, (this->pnl_hgt / 2) - 150, 500, 300, 30, font->font,
+        font->font_wid, font->font_hgt, file_buf
+    );
     this->text_panel = scroll_panel;
 
     if (file_buf != 0) {
@@ -109,8 +108,9 @@ TRIBE_Credits_Screen::~TRIBE_Credits_Screen() {
     }
 }
 
-long TRIBE_Credits_Screen::handle_mouse_down(unsigned char mouse_button_in, long x,
-                                             long y, int ctrl_key, int shift_key) {
+long TRIBE_Credits_Screen::handle_mouse_down(
+    unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key
+) {
     this->close_screen();
     return 1;
 }
@@ -139,7 +139,7 @@ long TRIBE_Credits_Screen::handle_idle() {
                 GetPaletteEntries(this->palette, 0, 256, this->color_table);
             }
 
-            RGE_fade_palette_start(this->render_area, this->color, 0.5f, 1, (tagPALETTEENTRY*)0, 0xFF, -1);
+            RGE_fade_palette_start(this->render_area, this->color, 0.5f, 1, (tagPALETTEENTRY*) 0, 0xFF, -1);
         } else {
             this->mode = 4;
         }
@@ -150,7 +150,7 @@ long TRIBE_Credits_Screen::handle_idle() {
             this->last_pause_time = 0;
             this->set_redraw(TPanel::RedrawNormal);
             this->handle_paint();
-            this->render_area->DrawSystem->Paint((tagRECT*)0);
+            this->render_area->DrawSystem->Paint((tagRECT*) 0);
         }
         goto tail;
     } else if (current_mode == 4) {
@@ -168,7 +168,7 @@ long TRIBE_Credits_Screen::handle_idle() {
         this->background_pic = this->back_pics[this->picture_set - 1];
         this->set_redraw(TPanel::RedrawNormal);
         this->handle_paint();
-        this->render_area->DrawSystem->Paint((tagRECT*)0);
+        this->render_area->DrawSystem->Paint((tagRECT*) 0);
 
         if (this->render_area->DrawSystem->ScreenMode == 2 || this->render_area->DrawSystem->DrawType == 1) {
             RGE_fade_palette_start(this->render_area, this->color, 0.5f, 2, this->color_table, 0xFF, -1);
@@ -227,8 +227,7 @@ void TRIBE_Credits_Screen::draw() {
     TScreenPanel::draw();
 }
 
-long TRIBE_Credits_Screen::key_down_action(long key, short count, int alt_key,
-                                           int ctrl_key, int shift_key) {
+long TRIBE_Credits_Screen::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     if (key == VK_RETURN || key == VK_ESCAPE) {
         this->close_screen();
         return 1;
@@ -236,7 +235,9 @@ long TRIBE_Credits_Screen::key_down_action(long key, short count, int alt_key,
     return 0;
 }
 
-long TRIBE_Credits_Screen::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
+long TRIBE_Credits_Screen::action(
+    TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2
+) {
     long action_result;
 
     if (from_panel != 0 && from_panel == this->text_panel && (action_in == 1)) {
@@ -260,20 +261,20 @@ void TRIBE_Credits_Screen::close_screen() {
     panel_system.destroyPanel("Credits Screen");
 }
 
-TScrollTextPanel::TScrollTextPanel(TPanel* parent_in,
-                                   TDrawArea* render_area_in, long x, long y,
-                                   long wid, long hgt, int speed_in,
-                                   void* font_in, long font_wid_in,
-                                   long font_hgt_in, char* text_in)
-    : TTextPanel() {
+TScrollTextPanel::TScrollTextPanel(
+    TPanel* parent_in, TDrawArea* render_area_in, long x, long y, long wid, long hgt, int speed_in, void* font_in,
+    long font_wid_in, long font_hgt_in, char* text_in
+) : TTextPanel() {
     this->speed = speed_in;
     this->scroll = 0;
     this->last_time = 0;
     this->done = 0;
 
     char* no_text = 0;
-    if (this->setup(render_area_in, parent_in, x, y, wid, hgt, font_in, font_wid_in, font_hgt_in, 0, 0, 0, 0, 0, 0,
-                    no_text) != 0) {
+    if (this->setup(
+            render_area_in, parent_in, x, y, wid, hgt, font_in, font_wid_in, font_hgt_in, 0, 0, 0, 0, 0, 0, no_text
+        )
+        != 0) {
         this->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignCenter);
         this->set_word_wrap(1);
         this->set_text(text_in);
@@ -296,10 +297,10 @@ long TScrollTextPanel::handle_idle() {
         this->last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 476);
     } else {
         unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 479);
-        __int64 elapsed = (unsigned long)(now - this->last_time);
+        __int64 elapsed = (unsigned long) (now - this->last_time);
         double elapsed_scale = elapsed * g_scroll_time_scale;
         double scroll_rate = this->speed;
-        int amount = (long)(elapsed_scale * scroll_rate);
+        int amount = (long) (elapsed_scale * scroll_rate);
         if (amount > 0) {
             this->scroll += amount;
             this->set_redraw(TPanel::RedrawNormal);
@@ -336,9 +337,9 @@ void TScrollTextPanel::draw() {
     }
 }
 
-void TScrollTextPanel::draw_scrolled_line(void* dc, short draw_row,
-                                          short text_line, unsigned long color1,
-                                          unsigned long color2) {
+void TScrollTextPanel::draw_scrolled_line(
+    void* dc, short draw_row, short text_line, unsigned long color1, unsigned long color2
+) {
     char* text;
     short text_len;
     char* temp_text2;
@@ -348,16 +349,17 @@ void TScrollTextPanel::draw_scrolled_line(void* dc, short draw_row,
     long text_y;
     text_len = 0;
     text2_len = 0;
-    text = this->get_text((long)text_line);
-    temp_text2 = this->get_text2((long)text_line);
+    text = this->get_text((long) text_line);
+    temp_text2 = this->get_text2((long) text_line);
     if (text == 0) {
-        if (temp_text2 == 0) return;
+        if (temp_text2 == 0)
+            return;
     }
     if (text != 0) {
-        text_len = (short)strlen(text);
+        text_len = (short) strlen(text);
     }
     if (temp_text2 != 0) {
-        text2_len = (short)strlen(temp_text2);
+        text2_len = (short) strlen(temp_text2);
     }
 
     this->calc_line_pos(dc, draw_row, text_line, &line_rect, 0);
@@ -368,7 +370,7 @@ void TScrollTextPanel::draw_scrolled_line(void* dc, short draw_row,
     }
     long second_text_x = this->second_column_pos + x2;
     text_y = this->pnl_hgt - this->scroll + line_rect.top;
-    if ((text_line == (short)this->num_lines - 1) && (this->font_hgt + text_y < this->pnl_y)) {
+    if ((text_line == (short) this->num_lines - 1) && (this->font_hgt + text_y < this->pnl_y)) {
         this->done = 1;
     }
 
@@ -377,68 +379,69 @@ void TScrollTextPanel::draw_scrolled_line(void* dc, short draw_row,
     }
 
     switch (this->text_style) {
-    case 0:
-        SetTextColor(dc, color1);
-        if (text != 0) {
-            TextOutA(dc, x2, text_y, text, (int)text_len);
-        }
-        break;
-    case 1:
-        SetTextColor(dc, color1);
-        if (text != 0) {
-            TextOutA(dc, x2 - 1, text_y + 1, text, (int)text_len);
-        }
-        SetTextColor(dc, color2);
-        if (text != 0) {
-            TextOutA(dc, x2, text_y, text, (int)text_len);
-        }
-        break;
-    case 2:
-        SetTextColor(dc, color2);
-        if (text != 0) {
-            TextOutA(dc, x2 - 1, text_y + 1, text, (int)text_len);
-        }
-        SetTextColor(dc, color1);
-        if (text != 0) {
-            TextOutA(dc, x2, text_y, text, (int)text_len);
-        }
-        break;
-    default:
-        break;
+        case 0:
+            SetTextColor(dc, color1);
+            if (text != 0) {
+                TextOutA(dc, x2, text_y, text, (int) text_len);
+            }
+            break;
+        case 1:
+            SetTextColor(dc, color1);
+            if (text != 0) {
+                TextOutA(dc, x2 - 1, text_y + 1, text, (int) text_len);
+            }
+            SetTextColor(dc, color2);
+            if (text != 0) {
+                TextOutA(dc, x2, text_y, text, (int) text_len);
+            }
+            break;
+        case 2:
+            SetTextColor(dc, color2);
+            if (text != 0) {
+                TextOutA(dc, x2 - 1, text_y + 1, text, (int) text_len);
+            }
+            SetTextColor(dc, color1);
+            if (text != 0) {
+                TextOutA(dc, x2, text_y, text, (int) text_len);
+            }
+            break;
+        default:
+            break;
     }
 
-    if (temp_text2 == 0) return;
+    if (temp_text2 == 0)
+        return;
 
     if (this->clip_rgn2 != 0) {
         SelectClipRgn(dc, this->clip_rgn);
     }
 
     switch (this->text_style) {
-    case 0:
-        SetTextColor(dc, color1);
-        TextOutA(dc, second_text_x, text_y, temp_text2, (int)text2_len);
-        return;
-    case 1:
-        SetTextColor(dc, color1);
-        TextOutA(dc, second_text_x - 1, text_y + 1, temp_text2, (int)text2_len);
-        SetTextColor(dc, color2);
-        TextOutA(dc, second_text_x, text_y, temp_text2, (int)text2_len);
-        return;
-    case 2:
-        SetTextColor(dc, color2);
-        TextOutA(dc, second_text_x - 1, text_y + 1, temp_text2, (int)text2_len);
-        SetTextColor(dc, color1);
-        TextOutA(dc, second_text_x, text_y, temp_text2, (int)text2_len);
-        return;
-    default:
-        return;
+        case 0:
+            SetTextColor(dc, color1);
+            TextOutA(dc, second_text_x, text_y, temp_text2, (int) text2_len);
+            return;
+        case 1:
+            SetTextColor(dc, color1);
+            TextOutA(dc, second_text_x - 1, text_y + 1, temp_text2, (int) text2_len);
+            SetTextColor(dc, color2);
+            TextOutA(dc, second_text_x, text_y, temp_text2, (int) text2_len);
+            return;
+        case 2:
+            SetTextColor(dc, color2);
+            TextOutA(dc, second_text_x - 1, text_y + 1, temp_text2, (int) text2_len);
+            SetTextColor(dc, color1);
+            TextOutA(dc, second_text_x, text_y, temp_text2, (int) text2_len);
+            return;
+        default:
+            return;
     }
 }
 
-void RGE_fade_palette_start(TDrawArea* surface_in, tagPALETTEENTRY color_in,
-                            float fade_time_in, unsigned char direction_in,
-                            tagPALETTEENTRY* new_palette,
-                            int ignore_color1_in, int ignore_color2_in) {
+void RGE_fade_palette_start(
+    TDrawArea* surface_in, tagPALETTEENTRY color_in, float fade_time_in, unsigned char direction_in,
+    tagPALETTEENTRY* new_palette, int ignore_color1_in, int ignore_color2_in
+) {
     palette_fade_surface = surface_in;
     palette_fade_color = color_in;
     palette_fade_duration = fade_time_in;
@@ -469,7 +472,7 @@ void RGE_fade_palette_start(TDrawArea* surface_in, tagPALETTEENTRY color_in,
             target->peFlags = source->peFlags;
             ++target;
             ++source;
-        } while ((int)target < (int)palette_fade_result);
+        } while ((int) target < (int) palette_fade_result);
     }
 
     palette_fade_start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 693);
@@ -490,13 +493,13 @@ int RGE_fade_palette_step() {
     if (palette_fade_direction == 1) {
         unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 712);
         int ticks = cur - palette_fade_start_time;
-        delta_time = (float)ticks * 0.001f;
+        delta_time = (float) ticks * 0.001f;
 
         if (palette_fade_duration <= 0.0 || delta_time > palette_fade_duration || delta_time < 0.0f) {
             amount = 100;
         } else {
             float v = delta_time * delta_time / palette_fade_duration_squared * g_fade_progress_scale;
-            amount = (long)v;
+            amount = (long) v;
         }
         palette_fade_amount = amount;
         if (amount >= 100) {
@@ -506,13 +509,13 @@ int RGE_fade_palette_step() {
     } else {
         unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 732);
         int ticks = cur - palette_fade_start_time;
-        delta_time = palette_fade_duration - (float)ticks * 0.001f;
+        delta_time = palette_fade_duration - (float) ticks * 0.001f;
 
         if (palette_fade_duration <= 0.0 || delta_time > palette_fade_duration || delta_time < 0.0f) {
             amount = 0;
         } else {
             float v = delta_time * delta_time / palette_fade_duration_squared * g_fade_progress_scale;
-            amount = (long)v;
+            amount = (long) v;
         }
         palette_fade_amount = amount;
         if (amount <= 0) {
@@ -521,8 +524,10 @@ int RGE_fade_palette_step() {
         }
     }
 
-    RGE_translate_palette(palette_fade_source, palette_fade_result, palette_fade_color, palette_fade_amount,
-                          palette_fade_ignore_color1, palette_fade_ignore_color2);
+    RGE_translate_palette(
+        palette_fade_source, palette_fade_result, palette_fade_color, palette_fade_amount, palette_fade_ignore_color1,
+        palette_fade_ignore_color2
+    );
     palette_fade_surface->SetPalette(palette_fade_result);
 
     return done;

@@ -14,13 +14,11 @@
 
 static const float LIMIT = 2000.0f;
 
-TRIBE_Action_Wonder::TRIBE_Action_Wonder(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1) {
+TRIBE_Action_Wonder::TRIBE_Action_Wonder(int infile, RGE_Action_Object* obj_in) : RGE_Action(infile, obj_in, 1) {
     this->action_type = TRIBE_ACTION_TYPE_WONDER;
 }
 
-TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* obj_in)
-    : RGE_Action(obj_in, 1) {
+TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* obj_in) : RGE_Action(obj_in, 1) {
     this->action_type = TRIBE_ACTION_TYPE_WONDER;
     this->timer = 0.0f;
 }
@@ -30,7 +28,7 @@ TRIBE_Action_Wonder::~TRIBE_Action_Wonder() {
 
     if (world->game_state == 0) {
         RGE_Player** players = world->players;
-        int player_num = (int)world->player_num;
+        int player_num = (int) world->player_num;
 
         if (this->state == 2) {
             RGE_Player** current = players;
@@ -85,7 +83,9 @@ TRIBE_Action_Wonder::~TRIBE_Action_Wonder() {
             }
         }
 
-        rge_base_game->notification(0x6E, this->obj->owner->id, (long)this->obj->world_x, (long)this->obj->world_y, 0);
+        rge_base_game->notification(
+            0x6E, this->obj->owner->id, (long) this->obj->world_x, (long) this->obj->world_y, 0
+        );
     }
 }
 
@@ -99,91 +99,96 @@ void TRIBE_Action_Wonder::set_state(unsigned char new_state) {
     this->state = new_state;
 
     switch (new_state) {
-    case 6: {
-        int player_num = (int)rge_base_game->world->player_num;
-        RGE_Player** players = rge_base_game->world->players;
-        int i = 1;
+        case 6: {
+            int player_num = (int) rge_base_game->world->player_num;
+            RGE_Player** players = rge_base_game->world->players;
+            int i = 1;
 
-        if (1 < player_num) {
-            ++players;
-            do {
-                if (i != this->obj->owner->id) {
-                    this->obj->unexplore_terrain(players[0], 1, -1);
-                    this->obj->explore_terrain(players[0], 0, -1);
-                }
-                ++i;
+            if (1 < player_num) {
                 ++players;
-            } while (i < player_num);
+                do {
+                    if (i != this->obj->owner->id) {
+                        this->obj->unexplore_terrain(players[0], 1, -1);
+                        this->obj->explore_terrain(players[0], 0, -1);
+                    }
+                    ++i;
+                    ++players;
+                } while (i < player_num);
+            }
+
+            if (rge_base_game->world[1].world_time == 0) {
+                rge_base_game->set_countdown_timer(this->obj->owner->id, 2000);
+            }
+
+            rge_base_game->notification(
+                0x6D, this->obj->owner->id, (long) this->obj->world_x, (long) this->obj->world_y, 0
+            );
+            return;
         }
 
-        if (rge_base_game->world[1].world_time == 0) {
-            rge_base_game->set_countdown_timer(this->obj->owner->id, 2000);
-        }
+        case 2: {
+            int player_num = (int) rge_base_game->world->player_num;
+            RGE_Player** players = rge_base_game->world->players;
+            int i = 1;
 
-        rge_base_game->notification(0x6D, this->obj->owner->id, (long)this->obj->world_x, (long)this->obj->world_y, 0);
-        return;
-    }
-
-    case 2: {
-        int player_num = (int)rge_base_game->world->player_num;
-        RGE_Player** players = rge_base_game->world->players;
-        int i = 1;
-
-        if (1 < player_num) {
-            ++players;
-            do {
-                if (i != this->obj->owner->id) {
-                    this->obj->explore_terrain(players[0], 1, -1);
-                }
-                ++i;
+            if (1 < player_num) {
                 ++players;
-            } while (i < player_num);
+                do {
+                    if (i != this->obj->owner->id) {
+                        this->obj->explore_terrain(players[0], 1, -1);
+                    }
+                    ++i;
+                    ++players;
+                } while (i < player_num);
+            }
+
+            rge_base_game->notification(
+                0x6C, this->obj->owner->id, (long) this->obj->world_x, (long) this->obj->world_y, 0
+            );
+            return;
         }
 
-        rge_base_game->notification(0x6C, this->obj->owner->id, (long)this->obj->world_x, (long)this->obj->world_y, 0);
-        return;
-    }
-
-    default:
-        return;
+        default:
+            return;
     }
 }
 
 unsigned char TRIBE_Action_Wonder::update() {
     switch (this->state) {
-    case 6:
-        if (this->timer >= LIMIT) return RGE_ACTION_UPDATE_CONTINUE;
+        case 6:
+            if (this->timer >= LIMIT)
+                return RGE_ACTION_UPDATE_CONTINUE;
 
-        {
-            float time_delta = this->obj->owner->world->world_time_delta_seconds;
-            this->timer = (time_delta + time_delta) + this->timer;
+            {
+                float time_delta = this->obj->owner->world->world_time_delta_seconds;
+                this->timer = (time_delta + time_delta) + this->timer;
 
-            if (rge_base_game->world[1].world_time != 0) {
-                goto cleanup;
+                if (rge_base_game->world[1].world_time != 0) {
+                    goto cleanup;
+                }
+
+                int player_id = this->obj->owner->id;
+                rge_base_game->set_countdown_timer(player_id, (int) (LIMIT - this->timer));
+
+                if (this->timer >= LIMIT) {
+                    RGE_Player* owner = this->obj->owner;
+                    owner->win_game_now();
+                    rge_base_game->world->game_end_condition = 100;
+                }
             }
+            goto cleanup;
 
-            int player_id = this->obj->owner->id;
-            rge_base_game->set_countdown_timer(player_id, (int)(LIMIT - this->timer));
-
-            if (this->timer >= LIMIT) {
-                RGE_Player* owner = this->obj->owner;
-                owner->win_game_now();
-                rge_base_game->world->game_end_condition = 100;
+        case 2:
+            if (this->obj->object_state == RGE_OBJECT_STATE_ACTIVE) {
+                this->set_state(6);
+                return RGE_ACTION_UPDATE_CONTINUE;
             }
-        }
-        goto cleanup;
+            goto cleanup;
 
-    case 2:
-        if (this->obj->object_state == RGE_OBJECT_STATE_ACTIVE) {
-            this->set_state(6);
+        cleanup:
             return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        goto cleanup;
 
-cleanup:
-        return RGE_ACTION_UPDATE_CONTINUE;
-
-    default:
-        return RGE_ACTION_UPDATE_CONTINUE;
+        default:
+            return RGE_ACTION_UPDATE_CONTINUE;
     }
 }

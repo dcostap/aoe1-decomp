@@ -8,7 +8,7 @@
 class ostream;
 
 class Path {
-public:
+  public:
     unsigned long timeStampValue;
     Waypoint startValue;
     Waypoint goalValue;
@@ -34,7 +34,7 @@ public:
             } else {
                 maxSizeValue += new_maximum;
             }
-            Waypoint* new_path = (Waypoint*)::operator new(maxSizeValue * 16);
+            Waypoint* new_path = (Waypoint*) ::operator new(maxSizeValue * 16);
             for (int i = 0; i < currentSizeValue; i++) {
                 new_path[i].x = pathValue[i].x;
                 new_path[i].y = pathValue[i].y;

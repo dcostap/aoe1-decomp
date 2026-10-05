@@ -18,8 +18,7 @@
 
 extern int confirmed_close;
 
-TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
-    : TScreenPanel("Achievements Screen") {
+TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag) : TScreenPanel("Achievements Screen") {
     char layout_file[260];
     char str[100];
     TPanel* tabList[8];
@@ -94,10 +93,14 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
 
     this->create_text(this, &this->time, str, 480, 10, 110, 20, RGE_FONT_STANDARD, 0, 0, 0);
     this->time->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
-    this->create_text(this, &this->title, STRING_ID_ACHIEVEMENTS_TITLE, 0, 5, 640, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0);
+    this->create_text(
+        this, &this->title, STRING_ID_ACHIEVEMENTS_TITLE, 0, 5, 640, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
+    );
     this->create_text(this, &this->summary_text, 0, 10, 35, 620, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0);
-    this->create_text(this, &this->instruction, STRING_ID_ACHIEVEMENTS_COLUMN_INSTRUCTION, 10, 410, 620,
-                      20, RGE_FONT_STANDARD, 1, 0, 0);
+    this->create_text(
+        this, &this->instruction, STRING_ID_ACHIEVEMENTS_COLUMN_INSTRUCTION, 10, 410, 620, 20, RGE_FONT_STANDARD, 1, 0,
+        0
+    );
 
     if (this->end_game_flag != 0) {
         RGE_Player* player = rge_base_game->get_player();
@@ -112,16 +115,20 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
             this->create_text(this, &this->win_loss_text, "", 10, 85, 620, 330, RGE_FONT_STANDARD, 0, 0, 1);
             if (this->win_loss_text != 0) {
                 this->create_auto_scrollbar(&this->win_loss_text_bar, this->win_loss_text, 20);
-                this->win_loss_text->set_bevel_info(4, this->bevel_color1, this->bevel_color2,
-                                                    this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                this->win_loss_text->set_bevel_info(
+                    4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                    this->bevel_color5, this->bevel_color6
+                );
                 this->win_loss_text->set_text(message);
             }
         }
     }
 
     this->time_line->create_timeline(this, &this->time_line, 10, 85, 620, 330, 11, 9, 640, 480);
-    this->time_line->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                                    this->bevel_color4, this->bevel_color5, this->bevel_color6);
+    this->time_line->set_bevel_info(
+        3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5,
+        this->bevel_color6
+    );
     this->time_line->set_special_events("timeline.slp");
 
     if (this->create_button(this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0) == 0) {
@@ -169,33 +176,33 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
             RGE_Player* player = rge_base_game->world->players[i];
             unsigned long color;
             switch (player->color_table->id) {
-            case 0:
-                color = 0xC40000;
-                break;
-            case 1:
-                color = 0xC8;
-                break;
-            case 2:
-                color = 0xEAEA;
-                break;
-            case 3:
-                color = 0x215A8C;
-                break;
-            case 4:
-                color = 0x80FF;
-                break;
-            case 5:
-                color = 0x8000;
-                break;
-            case 6:
-                color = 0x808080;
-                break;
-            case 7:
-                color = 0x808040;
-                break;
-            default:
-                color = 0xFFFFFF;
-                break;
+                case 0:
+                    color = 0xC40000;
+                    break;
+                case 1:
+                    color = 0xC8;
+                    break;
+                case 2:
+                    color = 0xEAEA;
+                    break;
+                case 3:
+                    color = 0x215A8C;
+                    break;
+                case 4:
+                    color = 0x80FF;
+                    break;
+                case 5:
+                    color = 0x8000;
+                    break;
+                case 6:
+                    color = 0x808080;
+                    break;
+                case 7:
+                    color = 0x808040;
+                    break;
+                default:
+                    color = 0xFFFFFF;
+                    break;
             }
             this->player_names[i - 1]->set_text_color(color, 0);
             for (int column = 0; column < 7; ++column) {
@@ -208,28 +215,53 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
     long ok_x;
     if (this->end_game_flag != 0 && rge_base_game->singlePlayerGame() != 0) {
         if (this->win_loss_text != 0) {
-            this->create_button(this, &this->aftermathButton, STRING_ID_ACHIEVEMENTS_AFTERMATH, 0, 5, 441, 150, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-            this->create_button(this, &this->timelineButton, STRING_ID_ACHIEVEMENTS_TIMELINE, 0, 165, 441, 150, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-            this->create_button(this, &this->restartButton, STRING_ID_ACHIEVEMENTS_RESTART, 0, 325, 441, 150, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+            this->create_button(
+                this, &this->aftermathButton, STRING_ID_ACHIEVEMENTS_AFTERMATH, 0, 5, 441, 150, 30,
+                RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+            );
+            this->create_button(
+                this, &this->timelineButton, STRING_ID_ACHIEVEMENTS_TIMELINE, 0, 165, 441, 150, 30,
+                RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+            );
+            this->create_button(
+                this, &this->restartButton, STRING_ID_ACHIEVEMENTS_RESTART, 0, 325, 441, 150, 30,
+                RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+            );
             button_width = 150;
             ok_x = 485;
         } else {
-            this->create_button(this, &this->timelineButton, STRING_ID_ACHIEVEMENTS_TIMELINE, 0, 20, 441, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-            this->create_button(this, &this->restartButton, STRING_ID_ACHIEVEMENTS_RESTART, 0, 230, 441, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+            this->create_button(
+                this, &this->timelineButton, STRING_ID_ACHIEVEMENTS_TIMELINE, 0, 20, 441, 180, 30,
+                RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+            );
+            this->create_button(
+                this, &this->restartButton, STRING_ID_ACHIEVEMENTS_RESTART, 0, 230, 441, 180, 30,
+                RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+            );
             button_width = 180;
             ok_x = 440;
         }
     } else {
-        this->create_button(this, &this->timelineButton, STRING_ID_ACHIEVEMENTS_TIMELINE, 0, 100, 441, 200, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+        this->create_button(
+            this, &this->timelineButton, STRING_ID_ACHIEVEMENTS_TIMELINE, 0, 100, 441, 200, 30,
+            RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        );
         button_width = 200;
         ok_x = 340;
     }
-    this->create_button(this, &this->okButton, STRING_ID_ACHIEVEMENTS_CLOSE, 0, ok_x, 441, button_width, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-    this->create_button(this, &this->backButton, STRING_ID_ACHIEVEMENTS_BACK, 0, 200, 441, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+    this->create_button(
+        this, &this->okButton, STRING_ID_ACHIEVEMENTS_CLOSE, 0, ok_x, 441, button_width, 30,
+        RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
+    this->create_button(
+        this, &this->backButton, STRING_ID_ACHIEVEMENTS_BACK, 0, 200, 441, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
     this->backButton->set_active(0);
     this->backButton->hotkey = VK_ESCAPE;
     this->backButton->hotkey_shift = 0;
-    this->create_button(this, &this->backButton2, STRING_ID_ACHIEVEMENTS_CLOSE, 0, 200, 441, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+    this->create_button(
+        this, &this->backButton2, STRING_ID_ACHIEVEMENTS_CLOSE, 0, 200, 441, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+    );
     this->backButton2->set_active(0);
     this->backButton2->hotkey = VK_ESCAPE;
     this->backButton2->hotkey_shift = 0;
@@ -314,7 +346,7 @@ TribeAchievementsScreen::~TribeAchievementsScreen() {
         delete this->instruction_bar;
     }
 
-    this->delete_panel((TPanel**)&this->close_button);
+    this->delete_panel((TPanel**) &this->close_button);
 
     for (int column = 0; column < 7; ++column) {
         if (this->title_bar[column] != 0) {
@@ -379,276 +411,275 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
     this->set_curr_child(this->backButton);
 
     switch (new_mode) {
-    case 0: {
-        this->size = 7;
-        this->set_curr_child(this->okButton);
+        case 0: {
+            this->size = 7;
+            this->set_curr_child(this->okButton);
 
-        if (this->restartButton != 0) {
-            this->restartButton->set_active(1);
-        }
-        if (this->okButton != 0) {
-            this->okButton->set_active(1);
-        }
-        if (this->aftermathButton != 0) {
-            this->aftermathButton->set_active(1);
-        }
-        if (this->timelineButton != 0) {
-            this->timelineButton->set_active(1);
-        }
-        if (this->backButton != 0) {
-            this->backButton->set_active(0);
-        }
-
-        this->instruction->set_active(1);
-        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_SUMMARY));
-        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MILITARY));
-        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ECONOMY));
-        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RELIGION));
-        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TECHNOLOGY));
-        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_SURVIVAL));
-        this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_WONDER));
-        this->title_bar[6]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_SUMMARY));
-
-        if (player_num > 0) {
-            int player_index = 0;
-            int remaining = player_num;
-            while (remaining != 0) {
-                RGE_Player* player;
-                player = rge_base_game->world->players[player_index + 1];
-
-                itoa(player->victory_conditions->get_victory_points_group(0), temptxt, 10);
-                this->statistics[player_index][0]->set_text(temptxt);
-                itoa(player->victory_conditions->get_victory_points_group(1), temptxt, 10);
-                this->statistics[player_index][1]->set_text(temptxt);
-                itoa(player->victory_conditions->get_victory_points_group(2), temptxt, 10);
-                this->statistics[player_index][2]->set_text(temptxt);
-                itoa(player->victory_conditions->get_victory_points_group(3), temptxt, 10);
-                this->statistics[player_index][3]->set_text(temptxt);
-
-                if (player->victory_conditions->get_victory_points_id(0x16) > 0) {
-                    this->statistics[player_index][4]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
-                } else {
-                    this->statistics[player_index][4]->set_text("");
-                }
-                if (player->victory_conditions->get_victory_points_id(0x17) > 0) {
-                    this->statistics[player_index][5]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
-                } else {
-                    this->statistics[player_index][5]->set_text("");
-                }
-
-                itoa(player->victory_conditions->get_victory_points(), temptxt, 10);
-                this->statistics[player_index][6]->set_text(temptxt);
-                ++player_index;
-                --remaining;
+            if (this->restartButton != 0) {
+                this->restartButton->set_active(1);
             }
-        }
-        break;
-    }
-
-    case 1: {
-        this->size = 6;
-        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MILITARY));
-        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_KILLS));
-        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RAZINGS));
-        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_LOSSES));
-        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_KILLS_LOSSES));
-        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_LARGEST_ARMY));
-        this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
-
-        if (player_num > 0) {
-            int player_index = 0;
-            int remaining = player_num;
-            while (remaining != 0) {
-                RGE_Player* player;
-                player = rge_base_game->world->players[player_index + 1];
-
-                itoa(player->victory_conditions->get_attribute_id(0), temptxt, 10);
-                this->statistics[player_index][0]->set_text(temptxt);
-                itoa(player->victory_conditions->get_attribute_id(1), temptxt, 10);
-                this->statistics[player_index][1]->set_text(temptxt);
-                itoa(static_cast<long>(player->attributes[19] - player->attributes[11]), temptxt, 10);
-                this->statistics[player_index][2]->set_text(temptxt);
-
-                itoa(player->victory_conditions->get_attribute_id(2), temptxt, 10);
-                this->statistics[player_index][3]->set_text(temptxt);
-
-                if (player->victory_conditions->get_victory_points_id(3) > 0) {
-                    this->statistics[player_index][4]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
-                } else {
-                    this->statistics[player_index][4]->set_text("");
-                }
-
-                itoa(player->victory_conditions->get_victory_points_group(0), temptxt, 10);
-                this->statistics[player_index][5]->set_text(temptxt);
-                ++player_index;
-                --remaining;
+            if (this->okButton != 0) {
+                this->okButton->set_active(1);
             }
-        }
-        break;
-    }
-
-    case 2: {
-        this->size = 7;
-        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ECONOMY));
-        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_GOLD_COLLECTED));
-        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_VILLAGER_HIGH));
-        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_VILLAGER_BONUS));
-        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_EXPLORATION));
-        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MOST_EXPLORED));
-        this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TRIBUTE_GIVEN));
-        this->title_bar[6]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
-
-        if (player_num > 0) {
-            int player_index = 0;
-            int remaining = player_num;
-            while (remaining != 0) {
-                RGE_Player* player;
-                player = rge_base_game->world->players[player_index + 1];
-
-                itoa(player->victory_conditions->get_attribute_id(4), temptxt, 10);
-                this->statistics[player_index][0]->set_text(temptxt);
-                itoa(player->victory_conditions->get_attribute_id(5), temptxt, 10);
-                this->statistics[player_index][1]->set_text(temptxt);
-
-                if (player->victory_conditions->get_victory_points_id(6) > 0) {
-                    this->statistics[player_index][2]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
-                } else {
-                    this->statistics[player_index][2]->set_text("");
-                }
-
-                sprintf(temptxt, "%d%%", player->victory_conditions->get_attribute_id(7));
-                this->statistics[player_index][3]->set_text(temptxt);
-
-                if (player->victory_conditions->get_victory_points_id(8) > 0) {
-                    this->statistics[player_index][4]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
-                } else {
-                    this->statistics[player_index][4]->set_text("");
-                }
-
-                itoa(player->victory_conditions->get_attribute_id(9), temptxt, 10);
-                this->statistics[player_index][5]->set_text(temptxt);
-                itoa(player->victory_conditions->get_victory_points_group(1), temptxt, 10);
-                this->statistics[player_index][6]->set_text(temptxt);
-                ++player_index;
-                --remaining;
+            if (this->aftermathButton != 0) {
+                this->aftermathButton->set_active(1);
             }
-        }
-        break;
-    }
-
-    case 3: {
-        this->size = 7;
-        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RELIGION));
-        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_CONVERSIONS));
-        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MOST_CONVERSIONS));
-        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RUINS));
-        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ARTIFACTS));
-        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TEMPLES));
-        this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS));
-        this->title_bar[6]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
-
-        if (player_num > 0) {
-            int player_index = 0;
-            int remaining = player_num;
-            while (remaining != 0) {
-                RGE_Player* player;
-                player = rge_base_game->world->players[player_index + 1];
-
-                this->time_line->set_active(0);
-                itoa(player->victory_conditions->get_attribute_id(10), temptxt, 10);
-                this->statistics[player_index][0]->set_text(temptxt);
-
-                if (player->victory_conditions->get_victory_points_id(11) > 0) {
-                    this->statistics[player_index][1]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
-                } else {
-                    this->statistics[player_index][1]->set_text("");
-                }
-
-                itoa(player->victory_conditions->get_attribute_id(12), temptxt, 10);
-                this->statistics[player_index][2]->set_text(temptxt);
-                itoa(player->victory_conditions->get_attribute_id(13), temptxt, 10);
-                this->statistics[player_index][3]->set_text(temptxt);
-                itoa(player->victory_conditions->get_attribute_id(14), temptxt, 10);
-                this->statistics[player_index][4]->set_text(temptxt);
-
-                long victory_points =
-                    player->victory_conditions->get_victory_points_id(16);
-                victory_points += player->victory_conditions->get_victory_points_id(15);
-                itoa(victory_points, temptxt, 10);
-                this->statistics[player_index][5]->set_text(temptxt);
-                itoa(player->victory_conditions->get_victory_points_group(2), temptxt, 10);
-                this->statistics[player_index][6]->set_text(temptxt);
-                ++player_index;
-                --remaining;
+            if (this->timelineButton != 0) {
+                this->timelineButton->set_active(1);
             }
-        }
-        break;
-    }
-
-    case 4: {
-        this->size = 5;
-        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TECHNOLOGY));
-        this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TECHNOLOGIES));
-        this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MOST_TECHNOLOGIES));
-        this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_BRONZE_AGE_FIRST));
-        this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_IRON_AGE_FIRST));
-        this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
-
-        if (player_num > 0) {
-            int player_index = 0;
-            int remaining = player_num;
-            while (remaining != 0) {
-                RGE_Player* player;
-                player = rge_base_game->world->players[player_index + 1];
-
-                itoa(player->victory_conditions->get_attribute_id(17), temptxt, 10);
-                this->statistics[player_index][0]->set_text(temptxt);
-                if (player->victory_conditions->get_victory_points_id(18) > 0) {
-                    this->statistics[player_index][1]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
-                } else {
-                    this->statistics[player_index][1]->set_text("");
-                }
-                if (player->victory_conditions->get_victory_points_id(19) > 0) {
-                    this->statistics[player_index][2]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
-                } else {
-                    this->statistics[player_index][2]->set_text("");
-                }
-                if (player->victory_conditions->get_victory_points_id(20) > 0) {
-                    this->statistics[player_index][3]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
-                } else {
-                    this->statistics[player_index][3]->set_text("");
-                }
-                itoa(player->victory_conditions->get_victory_points_group(3), temptxt, 10);
-                this->statistics[player_index][4]->set_text(temptxt);
-                ++player_index;
-                --remaining;
+            if (this->backButton != 0) {
+                this->backButton->set_active(0);
             }
-        }
-        break;
-    }
 
-    case 6:
-        this->size = 0;
-        this->time_line->set_active(1);
-        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TIMELINE));
-        this->time->set_active(1);
-        break;
+            this->instruction->set_active(1);
+            this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_SUMMARY));
+            this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MILITARY));
+            this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ECONOMY));
+            this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RELIGION));
+            this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TECHNOLOGY));
+            this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_SURVIVAL));
+            this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_WONDER));
+            this->title_bar[6]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_SUMMARY));
 
-    case 5:
-        this->size = 0;
-        this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_AFTERMATH));
-        if (this->win_loss_text != 0) {
-            this->win_loss_text->set_active(1);
+            if (player_num > 0) {
+                int player_index = 0;
+                int remaining = player_num;
+                while (remaining != 0) {
+                    RGE_Player* player;
+                    player = rge_base_game->world->players[player_index + 1];
+
+                    itoa(player->victory_conditions->get_victory_points_group(0), temptxt, 10);
+                    this->statistics[player_index][0]->set_text(temptxt);
+                    itoa(player->victory_conditions->get_victory_points_group(1), temptxt, 10);
+                    this->statistics[player_index][1]->set_text(temptxt);
+                    itoa(player->victory_conditions->get_victory_points_group(2), temptxt, 10);
+                    this->statistics[player_index][2]->set_text(temptxt);
+                    itoa(player->victory_conditions->get_victory_points_group(3), temptxt, 10);
+                    this->statistics[player_index][3]->set_text(temptxt);
+
+                    if (player->victory_conditions->get_victory_points_id(0x16) > 0) {
+                        this->statistics[player_index][4]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
+                    } else {
+                        this->statistics[player_index][4]->set_text("");
+                    }
+                    if (player->victory_conditions->get_victory_points_id(0x17) > 0) {
+                        this->statistics[player_index][5]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
+                    } else {
+                        this->statistics[player_index][5]->set_text("");
+                    }
+
+                    itoa(player->victory_conditions->get_victory_points(), temptxt, 10);
+                    this->statistics[player_index][6]->set_text(temptxt);
+                    ++player_index;
+                    --remaining;
+                }
+            }
+            break;
         }
-        this->time->set_active(0);
-        if (this->backButton != 0) {
-            this->backButton->set_active(0);
+
+        case 1: {
+            this->size = 6;
+            this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MILITARY));
+            this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_KILLS));
+            this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RAZINGS));
+            this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_LOSSES));
+            this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_KILLS_LOSSES));
+            this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_LARGEST_ARMY));
+            this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
+
+            if (player_num > 0) {
+                int player_index = 0;
+                int remaining = player_num;
+                while (remaining != 0) {
+                    RGE_Player* player;
+                    player = rge_base_game->world->players[player_index + 1];
+
+                    itoa(player->victory_conditions->get_attribute_id(0), temptxt, 10);
+                    this->statistics[player_index][0]->set_text(temptxt);
+                    itoa(player->victory_conditions->get_attribute_id(1), temptxt, 10);
+                    this->statistics[player_index][1]->set_text(temptxt);
+                    itoa(static_cast<long>(player->attributes[19] - player->attributes[11]), temptxt, 10);
+                    this->statistics[player_index][2]->set_text(temptxt);
+
+                    itoa(player->victory_conditions->get_attribute_id(2), temptxt, 10);
+                    this->statistics[player_index][3]->set_text(temptxt);
+
+                    if (player->victory_conditions->get_victory_points_id(3) > 0) {
+                        this->statistics[player_index][4]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
+                    } else {
+                        this->statistics[player_index][4]->set_text("");
+                    }
+
+                    itoa(player->victory_conditions->get_victory_points_group(0), temptxt, 10);
+                    this->statistics[player_index][5]->set_text(temptxt);
+                    ++player_index;
+                    --remaining;
+                }
+            }
+            break;
         }
-        if (this->backButton2 != 0) {
-            this->backButton2->set_active(1);
-            this->set_curr_child(this->backButton2);
+
+        case 2: {
+            this->size = 7;
+            this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ECONOMY));
+            this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_GOLD_COLLECTED));
+            this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_VILLAGER_HIGH));
+            this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_VILLAGER_BONUS));
+            this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_EXPLORATION));
+            this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MOST_EXPLORED));
+            this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TRIBUTE_GIVEN));
+            this->title_bar[6]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
+
+            if (player_num > 0) {
+                int player_index = 0;
+                int remaining = player_num;
+                while (remaining != 0) {
+                    RGE_Player* player;
+                    player = rge_base_game->world->players[player_index + 1];
+
+                    itoa(player->victory_conditions->get_attribute_id(4), temptxt, 10);
+                    this->statistics[player_index][0]->set_text(temptxt);
+                    itoa(player->victory_conditions->get_attribute_id(5), temptxt, 10);
+                    this->statistics[player_index][1]->set_text(temptxt);
+
+                    if (player->victory_conditions->get_victory_points_id(6) > 0) {
+                        this->statistics[player_index][2]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
+                    } else {
+                        this->statistics[player_index][2]->set_text("");
+                    }
+
+                    sprintf(temptxt, "%d%%", player->victory_conditions->get_attribute_id(7));
+                    this->statistics[player_index][3]->set_text(temptxt);
+
+                    if (player->victory_conditions->get_victory_points_id(8) > 0) {
+                        this->statistics[player_index][4]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
+                    } else {
+                        this->statistics[player_index][4]->set_text("");
+                    }
+
+                    itoa(player->victory_conditions->get_attribute_id(9), temptxt, 10);
+                    this->statistics[player_index][5]->set_text(temptxt);
+                    itoa(player->victory_conditions->get_victory_points_group(1), temptxt, 10);
+                    this->statistics[player_index][6]->set_text(temptxt);
+                    ++player_index;
+                    --remaining;
+                }
+            }
+            break;
         }
-        break;
+
+        case 3: {
+            this->size = 7;
+            this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RELIGION));
+            this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_CONVERSIONS));
+            this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MOST_CONVERSIONS));
+            this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_RUINS));
+            this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ARTIFACTS));
+            this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TEMPLES));
+            this->title_bar[5]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS));
+            this->title_bar[6]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
+
+            if (player_num > 0) {
+                int player_index = 0;
+                int remaining = player_num;
+                while (remaining != 0) {
+                    RGE_Player* player;
+                    player = rge_base_game->world->players[player_index + 1];
+
+                    this->time_line->set_active(0);
+                    itoa(player->victory_conditions->get_attribute_id(10), temptxt, 10);
+                    this->statistics[player_index][0]->set_text(temptxt);
+
+                    if (player->victory_conditions->get_victory_points_id(11) > 0) {
+                        this->statistics[player_index][1]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
+                    } else {
+                        this->statistics[player_index][1]->set_text("");
+                    }
+
+                    itoa(player->victory_conditions->get_attribute_id(12), temptxt, 10);
+                    this->statistics[player_index][2]->set_text(temptxt);
+                    itoa(player->victory_conditions->get_attribute_id(13), temptxt, 10);
+                    this->statistics[player_index][3]->set_text(temptxt);
+                    itoa(player->victory_conditions->get_attribute_id(14), temptxt, 10);
+                    this->statistics[player_index][4]->set_text(temptxt);
+
+                    long victory_points = player->victory_conditions->get_victory_points_id(16);
+                    victory_points += player->victory_conditions->get_victory_points_id(15);
+                    itoa(victory_points, temptxt, 10);
+                    this->statistics[player_index][5]->set_text(temptxt);
+                    itoa(player->victory_conditions->get_victory_points_group(2), temptxt, 10);
+                    this->statistics[player_index][6]->set_text(temptxt);
+                    ++player_index;
+                    --remaining;
+                }
+            }
+            break;
+        }
+
+        case 4: {
+            this->size = 5;
+            this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TECHNOLOGY));
+            this->title_bar[0]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TECHNOLOGIES));
+            this->title_bar[1]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_MOST_TECHNOLOGIES));
+            this->title_bar[2]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_BRONZE_AGE_FIRST));
+            this->title_bar[3]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_IRON_AGE_FIRST));
+            this->title_bar[4]->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY));
+
+            if (player_num > 0) {
+                int player_index = 0;
+                int remaining = player_num;
+                while (remaining != 0) {
+                    RGE_Player* player;
+                    player = rge_base_game->world->players[player_index + 1];
+
+                    itoa(player->victory_conditions->get_attribute_id(17), temptxt, 10);
+                    this->statistics[player_index][0]->set_text(temptxt);
+                    if (player->victory_conditions->get_victory_points_id(18) > 0) {
+                        this->statistics[player_index][1]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
+                    } else {
+                        this->statistics[player_index][1]->set_text("");
+                    }
+                    if (player->victory_conditions->get_victory_points_id(19) > 0) {
+                        this->statistics[player_index][2]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
+                    } else {
+                        this->statistics[player_index][2]->set_text("");
+                    }
+                    if (player->victory_conditions->get_victory_points_id(20) > 0) {
+                        this->statistics[player_index][3]->set_text(static_cast<long>(STRING_ID_BUTTON_YES));
+                    } else {
+                        this->statistics[player_index][3]->set_text("");
+                    }
+                    itoa(player->victory_conditions->get_victory_points_group(3), temptxt, 10);
+                    this->statistics[player_index][4]->set_text(temptxt);
+                    ++player_index;
+                    --remaining;
+                }
+            }
+            break;
+        }
+
+        case 6:
+            this->size = 0;
+            this->time_line->set_active(1);
+            this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_TIMELINE));
+            this->time->set_active(1);
+            break;
+
+        case 5:
+            this->size = 0;
+            this->summary_text->set_text(static_cast<long>(STRING_ID_ACHIEVEMENTS_AFTERMATH));
+            if (this->win_loss_text != 0) {
+                this->win_loss_text->set_active(1);
+            }
+            this->time->set_active(0);
+            if (this->backButton != 0) {
+                this->backButton->set_active(0);
+            }
+            if (this->backButton2 != 0) {
+                this->backButton2->set_active(1);
+                this->set_curr_child(this->backButton2);
+            }
+            break;
     }
 
     if (this->size == 0) {
@@ -684,8 +715,10 @@ void TribeAchievementsScreen::draw() {
                 int player_index = 0;
                 for (remaining = count; remaining != 0; --remaining) {
                     if (world->players[player_index + 1]->game_status == 1) {
-                        this->win_decal->shape_draw(this->render_area, this->player_names[player_index]->xPosition() - 20,
-                                                    this->player_names[player_index]->yPosition(), 0, 0, 0);
+                        this->win_decal->shape_draw(
+                            this->render_area, this->player_names[player_index]->xPosition() - 20,
+                            this->player_names[player_index]->yPosition(), 0, 0, 0
+                        );
                     }
                     ++player_index;
                 }
@@ -698,7 +731,9 @@ void TribeAchievementsScreen::draw() {
     }
 }
 
-long TribeAchievementsScreen::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
+long TribeAchievementsScreen::handle_mouse_down(
+    unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key
+) {
     long result = TEasy_Panel::handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
     if (current_mode == 0) {
         if (achievement_choice[0]->is_inside(x, y)) {
@@ -815,8 +850,8 @@ long TribeAchievementsScreen::wnd_proc(void* hwnd, unsigned int msg, unsigned in
     if (msg == WM_CLOSE && confirmed_close == 0) {
         confirmed_close = 1;
         int mode = rge_base_game->prog_mode;
-        if (mode == ProgModeGameOver || mode == ProgModeGame ||
-            mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor) {
+        if (mode == ProgModeGameOver || mode == ProgModeGame || mode == ProgModeGameTempPaused
+            || mode == ProgModeScenarioEditor) {
             if (IsIconic(render_area->Wnd) == 0) {
                 popupYesNoDialog(get_string(STRING_ID_CONFIRM_QUIT_GAME), 0, TEASY_POPUP_WIDTH, 100);
                 return 1;

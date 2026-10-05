@@ -7,16 +7,12 @@
 #include "../include/unit_ai_module.h"
 #include "../include/world.h"
 
-MainDecisionAIModule::MainDecisionAIModule(void* pW, int playerID, RGE_Player* plyr)
-    : AIModule("Main Decision AI", 1000, playerID, pW),
-      player(plyr),
-      objects() {
+MainDecisionAIModule::MainDecisionAIModule(void* pW, int playerID, RGE_Player* plyr) :
+    AIModule("Main Decision AI", 1000, playerID, pW), player(plyr), objects() {
 }
 
-MainDecisionAIModule::MainDecisionAIModule(int playerID, RGE_Player* plyr, int infile)
-    : AIModule("Main Decision AI", 1000, playerID, 0),
-      player(plyr),
-      objects() {
+MainDecisionAIModule::MainDecisionAIModule(int playerID, RGE_Player* plyr, int infile) :
+    AIModule("Main Decision AI", 1000, playerID, 0), player(plyr), objects() {
     int numberUnits;
 
     rge_read(infile, &numberUnits, sizeof(numberUnits));
@@ -67,8 +63,7 @@ int MainDecisionAIModule::numberObjectsWithAction(int aid) {
     int count = 0;
 
     for (int i = 0; i < this->objects.number(); ++i) {
-        RGE_Static_Object* object =
-            this->player->world->object(this->objects[i]);
+        RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object != 0 && object->unitAI() != 0 && object->unitAI()->currentAction() == aid) {
             ++count;
         }
@@ -81,8 +76,7 @@ int MainDecisionAIModule::numberObjectsWithGroup(int gid) {
     int count = 0;
 
     for (int i = 0; i < this->objects.number(); ++i) {
-        RGE_Static_Object* object =
-            this->player->world->object(this->objects[i]);
+        RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object != 0 && object->master_obj->object_group == gid) {
             ++count;
         }
@@ -95,8 +89,7 @@ int MainDecisionAIModule::numberObjectsWithActionAndTarget(int action, int targe
     int count = 0;
 
     for (int i = 0; i < this->objects.number(); ++i) {
-        RGE_Static_Object* object =
-            this->player->world->object(this->objects[i]);
+        RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object != 0) {
             if (object->unitAI() != 0) {
                 UnitAIModule* unit_ai = object->unitAI();
@@ -117,8 +110,7 @@ int MainDecisionAIModule::numberObjectsWithTargetType(int tt) {
     int count = 0;
 
     for (int i = 0; i < this->objects.number(); ++i) {
-        RGE_Static_Object* object =
-            this->player->world->object(this->objects[i]);
+        RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object != 0 && object->unitAI() != 0 && object->unitAI()->currentTargetType() == tt) {
             ++count;
         }
@@ -131,8 +123,7 @@ int MainDecisionAIModule::numberObjectsWithActionAndTargetType(int action, int t
     int count = 0;
 
     for (int i = 0; i < this->objects.number(); ++i) {
-        RGE_Static_Object* object =
-            this->player->world->object(this->objects[i]);
+        RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object != 0) {
             if (object->unitAI() != 0) {
                 UnitAIModule* unit_ai = object->unitAI();
@@ -154,13 +145,12 @@ RGE_Static_Object* MainDecisionAIModule::object(int id) {
 }
 
 RGE_Static_Object* MainDecisionAIModule::object(
-    int gameID, int typeID, int groupID, int currentAction,
-    int canPerformActionID, int targetID, int targetType,
-    int secondaryTargetType, int objectState, int maxAttributeAmount) {
+    int gameID, int typeID, int groupID, int currentAction, int canPerformActionID, int targetID, int targetType,
+    int secondaryTargetType, int objectState, int maxAttributeAmount
+) {
     int i = 0;
     for (; i < this->objects.number(); ++i) {
-        RGE_Static_Object* object =
-            this->player->world->object(this->objects[i]);
+        RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object != 0 && object->unitAI() != 0) {
 
             if (gameID != -1 && object->id != gameID) {
@@ -184,25 +174,23 @@ RGE_Static_Object* MainDecisionAIModule::object(
             if (targetType != -1 && object->unitAI()->currentTargetType() != targetType) {
                 goto next_object;
             }
-            if ((objectState == RGE_OBJECT_STATE_ANY || (int)object->object_state == objectState) && (maxAttributeAmount == -1 ||
-                 object->attribute_amount_held <= (float)maxAttributeAmount)) {
+            if ((objectState == RGE_OBJECT_STATE_ANY || (int) object->object_state == objectState)
+                && (maxAttributeAmount == -1 || object->attribute_amount_held <= (float) maxAttributeAmount)) {
                 return object;
             }
         }
 
-    next_object:
-        ;
+    next_object:;
     }
 
     return 0;
 }
 
-RGE_Static_Object* MainDecisionAIModule::object(int gameID, int typeID, int groupID,
-                                                int action1, int action2,
-                                                int objectState) {
+RGE_Static_Object* MainDecisionAIModule::object(
+    int gameID, int typeID, int groupID, int action1, int action2, int objectState
+) {
     for (int i = 0; i < this->objects.number(); ++i) {
-        RGE_Static_Object* object =
-            this->player->world->object(this->objects[i]);
+        RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object == 0) {
             continue;
         }
@@ -228,7 +216,7 @@ RGE_Static_Object* MainDecisionAIModule::object(int gameID, int typeID, int grou
         if (ai->currentAction() == action2) {
             continue;
         }
-        if (objectState != RGE_OBJECT_STATE_ANY && (int)object->object_state != objectState) {
+        if (objectState != RGE_OBJECT_STATE_ANY && (int) object->object_state != objectState) {
             continue;
         }
         return object;
@@ -250,8 +238,7 @@ int MainDecisionAIModule::numberBusyObjects() {
     int count = 0;
 
     for (int i = 0; i < this->objects.number(); ++i) {
-        RGE_Static_Object* object =
-            this->player->world->object(this->objects[i]);
+        RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object != 0) {
             UnitAIModule* unit_ai = object->unitAI();
             if (unit_ai != 0) {
@@ -271,25 +258,24 @@ RGE_Static_Object* MainDecisionAIModule::mostDamaged(int oGroup, int oType) {
     int damagePercentage = 0;
 
     for (int i = 0; i < this->objects.number(); ++i) {
-        RGE_Static_Object* object =
-            this->player->world->object(this->objects[i]);
+        RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object == 0 || object->unitAI() == 0 || object->object_state == RGE_OBJECT_STATE_UNBUILT) {
             continue;
         }
-        if ((int)object->master_obj->object_group != oGroup) {
+        if ((int) object->master_obj->object_group != oGroup) {
             continue;
         }
 
         int maxhp = object->master_obj->hp;
-        if ((float)maxhp <= object->hp || object->canRepair() != 1) {
+        if ((float) maxhp <= object->hp || object->canRepair() != 1) {
             continue;
         }
-        if (oType != -1 && oType != (int)object->master_obj->id) {
+        if (oType != -1 && oType != (int) object->master_obj->id) {
             continue;
         }
 
         int hp = object->master_obj->hp;
-        int damage = (long)((float)hp - object->hp) * 100 / hp;
+        int damage = (long) ((float) hp - object->hp) * 100 / hp;
         if (damage > damagePercentage) {
             mDB = object;
             damagePercentage = damage;

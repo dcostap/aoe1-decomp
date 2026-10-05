@@ -6,26 +6,24 @@
 #include "../include/rge_fio.h"
 #include "../include/world.h"
 
-RGE_Master_Missile_Object::RGE_Master_Missile_Object(
-    RGE_Master_Missile_Object* other_object, int do_setup)
-    : RGE_Master_Combat_Object(other_object, 0) {
+RGE_Master_Missile_Object::RGE_Master_Missile_Object(RGE_Master_Missile_Object* other_object, int do_setup) :
+    RGE_Master_Combat_Object(other_object, 0) {
     if (do_setup != 0) {
         setup(other_object);
     }
 }
 
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
-    : RGE_Master_Combat_Object(infile, sprites, sounds, 0) {
+    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup
+) : RGE_Master_Combat_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
         setup(infile, sprites, sounds);
     }
 }
 
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(
-    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id,
-    int do_setup)
-    : RGE_Master_Combat_Object(infile, sprites, sounds, in_id, 0) {
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup
+) : RGE_Master_Combat_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup != 0) {
         setup(infile, sprites, sounds, in_id);
     }
@@ -67,25 +65,25 @@ int RGE_Master_Missile_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sou
     recyclable = 1;
     master_type = 0x3C;
 
-    fscanf(infile, "%hd %hd %hd %hd %hd %f", &temp_missile_type, &temp_targetting_type, &temp_missile_hit_info,
-           &temp_missile_die_info, &temp_area_effect_specials, &ballistics_ratio);
+    fscanf(
+        infile, "%hd %hd %hd %hd %hd %f", &temp_missile_type, &temp_targetting_type, &temp_missile_hit_info,
+        &temp_missile_die_info, &temp_area_effect_specials, &ballistics_ratio
+    );
 
-    targetting_type = (unsigned char)temp_targetting_type;
-    missile_hit_info = (unsigned char)temp_missile_hit_info;
-    missile_die_info = (unsigned char)temp_missile_die_info;
-    area_effect_specials = (unsigned char)temp_area_effect_specials;
-    missile_type = (unsigned char)temp_missile_type;
+    targetting_type = (unsigned char) temp_targetting_type;
+    missile_hit_info = (unsigned char) temp_missile_hit_info;
+    missile_die_info = (unsigned char) temp_missile_die_info;
+    area_effect_specials = (unsigned char) temp_area_effect_specials;
+    missile_type = (unsigned char) temp_missile_type;
     return 1;
 }
 
 RGE_Master_Missile_Object::~RGE_Master_Missile_Object() {
 }
 
-RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(
-    RGE_Player* owner, float x, float y, float z) {
+RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(RGE_Player* owner, float x, float y, float z) {
     if (recyclable != 0) {
-        RGE_Static_Object* recycled =
-            owner->world->recycle_object_in_to_game(master_type);
+        RGE_Static_Object* recycled = owner->world->recycle_object_in_to_game(master_type);
         if (recycled != 0) {
             recycled->recycle_in_to_game(this, owner, x, y, z);
             return recycled;
@@ -101,8 +99,7 @@ RGE_Master_Static_Object* RGE_Master_Missile_Object::make_new_master() {
 
 void RGE_Master_Missile_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Combat_Object::copy_obj(source);
-    RGE_Master_Missile_Object* missile_source =
-        (RGE_Master_Missile_Object*)source;
+    RGE_Master_Missile_Object* missile_source = (RGE_Master_Missile_Object*) source;
     missile_type = missile_source->missile_type;
     targetting_type = missile_source->targetting_type;
     missile_hit_info = missile_source->missile_hit_info;
@@ -113,21 +110,21 @@ void RGE_Master_Missile_Object::copy_obj(RGE_Master_Static_Object* source) {
 
 void RGE_Master_Missile_Object::modify(float amount, unsigned char flag) {
     if (flag == 0x13) {
-        targetting_type = (unsigned char)(int)amount;
+        targetting_type = (unsigned char) (int) amount;
     }
     RGE_Master_Combat_Object::modify(amount, flag);
 }
 
 void RGE_Master_Missile_Object::modify_delta(float amount, unsigned char flag) {
     if (flag == 0x13) {
-        targetting_type = (unsigned char)(int)amount;
+        targetting_type = (unsigned char) (int) amount;
     }
     RGE_Master_Combat_Object::modify_delta(amount, flag);
 }
 
 void RGE_Master_Missile_Object::modify_percent(float amount, unsigned char flag) {
     if (flag == 0x13) {
-        targetting_type = (unsigned char)(int)amount;
+        targetting_type = (unsigned char) (int) amount;
     }
     RGE_Master_Combat_Object::modify_percent(amount, flag);
 }

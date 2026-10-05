@@ -4,7 +4,7 @@
 #include "diam_map.h"
 
 class RGE_Diamond_Map_View : public RGE_Diamond_Map {
-public:
+  public:
     RGE_Diamond_Map_View();
 
     virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key);
@@ -23,7 +23,6 @@ public:
     int right_click2(long, long);
 };
 
-typedef char vw_dimap_view_size_check[
-    (sizeof(RGE_Diamond_Map_View) == 0x16C) ? 1 : -1];
+typedef char vw_dimap_view_size_check[(sizeof(RGE_Diamond_Map_View) == 0x16C) ? 1 : -1];
 
 #endif

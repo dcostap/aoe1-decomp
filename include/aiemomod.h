@@ -6,7 +6,7 @@
 class MainDecisionAIModule;
 
 class EmotionalAIModule : public AIModule {
-public:
+  public:
     MainDecisionAIModule* md;   // +0xF0
     int stateValue[6];          // +0xF4
     char stateNameValue[6][30]; // +0x10C

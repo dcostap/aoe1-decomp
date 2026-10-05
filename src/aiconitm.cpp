@@ -8,8 +8,8 @@ ConstructionItem::ConstructionItem() : BaseItem() {
     this->buildAttemptsValue = 0;
 }
 
-ConstructionItem::ConstructionItem(float x, float y, float z, float xs, float ys, float zs, int ti, char* n)
-    : BaseItem(ti, -1, -1, n, x, y, z, xs, ys, zs) {
+ConstructionItem::ConstructionItem(float x, float y, float z, float xs, float ys, float zs, int ti, char* n) :
+    BaseItem(ti, -1, -1, n, x, y, z, xs, ys, zs) {
     this->next = 0;
     this->prev = 0;
     this->inProgressValue = 0;
@@ -17,21 +17,15 @@ ConstructionItem::ConstructionItem(float x, float y, float z, float xs, float ys
     this->buildAttemptsValue = 0;
 }
 
-ConstructionItem::ConstructionItem(ConstructionItem* ci)
-    : BaseItem(ci),
-      next(0),
-      prev(0),
-      inProgressValue(ci->inProgressValue),
-      builtValue(ci->builtValue),
-      buildAttemptsValue(ci->buildAttemptsValue) {}
+ConstructionItem::ConstructionItem(ConstructionItem* ci) :
+    BaseItem(ci), next(0), prev(0), inProgressValue(ci->inProgressValue), builtValue(ci->builtValue),
+    buildAttemptsValue(ci->buildAttemptsValue) {
+}
 
-ConstructionItem::ConstructionItem(const ConstructionItem& ci)
-    : BaseItem(ci),
-      next(0),
-      prev(0),
-      inProgressValue(ci.inProgressValue),
-      builtValue(ci.builtValue),
-      buildAttemptsValue(ci.buildAttemptsValue) {}
+ConstructionItem::ConstructionItem(const ConstructionItem& ci) :
+    BaseItem(ci), next(0), prev(0), inProgressValue(ci.inProgressValue), builtValue(ci.builtValue),
+    buildAttemptsValue(ci.buildAttemptsValue) {
+}
 
 ConstructionItem::~ConstructionItem() {
 }

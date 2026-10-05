@@ -7,7 +7,7 @@
 // 256-byte query buffer at offset 0x10.
 
 class TRegistry {
-public:
+  public:
     HKEY ghMachineKey;
     HKEY ghUserKey;
     HKEY ghMachineKeyRead;

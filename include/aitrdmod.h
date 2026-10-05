@@ -10,7 +10,7 @@
 class MainDecisionAIModule;
 
 class TradeAIModule : public AIModule {
-public:
+  public:
     virtual ~TradeAIModule();
     virtual int save(int outfile);
 
@@ -21,10 +21,8 @@ public:
     MainDecisionAIModule* md;
 };
 
-typedef char aitrdmod_tradeaimodule_size[
-    (sizeof(TradeAIModule) == 0xF4) ? 1 : -1];
+typedef char aitrdmod_tradeaimodule_size[(sizeof(TradeAIModule) == 0xF4) ? 1 : -1];
 
-typedef char aitrdmod_tradeaimodule_md_offset[
-    ((char*)&((TradeAIModule*)0)->md - (char*)0 == 0xF0) ? 1 : -1];
+typedef char aitrdmod_tradeaimodule_md_offset[((char*) &((TradeAIModule*) 0)->md - (char*) 0 == 0xF0) ? 1 : -1];
 
 #endif

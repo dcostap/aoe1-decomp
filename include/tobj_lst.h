@@ -7,7 +7,7 @@
 #include "t_b_obj.h"
 
 class TRIBE_Object_List : public RGE_Object_List {
-protected:
+  protected:
     void load(unsigned char object_type, int infile, RGE_Game_World* world);
 };
 

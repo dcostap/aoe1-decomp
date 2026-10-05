@@ -13,7 +13,7 @@ struct Zone_Queue {
 };
 
 class RGE_Zone_Map {
-public:
+  public:
     int numberTilesInZoneValue[257];
     uchar* zone_map;
     uchar** zone_map_rows;
@@ -34,12 +34,12 @@ public:
     int numberTilesInZone(uchar zone);
     int findClosestPointInTerrainType(XYPoint p, XYPoint& rVal, int type1, int type2, int range);
 
-private:
+  private:
     void do_zone_map_area(long x, long y, uchar group, uchar zone);
 };
 
 class RGE_Zone_Map_List {
-public:
+  public:
     RGE_Zone_Map** zone_maps;
     long zone_map_num;
     RGE_Map* map;
@@ -54,9 +54,7 @@ public:
     void delete_zone_maps();
 };
 
-typedef char rge_zone_map_size_check[
-    (sizeof(RGE_Zone_Map) == 0x51C) ? 1 : -1];
-typedef char rge_zone_map_list_size_check[
-    (sizeof(RGE_Zone_Map_List) == 0x0C) ? 1 : -1];
+typedef char rge_zone_map_size_check[(sizeof(RGE_Zone_Map) == 0x51C) ? 1 : -1];
+typedef char rge_zone_map_list_size_check[(sizeof(RGE_Zone_Map_List) == 0x0C) ? 1 : -1];
 
 #endif

@@ -8,7 +8,7 @@ class RGE_Player;
 class RGE_Static_Object;
 
 class MainDecisionAIModule : public AIModule {
-public:
+  public:
     RGE_Player* player;
     ManagedArray<int> objects;
 
@@ -29,15 +29,15 @@ public:
     int numberObjectsWithTargetType(int tt);
     int numberObjectsWithActionAndTargetType(int action, int tt);
     RGE_Static_Object* object(int id);
-    RGE_Static_Object* object(int gameID, int typeID, int groupID, int currentAction, int canPerformActionID,
-                              int targetID, int targetType, int secondaryTargetType, int objectState,
-                              int maxAttributeAmount);
+    RGE_Static_Object* object(
+        int gameID, int typeID, int groupID, int currentAction, int canPerformActionID, int targetID, int targetType,
+        int secondaryTargetType, int objectState, int maxAttributeAmount
+    );
     RGE_Static_Object* object(int gameID, int typeID, int groupID, int action1, int action2, int objectState);
     int numberBusyObjects();
     RGE_Static_Object* mostDamaged(int oGroup, int oType);
 };
 
-typedef char aimdmod_main_decision_size[
-    (sizeof(MainDecisionAIModule) == 0x104) ? 1 : -1];
+typedef char aimdmod_main_decision_size[(sizeof(MainDecisionAIModule) == 0x104) ? 1 : -1];
 
 #endif

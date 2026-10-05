@@ -18,8 +18,7 @@
 #define TRIBE_INFO_SUMERIAN   8
 #define TRIBE_INFO_COUNT      9
 
-TribeSelectTribeScreen::TribeSelectTribeScreen()
-    : TScreenPanel("Select Tribe Screen") {
+TribeSelectTribeScreen::TribeSelectTribeScreen() : TScreenPanel("Select Tribe Screen") {
     char backgroundName[10];
     TPanel* tabList[10];
     RGE_Font* font;
@@ -61,8 +60,9 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     backgroundPanel = this->background;
     secondHeight = this->pnl_hgt * 480 / 480;
     secondWidth = this->pnl_wid * 640 / 640;
-    backgroundPanel->set_positioning(TPanel::PositionCentered, 0, 0, 0, 0, secondWidth, secondWidth,
-                                     secondHeight, secondHeight, 0, 0, 0, 0);
+    backgroundPanel->set_positioning(
+        TPanel::PositionCentered, 0, 0, 0, 0, secondWidth, secondWidth, secondHeight, secondHeight, 0, 0, 0, 0
+    );
 
     font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_21_BOLD);
     this->title = new TTextPanel;
@@ -70,9 +70,11 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->error_code = 1;
         return;
     }
-    this->title->setup(this->render_area, this->background, this->pnl_wid * 20 / 640, this->pnl_hgt * 20 / 480,
-                       this->pnl_wid * 600 / 640, this->pnl_hgt * 30 / 480, font->font, font->font_wid, font->font_hgt,
-                       0, 0, 0, 0, 0, 0, "Civilization Selection");
+    this->title->setup(
+        this->render_area, this->background, this->pnl_wid * 20 / 640, this->pnl_hgt * 20 / 480,
+        this->pnl_wid * 600 / 640, this->pnl_hgt * 30 / 480, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0,
+        0, "Civilization Selection"
+    );
 
     buttonSound = rge_base_game->get_sound(0);
     font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_12_BOLD);
@@ -88,9 +90,11 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
             return;
         }
 
-        (*button)->setup(this->render_area, this->background, this->pnl_wid * 20 / 640 + secondWidth * this->pnl_wid / 640,
-                         this->pnl_hgt * 50 / 480 + secondHeight * this->pnl_hgt * 115 / 480, this->pnl_wid * 200 / 640,
-                         this->pnl_hgt * 110 / 480, TButtonPanel::DrawText, buttonSound, TButtonPanel::NotifyAction, 0);
+        (*button)->setup(
+            this->render_area, this->background, this->pnl_wid * 20 / 640 + secondWidth * this->pnl_wid / 640,
+            this->pnl_hgt * 50 / 480 + secondHeight * this->pnl_hgt * 115 / 480, this->pnl_wid * 200 / 640,
+            this->pnl_hgt * 110 / 480, TButtonPanel::DrawText, buttonSound, TButtonPanel::NotifyAction, 0
+        );
         (*button)->set_text_info(this->tribeName(i), font->font, font->font_wid, font->font_hgt, -1, -1);
 
         if (i == 2 || i == 5) {
@@ -108,9 +112,11 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->error_code = 1;
         return;
     }
-    this->tribeText->setup(this->render_area, this->background, this->pnl_wid * 20 / 640, this->pnl_hgt * 400 / 480,
-                           this->pnl_wid * 510 / 640, this->pnl_hgt * 60 / 480, font->font, font->font_wid, font->font_hgt,
-                           0, 0, 0, 0, 0, 0, "");
+    this->tribeText->setup(
+        this->render_area, this->background, this->pnl_wid * 20 / 640, this->pnl_hgt * 400 / 480,
+        this->pnl_wid * 510 / 640, this->pnl_hgt * 60 / 480, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0,
+        0, ""
+    );
     this->tribeText->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignWordwrap);
 
     this->okButton = new TButtonPanel;
@@ -118,9 +124,11 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->error_code = 1;
         return;
     }
-    this->okButton->setup(this->render_area, this->background, this->pnl_wid * 500 / 640, this->pnl_hgt * 400 / 480,
-                          this->pnl_wid * 120 / 640, this->pnl_hgt * 30 / 480, TButtonPanel::DrawText, buttonSound,
-                          TButtonPanel::NotifyAction, 0);
+    this->okButton->setup(
+        this->render_area, this->background, this->pnl_wid * 500 / 640, this->pnl_hgt * 400 / 480,
+        this->pnl_wid * 120 / 640, this->pnl_hgt * 30 / 480, TButtonPanel::DrawText, buttonSound,
+        TButtonPanel::NotifyAction, 0
+    );
     this->okButton->set_text_info("Previous Screen", font->font, font->font_wid, font->font_hgt, -1, -1);
 
     this->cancelButton = new TButtonPanel;
@@ -128,9 +136,11 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->error_code = 1;
         return;
     }
-    this->cancelButton->setup(this->render_area, this->background, this->pnl_wid * 500 / 640, this->pnl_hgt * 440 / 480,
-                              this->pnl_wid * 120 / 640, this->pnl_hgt * 30 / 480, TButtonPanel::DrawText, buttonSound,
-                              TButtonPanel::NotifyAction, 0);
+    this->cancelButton->setup(
+        this->render_area, this->background, this->pnl_wid * 500 / 640, this->pnl_hgt * 440 / 480,
+        this->pnl_wid * 120 / 640, this->pnl_hgt * 30 / 480, TButtonPanel::DrawText, buttonSound,
+        TButtonPanel::NotifyAction, 0
+    );
     this->cancelButton->set_text_info("Cancel", font->font, font->font_wid, font->font_hgt, -1, -1);
 
     this->set_curr_child(this->background);
@@ -165,7 +175,7 @@ TribeSelectTribeScreen::~TribeSelectTribeScreen() {
 }
 
 long TribeSelectTribeScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
-    if (fromPanel == (TPanel*)this->okButton || fromPanel == (TPanel*)this->cancelButton) {
+    if (fromPanel == (TPanel*) this->okButton || fromPanel == (TPanel*) this->cancelButton) {
         if (actionIn == 1) {
             panel_system.setCurrentPanel("MP Setup Screen", 0);
             panel_system.destroyPanel("Select Tribe Screen");
@@ -174,7 +184,7 @@ long TribeSelectTribeScreen::action(TPanel* fromPanel, long actionIn, unsigned l
     } else if (actionIn == 1) {
         int i;
         for (i = 0; i < TRIBE_INFO_COUNT; i++) {
-            if (fromPanel == (TPanel*)this->tribeButton[i]) {
+            if (fromPanel == (TPanel*) this->tribeButton[i]) {
                 this->fillTribeText(i);
                 return 1;
             }
@@ -186,33 +196,33 @@ long TribeSelectTribeScreen::action(TPanel* fromPanel, long actionIn, unsigned l
 
 void TribeSelectTribeScreen::fillTribeText(int t) {
     switch (t) {
-    case TRIBE_INFO_ASSYRIAN:
-        this->tribeText->set_text("Assyrian information here.");
-        break;
-    case TRIBE_INFO_BABYLONIAN:
-        this->tribeText->set_text("Babylonian information here.");
-        break;
-    case TRIBE_INFO_EGYPTIAN:
-        this->tribeText->set_text("Egyptian information here.");
-        break;
-    case TRIBE_INFO_GREEK:
-        this->tribeText->set_text("Greek information here.");
-        break;
-    case TRIBE_INFO_HITTITE:
-        this->tribeText->set_text("Hittite information here.");
-        break;
-    case TRIBE_INFO_ISREALITE:
-        this->tribeText->set_text("Isrealite information here.");
-        break;
-    case TRIBE_INFO_MINOAN:
-        this->tribeText->set_text("Minoan information here.");
-        break;
-    case TRIBE_INFO_PHOENICIAN:
-        this->tribeText->set_text("Phoenician information here.");
-        break;
-    case TRIBE_INFO_SUMERIAN:
-        this->tribeText->set_text("Sumerian information here.");
-        break;
+        case TRIBE_INFO_ASSYRIAN:
+            this->tribeText->set_text("Assyrian information here.");
+            break;
+        case TRIBE_INFO_BABYLONIAN:
+            this->tribeText->set_text("Babylonian information here.");
+            break;
+        case TRIBE_INFO_EGYPTIAN:
+            this->tribeText->set_text("Egyptian information here.");
+            break;
+        case TRIBE_INFO_GREEK:
+            this->tribeText->set_text("Greek information here.");
+            break;
+        case TRIBE_INFO_HITTITE:
+            this->tribeText->set_text("Hittite information here.");
+            break;
+        case TRIBE_INFO_ISREALITE:
+            this->tribeText->set_text("Isrealite information here.");
+            break;
+        case TRIBE_INFO_MINOAN:
+            this->tribeText->set_text("Minoan information here.");
+            break;
+        case TRIBE_INFO_PHOENICIAN:
+            this->tribeText->set_text("Phoenician information here.");
+            break;
+        case TRIBE_INFO_SUMERIAN:
+            this->tribeText->set_text("Sumerian information here.");
+            break;
     }
 
     this->tribeText->scroll(6, 0, 1);
@@ -220,15 +230,25 @@ void TribeSelectTribeScreen::fillTribeText(int t) {
 
 char* TribeSelectTribeScreen::tribeName(int i) {
     switch (i) {
-    case TRIBE_INFO_ASSYRIAN: return "Assyrian";
-    case TRIBE_INFO_BABYLONIAN: return "Babylonian";
-    case TRIBE_INFO_EGYPTIAN: return "Egyptian";
-    case TRIBE_INFO_GREEK: return "Greek";
-    case TRIBE_INFO_HITTITE: return "Hittite";
-    case TRIBE_INFO_ISREALITE: return "Isrealite";
-    case TRIBE_INFO_MINOAN: return "Minoan";
-    case TRIBE_INFO_PHOENICIAN: return "Phoenician";
-    case TRIBE_INFO_SUMERIAN: return "Sumerian";
-    default: return "No Culture";
+        case TRIBE_INFO_ASSYRIAN:
+            return "Assyrian";
+        case TRIBE_INFO_BABYLONIAN:
+            return "Babylonian";
+        case TRIBE_INFO_EGYPTIAN:
+            return "Egyptian";
+        case TRIBE_INFO_GREEK:
+            return "Greek";
+        case TRIBE_INFO_HITTITE:
+            return "Hittite";
+        case TRIBE_INFO_ISREALITE:
+            return "Isrealite";
+        case TRIBE_INFO_MINOAN:
+            return "Minoan";
+        case TRIBE_INFO_PHOENICIAN:
+            return "Phoenician";
+        case TRIBE_INFO_SUMERIAN:
+            return "Sumerian";
+        default:
+            return "No Culture";
     }
 }

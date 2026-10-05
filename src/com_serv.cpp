@@ -62,16 +62,14 @@ void TCommunications_Services::SetServiceActive(int id, int state) {
     }
 }
 
-BOOL __stdcall DPEnumCallback(LPGUID pid, LPSTR szName, DWORD major_ver,
-                              DWORD minor_ver, LPVOID lpx) {
-    TCommunications_Services* services =
-        (TCommunications_Services*)lpx;
+BOOL __stdcall DPEnumCallback(LPGUID pid, LPSTR szName, DWORD major_ver, DWORD minor_ver, LPVOID lpx) {
+    TCommunications_Services* services = (TCommunications_Services*) lpx;
     int count = services->GetServiceCount();
     services->SetServiceName(count, szName);
     services->EnumServiceGUID(count, pid);
 
     IDirectPlay* lpIDC;
-    int result = DirectPlayCreate(pid, (LPDIRECTPLAY*)&lpIDC, 0);
+    int result = DirectPlayCreate(pid, (LPDIRECTPLAY*) &lpIDC, 0);
 
     if (result == 0) {
         services->SetServiceActive(count, 1);

@@ -8,11 +8,7 @@
 
 typedef unsigned char uchar;
 
-enum {
-    TEASY_POPUP_WIDTH = 450,
-    TEASY_POPUP_HEIGHT = 100,
-    TEASY_SCENARIO_EDITOR_CURSOR = 0x7F8B
-};
+enum { TEASY_POPUP_WIDTH = 450, TEASY_POPUP_HEIGHT = 100, TEASY_SCENARIO_EDITOR_CURSOR = 0x7F8B };
 
 class TDrawArea;
 class RGE_Color_Table;
@@ -28,7 +24,7 @@ class THelpDialog;
 class TMessageDialog;
 
 class TEasy_Panel : public TPanel {
-public:
+  public:
     TEasy_Panel(char* name);
     TEasy_Panel();
     virtual ~TEasy_Panel();
@@ -82,51 +78,38 @@ public:
     virtual void set_focus(int);
     virtual void draw_background(int);
 
-    long setup(TDrawArea*, TPanel*, char*, long, int, long, long, long, long,
-               int);
+    long setup(TDrawArea*, TPanel*, char*, long, int, long, long, long, long, int);
 
-protected:
+  protected:
     virtual void set_ideal_size(long, long);
 
     // VC5 emits each overload group in reverse declaration order.
-    virtual int create_button(TPanel*, TButtonPanel**, char*, char*, long,
-                              long, long, long, long, long, long);
-    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long,
-                              long, long, long, long, long);
-    virtual int create_check_box(TPanel*, TButtonPanel**, long, long, long,
-                                 long, long, long);
-    virtual int create_radio_button(TPanel*, TButtonPanel**, long, long, long,
-                                    long, long, long);
-    virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long,
-                            long, long, int, int, int);
-    virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long,
-                            long, long, long, int, int);
-    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long,
-                            long, long, int, int, int);
-    virtual int create_input(TPanel*, TInputPanel**, char*, short,
-                             TInputPanel::FormatType, long, long, long, long,
-                             long);
-    virtual int create_edit(TPanel*, TEditPanel**, char*, short,
-                            TEditPanel::FormatType, long, long, long, long,
-                            long, int, int);
-    virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long,
-                                 long, long, long, long);
-    virtual int create_list(TPanel*, TListPanel**, long, long, long, long,
-                            long);
-    virtual int create_scrollbar(TPanel*, TScrollBarPanel**, TTextPanel*, long,
-                                 long, long, long, long);
+    virtual int create_button(TPanel*, TButtonPanel**, char*, char*, long, long, long, long, long, long, long);
+    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long, long, long, long, long, long);
+    virtual int create_check_box(TPanel*, TButtonPanel**, long, long, long, long, long, long);
+    virtual int create_radio_button(TPanel*, TButtonPanel**, long, long, long, long, long, long);
+    virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long, long, long, int, int, int);
+    virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long, long, long, long, int, int);
+    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long, long, long, int, int, int);
+    virtual int create_input(
+        TPanel*, TInputPanel**, char*, short, TInputPanel::FormatType, long, long, long, long, long
+    );
+    virtual int create_edit(
+        TPanel*, TEditPanel**, char*, short, TEditPanel::FormatType, long, long, long, long, long, int, int
+    );
+    virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long, long, long, long, long);
+    virtual int create_list(TPanel*, TListPanel**, long, long, long, long, long);
+    virtual int create_scrollbar(TPanel*, TScrollBarPanel**, TTextPanel*, long, long, long, long, long);
     virtual int create_auto_scrollbar(TScrollBarPanel**, TTextPanel*, long);
-    virtual int create_vert_slider(TPanel*, TVerticalSliderPanel**, long, long,
-                                   long, long, long, long, long);
-    virtual int create_horz_slider(TPanel*, THorizontalSliderPanel**, long,
-                                   long, long, long, long, long, long);
+    virtual int create_vert_slider(TPanel*, TVerticalSliderPanel**, long, long, long, long, long, long, long);
+    virtual int create_horz_slider(TPanel*, THorizontalSliderPanel**, long, long, long, long, long, long, long);
     virtual void position_panel(TPanel*, long, long, long, long);
 
     void init_vars();
     void command_help(char*, long, long, long, long);
     void command_help(char*, char*, long, long, long);
 
-public:
+  public:
     void prepare_for_close();
     void setup_shadow_area(int);
     void set_info_file(char*, long);
@@ -137,8 +120,7 @@ public:
     int set_cursor(char*, long);
     void set_use_bevels(int);
     void set_background_pos(int);
-    void set_bevel_colors(unsigned char, unsigned char, unsigned char,
-                          unsigned char, unsigned char, unsigned char);
+    void set_bevel_colors(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char);
     void set_text_colors(unsigned long, unsigned long);
     void set_focus_colors(unsigned long, unsigned long);
     void set_state_colors(unsigned long, unsigned long);
@@ -154,8 +136,9 @@ public:
     char* get_cursor();
     int get_use_bevels();
     int get_background_pos();
-    void get_bevel_colors(unsigned char&, unsigned char&, unsigned char&,
-                          unsigned char&, unsigned char&, unsigned char&);
+    void get_bevel_colors(
+        unsigned char&, unsigned char&, unsigned char&, unsigned char&, unsigned char&, unsigned char&
+    );
     void get_text_colors(unsigned long&, unsigned long&);
     void get_focus_colors(unsigned long&, unsigned long&);
     long get_shadow_amount();
@@ -177,7 +160,6 @@ public:
     void set_system_colors();
 };
 
-typedef char panel_ez_teasy_size_check[
-    (sizeof(TEasy_Panel) == 0x478) ? 1 : -1];
+typedef char panel_ez_teasy_size_check[(sizeof(TEasy_Panel) == 0x478) ? 1 : -1];
 
 #endif

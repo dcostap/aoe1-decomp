@@ -1,7 +1,6 @@
 #ifndef AOE1_AIPBOOK_H
 #define AOE1_AIPBOOK_H
 
-
 #include "aiplaybook.h"
 #include "ai_play_group.h"
 #include "ai_play_phase.h"
@@ -11,7 +10,7 @@ class RGE_Game_World;
 class AIPlayStatus;
 
 class AIPlay {
-public:
+  public:
     char nameValue[65];                         // +0x000
     unsigned char minimumNumberUnitsValue;      // +0x041
     unsigned char maximumNumberUnitsValue;      // +0x042
@@ -43,24 +42,24 @@ public:
     int fillGroups(AIPlayStatus* playStatus, int* groupMembers, int numberGroupMembers, RGE_Game_World* world);
     int groupGivenCommandOnPhase(int gID, int cType, int pID);
 
-protected:
+  protected:
     unsigned char convertToIntType(char* t) const;
     char* convertToNameType(unsigned char t) const;
 
-public:
+  public:
     int locationsOnMap(int targetX, int targetY, int mapXSize, int mapYSize);
 
     friend class AIPlayBook;
 };
 
 class AIPlayStatus {
-public:
+  public:
     class GroupingStruct {
-    public:
-        int id;                          // +0x00
-        unsigned char groupID;           // +0x04
-        unsigned char type;              // +0x05
-        unsigned char pad_06[2];         // +0x06
+      public:
+        int id;                  // +0x00
+        unsigned char groupID;   // +0x04
+        unsigned char type;      // +0x05
+        unsigned char pad_06[2]; // +0x06
     };
 
     GroupingStruct groupings[50];           // +0x000
@@ -78,7 +77,9 @@ public:
     AIPlayStatus();
     int originalHitPoints(int n) const;
     void setOriginalHitPoints(int n, int v);
-    XYZ originalPoint() const { return this->originalPointValue; }
+    XYZ originalPoint() const {
+        return this->originalPointValue;
+    }
     unsigned char numberInPlay() const;
     unsigned char numberInGroup(int n);
     unsigned char numberOfTypeInGroup(int n, int type);

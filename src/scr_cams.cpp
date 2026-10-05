@@ -13,9 +13,7 @@
 #include "../include/tribegam.h"
 #include <stdlib.h>
 
-
-TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
-    : TScreenPanel("Campaign Selection Screen") {
+TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection() : TScreenPanel("Campaign Selection Screen") {
     init_vars();
     if (!setup(rge_base_game->draw_area, "scr2", 0xC384, 1)) {
         error_code = 1;
@@ -30,42 +28,64 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
         campaignListHeight = 130;
         if (create_list(this, &campaignList, 20, 70, 600, 130, RGE_FONT_STANDARD)) {
             if (create_auto_scrollbar(&campaignScrollbar, campaignList, 20)) {
-                if (create_text(this, &campaignTitle, STRING_ID_SELECT_CAMPAIGN, campaignListX - 5, campaignListY - 20,
-                                200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0)) {
+                if (create_text(
+                        this, &campaignTitle, STRING_ID_SELECT_CAMPAIGN, campaignListX - 5, campaignListY - 20, 200, 20,
+                        RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+                    )) {
                     campaignList->set_text(STRING_ID_CAMPAIGN_LIST_LOADING);
                     scenarioListX = 20;
                     scenarioListY = campaignListY + campaignListHeight + 30;
                     scenarioListWidth = 600;
                     scenarioListHeight = 130;
-                    if (create_list(this, &scenarioList, scenarioListX, scenarioListY, scenarioListWidth,
-                                    scenarioListHeight, RGE_FONT_STANDARD)) {
+                    if (create_list(
+                            this, &scenarioList, scenarioListX, scenarioListY, scenarioListWidth, scenarioListHeight,
+                            RGE_FONT_STANDARD
+                        )) {
                         if (create_auto_scrollbar(&scenarioScrollbar, scenarioList, 20)) {
-                            if (create_text(this, &scenarioTitle, STRING_ID_SCENARIO_LIST_TITLE, scenarioListX - 5,
-                                            scenarioListY - 20, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0)) {
+                            if (create_text(
+                                    this, &scenarioTitle, STRING_ID_SCENARIO_LIST_TITLE, scenarioListX - 5,
+                                    scenarioListY - 20, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+                                )) {
                                 scenarioList->sorted = 0;
-                                if (create_text(this, &difficultyTitle, STRING_ID_DIFFICULTY_LABEL, 15, 370, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT,
-                                                0, 0, 0)) {
-                                    if (create_drop_down(this, &difficultyDrop, 130, 100, 20, 390, 130, 24,
-                                                         RGE_FONT_STANDARD)) {
+                                if (create_text(
+                                        this, &difficultyTitle, STRING_ID_DIFFICULTY_LABEL, 15, 370, 200, 20,
+                                        RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+                                    )) {
+                                    if (create_drop_down(
+                                            this, &difficultyDrop, 130, 100, 20, 390, 130, 24, RGE_FONT_STANDARD
+                                        )) {
                                         difficultyDrop->empty_list();
-                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASIEST, RGE_DIFFICULTY_EASIEST);
+                                        difficultyDrop->append_line(
+                                            STRING_ID_DIFFICULTY_EASIEST, RGE_DIFFICULTY_EASIEST
+                                        );
                                         difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASY, RGE_DIFFICULTY_EASY);
-                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_MODERATE, RGE_DIFFICULTY_MODERATE);
+                                        difficultyDrop->append_line(
+                                            STRING_ID_DIFFICULTY_MODERATE, RGE_DIFFICULTY_MODERATE
+                                        );
                                         difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARD, RGE_DIFFICULTY_HARD);
-                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARDEST, RGE_DIFFICULTY_HARDEST);
+                                        difficultyDrop->append_line(
+                                            STRING_ID_DIFFICULTY_HARDEST, RGE_DIFFICULTY_HARDEST
+                                        );
                                         difficultyDrop->set_line(difficultyDrop->get_line(rge_base_game->difficulty()));
-                                        if (create_button(this, &okButton, STRING_ID_BUTTON_OK, 0, 70, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
-                                            if (create_button(this, &cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440,
-                                                              240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
-                                                TButtonPanel* cancel =
-                                                    cancelButton;
+                                        if (create_button(
+                                                this, &okButton, STRING_ID_BUTTON_OK, 0, 70, 440, 240, 30,
+                                                RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+                                            )) {
+                                            if (create_button(
+                                                    this, &cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30,
+                                                    RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+                                                )) {
+                                                TButtonPanel* cancel = cancelButton;
                                                 cancel->hotkey = VK_ESCAPE;
                                                 cancel->hotkey_shift = 0;
-                                                if (create_button(this, &close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0,
-                                                                  -1, -1, 0)) {
+                                                if (create_button(
+                                                        this, &close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1,
+                                                        -1, 0
+                                                    )) {
                                                     close_button->set_active(1);
-                                                    close_button->set_positioning(TPanel::PositionRightTop,
-                                                                                  4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
+                                                    close_button->set_positioning(
+                                                        TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0
+                                                    );
                                                     TPanel* tabList[5];
                                                     tabList[0] = campaignList;
                                                     tabList[1] = scenarioList;
@@ -112,18 +132,18 @@ void TRIBE_Screen_Campaign_Selection::init_vars() {
 }
 
 TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection() {
-    delete_panel((TPanel**)&title);
-    delete_panel((TPanel**)&campaignTitle);
-    delete_panel((TPanel**)&campaignList);
-    delete_panel((TPanel**)&campaignScrollbar);
-    delete_panel((TPanel**)&scenarioTitle);
-    delete_panel((TPanel**)&scenarioList);
-    delete_panel((TPanel**)&scenarioScrollbar);
-    delete_panel((TPanel**)&difficultyTitle);
-    delete_panel((TPanel**)&difficultyDrop);
-    delete_panel((TPanel**)&okButton);
-    delete_panel((TPanel**)&cancelButton);
-    delete_panel((TPanel**)&close_button);
+    delete_panel((TPanel**) &title);
+    delete_panel((TPanel**) &campaignTitle);
+    delete_panel((TPanel**) &campaignList);
+    delete_panel((TPanel**) &campaignScrollbar);
+    delete_panel((TPanel**) &scenarioTitle);
+    delete_panel((TPanel**) &scenarioList);
+    delete_panel((TPanel**) &scenarioScrollbar);
+    delete_panel((TPanel**) &difficultyTitle);
+    delete_panel((TPanel**) &difficultyDrop);
+    delete_panel((TPanel**) &okButton);
+    delete_panel((TPanel**) &cancelButton);
+    delete_panel((TPanel**) &close_button);
 }
 
 long TRIBE_Screen_Campaign_Selection::handle_idle() {
@@ -290,10 +310,10 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
         int j;
         for (j = 1; j < player_count; ++j) {
             if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(j) == first_human) {
-                static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
-                    j, static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(0));
-                static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                    j, static_cast<TRIBE_Game*>(rge_base_game)->playerColor(0));
+                static_cast<TRIBE_Game*>(rge_base_game)
+                    ->setScenarioPlayer(j, static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(0));
+                static_cast<TRIBE_Game*>(rge_base_game)
+                    ->setPlayerColor(j, static_cast<TRIBE_Game*>(rge_base_game)->playerColor(0));
                 break;
             }
         }

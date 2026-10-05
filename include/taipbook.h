@@ -5,7 +5,7 @@
 #include "aiplaybook.h"
 
 class TribeAIPlayBook : public AIPlayBook {
-public:
+  public:
     virtual ~TribeAIPlayBook();
     virtual int convertTargetNameToIntType(char* t) const;
     virtual int convertTargetCharacteristicNameToIntType(char* t) const;

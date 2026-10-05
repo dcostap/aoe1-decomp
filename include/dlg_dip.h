@@ -18,13 +18,13 @@
 #include "rge_base_game_global.h"
 
 class TribeDiplomacyDialog : public TDialogPanel {
-public:
+  public:
     virtual ~TribeDiplomacyDialog();
 
-protected:
+  protected:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 
-public:
+  public:
     TTextPanel* title[8];
     TTextPanel* playerName[8];
     TTextPanel* playerVictoryScores[8];
@@ -59,7 +59,7 @@ public:
 
     TribeDiplomacyDialog(TScreenPanel* parentPanel);
 
-protected:
+  protected:
     int check_gold();
     int check_wood();
     int check_food();
@@ -67,7 +67,6 @@ protected:
     virtual void draw();
 };
 
-typedef char dlg_dip_dialog_size_check[
-    (sizeof(TribeDiplomacyDialog) == 0x6B8) ? 1 : -1];
+typedef char dlg_dip_dialog_size_check[(sizeof(TribeDiplomacyDialog) == 0x6B8) ? 1 : -1];
 
 #endif

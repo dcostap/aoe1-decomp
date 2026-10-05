@@ -11,13 +11,12 @@ struct rdlg_list_info {
     short id;
 };
 
-typedef char rdlg_list_info_size_check[
-    (sizeof(rdlg_list_info) == 0x66) ? 1 : -1];
+typedef char rdlg_list_info_size_check[(sizeof(rdlg_list_info) == 0x66) ? 1 : -1];
 
 int __cdecl rdlg_list_compare(const void* arg1, const void* arg2);
 
 class RGE_Dialog_List : public TListDialog {
-public:
+  public:
     RGE_Dialog_List(char* name);
     virtual ~RGE_Dialog_List();
     virtual short get_list_id();
@@ -29,7 +28,7 @@ public:
     rdlg_list_info* list_info;
     char** list_text;
 
-protected:
+  protected:
     virtual int create_list();
     int create_object_list();
     void sort_list();
@@ -37,7 +36,6 @@ protected:
     virtual short get_cur_id();
 };
 
-typedef char rdlg_dialog_list_size_check[
-    (sizeof(RGE_Dialog_List) == 0x4BC) ? 1 : -1];
+typedef char rdlg_dialog_list_size_check[(sizeof(RGE_Dialog_List) == 0x4BC) ? 1 : -1];
 
 #endif

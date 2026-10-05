@@ -8,14 +8,16 @@ class RGE_Sprite;
 class RGE_Sound;
 
 class RGE_Master_Player {
-public:
+  public:
     virtual ~RGE_Master_Player();
     virtual void finish_init(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
-    virtual void load_master_object(int infile, unsigned char obj_type, RGE_Sprite** sprites,
-                                    RGE_Sound** sounds, short index);
+    virtual void load_master_object(
+        int infile, unsigned char obj_type, RGE_Sprite** sprites, RGE_Sound** sounds, short index
+    );
     virtual void create_master_object_space(short count);
-    virtual void load_object(FILE* infile, unsigned char obj_type, RGE_Sprite** sprites,
-                             RGE_Sound** sounds, short index);
+    virtual void load_object(
+        FILE* infile, unsigned char obj_type, RGE_Sprite** sprites, RGE_Sound** sounds, short index
+    );
     virtual void save(int outfile);
 
     char name[20];
@@ -31,7 +33,6 @@ public:
     RGE_Master_Player(int infile);
 };
 
-typedef char mst_play_master_player_size[
-    (sizeof(RGE_Master_Player) == 0x2C) ? 1 : -1];
+typedef char mst_play_master_player_size[(sizeof(RGE_Master_Player) == 0x2C) ? 1 : -1];
 
-#endif  // AOE1_MST_PLAY_H
+#endif // AOE1_MST_PLAY_H

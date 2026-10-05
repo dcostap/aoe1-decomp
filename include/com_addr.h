@@ -8,7 +8,7 @@ class TCommunications_Handler;
 class TribeMPSetupScreen;
 
 class IPAD {
-public:
+  public:
     char DottedIPAddress[0x20];
     char Alias[0x80];
 
@@ -16,13 +16,14 @@ public:
         strcpy(this->DottedIPAddress, "");
         strcpy(this->Alias, "");
     }
-    ~IPAD() {}
+    ~IPAD() {
+    }
 };
 
 class RGE_Communications_Addresses {
     friend class TribeMPSetupScreen;
 
-private:
+  private:
     TCommunications_Handler* comm;   // +0x00
     WSADATA wsaData;                 // +0x04
     char hostname[0x80];             // +0x194
@@ -31,17 +32,17 @@ private:
     unsigned int AliasesAvailable;   // +0x21C
     IPAD* pIPAD;                     // +0x220
 
-public:
+  public:
     RGE_Communications_Addresses(TCommunications_Handler* CommIn);
     ~RGE_Communications_Addresses();
     char* GetHostName();
 
-protected:
+  protected:
     int SetIPAliases(char* sz);
     int SetIPAddresses(char* sz);
     void EraseInformation();
 
-public:
+  public:
     char* GetAddress(unsigned int Num);
     char* GetAlias(unsigned int Num);
 };

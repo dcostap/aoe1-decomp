@@ -1,7 +1,6 @@
 #ifndef AOE1_RMM_SHAL_H
 #define AOE1_RMM_SHAL_H
 
-
 #include "rmm_base.h"
 
 struct RGE_Shallows_Info_Line {
@@ -15,12 +14,11 @@ struct RGE_Shallows_Info {
 };
 
 class RGE_RMM_Shallows_Generator : public RGE_Random_Map_Module {
-protected:
+  protected:
     RGE_Shallows_Info info;
 
-public:
-    RGE_RMM_Shallows_Generator(RGE_Map* in_map,
-        RGE_Random_Map_Module* parent_module, RGE_Shallows_Info* in_info);
+  public:
+    RGE_RMM_Shallows_Generator(RGE_Map* in_map, RGE_Random_Map_Module* parent_module, RGE_Shallows_Info* in_info);
     virtual uchar generate();
     void make_tribe_connections(long point1, long point2);
 };

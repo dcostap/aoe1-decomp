@@ -5,8 +5,7 @@
 #include <string.h>
 #include <fcntl.h>
 
-extern "C" void __cdecl ds_stream_init(void* main_wnd, LPDIRECTSOUND direct_sound,
-                                         LPDIRECTSOUNDBUFFER primary_buffer);
+extern "C" void __cdecl ds_stream_init(void* main_wnd, LPDIRECTSOUND direct_sound, LPDIRECTSOUNDBUFFER primary_buffer);
 extern "C" void __cdecl ds_stream_exit(void);
 extern "C" int __cdecl ds_stream_file(char* file_name, int mode, long resource_id);
 extern "C" int __cdecl ds_stream_volume(long volume);
@@ -85,14 +84,14 @@ int TSound_Driver::init(void* wnd, char* path_in) {
 
     has_secondary = 0;
     if ((dscaps.dwFlags & DSCAPS_PRIMARY16BIT) != 0) {
-        this->dsrval = this->direct_sound->SetCooperativeLevel((HWND)this->main_wnd, DSSCL_PRIORITY);
+        this->dsrval = this->direct_sound->SetCooperativeLevel((HWND) this->main_wnd, DSSCL_PRIORITY);
         if (this->dsrval != 0) {
-            this->dsrval = this->direct_sound->SetCooperativeLevel((HWND)this->main_wnd, DSSCL_NORMAL);
+            this->dsrval = this->direct_sound->SetCooperativeLevel((HWND) this->main_wnd, DSSCL_NORMAL);
         } else {
             has_secondary = 1;
         }
     } else {
-        this->dsrval = this->direct_sound->SetCooperativeLevel((HWND)this->main_wnd, DSSCL_NORMAL);
+        this->dsrval = this->direct_sound->SetCooperativeLevel((HWND) this->main_wnd, DSSCL_NORMAL);
     }
 
     if (this->dsrval != 0) {
@@ -179,12 +178,12 @@ void TSound_Driver::set_volume(long in_vol, int permanent) {
         return;
     }
 
-    delta = (unsigned long)(this->mixer_volume_control.Bounds.lMaximum -
-                            this->mixer_volume_control.Bounds.lMinimum);
-    scaled = (unsigned long)((delta * (in_vol + 10000)) / 10000);
+    delta = (unsigned long) (this->mixer_volume_control.Bounds.lMaximum - this->mixer_volume_control.Bounds.lMinimum);
+    scaled = (unsigned long) ((delta * (in_vol + 10000)) / 10000);
     this->mixer_volume_value.dwValue = scaled;
-    this->dsrval = mixerSetControlDetails((HMIXEROBJ)this->mixer_handle,
-                                          &this->mixer_volume_details, MIXER_SETCONTROLDETAILSF_VALUE);
+    this->dsrval = mixerSetControlDetails(
+        (HMIXEROBJ) this->mixer_handle, &this->mixer_volume_details, MIXER_SETCONTROLDETAILSF_VALUE
+    );
 }
 
 int TSound_Driver::stream_file(char* file_name, int loop, long volume) {
@@ -274,8 +273,7 @@ int TSound_Driver::open_mixer() {
             this->mixer_line_info.cbStruct = sizeof(this->mixer_line_info);
             this->mixer_line_info.dwComponentType = MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT;
 
-            if (mixerGetLineInfoA(this->mixer_handle, &this->mixer_line_info,
-                                  MIXER_GETLINEINFOF_COMPONENTTYPE) == 0) {
+            if (mixerGetLineInfoA(this->mixer_handle, &this->mixer_line_info, MIXER_GETLINEINFOF_COMPONENTTYPE) == 0) {
                 memset(&this->mixer_line_controls, 0, sizeof(this->mixer_line_controls));
                 memset(&this->mixer_volume_control, 0, sizeof(this->mixer_volume_control));
                 this->mixer_line_controls.cbStruct = sizeof(this->mixer_line_controls);
@@ -285,8 +283,10 @@ int TSound_Driver::open_mixer() {
                 this->mixer_line_controls.cbmxctrl = sizeof(this->mixer_volume_control);
                 this->mixer_line_controls.pamxctrl = &this->mixer_volume_control;
 
-                if (mixerGetLineControlsA(this->mixer_handle, &this->mixer_line_controls,
-                                          MIXER_GETLINECONTROLSF_ONEBYTYPE) == 0) {
+                if (mixerGetLineControlsA(
+                        this->mixer_handle, &this->mixer_line_controls, MIXER_GETLINECONTROLSF_ONEBYTYPE
+                    )
+                    == 0) {
                     memset(&this->mixer_volume_details, 0, sizeof(this->mixer_volume_details));
                     memset(&this->mixer_volume_value, 0, sizeof(this->mixer_volume_value));
                     this->mixer_volume_details.cbStruct = sizeof(this->mixer_volume_details);
@@ -295,14 +295,15 @@ int TSound_Driver::open_mixer() {
                     this->mixer_volume_details.cbDetails = sizeof(this->mixer_volume_value);
                     this->mixer_volume_details.paDetails = &this->mixer_volume_value;
 
-                    if (mixerGetControlDetailsA(this->mixer_handle, &this->mixer_volume_details,
-                                                MIXER_GETCONTROLDETAILSF_VALUE) == 0) {
+                    if (mixerGetControlDetailsA(
+                            this->mixer_handle, &this->mixer_volume_details, MIXER_GETCONTROLDETAILSF_VALUE
+                        )
+                        == 0) {
                         this->mixer_open = 1;
-                        this->start_volume =
-                            (int)(((unsigned long)this->mixer_volume_value.dwValue * 10000) /
-                                  (unsigned long)(this->mixer_volume_control.Bounds.lMaximum -
-                                                  this->mixer_volume_control.Bounds.lMinimum)) -
-                            10000;
+                        this->start_volume = (int) (((unsigned long) this->mixer_volume_value.dwValue * 10000)
+                                                    / (unsigned long) (this->mixer_volume_control.Bounds.lMaximum
+                                                                       - this->mixer_volume_control.Bounds.lMinimum))
+                                             - 10000;
                         this->volume = this->start_volume;
                         return 1;
                     }
@@ -389,7 +390,7 @@ int TDigital::load(char* file_name, long res_id) {
     void* mem2;
     void* mem1;
     int load_type;
-    DSBUFFERDESC buffer_desc = {0};
+    DSBUFFERDESC buffer_desc = { 0 };
     _tag_wavheader wave_hdr;
     char file_with_path[260];
     int resDataSize;
@@ -440,15 +441,14 @@ int TDigital::load(char* file_name, long res_id) {
                 goto fail_return;
             }
 
-            if (strncmp((char*)wave_hdr.szRIFF, "RIFF", 4) != 0 ||
-                wave_hdr.wFormatTag != WAVE_FORMAT_PCM) {
+            if (strncmp((char*) wave_hdr.szRIFF, "RIFF", 4) != 0 || wave_hdr.wFormatTag != WAVE_FORMAT_PCM) {
                 this->failed = 1;
                 close(fd);
                 goto fail_return;
             }
 
             this->data_size = wave_hdr.dwDataLength;
-            this->wave_data = (uchar*)malloc(this->data_size);
+            this->wave_data = (uchar*) malloc(this->data_size);
             if (this->wave_data == 0) {
                 this->failed = 1;
                 close(fd);
@@ -465,7 +465,7 @@ int TDigital::load(char* file_name, long res_id) {
             }
 
             close(fd);
-            this->wave_info = (WAVEFORMATEX*)malloc(sizeof(WAVEFORMATEX));
+            this->wave_info = (WAVEFORMATEX*) malloc(sizeof(WAVEFORMATEX));
             if (this->wave_info == 0) {
                 this->failed = 1;
                 free(this->wave_data);
@@ -497,8 +497,7 @@ int TDigital::load(char* file_name, long res_id) {
                 goto fail_return;
             }
 
-            if (this->sound_buffer->Lock(0, this->data_size, &mem1, &size1,
-                                         &mem2, &size2, 0) == 0) {
+            if (this->sound_buffer->Lock(0, this->data_size, &mem1, &size1, &mem2, &size2, 0) == 0) {
                 memcpy(mem1, this->wave_data, size1);
                 if (size2 != 0) {
                     memcpy(mem2, this->wave_data + size1, size2);
@@ -521,13 +520,12 @@ int TDigital::load(char* file_name, long res_id) {
         }
     }
 
-    if (res_id <= -1 ||
-        (resource_data = RESFILE_load(RES_TYPE_WAVE, res_id, load_type, resDataSize)) == 0) {
+    if (res_id <= -1 || (resource_data = RESFILE_load(RES_TYPE_WAVE, res_id, load_type, resDataSize)) == 0) {
         this->failed = 1;
     } else {
         memcpy(&wave_hdr.szRIFF, resource_data, sizeof(wave_hdr));
         this->data_size = wave_hdr.dwDataLength;
-        this->wave_data = (uchar*)malloc(this->data_size);
+        this->wave_data = (uchar*) malloc(this->data_size);
         if (this->wave_data == 0) {
             this->failed = 1;
             if (load_type == 1) {
@@ -538,7 +536,7 @@ int TDigital::load(char* file_name, long res_id) {
             if (load_type == 1) {
                 free(resource_data);
             }
-            this->wave_info = (WAVEFORMATEX*)malloc(sizeof(WAVEFORMATEX));
+            this->wave_info = (WAVEFORMATEX*) malloc(sizeof(WAVEFORMATEX));
             if (this->wave_info == 0) {
                 this->failed = 1;
                 if (load_type != 1) {
@@ -546,7 +544,7 @@ int TDigital::load(char* file_name, long res_id) {
                 }
                 /* The shipped path frees resource_data twice. */
                 free(resource_data);
-wave_info_fail:
+            wave_info_fail:
                 color_log(0xBA, 0x5F, 1);
                 return 0;
             } else {
@@ -568,8 +566,7 @@ wave_info_fail:
                 if (direct_sound->CreateSoundBuffer(&buffer_desc, buffer_slot, 0) != 0) {
                     this->failed = 1;
                 } else {
-                    if ((*buffer_slot)->Lock(0, this->data_size, &mem1, &size1,
-                                             &mem2, &size2, 0) == 0) {
+                    if ((*buffer_slot)->Lock(0, this->data_size, &mem1, &size1, &mem2, &size2, 0) == 0) {
                         memcpy(mem1, this->wave_data, size1);
                         if (size2 != 0) {
                             memcpy(mem2, this->wave_data + size1, size2);

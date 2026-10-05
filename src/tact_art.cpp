@@ -13,24 +13,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1) {
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(int infile, RGE_Action_Object* obj_in) : RGE_Action(infile, obj_in, 1) {
     this->action_type = TRIBE_ACTION_TYPE_ARTIFACT;
 }
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
-                                             RGE_Task* task_in,
-                                             RGE_Static_Object* target_obj_in)
-    : RGE_Action(obj_in, 1) {
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(
+    RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in
+) : RGE_Action(obj_in, 1) {
     this->action_type = TRIBE_ACTION_TYPE_ARTIFACT;
     this->task = task_in;
     this->target_obj = target_obj_in;
 }
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
-                                             RGE_Task* task_in,
-                                             float x, float y, float z)
-    : RGE_Action(obj_in, 1) {
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z) :
+    RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = TRIBE_ACTION_TYPE_ARTIFACT;
     this->target_x = x;
@@ -58,31 +54,33 @@ void TRIBE_Action_Artifact::first_in_stack(unsigned char first_time) {
 void TRIBE_Action_Artifact::set_state(unsigned char new_state) {
     this->state = new_state;
     switch (new_state) {
-    case 10:
-        timer = 3.0f;
-        break;
-    case 4: {
-        sub_actions->delete_list();
-        RGE_Action_Move_To* move = new RGE_Action_Move_To(this->obj, target_x, target_y, target_z, 0.0f, task->move_sprite);
-        if (move != 0) {
-            sub_actions->add_action(move);
-            this->set_state(6);
+        case 10:
+            timer = 3.0f;
+            break;
+        case 4: {
+            sub_actions->delete_list();
+            RGE_Action_Move_To* move =
+                new RGE_Action_Move_To(this->obj, target_x, target_y, target_z, 0.0f, task->move_sprite);
+            if (move != 0) {
+                sub_actions->add_action(move);
+                this->set_state(6);
+            }
+            break;
         }
-        break;
-    }
-    case 5: {
-        sub_actions->delete_list();
-        target_x = target_obj->world_x;
-        target_y = target_obj->world_y;
-        target_z = target_obj->world_z;
-        target_obj = 0;
-        RGE_Action_Move_To* move = new RGE_Action_Move_To(this->obj, target_x, target_y, target_z, 0.0f, task->move_sprite);
-        if (move != 0) {
-            sub_actions->add_action(move);
-            this->set_state(6);
+        case 5: {
+            sub_actions->delete_list();
+            target_x = target_obj->world_x;
+            target_y = target_obj->world_y;
+            target_z = target_obj->world_z;
+            target_obj = 0;
+            RGE_Action_Move_To* move =
+                new RGE_Action_Move_To(this->obj, target_x, target_y, target_z, 0.0f, task->move_sprite);
+            if (move != 0) {
+                sub_actions->add_action(move);
+                this->set_state(6);
+            }
+            break;
         }
-        break;
-    }
     }
 }
 
@@ -92,39 +90,39 @@ unsigned char TRIBE_Action_Artifact::update() {
         sub_actions->delete_list();
     }
     switch (state) {
-    case 10: {
-        RGE_Action_Object* obj = this->obj;
-        float speed = this->timer - obj->owner->world->world_time_delta_seconds;
-        if (speed > g_artifact_timer_threshold) {
+        case 10: {
+            RGE_Action_Object* obj = this->obj;
+            float speed = this->timer - obj->owner->world->world_time_delta_seconds;
+            if (speed > g_artifact_timer_threshold) {
+                this->timer = speed;
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
             this->timer = speed;
+            this->set_state(6);
             return RGE_ACTION_UPDATE_CONTINUE;
         }
-        this->timer = speed;
-        this->set_state(6);
-        return RGE_ACTION_UPDATE_CONTINUE;
-    }
 
-    case 6: {
-        RGE_Player* owner = (RGE_Player*)check_ownership();
-        if (owner != 0) {
-            sub_actions->delete_list();
-            this->obj->change_ownership(owner);
+        case 6: {
+            RGE_Player* owner = (RGE_Player*) check_ownership();
+            if (owner != 0) {
+                sub_actions->delete_list();
+                this->obj->change_ownership(owner);
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            this->set_state(10);
             return RGE_ACTION_UPDATE_CONTINUE;
         }
-        this->set_state(10);
-        return RGE_ACTION_UPDATE_CONTINUE;
-    }
 
-    case 100:
-        this->obj->change_ownership(this->obj->owner->world->players[0]);
-        this->set_state(6);
-        return RGE_ACTION_UPDATE_CONTINUE;
+        case 100:
+            this->obj->change_ownership(this->obj->owner->world->players[0]);
+            this->set_state(6);
+            return RGE_ACTION_UPDATE_CONTINUE;
 
-    case 1:
-        return RGE_ACTION_UPDATE_REMOVE;
+        case 1:
+            return RGE_ACTION_UPDATE_REMOVE;
 
-    default:
-        return RGE_ACTION_UPDATE_CONTINUE;
+        default:
+            return RGE_ACTION_UPDATE_CONTINUE;
     }
 }
 
@@ -132,14 +130,14 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     RGE_Action_Object* obj = this->obj;
     RGE_Master_Static_Object* master = obj->master_obj;
 
-    short map_x = (short)(obj->world_x - g_artifact_scan_lower_adjustment - master->radius_x);
-    short map_y = (short)(obj->world_y - g_artifact_scan_lower_adjustment - master->radius_y);
-    short x0 = (short)(master->radius_x + obj->world_x - g_artifact_scan_upper_adjustment);
-    short y0 = (short)(master->radius_y + obj->world_y - g_artifact_scan_upper_adjustment);
+    short map_x = (short) (obj->world_x - g_artifact_scan_lower_adjustment - master->radius_x);
+    short map_y = (short) (obj->world_y - g_artifact_scan_lower_adjustment - master->radius_y);
+    short x0 = (short) (master->radius_x + obj->world_x - g_artifact_scan_upper_adjustment);
+    short y0 = (short) (master->radius_y + obj->world_y - g_artifact_scan_upper_adjustment);
 
     RGE_Map* map = obj->owner->world->map;
     short player_num = obj->owner->world->player_num;
-    unsigned char* player_list = (unsigned char*)calloc(player_num, 1);
+    unsigned char* player_list = (unsigned char*) calloc(player_num, 1);
 
     if (player_num > 0) {
         memset(player_list, 0, player_num);
@@ -152,10 +150,10 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
         map_y = 0;
     }
     if (x0 >= map->map_width) {
-        x0 = (short)map->map_width - 1;
+        x0 = (short) map->map_width - 1;
     }
     if (y0 >= map->map_height) {
-        y0 = (short)map->map_height - 1;
+        y0 = (short) map->map_height - 1;
     }
 
     for (short y = map_y; y <= y0; ++y) {
@@ -164,7 +162,8 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
             while (node != 0) {
                 RGE_Static_Object* entity = node->node;
                 short type = entity->master_obj->object_group;
-                if (type != OBJECT_GROUP_ARTIFACT && type != 0x0B && type != 0x1E && entity->object_state == RGE_OBJECT_STATE_ACTIVE) {
+                if (type != OBJECT_GROUP_ARTIFACT && type != 0x0B && type != 0x1E
+                    && entity->object_state == RGE_OBJECT_STATE_ACTIVE) {
                     ++player_list[entity->owner->id];
                 }
                 node = node->next;

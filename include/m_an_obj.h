@@ -5,7 +5,7 @@
 #include "m_s_obj.h"
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
-public:
+  public:
     virtual ~RGE_Master_Animated_Object();
     virtual void copy_obj(RGE_Master_Static_Object* source);
     virtual void modify(float amount, unsigned char flag);
@@ -19,16 +19,15 @@ public:
     RGE_Master_Animated_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup);
     RGE_Master_Animated_Object(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup);
 
-protected:
+  protected:
     int setup(RGE_Master_Animated_Object* other_object);
     int setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
     int setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id);
 
-public:
+  public:
     float speed;
 };
 
-typedef char m_an_obj_animated_size[
-    (sizeof(RGE_Master_Animated_Object) == 0xBC) ? 1 : -1];
+typedef char m_an_obj_animated_size[(sizeof(RGE_Master_Animated_Object) == 0xBC) ? 1 : -1];
 
 #endif

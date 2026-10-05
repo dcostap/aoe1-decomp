@@ -20,7 +20,6 @@ struct PlacementState {
     BuildItem* buildItem;
 };
 
-typedef char ai_placement_state_size_check[
-    (sizeof(PlacementState) == 0x130) ? 1 : -1];
+typedef char ai_placement_state_size_check[(sizeof(PlacementState) == 0x130) ? 1 : -1];
 
 #endif

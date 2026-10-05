@@ -8,7 +8,7 @@
 class TShape;
 
 class TMessagePanel : public TPanel {
-public:
+  public:
     enum MessageType {
         InfoMessage = 0,
         BadMessage = 1,
@@ -24,13 +24,7 @@ public:
         RolloverColor = 0x70,
         WhiteColor = 0xFF
     };
-    enum JustType {
-        TopJust = 0,
-        BottomJust = 1,
-        LeftJust = 2,
-        RightJust = 3,
-        CenterJust = 4
-    };
+    enum JustType { TopJust = 0, BottomJust = 1, LeftJust = 2, RightJust = 3, CenterJust = 4 };
 
     MessageType message_type;
     char text[0x200];
@@ -68,22 +62,33 @@ public:
     virtual void draw();
     virtual void get_true_render_rect(tagRECT& drawRect);
     virtual long handle_idle();
-    virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) { return 0; }
-    virtual long handle_mouse_move(long x, long y, int ctrl_key, int shift_key) { return 0; }
-    virtual long handle_mouse_up(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) { return 0; }
+    virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
+        return 0;
+    }
+    virtual long handle_mouse_move(long x, long y, int ctrl_key, int shift_key) {
+        return 0;
+    }
+    virtual long handle_mouse_up(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
+        return 0;
+    }
     void set_justification(JustType horz_just_in, JustType vert_just_in, int word_wrap_in);
-    void show_message(MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn, void* font_in, long font_wid_in, long font_hgt_in);
-    void show_message2(MessageType message_type_in, char* text_in, unsigned long color1, unsigned long color2,
-                       void* font_in, long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in,
-                       TShape* Icon2_in, int Frame2_in);
+    void show_message(
+        MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn, void* font_in,
+        long font_wid_in, long font_hgt_in
+    );
+    void show_message2(
+        MessageType message_type_in, char* text_in, unsigned long color1, unsigned long color2, void* font_in,
+        long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in, TShape* Icon2_in, int Frame2_in
+    );
     void remove_message();
-protected:
+
+  protected:
     int render_to_image_buffer();
-public:
+
+  public:
     virtual void set_font(void* font_in, long font_wid_in, long font_hgt_in);
 };
 
-typedef char pnl_msg_message_panel_size_check[
-    (sizeof(TMessagePanel) == 0x380) ? 1 : -1];
+typedef char pnl_msg_message_panel_size_check[(sizeof(TMessagePanel) == 0x380) ? 1 : -1];
 
 #endif

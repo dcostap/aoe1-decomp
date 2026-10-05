@@ -23,7 +23,7 @@ class TShape;
 class TDrawArea;
 
 class RGE_Sprite {
-public:
+  public:
     char pict_name[13];
     unsigned char gap_0D[3];
     long resource_id;
@@ -71,13 +71,25 @@ public:
     void load_facets(RGE_Sprite** sprites);
     void play_sound(short frame1, short frame2, short facet);
     unsigned char get_facetindex(long facet, long frame, long& facetindex);
-    void do_draw(long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char min_draw_level);
-    unsigned char draw(long facet, long frame, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char min_draw_level);
-    unsigned char normal_draw(long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area);
-    unsigned char shadow_draw(long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag);
+    void do_draw(
+        long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area,
+        unsigned char min_draw_level
+    );
+    unsigned char draw(
+        long facet, long frame, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area,
+        unsigned char min_draw_level
+    );
+    unsigned char normal_draw(
+        long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area
+    );
+    unsigned char shadow_draw(
+        long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag
+    );
     int get_size(long& xmin, long& ymin, long& xmax, long& ymax, long facet);
     int get_frame(short& min_x, short& min_y, short& max_x, short& max_y, long facet, long frame);
-    int get_frame_min_max(short& min_x, short& min_y, short& max_x, short& max_y, long facet, long frame, short pic_x, short pic_y);
+    int get_frame_min_max(
+        short& min_x, short& min_y, short& max_x, short& max_y, long facet, long frame, short pic_x, short pic_y
+    );
     unsigned char get_lowest_draw_level(void);
     unsigned char hit_test(short x, short y, long facet, long frame);
     unsigned char shape_hit_test(short x, short y, long facet, long frame);

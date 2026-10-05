@@ -6,9 +6,8 @@
 #include "../include/tribegam.h"
 #include <string.h>
 
-TRIBE_Screen_Info::TRIBE_Screen_Info(char* scr_name_in, char* info_file_in,
-                                     long info_id_in, unsigned long timer_in)
-    : TScreenPanel(scr_name_in) {
+TRIBE_Screen_Info::TRIBE_Screen_Info(char* scr_name_in, char* info_file_in, long info_id_in, unsigned long timer_in) :
+    TScreenPanel(scr_name_in) {
     timer = timer_in;
     auto_close = timer > 0;
     last_time = 0;

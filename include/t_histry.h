@@ -2,12 +2,12 @@
 #define AOE1_T_HISTRY_H
 
 class TRIBE_History_Entry {
-public:
+  public:
     unsigned char population;
 };
 
 class TRIBE_History_Events {
-public:
+  public:
     unsigned char event;
     unsigned char _pad_0[3];
     long time;
@@ -16,7 +16,7 @@ public:
 };
 
 class TRIBE_History_Info {
-public:
+  public:
     TRIBE_History_Entry* history;
     TRIBE_History_Events* events;
     long number_of_events;
@@ -36,9 +36,7 @@ public:
     unsigned char get_history_event(long time_slice, unsigned char& event);
 };
 
-typedef char t_histry_info_size_check[
-    (sizeof(TRIBE_History_Info) == 0x14) ? 1 : -1];
-typedef char t_histry_events_size_check[
-    (sizeof(TRIBE_History_Events) == 0x10) ? 1 : -1];
+typedef char t_histry_info_size_check[(sizeof(TRIBE_History_Info) == 0x14) ? 1 : -1];
+typedef char t_histry_events_size_check[(sizeof(TRIBE_History_Events) == 0x10) ? 1 : -1];
 
 #endif

@@ -18,31 +18,30 @@ struct SEs {
 };
 
 class TCommunications_Sessions {
-private:
+  private:
     int SessionCount;
     SEs Session[501];
     GUID glpGuid;
     IDirectPlay2* glpIDC;
 
-public:
+  public:
     TCommunications_Sessions(TCommunications_Handler* Comm);
     ~TCommunications_Sessions();
 
-private:
+  private:
     void EraseInformation();
 
-public:
+  public:
     int GetSessionCount();
     char* GetSessionName(int id);
     unsigned long GetSessionMaxPlayers(int id);
     unsigned long GetSessionCurrentPlayers(int id);
     GUID* GetSessionGUID(int id);
     int IncSessionCount();
-    int AddSession(GUID Instance, GUID Application,
-                   unsigned long MaxPlayers, unsigned long CurrentPlayers,
-                   char* Name, char* Password,
-                   unsigned long User1, unsigned long User2,
-                   unsigned long User3, unsigned long User4);
+    int AddSession(
+        GUID Instance, GUID Application, unsigned long MaxPlayers, unsigned long CurrentPlayers, char* Name,
+        char* Password, unsigned long User1, unsigned long User2, unsigned long User3, unsigned long User4
+    );
     int Refresh();
     int IsEqualGuid(GUID* lpguid1, GUID* lpguid2);
 };
@@ -52,10 +51,9 @@ extern GUID gServGUID;
 extern GUID gAppGUID;
 extern TCommunications_Handler* g_com_handler;
 
-int __stdcall EnumSessionCallback(DPSESSIONDESC2* lpDPSessionDesc,
-                                  unsigned long* lpdwTimeOut,
-                                  unsigned long dwFlags,
-                                  void* lpContext);
+int __stdcall EnumSessionCallback(
+    DPSESSIONDESC2* lpDPSessionDesc, unsigned long* lpdwTimeOut, unsigned long dwFlags, void* lpContext
+);
 
 typedef char com_sess_guid_size_check[(sizeof(GUID) == 0x10) ? 1 : -1];
 typedef char com_sess_entry_size_check[(sizeof(SEs) == 0x238) ? 1 : -1];

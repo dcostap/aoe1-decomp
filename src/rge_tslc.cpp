@@ -119,8 +119,10 @@ char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int duration) {
         maximum = high;
     }
 
-    sprintf(TBuff, "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)",
-            lowTSLC, minimum, average, original_count, maximum, highTSLC);
+    sprintf(
+        TBuff, "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)", lowTSLC, minimum, average, original_count, maximum,
+        highTSLC
+    );
     return TBuff;
 }
 
@@ -180,7 +182,7 @@ char* RGE_TimeSinceLastCall::GetElapsedFirstCall() {
     long minutes = 0;
     unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 181);
     Now = now;
-    int seconds = (int)((now - FirstCall) / 1000);
+    int seconds = (int) ((now - FirstCall) / 1000);
 
     if (seconds > 59) {
         minutes = seconds / 60;

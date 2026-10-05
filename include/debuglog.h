@@ -2,7 +2,7 @@
 #define AOE1_DEBUGLOG_H
 
 class TDebuggingLog {
-public:
+  public:
     int Timestamp;
     int DateTimestamp;
     int LogToFile;
@@ -31,11 +31,10 @@ public:
     void FlushLog();
     void CloseLog();
 
-protected:
+  protected:
     char* YesOrNo(int TorF);
 };
 
-typedef char debuglog_TDebuggingLog_size_check[
-    (sizeof(TDebuggingLog) == 0x7B0) ? 1 : -1];
+typedef char debuglog_TDebuggingLog_size_check[(sizeof(TDebuggingLog) == 0x7B0) ? 1 : -1];
 
 #endif

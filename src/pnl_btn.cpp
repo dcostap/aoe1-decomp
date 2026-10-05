@@ -9,41 +9,14 @@
 static char s_pnl_btn_draw[] = "pnl_btn::draw";
 static char s_pnl_btn_draw2[] = "pnl_btn::draw2";
 
-TButtonPanel::TButtonPanel()
-    : buttonTypeValue(Normal),
-      drawTypeValue(DrawClear),
-      notifyTypeValue(NotifyAction),
-      sound(0),
-      auto_pic_pos(1),
-      pic_x(0),
-      pic_y(0),
-      all_hot(1),
-      draw_reverse(0),
-      text_x(-1),
-      text_y(-1),
-      font(0),
-      font_wid(0),
-      font_hgt(0),
-      num_states(1),
-      cur_state(0),
-      is_down(0),
-      radio_buttons(0),
-      num_radio_buttons(0),
-      button_down_time(0),
-      hotkey(0),
-      hotkey_shift(0),
-      bevel_type(1),
-      bevel_color1(0),
-      bevel_color2(0),
-      bevel_color3(0),
-      bevel_color4(0),
-      bevel_color5(0),
-      bevel_color6(0),
-      key_down(0),
-      disabled(0),
-      sound_number(-1) {
+TButtonPanel::TButtonPanel() :
+    buttonTypeValue(Normal), drawTypeValue(DrawClear), notifyTypeValue(NotifyAction), sound(0), auto_pic_pos(1),
+    pic_x(0), pic_y(0), all_hot(1), draw_reverse(0), text_x(-1), text_y(-1), font(0), font_wid(0), font_hgt(0),
+    num_states(1), cur_state(0), is_down(0), radio_buttons(0), num_radio_buttons(0), button_down_time(0), hotkey(0),
+    hotkey_shift(0), bevel_type(1), bevel_color1(0), bevel_color2(0), bevel_color3(0), bevel_color4(0), bevel_color5(0),
+    bevel_color6(0), key_down(0), disabled(0), sound_number(-1) {
     // The compiler emits the derived vptr as part of normal construction.
-    ((TPanel*)this)->panel_type = 3;
+    ((TPanel*) this)->panel_type = 3;
 
     for (int i = 0; i < 9; i++) {
         id[i] = 0;
@@ -83,12 +56,11 @@ TButtonPanel::~TButtonPanel() {
 
 // 004720A0_setup.cpp
 
-long TButtonPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in,
-                         long x_in, long y_in, long wid_in, long hgt_in,
-                         TButtonPanel::DrawType drawTypeIn, TDigital* sound_in,
-                         TButtonPanel::NotifyType notifyTypeIn, long id_in) {
-    TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in,
-                  0);
+long TButtonPanel::setup(
+    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
+    TButtonPanel::DrawType drawTypeIn, TDigital* sound_in, TButtonPanel::NotifyType notifyTypeIn, long id_in
+) {
+    TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, 0);
     this->drawTypeValue = drawTypeIn;
     this->notifyTypeValue = notifyTypeIn;
     this->set_sound(sound_in);
@@ -97,22 +69,34 @@ long TButtonPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in,
 }
 
 // 00472110_buttonType.cpp
-TButtonPanel::ButtonType TButtonPanel::buttonType() const { return this->buttonTypeValue; }
+TButtonPanel::ButtonType TButtonPanel::buttonType() const {
+    return this->buttonTypeValue;
+}
 
 // 00472120_drawType.cpp
-TButtonPanel::DrawType TButtonPanel::drawType() const { return this->drawTypeValue; }
+TButtonPanel::DrawType TButtonPanel::drawType() const {
+    return this->drawTypeValue;
+}
 
 // 00472130_notifyType.cpp
-TButtonPanel::NotifyType TButtonPanel::notifyType() const { return this->notifyTypeValue; }
+TButtonPanel::NotifyType TButtonPanel::notifyType() const {
+    return this->notifyTypeValue;
+}
 
 // 00472140_setDrawType.cpp
-void TButtonPanel::setDrawType(TButtonPanel::DrawType drawTypeIn) { this->drawTypeValue = drawTypeIn; }
+void TButtonPanel::setDrawType(TButtonPanel::DrawType drawTypeIn) {
+    this->drawTypeValue = drawTypeIn;
+}
 
 // 00472150_setButtonType.cpp
-void TButtonPanel::setButtonType(TButtonPanel::ButtonType buttonTypeIn) { this->buttonTypeValue = buttonTypeIn; }
+void TButtonPanel::setButtonType(TButtonPanel::ButtonType buttonTypeIn) {
+    this->buttonTypeValue = buttonTypeIn;
+}
 
 // 00472160_set_picture_info.cpp
-void TButtonPanel::set_picture_info(TShape* pic_in, short pic_index_in, long pic_x_in, long pic_y_in, int all_hot_in, int auto_pic_pos_in) {
+void TButtonPanel::set_picture_info(
+    TShape* pic_in, short pic_index_in, long pic_x_in, long pic_y_in, int all_hot_in, int auto_pic_pos_in
+) {
     pic_x = pic_x_in;
     pic_y = pic_y_in;
     all_hot = all_hot_in;
@@ -121,14 +105,18 @@ void TButtonPanel::set_picture_info(TShape* pic_in, short pic_index_in, long pic
 }
 
 // 004721A0_set_text_info.cpp
-void TButtonPanel::set_text_info(char* text_in, void* font_in, long font_wid_in, long font_hgt_in, long text_x_in, long text_y_in) {
+void TButtonPanel::set_text_info(
+    char* text_in, void* font_in, long font_wid_in, long font_hgt_in, long text_x_in, long text_y_in
+) {
     set_text_pos(text_x_in, text_y_in);
     set_text(0, text_in);
     set_font(font_in, font_wid_in, font_hgt_in);
 }
 
 // 004721E0_set_text_info.cpp
-void TButtonPanel::set_text_info(long string_id_in, void* font_in, long font_wid_in, long font_hgt_in, long text_x_in, long text_y_in) {
+void TButtonPanel::set_text_info(
+    long string_id_in, void* font_in, long font_wid_in, long font_hgt_in, long text_x_in, long text_y_in
+) {
     set_text_pos(text_x_in, text_y_in);
     set_text(0, string_id_in);
     set_font(font_in, font_wid_in, font_hgt_in);
@@ -154,7 +142,7 @@ void TButtonPanel::set_radio_info(TButtonPanel** buttons_in, short button_count_
     }
     if (button_count_in != 0) {
         this->num_radio_buttons = button_count_in;
-        this->radio_buttons = (TButtonPanel**)calloc(button_count_in, sizeof(TButtonPanel*));
+        this->radio_buttons = (TButtonPanel**) calloc(button_count_in, sizeof(TButtonPanel*));
         if (button_count_in > 0) {
             int index = 0;
             int remaining = button_count_in;
@@ -192,7 +180,6 @@ void TButtonPanel::set_picture(short state_in, TShape* pic_in, short pic_index_i
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
-
 void TButtonPanel::set_text(short state_in, char* text_in) {
     if (text1[state_in] != 0) {
         free(text1[state_in]);
@@ -207,17 +194,17 @@ void TButtonPanel::set_text(short state_in, char* text_in) {
         short length;
 
         if (newline != 0) {
-            length = (short)(newline - text_in);
+            length = (short) (newline - text_in);
         } else {
-            length = (short)strlen(text_in);
+            length = (short) strlen(text_in);
         }
-        text1[state_in] = (char*)calloc(length + 1, 1);
+        text1[state_in] = (char*) calloc(length + 1, 1);
         if (text1[state_in] != 0) {
             strncpy(text1[state_in], text_in, length);
             text1[state_in][length] = 0;
             if (newline != 0) {
                 newline++;
-                text2[state_in] = (char*)calloc(strlen(newline) + 1, 1);
+                text2[state_in] = (char*) calloc(strlen(newline) + 1, 1);
                 if (text2[state_in] != 0) {
                     strcpy(text2[state_in], newline);
                 }
@@ -231,8 +218,6 @@ void TButtonPanel::set_text(short state_in, char* text_in) {
 
 #include <string.h>
 
-
-
 void TButtonPanel::set_text(short state_in, char* text1_in, char* text2_in) {
     if (text1[state_in] != 0) {
         free(text1[state_in]);
@@ -243,11 +228,11 @@ void TButtonPanel::set_text(short state_in, char* text1_in, char* text2_in) {
         text2[state_in] = 0;
     }
     if (text1_in != 0 && *text1_in != 0) {
-        text1[state_in] = (char*)calloc(strlen(text1_in) + 1, 1);
+        text1[state_in] = (char*) calloc(strlen(text1_in) + 1, 1);
         if (text1[state_in] != 0) {
             strcpy(text1[state_in], text1_in);
             if (text2_in != 0 && *text2_in != 0) {
-                text2[state_in] = (char*)calloc(strlen(text2_in) + 1, 1);
+                text2[state_in] = (char*) calloc(strlen(text2_in) + 1, 1);
                 if (text2[state_in] != 0) {
                     strcpy(text2[state_in], text2_in);
                 }
@@ -302,7 +287,9 @@ void TButtonPanel::set_highlight_text_color(int state, unsigned long text_color1
 }
 
 // 00472680_set_sound.cpp
-void TButtonPanel::set_sound(TDigital* sound_in) { this->sound = sound_in; }
+void TButtonPanel::set_sound(TDigital* sound_in) {
+    this->sound = sound_in;
+}
 
 // 00472690_set_radio_button.cpp
 void TButtonPanel::set_radio_button(void) {
@@ -330,7 +317,7 @@ void TButtonPanel::set_state_by_id(long id_in) {
 
     for (i = 0; i < num_states; i++) {
         if (id[i] == id_in) {
-            cur_state = (short)i;
+            cur_state = (short) i;
             set_redraw(TPanel::RedrawNormal);
             return;
         }
@@ -340,12 +327,12 @@ void TButtonPanel::set_state_by_id(long id_in) {
 // 00472760_set_bevel_info.cpp
 void TButtonPanel::set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c4, int c5, int c6) {
     bevel_type = bevel_type_in;
-    bevel_color1 = (unsigned char)c1;
-    bevel_color2 = (unsigned char)c2;
-    bevel_color3 = (unsigned char)c3;
-    bevel_color4 = (unsigned char)c4;
-    bevel_color5 = (unsigned char)c5;
-    bevel_color6 = (unsigned char)c6;
+    bevel_color1 = (unsigned char) c1;
+    bevel_color2 = (unsigned char) c2;
+    bevel_color3 = (unsigned char) c3;
+    bevel_color4 = (unsigned char) c4;
+    bevel_color5 = (unsigned char) c5;
+    bevel_color6 = (unsigned char) c6;
 }
 
 // 004727B0_set_disabled.cpp
@@ -404,7 +391,6 @@ void TButtonPanel::get_text_color(short state_in, unsigned long* color1, unsigne
 
 #include <string.h>
 
-
 extern "C" {
 __declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* object);
 __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* rgn);
@@ -412,8 +398,6 @@ __declspec(dllimport) int __stdcall SetBkMode(void* hdc, int mode);
 __declspec(dllimport) unsigned long __stdcall SetTextColor(void* hdc, unsigned long color);
 __declspec(dllimport) int __stdcall TextOutA(void* hdc, int x, int y, const char* s, int len);
 }
-
-
 
 void TButtonPanel::draw() {
     long x;
@@ -450,8 +434,8 @@ void TButtonPanel::draw() {
             if (pic[cur_state] != 0) {
                 if (auto_pic_pos != 0) {
                     pic[cur_state]->shape_minmax(x_min, y_min, x_max, y_max, pic_index[cur_state]);
-                    pic_x = (short)(pnl_wid / 2 - (x_max - x_min + 1) / 2 - x_min);
-                    pic_y = (short)(pnl_hgt / 2 - (y_max - y_min + 1) / 2 - y_min);
+                    pic_x = (short) (pnl_wid / 2 - (x_max - x_min + 1) / 2 - x_min);
+                    pic_y = (short) (pnl_hgt / 2 - (y_max - y_min + 1) / 2 - y_min);
                 }
 
                 x = pic_x + pnl_x;
@@ -487,7 +471,7 @@ void TButtonPanel::draw() {
                 text = text1[0];
             }
             if (text != 0) {
-                text_length = (short)strlen(text);
+                text_length = (short) strlen(text);
                 GetTextExtentPoint32A(dc, text, text_length, &text_size);
                 long text_x_pos = calc_x - text_size.cx / 2 + pnl_x;
                 long text_y_pos;
@@ -519,7 +503,7 @@ void TButtonPanel::draw() {
                     text = text2[0];
                 }
                 if (text != 0) {
-                    text_length = (short)strlen(text);
+                    text_length = (short) strlen(text);
                     GetTextExtentPoint32A(dc, text, text_length, &text_size);
                     text_x_pos = calc_x - text_size.cx / 2 + pnl_x;
                     text_y_pos = y + pnl_y;
@@ -549,51 +533,59 @@ void TButtonPanel::draw() {
         }
     }
 
-    if (drawTypeValue == DrawText || drawTypeValue == DrawPictureAndText || drawTypeValue == DrawFillAndText ||
-        drawTypeValue == DrawBevelPicture) {
+    if (drawTypeValue == DrawText || drawTypeValue == DrawPictureAndText || drawTypeValue == DrawFillAndText
+        || drawTypeValue == DrawBevelPicture) {
         if (render_area->Lock(s_pnl_btn_draw2, 1) != 0) {
             if (disabled != 0) {
                 render_area->DrawRect(pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6);
                 render_area->DrawRect(pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2, pnl_y + pnl_hgt - 2, bevel_color1);
             } else if ((draw_reverse == 0 && is_down == 0) || (draw_reverse != 0 && is_down != 0)) {
                 switch (bevel_type) {
-                case 1:
-                    render_area->DrawVertLine(pnl_x + pnl_wid - 1, pnl_y + 1, pnl_hgt - 1, 0);
-                    render_area->DrawHorzLine(pnl_x + 1, pnl_y + pnl_hgt - 1, pnl_wid - 1, 0);
-                    render_area->DrawRect(pnl_x, pnl_y, pnl_x + pnl_wid - 2, pnl_y + pnl_hgt - 2, 0xFF);
-                    break;
-                case 2:
-                    render_area->DrawBevel(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                                           pnl_y + pnl_hgt - 1, bevel_color1, bevel_color6);
-                    break;
-                case 3:
-                    render_area->DrawBevel2(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                                            pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2, bevel_color5, bevel_color6);
-                    break;
-                case 4:
-                    render_area->DrawBevel3(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                                            pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2, bevel_color3, bevel_color4, bevel_color5,
-                                            bevel_color6);
-                    break;
+                    case 1:
+                        render_area->DrawVertLine(pnl_x + pnl_wid - 1, pnl_y + 1, pnl_hgt - 1, 0);
+                        render_area->DrawHorzLine(pnl_x + 1, pnl_y + pnl_hgt - 1, pnl_wid - 1, 0);
+                        render_area->DrawRect(pnl_x, pnl_y, pnl_x + pnl_wid - 2, pnl_y + pnl_hgt - 2, 0xFF);
+                        break;
+                    case 2:
+                        render_area->DrawBevel(
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color1, bevel_color6
+                        );
+                        break;
+                    case 3:
+                        render_area->DrawBevel2(
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2,
+                            bevel_color5, bevel_color6
+                        );
+                        break;
+                    case 4:
+                        render_area->DrawBevel3(
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2,
+                            bevel_color3, bevel_color4, bevel_color5, bevel_color6
+                        );
+                        break;
                 }
             } else {
                 switch (bevel_type) {
-                case 1:
-                    render_area->DrawRect(pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2, pnl_y + pnl_hgt - 2, 0xFF);
-                    break;
-                case 2:
-                    render_area->DrawBevel(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                                           pnl_y + pnl_hgt - 1, bevel_color6, bevel_color1);
-                    break;
-                case 3:
-                    render_area->DrawBevel21(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                                             pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5, bevel_color2, bevel_color1);
-                    break;
-                case 4:
-                    render_area->DrawBevel32(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                                             pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5, bevel_color4, bevel_color3, bevel_color2,
-                                             bevel_color1);
-                    break;
+                    case 1:
+                        render_area->DrawRect(pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2, pnl_y + pnl_hgt - 2, 0xFF);
+                        break;
+                    case 2:
+                        render_area->DrawBevel(
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6, bevel_color1
+                        );
+                        break;
+                    case 3:
+                        render_area->DrawBevel21(
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5,
+                            bevel_color2, bevel_color1
+                        );
+                        break;
+                    case 4:
+                        render_area->DrawBevel32(
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5,
+                            bevel_color4, bevel_color3, bevel_color2, bevel_color1
+                        );
+                        break;
                 }
             }
             render_area->Unlock(s_pnl_btn_draw2);
@@ -671,8 +663,9 @@ long TButtonPanel::mouse_left_move_action(long x, long y, int ctrl_key, int shif
 }
 
 // 00473310_mouse_left_up_action.cpp
-extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
-
+extern "C" __declspec(dllimport) long __stdcall SendMessageA(
+    void* hwnd, unsigned int msg, unsigned int wparam, long lparam
+);
 
 long TButtonPanel::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     release_mouse();
@@ -745,7 +738,6 @@ long TButtonPanel::mouse_right_move_action(long x, long y, int ctrl_key, int shi
 
 // 00473520_mouse_right_up_action.cpp
 
-
 long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl_key, int shift_key) {
     release_mouse();
     if (is_down != 0) {
@@ -766,10 +758,9 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl_key, int shift
 
 // 004735B0_handle_key_down.cpp
 
-
 long TButtonPanel::handle_key_down(long key, short count, int alt_key, int ctrl_key, int shift_key) {
-    if (active != 0 && disabled == 0 && alt_key == 0 && ctrl_key == 0 && hotkey != 0 && key == hotkey && key_down == 0 &&
-        (hotkey_shift == 0 || shift_key == hotkey_shift)) {
+    if (active != 0 && disabled == 0 && alt_key == 0 && ctrl_key == 0 && hotkey != 0 && key == hotkey && key_down == 0
+        && (hotkey_shift == 0 || shift_key == hotkey_shift)) {
         if (tab_stop != 0 && parent_panel != 0 && have_focus == 0) {
             parent_panel->set_curr_child(this);
         }
@@ -793,7 +784,6 @@ long TButtonPanel::handle_key_down(long key, short count, int alt_key, int ctrl_
 
 // 004736F0_key_down_action.cpp
 
-
 long TButtonPanel::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     TPanel* child;
 
@@ -802,46 +792,46 @@ long TButtonPanel::key_down_action(long key, short count, int alt_key, int ctrl_
     }
 
     switch (key) {
-    case VK_DOWN:
-        if (alt_key == 0 && ctrl_key == 0 && tab_stop != 0 && parent_panel != 0) {
-            child = tab_next_panel;
-            if (child != 0) {
-                parent_panel->set_curr_child(child);
+        case VK_DOWN:
+            if (alt_key == 0 && ctrl_key == 0 && tab_stop != 0 && parent_panel != 0) {
+                child = tab_next_panel;
+                if (child != 0) {
+                    parent_panel->set_curr_child(child);
+                }
             }
-        }
-        return 1;
+            return 1;
 
-    case VK_UP:
-        if (alt_key == 0 && ctrl_key == 0 && tab_stop != 0 && parent_panel != 0) {
-            child = tab_prev_panel;
-            if (child != 0) {
-                parent_panel->set_curr_child(child);
+        case VK_UP:
+            if (alt_key == 0 && ctrl_key == 0 && tab_stop != 0 && parent_panel != 0) {
+                child = tab_prev_panel;
+                if (child != 0) {
+                    parent_panel->set_curr_child(child);
+                }
             }
-        }
-        return 1;
+            return 1;
 
-    case VK_RETURN:
-    case VK_SPACE:
-        if (disabled != 0 || alt_key != 0 || ctrl_key != 0) {
+        case VK_RETURN:
+        case VK_SPACE:
+            if (disabled != 0 || alt_key != 0 || ctrl_key != 0) {
+                break;
+            }
+            if (sound != 0) {
+                if (sound->is_playing() != 0) {
+                    sound->stop();
+                }
+                sound->play();
+            }
+            key_down = key;
+            is_down = 1;
+            button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 1099);
+            set_redraw(TPanel::RedrawNormal);
+            if (parent_panel != 0) {
+                parent_panel->action(this, 2, id[cur_state], id2[cur_state]);
+            }
+            return 1;
+
+        default:
             break;
-        }
-        if (sound != 0) {
-            if (sound->is_playing() != 0) {
-                sound->stop();
-            }
-            sound->play();
-        }
-        key_down = key;
-        is_down = 1;
-        button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 1099);
-        set_redraw(TPanel::RedrawNormal);
-        if (parent_panel != 0) {
-            parent_panel->action(this, 2, id[cur_state], id2[cur_state]);
-        }
-        return 1;
-
-    default:
-        break;
     }
     return 0;
 }
@@ -849,9 +839,6 @@ long TButtonPanel::key_down_action(long key, short count, int alt_key, int ctrl_
 // 00473890_wnd_proc.cpp
 
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* hwnd, unsigned msg, unsigned wparam, long lparam);
-
-
-
 
 long TButtonPanel::wnd_proc(void* hwnd, unsigned msg, unsigned wParam, long lParam) {
     if (msg == WM_KEYUP && this->key_down != 0 && wParam == this->key_down) {
@@ -869,7 +856,9 @@ long TButtonPanel::wnd_proc(void* hwnd, unsigned msg, unsigned wParam, long lPar
 }
 
 // 00473920_char_action.cpp
-long TButtonPanel::char_action(long key, short count) { return 0; }
+long TButtonPanel::char_action(long key, short count) {
+    return 0;
+}
 
 // 00473930_hit_button.cpp
 
@@ -887,9 +876,7 @@ int TButtonPanel::hit_button(long x, long y) {
         long shape_index = this->pic_index[this->cur_state];
         long shape_y = (y - this->pic_y) - this->pnl_y;
         long shape_x = (x - this->pic_x) - this->pnl_x;
-        return this->pic[this->cur_state]->shape_check(shape_x, shape_y, shape_index)
-                   ? 1
-                   : 0;
+        return this->pic[this->cur_state]->shape_check(shape_x, shape_y, shape_index) ? 1 : 0;
     }
     return 1;
 }
@@ -898,11 +885,12 @@ int TButtonPanel::hit_button(long x, long y) {
 // Pnl_btn.cpp
 
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(
-    void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
+    void* hwnd, unsigned int msg, unsigned int wparam, long lparam
+);
 
 void TButtonPanel::do_action(void) {
     if (this->buttonTypeValue == TButtonPanel::State) {
-        if ((int)this->cur_state == this->num_states - 1) {
+        if ((int) this->cur_state == this->num_states - 1) {
             this->set_state(0);
         } else {
             this->set_state(this->cur_state + 1);
@@ -930,7 +918,7 @@ void TButtonPanel::do_action(void) {
 
 void TButtonPanel::do_right_action(int shift_key) {
     if (this->buttonTypeValue == TButtonPanel::State) {
-        if ((int)this->cur_state == this->num_states - 1) {
+        if ((int) this->cur_state == this->num_states - 1) {
             this->set_state(0);
         } else {
             this->set_state(this->cur_state + 1);
@@ -969,7 +957,9 @@ void TButtonPanel::reset(void) {
 }
 
 // 00473BB0_set_sound_number.cpp
-void TButtonPanel::set_sound_number(int sound_number_in) { this->sound_number = sound_number_in; }
+void TButtonPanel::set_sound_number(int sound_number_in) {
+    this->sound_number = sound_number_in;
+}
 
 // 00473BC0_stop_sound_system.cpp
 void TButtonPanel::stop_sound_system(void) {

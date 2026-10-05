@@ -34,11 +34,10 @@ struct Special_Events {
     Special_Events* next;
 };
 
-typedef char special_events_size_check[
-    (sizeof(Special_Events) == 0xB0) ? 1 : -1];
+typedef char special_events_size_check[(sizeof(Special_Events) == 0xB0) ? 1 : -1];
 
 class Time_Line_Panel : public TEasy_Panel {
-public:
+  public:
     enum Style { ChiseledStyle = 2 };
 
     void* axis_font;
@@ -95,12 +94,16 @@ public:
     virtual ~Time_Line_Panel();
     virtual void draw();
 
-    long create_timeline(TPanel* parent, Time_Line_Panel** time_line, long x, long y, long width, long height,
-                         long axis_font_num, long body_font_num, long ideal_width, long ideal_height);
-    long setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
-               void* axis_font_in, long axis_font_wid_in, long axis_font_hgt_in, void* body_font_in,
-               long body_font_wid_in, long body_font_hgt_in, char* back_pic_in, char* special_event_pic_in,
-               int fill_back_in, unsigned char back_color_in, int outline_in, unsigned char outline_color_in);
+    long create_timeline(
+        TPanel* parent, Time_Line_Panel** time_line, long x, long y, long width, long height, long axis_font_num,
+        long body_font_num, long ideal_width, long ideal_height
+    );
+    long setup(
+        TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
+        void* axis_font_in, long axis_font_wid_in, long axis_font_hgt_in, void* body_font_in, long body_font_wid_in,
+        long body_font_hgt_in, char* back_pic_in, char* special_event_pic_in, int fill_back_in,
+        unsigned char back_color_in, int outline_in, unsigned char outline_color_in
+    );
     void set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c4, int c5, int c6);
     int set_background(char* file_name);
     int set_background(char* file_name, long resource_id);
@@ -111,9 +114,13 @@ public:
     void set_back_color(int use_back_color_flag_in, unsigned char back_color_in);
     void draw_border();
     void init_timeline();
-    void add_pop_total_special_event(long sample_time_slice, long sample_pop_total, long sample_x_line_pos, int time_flag);
-    void record_special_event(unsigned char player_id, TRIBE_History_Info* history, unsigned char player_color,
-                              long time_slice, long x_line_pos, long y_line_pos, long intermediate_y_line_segment);
+    void add_pop_total_special_event(
+        long sample_time_slice, long sample_pop_total, long sample_x_line_pos, int time_flag
+    );
+    void record_special_event(
+        unsigned char player_id, TRIBE_History_Info* history, unsigned char player_color, long time_slice,
+        long x_line_pos, long y_line_pos, long intermediate_y_line_segment
+    );
     int calculate_icon_location(Special_Events* event_ptr, short icon_number, unsigned char history_type);
     void draw_axis();
     void draw_special_events();
@@ -124,8 +131,6 @@ public:
     void draw_legend();
 };
 
-typedef char time_line_panel_size_check[
-    (sizeof(Time_Line_Panel) == 0x52C) ? 1 : -1];
-
+typedef char time_line_panel_size_check[(sizeof(Time_Line_Panel) == 0x52C) ? 1 : -1];
 
 #endif

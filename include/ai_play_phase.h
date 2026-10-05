@@ -5,24 +5,21 @@
 #include "ai_play_phase_trigger.h"
 
 class AIPlayPhase {
-public:
-    enum {
-        MaxCommands = 5,
-        MaxTriggers = 3
-    };
+  public:
+    enum { MaxCommands = 5, MaxTriggers = 3 };
 
-protected:
-    AIPlayPhaseCommand commands[MaxCommands];  // +0x00
-    AIPlayPhaseTrigger triggers[MaxTriggers];  // +0x50
+  protected:
+    AIPlayPhaseCommand commands[MaxCommands]; // +0x00
+    AIPlayPhaseTrigger triggers[MaxTriggers]; // +0x50
 
-public:
+  public:
     AIPlayPhase();
     AIPlayPhaseCommand* command(int v);
     AIPlayPhaseTrigger* trigger(int v);
     int addCommand(AIPlayPhaseCommand& c);
     int addTrigger(AIPlayPhaseTrigger& t);
 
-protected:
+  protected:
     void initialize();
 };
 

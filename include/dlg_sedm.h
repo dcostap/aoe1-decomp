@@ -11,18 +11,16 @@ class TTextPanel;
 class TRIBE_Screen_Sed;
 
 class TRIBE_Dialog_Sed_Menu : public TDialogPanel {
-public:
+  public:
     TRIBE_Screen_Sed* scenario_editor;
     TTextPanel* title;
     TButtonPanel* buttons[7];
 
     TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed* scenario_editor_in);
     virtual ~TRIBE_Dialog_Sed_Menu();
-    virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1,
-                        unsigned long action_val2);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
 };
 
-typedef char dlg_sedm_dialog_size_check[
-    (sizeof(TRIBE_Dialog_Sed_Menu) == 0x4B4) ? 1 : -1];
+typedef char dlg_sedm_dialog_size_check[(sizeof(TRIBE_Dialog_Sed_Menu) == 0x4B4) ? 1 : -1];
 
 #endif

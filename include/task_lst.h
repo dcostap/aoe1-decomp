@@ -11,7 +11,7 @@ class RGE_Static_Object;
 typedef char task_lst_task_size_check[(sizeof(RGE_Task) == 0x4C) ? 1 : -1];
 
 class RGE_Task_List {
-public:
+  public:
     RGE_Task_List();
     // The destructor is nonvirtual in the original ABI.
     ~RGE_Task_List();
@@ -23,14 +23,15 @@ public:
     void delete_list();
 
     virtual RGE_Task* create_task(short task_type, short index);
-    virtual RGE_Task* get_target_task(RGE_Action_Object* obj, RGE_Static_Object* target_obj,
-                                      float target_x, float target_y, float target_z);
+    virtual RGE_Task* get_target_task(
+        RGE_Action_Object* obj, RGE_Static_Object* target_obj, float target_x, float target_y, float target_z
+    );
     virtual int is_attack_task(RGE_Task* task);
 
-protected:
+  protected:
     virtual int check_task(RGE_Task* task, RGE_Action_Object* obj, RGE_Static_Object* target_obj);
 
-public:
+  public:
     RGE_Task** list;
     short list_num;
 };

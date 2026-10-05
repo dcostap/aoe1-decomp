@@ -4,9 +4,11 @@
 #include <string.h>
 #include <stdio.h>
 
-CombatRuleSystem::CombatRuleSystem() {}
+CombatRuleSystem::CombatRuleSystem() {
+}
 
-CombatRuleSystem::~CombatRuleSystem() {}
+CombatRuleSystem::~CombatRuleSystem() {
+}
 
 int CombatRuleSystem::loadRules(char* rName) {
     char temp[256];
@@ -32,7 +34,7 @@ int CombatRuleSystem::loadRules(char* rName) {
         sscanf(temp, "%d %d %d", &rating, &unitIndex, &targetUnitType);
         if (rating < 0 || rating >= 50)
             continue;
-        ratingValue[unitIndex + rating * 50] = (char)targetUnitType;
+        ratingValue[unitIndex + rating * 50] = (char) targetUnitType;
     }
 
     fclose(f);
@@ -41,6 +43,10 @@ int CombatRuleSystem::loadRules(char* rName) {
     return 1;
 }
 
-int CombatRuleSystem::bestUnitTypeToAttack(int tType) { return -1; }
+int CombatRuleSystem::bestUnitTypeToAttack(int tType) {
+    return -1;
+}
 
-int CombatRuleSystem::bestUnitTypeToDefendAgainst(int tType) { return -1; }
+int CombatRuleSystem::bestUnitTypeToDefendAgainst(int tType) {
+    return -1;
+}

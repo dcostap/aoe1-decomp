@@ -1,52 +1,40 @@
 #include "../include/aiblditm.h"
 
-BuildItem::BuildItem()
-    : next(0), prev(0), numberValue(0), priorityValue(0),
-      progressValue(0), builtValue(0), buildAttemptsValue(0),
-      terrainSetValue(-1),
-      placeOnElevationValue(0), numberBuildsValue(0), skipCyclesValue(0),
-      permanentSkipValue(0), buildCategoryValue(-1),
-      buildFromValue(-1),
-      buildCapValue(-1) {
+BuildItem::BuildItem() :
+    next(0), prev(0), numberValue(0), priorityValue(0), progressValue(0), builtValue(0), buildAttemptsValue(0),
+    terrainSetValue(-1), placeOnElevationValue(0), numberBuildsValue(0), skipCyclesValue(0), permanentSkipValue(0),
+    buildCategoryValue(-1), buildFromValue(-1), buildCapValue(-1) {
     terrainAdjacencyValue[0] = -1;
     terrainAdjacencyValue[1] = -1;
 }
 
-BuildItem::BuildItem(int bc, int ti, int bi, int n, int p, int bf, char* name, float x, float y, float z, int tSet, int tOne, int tTwo, int pEle)
-    : BaseItem(ti, -1, bi, name, -1.0f, -1.0f, -1.0f, x, y, z),
-      next(0), prev(0), buildCategoryValue(bc), numberValue(n),
-      priorityValue(p), progressValue(0), builtValue(0),
-      buildAttemptsValue(0), buildFromValue(bf), terrainSetValue(tSet),
-      placeOnElevationValue(pEle), numberBuildsValue(0),
-      buildCapValue(-1), skipCyclesValue(0), permanentSkipValue(0) {
+BuildItem::BuildItem(
+    int bc, int ti, int bi, int n, int p, int bf, char* name, float x, float y, float z, int tSet, int tOne, int tTwo,
+    int pEle
+) :
+    BaseItem(ti, -1, bi, name, -1.0f, -1.0f, -1.0f, x, y, z), next(0), prev(0), buildCategoryValue(bc), numberValue(n),
+    priorityValue(p), progressValue(0), builtValue(0), buildAttemptsValue(0), buildFromValue(bf), terrainSetValue(tSet),
+    placeOnElevationValue(pEle), numberBuildsValue(0), buildCapValue(-1), skipCyclesValue(0), permanentSkipValue(0) {
     terrainAdjacencyValue[0] = tOne;
     terrainAdjacencyValue[1] = tTwo;
 }
 
-BuildItem::BuildItem(BuildItem* bi)
-    : BaseItem(static_cast<BaseItem*>(bi)), next(0), prev(0),
-      buildCategoryValue(bi->buildCategoryValue),
-      numberValue(bi->numberValue), priorityValue(bi->priorityValue),
-      progressValue(bi->progressValue), builtValue(bi->progressValue),
-      buildAttemptsValue(bi->buildAttemptsValue),
-      buildFromValue(bi->buildFromValue), terrainSetValue(bi->terrainSetValue),
-      placeOnElevationValue(bi->placeOnElevationValue),
-      numberBuildsValue(0), buildCapValue(-1), skipCyclesValue(0),
-      permanentSkipValue(0) {
+BuildItem::BuildItem(BuildItem* bi) :
+    BaseItem(static_cast<BaseItem*>(bi)), next(0), prev(0), buildCategoryValue(bi->buildCategoryValue),
+    numberValue(bi->numberValue), priorityValue(bi->priorityValue), progressValue(bi->progressValue),
+    builtValue(bi->progressValue), buildAttemptsValue(bi->buildAttemptsValue), buildFromValue(bi->buildFromValue),
+    terrainSetValue(bi->terrainSetValue), placeOnElevationValue(bi->placeOnElevationValue), numberBuildsValue(0),
+    buildCapValue(-1), skipCyclesValue(0), permanentSkipValue(0) {
     terrainAdjacencyValue[0] = bi->terrainAdjacencyValue[0];
     terrainAdjacencyValue[1] = bi->terrainAdjacencyValue[1];
 }
 
-BuildItem::BuildItem(const BuildItem& bi)
-    : BaseItem(static_cast<const BaseItem&>(bi)), next(0), prev(0),
-      buildCategoryValue(bi.buildCategoryValue),
-      numberValue(bi.numberValue), priorityValue(bi.priorityValue),
-      progressValue(bi.progressValue), builtValue(bi.progressValue),
-      buildAttemptsValue(bi.buildAttemptsValue),
-      buildFromValue(bi.buildFromValue), terrainSetValue(bi.terrainSetValue),
-      placeOnElevationValue(bi.placeOnElevationValue),
-      numberBuildsValue(0), buildCapValue(-1), skipCyclesValue(0),
-      permanentSkipValue(0) {
+BuildItem::BuildItem(const BuildItem& bi) :
+    BaseItem(static_cast<const BaseItem&>(bi)), next(0), prev(0), buildCategoryValue(bi.buildCategoryValue),
+    numberValue(bi.numberValue), priorityValue(bi.priorityValue), progressValue(bi.progressValue),
+    builtValue(bi.progressValue), buildAttemptsValue(bi.buildAttemptsValue), buildFromValue(bi.buildFromValue),
+    terrainSetValue(bi.terrainSetValue), placeOnElevationValue(bi.placeOnElevationValue), numberBuildsValue(0),
+    buildCapValue(-1), skipCyclesValue(0), permanentSkipValue(0) {
     terrainAdjacencyValue[0] = bi.terrainAdjacencyValue[0];
     terrainAdjacencyValue[1] = bi.terrainAdjacencyValue[1];
 }

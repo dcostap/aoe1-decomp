@@ -17,9 +17,7 @@ struct TRANSINFO {
     LINEINFO* LineInfo;
 };
 
-typedef char picture_line_info_size_check[
-    (sizeof(LINEINFO) == 0x10) ? 1 : -1];
-typedef char picture_trans_info_size_check[
-    (sizeof(TRANSINFO) == 0x18) ? 1 : -1];
+typedef char picture_line_info_size_check[(sizeof(LINEINFO) == 0x10) ? 1 : -1];
+typedef char picture_trans_info_size_check[(sizeof(TRANSINFO) == 0x18) ? 1 : -1];
 
 #endif

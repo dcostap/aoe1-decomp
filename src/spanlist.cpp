@@ -13,10 +13,9 @@ extern "C" int __cdecl open(const char* path, int flags, ...);
 extern "C" int __cdecl close(int fd);
 extern "C" int __cdecl write(int fd, const void* buf, unsigned int count);
 
-TSpan_Node_List::TSpan_Node_List(int InitialSize, int GrowSize, int szitem)
-    : Free_Pool_Zone(-1), Free_Pool_Index(-1), Zone_Ptrs(0),
-      Zone_Size_Ptrs(0), Used_Zones(0), Free_Head(0), Total_Blocks(0),
-      Free_Blocks(0), Max_Zones(8), Default_Grow_Size(GrowSize), Element_Size(szitem) {
+TSpan_Node_List::TSpan_Node_List(int InitialSize, int GrowSize, int szitem) :
+    Free_Pool_Zone(-1), Free_Pool_Index(-1), Zone_Ptrs(0), Zone_Size_Ptrs(0), Used_Zones(0), Free_Head(0),
+    Total_Blocks(0), Free_Blocks(0), Max_Zones(8), Default_Grow_Size(GrowSize), Element_Size(szitem) {
     ResetStats();
     SetNumZones(8);
     InitNewZone(InitialSize);
@@ -42,8 +41,8 @@ TSpan_Node_List::~TSpan_Node_List(void) {
 
 void TSpan_Node_List::SetNumZones(int New_Size) {
     if (New_Size >= this->Max_Zones) {
-        VSpan_Node** Ptrs = (VSpan_Node**)calloc(New_Size, 4);
-        int* newZoneSizePtrs = (int*)calloc(New_Size, 4);
+        VSpan_Node** Ptrs = (VSpan_Node**) calloc(New_Size, 4);
+        int* newZoneSizePtrs = (int*) calloc(New_Size, 4);
 
         if (this->Zone_Ptrs) {
             for (int i = 0; i < this->Used_Zones; i++) {
@@ -72,7 +71,7 @@ void TSpan_Node_List::InitNewZone(int Zone_Size) {
     this->Used_Zones = idx + 1;
     int bytes = this->Element_Size * grow;
     sizes[idx] = grow;
-    this->Zone_Ptrs[idx] = (VSpan_Node*)malloc(bytes);
+    this->Zone_Ptrs[idx] = (VSpan_Node*) malloc(bytes);
 
     this->NewZone_Count++;
     this->Total_Blocks += Zone_Size;
@@ -172,26 +171,33 @@ void TSpan_Node_List::ResetStats() {
     this->Reset_Count = 0;
 }
 
-TSpan_List_Manager::TSpan_List_Manager(int Surface_Width, int Surface_Height)
-    : VSList(((Surface_Width + 31) / 32) * Surface_Height, Surface_Height << 4, 0x10) {
+TSpan_List_Manager::TSpan_List_Manager(int Surface_Width, int Surface_Height) :
+    VSList(((Surface_Width + 31) / 32) * Surface_Height, Surface_Height << 4, 0x10) {
     this->Num_Lines = Surface_Height;
-    if (Surface_Height < 0x10) this->Num_Lines = 0x10;
+    if (Surface_Height < 0x10)
+        this->Num_Lines = 0x10;
     this->Num_Pixels = Surface_Width;
-    if (Surface_Width < 0x10) this->Num_Pixels = 0x10;
+    if (Surface_Width < 0x10)
+        this->Num_Pixels = 0x10;
     this->SetSpanRegions(0, 0, this->Num_Pixels - 1, this->Num_Lines - 1);
-    this->Line_Head_Ptrs = (VSpan_Node**)calloc(this->Num_Lines, 4);
-    this->Line_Tail_Ptrs = (VSpan_Node**)calloc(this->Num_Lines, 4);
-    this->LeftMostPx = (int*)calloc(this->Num_Lines, 4);
-    this->RightMostPx = (int*)calloc(this->Num_Lines, 4);
-    this->Span_Count = (int*)calloc(this->Num_Lines, 4);
+    this->Line_Head_Ptrs = (VSpan_Node**) calloc(this->Num_Lines, 4);
+    this->Line_Tail_Ptrs = (VSpan_Node**) calloc(this->Num_Lines, 4);
+    this->LeftMostPx = (int*) calloc(this->Num_Lines, 4);
+    this->RightMostPx = (int*) calloc(this->Num_Lines, 4);
+    this->Span_Count = (int*) calloc(this->Num_Lines, 4);
 }
 
 TSpan_List_Manager::~TSpan_List_Manager() {
-    if (Line_Head_Ptrs != 0) free(Line_Head_Ptrs);
-    if (Line_Tail_Ptrs != 0) free(Line_Tail_Ptrs);
-    if (LeftMostPx != 0) free(LeftMostPx);
-    if (RightMostPx != 0) free(RightMostPx);
-    if (Span_Count != 0) free(Span_Count);
+    if (Line_Head_Ptrs != 0)
+        free(Line_Head_Ptrs);
+    if (Line_Tail_Ptrs != 0)
+        free(Line_Tail_Ptrs);
+    if (LeftMostPx != 0)
+        free(LeftMostPx);
+    if (RightMostPx != 0)
+        free(RightMostPx);
+    if (Span_Count != 0)
+        free(Span_Count);
 }
 
 void TSpan_List_Manager::SetSpanRegions(int MinS, int MinL, int MaxS, int MaxL) {
@@ -482,8 +488,7 @@ void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num, int Xpos, int
         Shape_Info* info;
         int X2;
         info = &theShape->shape_info[shape_num];
-        unsigned short* outline =
-            (unsigned short*)(theShape->FShape->Version + info->Shape_Outline_Offset);
+        unsigned short* outline = (unsigned short*) (theShape->FShape->Version + info->Shape_Outline_Offset);
         X2 = info->Width - 1 + Xpos;
         int height = info->Height;
 
@@ -494,7 +499,7 @@ void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num, int Xpos, int
                     unsigned short start = *outline++;
                     unsigned short end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line && (start & 0x8000) == 0) {
-                        AddSpan((short)start + Xpos, X2 - (short)end, line);
+                        AddSpan((short) start + Xpos, X2 - (short) end, line);
                     }
                     line++;
                 } while (line < Ypos + info->Height);
@@ -507,7 +512,7 @@ void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num, int Xpos, int
                     unsigned short start = *outline++;
                     unsigned short end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line && (end & 0x8000) == 0) {
-                        AddSpan((short)end + Xpos, X2 - (short)start, line);
+                        AddSpan((short) end + Xpos, X2 - (short) start, line);
                     }
                     line++;
                 } while (line < Ypos + info->Height);
@@ -522,7 +527,7 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base, Shape_Info* S
         int line;
         unsigned short start;
         unsigned short end;
-        outline = (unsigned short*)(Shape_Base + SI->Shape_Outline_Offset);
+        outline = (unsigned short*) (Shape_Base + SI->Shape_Outline_Offset);
         int X2 = SI->Width - 1 + Xpos;
 
         if (Mirror == 0) {
@@ -532,7 +537,7 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base, Shape_Info* S
                     start = *outline++;
                     end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line && (start & 0x8000) == 0) {
-                        AddSpan((short)start + Xpos & 0xfffffffc, X2 - (short)end | 3, line);
+                        AddSpan((short) start + Xpos & 0xfffffffc, X2 - (short) end | 3, line);
                     }
                     line++;
                 } while (line < Ypos + SI->Height);
@@ -545,7 +550,7 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base, Shape_Info* S
                     start = *outline++;
                     end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line && (end & 0x8000) == 0) {
-                        AddSpan((short)end + Xpos & 0xfffffffc, X2 - (short)start | 3, line);
+                        AddSpan((short) end + Xpos & 0xfffffffc, X2 - (short) start | 3, line);
                     }
                     line++;
                 } while (line < Ypos + SI->Height);
@@ -655,23 +660,27 @@ void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* theList, int Xpos, int 
             return;
         }
 
-        this->DeleteSpan((int)theList->X_start + add_x, (int)theList->X_end + add_x, y_delta + add_y);
+        this->DeleteSpan((int) theList->X_start + add_x, (int) theList->X_end + add_x, y_delta + add_y);
 
-        theList = (VSpanMiniList*)((char*)theList + 3);
+        theList = (VSpanMiniList*) ((char*) theList + 3);
     }
 }
 
 void TSpan_List_Manager::DeleteSpan(int LeftPx, int RightPx, int Line) {
-    if (Line < this->Min_Line || Line > this->Max_Line) return;
+    if (Line < this->Min_Line || Line > this->Max_Line)
+        return;
 
     if (LeftPx > RightPx) {
         int t = LeftPx;
         LeftPx = RightPx;
         RightPx = t;
     }
-    if (RightPx < this->Min_Span_Px || LeftPx > this->Max_Span_Px) return;
-    if (LeftPx < this->Min_Span_Px) LeftPx = this->Min_Span_Px;
-    if (RightPx > this->Max_Span_Px) RightPx = this->Max_Span_Px;
+    if (RightPx < this->Min_Span_Px || LeftPx > this->Max_Span_Px)
+        return;
+    if (LeftPx < this->Min_Span_Px)
+        LeftPx = this->Min_Span_Px;
+    if (RightPx > this->Max_Span_Px)
+        RightPx = this->Max_Span_Px;
 
     VSpan_Node* head = this->Line_Head_Ptrs[Line];
     if (head != 0) {
@@ -702,8 +711,10 @@ void TSpan_List_Manager::DeleteSpan(int LeftPx, int RightPx, int Line) {
                     node->Prev = first;
                     node->Next = first->Next;
                     first->Next = node;
-                    if (node->Next != 0) node->Next->Prev = node;
-                    if (first == R) this->Line_Tail_Ptrs[Line] = node;
+                    if (node->Next != 0)
+                        node->Next->Prev = node;
+                    if (first == R)
+                        this->Line_Tail_Ptrs[Line] = node;
                     node->StartPx = RightPx + 1;
                     node->EndPx = first->EndPx;
                     first->EndPx = LeftPx - 1;
@@ -717,22 +728,27 @@ void TSpan_List_Manager::DeleteSpan(int LeftPx, int RightPx, int Line) {
                 }
 
                 VSpan_Node* next;
-                if (first != 0) do {
-                    if (LeftPx <= first->StartPx && RightPx >= first->EndPx) {
-                        if (first == head) L = first->Next;
-                        if (first == R) R = first->Prev;
-                        VSpan_Node* prev = first->Prev;
-                        if (prev != 0) prev->Next = first->Next;
-                        if (first->Next != 0) first->Next->Prev = first->Prev;
-                        next = first->Next;
-                        this->VSList.FreeNode(first);
-                        this->Span_Count[Line]--;
-                        head = L;
-                        first = next;
-                    } else {
-                        next = 0;
-                    }
-                } while (next != 0);
+                if (first != 0)
+                    do {
+                        if (LeftPx <= first->StartPx && RightPx >= first->EndPx) {
+                            if (first == head)
+                                L = first->Next;
+                            if (first == R)
+                                R = first->Prev;
+                            VSpan_Node* prev = first->Prev;
+                            if (prev != 0)
+                                prev->Next = first->Next;
+                            if (first->Next != 0)
+                                first->Next->Prev = first->Prev;
+                            next = first->Next;
+                            this->VSList.FreeNode(first);
+                            this->Span_Count[Line]--;
+                            head = L;
+                            first = next;
+                        } else {
+                            next = 0;
+                        }
+                    } while (next != 0);
                 if (first != 0 && RightPx >= first->StartPx) {
                     first->StartPx = RightPx + 1;
                 }
@@ -754,8 +770,7 @@ void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num, int Xpos, 
         unsigned short end;
 
         Shape_Info* info = &theShape->shape_info[shape_num];
-        outline =
-            (unsigned short*)(theShape->FShape->Version + info->Shape_Outline_Offset);
+        outline = (unsigned short*) (theShape->FShape->Version + info->Shape_Outline_Offset);
         X2 = info->Width - 1 + Xpos;
 
         if (Mirror == 0) {
@@ -765,7 +780,7 @@ void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num, int Xpos, 
                     start = *outline++;
                     end = *outline++;
                     if ((start & 0x8000) == 0) {
-                        this->DeleteSpan(Xpos + (short)start, X2 - (short)end, line);
+                        this->DeleteSpan(Xpos + (short) start, X2 - (short) end, line);
                     }
                     line++;
                 } while (line < Ypos + info->Height);
@@ -778,7 +793,7 @@ void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num, int Xpos, 
                     start = *outline++;
                     end = *outline++;
                     if ((end & 0x8000) == 0) {
-                        this->DeleteSpan(Xpos + (short)end, X2 - (short)start, line);
+                        this->DeleteSpan(Xpos + (short) end, X2 - (short) start, line);
                     }
                     line++;
                 } while (line < Ypos + info->Height);
@@ -788,13 +803,16 @@ void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num, int Xpos, 
 }
 
 int TSpan_List_Manager::PointVisible(int x, int Line) {
-    if (Line < 0 || Line >= this->Num_Lines) return 0;
+    if (Line < 0 || Line >= this->Num_Lines)
+        return 0;
 
     VSpan_Node* node = this->Line_Head_Ptrs[Line];
-    if (!node) return 0;
+    if (!node)
+        return 0;
 
     while (node) {
-        if (x >= node->StartPx && x <= node->EndPx) return 1;
+        if (x >= node->StartPx && x <= node->EndPx)
+            return 1;
         node = node->Next;
     }
 
@@ -804,10 +822,14 @@ int TSpan_List_Manager::PointVisible(int x, int Line) {
 void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager* List1, TSpan_List_Manager* List2) {
     ResetAll();
 
-    if (Num_Lines != List1->Num_Lines) return;
-    if (Num_Lines != List2->Num_Lines) return;
-    if (Num_Pixels != List1->Num_Pixels) return;
-    if (Num_Pixels != List2->Num_Pixels) return;
+    if (Num_Lines != List1->Num_Lines)
+        return;
+    if (Num_Lines != List2->Num_Lines)
+        return;
+    if (Num_Pixels != List1->Num_Pixels)
+        return;
+    if (Num_Pixels != List2->Num_Pixels)
+        return;
 
     for (int i = 0; i < Num_Lines; i++) {
         VSpan_Node* node1 = List1->Line_Head_Ptrs[i];
@@ -1016,17 +1038,24 @@ int TSpan_List_Manager::ValidateSpan(int Line) {
             VSpan_Node* prev = 0;
             while (node != 0) {
                 C++;
-                if (C == 1 && node->StartPx != this->LeftMostPx[Line]) return 0;
-                if (node->Prev != prev) return 0;
-                if (node->StartPx > node->EndPx) return 0;
-                if (C > 1 && node->StartPx <= prevEnd) return 0;
+                if (C == 1 && node->StartPx != this->LeftMostPx[Line])
+                    return 0;
+                if (node->Prev != prev)
+                    return 0;
+                if (node->StartPx > node->EndPx)
+                    return 0;
+                if (C > 1 && node->StartPx <= prevEnd)
+                    return 0;
                 prevEnd = node->EndPx;
                 prev = node;
                 node = node->Next;
             }
-            if (this->Span_Count[Line] != C) return 0;
-            if (this->Line_Tail_Ptrs[Line] != prev) return 0;
-            if (prev->EndPx != this->RightMostPx[Line]) return 0;
+            if (this->Span_Count[Line] != C)
+                return 0;
+            if (this->Line_Tail_Ptrs[Line] != prev)
+                return 0;
+            if (prev->EndPx != this->RightMostPx[Line])
+                return 0;
             return this->LeftMostPx[Line] <= this->RightMostPx[Line];
         }
     }
@@ -1053,10 +1082,10 @@ int TSpan_List_Manager::DecodeLine(unsigned char* LineBuf, int Line, unsigned ch
     return count;
 }
 
-void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
-                                        TDrawArea* render_area, int scolor,
-                                        TSpan_List_Manager** SpanArray,
-                                        int* colorArray, int ArraySize) {
+void TSpan_List_Manager::take_snapshot(
+    char* filespec, int& index_no, TDrawArea* render_area, int scolor, TSpan_List_Manager** SpanArray, int* colorArray,
+    int ArraySize
+) {
     int infile;
     int bmWide;
     BITMAPFILEHEADER bmFH;
@@ -1070,7 +1099,8 @@ void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
         if (i < ArraySize) {
             TSpan_List_Manager** s = SpanArray;
             while (i < ArraySize) {
-                if (*s == 0) return;
+                if (*s == 0)
+                    return;
                 i++;
                 s++;
             }
@@ -1109,19 +1139,24 @@ void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
     }
 
     int tries = 0;
-    if (index_no < 0) index_no = 0;
+    if (index_no < 0)
+        index_no = 0;
     while (1) {
-        if (filespec == 0) sprintf(BMPFile, "C:\\AOE_%03d.BMP", index_no);
-        else sprintf(BMPFile, filespec, index_no);
+        if (filespec == 0)
+            sprintf(BMPFile, "C:\\AOE_%03d.BMP", index_no);
+        else
+            sprintf(BMPFile, filespec, index_no);
         tries++;
         int fd = open(BMPFile, 0);
-        if (fd == -1) break;
+        if (fd == -1)
+            break;
         index_no++;
         close(fd);
-        if (tries > 1000) return;
+        if (tries > 1000)
+            return;
     }
 
-    unsigned char* line = (unsigned char*)malloc(bmWide);
+    unsigned char* line = (unsigned char*) malloc(bmWide);
     infile = open(BMPFile, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
     if (infile != -1) {
         write(infile, &bmFH, 14);
@@ -1131,11 +1166,11 @@ void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
         if (y >= 0) {
             do {
                 memset(line, 0, bmWide);
-                this->DecodeLine(line, y, (unsigned char)scolor, Height);
+                this->DecodeLine(line, y, (unsigned char) scolor, Height);
                 if (ArraySize > 0) {
                     int i;
                     for (i = 0; i < ArraySize; ++i) {
-                        SpanArray[i]->DecodeLine(line, y, (unsigned char)colorArray[i], Height);
+                        SpanArray[i]->DecodeLine(line, y, (unsigned char) colorArray[i], Height);
                     }
                 }
                 write(infile, line, bmWide);

@@ -15,7 +15,7 @@ struct DisplaySelectedObjRec {
 };
 
 class RGE_Main_View : public RGE_View {
-public:
+  public:
     RGE_Main_View();
     virtual void draw();
     virtual long handle_idle();
@@ -37,16 +37,18 @@ public:
     virtual void draw_multi_object_outline();
     int do_auto_scroll();
     int handle_keys();
-    unsigned char pick1(unsigned char pick_mode_in, unsigned char select_level, long x, long y,
-                        RGE_Pick_Info* pick_info, RGE_Static_Object* last_picked_object, int pick_dopples);
+    unsigned char pick1(
+        unsigned char pick_mode_in, unsigned char select_level, long x, long y, RGE_Pick_Info* pick_info,
+        RGE_Static_Object* last_picked_object, int pick_dopples
+    );
     int pick_objects1(long x, long y, RGE_Static_Object** object_list, int max_objects);
     RGE_Static_Object* pick_best_target(long x, long y, int* attacking_in, short action_type);
 
-protected:
+  protected:
     virtual unsigned char get_help_info(char*& string, long& page, long x, long y);
     void fixup_pick_info(RGE_Pick_Info* pick_info);
 
-public:
+  public:
     void reset_display_object_selection(int reset_type);
 
     TPanel* map_view;
@@ -59,13 +61,12 @@ public:
     RGE_Player* save_player;
 };
 
-typedef char vw_main_main_view_size_check[
-    (sizeof(RGE_Main_View) == 0x380) ? 1 : -1];
+typedef char vw_main_main_view_size_check[(sizeof(RGE_Main_View) == 0x380) ? 1 : -1];
 
 // tvw_main.cpp owns the derived game-view input and wall-placement methods.
 // The base layout and virtual surface remain owned by vw_main.cpp/view.cpp.
 class TRIBE_Main_View : public RGE_Main_View {
-public:
+  public:
     virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);
     virtual long mouse_left_dbl_click_action(long x, long y, int ctrl_key, int shift_key);
     virtual long mouse_right_up_action(long x, long y, int ctrl_key, int shift_key);
@@ -76,12 +77,13 @@ public:
     virtual int command_make_do(long x, long y, int work_on_tile, short action_type);
     virtual int command_place_multi_object(long x1, long y1, long x2, long y2, int reset_mode);
 
-protected:
+  protected:
     int draw_wall_outline(long col, long row, TRIBE_Master_Building_Object* master_bldg, long facet);
-    void place_line_of_walls(TRIBE_Player* player, TRIBE_Master_Building_Object* master_obj, int x1, int y1, int x2, int y2);
+    void place_line_of_walls(
+        TRIBE_Player* player, TRIBE_Master_Building_Object* master_obj, int x1, int y1, int x2, int y2
+    );
 };
 
-typedef char vw_main_tribe_main_view_size_check[
-    (sizeof(TRIBE_Main_View) == 0x380) ? 1 : -1];
+typedef char vw_main_tribe_main_view_size_check[(sizeof(TRIBE_Main_View) == 0x380) ? 1 : -1];
 
 #endif

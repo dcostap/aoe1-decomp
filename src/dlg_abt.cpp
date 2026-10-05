@@ -12,9 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
-
-TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
-    : TDialogPanel("About Dialog") {
+TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel) : TDialogPanel("About Dialog") {
     char temp_str[512];
     char str[4096];
     tagRECT rect;
@@ -34,37 +32,45 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
     this->circle_p_pic = 0;
     this->background = 0;
 
-    if (!TDialogPanel::setup(parentPanel->renderArea(), parentPanel, 0x208, 0x19c, parentPanel->get_popup_info_file(),
-                             parentPanel->get_popup_info_id(), modal))
+    if (!TDialogPanel::setup(
+            parentPanel->renderArea(), parentPanel, 0x208, 0x19c, parentPanel->get_popup_info_file(),
+            parentPanel->get_popup_info_id(), modal
+        ))
         return;
 
-    TEasy_Panel::create_text(this, &this->background, "", 10, 10, 500,
-                             350, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0);
+    TEasy_Panel::create_text(this, &this->background, "", 10, 10, 500, 350, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0);
 
-    this->background->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
-                                     this->bevel_color5, this->bevel_color6);
+    this->background->set_bevel_info(
+        3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5,
+        this->bevel_color6
+    );
 
-    TEasy_Panel::create_text(this, &this->title_text, STRING_ID_PRODUCT_TITLE, 20, 20,
-                             480, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0);
-    TEasy_Panel::create_text(this, &this->version_text, STRING_ID_PRODUCT_VERSION, 20, 40,
-                             480, 20, RGE_FONT_STANDARD, 0, 0, 0);
+    TEasy_Panel::create_text(
+        this, &this->title_text, STRING_ID_PRODUCT_TITLE, 20, 20, 480, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+    );
+    TEasy_Panel::create_text(
+        this, &this->version_text, STRING_ID_PRODUCT_VERSION, 20, 40, 480, 20, RGE_FONT_STANDARD, 0, 0, 0
+    );
 
     TPanel::get_string(STRING_ID_COPYRIGHT_SEPARATOR, temp_str, 512);
     if (temp_str[0] == '\0') {
-        TEasy_Panel::create_text(this, &this->ms_copy_text1, STRING_ID_COPYRIGHT_PREFIX, 20,
-                                 65, 480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
+        TEasy_Panel::create_text(
+            this, &this->ms_copy_text1, STRING_ID_COPYRIGHT_PREFIX, 20, 65, 480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0,
+            0
+        );
 
         if (this->ms_copy_text1) {
             if (this->ms_copy_text1->get_text_rect(&rect)) {
                 this->circle_p_pic = new TPicturePanel();
                 if (this->circle_p_pic) {
-                    this->circle_p_pic->setup(this->render_area, this, (rect.right - this->pnl_x) + 3,
-                                              0x42, 0xf, 0xe, "circlep", 0xc4e0, 0, 1);
+                    this->circle_p_pic->setup(
+                        this->render_area, this, (rect.right - this->pnl_x) + 3, 0x42, 0xf, 0xe, "circlep", 0xc4e0, 0, 1
+                    );
                     TEasy_Panel::create_text(
                         this, &this->ms_copy_text2, STRING_ID_COPYRIGHT_SUFFIX,
-                        this->circle_p_pic->xPosition() - this->pnl_x +
-                            this->circle_p_pic->width(),
-                        65, 480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
+                        this->circle_p_pic->xPosition() - this->pnl_x + this->circle_p_pic->width(), 65, 480, 20,
+                        RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0
+                    );
                 }
             }
         }
@@ -73,16 +79,21 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
         strcat(temp_str, TPanel::get_string(STRING_ID_COPYRIGHT_SEPARATOR));
         strcat(temp_str, " ");
         strcat(temp_str, TPanel::get_string(STRING_ID_COPYRIGHT_SUFFIX));
-        TEasy_Panel::create_text(this, &this->ms_copy_text1, temp_str, 20,
-                                 65, 480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
+        TEasy_Panel::create_text(
+            this, &this->ms_copy_text1, temp_str, 20, 65, 480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0
+        );
     }
 
-    TEasy_Panel::create_text(this, &this->ens_copy_text, STRING_ID_COPYRIGHT_ENSEMBLE, 20, 85,
-                             480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
-    TEasy_Panel::create_text(this, &this->genie_copy_text, STRING_ID_GENIE_ENGINE_COPYRIGHT, 20,
-                             105, 480, 40, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 1);
-    TEasy_Panel::create_text(this, &this->pid_label_text, STRING_ID_PRODUCT_ID_LABEL, 20,
-                             150, 95, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0);
+    TEasy_Panel::create_text(
+        this, &this->ens_copy_text, STRING_ID_COPYRIGHT_ENSEMBLE, 20, 85, 480, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0
+    );
+    TEasy_Panel::create_text(
+        this, &this->genie_copy_text, STRING_ID_GENIE_ENGINE_COPYRIGHT, 20, 105, 480, 40, RGE_FONT_ARIAL_10_NORMAL_ALT,
+        0, 0, 1
+    );
+    TEasy_Panel::create_text(
+        this, &this->pid_label_text, STRING_ID_PRODUCT_ID_LABEL, 20, 150, 95, 20, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 0
+    );
 
     if (this->pid_label_text) {
         if (this->pid_label_text->get_text_rect(&rect)) {
@@ -91,20 +102,22 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
                 pid_str = "00000-000-0000000-00000";
             sprintf(str, "%s", pid_str);
             TEasy_Panel::create_text(
-                this, &this->pid_text, str,
-                (rect.right - this->pnl_x) + 4, 150, 200, 20, RGE_FONT_STANDARD, 0, 0,
-                0);
+                this, &this->pid_text, str, (rect.right - this->pnl_x) + 4, 150, 200, 20, RGE_FONT_STANDARD, 0, 0, 0
+            );
         }
     }
 
     TPanel::get_string(STRING_ID_ABOUT_COPYRIGHT_WARNING, str, 4096);
-    TEasy_Panel::create_text(this, &this->warning_text, str, 20, 175,
-                             480, 220, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 1);
+    TEasy_Panel::create_text(this, &this->warning_text, str, 20, 175, 480, 220, RGE_FONT_ARIAL_10_NORMAL_ALT, 0, 0, 1);
 
-    TEasy_Panel::create_button(this, &this->credits_button, STRING_ID_ABOUT_CREDITS_BUTTON, 0, 70,
-                               370, 170, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
-    TEasy_Panel::create_button(this, &this->close_button, STRING_ID_ABOUT_CLOSE_BUTTON, 0, 280,
-                               370, 170, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+    TEasy_Panel::create_button(
+        this, &this->credits_button, STRING_ID_ABOUT_CREDITS_BUTTON, 0, 70, 370, 170, 30, RGE_FONT_COPPERPLATE_12_BOLD,
+        0, 0
+    );
+    TEasy_Panel::create_button(
+        this, &this->close_button, STRING_ID_ABOUT_CLOSE_BUTTON, 0, 280, 370, 170, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0,
+        0
+    );
 
     TButtonPanel* close_button = this->close_button;
     close_button->hotkey = 0x1b;
@@ -118,19 +131,19 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
 }
 
 TribeAboutDialog::~TribeAboutDialog() {
-    this->delete_panel((TPanel**)&this->title_text);
-    this->delete_panel((TPanel**)&this->version_text);
-    this->delete_panel((TPanel**)&this->ms_copy_text1);
-    this->delete_panel((TPanel**)&this->ms_copy_text2);
-    this->delete_panel((TPanel**)&this->ens_copy_text);
-    this->delete_panel((TPanel**)&this->genie_copy_text);
-    this->delete_panel((TPanel**)&this->pid_label_text);
-    this->delete_panel((TPanel**)&this->pid_text);
-    this->delete_panel((TPanel**)&this->warning_text);
-    this->delete_panel((TPanel**)&this->credits_button);
-    this->delete_panel((TPanel**)&this->close_button);
-    this->delete_panel((TPanel**)&this->circle_p_pic);
-    this->delete_panel((TPanel**)&this->background);
+    this->delete_panel((TPanel**) &this->title_text);
+    this->delete_panel((TPanel**) &this->version_text);
+    this->delete_panel((TPanel**) &this->ms_copy_text1);
+    this->delete_panel((TPanel**) &this->ms_copy_text2);
+    this->delete_panel((TPanel**) &this->ens_copy_text);
+    this->delete_panel((TPanel**) &this->genie_copy_text);
+    this->delete_panel((TPanel**) &this->pid_label_text);
+    this->delete_panel((TPanel**) &this->pid_text);
+    this->delete_panel((TPanel**) &this->warning_text);
+    this->delete_panel((TPanel**) &this->credits_button);
+    this->delete_panel((TPanel**) &this->close_button);
+    this->delete_panel((TPanel**) &this->circle_p_pic);
+    this->delete_panel((TPanel**) &this->background);
 }
 
 long TribeAboutDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {

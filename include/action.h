@@ -45,7 +45,7 @@ class RGE_Task_List;
 // action.cpp owns this 0x40-byte base class.
 // Derived action modules must use this virtual order.
 class RGE_Action {
-public:
+  public:
     RGE_Action();
     RGE_Action(int infile, RGE_Action_Object* obj_in, int do_setup);
     RGE_Action(RGE_Action_Object* obj_in, int do_setup);
@@ -67,18 +67,21 @@ public:
     virtual unsigned char attack_response(RGE_Static_Object* obj_in);
     virtual unsigned char relation_response(long player_id, unsigned char relation);
     virtual void copy_obj(RGE_Master_Action_Object* source);
-    virtual void copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task,
-                                  RGE_Task* new_task);
+    virtual void copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task);
     virtual void get_state_name(char* state_name);
-    virtual RGE_Static_Object* get_target_obj() { return this->target_obj; }
-    virtual RGE_Static_Object* get_target_obj2() { return this->target_obj2; }
+    virtual RGE_Static_Object* get_target_obj() {
+        return this->target_obj;
+    }
+    virtual RGE_Static_Object* get_target_obj2() {
+        return this->target_obj2;
+    }
     virtual void set_target_obj(RGE_Static_Object* new_obj);
     virtual void set_target_obj2(RGE_Static_Object* new_obj);
 
-protected:
+  protected:
     virtual void set_state(unsigned char new_state);
 
-public:
+  public:
     short action_type;
     RGE_Action_Object* obj;
     unsigned char state;

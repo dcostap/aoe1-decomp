@@ -11,7 +11,7 @@ class TScrollBarPanel;
 class TPicture;
 
 class TRIBE_Mission_Screen : public TScreenPanel {
-public:
+  public:
     TTextPanel* title;
     TTextPanel* list;
     TScrollBarPanel* scroll_bar;
@@ -28,7 +28,6 @@ public:
     virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
 };
 
-typedef char scr_vc_screen_size_check[
-    (sizeof(TRIBE_Mission_Screen) == 0x49C) ? 1 : -1];
+typedef char scr_vc_screen_size_check[(sizeof(TRIBE_Mission_Screen) == 0x49C) ? 1 : -1];
 
 #endif

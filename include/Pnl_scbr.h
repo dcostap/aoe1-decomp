@@ -8,15 +8,9 @@
 #include "color.h"
 
 class TScrollBarPanel : public TPanel {
-public:
+  public:
     enum Orientation { Vertical = 0, Horizontal = 1 };
-    enum ActionType {
-        ActionUp = 0,
-        ActionDown = 1,
-        ActionPrior = 2,
-        ActionNext = 3,
-        ActionPosition = 4
-    };
+    enum ActionType { ActionUp = 0, ActionDown = 1, ActionPrior = 2, ActionNext = 3, ActionPosition = 4 };
 
     TPanel* list_panel;
     long list_len;
@@ -65,14 +59,17 @@ public:
 
     TScrollBarPanel();
     virtual ~TScrollBarPanel();
-    long setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in,
-               long wid_in, long hgt_in, char* back_pic_in, char* up_pic_in,
-               char* down_pic_in, char* tab_pic_in, long arrowSizeIn, long tabSizeIn,
-               TPanel* list_panel_in, long list_len_in, Orientation orientation);
+    long setup(
+        TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
+        char* back_pic_in, char* up_pic_in, char* down_pic_in, char* tab_pic_in, long arrowSizeIn, long tabSizeIn,
+        TPanel* list_panel_in, long list_len_in, Orientation orientation
+    );
     virtual void set_rect(long x_in, long y_in, long wid_in, long hgt_in);
-protected:
+
+  protected:
     void calc_item_rects();
-public:
+
+  public:
     void set_tab_pos(long list_num_in);
     void set_list_len(long list_len_in, long list_num_in);
     void set_buttons(TShape* button_pics_in, int back_frame_in, int up_frame_in, int down_frame_in, int tab_frame_in);
@@ -84,7 +81,7 @@ public:
     void scroll(ActionType action, long val);
     virtual void draw();
 
-protected:
+  protected:
     void draw_border(int button, int down, tagRECT* rect);
     void draw_border(int button, int down, long x1, long y1, long x2, long y2);
     void draw_back_pic();
@@ -92,7 +89,6 @@ protected:
 };
 
 typedef char pnl_scbr_tpanel_size_check[(sizeof(TPanel) == 0xF4) ? 1 : -1];
-typedef char pnl_scbr_scrollbar_size_check[
-    (sizeof(TScrollBarPanel) == 0x1C4) ? 1 : -1];
+typedef char pnl_scbr_scrollbar_size_check[(sizeof(TScrollBarPanel) == 0x1C4) ? 1 : -1];
 
 #endif

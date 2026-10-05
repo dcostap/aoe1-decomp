@@ -88,7 +88,7 @@ int TTaunt::GetTauntNo(char* Msg) {
 }
 
 char* TTaunt::GetTauntText(int TauntNo) {
-    strcpy(this->TBuff, (const char*)0x588B88);
+    strcpy(this->TBuff, (const char*) 0x588B88);
     return this->TBuff;
 }
 

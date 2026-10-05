@@ -10,10 +10,10 @@ static char s_tpnl_btn_draw[] = "tpnl_btn::draw";
 static char s_tpnl_btn_draw2[] = "tpnl_btn::draw2";
 static char s_tpnl_btn_draw3[] = "tpnl_btn::draw3";
 
-
 TRIBE_Panel_Button::TRIBE_Panel_Button(
-    TDrawArea* render_area_in, TPanel* parent_panel_in, TDigital* sound_in,
-    void* font_in, long font_wid_in, long font_hgt_in, TShape* border_pic_in) {
+    TDrawArea* render_area_in, TPanel* parent_panel_in, TDigital* sound_in, void* font_in, long font_wid_in,
+    long font_hgt_in, TShape* border_pic_in
+) {
     tribe_button_type = 0;
     color_table = 0;
     border_frame = 0;
@@ -23,8 +23,11 @@ TRIBE_Panel_Button::TRIBE_Panel_Button(
     garrsion_number = 0;
     border_pic = border_pic_in;
 
-    if (setup(render_area_in, parent_panel_in, 0, 0, 0, 0, TButtonPanel::DrawClear, sound_in,
-              TButtonPanel::NotifyAction, -1) == 0) {
+    if (setup(
+            render_area_in, parent_panel_in, 0, 0, 0, 0, TButtonPanel::DrawClear, sound_in, TButtonPanel::NotifyAction,
+            -1
+        )
+        == 0) {
         error_code = 1;
     } else {
         set_font(font_in, font_wid_in, font_hgt_in);
@@ -46,8 +49,7 @@ int TRIBE_Panel_Button::is_inside(long x, long y) {
         return 0;
 
     if (tribe_button_type == 2 || tribe_button_type == 3) {
-        TRIBE_Screen_Game* screen =
-            static_cast<TRIBE_Screen_Game*>(parent_panel);
+        TRIBE_Screen_Game* screen = static_cast<TRIBE_Screen_Game*>(parent_panel);
         TPanel* map_view = screen->get_map_panel();
         if (map_view != 0 && map_view->is_inside(x, y))
             return 0;
@@ -162,18 +164,22 @@ void TRIBE_Panel_Button::draw() {
                 if (!is_down) {
                     x = pnl_x + 2;
                     y = pnl_y + 2;
-                    render_area->SetClipRect(clip_rect.left + 2, clip_rect.top + 2, clip_rect.right - 2,
-                                             clip_rect.bottom - 2);
+                    render_area->SetClipRect(
+                        clip_rect.left + 2, clip_rect.top + 2, clip_rect.right - 2, clip_rect.bottom - 2
+                    );
                 } else {
                     x = pnl_x + 3;
                     y = pnl_y + 3;
-                    render_area->SetClipRect(clip_rect.left + 3, clip_rect.top + 3, clip_rect.right - 2,
-                                             clip_rect.bottom - 3);
+                    render_area->SetClipRect(
+                        clip_rect.left + 3, clip_rect.top + 3, clip_rect.right - 2, clip_rect.bottom - 3
+                    );
                 }
             } else if (tribe_button_type == 1) {
                 x = pnl_x + 1;
                 y = pnl_y + 1;
-                render_area->SetClipRect(clip_rect.left + 1, clip_rect.top + 1, clip_rect.right - 1, clip_rect.bottom - 1);
+                render_area->SetClipRect(
+                    clip_rect.left + 1, clip_rect.top + 1, clip_rect.right - 1, clip_rect.bottom - 1
+                );
                 if (is_down) {
                     x++;
                     y++;
@@ -212,8 +218,10 @@ void TRIBE_Panel_Button::draw() {
             SelectClipRgn(render_area->DrawDc, clip_rgn);
             SetBkMode(render_area->DrawDc, TRANSPARENT);
             SetTextColor(render_area->DrawDc, 0xCCCCCC);
-            TextOutA(render_area->DrawDc, pnl_x + 3 + (is_down != 0), pnl_y + 2 + (is_down != 0), msg,
-                     static_cast<int>(strlen(msg)));
+            TextOutA(
+                render_area->DrawDc, pnl_x + 3 + (is_down != 0), pnl_y + 2 + (is_down != 0), msg,
+                static_cast<int>(strlen(msg))
+            );
             SelectClipRgn(render_area->DrawDc, 0);
             render_area->ReleaseDc(s_tpnl_btn_draw2);
         }

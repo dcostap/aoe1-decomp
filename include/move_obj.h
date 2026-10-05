@@ -14,10 +14,10 @@ class RGE_Static_Object;
 struct XYZBYTEPoint;
 struct XYZPoint;
 
-template<class T> class ManagedArray;
+template <class T> class ManagedArray;
 
 class RGE_Moving_Object : public RGE_Animated_Object {
-public:
+  public:
     float trail_remainder;
     float velocity_x;
     float velocity_y;
@@ -51,19 +51,15 @@ public:
     unsigned char lastFacet;
     unsigned char lastFacet2;
 
-    enum PathResult {
-        PathFound = 0,
-        PathNoPath = 1,
-        NoPathFound = 1,
-        WaitingOnPathingCap = 2
-    };
+    enum PathResult { PathFound = 0, PathNoPath = 1, NoPathFound = 1, WaitingOnPathingCap = 2 };
 
     virtual float teleport(float x, float y, float z);
     RGE_Moving_Object(RGE_Master_Moving_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
     RGE_Moving_Object(int infile, RGE_Game_World* gworld, int do_setup);
     virtual ~RGE_Moving_Object();
     void destroy();
-public:
+
+  public:
     void recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     void save(int outfile);
     void new_sprite(RGE_Sprite* nsprite);
@@ -72,14 +68,18 @@ public:
     unsigned char is_moving();
     virtual void stop_moving();
     int movement_state() const;
-    virtual float getAngle() const { return this->angle; }
+    virtual float getAngle() const {
+        return this->angle;
+    }
     virtual unsigned char waitingToMove() const;
     float angle_to_object(RGE_Static_Object* to_object, float x, float y);
     virtual unsigned char turn_towards(RGE_Static_Object* obj, float x, float y);
-protected:
+
+  protected:
     virtual int setup(int infile, RGE_Game_World* gworld);
     virtual int setup(RGE_Master_Moving_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
-public:
+
+  public:
     void set_velocity(float x, float y, float z);
     void new_angle(float new_angle);
     const Path& getPath() const;
@@ -109,29 +109,36 @@ public:
     virtual Path* findAvoidancePath(XYZPoint& goalPoint, float aRange, int targetID);
     virtual int passableTile(float x, float y, int aiCheck);
     virtual float maximumSpeed();
-    virtual int canPath(XYZPoint p, float aRange, int targetID, float* pathDistance, int aiCheck,
-                        int unobstructiblePlayerID, int unobstructibleGroupID);
-    virtual int canPath(int targetID, float aRange, float* pathDistance, int aiCheck,
-                        int unobstructiblePlayerID, int unobstructibleGroupID);
-    virtual int canBidirectionPath(int targetID, int targetID2, float aRange, float* pathDistance,
-                                   int aiCheck, int unobstructiblePlayerID, int unobstructibleGroupID);
-    virtual int canPathWithObstructions(int targetID, float aRange, float* pathDistance, int aiCheck,
-                                        int unobstructiblePlayerID, int unobstructibleGroupID,
-                                        ManagedArray<int>& obstructions);
-    virtual int canPathWithAdditionalPassability(XYZPoint p, float aRange, int targetID,
-                                                 float* pathDistance, int eTerrain1, int eTerrain2,
-                                                 int aiCheck, int unobstructiblePlayerID,
-                                                 int unobstructibleGroupID);
+    virtual int canPath(
+        XYZPoint p, float aRange, int targetID, float* pathDistance, int aiCheck, int unobstructiblePlayerID,
+        int unobstructibleGroupID
+    );
+    virtual int canPath(
+        int targetID, float aRange, float* pathDistance, int aiCheck, int unobstructiblePlayerID,
+        int unobstructibleGroupID
+    );
+    virtual int canBidirectionPath(
+        int targetID, int targetID2, float aRange, float* pathDistance, int aiCheck, int unobstructiblePlayerID,
+        int unobstructibleGroupID
+    );
+    virtual int canPathWithObstructions(
+        int targetID, float aRange, float* pathDistance, int aiCheck, int unobstructiblePlayerID,
+        int unobstructibleGroupID, ManagedArray<int>& obstructions
+    );
+    virtual int canPathWithAdditionalPassability(
+        XYZPoint p, float aRange, int targetID, float* pathDistance, int eTerrain1, int eTerrain2, int aiCheck,
+        int unobstructiblePlayerID, int unobstructibleGroupID
+    );
     virtual int findFirstTerrainAlongExceptionPath(int eTerrain, float* rX, float* rY);
     virtual int canLinePath(int sX, int sY, int dX, int dY, float range, int aiCheck);
     virtual int canLinePath(const XYPoint& s, const XYPoint& d, float range, XYPoint& rPoint, int aiCheck);
-    virtual int firstTileAlongLine(const XYPoint& s, const XYPoint& d, XYPoint& rPoint,
-                                   int tType1, int tType2, int checkPassability);
+    virtual int firstTileAlongLine(
+        const XYPoint& s, const XYPoint& d, XYPoint& rPoint, int tType1, int tType2, int checkPassability
+    );
     void setStart(float x, float y, float z);
     void displayPath(int object_id);
 };
 
-typedef char rge_moving_object_size_check[
-    (sizeof(RGE_Moving_Object) == 0x180) ? 1 : -1];
+typedef char rge_moving_object_size_check[(sizeof(RGE_Moving_Object) == 0x180) ? 1 : -1];
 
 #endif

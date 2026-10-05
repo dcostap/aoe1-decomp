@@ -9,26 +9,23 @@
 #include "../include/task_lst.h"
 #include "../include/world.h"
 
-RGE_Master_Action_Object::RGE_Master_Action_Object(
-    RGE_Master_Action_Object* other_object, int do_setup)
-    : RGE_Master_Moving_Object(other_object, 0) {
+RGE_Master_Action_Object::RGE_Master_Action_Object(RGE_Master_Action_Object* other_object, int do_setup) :
+    RGE_Master_Moving_Object(other_object, 0) {
     if (do_setup) {
         setup(other_object);
     }
 }
 
-RGE_Master_Action_Object::RGE_Master_Action_Object(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
-    : RGE_Master_Moving_Object(infile, sprites, sounds, 0) {
+RGE_Master_Action_Object::RGE_Master_Action_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) :
+    RGE_Master_Moving_Object(infile, sprites, sounds, 0) {
     if (do_setup) {
         setup(infile, sprites, sounds);
     }
 }
 
 RGE_Master_Action_Object::RGE_Master_Action_Object(
-    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id,
-    int do_setup)
-    : RGE_Master_Moving_Object(infile, sprites, sounds, in_id, 0) {
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup
+) : RGE_Master_Moving_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup) {
         setup(infile, sprites, sounds, in_id);
     }
@@ -106,11 +103,13 @@ int RGE_Master_Action_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     RGE_Master_Moving_Object::setup(infile, sprites, sounds, in_id);
     master_type = 0x28;
 
-    fscanf(infile, "%f %f %hd %hd %hd %hd %hd %hd", &search_radius, &work_rate, &drop_site, &backup_drop_site,
-           &temp_task_by_group, &temp_command_sound, &temp_move_sound, &temp_run_pattern);
+    fscanf(
+        infile, "%f %f %hd %hd %hd %hd %hd %hd", &search_radius, &work_rate, &drop_site, &backup_drop_site,
+        &temp_task_by_group, &temp_command_sound, &temp_move_sound, &temp_run_pattern
+    );
 
-    task_by_group = (unsigned char)temp_task_by_group;
-    run_pattern = (unsigned char)temp_run_pattern;
+    task_by_group = (unsigned char) temp_task_by_group;
+    run_pattern = (unsigned char) temp_run_pattern;
 
     if (temp_command_sound >= 0) {
         selected_sound = sounds[temp_command_sound];
@@ -136,7 +135,7 @@ int RGE_Master_Action_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
             if (tasks->list[index]->is_default == 0) {
                 index++;
             } else {
-                default_task = (short)index;
+                default_task = (short) index;
                 break;
             }
         } while (index < task_count);
@@ -155,11 +154,9 @@ RGE_Task_List* RGE_Master_Action_Object::create_task_list() {
     return new RGE_Task_List();
 }
 
-RGE_Static_Object* RGE_Master_Action_Object::make_new_obj(
-    RGE_Player* owner, float x, float y, float z) {
+RGE_Static_Object* RGE_Master_Action_Object::make_new_obj(RGE_Player* owner, float x, float y, float z) {
     if (recyclable) {
-        RGE_Static_Object* recycled =
-            owner->world->recycle_object_in_to_game(master_type);
+        RGE_Static_Object* recycled = owner->world->recycle_object_in_to_game(master_type);
         if (recycled) {
             recycled->recycle_in_to_game(this, owner, x, y, z);
             return recycled;
@@ -196,8 +193,7 @@ RGE_Task* RGE_Master_Action_Object::getTaskByTaskID(int t) const {
 void RGE_Master_Action_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Moving_Object::copy_obj(source);
 
-    RGE_Master_Action_Object* action_source =
-        static_cast<RGE_Master_Action_Object*>(source);
+    RGE_Master_Action_Object* action_source = static_cast<RGE_Master_Action_Object*>(source);
     default_task = action_source->default_task;
     search_radius = action_source->search_radius;
     work_rate = action_source->work_rate;

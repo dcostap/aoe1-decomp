@@ -26,17 +26,13 @@
 class TRIBE_Screen_Sed_Open;
 
 class TribeSaveGameScreen : public TScreenPanel {
-public:
-    enum Mode {
-        SaveGame = 0,
-        SaveScenario = 1,
-        SaveScenarioEdit = 2
-    };
+  public:
+    enum Mode { SaveGame = 0, SaveScenario = 1, SaveScenarioEdit = 2 };
 
     TribeSaveGameScreen(Mode m, char* file_name, int quit_after_save_in);
     virtual ~TribeSaveGameScreen();
 
-protected:
+  protected:
     TTextPanel* title;
     TEditPanel* input;
     TListPanel* list;
@@ -54,7 +50,6 @@ protected:
     void save_for_scenario_editor();
 };
 
-typedef char scr_save_screen_size_check[
-    (sizeof(TribeSaveGameScreen) == 0x6A4) ? 1 : -1];
+typedef char scr_save_screen_size_check[(sizeof(TribeSaveGameScreen) == 0x6A4) ? 1 : -1];
 
 #endif

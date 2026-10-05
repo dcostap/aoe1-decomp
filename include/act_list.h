@@ -9,22 +9,22 @@ class RGE_Static_Object;
 class RGE_Task;
 
 class RGE_Action_Node {
-public:
+  public:
     RGE_Action* action;
     RGE_Action_Node* next;
 };
 
 class RGE_Action_List {
-public:
+  public:
     virtual RGE_Action* create_action(int infile, short action_type);
-    virtual RGE_Action* create_task_action(RGE_Task* task, RGE_Static_Object* target_obj,
-                                           float target_x, float target_y, float target_z);
+    virtual RGE_Action* create_task_action(
+        RGE_Task* task, RGE_Static_Object* target_obj, float target_x, float target_y, float target_z
+    );
     virtual unsigned char inside_obj_update();
     virtual unsigned char update();
     virtual void get_action_name(char* action_name);
     virtual void copy_obj(RGE_Master_Action_Object* source);
-    virtual void copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task,
-                                  RGE_Task* new_task);
+    virtual void copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task);
 
     RGE_Action_List(RGE_Action_Object* obj_in);
     ~RGE_Action_List();
@@ -50,7 +50,6 @@ public:
     RGE_Task* get_task();
 };
 
-typedef char action_list_size_check[
-    (sizeof(RGE_Action_List) == 0x0C) ? 1 : -1];
+typedef char action_list_size_check[(sizeof(RGE_Action_List) == 0x0C) ? 1 : -1];
 
 #endif

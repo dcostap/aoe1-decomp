@@ -29,8 +29,7 @@ struct RGE_Land_Data_Entry {
     long clumpiness_factor;
 };
 
-typedef char rmm_dbct_land_entry_size_check[
-    (sizeof(RGE_Land_Data_Entry) == 0x2C) ? 1 : -1];
+typedef char rmm_dbct_land_entry_size_check[(sizeof(RGE_Land_Data_Entry) == 0x2C) ? 1 : -1];
 
 struct RGE_Land_Data {
     long map_edge_buffer[4];
@@ -43,8 +42,7 @@ struct RGE_Land_Data {
     RGE_Land_Data_Entry* land;
 };
 
-typedef char rmm_dbct_land_data_size_check[
-    (sizeof(RGE_Land_Data) == 0x2C) ? 1 : -1];
+typedef char rmm_dbct_land_data_size_check[(sizeof(RGE_Land_Data) == 0x2C) ? 1 : -1];
 
 struct RGE_Terrain_Data_Entry {
     long terrain_percent;
@@ -55,16 +53,14 @@ struct RGE_Terrain_Data_Entry {
     long clumpiness_factor;
 };
 
-typedef char rmm_dbct_terrain_entry_size_check[
-    (sizeof(RGE_Terrain_Data_Entry) == 0x18) ? 1 : -1];
+typedef char rmm_dbct_terrain_entry_size_check[(sizeof(RGE_Terrain_Data_Entry) == 0x18) ? 1 : -1];
 
 struct RGE_Terrain_Data {
     long terrain_num;
     RGE_Terrain_Data_Entry* terrain;
 };
 
-typedef char rmm_dbct_terrain_data_size_check[
-    (sizeof(RGE_Terrain_Data) == 0x08) ? 1 : -1];
+typedef char rmm_dbct_terrain_data_size_check[(sizeof(RGE_Terrain_Data) == 0x08) ? 1 : -1];
 
 struct RGE_Object_Data_Entry {
     long obj_id;
@@ -81,16 +77,14 @@ struct RGE_Object_Data_Entry {
     long land_outer_radius;
 };
 
-typedef char rmm_dbct_object_entry_size_check[
-    (sizeof(RGE_Object_Data_Entry) == 0x2C) ? 1 : -1];
+typedef char rmm_dbct_object_entry_size_check[(sizeof(RGE_Object_Data_Entry) == 0x2C) ? 1 : -1];
 
 struct RGE_Object_Data {
     long object_num;
     RGE_Object_Data_Entry* objects;
 };
 
-typedef char rmm_dbct_object_data_size_check[
-    (sizeof(RGE_Object_Data) == 0x08) ? 1 : -1];
+typedef char rmm_dbct_object_data_size_check[(sizeof(RGE_Object_Data) == 0x08) ? 1 : -1];
 
 struct RGE_Elevation_Data_Entry {
     long elevation_percent;
@@ -101,16 +95,14 @@ struct RGE_Elevation_Data_Entry {
     long base_elevation_type;
 };
 
-typedef char rmm_dbct_elevation_entry_size_check[
-    (sizeof(RGE_Elevation_Data_Entry) == 0x18) ? 1 : -1];
+typedef char rmm_dbct_elevation_entry_size_check[(sizeof(RGE_Elevation_Data_Entry) == 0x18) ? 1 : -1];
 
 struct RGE_Elevation_Data {
     long elevation_num;
     RGE_Elevation_Data_Entry* elevation;
 };
 
-typedef char rmm_dbct_elevation_data_size_check[
-    (sizeof(RGE_Elevation_Data) == 0x08) ? 1 : -1];
+typedef char rmm_dbct_elevation_data_size_check[(sizeof(RGE_Elevation_Data) == 0x08) ? 1 : -1];
 
 struct RGE_Map_Data_Entry {
     long map_id;
@@ -120,19 +112,17 @@ struct RGE_Map_Data_Entry {
     RGE_Elevation_Data elevation_info;
 };
 
-typedef char rmm_dbct_map_entry_size_check[
-    (sizeof(RGE_Map_Data_Entry) == 0x48) ? 1 : -1];
+typedef char rmm_dbct_map_entry_size_check[(sizeof(RGE_Map_Data_Entry) == 0x48) ? 1 : -1];
 
 struct RGE_Map_Data {
     long map_num;
     RGE_Map_Data_Entry* maps;
 };
 
-typedef char rmm_dbct_map_data_size_check[
-    (sizeof(RGE_Map_Data) == 0x08) ? 1 : -1];
+typedef char rmm_dbct_map_data_size_check[(sizeof(RGE_Map_Data) == 0x08) ? 1 : -1];
 
 class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
-public:
+  public:
     RGE_Game_World* world;
     long map_type;
     long number_of_players;
@@ -143,26 +133,23 @@ public:
     RGE_Map_Data map_info;
 
     RGE_RMM_Database_Controller(int infile);
-    RGE_RMM_Database_Controller(char* land_file, char* terrain_file,
-        char* object_file, char* map_file);
+    RGE_RMM_Database_Controller(char* land_file, char* terrain_file, char* object_file, char* map_file);
     ~RGE_RMM_Database_Controller();
     virtual uchar generate();
 
-protected:
+  protected:
     virtual void add_land_module(uchar fixed_positions);
     virtual void add_terrain_module();
     virtual void add_object_module();
     virtual void add_elevation_module();
     void calc_land_start(long land_index, long edge, long land_num, RGE_Land_Data_Entry* info);
 
-public:
-    virtual uchar init(RGE_Map* in_map, RGE_Game_World* in_world, uchar type,
-                       long player_num, uchar fixed_positions);
+  public:
+    virtual uchar init(RGE_Map* in_map, RGE_Game_World* in_world, uchar type, long player_num, uchar fixed_positions);
     virtual uchar de_init();
     uchar save(int outfile);
 };
 
-typedef char rmm_dbct_controller_size_check[
-    (sizeof(RGE_RMM_Database_Controller) == 0x4F5C) ? 1 : -1];
+typedef char rmm_dbct_controller_size_check[(sizeof(RGE_RMM_Database_Controller) == 0x4F5C) ? 1 : -1];
 
 #endif

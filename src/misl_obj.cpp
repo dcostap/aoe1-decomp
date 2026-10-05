@@ -11,29 +11,24 @@
 
 #include <stdlib.h>
 
-
 RGE_Missile_Object::RGE_Missile_Object(
-    RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner,
-    float x, float y, float z, int do_setup)
-    : RGE_Combat_Object(tobj, obj_owner, x, y, z, 0) {
+    RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup
+) : RGE_Combat_Object(tobj, obj_owner, x, y, z, 0) {
     if (do_setup != 0) {
         this->setup(tobj, obj_owner, x, y, z);
     }
     this->type = 0x3C;
 }
 
-RGE_Missile_Object::RGE_Missile_Object(
-    int infile, RGE_Game_World* gworld, int do_setup)
-    : RGE_Combat_Object(infile, gworld, 0) {
+RGE_Missile_Object::RGE_Missile_Object(int infile, RGE_Game_World* gworld, int do_setup) :
+    RGE_Combat_Object(infile, gworld, 0) {
     if (do_setup != 0) {
         this->setup(infile, gworld);
     }
     this->type = 0x3C;
 }
 
-int RGE_Missile_Object::setup(
-    RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner,
-    float x, float y, float z) {
+int RGE_Missile_Object::setup(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z) {
     RGE_Combat_Object::setup(tobj, obj_owner, x, y, z);
     this->type = 0x3C;
     return 1;
@@ -63,18 +58,17 @@ unsigned char RGE_Missile_Object::update() {
     return RGE_Combat_Object::update();
 }
 
-void RGE_Missile_Object::init_missile(
-    RGE_Combat_Object* launcher, RGE_Static_Object* target, float in_range) {
-    RGE_Action_Missile* action = new RGE_Action_Missile(static_cast<RGE_Action_Object*>(this), launcher, target,
-                                                        target->world_x, target->world_y, target->world_z);
+void RGE_Missile_Object::init_missile(RGE_Combat_Object* launcher, RGE_Static_Object* target, float in_range) {
+    RGE_Action_Missile* action = new RGE_Action_Missile(
+        static_cast<RGE_Action_Object*>(this), launcher, target, target->world_x, target->world_y, target->world_z
+    );
     if (action != 0) {
         this->actions->add_action(action);
     }
     this->max_range = in_range;
 }
 
-void RGE_Missile_Object::init_missile(
-    RGE_Combat_Object* launcher, float x, float y, float z, float in_range) {
+void RGE_Missile_Object::init_missile(RGE_Combat_Object* launcher, float x, float y, float z, float in_range) {
     RGE_Action_Missile* action = new RGE_Action_Missile(static_cast<RGE_Action_Object*>(this), launcher, 0, x, y, z);
     if (action != 0) {
         this->actions->add_action(action);
@@ -91,8 +85,8 @@ unsigned char RGE_Missile_Object::missile_move() {
     new_y = this->world_y + this->velocity_y;
     new_z = this->world_z + this->velocity_z;
 
-    if (new_x < g_missile_zero_float || new_x >= (float)this->owner->world->map->map_width || new_y < g_missile_zero_float ||
-        new_y >= (float)this->owner->world->map->map_height) {
+    if (new_x < g_missile_zero_float || new_x >= (float) this->owner->world->map->map_width
+        || new_y < g_missile_zero_float || new_y >= (float) this->owner->world->map->map_height) {
         this->die_die_die();
     }
 
@@ -119,10 +113,10 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float delta) {
         return 0;
     }
 
-    min_x = (short)(int)(this->world_x - g_missile_bounds_min_adjustment);
-    min_y = (short)(int)(this->world_y - g_missile_bounds_min_adjustment);
-    x1 = (short)(int)(this->world_x - g_missile_bounds_max_adjustment);
-    max_y = (short)(int)(this->world_y - g_missile_bounds_max_adjustment);
+    min_x = (short) (int) (this->world_x - g_missile_bounds_min_adjustment);
+    min_y = (short) (int) (this->world_y - g_missile_bounds_min_adjustment);
+    x1 = (short) (int) (this->world_x - g_missile_bounds_max_adjustment);
+    max_y = (short) (int) (this->world_y - g_missile_bounds_max_adjustment);
 
     map = this->owner->world->map;
     check_list = new RGE_Check_List;
@@ -130,14 +124,14 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float delta) {
     if (min_x < 0) {
         min_x = 0;
     }
-    if ((int)x1 >= map->map_width) {
-        x1 = (short)(map->map_width - 1);
+    if ((int) x1 >= map->map_width) {
+        x1 = (short) (map->map_width - 1);
     }
     if (min_y < 0) {
         min_y = 0;
     }
-    if ((int)max_y >= map->map_height) {
-        max_y = (short)(map->map_height - 1);
+    if ((int) max_y >= map->map_height) {
+        max_y = (short) (map->map_height - 1);
     }
 
     for (short row = min_y; row <= max_y; ++row) {
@@ -153,8 +147,8 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float delta) {
                     rx2 = object_master->radius_x;
                     if (ry2 > 0.0f && rx2 > 0.0f) {
                         float dz = object->world_z - this->world_z;
-                        if (dz >= -(object_master->radius_z - g_missile_vertical_adjustment) &&
-                            dz <= this->master_obj->radius_z - g_missile_vertical_adjustment) {
+                        if (dz >= -(object_master->radius_z - g_missile_vertical_adjustment)
+                            && dz <= this->master_obj->radius_z - g_missile_vertical_adjustment) {
                             dx = object->world_x - this->world_x;
                             dy = object->world_y - this->world_y;
                             if (dx < g_missile_zero_float) {

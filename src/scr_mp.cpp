@@ -15,10 +15,7 @@
 #include "../include/scr_main.h"
 #include "../include/scr_cj.h"
 
-
-
-TribeMPStartupScreen::TribeMPStartupScreen()
-    : TScreenPanel("MP Startup Screen") {
+TribeMPStartupScreen::TribeMPStartupScreen() : TScreenPanel("MP Startup Screen") {
     TButtonPanel** cancel_button;
     TButtonPanel** ok_button;
     TButtonPanel* cancel;
@@ -44,45 +41,70 @@ TribeMPStartupScreen::TribeMPStartupScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    if (this->create_text(this, &this->title, STRING_ID_MULTIPLAYER_CONNECTION_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0) &&
-        this->create_text(this, &this->inputTitle, STRING_ID_MULTIPLAYER_NAME_LABEL, 20, 75, 500, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0)) {
+    if (this->create_text(
+            this, &this->title, STRING_ID_MULTIPLAYER_CONNECTION_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD,
+            1, 0, 0
+        )
+        && this->create_text(
+            this, &this->inputTitle, STRING_ID_MULTIPLAYER_NAME_LABEL, 20, 75, 500, 20,
+            RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+        )) {
         if (Regs->RegGetAscii(1, "Default Age Of Empires Player Name") != 0) {
             strcpy(str, Regs->RegGetAscii(1, "Default Age Of Empires Player Name"));
         } else {
             str[0] = 0;
         }
 
-        if (this->create_edit(this, &this->input, str, 0x0F, TEditPanel::FormatText,
-                              20, 100, 600, 23, RGE_FONT_STANDARD, 1, 0)) {
+        if (this->create_edit(
+                this, &this->input, str, 0x0F, TEditPanel::FormatText, 20, 100, 600, 23, RGE_FONT_STANDARD, 1, 0
+            )) {
             this->input->set_help_info(STRING_ID_HELP_MULTIPLAYER_PLAYER_NAME, -1);
-            if (this->create_text(this, &this->connectionTitle, STRING_ID_MULTIPLAYER_CONNECTION_TYPE_LABEL,
-                                  20, 165, 600, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0) &&
-                this->create_list(this, &this->list, 20, 190, 600, 210, RGE_FONT_STANDARD) &&
-                this->create_auto_scrollbar(&this->scrollbar, this->list, 20)) {
-                this->list->set_help_info(STRING_ID_HELP_MULTIPLAYER_CONNECTION_TYPE, STRING_ID_HELP_MP_CONNECTION_TYPE_MORE);
+            if (this->create_text(
+                    this, &this->connectionTitle, STRING_ID_MULTIPLAYER_CONNECTION_TYPE_LABEL, 20, 165, 600, 20,
+                    RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+                )
+                && this->create_list(this, &this->list, 20, 190, 600, 210, RGE_FONT_STANDARD)
+                && this->create_auto_scrollbar(&this->scrollbar, this->list, 20)) {
+                this->list->set_help_info(
+                    STRING_ID_HELP_MULTIPLAYER_CONNECTION_TYPE, STRING_ID_HELP_MP_CONNECTION_TYPE_MORE
+                );
                 ok_button = &this->okButton;
-                if (this->create_button(this, ok_button, STRING_ID_BUTTON_OK, 0, 70, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
+                if (this->create_button(
+                        this, ok_button, STRING_ID_BUTTON_OK, 0, 70, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+                    )) {
                     (*ok_button)->set_help_info(STRING_ID_HELP_OK, -1);
-                    if (this->create_button(this, cancel_button, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
+                    if (this->create_button(
+                            this, cancel_button, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30,
+                            RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+                        )) {
                         (*cancel_button)->set_help_info(STRING_ID_HELP_CANCEL, -1);
                         cancel = *cancel_button;
                         cancel->hotkey = 0x1B;
                         cancel->hotkey_shift = 0;
-                        if (this->create_button(this, &this->help_button, STRING_ID_BUTTON_HELP, 0, 580, 440, 30, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
-                            if (this->create_button(this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0,
-                                                    -1, -1, 0)) {
+                        if (this->create_button(
+                                this, &this->help_button, STRING_ID_BUTTON_HELP, 0, 580, 440, 30, 30,
+                                RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+                            )) {
+                            if (this->create_button(
+                                    this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0
+                                )) {
                                 this->close_button->set_active(1);
-                                this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4,
-                                                                    17, 17, 17, 17, 0, 0, 0, 0);
+                                this->close_button->set_positioning(
+                                    TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0
+                                );
 
                                 this->zone_exec[0] = 0;
                                 this->browser_exec[0] = 0;
-                                RegCreateKeyExA(HKEY_CLASSES_ROOT, "http\\shell\\open\\command", 0, 0, 0,
-                                                0xF003F, 0, &ghUserKey, &gdwDisp);
+                                RegCreateKeyExA(
+                                    HKEY_CLASSES_ROOT, "http\\shell\\open\\command", 0, 0, 0, 0xF003F, 0, &ghUserKey,
+                                    &gdwDisp
+                                );
                                 dwType = 1;
                                 dwSize = 0xFF;
-                                int result = RegQueryValueExA(ghUserKey, 0, 0, &dwType,
-                                                              static_cast<unsigned char*>(static_cast<void*>(Data)), &dwSize);
+                                int result = RegQueryValueExA(
+                                    ghUserKey, 0, 0, &dwType, static_cast<unsigned char*>(static_cast<void*>(Data)),
+                                    &dwSize
+                                );
                                 if (ghUserKey != 0) {
                                     RegCloseKey(ghUserKey);
                                     ghUserKey = 0;
@@ -124,31 +146,28 @@ TribeMPStartupScreen::TribeMPStartupScreen()
     }
 }
 
-
 TribeMPStartupScreen::~TribeMPStartupScreen() {
-    this->delete_panel((TPanel**)&this->title);
-    this->delete_panel((TPanel**)&this->inputTitle);
-    this->delete_panel((TPanel**)&this->input);
-    this->delete_panel((TPanel**)&this->connectionTitle);
-    this->delete_panel((TPanel**)&this->list);
-    this->delete_panel((TPanel**)&this->scrollbar);
-    this->delete_panel((TPanel**)&this->okButton);
-    this->delete_panel((TPanel**)&this->cancelButton);
-    this->delete_panel((TPanel**)&this->help_button);
-    this->delete_panel((TPanel**)&this->close_button);
+    this->delete_panel((TPanel**) &this->title);
+    this->delete_panel((TPanel**) &this->inputTitle);
+    this->delete_panel((TPanel**) &this->input);
+    this->delete_panel((TPanel**) &this->connectionTitle);
+    this->delete_panel((TPanel**) &this->list);
+    this->delete_panel((TPanel**) &this->scrollbar);
+    this->delete_panel((TPanel**) &this->okButton);
+    this->delete_panel((TPanel**) &this->cancelButton);
+    this->delete_panel((TPanel**) &this->help_button);
+    this->delete_panel((TPanel**) &this->close_button);
 
     panel_system.destroyPanel("Create Dialog");
     panel_system.destroyPanel("OKDialog");
     panel_system.destroyPanel("YesNoDialog");
 }
 
-
 long TribeMPStartupScreen::handle_idle() {
     if (!rge_base_game->input_enabled)
         rge_base_game->enable_input();
     return TPanel::handle_idle();
 }
-
 
 long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     if (fromPanel != 0) {
@@ -172,11 +191,16 @@ long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned lon
                 return 1;
             } else if (this->zone_exec[0] == 0 || this->list->get_id() != -1) {
                 rge_base_game->disable_input();
-                Regs->RegSetAscii(1, "Default Age Of Empires Player Name", static_cast<unsigned char*>(static_cast<void*>(
-                        this->input->currentLine())), strlen(this->input->currentLine()) + 1);
-                Regs->RegSetAscii(1, "Default Age Of Empires Multiplayer Service",
-                                  static_cast<unsigned char*>(static_cast<void*>(this->list->get_text())),
-                                  strlen(this->list->get_text()) + 1);
+                Regs->RegSetAscii(
+                    1, "Default Age Of Empires Player Name",
+                    static_cast<unsigned char*>(static_cast<void*>(this->input->currentLine())),
+                    strlen(this->input->currentLine()) + 1
+                );
+                Regs->RegSetAscii(
+                    1, "Default Age Of Empires Multiplayer Service",
+                    static_cast<unsigned char*>(static_cast<void*>(this->list->get_text())),
+                    strlen(this->list->get_text()) + 1
+                );
                 comm->SetMyPlayerName(this->input->currentLine());
 
                 TCommunications_Services Serv;
@@ -236,7 +260,6 @@ long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned lon
     return this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-
 void TribeMPStartupScreen::fillList() {
     int lastServiceNumber;
     char lastServiceName[256];
@@ -274,7 +297,6 @@ void TribeMPStartupScreen::fillList() {
         this->list->set_line(this->list->get_line(lastServiceNumber));
     }
 }
-
 
 long TribeMPStartupScreen::handle_user_command(unsigned int wParam, long lParam) {
     return 1;

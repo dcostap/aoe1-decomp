@@ -16,9 +16,7 @@ struct OldUnitData2 {
     int target;
 };
 
-typedef char tactical_old_unit_data_size_check[
-    (sizeof(OldUnitData) == 0x10) ? 1 : -1];
-typedef char tactical_old_unit_data2_size_check[
-    (sizeof(OldUnitData2) == 0x14) ? 1 : -1];
+typedef char tactical_old_unit_data_size_check[(sizeof(OldUnitData) == 0x10) ? 1 : -1];
+typedef char tactical_old_unit_data2_size_check[(sizeof(OldUnitData2) == 0x14) ? 1 : -1];
 
 #endif

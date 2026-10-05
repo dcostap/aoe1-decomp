@@ -22,8 +22,7 @@
 
 #include <math.h>
 
-RGE_Action_Attack::RGE_Action_Attack(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1) {
+RGE_Action_Attack::RGE_Action_Attack(int infile, RGE_Action_Object* obj_in) : RGE_Action(infile, obj_in, 1) {
     short short_val;
 
     this->action_type = RGE_ACTION_TYPE_ATTACK;
@@ -43,11 +42,10 @@ RGE_Action_Attack::RGE_Action_Attack(int infile, RGE_Action_Object* obj_in)
 }
 
 RGE_Action_Attack::RGE_Action_Attack(
-    RGE_Action_Object* obj_in, RGE_Static_Object* target_obj_in,
-    RGE_Sprite* move_sprite_in, RGE_Sprite* fight_sprite_in,
-    RGE_Sprite* wait_sprite_in, float range_in, float min_range_in,
-    short missile_id_in, short fire_missile_at_frame_in)
-    : RGE_Action(obj_in, 1) {
+    RGE_Action_Object* obj_in, RGE_Static_Object* target_obj_in, RGE_Sprite* move_sprite_in,
+    RGE_Sprite* fight_sprite_in, RGE_Sprite* wait_sprite_in, float range_in, float min_range_in, short missile_id_in,
+    short fire_missile_at_frame_in
+) : RGE_Action(obj_in, 1) {
     this->action_type = RGE_ACTION_TYPE_ATTACK;
     this->set_target_obj(target_obj_in);
     this->fight_sprite = fight_sprite_in;
@@ -69,8 +67,7 @@ RGE_Action_Attack::RGE_Action_Attack(
     }
 
     if (move_sprite_in == 0) {
-        RGE_Master_Moving_Object* master =
-            static_cast<RGE_Master_Moving_Object*>(this->obj->master_obj);
+        RGE_Master_Moving_Object* master = static_cast<RGE_Master_Moving_Object*>(this->obj->master_obj);
         RGE_Sprite* sprite = master->run_sprite;
         if (sprite == 0) {
             sprite = master->move_sprite;
@@ -78,17 +75,13 @@ RGE_Action_Attack::RGE_Action_Attack(
         this->move_sprite = sprite;
     }
     if (fight_sprite_in == 0) {
-        this->fight_sprite =
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                ->fight_sprite;
+        this->fight_sprite = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fight_sprite;
     }
     if (wait_sprite_in == 0) {
         this->wait_sprite = this->obj->master_obj->sprite;
     }
     if (range_in == 0.0f) {
-        this->range =
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                ->weapon_range;
+        this->range = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->weapon_range;
         if (this->range == 0.0f) {
             this->range = 0.4f;
         }
@@ -96,11 +89,9 @@ RGE_Action_Attack::RGE_Action_Attack(
 }
 
 RGE_Action_Attack::RGE_Action_Attack(
-    RGE_Action_Object* obj_in, float x, float y, float z,
-    RGE_Sprite* move_sprite_in, RGE_Sprite* fight_sprite_in,
-    RGE_Sprite* wait_sprite_in, float range_in, float min_range_in,
-    short missile_id_in, short fire_missile_at_frame_in)
-    : RGE_Action(obj_in, 1) {
+    RGE_Action_Object* obj_in, float x, float y, float z, RGE_Sprite* move_sprite_in, RGE_Sprite* fight_sprite_in,
+    RGE_Sprite* wait_sprite_in, float range_in, float min_range_in, short missile_id_in, short fire_missile_at_frame_in
+) : RGE_Action(obj_in, 1) {
     this->target_x = x;
     this->range = range_in;
     this->min_range = min_range_in;
@@ -117,8 +108,7 @@ RGE_Action_Attack::RGE_Action_Attack(
     this->indirect_fire_flag = 2;
 
     if (move_sprite_in == 0) {
-        RGE_Master_Moving_Object* master =
-            static_cast<RGE_Master_Moving_Object*>(this->obj->master_obj);
+        RGE_Master_Moving_Object* master = static_cast<RGE_Master_Moving_Object*>(this->obj->master_obj);
         RGE_Sprite* sprite = master->run_sprite;
         if (sprite == 0) {
             sprite = master->move_sprite;
@@ -126,17 +116,13 @@ RGE_Action_Attack::RGE_Action_Attack(
         this->move_sprite = sprite;
     }
     if (fight_sprite_in == 0) {
-        this->fight_sprite =
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                ->fight_sprite;
+        this->fight_sprite = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fight_sprite;
     }
     if (wait_sprite_in == 0) {
         this->wait_sprite = this->obj->master_obj->sprite;
     }
     if (range_in == 0.0f) {
-        this->range =
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                ->weapon_range;
+        this->range = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->weapon_range;
         if (this->range == 0.0f) {
             this->range = 0.4f;
         }
@@ -212,65 +198,68 @@ void RGE_Action_Attack::set_state(unsigned char new_state) {
     this->state = new_state;
 
     switch (new_state) {
-    case 2:
-        this->indirect_fire_flag = 0;
-        return;
-
-    case 4: {
-        if (this->indirect_fire_flag > 0) {
-            this->indirect_fire_flag--;
-        }
-        RGE_Action_Move_To* action;
-        if (this->target_obj != 0) {
-            action = new RGE_Action_Move_To(this->obj, this->target_obj, this->range, this->move_sprite);
-        } else {
-            action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z,
-                                            this->range, this->move_sprite);
-        }
-        if (action == 0) {
-            if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_MOVE, 0, 0);
-            }
-            this->set_state(1);
-            return;
-        }
-        this->sub_actions->add_action(action);
-        action->setSubAction(1);
-        this->timer = 0.0f;
-        return;
-    }
-
-    case 6: {
-        if (this->indirect_fire_flag > 0 && this->target_obj != 0) {
+        case 2:
             this->indirect_fire_flag = 0;
-        }
-        int rangeStatus = -1;
-        if (this->ready_to_attack(rangeStatus)) {
-            static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
-            this->set_state(7);
+            return;
+
+        case 4: {
+            if (this->indirect_fire_flag > 0) {
+                this->indirect_fire_flag--;
+            }
+            RGE_Action_Move_To* action;
+            if (this->target_obj != 0) {
+                action = new RGE_Action_Move_To(this->obj, this->target_obj, this->range, this->move_sprite);
+            } else {
+                action = new RGE_Action_Move_To(
+                    this->obj, this->target_x, this->target_y, this->target_z, this->range, this->move_sprite
+                );
+            }
+            if (action == 0) {
+                if (this->subActionValue == 0) {
+                    this->obj->notify(
+                        this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_MOVE, 0, 0
+                    );
+                }
+                this->set_state(1);
+                return;
+            }
+            this->sub_actions->add_action(action);
+            action->setSubAction(1);
+            this->timer = 0.0f;
             return;
         }
-        if (this->missile_id == -1) {
-            this->obj->new_sprite(this->fight_sprite);
-        } else {
-            this->obj->new_sprite(this->wait_sprite);
+
+        case 6: {
+            if (this->indirect_fire_flag > 0 && this->target_obj != 0) {
+                this->indirect_fire_flag = 0;
+            }
+            int rangeStatus = -1;
+            if (this->ready_to_attack(rangeStatus)) {
+                static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
+                this->set_state(7);
+                return;
+            }
+            if (this->missile_id == -1) {
+                this->obj->new_sprite(this->fight_sprite);
+            } else {
+                this->obj->new_sprite(this->wait_sprite);
+            }
+            return;
         }
-        return;
-    }
 
-    case 7:
-        this->obj->new_sprite(this->fight_sprite);
-        this->need_to_attack = 1;
-        return;
+        case 7:
+            this->obj->new_sprite(this->fight_sprite);
+            this->need_to_attack = 1;
+            return;
 
-    case 1:
-    case 13:
-    case 14:
-        this->obj->new_sprite(this->wait_sprite);
-        return;
+        case 1:
+        case 13:
+        case 14:
+            this->obj->new_sprite(this->wait_sprite);
+            return;
 
-    default:
-        return;
+        default:
+            return;
     }
 }
 
@@ -296,7 +285,9 @@ unsigned char RGE_Action_Attack::update() {
     if (this->target_obj != 0 && this->obj->owner->id != 0 && this->obj->owner->isAlly(this->target_obj->owner->id)) {
         this->set_state(1);
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0);
+            this->obj->notify(
+                this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0
+            );
         }
         return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
@@ -304,113 +295,120 @@ unsigned char RGE_Action_Attack::update() {
     if (this->target_obj != 0 && this->target_obj->inside_obj != 0) {
         this->set_state(1);
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0);
+            this->obj->notify(
+                this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0
+            );
         }
         return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
 
     switch (this->state) {
-    case 1:
-        return RGE_ACTION_UPDATE_REMOVE;
+        case 1:
+            return RGE_ACTION_UPDATE_REMOVE;
 
-    case 2:
-        if (this->obj->sprite_list->looped(this->obj->sprite) == 1) {
-            this->set_target_obj(0);
-            if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_ATTACK, 0, 0);
+        case 2:
+            if (this->obj->sprite_list->looped(this->obj->sprite) == 1) {
+                this->set_target_obj(0);
+                if (this->subActionValue == 0) {
+                    this->obj->notify(
+                        this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_ATTACK, 0, 0
+                    );
+                }
+                this->set_state(1);
+                if (this->subActionValue == 1) {
+                    return RGE_ACTION_UPDATE_TARGET_LOST;
+                }
+                return RGE_ACTION_UPDATE_COMPLETED;
             }
-            this->set_state(1);
-            if (this->subActionValue == 1) {
-                return RGE_ACTION_UPDATE_TARGET_LOST;
-            }
-            return RGE_ACTION_UPDATE_COMPLETED;
-        }
-        break;
-
-    case 4:
-        switch (this->sub_actions->update()) {
-        case RGE_ACTION_UPDATE_REMOVE:
-        case RGE_ACTION_UPDATE_COMPLETED:
-            this->set_state(6);
             break;
 
-        case RGE_ACTION_UPDATE_FAILED:
-            this->set_state(13);
-            if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ATTACK, 0, 0);
-            }
-            return RGE_ACTION_UPDATE_FAILED;
+        case 4:
+            switch (this->sub_actions->update()) {
+                case RGE_ACTION_UPDATE_REMOVE:
+                case RGE_ACTION_UPDATE_COMPLETED:
+                    this->set_state(6);
+                    break;
 
-        case RGE_ACTION_UPDATE_TARGET_INVALID:
-            this->set_state(14);
-            if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK, this->targetID, 0);
+                case RGE_ACTION_UPDATE_FAILED:
+                    this->set_state(13);
+                    if (this->subActionValue == 0) {
+                        this->obj->notify(
+                            this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ATTACK, 0, 0
+                        );
+                    }
+                    return RGE_ACTION_UPDATE_FAILED;
+
+                case RGE_ACTION_UPDATE_TARGET_INVALID:
+                    this->set_state(14);
+                    if (this->subActionValue == 0) {
+                        this->obj->notify(
+                            this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_ATTACK,
+                            this->targetID, 0
+                        );
+                    }
+                    return RGE_ACTION_UPDATE_TARGET_INVALID;
+
+                default:
+                    break;
             }
-            return RGE_ACTION_UPDATE_TARGET_INVALID;
+            break;
+
+        case 6: {
+            int rangeStatus = -1;
+            if (this->ready_to_attack(rangeStatus)) {
+                static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
+                this->set_state(7);
+            }
+            break;
+        }
+
+        case 7:
+            if (this->need_to_attack == 0) {
+                if (this->obj->can_attack() == 1) {
+                    if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
+                        this->set_state(2);
+                        return RGE_ACTION_UPDATE_CONTINUE;
+                    }
+
+                    static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
+                    this->set_state(6);
+                    if (this->state == 13 || this->state == 4) {
+                        return RGE_ACTION_UPDATE_CONTINUE;
+                    }
+                    this->set_state(7);
+                }
+
+                if (this->need_to_attack == 0) {
+                    if (this->obj->sprite_list->looped(this->obj->sprite) != 1 && (this->obj->sprite->flags & 1) != 0) {
+                        return RGE_ACTION_UPDATE_CONTINUE;
+                    }
+
+                    if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
+                        this->set_state(2);
+                    } else {
+                        this->set_state(6);
+                    }
+                    return RGE_ACTION_UPDATE_CONTINUE;
+                }
+            }
+
+            {
+                short attack_frame = this->fire_missile_at_frame;
+                if (attack_frame == 0) {
+                    attack_frame = static_cast<short>(this->obj->sprite->frame_num * 0.5f);
+                }
+                if (this->obj->sprite_list->frame_passed(this->obj->sprite, attack_frame)) {
+                    this->do_attack();
+                }
+            }
+            break;
+
+        case 13:
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ATTACK, 0, 0);
+            return RGE_ACTION_UPDATE_FAILED;
 
         default:
             break;
-        }
-        break;
-
-    case 6: {
-        int rangeStatus = -1;
-        if (this->ready_to_attack(rangeStatus)) {
-            static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
-            this->set_state(7);
-        }
-        break;
-    }
-
-    case 7:
-        if (this->need_to_attack == 0) {
-            if (this->obj->can_attack() == 1) {
-                if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
-                    this->set_state(2);
-                    return RGE_ACTION_UPDATE_CONTINUE;
-                }
-
-                static_cast<RGE_Combat_Object*>(this->obj)
-                    ->reset_attack_timer();
-                this->set_state(6);
-                if (this->state == 13 || this->state == 4) {
-                    return RGE_ACTION_UPDATE_CONTINUE;
-                }
-                this->set_state(7);
-            }
-
-            if (this->need_to_attack == 0) {
-                if (this->obj->sprite_list->looped(this->obj->sprite) != 1 && (this->obj->sprite->flags & 1) != 0) {
-                    return RGE_ACTION_UPDATE_CONTINUE;
-                }
-
-                if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
-                    this->set_state(2);
-                } else {
-                    this->set_state(6);
-                }
-                return RGE_ACTION_UPDATE_CONTINUE;
-            }
-        }
-
-        {
-            short attack_frame = this->fire_missile_at_frame;
-            if (attack_frame == 0) {
-                attack_frame =
-                    static_cast<short>(this->obj->sprite->frame_num * 0.5f);
-            }
-            if (this->obj->sprite_list->frame_passed(this->obj->sprite, attack_frame)) {
-                this->do_attack();
-            }
-        }
-        break;
-
-    case 13:
-        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_ATTACK, 0, 0);
-        return RGE_ACTION_UPDATE_FAILED;
-
-    default:
-        break;
     }
 
     return RGE_ACTION_UPDATE_CONTINUE;
@@ -460,10 +458,8 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
 
         radius_x = this->obj->master_obj->radius_x;
         radius_y = this->obj->master_obj->radius_y;
-        radius_distance =
-            (float)sqrt(radius_x * radius_x + radius_y * radius_y);
-        radius_distance =
-            radius_distance + this->range - g_attack_radius_distance_adjustment;
+        radius_distance = (float) sqrt(radius_x * radius_x + radius_y * radius_y);
+        radius_distance = radius_distance + this->range - g_attack_radius_distance_adjustment;
         if (rangeDistance <= radius_distance) {
             goto ready;
         }
@@ -472,10 +468,10 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
         goto too_far;
     }
 
-    if (this->target_obj->owner->id > 0 && this->target_obj->master_obj->object_group != OBJECT_GROUP_BUILDING &&
-        this->target_obj->master_obj->object_group != OBJECT_GROUP_WALL) {
-        unsigned char visible = this->obj->owner->visible->get_visible((int)this->target_obj->world_x,
-                                                                       (int)this->target_obj->world_y);
+    if (this->target_obj->owner->id > 0 && this->target_obj->master_obj->object_group != OBJECT_GROUP_BUILDING
+        && this->target_obj->master_obj->object_group != OBJECT_GROUP_WALL) {
+        unsigned char visible =
+            this->obj->owner->visible->get_visible((int) this->target_obj->world_x, (int) this->target_obj->world_y);
         if (visible == 0) {
             this->set_state(0x0D);
             return 0;
@@ -486,8 +482,8 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
         }
     }
 
-    if (this->target_obj->world_x == this->target_x && this->target_obj->world_y == this->target_y &&
-        this->target_obj->world_z == this->target_z) {
+    if (this->target_obj->world_x == this->target_x && this->target_obj->world_y == this->target_y
+        && this->target_obj->world_z == this->target_z) {
         goto ready;
     }
 
@@ -495,23 +491,21 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
     y_change = this->target_obj->world_y - this->target_y;
     z_change = this->target_obj->world_z - this->target_z;
 
-    if (x_change <= 0.5f && x_change >= -0.5f && y_change <= 0.5f && y_change >= -0.5f &&
-        z_change <= 0.5f && z_change >= -0.5f) {
+    if (x_change <= 0.5f && x_change >= -0.5f && y_change <= 0.5f && y_change >= -0.5f && z_change <= 0.5f
+        && z_change >= -0.5f) {
         goto ready;
     }
 
     rangeDistance = this->obj->distance_to_object(this->target_obj);
     radius_x = this->obj->master_obj->radius_x;
     radius_y = this->obj->master_obj->radius_y;
-    radius_distance =
-        (float)sqrt(radius_x * radius_x + radius_y * radius_y);
-    radius_distance =
-        radius_distance + this->range - g_attack_radius_distance_adjustment;
+    radius_distance = (float) sqrt(radius_x * radius_x + radius_y * radius_y);
+    radius_distance = radius_distance + this->range - g_attack_radius_distance_adjustment;
 
     if (rangeDistance < this->min_range) {
         rangeState = 0;
 
-too_close:
+    too_close:
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, 0x1FE, 0, 0, 0);
         }
@@ -539,7 +533,8 @@ too_far:
     if (this->subActionValue == 0) {
         this->obj->notify(this->obj->id, this->obj->id, 0x1FD, 0, 0, 0);
     }
-    if (this->obj->maximumSpeed() == 0.0 || (this->obj->unitAI() != 0 && this->obj->unitAI()->currentOrder() == UNIT_AI_ORDER_STAND_GROUND)) {
+    if (this->obj->maximumSpeed() == 0.0
+        || (this->obj->unitAI() != 0 && this->obj->unitAI()->currentOrder() == UNIT_AI_ORDER_STAND_GROUND)) {
         this->set_state(0x0D);
     } else {
         this->set_state(4);
@@ -566,7 +561,7 @@ void RGE_Action_Attack::copy_obj_sprites(RGE_Master_Action_Object* source, RGE_T
     if (this->move_sprite != 0) {
         if ((task != 0) && (new_task != 0) && (this->move_sprite == task->move_sprite)) {
             this->move_sprite = new_task->move_sprite;
-        } else if (this->move_sprite == static_cast<RGE_Master_Action_Object*>(this->obj->master_obj) ->move_sprite) {
+        } else if (this->move_sprite == static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->move_sprite) {
             this->move_sprite = source->move_sprite;
         }
     }
@@ -576,9 +571,8 @@ void RGE_Action_Attack::copy_obj_sprites(RGE_Master_Action_Object* source, RGE_T
             this->fight_sprite = new_task->work_sprite;
         } else if ((task != 0) && (new_task != 0) && (this->fight_sprite == task->work_sprite2)) {
             this->fight_sprite = new_task->work_sprite2;
-        } else if (this->fight_sprite == static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->fight_sprite) {
-            this->fight_sprite =
-                static_cast<RGE_Master_Combat_Object*>(source)->fight_sprite;
+        } else if (this->fight_sprite == static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fight_sprite) {
+            this->fight_sprite = static_cast<RGE_Master_Combat_Object*>(source)->fight_sprite;
         }
     }
 

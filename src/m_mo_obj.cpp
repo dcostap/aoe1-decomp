@@ -7,26 +7,23 @@
 
 #include "../include/rge_fio.h"
 
-RGE_Master_Moving_Object::RGE_Master_Moving_Object(
-    RGE_Master_Moving_Object* other_object, int do_setup)
-    : RGE_Master_Animated_Object(other_object, 0) {
+RGE_Master_Moving_Object::RGE_Master_Moving_Object(RGE_Master_Moving_Object* other_object, int do_setup) :
+    RGE_Master_Animated_Object(other_object, 0) {
     if (do_setup) {
         setup(other_object);
     }
 }
 
-RGE_Master_Moving_Object::RGE_Master_Moving_Object(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
-    : RGE_Master_Animated_Object(infile, sprites, sounds, 0) {
+RGE_Master_Moving_Object::RGE_Master_Moving_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) :
+    RGE_Master_Animated_Object(infile, sprites, sounds, 0) {
     if (do_setup) {
         setup(infile, sprites, sounds);
     }
 }
 
 RGE_Master_Moving_Object::RGE_Master_Moving_Object(
-    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id,
-    int do_setup)
-    : RGE_Master_Animated_Object(infile, sprites, sounds, in_id, 0) {
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup
+) : RGE_Master_Animated_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup) {
         setup(infile, sprites, sounds, in_id);
     }
@@ -97,12 +94,14 @@ int RGE_Master_Moving_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
 
     master_type = 0x1E;
 
-    fscanf(infile, "%hd %hd %f %hd %hd %hd %f %hd", &move_sprite_id, &run_sprite_id, &turn_speed,
-           &temp_size_class, &obj_trail_id, &temp_obj_trail_options, &obj_trail_spacing, &temp_move_algorithem);
+    fscanf(
+        infile, "%hd %hd %f %hd %hd %hd %f %hd", &move_sprite_id, &run_sprite_id, &turn_speed, &temp_size_class,
+        &obj_trail_id, &temp_obj_trail_options, &obj_trail_spacing, &temp_move_algorithem
+    );
 
-    size_class = (unsigned char)temp_size_class;
-    move_algorithem = (unsigned char)temp_move_algorithem;
-    obj_trail_options = (unsigned char)temp_obj_trail_options;
+    size_class = (unsigned char) temp_size_class;
+    move_algorithem = (unsigned char) temp_move_algorithem;
+    obj_trail_options = (unsigned char) temp_obj_trail_options;
 
     if (move_sprite_id >= 0) {
         selected_move = sprites[move_sprite_id];
@@ -124,11 +123,9 @@ int RGE_Master_Moving_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
 RGE_Master_Moving_Object::~RGE_Master_Moving_Object() {
 }
 
-RGE_Static_Object* RGE_Master_Moving_Object::make_new_obj(
-    RGE_Player* owner, float x, float y, float z) {
+RGE_Static_Object* RGE_Master_Moving_Object::make_new_obj(RGE_Player* owner, float x, float y, float z) {
     if (recyclable) {
-        RGE_Static_Object* recycled =
-            owner->world->recycle_object_in_to_game(master_type);
+        RGE_Static_Object* recycled = owner->world->recycle_object_in_to_game(master_type);
         if (recycled) {
             recycled->recycle_in_to_game(this, owner, x, y, z);
             return recycled;
@@ -145,8 +142,7 @@ RGE_Master_Static_Object* RGE_Master_Moving_Object::make_new_master() {
 void RGE_Master_Moving_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Animated_Object::copy_obj(source);
 
-    RGE_Master_Moving_Object* moving_source =
-        static_cast<RGE_Master_Moving_Object*>(source);
+    RGE_Master_Moving_Object* moving_source = static_cast<RGE_Master_Moving_Object*>(source);
     move_sprite = moving_source->move_sprite;
     run_sprite = moving_source->run_sprite;
     turn_speed = moving_source->turn_speed;

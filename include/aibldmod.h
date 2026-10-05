@@ -13,7 +13,7 @@
 extern float save_game_version;
 
 class BuildAIModule : public AIModule {
-public:
+  public:
     // AIModule supplies slots 0-14. These four methods supply slots 15-18.
     virtual ~BuildAIModule();
     virtual int save(int outfile);
@@ -21,14 +21,14 @@ public:
     virtual int loadBuildList(char* lName, RGE_Player* player);
     virtual int numberBuiltOrInProgressItemsOfType(int type, int category);
 
-    BuildItem buildList;                         // +0x0F0
-    int buildListLengthValue;                    // +0x1A0
-    char buildListNameValue[0x101];              // +0x1A4
-    char lastBuildItemRequestedValue[0x101];     // +0x2A5
-    char currentBuildItemRequestedValue[0x101];  // +0x3A6
-    char nextBuildItemRequestedValue[0x101];     // +0x4A7
-    int numberItemsIntoBuildListValue;           // +0x5A8
-    ManagedArray<int> typesToIgnore;             // +0x5AC
+    BuildItem buildList;                        // +0x0F0
+    int buildListLengthValue;                   // +0x1A0
+    char buildListNameValue[0x101];             // +0x1A4
+    char lastBuildItemRequestedValue[0x101];    // +0x2A5
+    char currentBuildItemRequestedValue[0x101]; // +0x3A6
+    char nextBuildItemRequestedValue[0x101];    // +0x4A7
+    int numberItemsIntoBuildListValue;          // +0x5A8
+    ManagedArray<int> typesToIgnore;            // +0x5AC
 
     BuildAIModule(void* pW, int playerID);
     BuildAIModule(int playerID, int infile);
@@ -36,7 +36,10 @@ public:
     int buildListLength() const;
     char* buildListName();
     int haveBuildList() const;
-    int insertItem(RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap, int insertAfterItemNumber);
+    int insertItem(
+        RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap,
+        int insertAfterItemNumber
+    );
     int numberItemsBuilt() const;
     int numberItemsInProgress() const;
     int numberItemsBuiltOrInProgress() const;
@@ -49,7 +52,7 @@ public:
     int numberUnbuiltItemsOfType(int type, int category);
     int numberInProgressItemsOfType(int type, int category);
 
-protected:
+  protected:
     void removeOldList();
     BuildItem* anyBuildListItem(int id, int checkBuilt, int buildStatus);
     BuildItem* specificBuildListItem(int id);
@@ -57,4 +60,4 @@ protected:
 
 typedef char aibldmod_module_size[(sizeof(BuildAIModule) == 0x5BC) ? 1 : -1];
 
-#endif  // AOE1_AIBLDMOD_H
+#endif // AOE1_AIBLDMOD_H

@@ -7,49 +7,40 @@
 void* __cdecl operator new(size_t size);
 void __cdecl operator delete(void* ptr);
 
-BaseObject::BaseObject()
-    : next(0), prev(0),
-      numberGroupsValue(0), groupIDValue(0),
-      categoryIDValue(-1), typeIDValue(-1), gameIDValue(-1),
-      xPositionValue(-1.0f), yPositionValue(-1.0f), zPositionValue(-1.0f),
-      xSizeValue(-1.0f), ySizeValue(-1.0f), zSizeValue(-1.0f),
-      hitPointValue(0), minHitPointValue(0), maxHitPointValue(0),
-      busyValue(0), currentTaskValue(-1), currentTargetValue(-1),
-      currentTargetTypeValue(-1), currentTargetXPositionValue(0.0f),
-      currentTargetYPositionValue(0.0f), currentTargetZPositionValue(0.0f) {
+BaseObject::BaseObject() :
+    next(0), prev(0), numberGroupsValue(0), groupIDValue(0), categoryIDValue(-1), typeIDValue(-1), gameIDValue(-1),
+    xPositionValue(-1.0f), yPositionValue(-1.0f), zPositionValue(-1.0f), xSizeValue(-1.0f), ySizeValue(-1.0f),
+    zSizeValue(-1.0f), hitPointValue(0), minHitPointValue(0), maxHitPointValue(0), busyValue(0), currentTaskValue(-1),
+    currentTargetValue(-1), currentTargetTypeValue(-1), currentTargetXPositionValue(0.0f),
+    currentTargetYPositionValue(0.0f), currentTargetZPositionValue(0.0f) {
     strcpy(nameValue, "");
 }
 
-BaseObject::BaseObject(int gri, int ci, int ti, int gi, char* nm, float xs, float ys, float zs, float xp, float yp, float zp, int hp, int minp, int maxp)
-    : next(0), prev(0), numberGroupsValue(1),
-      categoryIDValue(ci), typeIDValue(ti), gameIDValue(gi),
-      xPositionValue(xp), yPositionValue(yp), zPositionValue(zp),
-      xSizeValue(xs), ySizeValue(ys), zSizeValue(zs),
-      hitPointValue(hp), minHitPointValue(minp), maxHitPointValue(maxp),
-      busyValue(0), currentTaskValue(-1), currentTargetValue(-1),
-      currentTargetTypeValue(-1), currentTargetXPositionValue(0.0f),
-      currentTargetYPositionValue(0.0f), currentTargetZPositionValue(0.0f) {
+BaseObject::BaseObject(
+    int gri, int ci, int ti, int gi, char* nm, float xs, float ys, float zs, float xp, float yp, float zp, int hp,
+    int minp, int maxp
+) :
+    next(0), prev(0), numberGroupsValue(1), categoryIDValue(ci), typeIDValue(ti), gameIDValue(gi), xPositionValue(xp),
+    yPositionValue(yp), zPositionValue(zp), xSizeValue(xs), ySizeValue(ys), zSizeValue(zs), hitPointValue(hp),
+    minHitPointValue(minp), maxHitPointValue(maxp), busyValue(0), currentTaskValue(-1), currentTargetValue(-1),
+    currentTargetTypeValue(-1), currentTargetXPositionValue(0.0f), currentTargetYPositionValue(0.0f),
+    currentTargetZPositionValue(0.0f) {
     groupIDValue = new int[1];
     groupIDValue[0] = gri;
 
     strncpy(nameValue, nm, 63);
 }
 
-BaseObject::BaseObject(BaseObject* bo)
-    : next(0), prev(0),
-      numberGroupsValue(bo->numberGroupsValue),
-      categoryIDValue(bo->categoryIDValue), typeIDValue(bo->typeIDValue),
-      gameIDValue(bo->gameIDValue),
-      xPositionValue(bo->xPositionValue), yPositionValue(bo->yPositionValue),
-      zPositionValue(bo->zPositionValue), xSizeValue(bo->xSizeValue),
-      ySizeValue(bo->ySizeValue), zSizeValue(bo->zSizeValue),
-      hitPointValue(bo->hitPointValue), minHitPointValue(bo->minHitPointValue),
-      maxHitPointValue(bo->maxHitPointValue), busyValue(bo->busyValue),
-      currentTaskValue(bo->currentTaskValue), currentTargetValue(bo->currentTargetValue),
-      currentTargetTypeValue(bo->currentTargetTypeValue),
-      currentTargetXPositionValue(bo->currentTargetXPositionValue),
-      currentTargetYPositionValue(bo->currentTargetYPositionValue),
-      currentTargetZPositionValue(bo->currentTargetZPositionValue) {
+BaseObject::BaseObject(BaseObject* bo) :
+    next(0), prev(0), numberGroupsValue(bo->numberGroupsValue), categoryIDValue(bo->categoryIDValue),
+    typeIDValue(bo->typeIDValue), gameIDValue(bo->gameIDValue), xPositionValue(bo->xPositionValue),
+    yPositionValue(bo->yPositionValue), zPositionValue(bo->zPositionValue), xSizeValue(bo->xSizeValue),
+    ySizeValue(bo->ySizeValue), zSizeValue(bo->zSizeValue), hitPointValue(bo->hitPointValue),
+    minHitPointValue(bo->minHitPointValue), maxHitPointValue(bo->maxHitPointValue), busyValue(bo->busyValue),
+    currentTaskValue(bo->currentTaskValue), currentTargetValue(bo->currentTargetValue),
+    currentTargetTypeValue(bo->currentTargetTypeValue), currentTargetXPositionValue(bo->currentTargetXPositionValue),
+    currentTargetYPositionValue(bo->currentTargetYPositionValue),
+    currentTargetZPositionValue(bo->currentTargetZPositionValue) {
     groupIDValue = new int[numberGroupsValue];
 
     int i;
@@ -59,21 +50,16 @@ BaseObject::BaseObject(BaseObject* bo)
     strncpy(nameValue, bo->nameValue, 63);
 }
 
-BaseObject::BaseObject(const BaseObject& bo)
-    : next(0), prev(0),
-      numberGroupsValue(bo.numberGroupsValue),
-      categoryIDValue(bo.categoryIDValue), typeIDValue(bo.typeIDValue),
-      gameIDValue(bo.gameIDValue),
-      xPositionValue(bo.xPositionValue), yPositionValue(bo.yPositionValue),
-      zPositionValue(bo.zPositionValue), xSizeValue(bo.xSizeValue),
-      ySizeValue(bo.ySizeValue), zSizeValue(bo.zSizeValue),
-      hitPointValue(bo.hitPointValue), minHitPointValue(bo.minHitPointValue),
-      maxHitPointValue(bo.maxHitPointValue), busyValue(bo.busyValue),
-      currentTaskValue(bo.currentTaskValue), currentTargetValue(bo.currentTargetValue),
-      currentTargetTypeValue(bo.currentTargetTypeValue),
-      currentTargetXPositionValue(bo.currentTargetXPositionValue),
-      currentTargetYPositionValue(bo.currentTargetYPositionValue),
-      currentTargetZPositionValue(bo.currentTargetZPositionValue) {
+BaseObject::BaseObject(const BaseObject& bo) :
+    next(0), prev(0), numberGroupsValue(bo.numberGroupsValue), categoryIDValue(bo.categoryIDValue),
+    typeIDValue(bo.typeIDValue), gameIDValue(bo.gameIDValue), xPositionValue(bo.xPositionValue),
+    yPositionValue(bo.yPositionValue), zPositionValue(bo.zPositionValue), xSizeValue(bo.xSizeValue),
+    ySizeValue(bo.ySizeValue), zSizeValue(bo.zSizeValue), hitPointValue(bo.hitPointValue),
+    minHitPointValue(bo.minHitPointValue), maxHitPointValue(bo.maxHitPointValue), busyValue(bo.busyValue),
+    currentTaskValue(bo.currentTaskValue), currentTargetValue(bo.currentTargetValue),
+    currentTargetTypeValue(bo.currentTargetTypeValue), currentTargetXPositionValue(bo.currentTargetXPositionValue),
+    currentTargetYPositionValue(bo.currentTargetYPositionValue),
+    currentTargetZPositionValue(bo.currentTargetZPositionValue) {
     groupIDValue = new int[numberGroupsValue];
 
     int i;
@@ -118,7 +104,8 @@ int BaseObject::inGroup(int v) const {
     int n = this->numberGroupsValue;
     int i = 0;
     while (i < n) {
-        if (this->groupIDValue[i] == v) return 1;
+        if (this->groupIDValue[i] == v)
+            return 1;
         i++;
     }
     return 0;

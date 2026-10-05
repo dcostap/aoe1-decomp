@@ -85,8 +85,7 @@ extern "C" int __stdcall WinMain(HINSTANCE prog_inst, HINSTANCE prev_inst, char*
             // The original code discards this second status query.
             game->get_error_code();
             delete game;
-        }
-        else if (error_code != RGE_ERROR_CHECK_MULTI_COPIES) {
+        } else if (error_code != RGE_ERROR_CHECK_MULTI_COPIES) {
             game->get_string(STRING_ID_ERROR_TITLE, title, 256);
             game->get_string2(RGE_STRING_TYPE_ERROR, error_code, 0, msg, 256);
             delete game;

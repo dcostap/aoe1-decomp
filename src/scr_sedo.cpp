@@ -16,8 +16,7 @@
 
 // The constructor owns the +0x478-+0x48C panel slots and keeps
 // the original setup and child-creation order.
-TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
-    : TScreenPanel("Scenario Editor Open") {
+TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel("Scenario Editor Open") {
     TPanel* tabList[5];
     char info_file[260];
 
@@ -41,7 +40,9 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     setup_shadow_area(0);
     set_ideal_size(640, 480);
 
-    if (!create_text(this, &title, STRING_ID_SCENARIO_OPEN_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0))
+    if (!create_text(
+            this, &title, STRING_ID_SCENARIO_OPEN_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
+        ))
         return;
 
     if (!create_list(this, &list, 20, 70, 600, 340, RGE_FONT_STANDARD))
@@ -53,10 +54,14 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     if (!create_button(this, &okButton, STRING_ID_BUTTON_OK, 0, 30, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
         return;
 
-    if (!create_button(this, &deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
+    if (!create_button(
+            this, &deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        ))
         return;
 
-    if (!create_button(this, &cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
+    if (!create_button(
+            this, &cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        ))
         return;
 
     TButtonPanel* cancel = cancelButton;
@@ -83,12 +88,12 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
 }
 
 TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open() {
-    this->delete_panel((TPanel**)&this->title);
-    this->delete_panel((TPanel**)&this->list);
-    this->delete_panel((TPanel**)&this->scrollbar);
-    this->delete_panel((TPanel**)&this->okButton);
-    this->delete_panel((TPanel**)&this->cancelButton);
-    this->delete_panel((TPanel**)&this->deleteButton);
+    this->delete_panel((TPanel**) &this->title);
+    this->delete_panel((TPanel**) &this->list);
+    this->delete_panel((TPanel**) &this->scrollbar);
+    this->delete_panel((TPanel**) &this->okButton);
+    this->delete_panel((TPanel**) &this->cancelButton);
+    this->delete_panel((TPanel**) &this->deleteButton);
 }
 
 void TRIBE_Screen_Sed_Open::fillList() {
@@ -189,18 +194,16 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
 
                     if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                         sprintf(fileName, "%s.scn", list->currentLine());
-                        static_cast<TRIBE_Game*>(rge_base_game)->
-                            start_scenario_editor(fileName, 0);
+                        static_cast<TRIBE_Game*>(rge_base_game)->start_scenario_editor(fileName, 0);
                         return 1;
                     } else {
                         prog_info = rge_base_game->prog_info;
                         scenario_dir = prog_info->scenario_dir;
                         line = list->currentLine();
                         sprintf(fileName, "%s%s.scx", scenario_dir, line);
-                    if (OpenFile(fileName, &of, OF_EXIST) != -1) {
+                        if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                             sprintf(fileName, "%s.scx", list->currentLine());
-                            static_cast<TRIBE_Game*>(rge_base_game)->
-                                start_scenario_editor(fileName, 0);
+                            static_cast<TRIBE_Game*>(rge_base_game)->start_scenario_editor(fileName, 0);
                             return 1;
                         } else {
                             popupOKDialog(STRING_ID_ERROR_CANNOT_LOAD_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);

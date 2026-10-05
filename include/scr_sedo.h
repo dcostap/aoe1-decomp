@@ -11,7 +11,7 @@ class TScrollBarPanel;
 class TButtonPanel;
 
 class TRIBE_Screen_Sed_Open : public TScreenPanel {
-public:
+  public:
     TTextPanel* title;
     TListPanel* list;
     TScrollBarPanel* scrollbar;
@@ -22,12 +22,11 @@ public:
     TRIBE_Screen_Sed_Open();
     virtual ~TRIBE_Screen_Sed_Open();
 
-protected:
+  protected:
     void fillList();
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
-typedef char scr_sedo_screen_size_check[
-    (sizeof(TRIBE_Screen_Sed_Open) == 0x490) ? 1 : -1];
+typedef char scr_sedo_screen_size_check[(sizeof(TRIBE_Screen_Sed_Open) == 0x490) ? 1 : -1];
 
 #endif

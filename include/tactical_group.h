@@ -7,7 +7,7 @@ class TribeMainDecisionAIModule;
 class TribeTacticalAIModule;
 
 class TacticalAIGroup {
-public:
+  public:
     virtual ~TacticalAIGroup();
 
     TacticalAIGroup* next;
@@ -122,7 +122,6 @@ public:
     int task(TribeTacticalAIModule*, TribeMainDecisionAIModule*, int, int, int);
 };
 
-typedef char tactical_group_size_check[
-    (sizeof(TacticalAIGroup) == 0x330) ? 1 : -1];
+typedef char tactical_group_size_check[(sizeof(TacticalAIGroup) == 0x330) ? 1 : -1];
 
 #endif

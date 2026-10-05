@@ -45,23 +45,16 @@
 #include <stdarg.h>
 
 // TPlayer owns the object-group selection property table at 0058ABA0.
-unsigned long tribe_group_properties[0x28] = {
-    7, 0, 4, 0, 0x67, 0, 7, 0,
-    0, 0, 0, 0, 7, 7, 0, 0,
-    0, 0x10, 0x96, 0, 0, 0, 1, 7,
-    7, 7, 7, 0, 7, 0, 0, 0,
-    0, 0, 0, 7, 7, 0, 0, 7
-};
+unsigned long tribe_group_properties[0x28] = { 7, 0, 4, 0, 0x67, 0, 7, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0x10, 0x96, 0,
+                                               0, 0, 1, 7, 7,    7, 7, 0, 7, 0, 0, 0, 0, 0, 0, 7, 7, 0,    0,    7 };
 int tribe_group_properties_num = 0x28;
 
 static char tplayerSourceName[] = "C:\\msdev\\work\\age1_x1\\tplayer.cpp";
 // AI setup log messages and names, as referenced by the original executable.
 static char tplayerRandomName[] = "RandomGameSpecialized";
 
-
-
-TRIBE_Player::TRIBE_Player(int infile, TRIBE_World* gworld, unsigned char this_id)
-    : RGE_Player(infile, gworld, this_id), playerAI(0) {
+TRIBE_Player::TRIBE_Player(int infile, TRIBE_World* gworld, unsigned char this_id) :
+    RGE_Player(infile, gworld, this_id), playerAI(0) {
     rge_read(infile, &this->type, 1);
     rge_read(infile, &this->update_count, 4);
     rge_read(infile, &this->updateCountNeedHelp, 4);
@@ -98,18 +91,10 @@ TRIBE_Player::TRIBE_Player(int infile, TRIBE_World* gworld, unsigned char this_i
     }
 }
 
-
-
-
-
-
-
-TRIBE_Player::TRIBE_Player(TRIBE_World* gworld, RGE_Master_Player* prototype,
-                           unsigned char this_id, char* new_name,
-                           unsigned char m_player_id, unsigned char computerPlayer,
-                           unsigned char flag, char* buildListName, char* cityPlanName,
-                           char* ruleSetName)
-    : RGE_Player(gworld, prototype, this_id, new_name, m_player_id, 0), playerAI(0) {
+TRIBE_Player::TRIBE_Player(
+    TRIBE_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name, unsigned char m_player_id,
+    unsigned char computerPlayer, unsigned char flag, char* buildListName, char* cityPlanName, char* ruleSetName
+) : RGE_Player(gworld, prototype, this_id, new_name, m_player_id, 0), playerAI(0) {
     this->VR_List = new Visible_Resource_Manager(this, 5);
 
     if (computerPlayer == 0) {
@@ -118,8 +103,8 @@ TRIBE_Player::TRIBE_Player(TRIBE_World* gworld, RGE_Master_Player* prototype,
         this->type = 3;
         this->computerPlayerValue = 1;
         if (comm->IsHost() == 1) {
-            this->playerAI = new TribeMainDecisionAIModule(
-                0, this->id, this->name, this, buildListName, cityPlanName, ruleSetName);
+            this->playerAI =
+                new TribeMainDecisionAIModule(0, this->id, this->name, this, buildListName, cityPlanName, ruleSetName);
         }
     }
 
@@ -157,8 +142,6 @@ TRIBE_Player::TRIBE_Player(TRIBE_World* gworld, RGE_Master_Player* prototype,
     this->artifact_held_time = -1.0f;
 }
 
-
-
 TRIBE_Player::~TRIBE_Player() {
     if (tech_tree != 0) {
         delete tech_tree;
@@ -176,29 +159,26 @@ TRIBE_Player::~TRIBE_Player() {
     }
 }
 
-
-
 //! @bug The saved unit status byte arrives here but is never applied to the new object.
 //! The state maps to actions only, so the object keeps its constructor default status.
 //! Dying buildings also keep the construction sprite, which breaks their display.
-RGE_Static_Object* TRIBE_Player::make_scenario_obj(float world_x, float world_y, float world_z, short master_id, unsigned char state, float new_angle) {
+RGE_Static_Object* TRIBE_Player::make_scenario_obj(
+    float world_x, float world_y, float world_z, short master_id, unsigned char state, float new_angle
+) {
     RGE_Static_Object* obj = 0;
     RGE_Master_Static_Object* type = this->master_objects[master_id];
     if (type) {
         obj = type->make_new_obj(this, world_x, world_y, world_z);
         if (state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
             obj->destroy_obj();
-        }
-        else if (state > RGE_OBJECT_STATE_ACTIVE) {
+        } else if (state > RGE_OBJECT_STATE_ACTIVE) {
             obj->die_die_die();
-        }
-        else {
+        } else {
             RGE_Master_Static_Object* master = obj->master_obj;
             unsigned char group = master->master_type;
             if (group > 0x1E && group < 0x5A) {
                 obj->new_angle(new_angle);
-            }
-            else {
+            } else {
                 obj->facet = static_cast<unsigned char>(static_cast<int>(new_angle));
             }
         }
@@ -208,9 +188,6 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float world_x, float world_y,
     }
     return obj;
 }
-
-
-
 
 void TRIBE_Player::save(int outfile) {
     int save_file;
@@ -243,9 +220,6 @@ void TRIBE_Player::save(int outfile) {
     color_log(0x16, 0x5F, 2);
 }
 
-
-
-
 void TRIBE_Player::update() {
     this->update_time += this->world->world_time_delta_seconds;
     while (this->update_time > 1.0f) {
@@ -256,24 +230,33 @@ void TRIBE_Player::update() {
             if (this->attributes[11] < 0.0f)
                 this->history->add_history_entry(0, 0);
             else
-                this->history->add_history_entry(0, static_cast<unsigned char>(static_cast<long>(this->attributes[11])));
+                this->history->add_history_entry(
+                    0, static_cast<unsigned char>(static_cast<long>(this->attributes[11]))
+                );
         }
-        if (rge_base_game->fullVisibility()) this->attributes[22] = 100.0f;
-        else this->attributes[22] = this->visible->percentExplored() * 100.0f;
-        this->attributes[44] = this->attributes[20] -
-            (this->attributes[19] - this->attributes[11]);
-        if (this->attributes[44] < 0.0) this->attributes[44] = 0.0f;
+        if (rge_base_game->fullVisibility())
+            this->attributes[22] = 100.0f;
+        else
+            this->attributes[22] = this->visible->percentExplored() * 100.0f;
+        this->attributes[44] = this->attributes[20] - (this->attributes[19] - this->attributes[11]);
+        if (this->attributes[44] < 0.0)
+            this->attributes[44] = 0.0f;
         this->attributes[9] += this->attributes[10];
-        if (this->attributes[9] > 100.0) this->attributes[9] = 100.0f;
-        if (this->update_count > 0) --this->update_count;
-        if (this->updateCountNeedHelp > 0) --this->updateCountNeedHelp;
+        if (this->attributes[9] > 100.0)
+            this->attributes[9] = 100.0f;
+        if (this->update_count > 0)
+            --this->update_count;
+        if (this->updateCountNeedHelp > 0)
+            --this->updateCountNeedHelp;
         if (this->id > 0) {
             RGE_Object_Node* node = this->objects->list;
             while (node != 0) {
                 RGE_Static_Object* object = node->node;
                 int group = object->master_obj->object_group;
-                if (group != 0xb && group != 0x1e && group != OBJECT_GROUP_WALL && group != OBJECT_GROUP_ARTIFACT && group != OBJECT_GROUP_FISHING_BOAT && group != OBJECT_GROUP_TRANSPORT_BOAT &&
-                    group != OBJECT_GROUP_TRADE_BOAT && group != 0x25 && object->object_state == RGE_OBJECT_STATE_ACTIVE)
+                if (group != 0xb && group != 0x1e && group != OBJECT_GROUP_WALL && group != OBJECT_GROUP_ARTIFACT
+                    && group != OBJECT_GROUP_FISHING_BOAT && group != OBJECT_GROUP_TRANSPORT_BOAT
+                    && group != OBJECT_GROUP_TRADE_BOAT && group != 0x25
+                    && object->object_state == RGE_OBJECT_STATE_ACTIVE)
                     break;
                 node = node->next;
             }
@@ -284,24 +267,28 @@ void TRIBE_Player::update() {
         }
     }
     RGE_Player::update();
-    this->attributes[RGE_RESOURCE_FOOD] -= this->world->world_time_delta_seconds *
-        this->attributes[33] * this->attributes[11] * 0.016666667f;
-    if (this->attributes[RGE_RESOURCE_FOOD] < 0.0) this->attributes[RGE_RESOURCE_FOOD] = 0.0f;
+    this->attributes[RGE_RESOURCE_FOOD] -=
+        this->world->world_time_delta_seconds * this->attributes[33] * this->attributes[11] * 0.016666667f;
+    if (this->attributes[RGE_RESOURCE_FOOD] < 0.0)
+        this->attributes[RGE_RESOURCE_FOOD] = 0.0f;
     int seed = debug_rand(tplayerSourceName, 607);
     int old = debug_random_on;
     global_save_debug_random_on1 = old;
     debug_random_on = 0;
     if (this->playerAI && comm->ComputerPlayerGameStart() == 1) {
-        if (this->world->currentUpdateComputerPlayer == -1) this->world->selectNextComputerPlayer(3);
+        if (this->world->currentUpdateComputerPlayer == -1)
+            this->world->selectNextComputerPlayer(3);
         this->playerAI->update(0);
     }
     debug_random_on = old;
     debug_srand(tplayerSourceName, 631, seed);
-    if (MouseSystem != 0) MouseSystem->Poll();
+    if (MouseSystem != 0)
+        MouseSystem->Poll();
 }
 
-
-void TRIBE_Player::update_dopplegangers() { RGE_Player::update_dopplegangers(); }
+void TRIBE_Player::update_dopplegangers() {
+    RGE_Player::update_dopplegangers();
+}
 
 void TRIBE_Player::scenario_save(int outfile) {
     RGE_Player::scenario_save(outfile);
@@ -310,7 +297,6 @@ void TRIBE_Player::scenario_save(int outfile) {
     rge_write(outfile, &this->attributes[RGE_RESOURCE_GOLD], 4);
     rge_write(outfile, &this->attributes[RGE_RESOURCE_STONE], 4);
 }
-
 
 void TRIBE_Player::scenario_load(int infile, long* player_id_hash, float version) {
     TRIBE_Player_Tech* tech;
@@ -353,10 +339,11 @@ void TRIBE_Player::scenario_load(int infile, long* player_id_hash, float version
     tech = new TRIBE_Player_Tech(static_cast<TRIBE_World*>(this->world)->tech, this, 0);
     this->tech_tree = tech;
 
-    if (this->tribe_effect >= 0 && !static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() && !static_cast<T_Scenario*>(static_cast<TRIBE_World*>(this->world)->scenario)->GetScenarioOption(2)) {
-        static_cast<TRIBE_Effects*>(static_cast<TRIBE_World*>(this->world)->effects)->do_tech_effect(static_cast<short>(this->tribe_effect), this);
-    }
-    else {
+    if (this->tribe_effect >= 0 && !static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree()
+        && !static_cast<T_Scenario*>(static_cast<TRIBE_World*>(this->world)->scenario)->GetScenarioOption(2)) {
+        static_cast<TRIBE_Effects*>(static_cast<TRIBE_World*>(this->world)->effects)
+            ->do_tech_effect(static_cast<short>(this->tribe_effect), this);
+    } else {
         static_cast<TRIBE_Effects*>(static_cast<TRIBE_World*>(this->world)->effects)->do_tech_effect(0xD2, this);
     }
 
@@ -365,7 +352,6 @@ void TRIBE_Player::scenario_load(int infile, long* player_id_hash, float version
     }
     this->tech_tree->check_for_new_tech();
 }
-
 
 void TRIBE_Player::load(int infile) {
     rge_read(infile, &this->master_object_num, 2);
@@ -398,44 +384,40 @@ void TRIBE_Player::load(int infile) {
     }
 }
 
-
-
-
-void TRIBE_Player::load_master_object(int infile, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds) {
+void TRIBE_Player::load_master_object(
+    int infile, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds
+) {
     RGE_Master_Static_Object* obj;
 
     switch (type) {
-    case 'F':
-        obj = new TRIBE_Master_Combat_Object(infile, sprites, sounds, 1);
-        break;
-    case 'P':
-        obj = new TRIBE_Master_Building_Object(infile, sprites, sounds, 1);
-        master_objects[index] = obj;
-        return;
-    case 'Z':
-        obj = new TRIBE_Master_Tree_Object(infile, sprites, sounds, 1);
-        break;
-    default:
-        RGE_Player::load_master_object(infile, index, type, sprites, sounds);
-        return;
+        case 'F':
+            obj = new TRIBE_Master_Combat_Object(infile, sprites, sounds, 1);
+            break;
+        case 'P':
+            obj = new TRIBE_Master_Building_Object(infile, sprites, sounds, 1);
+            master_objects[index] = obj;
+            return;
+        case 'Z':
+            obj = new TRIBE_Master_Tree_Object(infile, sprites, sounds, 1);
+            break;
+        default:
+            RGE_Player::load_master_object(infile, index, type, sprites, sounds);
+            return;
     }
     master_objects[index] = obj;
 }
 
-
-void TRIBE_Player::tech_cost(short tech_id, short& inv_1, short& inv_amt_1,
-                             short& inv_2, short& inv_amt_2, short& inv_3,
-                             short& inv_amt_3) {
-    TRIBE_Player_Tech* tech =
-        this->tech_tree;
+void TRIBE_Player::tech_cost(
+    short tech_id, short& inv_1, short& inv_amt_1, short& inv_2, short& inv_amt_2, short& inv_3, short& inv_amt_3
+) {
+    TRIBE_Player_Tech* tech = this->tech_tree;
     tech->tech_cost(tech_id, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3);
 }
 
-
-
-void TRIBE_Player::obj_cost(short obj_id, char** name, short& inv_1,
-                             short& inv_amt_1, short& inv_2, short& inv_amt_2,
-                             short& inv_3, short& inv_amt_3, float modifier) {
+void TRIBE_Player::obj_cost(
+    short obj_id, char** name, short& inv_1, short& inv_amt_1, short& inv_2, short& inv_amt_2, short& inv_3,
+    short& inv_amt_3, float modifier
+) {
     short avail;
     short* amount_output;
     short total = 0;
@@ -446,14 +428,14 @@ void TRIBE_Player::obj_cost(short obj_id, char** name, short& inv_1,
     inv_3 = -1;
     inv_amt_3 = total;
 
-    unsigned char can =
-        this->check_obj_cost(obj_id, 0, 1.0f, 0);
+    unsigned char can = this->check_obj_cost(obj_id, 0, 1.0f, 0);
     RGE_Master_Static_Object* master = this->master_objects[obj_id];
-    if (master == 0 || master->master_type < 0x46) return;
-    if (name != 0) *name = master->name;
+    if (master == 0 || master->master_type < 0x46)
+        return;
+    if (name != 0)
+        *name = master->name;
 
-    TRIBE_Master_Combat_Object* combat =
-        static_cast<TRIBE_Master_Combat_Object*>(master);
+    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(master);
     if (combat->build_inventory[0].flag != 0) {
         inv_1 = combat->build_inventory[0].type;
         if (inv_1 >= 0) {
@@ -507,11 +489,13 @@ void TRIBE_Player::obj_cost(short obj_id, char** name, short& inv_1,
     }
 
 done_total:
-    if (inv_amt_1 <= 0) inv_1 = -1;
-    if (inv_amt_2 <= 0) inv_2 = -1;
-    if (inv_amt_3 <= 0) inv_3 = -1;
+    if (inv_amt_1 <= 0)
+        inv_1 = -1;
+    if (inv_amt_2 <= 0)
+        inv_2 = -1;
+    if (inv_amt_3 <= 0)
+        inv_3 = -1;
 }
-
 
 RGE_Static_Object* TRIBE_Player::find_obj(short obj_id, RGE_Static_Object* after_obj) {
     if (after_obj != 0) {
@@ -532,7 +516,8 @@ RGE_Static_Object* TRIBE_Player::find_obj(short obj_id, RGE_Static_Object* after
     }
 
     RGE_Object_Node* node = this->objects->list;
-    if (node == 0) return 0;
+    if (node == 0)
+        return 0;
     while (node != 0) {
         RGE_Static_Object* object = node->node;
         if (object != 0 && object->master_obj->id == obj_id && object->object_state == RGE_OBJECT_STATE_ACTIVE)
@@ -542,7 +527,6 @@ RGE_Static_Object* TRIBE_Player::find_obj(short obj_id, RGE_Static_Object* after
     return 0;
 }
 
-
 RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, float z, int build_all_the_way) {
     RGE_Static_Object* object = RGE_Player::make_new_object(obj_id, x, y, z, build_all_the_way);
     if (object != 0) {
@@ -551,13 +535,12 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, 
             if (object->master_obj->master_type == 'P')
                 static_cast<TRIBE_Building_Object*>(object)->build(10000.0f);
         }
-        if (rge_base_game->prog_mode == ProgModeScenarioEditor && (object->master_obj->object_group == 5 ||
-             object->master_obj->object_group == 0x21))
+        if (rge_base_game->prog_mode == ProgModeScenarioEditor
+            && (object->master_obj->object_group == 5 || object->master_obj->object_group == 0x21))
             object->sprite_list->set_frame(object->sprite, 5);
     }
     return object;
 }
-
 
 void TRIBE_Player::interface_tech_avail(Item_Avail** list, short* list_num, short obj_cat) {
     short count = 0;
@@ -618,9 +601,6 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** list, short* list_num, shor
     } while (list_n < this->tech_tree->tech_player_tree_num);
 }
 
-
-
-
 void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, short obj_cat) {
     short tribe_flag = 0;
     short count = 0;
@@ -631,8 +611,9 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
         int n = this->master_object_num;
         do {
             RGE_Master_Static_Object* m = *pp;
-            if (m != 0 && m->master_type >= 0x46 && m->available != 0 &&
-                static_cast<TRIBE_Master_Combat_Object*>(m)->id_of_building_obj == obj_cat) count++;
+            if (m != 0 && m->master_type >= 0x46 && m->available != 0
+                && static_cast<TRIBE_Master_Combat_Object*>(m)->id_of_building_obj == obj_cat)
+                count++;
             pp++;
             n--;
         } while (n != 0);
@@ -642,40 +623,46 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
         tribe_flag = 1;
         RGE_Object_Node* node = this->objects->list;
         while (node != 0) {
-            if (node->node->master_obj->id == 0x6d) tribe_flag = 0;
+            if (node->node->master_obj->id == 0x6d)
+                tribe_flag = 0;
             node = node->next;
         }
     }
-    if (tribe_flag != 0) count++;
+    if (tribe_flag != 0)
+        count++;
 
     Item_Avail** item_list = list;
-    if (*item_list != 0) { free(*item_list); *item_list = 0; }
+    if (*item_list != 0) {
+        free(*item_list);
+        *item_list = 0;
+    }
     *list_num = count;
-    if (count == 0) return;
+    if (count == 0)
+        return;
     // The dialog owns this C-allocated block and releases it with free().
     *item_list = static_cast<Item_Avail*>(calloc(count, sizeof(Item_Avail)));
 
     short index = 0;
     short list_n = 0;
     while (index < this->master_object_num) {
-            if (this->master_objects[index] != 0 && this->master_objects[index]->master_type >= 0x46 &&
-                this->master_objects[index]->available != 0 &&
-                static_cast<TRIBE_Master_Combat_Object*>(this->master_objects[index])->id_of_building_obj == obj_cat) {
-                (*item_list)[list_n].id = index;
-                (*item_list)[list_n].pict = this->master_objects[index]->button_pict;
-                (*item_list)[list_n].name = this->master_objects[index]->name;
-                this->obj_cost(static_cast<short>(index), 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
-                (*item_list)[list_n].inventory_item_1 = inv_1;
-                (*item_list)[list_n].inventory_cost_1 = inv_amt_1;
-                (*item_list)[list_n].inventory_item_2 = inv_2;
-                (*item_list)[list_n].inventory_cost_2 = inv_amt_2;
-                (*item_list)[list_n].inventory_item_3 = inv_3;
-                (*item_list)[list_n].inventory_cost_3 = inv_amt_3;
-                (*item_list)[list_n].help_string_id = this->master_objects[index]->get_help_message();
-                (*item_list)[list_n].help_page_id = this->master_objects[index]->get_help_page();
-                ++list_n;
-            }
-            index++;
+        if (this->master_objects[index] != 0 && this->master_objects[index]->master_type >= 0x46
+            && this->master_objects[index]->available != 0
+            && static_cast<TRIBE_Master_Combat_Object*>(this->master_objects[index])->id_of_building_obj == obj_cat) {
+            (*item_list)[list_n].id = index;
+            (*item_list)[list_n].pict = this->master_objects[index]->button_pict;
+            (*item_list)[list_n].name = this->master_objects[index]->name;
+            this->obj_cost(static_cast<short>(index), 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
+            (*item_list)[list_n].inventory_item_1 = inv_1;
+            (*item_list)[list_n].inventory_cost_1 = inv_amt_1;
+            (*item_list)[list_n].inventory_item_2 = inv_2;
+            (*item_list)[list_n].inventory_cost_2 = inv_amt_2;
+            (*item_list)[list_n].inventory_item_3 = inv_3;
+            (*item_list)[list_n].inventory_cost_3 = inv_amt_3;
+            (*item_list)[list_n].help_string_id = this->master_objects[index]->get_help_message();
+            (*item_list)[list_n].help_page_id = this->master_objects[index]->get_help_page();
+            ++list_n;
+        }
+        index++;
     }
 
     if (tribe_flag != 0) {
@@ -694,9 +681,7 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
     }
 }
 
-
-void TRIBE_Player::interface_trade_avail(Trade_Avail** list,
-                                          short* list_num) {
+void TRIBE_Player::interface_trade_avail(Trade_Avail** list, short* list_num) {
     int i = 1;
     int dock_count = 0;
     RGE_Static_Object* dock_list[96];
@@ -710,8 +695,9 @@ void TRIBE_Player::interface_trade_avail(Trade_Avail** list,
                     do {
                         //! Trade targets only docks (master id 0x2D); RockNROR allows other trade-partner units.
                         if (node->node->master_obj->id == 0x2D) {
-                            if (this->visible->get_visible(static_cast<short>(node->node->world_x),
-                                                           static_cast<short>(node->node->world_y))) {
+                            if (this->visible->get_visible(
+                                    static_cast<short>(node->node->world_x), static_cast<short>(node->node->world_y)
+                                )) {
                                 ++dock_count;
                                 *output = node->node;
                                 ++output;
@@ -751,8 +737,6 @@ void TRIBE_Player::interface_trade_avail(Trade_Avail** list,
     }
 }
 
-
-
 unsigned char TRIBE_Player::command_make_building(short obj_id, float x, float y) {
     short list_num;
     RGE_Static_Object** list;
@@ -771,10 +755,7 @@ unsigned char TRIBE_Player::command_make_building(short obj_id, float x, float y
     return 0;
 }
 
-
-
-unsigned char TRIBE_Player::command_make_wall(short obj_id, long x1, long y1,
-                                               long x2, long y2) {
+unsigned char TRIBE_Player::command_make_wall(short obj_id, long x1, long y1, long x2, long y2) {
     short list_num;
     RGE_Static_Object** list;
 
@@ -782,7 +763,8 @@ unsigned char TRIBE_Player::command_make_wall(short obj_id, long x1, long y1,
     if (info != 0 && info->available != 0) {
         if (get_selected_objects_to_command(&list, &list_num, 4, 4, -1, -1)) {
             this->master_objects[0x76]->play_command_sound();
-            static_cast<TRIBE_Command*>(this->world->commands)->command_build_wall(list, list_num, obj_id, x1, y1, x2, y2);
+            static_cast<TRIBE_Command*>(this->world->commands)
+                ->command_build_wall(list, list_num, obj_id, x1, y1, x2, y2);
             free(list);
             return 1;
         }
@@ -790,18 +772,15 @@ unsigned char TRIBE_Player::command_make_wall(short obj_id, long x1, long y1,
     return 0;
 }
 
-
 unsigned char TRIBE_Player::command_building_make_tech(short tech_id) {
     RGE_Static_Object* object = this->selected_obj;
     if (object && object->master_obj->master_type == 'P') {
-        TRIBE_Command* command =
-            static_cast<TRIBE_Command*>(this->world->commands);
+        TRIBE_Command* command = static_cast<TRIBE_Command*>(this->world->commands);
         command->command_research(object, tech_id);
         return 1;
     }
     return 0;
 }
-
 
 unsigned char TRIBE_Player::command_building_cancel() {
     RGE_Static_Object* selected_obj;
@@ -821,7 +800,6 @@ unsigned char TRIBE_Player::command_building_cancel() {
     return 0;
 }
 
-
 unsigned char TRIBE_Player::command_delete_object(RGE_Static_Object* obj) {
     unsigned char type;
 
@@ -834,7 +812,6 @@ unsigned char TRIBE_Player::command_delete_object(RGE_Static_Object* obj) {
     }
     return 0;
 }
-
 
 unsigned char TRIBE_Player::command_trade_attribute(long attribute) {
     RGE_Static_Object** list;
@@ -850,15 +827,12 @@ unsigned char TRIBE_Player::command_trade_attribute(long attribute) {
     return 0;
 }
 
-
 unsigned char TRIBE_Player::command_trade_attribute(int unitID, long attribute) {
     short player_id = this->id;
-    TRIBE_Command* command =
-        static_cast<TRIBE_Command*>(this->world->commands);
+    TRIBE_Command* command = static_cast<TRIBE_Command*>(this->world->commands);
     command->command_trade_attribute(unitID, player_id, attribute);
     return 1;
 }
-
 
 unsigned char TRIBE_Player::command_attack_ground(float x, float y) {
     RGE_Static_Object** list;
@@ -874,45 +848,42 @@ unsigned char TRIBE_Player::command_attack_ground(float x, float y) {
     return 0;
 }
 
-
 unsigned char TRIBE_Player::command_give_attribute(int to_player_id, int attr_id, float attr_amount, float attr_cost) {
     if (attr_id == -1 || attr_amount == 0.0f) {
         return 0;
     }
-    static_cast<TRIBE_Command*>(this->world->commands)->command_give_attribute(this->id, to_player_id, attr_id, attr_amount, attr_cost);
+    static_cast<TRIBE_Command*>(this->world->commands)
+        ->command_give_attribute(this->id, to_player_id, attr_id, attr_amount, attr_cost);
     return 1;
 }
-
 
 unsigned char TRIBE_Player::command_building_make_obj(short obj_id) {
     RGE_Static_Object* object = this->selected_obj;
     if (object && object->master_obj->master_type == 'P') {
-        TRIBE_Command* command =
-            static_cast<TRIBE_Command*>(this->world->commands);
+        TRIBE_Command* command = static_cast<TRIBE_Command*>(this->world->commands);
         command->command_make(object, obj_id);
         return 1;
     }
     return 0;
 }
 
-
-
-
 unsigned char TRIBE_Player::command_make_repair(RGE_Static_Object* obj) {
     short list_num;
     RGE_Static_Object** list;
-    if (!(((obj->owner == this || this->isAlly(obj->owner->id)) && obj->master_obj->master_type == 'P' &&
-           static_cast<float>(obj->master_obj->hp) > obj->hp && obj->object_state < RGE_OBJECT_STATE_DYING) || ((obj->owner == this ||
-            (this->isAlly(obj->owner->id) && obj->owner->isAlly(this->id))) && (obj->master_obj->object_group == OBJECT_GROUP_TRADE_BOAT ||
-            obj->master_obj->object_group == OBJECT_GROUP_TRANSPORT_BOAT || obj->master_obj->object_group == OBJECT_GROUP_FISHING_BOAT ||
-            obj->master_obj->object_group == OBJECT_GROUP_WAR_BOAT) && static_cast<float>(obj->master_obj->hp) > obj->hp &&
-           obj->object_state < RGE_OBJECT_STATE_DYING)))
+    if (!(((obj->owner == this || this->isAlly(obj->owner->id)) && obj->master_obj->master_type == 'P'
+           && static_cast<float>(obj->master_obj->hp) > obj->hp && obj->object_state < RGE_OBJECT_STATE_DYING)
+          || ((obj->owner == this || (this->isAlly(obj->owner->id) && obj->owner->isAlly(this->id)))
+              && (obj->master_obj->object_group == OBJECT_GROUP_TRADE_BOAT
+                  || obj->master_obj->object_group == OBJECT_GROUP_TRANSPORT_BOAT
+                  || obj->master_obj->object_group == OBJECT_GROUP_FISHING_BOAT
+                  || obj->master_obj->object_group == OBJECT_GROUP_WAR_BOAT)
+              && static_cast<float>(obj->master_obj->hp) > obj->hp && obj->object_state < RGE_OBJECT_STATE_DYING)))
         return 0;
     if (!this->get_selected_objects_to_command(&list, &list_num, 4, 4, -1, -1))
         return 0;
-    RGE_Master_Static_Object* repair_master =
-        list[0]->get_command_master(obj, 0.0f, 0.0f, 0.0f);
-    if (repair_master != 0) repair_master->play_command_sound();
+    RGE_Master_Static_Object* repair_master = list[0]->get_command_master(obj, 0.0f, 0.0f, 0.0f);
+    if (repair_master != 0)
+        repair_master->play_command_sound();
     static_cast<TRIBE_Command*>(this->world->commands)->command_repair(list, list_num, obj);
     free(list);
     return 1;
@@ -932,11 +903,10 @@ unsigned char TRIBE_Player::command_make_unload(float x, float y) {
     return 0;
 }
 
-
-unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed,
-                                             float modifier, int ignore_pop) {
+unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed, float modifier, int ignore_pop) {
     float population = this->attributes[RGE_RESOURCE_GOLD];
-    if (attribute_needed != 0) *attribute_needed = static_cast<short>(-1);
+    if (attribute_needed != 0)
+        *attribute_needed = static_cast<short>(-1);
     bool population_available;
     if (this->attributes[29] < 1.0) {
         population = 0.0f;
@@ -947,27 +917,32 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed
     RGE_Master_Static_Object* object = this->master_objects[obj_id];
     TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
     if (object == 0 || object->master_type < 0x46) {
-        if (attribute_needed != 0) *attribute_needed = static_cast<short>(-1);
+        if (attribute_needed != 0)
+            *attribute_needed = static_cast<short>(-1);
         return 0;
     }
     for (int i = 0; i < 3; ++i) {
         int type = combat->build_inventory[i].type;
-        if (type < 0) continue;
+        if (type < 0)
+            continue;
         float amount = combat->build_inventory[i].amount * modifier;
         if (type == 4 && ignore_pop == 0 && this->attributes[11] >= this->attributes[32]) {
-            if (attribute_needed != 0) *attribute_needed = 0x20;
+            if (attribute_needed != 0)
+                *attribute_needed = 0x20;
             return 0;
         }
         if (population_available && type == 3) {
             population -= amount;
             if (population < 0.0f) {
-                if (attribute_needed != 0) *attribute_needed = 3;
+                if (attribute_needed != 0)
+                    *attribute_needed = 3;
                 return 0;
             }
         }
         if (this->attributes[type] < amount && (type != 4 || ignore_pop == 0)) {
             if (combat->build_inventory[i].flag == 0 || population + this->attributes[type] < amount) {
-                if (attribute_needed != 0) *attribute_needed = static_cast<short>(type);
+                if (attribute_needed != 0)
+                    *attribute_needed = static_cast<short>(type);
                 return 0;
             }
             population -= amount - this->attributes[type];
@@ -975,7 +950,6 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed
     }
     return 1;
 }
-
 
 unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float modifier, int ignore_pop) {
     if (check_obj_cost(obj_id, 0, modifier, ignore_pop)) {
@@ -998,11 +972,11 @@ unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float modifier, int ignor
     return 0;
 }
 
-
 void TRIBE_Player::reimburse_obj_cost(short obj_id) {
     RGE_Master_Static_Object* object = this->master_objects[obj_id];
     TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
-    if (object->master_type < 0x46) return;
+    if (object->master_type < 0x46)
+        return;
     Attribute_Cost* cost = combat->build_inventory;
     int i;
     short type;
@@ -1014,61 +988,58 @@ void TRIBE_Player::reimburse_obj_cost(short obj_id) {
     }
 }
 
-
 unsigned char TRIBE_Player::check_tech_cost(short tech_id, short* attribute_needed) {
     return this->tech_tree->check_tech_cost(tech_id, attribute_needed);
 }
-
 
 unsigned char TRIBE_Player::pay_tech_cost(short tech_id) {
     return this->tech_tree->start_research(tech_id, 1, 0);
 }
 
-
 void TRIBE_Player::tech_abling(long tech_id, unsigned char able_flag) {
-    if (able_flag != 0) this->tech_tree->enable(static_cast<short>(tech_id));
-    else this->tech_tree->disable(static_cast<short>(tech_id));
+    if (able_flag != 0)
+        this->tech_tree->enable(static_cast<short>(tech_id));
+    else
+        this->tech_tree->disable(static_cast<short>(tech_id));
 }
-
 
 void TRIBE_Player::rev_tech(long age) {
     switch (age) {
-    case 0x19:
-        this->tech_tree->do_tech(static_cast<short>(this->attributes[25]));
-        return;
+        case 0x19:
+            this->tech_tree->do_tech(static_cast<short>(this->attributes[25]));
+            return;
 
-    case 0x17:
-        this->tech_tree->disable(static_cast<short>(this->attributes[23]));
-        this->tech_tree->rev_tech(static_cast<short>(this->attributes[25]));
-        this->tech_tree->enable(static_cast<short>(this->attributes[23]));
-        this->tech_tree->do_tech(static_cast<short>(this->attributes[23]));
-        return;
+        case 0x17:
+            this->tech_tree->disable(static_cast<short>(this->attributes[23]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[25]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[23]));
+            this->tech_tree->do_tech(static_cast<short>(this->attributes[23]));
+            return;
 
-    case 0x18:
-        this->tech_tree->disable(static_cast<short>(this->attributes[23]));
-        this->tech_tree->disable(static_cast<short>(this->attributes[24]));
-        this->tech_tree->rev_tech(static_cast<short>(this->attributes[25]));
-        this->tech_tree->enable(static_cast<short>(this->attributes[23]));
-        this->tech_tree->rev_tech(static_cast<short>(this->attributes[23]));
-        this->tech_tree->enable(static_cast<short>(this->attributes[24]));
-        this->tech_tree->do_tech(static_cast<short>(this->attributes[24]));
-        return;
+        case 0x18:
+            this->tech_tree->disable(static_cast<short>(this->attributes[23]));
+            this->tech_tree->disable(static_cast<short>(this->attributes[24]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[25]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[23]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[23]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[24]));
+            this->tech_tree->do_tech(static_cast<short>(this->attributes[24]));
+            return;
 
-    case 1:
-        this->tech_tree->disable(static_cast<short>(this->attributes[23]));
-        this->tech_tree->disable(static_cast<short>(this->attributes[24]));
-        this->tech_tree->rev_tech(static_cast<short>(this->attributes[25]));
-        this->tech_tree->enable(static_cast<short>(this->attributes[23]));
-        this->tech_tree->rev_tech(static_cast<short>(this->attributes[23]));
-        this->tech_tree->enable(static_cast<short>(this->attributes[24]));
-        this->tech_tree->rev_tech(static_cast<short>(this->attributes[24]));
-        return;
+        case 1:
+            this->tech_tree->disable(static_cast<short>(this->attributes[23]));
+            this->tech_tree->disable(static_cast<short>(this->attributes[24]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[25]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[23]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[23]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[24]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[24]));
+            return;
 
-    default:
-        return;
+        default:
+            return;
     }
 }
-
 
 void TRIBE_Player::add_population_entry() {
     if (this->attributes[11] < 0.0f) {
@@ -1079,32 +1050,20 @@ void TRIBE_Player::add_population_entry() {
     this->history->add_history_entry(0, static_cast<int>(this->attributes[11]));
 }
 
-
-
-
-
 void TRIBE_Player::random_start() {
     uchar found_ally = 0;
 
     if (this->objects->list == 0) {
         float w1;
         float h;
-        w1 = ((debug_rand(tplayerSourceName, 1585) *
-               (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
-              + 0.5f;
-        h = ((debug_rand(tplayerSourceName, 1586) *
-              (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
-             + 0.5f;
+        w1 = ((debug_rand(tplayerSourceName, 1585) * (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf) + 0.5f;
+        h = ((debug_rand(tplayerSourceName, 1586) * (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf) + 0.5f;
         int tries = 1;
         while (tries < 5000) {
             if (this->master_objects[0x6d]->check_placement(this, h + 0.5f, w1 + 0.5f, 0, 0, 1, 1, 1, 1, 1) == 0)
                 break;
-            w1 = ((debug_rand(tplayerSourceName, 1585) *
-                   (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
-                         + 0.5f;
-            h = ((debug_rand(tplayerSourceName, 1586) *
-                  (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
-                + 0.5f;
+            w1 = ((debug_rand(tplayerSourceName, 1585) * (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf) + 0.5f;
+            h = ((debug_rand(tplayerSourceName, 1586) * (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf) + 0.5f;
             ++tries;
         }
 
@@ -1123,18 +1082,14 @@ void TRIBE_Player::random_start() {
             do {
                 uchar bad = 1;
                 do {
-                    w2 = (debug_rand(tplayerSourceName, 1606) * 6) /
-                              0x7fff - 3;
-                    h2 = (debug_rand(tplayerSourceName, 1607) * 6) /
-                              0x7fff - 3;
-                    w = w2 -
-                        debug_rand(tplayerSourceName, 1608) * -3.051851e-05f + w1;
-                    h1 = h2 -
-                        debug_rand(tplayerSourceName, 1609) * -3.051851e-05f + h;
+                    w2 = (debug_rand(tplayerSourceName, 1606) * 6) / 0x7fff - 3;
+                    h2 = (debug_rand(tplayerSourceName, 1607) * 6) / 0x7fff - 3;
+                    w = w2 - debug_rand(tplayerSourceName, 1608) * -3.051851e-05f + w1;
+                    h1 = h2 - debug_rand(tplayerSourceName, 1609) * -3.051851e-05f + h;
 
-                    if (w >= 0.0f && w < static_cast<float>(this->world->map->map_height) &&
-                        h1 >= 0.0f && h1 < static_cast<float>(this->world->map->map_width) &&
-                        this->master_objects[0x53]->check_placement(this, h1, w, 0, 0, 1, 1, 1, 1, 1) == 0) {
+                    if (w >= 0.0f && w < static_cast<float>(this->world->map->map_height) && h1 >= 0.0f
+                        && h1 < static_cast<float>(this->world->map->map_width)
+                        && this->master_objects[0x53]->check_placement(this, h1, w, 0, 0, 1, 1, 1, 1, 1) == 0) {
                         this->master_objects[0x53]->make_new_obj(this, h1, w, 0);
                         bad = 0;
                     }
@@ -1143,20 +1098,20 @@ void TRIBE_Player::random_start() {
             } while (count != 0);
         }
     } else {
-        RGE_Static_Object* town_center_object =
-            this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, 0);
+        RGE_Static_Object* town_center_object = this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, 0);
         if (town_center_object == 0) {
             town_center_object = this->objects->list->node;
         }
-        this->set_map_loc(static_cast<short>(town_center_object->world_x), static_cast<short>(town_center_object->world_y));
+        this->set_map_loc(
+            static_cast<short>(town_center_object->world_x), static_cast<short>(town_center_object->world_y)
+        );
         this->set_view_loc(town_center_object->world_x, town_center_object->world_y);
     }
 
     if (rge_base_game->multiplayerGame() || rge_base_game->randomGame()) {
         for (int i = 1; i < this->world->player_num; ++i) {
             if (this->isAlly(i) && i != this->id) {
-                RGE_Static_Object* town_center_object =
-                    this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, 0);
+                RGE_Static_Object* town_center_object = this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, 0);
                 if (town_center_object == 0) {
                     town_center_object = this->objects->list->node;
                 }
@@ -1183,7 +1138,6 @@ void TRIBE_Player::random_start() {
     }
 }
 
-
 void TRIBE_Player::objectCost(int id, int unused1, ResourceItem* ri, int unused2) {
     short object = static_cast<short>(id);
     short inv_amt_3;
@@ -1200,7 +1154,6 @@ void TRIBE_Player::objectCost(int id, int unused1, ResourceItem* ri, int unused2
     ri->incrementValue(inv_1, inv_amt_3);
 }
 
-
 int TRIBE_Player::objectCostByType(int id) {
     short inv_3;
     short inv_amt_1;
@@ -1212,7 +1165,6 @@ int TRIBE_Player::objectCostByType(int id) {
     obj_cost(static_cast<short>(id), 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
     return inv_amt_1 + inv_amt_2 + inv_amt_3;
 }
-
 
 void TRIBE_Player::researchCost(int id, int unused1, ResourceItem* ri, int unused2) {
     short technology = static_cast<short>(id);
@@ -1230,47 +1182,38 @@ void TRIBE_Player::researchCost(int id, int unused1, ResourceItem* ri, int unuse
     ri->incrementValue(inv_1, inv_amt_2);
 }
 
-
 int TRIBE_Player::objectAvailable(int id) {
-    RGE_Master_Static_Object** objects =
-        this->master_objects;
+    RGE_Master_Static_Object** objects = this->master_objects;
     RGE_Master_Static_Object* object = objects[id];
     if ((object != 0 && object->available) || id == 0x6D)
         return 1;
     return 0;
 }
 
-
 int TRIBE_Player::researchAvailable(int id) {
     return this->tech_tree->tech_player_tree[id].state == 1;
 }
 
-
 int TRIBE_Player::researchEverAvailable(int id) {
     short state;
 
-    TRIBE_Player_Tech* tech =
-        this->tech_tree;
+    TRIBE_Player_Tech* tech = this->tech_tree;
     state = tech->get_tech_state(static_cast<short>(id));
     if (state != 3 && state != -1)
         return 1;
     return 0;
 }
 
-
 unsigned char TRIBE_Player::researchState(int id) {
-    TRIBE_Player_Tech* tech =
-        this->tech_tree;
+    TRIBE_Player_Tech* tech = this->tech_tree;
     return static_cast<unsigned char>(tech->get_tech_state(static_cast<short>(id)));
 }
 
+void TRIBE_Player::changeToHumanPlayer() {
+}
 
-void TRIBE_Player::changeToHumanPlayer() {}
-
-
-void TRIBE_Player::changeToComputerPlayer() {}
-
-
+void TRIBE_Player::changeToComputerPlayer() {
+}
 
 char* TRIBE_Player::aiStatus(int sNum) {
     if (this->playerAI == 0) {
@@ -1280,64 +1223,93 @@ char* TRIBE_Player::aiStatus(int sNum) {
                 TribeMainDecisionAIModule* ai = static_cast<TRIBE_Player*>(otherPlayer)->playerAI;
                 int last = ai->tacticalAI.lastUpdateAreaTimeValue;
                 int avg = ai->tacticalAI.averageUpdateAreaTimeValue;
-                sprintf(this->aiStatusInformationValue, "ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms=%3d, UA=%s.",
-                        static_cast<TRIBE_World*>(this->world)->controllingComputerPlayer,
-                        this->world->currentUpdateComputerPlayer, avg, last, ai->tacticalAI.updateAreaName());
+                sprintf(
+                    this->aiStatusInformationValue, "ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms=%3d, UA=%s.",
+                    static_cast<TRIBE_World*>(this->world)->controllingComputerPlayer,
+                    this->world->currentUpdateComputerPlayer, avg, last, ai->tacticalAI.updateAreaName()
+                );
                 return this->aiStatusInformationValue;
             }
         }
         return "Invalid currentUpdateComputerPlayer...";
     }
     if (sNum == 1) {
-        sprintf(this->aiStatusInformationValue, "Build List:%s, City Plan:%s, BuildAI(C=%s, N=%s, L=%s, %d/%d).",
-                this->playerAI->buildAI.buildListName(), this->playerAI->constructionAI.constructionPlanName(),
-                this->playerAI->buildAI.currentBuildItemRequested(), this->playerAI->buildAI.nextBuildItemRequested(),
-                this->playerAI->buildAI.lastBuildItemRequested(), this->playerAI->buildAI.numberItemsIntoBuildList(),
-                this->playerAI->buildAI.buildListLength());
+        sprintf(
+            this->aiStatusInformationValue, "Build List:%s, City Plan:%s, BuildAI(C=%s, N=%s, L=%s, %d/%d).",
+            this->playerAI->buildAI.buildListName(), this->playerAI->constructionAI.constructionPlanName(),
+            this->playerAI->buildAI.currentBuildItemRequested(), this->playerAI->buildAI.nextBuildItemRequested(),
+            this->playerAI->buildAI.lastBuildItemRequested(), this->playerAI->buildAI.numberItemsIntoBuildList(),
+            this->playerAI->buildAI.buildListLength()
+        );
         return this->aiStatusInformationValue;
     }
     if (sNum == 2) {
-        sprintf(this->aiStatusInformationValue2,
-                "NeedRes: %s=%d, %s=%d, %s=%d, %s=%d, ResDiff: %s=%d, %s=%d, %s=%d, %s=%d.",
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)), this->playerAI->tacticalAI.neededResourceAmount(0),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)), this->playerAI->tacticalAI.neededResourceAmount(1),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)), this->playerAI->tacticalAI.neededResourceAmount(2),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)), this->playerAI->tacticalAI.neededResourceAmount(3),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)), this->playerAI->tacticalAI.resourceDifference(0),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)), this->playerAI->tacticalAI.resourceDifference(1),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)), this->playerAI->tacticalAI.resourceDifference(2),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)), this->playerAI->tacticalAI.resourceDifference(3));
+        sprintf(
+            this->aiStatusInformationValue2,
+            "NeedRes: %s=%d, %s=%d, %s=%d, %s=%d, ResDiff: %s=%d, %s=%d, %s=%d, %s=%d.",
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)),
+            this->playerAI->tacticalAI.neededResourceAmount(0),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)),
+            this->playerAI->tacticalAI.neededResourceAmount(1),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)),
+            this->playerAI->tacticalAI.neededResourceAmount(2),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)),
+            this->playerAI->tacticalAI.neededResourceAmount(3),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)),
+            this->playerAI->tacticalAI.resourceDifference(0),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)),
+            this->playerAI->tacticalAI.resourceDifference(1),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)),
+            this->playerAI->tacticalAI.resourceDifference(2),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)),
+            this->playerAI->tacticalAI.resourceDifference(3)
+        );
         return this->aiStatusInformationValue2;
     }
     if (sNum == 3) {
-        sprintf(this->aiStatusInformationValue3,
-                "Gat(Act/Des): %s=(%d/%d), %s=(%d/%d), %s=(%d/%d), %s=(%d/%d).  #Civs=%d, #Sol=%d, #Boats=%d.",
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)), this->playerAI->tacticalAI.actualGathererCount(0), this->playerAI->tacticalAI.desiredGathererCount(0),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)), this->playerAI->tacticalAI.actualGathererCount(1), this->playerAI->tacticalAI.desiredGathererCount(1),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)), this->playerAI->tacticalAI.actualGathererCount(2), this->playerAI->tacticalAI.desiredGathererCount(2),
-                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)), this->playerAI->tacticalAI.actualGathererCount(3), this->playerAI->tacticalAI.desiredGathererCount(3),
-                this->playerAI->tacticalAI.numberCivilians(), this->playerAI->tacticalAI.numberSoldiers(), this->playerAI->tacticalAI.numberBoats());
+        sprintf(
+            this->aiStatusInformationValue3,
+            "Gat(Act/Des): %s=(%d/%d), %s=(%d/%d), %s=(%d/%d), %s=(%d/%d).  #Civs=%d, #Sol=%d, #Boats=%d.",
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)),
+            this->playerAI->tacticalAI.actualGathererCount(0), this->playerAI->tacticalAI.desiredGathererCount(0),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)),
+            this->playerAI->tacticalAI.actualGathererCount(1), this->playerAI->tacticalAI.desiredGathererCount(1),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)),
+            this->playerAI->tacticalAI.actualGathererCount(2), this->playerAI->tacticalAI.desiredGathererCount(2),
+            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)),
+            this->playerAI->tacticalAI.actualGathererCount(3), this->playerAI->tacticalAI.desiredGathererCount(3),
+            this->playerAI->tacticalAI.numberCivilians(), this->playerAI->tacticalAI.numberSoldiers(),
+            this->playerAI->tacticalAI.numberBoats()
+        );
         return this->aiStatusInformationValue3;
     }
     if (sNum == 4) {
-        sprintf(this->aiStatusInformationValue4, "Pers (Spec/BL): Food=(%d/%d), Wood=(%d/%d), Gold=(%d/%d), Stone=(%d/%d).",
-                this->playerAI->tacticalAI.strategicNumber(0x75), this->playerAI->tacticalAI.strategicNumber(0x9C),
-                this->playerAI->tacticalAI.strategicNumber(0x78), this->playerAI->tacticalAI.strategicNumber(0x9D),
-                this->playerAI->tacticalAI.strategicNumber(0x76), this->playerAI->tacticalAI.strategicNumber(0x9F),
-                this->playerAI->tacticalAI.strategicNumber(0x77), this->playerAI->tacticalAI.strategicNumber(0x9E));
+        sprintf(
+            this->aiStatusInformationValue4, "Pers (Spec/BL): Food=(%d/%d), Wood=(%d/%d), Gold=(%d/%d), Stone=(%d/%d).",
+            this->playerAI->tacticalAI.strategicNumber(0x75), this->playerAI->tacticalAI.strategicNumber(0x9C),
+            this->playerAI->tacticalAI.strategicNumber(0x78), this->playerAI->tacticalAI.strategicNumber(0x9D),
+            this->playerAI->tacticalAI.strategicNumber(0x76), this->playerAI->tacticalAI.strategicNumber(0x9F),
+            this->playerAI->tacticalAI.strategicNumber(0x77), this->playerAI->tacticalAI.strategicNumber(0x9E)
+        );
         return this->aiStatusInformationValue4;
     }
     if (sNum == 5) {
-        sprintf(this->aiStatusInformationValue5,
-                "Dip: P1(%d/%d/%d), P2(%d/%d/%d), P3(%d/%d/%d), P4(%d/%d/%d), P5(%d/%d/%d), P6(%d/%d/%d), P7(%d/%d/%d), P8(%d/%d/%d).",
-                this->playerAI->diplomacyAI.stance(1, 0), this->playerAI->diplomacyAI.stance(1, 1), this->playerAI->diplomacyAI.stance(1, 2),
-                this->playerAI->diplomacyAI.stance(2, 0), this->playerAI->diplomacyAI.stance(2, 1), this->playerAI->diplomacyAI.stance(2, 2),
-                this->playerAI->diplomacyAI.stance(3, 0), this->playerAI->diplomacyAI.stance(3, 1), this->playerAI->diplomacyAI.stance(3, 2),
-                this->playerAI->diplomacyAI.stance(4, 0), this->playerAI->diplomacyAI.stance(4, 1), this->playerAI->diplomacyAI.stance(4, 2),
-                this->playerAI->diplomacyAI.stance(5, 0), this->playerAI->diplomacyAI.stance(5, 1), this->playerAI->diplomacyAI.stance(5, 2),
-                this->playerAI->diplomacyAI.stance(6, 0), this->playerAI->diplomacyAI.stance(6, 1), this->playerAI->diplomacyAI.stance(6, 2),
-                this->playerAI->diplomacyAI.stance(7, 0), this->playerAI->diplomacyAI.stance(7, 1), this->playerAI->diplomacyAI.stance(7, 2),
-                this->playerAI->diplomacyAI.stance(8, 0), this->playerAI->diplomacyAI.stance(8, 1), this->playerAI->diplomacyAI.stance(8, 2));
+        sprintf(
+            this->aiStatusInformationValue5,
+            "Dip: P1(%d/%d/%d), P2(%d/%d/%d), P3(%d/%d/%d), P4(%d/%d/%d), P5(%d/%d/%d), P6(%d/%d/%d), P7(%d/%d/%d), P8(%d/%d/%d).",
+            this->playerAI->diplomacyAI.stance(1, 0), this->playerAI->diplomacyAI.stance(1, 1),
+            this->playerAI->diplomacyAI.stance(1, 2), this->playerAI->diplomacyAI.stance(2, 0),
+            this->playerAI->diplomacyAI.stance(2, 1), this->playerAI->diplomacyAI.stance(2, 2),
+            this->playerAI->diplomacyAI.stance(3, 0), this->playerAI->diplomacyAI.stance(3, 1),
+            this->playerAI->diplomacyAI.stance(3, 2), this->playerAI->diplomacyAI.stance(4, 0),
+            this->playerAI->diplomacyAI.stance(4, 1), this->playerAI->diplomacyAI.stance(4, 2),
+            this->playerAI->diplomacyAI.stance(5, 0), this->playerAI->diplomacyAI.stance(5, 1),
+            this->playerAI->diplomacyAI.stance(5, 2), this->playerAI->diplomacyAI.stance(6, 0),
+            this->playerAI->diplomacyAI.stance(6, 1), this->playerAI->diplomacyAI.stance(6, 2),
+            this->playerAI->diplomacyAI.stance(7, 0), this->playerAI->diplomacyAI.stance(7, 1),
+            this->playerAI->diplomacyAI.stance(7, 2), this->playerAI->diplomacyAI.stance(8, 0),
+            this->playerAI->diplomacyAI.stance(8, 1), this->playerAI->diplomacyAI.stance(8, 2)
+        );
         return this->aiStatusInformationValue5;
     }
     if (sNum == 6) {
@@ -1346,24 +1318,24 @@ char* TRIBE_Player::aiStatus(int sNum) {
         int last = ai->tacticalAI.lastUpdateAreaTimeValue;
         int avg = ai->tacticalAI.averageUpdateAreaTimeValue;
         int attackEnabled = this->playerAI->tacticalAI.attackEnabledValue;
-        sprintf(this->aiStatusInformationValue6,
-                "Per: %s, AttEnab=%d, AttDly=%d Min, ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms=%3d, UA=%s.",
-                this->playerAI->strategyAI.ruleSetName(), attackEnabled, this->playerAI->tacticalAI.strategicNumber(0x68) / 60,
-                static_cast<TRIBE_World*>(this->world)->controllingComputerPlayer, this->world->currentUpdateComputerPlayer,
-                avg, last, ai->tacticalAI.updateAreaName());
+        sprintf(
+            this->aiStatusInformationValue6,
+            "Per: %s, AttEnab=%d, AttDly=%d Min, ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms=%3d, UA=%s.",
+            this->playerAI->strategyAI.ruleSetName(), attackEnabled,
+            this->playerAI->tacticalAI.strategicNumber(0x68) / 60,
+            static_cast<TRIBE_World*>(this->world)->controllingComputerPlayer, this->world->currentUpdateComputerPlayer,
+            avg, last, ai->tacticalAI.updateAreaName()
+        );
         return this->aiStatusInformationValue6;
     }
     return "Invalid status line number.";
 }
 
-
 void TRIBE_Player::kickAI(int m) {
-    TribeMainDecisionAIModule* ai =
-        this->playerAI;
+    TribeMainDecisionAIModule* ai = this->playerAI;
     if (ai)
         ai->kick(m);
 }
-
 
 int TRIBE_Player::strategicNumber(int sN) {
     TribeMainDecisionAIModule* ai = this->playerAI;
@@ -1372,8 +1344,6 @@ int TRIBE_Player::strategicNumber(int sN) {
     }
     return -1;
 }
-
-
 
 void __cdecl TRIBE_Player::logMessage(char* textIn, ...) {
     char textOut[1024];
@@ -1387,13 +1357,12 @@ void __cdecl TRIBE_Player::logMessage(char* textIn, ...) {
     }
 }
 
-
 int TRIBE_Player::sendAICommand(int caller, int mType, int p1, int p2, int p3) {
     TribeMainDecisionAIModule* ai = this->playerAI;
-    if (!ai) return 0;
+    if (!ai)
+        return 0;
     return ai->processAICommand(caller, mType, p1, p2, p3);
 }
-
 
 RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* obj, int sleepFlag, int dopple_flag) {
     RGE_Object_Node* node = RGE_Player::addObject(obj, sleepFlag, dopple_flag);
@@ -1415,7 +1384,6 @@ RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* obj, int sleepFlag, 
     return node;
 }
 
-
 void TRIBE_Player::removeObject(RGE_Static_Object* obj, int sleepFlag, int dopple_flag, RGE_Object_Node* node) {
     RGE_Player::removeObject(obj, sleepFlag, dopple_flag, node);
 
@@ -1427,9 +1395,6 @@ void TRIBE_Player::removeObject(RGE_Static_Object* obj, int sleepFlag, int doppl
     }
 }
 
-
-
-
 void TRIBE_Player::buildObject(int bi, int oi, float x, float y, int ui) {
     int* objectId = static_cast<int*>(calloc(1, 4));
     *objectId = bi;
@@ -1437,29 +1402,26 @@ void TRIBE_Player::buildObject(int bi, int oi, float x, float y, int ui) {
     free(objectId);
 }
 
-
-void TRIBE_Player::cancelBuild(int reason, int blockerID, int blockerType, float x, float y, int uniqueID, int builderID) {
+void TRIBE_Player::cancelBuild(
+    int reason, int blockerID, int blockerType, float x, float y, int uniqueID, int builderID
+) {
     if (this->playerAI != 0) {
         this->playerAI->buildAI.cancelBuildItem(reason, blockerID, blockerType, x, y, uniqueID, builderID);
     }
 }
 
-
 void TRIBE_Player::registerBuild(RGE_Static_Object* obj, int uniqueID) {
-    TribeMainDecisionAIModule* ai =
-        this->playerAI;
-    if (!ai) return;
+    TribeMainDecisionAIModule* ai = this->playerAI;
+    if (!ai)
+        return;
     ai->buildAI.addBuiltItem(obj, uniqueID);
 }
 
-
 void TRIBE_Player::trainUnit(int uType, int bID, int uniqueID) {
     short player_id = this->id;
-    TRIBE_Command* command =
-        static_cast<TRIBE_Command*>(this->world->commands);
+    TRIBE_Command* command = static_cast<TRIBE_Command*>(this->world->commands);
     command->command_make(player_id, bID, uType, uniqueID);
 }
-
 
 void TRIBE_Player::cancelTrain(int reason, int uType, int location, int uniqueID) {
     TribeMainDecisionAIModule* ai = this->playerAI;
@@ -1469,7 +1431,6 @@ void TRIBE_Player::cancelTrain(int reason, int uType, int location, int uniqueID
     ai->buildAI.cancelTrainUnit(reason, uType, location, uniqueID);
 }
 
-
 void TRIBE_Player::registerTrain(int uType, int location, int uniqueID, int gameID) {
     TribeMainDecisionAIModule* ai = this->playerAI;
     if (!ai) {
@@ -1478,33 +1439,26 @@ void TRIBE_Player::registerTrain(int uType, int location, int uniqueID, int game
     ai->buildAI.addTrainedUnit(uType, location, uniqueID, gameID);
 }
 
-
 void TRIBE_Player::research(int rType, int bID, int uniqueID) {
     short player_id = this->id;
-    TRIBE_Command* command =
-        static_cast<TRIBE_Command*>(this->world->commands);
+    TRIBE_Command* command = static_cast<TRIBE_Command*>(this->world->commands);
     command->command_research(player_id, bID, rType, uniqueID);
 }
 
-
 void TRIBE_Player::cancelResearch(int reason, int rType, int location, int uniqueID) {
-    TribeMainDecisionAIModule* ai =
-        this->playerAI;
+    TribeMainDecisionAIModule* ai = this->playerAI;
     if (!ai) {
         return;
     }
     ai->buildAI.cancelResearch(reason, rType, location, uniqueID);
 }
 
-
 void TRIBE_Player::registerResearch(int rType, int location, int uniqueID) {
-    TribeMainDecisionAIModule* ai =
-        this->playerAI;
-    if (!ai) return;
+    TribeMainDecisionAIModule* ai = this->playerAI;
+    if (!ai)
+        return;
     ai->buildAI.addResearch(rType, location, uniqueID);
 }
-
-
 
 void TRIBE_Player::taskTrader(int tID, int oID, int ownerID, float x, float y) {
     int* task = static_cast<int*>(calloc(1, 4));
@@ -1513,8 +1467,6 @@ void TRIBE_Player::taskTrader(int tID, int oID, int ownerID, float x, float y) {
     free(task);
 }
 
-
-
 void TRIBE_Player::taskResourceGatherer(int gID, int oID, int ownerID, float x, float y) {
     int* task = static_cast<int*>(calloc(1, 4));
     *task = gID;
@@ -1522,11 +1474,10 @@ void TRIBE_Player::taskResourceGatherer(int gID, int oID, int ownerID, float x, 
     free(task);
 }
 
-
 void TRIBE_Player::setDiplomaticStance(int playerNum, int rType) {
-    static_cast<TRIBE_Command*>(this->world->commands)->command_relation(this->id, static_cast<short>(playerNum), static_cast<short>(rType));
+    static_cast<TRIBE_Command*>(this->world->commands)
+        ->command_relation(this->id, static_cast<short>(playerNum), static_cast<short>(rType));
 }
-
 
 void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int mapType) {
     char noneString[256];
@@ -1543,12 +1494,24 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
 
     if (this->playerAI) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case TRIBE_Game::AllWater: this->playerAI->logCommonHistory("We have an all water map."); break;
-        case TRIBE_Game::MostlyWater: this->playerAI->logCommonHistory("We have a mostly water map."); break;
-        case TRIBE_Game::WaterAndLand: this->playerAI->logCommonHistory("We have a land and water map."); break;
-        case TRIBE_Game::MostlyLand: this->playerAI->logCommonHistory("We have a mostly land map."); break;
-        case TRIBE_Game::AllLand: this->playerAI->logCommonHistory("We have an all land map."); break;
-        default: this->playerAI->logCommonHistory("We don't have a specific map type (i.e. this is a scenario)."); break;
+            case TRIBE_Game::AllWater:
+                this->playerAI->logCommonHistory("We have an all water map.");
+                break;
+            case TRIBE_Game::MostlyWater:
+                this->playerAI->logCommonHistory("We have a mostly water map.");
+                break;
+            case TRIBE_Game::WaterAndLand:
+                this->playerAI->logCommonHistory("We have a land and water map.");
+                break;
+            case TRIBE_Game::MostlyLand:
+                this->playerAI->logCommonHistory("We have a mostly land map.");
+                break;
+            case TRIBE_Game::AllLand:
+                this->playerAI->logCommonHistory("We have an all land map.");
+                break;
+            default:
+                this->playerAI->logCommonHistory("We don't have a specific map type (i.e. this is a scenario).");
+                break;
         }
         rge_base_game->get_string(STRING_ID_FILE_NONE, noneString, 256);
         rge_base_game->get_string(STRING_ID_AI_FILE_RANDOM, randomString, 256);
@@ -1559,10 +1522,11 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
         if (bL) {
             if (strcmp(bL, randomString) == 0) {
                 do {
-                    this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
-                                                                static_cast<TRIBE_Game*>(rge_base_game)->mapType(),
-                                                                static_cast<TRIBE_Game*>(rge_base_game)->victoryType(),
-                                                                 static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
+                    this->intelligentBuildListAndRulesSelection(
+                        buildListName, ruleSetName, static_cast<TRIBE_Game*>(rge_base_game)->mapType(),
+                        static_cast<TRIBE_Game*>(rge_base_game)->victoryType(),
+                        static_cast<TRIBE_Game*>(rge_base_game)->mapSize()
+                    );
                     this->playerAI->logCommonHistory("Loading random game selected build list=%s.", buildListName);
                 } while (this->playerAI->buildAI.loadBuildList(buildListName, this) == 0);
             } else {
@@ -1571,10 +1535,11 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
             }
         } else {
             do {
-                this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
-                                                            static_cast<TRIBE_Game*>(rge_base_game)->mapType(),
-                                                            static_cast<TRIBE_Game*>(rge_base_game)->victoryType(),
-                                                            static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
+                this->intelligentBuildListAndRulesSelection(
+                    buildListName, ruleSetName, static_cast<TRIBE_Game*>(rge_base_game)->mapType(),
+                    static_cast<TRIBE_Game*>(rge_base_game)->victoryType(),
+                    static_cast<TRIBE_Game*>(rge_base_game)->mapSize()
+                );
                 this->playerAI->logCommonHistory("Loading default build list=%s.", buildListName);
             } while (this->playerAI->buildAI.loadBuildList(buildListName, this) == 0);
         }
@@ -1584,15 +1549,17 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
                 this->playerAI->logCommonHistory("Loading no city plan (influence placement will be used).");
             } else {
                 this->playerAI->logCommonHistory("Loading city plan=%s.", cP);
-                this->playerAI->constructionAI.loadConstructionPlan(cP, this->world->map->map_width,
-                                                                    this->world->map->map_height, 0, 0, 0);
+                this->playerAI->constructionAI.loadConstructionPlan(
+                    cP, this->world->map->map_width, this->world->map->map_height, 0, 0, 0
+                );
                 goto constructionLoaded;
             }
         } else {
             this->playerAI->logCommonHistory("Loading no city plan (influence placement will be used).");
         }
-        this->playerAI->constructionAI.loadConstructionPlan("NONE", this->world->map->map_width,
-                                                            this->world->map->map_height, 0, 0, 0);
+        this->playerAI->constructionAI.loadConstructionPlan(
+            "NONE", this->world->map->map_width, this->world->map->map_height, 0, 0, 0
+        );
 
     constructionLoaded:
 
@@ -1633,55 +1600,56 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
 
         this->playerAI->emotionalAI.setOverallState(mood);
         char* learn = this->world->scenario->scenario_name;
-        if (learn && strlen(learn) != 0) this->playerAI->informationAI.loadLearnInfo(learn);
+        if (learn && strlen(learn) != 0)
+            this->playerAI->informationAI.loadLearnInfo(learn);
     }
 
     debug_random_on = save_debug_random_on;
     debug_srand(tplayerSourceName, 2301, saveRand);
 }
 
-
 extern int global_save_debug_random_on3;
 extern int global_save_debug_random_on4;
 
-
-void TRIBE_Player::notify(int caller, int recipient, int mType,
-                          long p1, long p2, long p3) {
+void TRIBE_Player::notify(int caller, int recipient, int mType, long p1, long p2, long p3) {
     RGE_Static_Object* attackingObject;
     switch (mType) {
-    case 0x201:
-        if (this->update_count == 0) {
-            this->update_count = 20;
-            attackingObject = this->world->object(p1);
-            if (attackingObject != 0) {
-                int seed = debug_rand(tplayerSourceName, 2336);
-                int saved = debug_random_on;
-                debug_random_on = 0;
-                global_save_debug_random_on3 = saved;
-                if (this->world->curr_player == this->id) {
-                    //! @bug The alert sound index comes from attribute 26 with no validation or default.
-                    //! The gaia master row leaves attribute 26 at 0, so player 0 plays sounds[0].
-                    //! Normal players play the attack sound. This runs when player 0 is current.
-                    RGE_Sound* sound = this->world->sounds[static_cast<short>(this->attributes[26])];
-                    if (sound != 0) sound->play(1);
-                    static_cast<TRIBE_Game*>(rge_base_game)->add_notification_loc(
-                        static_cast<long>(attackingObject->world_x), static_cast<long>(attackingObject->world_y));
+        case 0x201:
+            if (this->update_count == 0) {
+                this->update_count = 20;
+                attackingObject = this->world->object(p1);
+                if (attackingObject != 0) {
+                    int seed = debug_rand(tplayerSourceName, 2336);
+                    int saved = debug_random_on;
+                    debug_random_on = 0;
+                    global_save_debug_random_on3 = saved;
+                    if (this->world->curr_player == this->id) {
+                        //! @bug The alert sound index comes from attribute 26 with no validation or default.
+                        //! The gaia master row leaves attribute 26 at 0, so player 0 plays sounds[0].
+                        //! Normal players play the attack sound. This runs when player 0 is current.
+                        RGE_Sound* sound = this->world->sounds[static_cast<short>(this->attributes[26])];
+                        if (sound != 0)
+                            sound->play(1);
+                        static_cast<TRIBE_Game*>(rge_base_game)
+                            ->add_notification_loc(
+                                static_cast<long>(attackingObject->world_x), static_cast<long>(attackingObject->world_y)
+                            );
+                    }
+                    debug_random_on = saved;
+                    debug_srand(tplayerSourceName, 2353, seed);
                 }
-                debug_random_on = saved;
-                debug_srand(tplayerSourceName, 2353, seed);
             }
-        }
-        break;
-    case 0x20C:
-        if (p1 == UNIT_AI_ACTION_TRADE)
-            static_cast<TRIBE_Game*>(rge_base_game)->notification(3, this->id, 0, 0, 0);
-        break;
-    case 0x207:
-        static_cast<TRIBE_Game*>(rge_base_game)->notification(1, this->id, 0, 0, 0);
-        break;
-    case 0x206:
-        static_cast<TRIBE_Game*>(rge_base_game)->notification(2, this->id, 0, 0, 0);
-        break;
+            break;
+        case 0x20C:
+            if (p1 == UNIT_AI_ACTION_TRADE)
+                static_cast<TRIBE_Game*>(rge_base_game)->notification(3, this->id, 0, 0, 0);
+            break;
+        case 0x207:
+            static_cast<TRIBE_Game*>(rge_base_game)->notification(1, this->id, 0, 0, 0);
+            break;
+        case 0x206:
+            static_cast<TRIBE_Game*>(rge_base_game)->notification(2, this->id, 0, 0, 0);
+            break;
     }
     int seed = debug_rand(tplayerSourceName, 2377);
     int saved = debug_random_on;
@@ -1693,71 +1661,72 @@ void TRIBE_Player::notify(int caller, int recipient, int mType,
     debug_srand(tplayerSourceName, 2390, seed);
 }
 
-
-
-
 void TRIBE_Player::notifyAI(int callerID, int recipientID, int mType, long p1, long p2, long p3) {
     RGE_Static_Object* obj = this->world->object(callerID);
     if (mType != 0x20a && mType != 0x72 && mType != 0x74) {
-        if (obj == 0) return;
-        if (obj->unitAI() == 0) return;
+        if (obj == 0)
+            return;
+        if (obj->unitAI() == 0)
+            return;
     }
 
     switch (mType) {
-    case UNIT_AI_NOTIFY_ACTION_FAILED:
-        if (p1 != UNIT_AI_ACTION_EXPLORE) return;
-        {
-            TacticalAIGroup* group = this->playerAI->tacticalAI.groupUnitIsIn(callerID);
-            if (group == 0) return;
-            if (group->type() != 0x6b) return;
-            this->playerAI->tacticalAI.removeGroup(group->id());
-            return;
-        }
-    case UNIT_AI_NOTIFY_REQUEST_TASK: {
-        float unY;
-        float unX;
-        switch (p1) {
-        case UNIT_AI_ACTION_EXPLORE:
-        case UNIT_AI_ACTION_EXPLORE_AND_DESTROY:
-            if (this->playerAI->informationAI.fullyExploredZone(callerID) != 0 &&
-                this->playerAI->informationAI.closestUnexploredTile(callerID, obj->world_x, obj->world_y, &unY, &unX) == 1) {
-                this->playerAI->tacticalAI.taskExplorer(callerID, unY, unX);
+        case UNIT_AI_NOTIFY_ACTION_FAILED:
+            if (p1 != UNIT_AI_ACTION_EXPLORE)
+                return;
+            {
+                TacticalAIGroup* group = this->playerAI->tacticalAI.groupUnitIsIn(callerID);
+                if (group == 0)
+                    return;
+                if (group->type() != 0x6b)
+                    return;
+                this->playerAI->tacticalAI.removeGroup(group->id());
                 return;
             }
-            this->playerAI->tacticalAI.detask(callerID);
-            return;
+        case UNIT_AI_NOTIFY_REQUEST_TASK: {
+            float unY;
+            float unX;
+            switch (p1) {
+                case UNIT_AI_ACTION_EXPLORE:
+                case UNIT_AI_ACTION_EXPLORE_AND_DESTROY:
+                    if (this->playerAI->informationAI.fullyExploredZone(callerID) != 0
+                        && this->playerAI->informationAI.closestUnexploredTile(
+                               callerID, obj->world_x, obj->world_y, &unY, &unX
+                           ) == 1) {
+                        this->playerAI->tacticalAI.taskExplorer(callerID, unY, unX);
+                        return;
+                    }
+                    this->playerAI->tacticalAI.detask(callerID);
+                    return;
+            }
+            break;
         }
-        break;
-    }
-    case 0x209:
-        obj = this->world->object(p1);
-        if (obj != 0) {
-            this->playerAI->diplomacyAI.changeStance(obj->owner->id, 0, 10);
+        case 0x209:
+            obj = this->world->object(p1);
+            if (obj != 0) {
+                this->playerAI->diplomacyAI.changeStance(obj->owner->id, 0, 10);
+                return;
+            }
+            break;
+        case 0x20a:
+            this->playerAI->tributeNotify(callerID, p1, p2);
             return;
-        }
-        break;
-    case 0x20a:
-        this->playerAI->tributeNotify(callerID, p1, p2);
-        return;
-    case 0x72:
-    case 0x74:
-    case 0x201:
-        this->playerAI->tacticalAI.notify(callerID, recipientID, mType, p1, p2, p3);
-        return;
-    case 0x20d:
-        this->playerAI->informationAI.addImportantObject(p1);
-        break;
+        case 0x72:
+        case 0x74:
+        case 0x201:
+            this->playerAI->tacticalAI.notify(callerID, recipientID, mType, p1, p2, p3);
+            return;
+        case 0x20d:
+            this->playerAI->informationAI.addImportantObject(p1);
+            break;
     }
 }
 
+int TRIBE_Player::intelligentCivSelection(int mapType, int gameType, int mapSize) {
+    return 0;
+}
 
-int TRIBE_Player::intelligentCivSelection(int mapType, int gameType, int mapSize) { return 0; }
-
-
-
-
-void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
-                                                         int mapType, int gameType, int mapSize) {
+void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int mapType, int gameType, int mapSize) {
     int difficultyLevel;
     int gameDifficulty;
     int buildLists[125];
@@ -1772,30 +1741,62 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
     memset(buildLists, 0, sizeof(buildLists));
 
     switch (this->master_player_id) {
-    case CIVILIZATION_EGYPTIAN: this->setupEgyptian(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_GREEK: this->setupGreek(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_BABYLONIAN: this->setupBabylonian(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_ASSYRIAN: this->setupAssyrian(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_MINOAN: this->setupMinoan(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_HITTITE: this->setupHittite(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_PHOENICIAN: this->setupPhoenician(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_SUMERIAN: this->setupSumerian(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_PERSIAN: this->setupPersian(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_SHANG: this->setupShang(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_YAMATO: this->setupYamato(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_CHOSON: this->setupChoson(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_ROMAN: this->setupRoman(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_CARTHAGINIAN: this->setupCarthaginian(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_PALMYRAN: this->setupPalmyran(buildLists, mapType, gameType, mapSize); break;
-    case CIVILIZATION_MACEDONIAN: this->setupMacedonian(buildLists, mapType, gameType, mapSize); break;
+        case CIVILIZATION_EGYPTIAN:
+            this->setupEgyptian(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_GREEK:
+            this->setupGreek(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_BABYLONIAN:
+            this->setupBabylonian(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_ASSYRIAN:
+            this->setupAssyrian(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_MINOAN:
+            this->setupMinoan(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_HITTITE:
+            this->setupHittite(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_PHOENICIAN:
+            this->setupPhoenician(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_SUMERIAN:
+            this->setupSumerian(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_PERSIAN:
+            this->setupPersian(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_SHANG:
+            this->setupShang(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_YAMATO:
+            this->setupYamato(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_CHOSON:
+            this->setupChoson(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_ROMAN:
+            this->setupRoman(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_CARTHAGINIAN:
+            this->setupCarthaginian(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_PALMYRAN:
+            this->setupPalmyran(buildLists, mapType, gameType, mapSize);
+            break;
+        case CIVILIZATION_MACEDONIAN:
+            this->setupMacedonian(buildLists, mapType, gameType, mapSize);
+            break;
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0) {
         int civ = this->master_player_id - 1;
-        if (civ == (CIVILIZATION_ASSYRIAN - 1) || civ == (CIVILIZATION_EGYPTIAN - 1) ||
-            civ == (CIVILIZATION_GREEK - 1) || civ == (CIVILIZATION_MINOAN - 1) ||
-            civ == (CIVILIZATION_PERSIAN - 1) || civ == (CIVILIZATION_PHOENICIAN - 1) ||
-            civ == (CIVILIZATION_SUMERIAN - 1) || civ == (CIVILIZATION_YAMATO - 1)) {
+        if (civ == (CIVILIZATION_ASSYRIAN - 1) || civ == (CIVILIZATION_EGYPTIAN - 1) || civ == (CIVILIZATION_GREEK - 1)
+            || civ == (CIVILIZATION_MINOAN - 1) || civ == (CIVILIZATION_PERSIAN - 1)
+            || civ == (CIVILIZATION_PHOENICIAN - 1) || civ == (CIVILIZATION_SUMERIAN - 1)
+            || civ == (CIVILIZATION_YAMATO - 1)) {
             int aggressiveSelections = tplayer_globals::aggressiveBuildListCount;
             int selectedBuildLists = tplayer_globals::selectedBuildListCount;
             if (mapType == TRIBE_Game::AllWater) {
@@ -1851,140 +1852,199 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
         this->playerAI->informationAI.loadUnitHistory();
         this->playerAI->informationAI.unitsThatAreMostBuilt(difficultyLevel, mostBuiltUnit2);
         switch (difficultyLevel) {
-        case 0:
-            buildLists[(7) - 1] += 25;
-            buildLists[(8) - 1] += 25;
-            break;
-        case 1:
-            buildLists[(7) - 1] += 30;
-            buildLists[(8) - 1] += 30;
-            break;
-        case 2:
-            buildLists[(0x12) - 1] += 20;
-            buildLists[(0x13) - 1] += 20;
-            buildLists[(4) - 1] += 40;
-            buildLists[(5) - 1] += 40;
-            break;
-        case 3:
-            buildLists[(1) - 1] += 40;
-            buildLists[(2) - 1] += 20;
-            buildLists[(0x14) - 1] += 20;
-            buildLists[(0x15) - 1] += 20;
-            buildLists[(0x12) - 1] -= 60;
-            buildLists[(0x13) - 1] -= 60;
-            break;
-        case 4:
-            buildLists[(7) - 1] += 15;
-            buildLists[(8) - 1] += 15;
-            buildLists[(0x14) - 1] += 20;
-            buildLists[(0x15) - 1] += 20;
-            break;
-        case 5:
-            buildLists[(7) - 1] += 15;
-            buildLists[(8) - 1] += 15;
-            buildLists[(1) - 1] += 10;
-            buildLists[(2) - 1] += 10;
-            break;
-        case 6:
-            buildLists[(7) - 1] += 15;
-            buildLists[(8) - 1] += 15;
-            break;
-        case 7:
-        case 10:
-            buildLists[(0x14) - 1] -= 60;
-            buildLists[(0x15) - 1] -= 60;
-            break;
-        case 8:
-            buildLists[(0x14) - 1] += 40;
-            buildLists[(0x15) - 1] += 40;
-            if (tplayer_globals::selectedBuildListCount > 0) {
-                buildLists[(0x0E) - 1] += 50;
-                buildLists[(0x0F) - 1] += 50;
-            }
-            break;
-        case 9:
-            buildLists[(0x14) - 1] += 100;
-            buildLists[(0x15) - 1] += 100;
-            break;
+            case 0:
+                buildLists[(7) - 1] += 25;
+                buildLists[(8) - 1] += 25;
+                break;
+            case 1:
+                buildLists[(7) - 1] += 30;
+                buildLists[(8) - 1] += 30;
+                break;
+            case 2:
+                buildLists[(0x12) - 1] += 20;
+                buildLists[(0x13) - 1] += 20;
+                buildLists[(4) - 1] += 40;
+                buildLists[(5) - 1] += 40;
+                break;
+            case 3:
+                buildLists[(1) - 1] += 40;
+                buildLists[(2) - 1] += 20;
+                buildLists[(0x14) - 1] += 20;
+                buildLists[(0x15) - 1] += 20;
+                buildLists[(0x12) - 1] -= 60;
+                buildLists[(0x13) - 1] -= 60;
+                break;
+            case 4:
+                buildLists[(7) - 1] += 15;
+                buildLists[(8) - 1] += 15;
+                buildLists[(0x14) - 1] += 20;
+                buildLists[(0x15) - 1] += 20;
+                break;
+            case 5:
+                buildLists[(7) - 1] += 15;
+                buildLists[(8) - 1] += 15;
+                buildLists[(1) - 1] += 10;
+                buildLists[(2) - 1] += 10;
+                break;
+            case 6:
+                buildLists[(7) - 1] += 15;
+                buildLists[(8) - 1] += 15;
+                break;
+            case 7:
+            case 10:
+                buildLists[(0x14) - 1] -= 60;
+                buildLists[(0x15) - 1] -= 60;
+                break;
+            case 8:
+                buildLists[(0x14) - 1] += 40;
+                buildLists[(0x15) - 1] += 40;
+                if (tplayer_globals::selectedBuildListCount > 0) {
+                    buildLists[(0x0E) - 1] += 50;
+                    buildLists[(0x0F) - 1] += 50;
+                }
+                break;
+            case 9:
+                buildLists[(0x14) - 1] += 100;
+                buildLists[(0x15) - 1] += 100;
+                break;
         }
     }
 
     difficultyLevel = 0;
     do {
         switch (difficultyLevel) {
-        case 0:
-            if (0 < (buildLists[(0x14) - 1])) (buildLists[(0x14) - 1]) = (buildLists[(0x14) - 1]) / 3;
-            if (0 < (buildLists[(0x15) - 1])) (buildLists[(0x15) - 1]) = (buildLists[(0x15) - 1]) / 3;
-            if (0 < (buildLists[(0x16) - 1])) (buildLists[(0x16) - 1]) = (buildLists[(0x16) - 1]) / 3;
-            break;
-        case 1:
-            if (0 < (buildLists[(7) - 1])) (buildLists[(7) - 1]) = (buildLists[(7) - 1]) / 3;
-            if (0 < (buildLists[(8) - 1])) (buildLists[(8) - 1]) = (buildLists[(8) - 1]) / 3;
-            if (0 < (buildLists[(9) - 1])) (buildLists[(9) - 1]) = (buildLists[(9) - 1]) / 3;
-            if (0 < (buildLists[(0x3C) - 1])) (buildLists[(0x3C) - 1]) = (buildLists[(0x3C) - 1]) / 3;
-            if (0 < (buildLists[(0x3B) - 1])) (buildLists[(0x3B) - 1]) = (buildLists[(0x3B) - 1]) / 3;
-            if (0 < (buildLists[(0x37) - 1])) (buildLists[(0x37) - 1]) = (buildLists[(0x37) - 1]) / 3;
-            if (0 < (buildLists[(0x38) - 1])) (buildLists[(0x38) - 1]) = (buildLists[(0x38) - 1]) / 3;
-            if (0 < (buildLists[(0x69) - 1])) (buildLists[(0x69) - 1]) = (buildLists[(0x69) - 1]) / 3;
-            break;
-        case 2:
-            if (0 < (buildLists[(0x11) - 1])) (buildLists[(0x11) - 1]) = (buildLists[(0x11) - 1]) / 3;
-            if (0 < (buildLists[(0x32) - 1])) (buildLists[(0x32) - 1]) = (buildLists[(0x32) - 1]) / 3;
-            if (0 < (buildLists[(0x6D) - 1])) (buildLists[(0x6D) - 1]) = (buildLists[(0x6D) - 1]) / 3;
-            break;
-        case 3:
-            if (0 < (buildLists[(0x2F) - 1])) (buildLists[(0x2F) - 1]) = (buildLists[(0x2F) - 1]) / 3;
-            if (0 < (buildLists[(0x36) - 1])) (buildLists[(0x36) - 1]) = (buildLists[(0x36) - 1]) / 3;
-            if (0 < (buildLists[(0x12) - 1])) (buildLists[(0x12) - 1]) = (buildLists[(0x12) - 1]) / 3;
-            if (0 < (buildLists[(0x13) - 1])) (buildLists[(0x13) - 1]) = (buildLists[(0x13) - 1]) / 3;
-            if (0 < (buildLists[(100) - 1])) (buildLists[(100) - 1]) = (buildLists[(100) - 1]) / 3;
-            if (0 < (buildLists[(0x67) - 1])) (buildLists[(0x67) - 1]) = (buildLists[(0x67) - 1]) / 3;
-            if (0 < (buildLists[(0x6E) - 1])) (buildLists[(0x6E) - 1]) = (buildLists[(0x6E) - 1]) / 3;
-            if (0 < (buildLists[(0x13) - 1])) (buildLists[(0x13) - 1]) = (buildLists[(0x13) - 1]) / 3;
-            break;
-        case 4:
-            if (0 < (buildLists[(4) - 1])) (buildLists[(4) - 1]) = (buildLists[(4) - 1]) / 3;
-            if (0 < (buildLists[(5) - 1])) (buildLists[(5) - 1]) = (buildLists[(5) - 1]) / 3;
-            if (0 < (buildLists[(6) - 1])) (buildLists[(6) - 1]) = (buildLists[(6) - 1]) / 3;
-            if (0 < (buildLists[(10) - 1])) (buildLists[(10) - 1]) = (buildLists[(10) - 1]) / 3;
-            if (0 < (buildLists[(0x0B) - 1])) (buildLists[(0x0B) - 1]) = (buildLists[(0x0B) - 1]) / 3;
-            if (0 < (buildLists[(0x0C) - 1])) (buildLists[(0x0C) - 1]) = (buildLists[(0x0C) - 1]) / 3;
-            if (0 < (buildLists[(0x0D) - 1])) (buildLists[(0x0D) - 1]) = (buildLists[(0x0D) - 1]) / 3;
-            if (0 < (buildLists[(0x2B) - 1])) (buildLists[(0x2B) - 1]) = (buildLists[(0x2B) - 1]) / 3;
-            if (0 < (buildLists[(0x2D) - 1])) (buildLists[(0x2D) - 1]) = (buildLists[(0x2D) - 1]) / 3;
-            if (0 < (buildLists[(0x2E) - 1])) (buildLists[(0x2E) - 1]) = (buildLists[(0x2E) - 1]) / 3;
-            if (0 < (buildLists[(0x30) - 1])) (buildLists[(0x30) - 1]) = (buildLists[(0x30) - 1]) / 3;
-            if (0 < (buildLists[(0x31) - 1])) (buildLists[(0x31) - 1]) = (buildLists[(0x31) - 1]) / 3;
-            if (0 < (buildLists[(0x39) - 1])) (buildLists[(0x39) - 1]) = (buildLists[(0x39) - 1]) / 3;
-            if (0 < (buildLists[(0x4B) - 1])) (buildLists[(0x4B) - 1]) = (buildLists[(0x4B) - 1]) / 3;
-            if (0 < (buildLists[(99) - 1])) (buildLists[(99) - 1]) = (buildLists[(99) - 1]) / 3;
-            if (0 < (buildLists[(0x68) - 1])) (buildLists[(0x68) - 1]) = (buildLists[(0x68) - 1]) / 3;
-            if (0 < (buildLists[(0x71) - 1])) (buildLists[(0x71) - 1]) = (buildLists[(0x71) - 1]) / 3;
-            if (0 < (buildLists[(0x72) - 1])) (buildLists[(0x72) - 1]) = (buildLists[(0x72) - 1]) / 3;
-            break;
-        case 5:
-            if (0 < (buildLists[(0x2A) - 1])) (buildLists[(0x2A) - 1]) = (buildLists[(0x2A) - 1]) / 3;
-            if (0 < (buildLists[(1) - 1])) (buildLists[(1) - 1]) = (buildLists[(1) - 1]) / 3;
-            if (0 < (buildLists[(2) - 1])) (buildLists[(2) - 1]) = (buildLists[(2) - 1]) / 3;
-            if (0 < (buildLists[(3) - 1])) (buildLists[(3) - 1]) = (buildLists[(3) - 1]) / 3;
-            if (0 < (buildLists[(0x2A) - 1])) (buildLists[(0x2A) - 1]) = (buildLists[(0x2A) - 1]) / 3;
-            if (0 < (buildLists[(0x33) - 1])) (buildLists[(0x33) - 1]) = (buildLists[(0x33) - 1]) / 3;
-            if (0 < (buildLists[(0x34) - 1])) (buildLists[(0x34) - 1]) = (buildLists[(0x34) - 1]) / 3;
-            if (0 < (buildLists[(0x49) - 1])) (buildLists[(0x49) - 1]) = (buildLists[(0x49) - 1]) / 3;
-            if (0 < (buildLists[(0x4A) - 1])) (buildLists[(0x4A) - 1]) = (buildLists[(0x4A) - 1]) / 3;
-            if (0 < (buildLists[(0x33) - 1])) (buildLists[(0x33) - 1]) = (buildLists[(0x33) - 1]) / 3;
-            if (0 < (buildLists[(0x34) - 1])) (buildLists[(0x34) - 1]) = (buildLists[(0x34) - 1]) / 3;
-            if (0 < (buildLists[(0x51) - 1])) (buildLists[(0x51) - 1]) = (buildLists[(0x51) - 1]) / 3;
-            if (0 < (buildLists[(0x52) - 1])) (buildLists[(0x52) - 1]) = (buildLists[(0x52) - 1]) / 3;
-            if (0 < (buildLists[(0x53) - 1])) (buildLists[(0x53) - 1]) = (buildLists[(0x53) - 1]) / 3;
-            if (0 < (buildLists[(0x6C) - 1])) (buildLists[(0x6C) - 1]) = (buildLists[(0x6C) - 1]) / 3;
-            break;
-        case 6:
-            if (0 < (buildLists[(0x29) - 1])) (buildLists[(0x29) - 1]) = (buildLists[(0x29) - 1]) / 3;
-            if (0 < (buildLists[(0x3A) - 1])) (buildLists[(0x3A) - 1]) = (buildLists[(0x3A) - 1]) / 3;
-            if (0 < (buildLists[(0x73) - 1])) (buildLists[(0x73) - 1]) = (buildLists[(0x73) - 1]) / 3;
-            if (0 < (buildLists[(0x55) - 1])) (buildLists[(0x55) - 1]) = (buildLists[(0x55) - 1]) / 3;
-            break;
+            case 0:
+                if (0 < (buildLists[(0x14) - 1]))
+                    (buildLists[(0x14) - 1]) = (buildLists[(0x14) - 1]) / 3;
+                if (0 < (buildLists[(0x15) - 1]))
+                    (buildLists[(0x15) - 1]) = (buildLists[(0x15) - 1]) / 3;
+                if (0 < (buildLists[(0x16) - 1]))
+                    (buildLists[(0x16) - 1]) = (buildLists[(0x16) - 1]) / 3;
+                break;
+            case 1:
+                if (0 < (buildLists[(7) - 1]))
+                    (buildLists[(7) - 1]) = (buildLists[(7) - 1]) / 3;
+                if (0 < (buildLists[(8) - 1]))
+                    (buildLists[(8) - 1]) = (buildLists[(8) - 1]) / 3;
+                if (0 < (buildLists[(9) - 1]))
+                    (buildLists[(9) - 1]) = (buildLists[(9) - 1]) / 3;
+                if (0 < (buildLists[(0x3C) - 1]))
+                    (buildLists[(0x3C) - 1]) = (buildLists[(0x3C) - 1]) / 3;
+                if (0 < (buildLists[(0x3B) - 1]))
+                    (buildLists[(0x3B) - 1]) = (buildLists[(0x3B) - 1]) / 3;
+                if (0 < (buildLists[(0x37) - 1]))
+                    (buildLists[(0x37) - 1]) = (buildLists[(0x37) - 1]) / 3;
+                if (0 < (buildLists[(0x38) - 1]))
+                    (buildLists[(0x38) - 1]) = (buildLists[(0x38) - 1]) / 3;
+                if (0 < (buildLists[(0x69) - 1]))
+                    (buildLists[(0x69) - 1]) = (buildLists[(0x69) - 1]) / 3;
+                break;
+            case 2:
+                if (0 < (buildLists[(0x11) - 1]))
+                    (buildLists[(0x11) - 1]) = (buildLists[(0x11) - 1]) / 3;
+                if (0 < (buildLists[(0x32) - 1]))
+                    (buildLists[(0x32) - 1]) = (buildLists[(0x32) - 1]) / 3;
+                if (0 < (buildLists[(0x6D) - 1]))
+                    (buildLists[(0x6D) - 1]) = (buildLists[(0x6D) - 1]) / 3;
+                break;
+            case 3:
+                if (0 < (buildLists[(0x2F) - 1]))
+                    (buildLists[(0x2F) - 1]) = (buildLists[(0x2F) - 1]) / 3;
+                if (0 < (buildLists[(0x36) - 1]))
+                    (buildLists[(0x36) - 1]) = (buildLists[(0x36) - 1]) / 3;
+                if (0 < (buildLists[(0x12) - 1]))
+                    (buildLists[(0x12) - 1]) = (buildLists[(0x12) - 1]) / 3;
+                if (0 < (buildLists[(0x13) - 1]))
+                    (buildLists[(0x13) - 1]) = (buildLists[(0x13) - 1]) / 3;
+                if (0 < (buildLists[(100) - 1]))
+                    (buildLists[(100) - 1]) = (buildLists[(100) - 1]) / 3;
+                if (0 < (buildLists[(0x67) - 1]))
+                    (buildLists[(0x67) - 1]) = (buildLists[(0x67) - 1]) / 3;
+                if (0 < (buildLists[(0x6E) - 1]))
+                    (buildLists[(0x6E) - 1]) = (buildLists[(0x6E) - 1]) / 3;
+                if (0 < (buildLists[(0x13) - 1]))
+                    (buildLists[(0x13) - 1]) = (buildLists[(0x13) - 1]) / 3;
+                break;
+            case 4:
+                if (0 < (buildLists[(4) - 1]))
+                    (buildLists[(4) - 1]) = (buildLists[(4) - 1]) / 3;
+                if (0 < (buildLists[(5) - 1]))
+                    (buildLists[(5) - 1]) = (buildLists[(5) - 1]) / 3;
+                if (0 < (buildLists[(6) - 1]))
+                    (buildLists[(6) - 1]) = (buildLists[(6) - 1]) / 3;
+                if (0 < (buildLists[(10) - 1]))
+                    (buildLists[(10) - 1]) = (buildLists[(10) - 1]) / 3;
+                if (0 < (buildLists[(0x0B) - 1]))
+                    (buildLists[(0x0B) - 1]) = (buildLists[(0x0B) - 1]) / 3;
+                if (0 < (buildLists[(0x0C) - 1]))
+                    (buildLists[(0x0C) - 1]) = (buildLists[(0x0C) - 1]) / 3;
+                if (0 < (buildLists[(0x0D) - 1]))
+                    (buildLists[(0x0D) - 1]) = (buildLists[(0x0D) - 1]) / 3;
+                if (0 < (buildLists[(0x2B) - 1]))
+                    (buildLists[(0x2B) - 1]) = (buildLists[(0x2B) - 1]) / 3;
+                if (0 < (buildLists[(0x2D) - 1]))
+                    (buildLists[(0x2D) - 1]) = (buildLists[(0x2D) - 1]) / 3;
+                if (0 < (buildLists[(0x2E) - 1]))
+                    (buildLists[(0x2E) - 1]) = (buildLists[(0x2E) - 1]) / 3;
+                if (0 < (buildLists[(0x30) - 1]))
+                    (buildLists[(0x30) - 1]) = (buildLists[(0x30) - 1]) / 3;
+                if (0 < (buildLists[(0x31) - 1]))
+                    (buildLists[(0x31) - 1]) = (buildLists[(0x31) - 1]) / 3;
+                if (0 < (buildLists[(0x39) - 1]))
+                    (buildLists[(0x39) - 1]) = (buildLists[(0x39) - 1]) / 3;
+                if (0 < (buildLists[(0x4B) - 1]))
+                    (buildLists[(0x4B) - 1]) = (buildLists[(0x4B) - 1]) / 3;
+                if (0 < (buildLists[(99) - 1]))
+                    (buildLists[(99) - 1]) = (buildLists[(99) - 1]) / 3;
+                if (0 < (buildLists[(0x68) - 1]))
+                    (buildLists[(0x68) - 1]) = (buildLists[(0x68) - 1]) / 3;
+                if (0 < (buildLists[(0x71) - 1]))
+                    (buildLists[(0x71) - 1]) = (buildLists[(0x71) - 1]) / 3;
+                if (0 < (buildLists[(0x72) - 1]))
+                    (buildLists[(0x72) - 1]) = (buildLists[(0x72) - 1]) / 3;
+                break;
+            case 5:
+                if (0 < (buildLists[(0x2A) - 1]))
+                    (buildLists[(0x2A) - 1]) = (buildLists[(0x2A) - 1]) / 3;
+                if (0 < (buildLists[(1) - 1]))
+                    (buildLists[(1) - 1]) = (buildLists[(1) - 1]) / 3;
+                if (0 < (buildLists[(2) - 1]))
+                    (buildLists[(2) - 1]) = (buildLists[(2) - 1]) / 3;
+                if (0 < (buildLists[(3) - 1]))
+                    (buildLists[(3) - 1]) = (buildLists[(3) - 1]) / 3;
+                if (0 < (buildLists[(0x2A) - 1]))
+                    (buildLists[(0x2A) - 1]) = (buildLists[(0x2A) - 1]) / 3;
+                if (0 < (buildLists[(0x33) - 1]))
+                    (buildLists[(0x33) - 1]) = (buildLists[(0x33) - 1]) / 3;
+                if (0 < (buildLists[(0x34) - 1]))
+                    (buildLists[(0x34) - 1]) = (buildLists[(0x34) - 1]) / 3;
+                if (0 < (buildLists[(0x49) - 1]))
+                    (buildLists[(0x49) - 1]) = (buildLists[(0x49) - 1]) / 3;
+                if (0 < (buildLists[(0x4A) - 1]))
+                    (buildLists[(0x4A) - 1]) = (buildLists[(0x4A) - 1]) / 3;
+                if (0 < (buildLists[(0x33) - 1]))
+                    (buildLists[(0x33) - 1]) = (buildLists[(0x33) - 1]) / 3;
+                if (0 < (buildLists[(0x34) - 1]))
+                    (buildLists[(0x34) - 1]) = (buildLists[(0x34) - 1]) / 3;
+                if (0 < (buildLists[(0x51) - 1]))
+                    (buildLists[(0x51) - 1]) = (buildLists[(0x51) - 1]) / 3;
+                if (0 < (buildLists[(0x52) - 1]))
+                    (buildLists[(0x52) - 1]) = (buildLists[(0x52) - 1]) / 3;
+                if (0 < (buildLists[(0x53) - 1]))
+                    (buildLists[(0x53) - 1]) = (buildLists[(0x53) - 1]) / 3;
+                if (0 < (buildLists[(0x6C) - 1]))
+                    (buildLists[(0x6C) - 1]) = (buildLists[(0x6C) - 1]) / 3;
+                break;
+            case 6:
+                if (0 < (buildLists[(0x29) - 1]))
+                    (buildLists[(0x29) - 1]) = (buildLists[(0x29) - 1]) / 3;
+                if (0 < (buildLists[(0x3A) - 1]))
+                    (buildLists[(0x3A) - 1]) = (buildLists[(0x3A) - 1]) / 3;
+                if (0 < (buildLists[(0x73) - 1]))
+                    (buildLists[(0x73) - 1]) = (buildLists[(0x73) - 1]) / 3;
+                if (0 < (buildLists[(0x55) - 1]))
+                    (buildLists[(0x55) - 1]) = (buildLists[(0x55) - 1]) / 3;
+                break;
         }
         ++difficultyLevel;
     } while (difficultyLevel < 7);
@@ -2025,186 +2085,430 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
     rge_base_game->get_string(selectedBuildList + 0x26930, b, 256);
 
     switch (selectedBuildList) {
-    case 0x0D: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x0E: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x0F: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x13: ++computerPlayerSetup[0]; break;
-    case 0x14: ++computerPlayerSetup[0]; break;
-    case 0x15: ++computerPlayerSetup[0]; break;
-    case 0x16: break;
-    case 0x17: break;
-    case 0x18: break;
-    case 0x19: break;
-    case 0x1A: break;
-    case 0x1B: break;
-    case 0x1C: break;
-    case 0x1D: break;
-    case 0x1E: break;
-    case 0x1F: break;
-    case 0x20: break;
-    case 0x21: break;
-    case 0x22: break;
-    case 0x23: break;
-    case 0x24: break;
-    case 0x25: break;
-    case 0x26: break;
-    case 0x27: break;
-    case 0x75: break;
-    case 0x76: break;
-    case 0x77: break;
-    case 0x78: break;
-    case 0x3C: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x3D: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x3E: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x3F: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x40: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x41: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x42: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x43: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x44: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x45: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x46: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x47: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x4B: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x4C: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x4D: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x4E: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x4F: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x53: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x55: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x56: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x57: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x58: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x59: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x5A: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x5B: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x5C: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x5D: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x5E: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x5F: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x60: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x61: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 100: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x65: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x69: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x6A: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x6E: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x6F: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x73: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x74: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x79: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x7A: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x7B: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x7C: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
-    case 0x48: ++tplayer_globals::selectedBuildListCount; ++tplayer_globals::buildListCategoryCount5; goto selectedCountersDone;
-    case 0x49: ++tplayer_globals::selectedBuildListCount; ++tplayer_globals::buildListCategoryCount5; goto selectedCountersDone;
-    case 0x4A: ++tplayer_globals::selectedBuildListCount; ++tplayer_globals::buildListCategoryCount4; goto selectedCountersDone;
-    case 6: ++tplayer_globals::buildListCategoryCount1; break;
-    case 7: ++tplayer_globals::buildListCategoryCount1; break;
-    case 8: ++tplayer_globals::buildListCategoryCount1; break;
-    case 0x2B: ++tplayer_globals::buildListCategoryCount1; break;
-    case 0x36: ++tplayer_globals::buildListCategoryCount1; break;
-    case 0x37: ++tplayer_globals::buildListCategoryCount1; break;
-    case 0x3A: ++tplayer_globals::buildListCategoryCount1; break;
-    case 0x3B: ++tplayer_globals::buildListCategoryCount1; break;
-    case 0x68: ++tplayer_globals::buildListCategoryCount1; break;
-    case 0: ++tplayer_globals::buildListCategoryCount5; break;
-    case 1: ++tplayer_globals::buildListCategoryCount5; break;
-    case 2: ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x29: ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x32: ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x33: ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x50: ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x51: ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x52: ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x6B: ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x10: ++tplayer_globals::buildListCategoryCount2; break;
-    case 0x31: ++tplayer_globals::buildListCategoryCount2; break;
-    case 0x6C: ++tplayer_globals::buildListCategoryCount2; break;
-    case 0x11: ++tplayer_globals::buildListCategoryCount3; break;
-    case 0x12: ++tplayer_globals::buildListCategoryCount3; break;
-    case 0x2E: ++tplayer_globals::buildListCategoryCount3; break;
-    case 0x34: ++tplayer_globals::buildListCategoryCount3; break;
-    case 0x35: ++tplayer_globals::buildListCategoryCount3; break;
-    case 99: ++tplayer_globals::buildListCategoryCount3; break;
-    case 0x66: ++tplayer_globals::buildListCategoryCount3; break;
-    case 0x6D: ++tplayer_globals::buildListCategoryCount3; break;
-    case 0x28: ++tplayer_globals::buildListCategoryCount6; break;
-    case 0x39: ++tplayer_globals::buildListCategoryCount6; break;
-    case 0x54: ++tplayer_globals::buildListCategoryCount6; break;
-    case 0x72: ++tplayer_globals::buildListCategoryCount6; break;
-    case 3: ++tplayer_globals::buildListCategoryCount4; break;
-    case 4: ++tplayer_globals::buildListCategoryCount4; break;
-    case 5: ++tplayer_globals::buildListCategoryCount4; break;
-    case 9: ++tplayer_globals::buildListCategoryCount4; break;
-    case 10: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x0B: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x0C: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x2A: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x2C: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x2D: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x2F: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x30: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x38: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x62: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x67: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x70: ++tplayer_globals::buildListCategoryCount4; break;
-    case 0x71: ++tplayer_globals::buildListCategoryCount4; break;
-    default:
-        ++tplayer_globals::buildListCategoryCount4;
-        break;
+        case 0x0D:
+            this->playerAI->strategyAI.setRule(0x3B, 4);
+            this->playerAI->strategyAI.setRule(0x3C, 10);
+            ++tplayer_globals::buildListCategoryCount7;
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x0E:
+            this->playerAI->strategyAI.setRule(0x3B, 4);
+            this->playerAI->strategyAI.setRule(0x3C, 10);
+            ++tplayer_globals::buildListCategoryCount7;
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x0F:
+            this->playerAI->strategyAI.setRule(0x3B, 4);
+            this->playerAI->strategyAI.setRule(0x3C, 10);
+            ++tplayer_globals::buildListCategoryCount7;
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x13:
+            ++computerPlayerSetup[0];
+            break;
+        case 0x14:
+            ++computerPlayerSetup[0];
+            break;
+        case 0x15:
+            ++computerPlayerSetup[0];
+            break;
+        case 0x16:
+            break;
+        case 0x17:
+            break;
+        case 0x18:
+            break;
+        case 0x19:
+            break;
+        case 0x1A:
+            break;
+        case 0x1B:
+            break;
+        case 0x1C:
+            break;
+        case 0x1D:
+            break;
+        case 0x1E:
+            break;
+        case 0x1F:
+            break;
+        case 0x20:
+            break;
+        case 0x21:
+            break;
+        case 0x22:
+            break;
+        case 0x23:
+            break;
+        case 0x24:
+            break;
+        case 0x25:
+            break;
+        case 0x26:
+            break;
+        case 0x27:
+            break;
+        case 0x75:
+            break;
+        case 0x76:
+            break;
+        case 0x77:
+            break;
+        case 0x78:
+            break;
+        case 0x3C:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x3D:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x3E:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x3F:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x40:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x41:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x42:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x43:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x44:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x45:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x46:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x47:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x4B:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x4C:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x4D:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x4E:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x4F:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x53:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x55:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x56:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x57:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x58:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x59:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x5A:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x5B:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x5C:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x5D:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x5E:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x5F:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x60:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x61:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 100:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x65:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x69:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x6A:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x6E:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x6F:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x73:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x74:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x79:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x7A:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x7B:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x7C:
+            ++tplayer_globals::aggressiveBuildListCount;
+            goto selectedCountersDone;
+        case 0x48:
+            ++tplayer_globals::selectedBuildListCount;
+            ++tplayer_globals::buildListCategoryCount5;
+            goto selectedCountersDone;
+        case 0x49:
+            ++tplayer_globals::selectedBuildListCount;
+            ++tplayer_globals::buildListCategoryCount5;
+            goto selectedCountersDone;
+        case 0x4A:
+            ++tplayer_globals::selectedBuildListCount;
+            ++tplayer_globals::buildListCategoryCount4;
+            goto selectedCountersDone;
+        case 6:
+            ++tplayer_globals::buildListCategoryCount1;
+            break;
+        case 7:
+            ++tplayer_globals::buildListCategoryCount1;
+            break;
+        case 8:
+            ++tplayer_globals::buildListCategoryCount1;
+            break;
+        case 0x2B:
+            ++tplayer_globals::buildListCategoryCount1;
+            break;
+        case 0x36:
+            ++tplayer_globals::buildListCategoryCount1;
+            break;
+        case 0x37:
+            ++tplayer_globals::buildListCategoryCount1;
+            break;
+        case 0x3A:
+            ++tplayer_globals::buildListCategoryCount1;
+            break;
+        case 0x3B:
+            ++tplayer_globals::buildListCategoryCount1;
+            break;
+        case 0x68:
+            ++tplayer_globals::buildListCategoryCount1;
+            break;
+        case 0:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 1:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 2:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 0x29:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 0x32:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 0x33:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 0x50:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 0x51:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 0x52:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 0x6B:
+            ++tplayer_globals::buildListCategoryCount5;
+            break;
+        case 0x10:
+            ++tplayer_globals::buildListCategoryCount2;
+            break;
+        case 0x31:
+            ++tplayer_globals::buildListCategoryCount2;
+            break;
+        case 0x6C:
+            ++tplayer_globals::buildListCategoryCount2;
+            break;
+        case 0x11:
+            ++tplayer_globals::buildListCategoryCount3;
+            break;
+        case 0x12:
+            ++tplayer_globals::buildListCategoryCount3;
+            break;
+        case 0x2E:
+            ++tplayer_globals::buildListCategoryCount3;
+            break;
+        case 0x34:
+            ++tplayer_globals::buildListCategoryCount3;
+            break;
+        case 0x35:
+            ++tplayer_globals::buildListCategoryCount3;
+            break;
+        case 99:
+            ++tplayer_globals::buildListCategoryCount3;
+            break;
+        case 0x66:
+            ++tplayer_globals::buildListCategoryCount3;
+            break;
+        case 0x6D:
+            ++tplayer_globals::buildListCategoryCount3;
+            break;
+        case 0x28:
+            ++tplayer_globals::buildListCategoryCount6;
+            break;
+        case 0x39:
+            ++tplayer_globals::buildListCategoryCount6;
+            break;
+        case 0x54:
+            ++tplayer_globals::buildListCategoryCount6;
+            break;
+        case 0x72:
+            ++tplayer_globals::buildListCategoryCount6;
+            break;
+        case 3:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 4:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 5:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 9:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 10:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x0B:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x0C:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x2A:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x2C:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x2D:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x2F:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x30:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x38:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x62:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x67:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x70:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        case 0x71:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
+        default:
+            ++tplayer_globals::buildListCategoryCount4;
+            break;
     }
     ++tplayer_globals::selectedBuildListCount;
 
 selectedCountersDone:
     // Keep the arithmetic lookup; expansion civilization names use different resource IDs.
-    rge_base_game->get_string(static_cast<int>(this->master_player_id) + (STRING_ID_CIVILIZATION_EGYPTIAN - 1), tempString, 256);
-    this->playerAI->logCommonHistory("I am the %s civ (culture #%d):", tempString, static_cast<int>(this->master_player_id) - 1);
+    rge_base_game->get_string(
+        static_cast<int>(this->master_player_id) + (STRING_ID_CIVILIZATION_EGYPTIAN - 1), tempString, 256
+    );
+    this->playerAI->logCommonHistory(
+        "I am the %s civ (culture #%d):", tempString, static_cast<int>(this->master_player_id) - 1
+    );
     this->playerAI->logCommonHistory("Selected a best build list of '%s'.", b);
     strcpy(r, tplayerRandomName);
     this->playerAI->logCommonHistory("Setting AI Personality:");
 
     int workingMapType = mapType;
     switch (gameType) {
-    case TRIBE_Game::VictoryDefault:
-    case TRIBE_Game::VictoryConquest:
-        this->playerAI->strategyAI.setRule(0x36, 5);
-        this->playerAI->strategyAI.setRule(0x37, 5);
-        break;
-    case TRIBE_VICTORY_TYPE_EXPLORATION:
-    case TRIBE_VICTORY_TYPE_RUINS:
-    case TRIBE_VICTORY_TYPE_ARTIFACTS:
-    case TRIBE_VICTORY_TYPE_DISCOVERIES:
-        workingMapType = this->playerAI->strategyAI.rule(1);
-        if (workingMapType > 0) {
-            this->playerAI->strategyAI.setRule(0, 0x32);
-            this->playerAI->strategyAI.setRule(1, 0x19);
-            this->playerAI->strategyAI.setRule(2, 0x19);
-        } else {
-            this->playerAI->strategyAI.setRule(0, 0x32);
-            this->playerAI->strategyAI.setRule(2, 0x32);
-        }
-        if (mapType > TRIBE_Game::MostlyWater) {
-            this->playerAI->strategyAI.setRule(3, 5);
-        }
-        this->playerAI->strategyAI.setRule(0x2A, 2);
-        this->playerAI->strategyAI.setRule(0x3D, 2);
-        workingMapType = mapType;
-        if (gameType != TRIBE_VICTORY_TYPE_EXPLORATION) {
-            this->playerAI->strategyAI.setRule(0x26, mapSize + 1);
-            this->playerAI->strategyAI.setRule(0x24, 1);
-            if (gameType == TRIBE_VICTORY_TYPE_RUINS) {
-                this->playerAI->strategyAI.setRule(0x36, 1);
+        case TRIBE_Game::VictoryDefault:
+        case TRIBE_Game::VictoryConquest:
+            this->playerAI->strategyAI.setRule(0x36, 5);
+            this->playerAI->strategyAI.setRule(0x37, 5);
+            break;
+        case TRIBE_VICTORY_TYPE_EXPLORATION:
+        case TRIBE_VICTORY_TYPE_RUINS:
+        case TRIBE_VICTORY_TYPE_ARTIFACTS:
+        case TRIBE_VICTORY_TYPE_DISCOVERIES:
+            workingMapType = this->playerAI->strategyAI.rule(1);
+            if (workingMapType > 0) {
+                this->playerAI->strategyAI.setRule(0, 0x32);
+                this->playerAI->strategyAI.setRule(1, 0x19);
+                this->playerAI->strategyAI.setRule(2, 0x19);
             } else {
-                this->playerAI->strategyAI.setRule(0x36, 5);
+                this->playerAI->strategyAI.setRule(0, 0x32);
+                this->playerAI->strategyAI.setRule(2, 0x32);
             }
-            if (gameType == TRIBE_VICTORY_TYPE_ARTIFACTS) {
-                this->playerAI->strategyAI.setRule(0x37, 1);
-            } else {
-                this->playerAI->strategyAI.setRule(0x37, 5);
+            if (mapType > TRIBE_Game::MostlyWater) {
+                this->playerAI->strategyAI.setRule(3, 5);
             }
-        }
-        break;
+            this->playerAI->strategyAI.setRule(0x2A, 2);
+            this->playerAI->strategyAI.setRule(0x3D, 2);
+            workingMapType = mapType;
+            if (gameType != TRIBE_VICTORY_TYPE_EXPLORATION) {
+                this->playerAI->strategyAI.setRule(0x26, mapSize + 1);
+                this->playerAI->strategyAI.setRule(0x24, 1);
+                if (gameType == TRIBE_VICTORY_TYPE_RUINS) {
+                    this->playerAI->strategyAI.setRule(0x36, 1);
+                } else {
+                    this->playerAI->strategyAI.setRule(0x36, 5);
+                }
+                if (gameType == TRIBE_VICTORY_TYPE_ARTIFACTS) {
+                    this->playerAI->strategyAI.setRule(0x37, 1);
+                } else {
+                    this->playerAI->strategyAI.setRule(0x37, 5);
+                }
+            }
+            break;
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2213,53 +2517,53 @@ selectedCountersDone:
 
     int attackTime = (debug_rand(tplayerSourceName, 3642) % 12 + 0x1C) * 60;
     switch (selectedBuildList) {
-    case 0:
-    case 3:
-    case 0x0B:
-    case 0x0C:
-    case 0x0D:
-    case 0x13:
-    case 0x2F:
-    case 0x30:
-    case 0x33:
-    case 0x37:
-    case 0x39:
-    case 0x48:
-    case 0x4A:
-    case 0x4B:
-    case 0x4E:
-    case 0x51:
-    case 0x55:
-    case 0x58:
-    case 0x5A:
-    case 0x5E:
-    case 0x60:
-    case 100:
-    case 0x69:
-    case 0x6E:
-    case 0x73:
-        ++tplayer_globals::fastAttackListCount;
-        attackTime = (debug_rand(tplayerSourceName, 3672) % 6 + 0x14) * 60;
-        break;
-    case 10:
-    case 0x29:
-    case 0x2B:
-    case 0x2C:
-    case 0x2D:
-    case 0x32:
-    case 0x3A:
-    case 0x71:
-        ++tplayer_globals::attackTimingCategoryCount;
-        attackTime = (debug_rand(tplayerSourceName, 3684) % 4 + 0x0B) * 60;
-        break;
-    case 9:
-    case 0x38:
-        attackTime = (debug_rand(tplayerSourceName, 3689) % 2 + 5) * 60;
-        ++tplayer_globals::attackTimingCategoryCount;
-        break;
-    default:
-        ++tplayer_globals::defaultAttackListCount;
-        break;
+        case 0:
+        case 3:
+        case 0x0B:
+        case 0x0C:
+        case 0x0D:
+        case 0x13:
+        case 0x2F:
+        case 0x30:
+        case 0x33:
+        case 0x37:
+        case 0x39:
+        case 0x48:
+        case 0x4A:
+        case 0x4B:
+        case 0x4E:
+        case 0x51:
+        case 0x55:
+        case 0x58:
+        case 0x5A:
+        case 0x5E:
+        case 0x60:
+        case 100:
+        case 0x69:
+        case 0x6E:
+        case 0x73:
+            ++tplayer_globals::fastAttackListCount;
+            attackTime = (debug_rand(tplayerSourceName, 3672) % 6 + 0x14) * 60;
+            break;
+        case 10:
+        case 0x29:
+        case 0x2B:
+        case 0x2C:
+        case 0x2D:
+        case 0x32:
+        case 0x3A:
+        case 0x71:
+            ++tplayer_globals::attackTimingCategoryCount;
+            attackTime = (debug_rand(tplayerSourceName, 3684) % 4 + 0x0B) * 60;
+            break;
+        case 9:
+        case 0x38:
+            attackTime = (debug_rand(tplayerSourceName, 3689) % 2 + 5) * 60;
+            ++tplayer_globals::attackTimingCategoryCount;
+            break;
+        default:
+            ++tplayer_globals::defaultAttackListCount;
+            break;
     }
 
     int difficultyCopy = gameDifficulty;
@@ -2291,35 +2595,49 @@ selectedCountersDone:
     }
 
     switch (randomValue) {
-    case -2:
-    case -1:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3746) % 2 + 0x0E);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3748) % 4 + 1);
-        break;
-    case 0:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3751) % 2 + 0x0F);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3753) % 4 + 1);
-        break;
-    case 1:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3756) % 3 + 0x10);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3758) % 5 + 1);
-        break;
-    case 2:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3761) % 2 + 0x11);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3763) % 6 + 1);
-        break;
-    case 3:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3766) % 2 + 0x12);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3768) % 7 + 1);
-        break;
-    case 4:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3771) % 4 + 0x12);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3773) % 8 + 1);
-        break;
-    default:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3777) % 2 + 0x12);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3779) % 9 + 1);
-        break;
+        case -2:
+        case -1:
+            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3746) % 2 + 0x0E);
+            this->playerAI->strategyAI.setRule(
+                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3748) % 4 + 1
+            );
+            break;
+        case 0:
+            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3751) % 2 + 0x0F);
+            this->playerAI->strategyAI.setRule(
+                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3753) % 4 + 1
+            );
+            break;
+        case 1:
+            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3756) % 3 + 0x10);
+            this->playerAI->strategyAI.setRule(
+                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3758) % 5 + 1
+            );
+            break;
+        case 2:
+            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3761) % 2 + 0x11);
+            this->playerAI->strategyAI.setRule(
+                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3763) % 6 + 1
+            );
+            break;
+        case 3:
+            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3766) % 2 + 0x12);
+            this->playerAI->strategyAI.setRule(
+                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3768) % 7 + 1
+            );
+            break;
+        case 4:
+            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3771) % 4 + 0x12);
+            this->playerAI->strategyAI.setRule(
+                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3773) % 8 + 1
+            );
+            break;
+        default:
+            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3777) % 2 + 0x12);
+            this->playerAI->strategyAI.setRule(
+                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3779) % 9 + 1
+            );
+            break;
     }
     this->playerAI->strategyAI.setRule(0xD0, 1);
     this->playerAI->strategyAI.setRule(0xD1, 1);
@@ -2336,12 +2654,14 @@ selectedCountersDone:
         this->playerAI->strategyAI.setRule(0xD5, 5);
         this->playerAI->strategyAI.setRule(0xD6, 2);
         this->playerAI->strategyAI.setRule(0xE0, 4);
-    } else if (workingMapType == TRIBE_Game::WaterAndLand || workingMapType == TRIBE_Game::Lake || workingMapType == TRIBE_Game::Continental || workingMapType == TRIBE_Game::Isthmas) {
+    } else if (workingMapType == TRIBE_Game::WaterAndLand || workingMapType == TRIBE_Game::Lake
+               || workingMapType == TRIBE_Game::Continental || workingMapType == TRIBE_Game::Isthmas) {
         this->playerAI->strategyAI.setRule(0xD4, 1);
         this->playerAI->strategyAI.setRule(0xD5, 4);
         this->playerAI->strategyAI.setRule(0xD6, 1);
         this->playerAI->strategyAI.setRule(0xE0, 3);
-    } else if (workingMapType == TRIBE_Game::MostlyLand || workingMapType == TRIBE_Game::AllLand || workingMapType == TRIBE_Game::Hilly) {
+    } else if (workingMapType == TRIBE_Game::MostlyLand || workingMapType == TRIBE_Game::AllLand
+               || workingMapType == TRIBE_Game::Hilly) {
         this->playerAI->strategyAI.setRule(0xD4, 0);
         this->playerAI->strategyAI.setRule(0xD5, 0);
         this->playerAI->strategyAI.setRule(0xD6, 0);
@@ -2402,8 +2722,6 @@ selectedCountersDone:
     }
 }
 
-
-
 void TRIBE_Player::setupEgyptian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Egyptians.");
 
@@ -2437,13 +2755,12 @@ void TRIBE_Player::setupEgyptian(int* b, int mapType, int gameType, int mapSize)
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x53] = 200;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x53] = 100;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupGreek(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Greeks.");
@@ -2478,14 +2795,13 @@ void TRIBE_Player::setupGreek(int* b, int mapType, int gameType, int mapSize) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x55] = 200;
             b[0x56] = 200;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x55] = 100;
             b[0x56] = 100;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupBabylonian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Babylonians.");
@@ -2518,12 +2834,11 @@ void TRIBE_Player::setupBabylonian(int* b, int mapType, int gameType, int mapSiz
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater)
             b[77] = 60;
-        else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental)
+        else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                 || mapType == TRIBE_Game::Continental)
             b[77] = 30;
     }
 }
-
-
 
 void TRIBE_Player::setupAssyrian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Assyrians.");
@@ -2561,14 +2876,13 @@ void TRIBE_Player::setupAssyrian(int* b, int mapType, int gameType, int mapSize)
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x4B] = 100;
             b[0x4C] = 100;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x4B] = 0x32;
             b[0x4C] = 0x32;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupMinoan(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Minoans.");
@@ -2601,14 +2915,13 @@ void TRIBE_Player::setupMinoan(int* b, int mapType, int gameType, int mapSize) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x58] = 200;
             b[0x59] = 200;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x58] = 100;
             b[0x59] = 100;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupHittite(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Hittites.");
@@ -2642,14 +2955,13 @@ void TRIBE_Player::setupHittite(int* b, int mapType, int gameType, int mapSize) 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x57] = 0xA0;
             b[0] = 0x14;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x57] = 0x50;
             b[0] = 10;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupPhoenician(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Phoenicians.");
@@ -2683,13 +2995,12 @@ void TRIBE_Player::setupPhoenician(int* b, int mapType, int gameType, int mapSiz
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x5C] = 200;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x5C] = 100;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupSumerian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Sumerians.");
@@ -2722,14 +3033,13 @@ void TRIBE_Player::setupSumerian(int* b, int mapType, int gameType, int mapSize)
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x5E] = 200;
             b[0x5F] = 200;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x5E] = 100;
             b[0x5F] = 100;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupPersian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Persians.");
@@ -2764,13 +3074,13 @@ void TRIBE_Player::setupPersian(int* b, int mapType, int gameType, int mapSize) 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x5A] = 0xC8;
             b[0x5B] = 0xC8;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x5A] = 0x64;
             b[0x5B] = 0x64;
         }
     }
 }
-
 
 void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Shang.");
@@ -2806,13 +3116,12 @@ void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize) {
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x5D] = 0xA0;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x5D] = 0x50;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupYamato(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Yamato.");
@@ -2852,14 +3161,13 @@ void TRIBE_Player::setupYamato(int* b, int mapType, int gameType, int mapSize) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x60] = 200;
             b[0x61] = 200;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x60] = 100;
             b[0x61] = 100;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupChoson(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Choson.");
@@ -2894,14 +3202,13 @@ void TRIBE_Player::setupChoson(int* b, int mapType, int gameType, int mapSize) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x4E] = 200;
             b[0x4F] = 200;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x4E] = 100;
             b[0x4F] = 100;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupRoman(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Roman.");
@@ -2935,14 +3242,13 @@ void TRIBE_Player::setupRoman(int* b, int mapType, int gameType, int mapSize) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x73] = 0xC8;
             b[0x74] = 0xC8;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x73] = 0x64;
             b[0x74] = 0x64;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupCarthaginian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Carthaginian.");
@@ -2978,14 +3284,13 @@ void TRIBE_Player::setupCarthaginian(int* b, int mapType, int gameType, int mapS
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[100] = 200;
             b[101] = 200;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[100] = 100;
             b[101] = 100;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupPalmyran(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Palmyran.");
@@ -3021,14 +3326,13 @@ void TRIBE_Player::setupPalmyran(int* b, int mapType, int gameType, int mapSize)
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x6E] = 0xC8;
             b[0x6F] = 0xC8;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x6E] = 0x64;
             b[0x6F] = 0x64;
         }
     }
 }
-
-
 
 void TRIBE_Player::setupMacedonian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Macedonian.");
@@ -3061,14 +3365,13 @@ void TRIBE_Player::setupMacedonian(int* b, int mapType, int gameType, int mapSiz
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
             b[0x69] = 0xC8;
             b[0x6A] = 0xC8;
-        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas || mapType == TRIBE_Game::Continental) {
+        } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
+                   || mapType == TRIBE_Game::Continental) {
             b[0x69] = 100;
             b[0x6A] = 100;
         }
     }
 }
-
-
 
 void TRIBE_Player::logStatus(FILE* out, int firstTime) {
     char tempString[256];
@@ -3078,7 +3381,9 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime) {
     fprintf(out, "Player %d:\n", static_cast<int>(this->id));
     if (firstTime == 1) {
         // Keep the arithmetic lookup; expansion civilization names use different resource IDs.
-        rge_base_game->get_string(static_cast<int>(this->master_player_id) + (STRING_ID_CIVILIZATION_EGYPTIAN - 1), tempString, 256);
+        rge_base_game->get_string(
+            static_cast<int>(this->master_player_id) + (STRING_ID_CIVILIZATION_EGYPTIAN - 1), tempString, 256
+        );
         if (this->playerAI == 0) {
             fprintf(out, "  Human Player, %s.\n", tempString);
         } else {
@@ -3109,19 +3414,22 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime) {
     fprintf(out, "  Exploration:     %d.\n", this->victory_conditions->get_attribute_id(7));
 
     if (this->playerAI != 0) {
-        fprintf(out, "Build AI: last=%s, last2=%s, Progress=%d/%d.\n", this->playerAI->buildAI.currentBuildItemRequested(),
-                this->playerAI->buildAI.lastBuildItemRequested(), this->playerAI->buildAI.numberItemsIntoBuildList(),
-                this->playerAI->buildAI.buildListLength());
-        fprintf(out, "Civilians: Total=%d, Exp(%d/%d), Gat(%d/%d), Res(%d,%d,%d,%d).\n",
-                this->playerAI->tacticalAI.numberCivilians(), this->playerAI->tacticalAI.numberCivilianExplorers(),
-                this->playerAI->tacticalAI.desiredNumberCivilianExplorers(), this->playerAI->tacticalAI.numberGatherers(),
-                this->playerAI->tacticalAI.desiredNumberGatherers(), this->playerAI->tacticalAI.neededResource(0),
-                this->playerAI->tacticalAI.neededResource(1), this->playerAI->tacticalAI.neededResource(2),
-                this->playerAI->tacticalAI.neededResource(3));
+        fprintf(
+            out, "Build AI: last=%s, last2=%s, Progress=%d/%d.\n", this->playerAI->buildAI.currentBuildItemRequested(),
+            this->playerAI->buildAI.lastBuildItemRequested(), this->playerAI->buildAI.numberItemsIntoBuildList(),
+            this->playerAI->buildAI.buildListLength()
+        );
+        fprintf(
+            out, "Civilians: Total=%d, Exp(%d/%d), Gat(%d/%d), Res(%d,%d,%d,%d).\n",
+            this->playerAI->tacticalAI.numberCivilians(), this->playerAI->tacticalAI.numberCivilianExplorers(),
+            this->playerAI->tacticalAI.desiredNumberCivilianExplorers(), this->playerAI->tacticalAI.numberGatherers(),
+            this->playerAI->tacticalAI.desiredNumberGatherers(), this->playerAI->tacticalAI.neededResource(0),
+            this->playerAI->tacticalAI.neededResource(1), this->playerAI->tacticalAI.neededResource(2),
+            this->playerAI->tacticalAI.neededResource(3)
+        );
         fprintf(out, "Number Soldiers=%d.\n", this->playerAI->tacticalAI.numberSoldiers());
     }
 }
-
 
 void TRIBE_Player::trackUnitGather(int unitID, int attributeID, int amount) {
     if (!this->playerAI)
@@ -3130,38 +3438,37 @@ void TRIBE_Player::trackUnitGather(int unitID, int attributeID, int amount) {
     this->playerAI->tacticalAI.trackUnitGather(unitID, attributeID, amount);
 }
 
-
 void TRIBE_Player::get_achievement(unsigned char achievement, char* info) {
     switch (achievement) {
-    case 0:
-        strcpy(info, name);
-        break;
-    case 1:
-        sprintf(info, "%4.f", attributes[19] - attributes[11]);
-        break;
-    case 2:
-        sprintf(info, "%4.f", attributes[20]);
-        break;
-    case 3:
-        sprintf(info, "%4.f", attributes[11]);
-        break;
-    case 4:
-        sprintf(info, "%5.f", attributes[RGE_RESOURCE_GOLD]);
-        break;
-    case 5: {
-        float pct = this->visible->percentExplored() * 100.0f;
-        sprintf(info, "%3.f%%", pct);
-        break;
-    }
-    case 6:
-        sprintf(info, "%4.f", attributes[19]);
-        break;
-    case 7:
-        sprintf(info, "%4.f/%4.f/%4.f", attributes[7], attributes[13], attributes[14]);
-        break;
-    case 8:
-        sprintf(info, "%4.f", attributes[21]);
-        break;
+        case 0:
+            strcpy(info, name);
+            break;
+        case 1:
+            sprintf(info, "%4.f", attributes[19] - attributes[11]);
+            break;
+        case 2:
+            sprintf(info, "%4.f", attributes[20]);
+            break;
+        case 3:
+            sprintf(info, "%4.f", attributes[11]);
+            break;
+        case 4:
+            sprintf(info, "%5.f", attributes[RGE_RESOURCE_GOLD]);
+            break;
+        case 5: {
+            float pct = this->visible->percentExplored() * 100.0f;
+            sprintf(info, "%3.f%%", pct);
+            break;
+        }
+        case 6:
+            sprintf(info, "%4.f", attributes[19]);
+            break;
+        case 7:
+            sprintf(info, "%4.f/%4.f/%4.f", attributes[7], attributes[13], attributes[14]);
+            break;
+        case 8:
+            sprintf(info, "%4.f", attributes[21]);
+            break;
     }
 }
 
@@ -3170,12 +3477,10 @@ void TRIBE_Player::load_victory(int infile, long* player_id_hash, unsigned char 
     this->victory_conditions = v;
 }
 
-
 void TRIBE_Player::new_victory() {
     TRIBE_Victory_Conditions* v = new TRIBE_Victory_Conditions(this);
     this->victory_conditions = v;
 }
-
 
 void TRIBE_Player::add_attribute_num(short attribute, float amount, unsigned char earned) {
     if ((attribute == 3) && (earned != 0)) {
@@ -3187,7 +3492,6 @@ void TRIBE_Player::add_attribute_num(short attribute, float amount, unsigned cha
     }
     RGE_Player::add_attribute_num(attribute, amount, earned);
 }
-
 
 void TRIBE_Player::analyize_selected_objects() {
     int i = 0;
@@ -3230,9 +3534,6 @@ void TRIBE_Player::analyize_selected_objects() {
     }
 }
 
-
-
-
 int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& text_id) {
     int ObjectType;
     int ObjPlayer;
@@ -3255,8 +3556,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
     current = 0;
     if (thisObj != 0) {
         if (thisObj->type == 0x19) {
-            RGE_Doppleganger_Object* dopple =
-                static_cast<RGE_Doppleganger_Object*>(thisObj);
+            RGE_Doppleganger_Object* dopple = static_cast<RGE_Doppleganger_Object*>(thisObj);
             master = dopple->doppled_master_obj;
             ObjectType = dopple->doppled_player;
             ObjPlayer = master->object_group;
@@ -3314,30 +3614,30 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
         }
 
         switch (this->unitDiplomacy[ObjectType]) {
-        case 0:
-            action_code = entry->gaia_action;
-            action_var = entry->gaia_text_id;
-            break;
-        case 1:
-            action_code = entry->self_action;
-            action_var = entry->self_text_id;
-            break;
-        case 2:
-            action_code = entry->ally_action;
-            action_var = entry->ally_text_id;
-            break;
-        case 3:
-            action_code = entry->neutral_action;
-            action_var = entry->neutral_text_id;
-            break;
-        case 4:
-            action_code = entry->enemy_action;
-            action_var = entry->enemy_text_id;
-            break;
-        default:
-            action_code = -1;
-            action_var = -1;
-            break;
+            case 0:
+                action_code = entry->gaia_action;
+                action_var = entry->gaia_text_id;
+                break;
+            case 1:
+                action_code = entry->self_action;
+                action_var = entry->self_text_id;
+                break;
+            case 2:
+                action_code = entry->ally_action;
+                action_var = entry->ally_text_id;
+                break;
+            case 3:
+                action_code = entry->neutral_action;
+                action_var = entry->neutral_text_id;
+                break;
+            case 4:
+                action_code = entry->enemy_action;
+                action_var = entry->enemy_text_id;
+                break;
+            default:
+                action_code = -1;
+                action_var = -1;
+                break;
         }
         if (action_code == -1) {
             return 0;
@@ -3346,106 +3646,105 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
     redo_mouseFunc:
         do {
             switch (action_code) {
-            case 0:
-                newFacet = 0;
-                text_id = current + action_var;
-                goto finish;
-            case 1:
-            case 8:
-                if ((this->sel_object_properties & 1) != 0 && thisObj->object_state <= RGE_OBJECT_STATE_ACTIVE) {
-                    newFacet = 4;
+                case 0:
+                    newFacet = 0;
                     text_id = current + action_var;
                     goto finish;
-                }
-                if (action_code != 8) {
-                    goto finish;
-                }
-                current = 50;
-                action_code = 7;
-                continue;
-            case 2:
-                if ((this->sel_object_properties & 2) == 0) {
-                    goto finish;
-                }
-                newFacet = 5;
-                text_id = current + action_var;
-                goto finish;
-            case 3:
-                if ((this->sel_object_properties & 4) == 0) {
-                    goto finish;
-                }
-                newFacet = 5;
-                text_id = current + action_var;
-                goto finish;
-            case 4:
-                if ((this->sel_object_properties & 0x10) == 0) {
-                    goto finish;
-                }
-                if (tplayer_globals::selectedObjectCount == 1 &&
-                    Obj_id == tplayer_globals::selectedObjectId) {
-                    goto finish;
-                }
-                {
-                    int hp = static_cast<int>(thisObj->hp);
-                    if (hp <= 0 || hp >= MaxHp) {
+                case 1:
+                case 8:
+                    if ((this->sel_object_properties & 1) != 0 && thisObj->object_state <= RGE_OBJECT_STATE_ACTIVE) {
+                        newFacet = 4;
+                        text_id = current + action_var;
                         goto finish;
                     }
-                }
-                newFacet = 5;
-                text_id = current + action_var;
-                goto finish;
-            case 5:
-                if ((this->sel_object_properties & 0x20) == 0) {
-                    goto finish;
-                }
-                if (thisObj->object_state == RGE_OBJECT_STATE_UNBUILT) {
+                    if (action_code != 8) {
+                        goto finish;
+                    }
                     current = 50;
-                }
-                //! @bug The full-hp gate drops an intact farm here and falls back to the retry.
-                //! The retry re-reads the left-click table, so it shows "Click to select" and facet 0.
-                //! A villager selection gets no work hint or cursor, even though right-click works.
-                {
-                    int hp = static_cast<int>(thisObj->hp);
-                    if (hp <= 0 || hp >= MaxHp) {
+                    action_code = 7;
+                    continue;
+                case 2:
+                    if ((this->sel_object_properties & 2) == 0) {
                         goto finish;
                     }
-                }
-                newFacet = 3;
-                text_id = current + action_var;
-                goto finish;
-            case 6:
-            case 9:
-                if ((this->sel_object_properties & 0x40) != 0) {
+                    newFacet = 5;
+                    text_id = current + action_var;
+                    goto finish;
+                case 3:
+                    if ((this->sel_object_properties & 4) == 0) {
+                        goto finish;
+                    }
+                    newFacet = 5;
+                    text_id = current + action_var;
+                    goto finish;
+                case 4:
+                    if ((this->sel_object_properties & 0x10) == 0) {
+                        goto finish;
+                    }
+                    if (tplayer_globals::selectedObjectCount == 1 && Obj_id == tplayer_globals::selectedObjectId) {
+                        goto finish;
+                    }
+                    {
+                        int hp = static_cast<int>(thisObj->hp);
+                        if (hp <= 0 || hp >= MaxHp) {
+                            goto finish;
+                        }
+                    }
+                    newFacet = 5;
+                    text_id = current + action_var;
+                    goto finish;
+                case 5:
+                    if ((this->sel_object_properties & 0x20) == 0) {
+                        goto finish;
+                    }
+                    if (thisObj->object_state == RGE_OBJECT_STATE_UNBUILT) {
+                        current = 50;
+                    }
+                    //! @bug The full-hp gate drops an intact farm here and falls back to the retry.
+                    //! The retry re-reads the left-click table, so it shows "Click to select" and facet 0.
+                    //! A villager selection gets no work hint or cursor, even though right-click works.
+                    {
+                        int hp = static_cast<int>(thisObj->hp);
+                        if (hp <= 0 || hp >= MaxHp) {
+                            goto finish;
+                        }
+                    }
                     newFacet = 3;
                     text_id = current + action_var;
                     goto finish;
-                }
-                if (action_code != 9) {
+                case 6:
+                case 9:
+                    if ((this->sel_object_properties & 0x40) != 0) {
+                        newFacet = 3;
+                        text_id = current + action_var;
+                        goto finish;
+                    }
+                    if (action_code != 9) {
+                        goto finish;
+                    }
+                    current = 50;
+                    action_code = 1;
+                    continue;
+                case 7:
+                    if ((this->sel_object_properties & 0x80) == 0) {
+                        goto finish;
+                    }
+                    if (ObjPlayer == 0x12 && this->attributes[27] == g_player_selection_zero_attribute) {
+                        goto finish;
+                    }
+                    if (ObjPlayer == 3 && this->attributes[28] == g_player_selection_zero_attribute) {
+                        goto finish;
+                    }
+                    if (ObjPlayer == 3 && (MstrObjId == 0x6D || MstrObjId == 0x114)) {
+                        goto finish;
+                    }
+                    newFacet = 5;
+                    text_id = current + action_var;
                     goto finish;
-                }
-                current = 50;
-                action_code = 1;
-                continue;
-            case 7:
-                if ((this->sel_object_properties & 0x80) == 0) {
+                default:
+                    newFacet = 0;
+                    text_id = 0;
                     goto finish;
-                }
-                if (ObjPlayer == 0x12 && this->attributes[27] == g_player_selection_zero_attribute) {
-                    goto finish;
-                }
-                if (ObjPlayer == 3 && this->attributes[28] == g_player_selection_zero_attribute) {
-                    goto finish;
-                }
-                if (ObjPlayer == 3 && (MstrObjId == 0x6D || MstrObjId == 0x114)) {
-                    goto finish;
-                }
-                newFacet = 5;
-                text_id = current + action_var;
-                goto finish;
-            default:
-                newFacet = 0;
-                text_id = 0;
-                goto finish;
             }
         } while (1);
 
@@ -3460,9 +3759,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
     return 0;
 }
 
-
-TRIBE_Gaia::TRIBE_Gaia(int infile, TRIBE_World* gworld, unsigned char this_id)
-    : TRIBE_Player(infile, gworld, this_id) {
+TRIBE_Gaia::TRIBE_Gaia(int infile, TRIBE_World* gworld, unsigned char this_id) : TRIBE_Player(infile, gworld, this_id) {
     this->type = 2;
     rge_read(infile, &update_time, 4);
     rge_read(infile, &update_nature, 4);
@@ -3470,17 +3767,15 @@ TRIBE_Gaia::TRIBE_Gaia(int infile, TRIBE_World* gworld, unsigned char this_id)
     rge_read(infile, &last_count, 4);
 }
 
-
-TRIBE_Gaia::TRIBE_Gaia(TRIBE_World* gworld, RGE_Master_Player* prototype,
-                        unsigned char this_id, char* new_name, unsigned char m_player_id)
-    : TRIBE_Player(gworld, prototype, this_id, new_name, m_player_id, 0, 1, 0, 0, 0) {
+TRIBE_Gaia::TRIBE_Gaia(
+    TRIBE_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name, unsigned char m_player_id
+) : TRIBE_Player(gworld, prototype, this_id, new_name, m_player_id, 0, 1, 0, 0, 0) {
     this->type = 2;
     this->update_time = 0.0f;
     this->update_nature = 0x1D;
     this->animal_max = 0;
     this->last_count = 0;
 }
-
 
 void TRIBE_Gaia::save(int outfile) {
     TRIBE_Player::save(outfile);
@@ -3491,9 +3786,8 @@ void TRIBE_Gaia::save(int outfile) {
     rge_write(outfile, &this->last_count, 4);
 }
 
-
 void TRIBE_Gaia::update() {
-        this->update_time = this->update_time + this->world->world_time_delta_seconds;
+    this->update_time = this->update_time + this->world->world_time_delta_seconds;
     if (this->update_time > 1.0f) {
         do {
             this->update_time = this->update_time - 1.0f;
@@ -3505,15 +3799,14 @@ void TRIBE_Gaia::update() {
     RGE_Player::update();
 }
 
-
-void TRIBE_Gaia::load_master_object(int infile, short index, unsigned char type,
-                                    RGE_Sprite** sprites, RGE_Sound** sounds) {
+void TRIBE_Gaia::load_master_object(
+    int infile, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds
+) {
     TRIBE_Player::load_master_object(infile, index, type, sprites, sounds);
 }
 
-
-void TRIBE_Gaia::random_start() {}
-
+void TRIBE_Gaia::random_start() {
+}
 
 void TRIBE_Player::scenario_postload(int infile, long* player_id_hash, float version) {
     RGE_Player::scenario_postload(infile, player_id_hash, version);

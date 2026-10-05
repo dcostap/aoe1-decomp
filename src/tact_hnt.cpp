@@ -19,30 +19,26 @@
 #include "../include/rge_base_game_global.h"
 #include "../include/rge_fio.h"
 
-
-TRIBE_Action_Hunt::TRIBE_Action_Hunt(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1) {
+TRIBE_Action_Hunt::TRIBE_Action_Hunt(int infile, RGE_Action_Object* obj_in) : RGE_Action(infile, obj_in, 1) {
     this->action_type = TRIBE_ACTION_TYPE_HUNT;
     rge_read(infile, &targetType, 4);
 }
 
-TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj_in, RGE_Task* task_in,
-                                     RGE_Static_Object* target_obj_in)
-    : RGE_Action(obj_in, 1) {
+TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in) :
+    RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = TRIBE_ACTION_TYPE_HUNT;
     this->set_target_obj(target_obj_in);
     if (target_obj_in && target_obj_in->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
-        this->target_x = (float)target_obj_in->world_x;
-        this->target_y = (float)target_obj_in->world_y;
-        this->target_z = (float)target_obj_in->world_z;
+        this->target_x = (float) target_obj_in->world_x;
+        this->target_y = (float) target_obj_in->world_y;
+        this->target_z = (float) target_obj_in->world_z;
         this->targetType = target_obj_in->master_obj->id;
     }
 }
 
-TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj_in, RGE_Task* task_in,
-                                     float x, float y, float z)
-    : RGE_Action(obj_in, 1) {
+TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z) :
+    RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = TRIBE_ACTION_TYPE_HUNT;
     this->target_x = x;
@@ -59,7 +55,7 @@ void TRIBE_Action_Hunt::save(int outfile) {
 float _zero_val = 0.0f;
 
 void TRIBE_Action_Hunt::first_in_stack(unsigned char first_time) {
-    RGE_Task* tsk = (RGE_Task*)this->task;
+    RGE_Task* tsk = (RGE_Task*) this->task;
 
     short attr_val = tsk->attribute_type;
     if (this->obj->attribute_type_held != attr_val) {
@@ -73,8 +69,7 @@ void TRIBE_Action_Hunt::first_in_stack(unsigned char first_time) {
             // Compare target->owner with unit->owner (order matters for register choice)
             if (target->owner == unit->owner) {
                 RGE_Master_Static_Object* target_master = target->master_obj;
-                RGE_Master_Action_Object* unit_master =
-                    (RGE_Master_Action_Object*)unit->master_obj;
+                RGE_Master_Action_Object* unit_master = (RGE_Master_Action_Object*) unit->master_obj;
                 short target_id = target_master->id;
                 if (target_id == unit_master->drop_site || target_id == unit_master->backup_drop_site) {
                     if (unit->attribute_amount_held > _zero_val) {
@@ -102,146 +97,155 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
     this->state = new_state;
 
     switch (new_state) {
-    case 3:
-        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HUNT, this->targetType, 0);
-        this->obj->new_sprite(this->get_wait_sprite());
-        this->timer = -10.0f;
-        return;
-
-    case 2:
-        this->obj->new_sprite(this->get_wait_sprite());
-        this->set_target_obj(0);
-        this->set_target_obj2(0);
-        this->timer = 0.0f;
-        this->target_x = -1.0f;
-        this->target_y = -1.0f;
-        this->target_z = -1.0f;
-        return;
-
-    case 11:
-    case 15: {
-        this->timer = 0.0f;
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z,
-                                                            this->task->work_range, this->get_move_sprite());
-        if (action == 0) {
-            this->set_state(0x0D);
+        case 3:
+            this->obj->notify(
+                this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HUNT, this->targetType, 0
+            );
+            this->obj->new_sprite(this->get_wait_sprite());
+            this->timer = -10.0f;
             return;
-        }
-        action->setSubAction(1);
-        this->sub_actions->add_action(action);
-        return;
-    }
 
-    case 4: {
-        this->timer = 0.0f;
-        if (this->target_obj == 0) {
-            this->set_state(0x0D);
+        case 2:
+            this->obj->new_sprite(this->get_wait_sprite());
+            this->set_target_obj(0);
+            this->set_target_obj2(0);
+            this->timer = 0.0f;
+            this->target_x = -1.0f;
+            this->target_y = -1.0f;
+            this->target_z = -1.0f;
             return;
-        }
-        this->target_x = this->target_obj->world_x;
-        this->target_y = this->target_obj->world_y;
-        this->target_z = this->target_obj->world_z;
-        if (this->target_obj->object_state <= RGE_OBJECT_STATE_ACTIVE) {
-            this->set_state(0x0C);
-            return;
-        }
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj, this->task->work_range,
-                                                            this->get_move_sprite());
-        if (action == 0) {
-            this->set_state(0x0D);
-            return;
-        }
-        this->sub_actions->add_action(action);
-        action->setSubAction(1);
-        return;
-    }
 
-    case 12: {
-        this->timer = 0.0f;
-        // The action master is stored as a static-master pointer.
-        // These three reads prove the combat-master fields at +0x124, +0x12A,
-        // and +0x138.
-        RGE_Action_Attack* action = new RGE_Action_Attack(this->obj, this->target_obj, this->get_move_sprite(),
-                                                          this->task->work_sprite, 0, this->task->work_range,
-                                                          static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
-                                                          static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
-                                                          static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame);
-        if (action == 0) {
-            this->set_state(0x0D);
-            return;
-        }
-        this->sub_actions->add_action(action);
-        action->setSubAction(1);
-        return;
-    }
-
-    case 6:
-        this->timer = 0.0f;
-        this->obj->new_sprite(this->get_move_sprite());
-        return;
-
-    case 7:
-        this->timer = 0.0f;
-        // State 7 reads attribute_type_held (+0x4C), then calls
-        // the inherited set_attribute virtual at slot +0x80.
-        if (this->obj->attribute_type_held != this->task->attribute_type) {
-            this->obj->set_attribute(this->task->attribute_type, 0);
-        }
-        this->obj->new_sprite(this->task->work_sprite2);
-        if (this->task->work_sound != 0) {
-            this->task->work_sound->play(1);
-        }
-        return;
-
-    case 8:
-        if (this->obj->attribute_amount_held > g_hunt_empty_amount) {
-            if (this->target_obj2 == 0) {
-                if (static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site != -1) {
-                    this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
-                        static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site,
-                        static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->backup_drop_site,
-                        this->obj->world_x, this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE, (RGE_Static_Object*)this->obj));
-                } else {
-                    this->set_target_obj2(0);
-                }
-            }
-            if (this->target_obj2 != 0) {
-                RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj2, this->task->work_range,
-                                                                    this->get_move_sprite());
-                if (action == 0) {
-                    this->set_state(0x0D);
-                    return;
-                }
-                this->sub_actions->add_action(action);
-                action->setSubAction(1);
+        case 11:
+        case 15: {
+            this->timer = 0.0f;
+            RGE_Action_Move_To* action = new RGE_Action_Move_To(
+                this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range,
+                this->get_move_sprite()
+            );
+            if (action == 0) {
+                this->set_state(0x0D);
                 return;
             }
-            this->obj->notify(this->obj->id, this->obj->id, 0x203, UNIT_AI_ACTION_HUNT, 0, 0);
-            if (this->obj->owner->computerPlayer() == 0) {
-                this->set_state(2);
-            } else {
-                this->set_state(1);
-            }
+            action->setSubAction(1);
+            this->sub_actions->add_action(action);
             return;
         }
-        // The shipped check reads target_obj (+0x10), not
-        // target_obj2 (+0x14), before clearing target_obj.
-        // LIKELY INTENT: Clear the current target before state 3.
-        if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= g_hunt_empty_amount) {
-            this->set_target_obj(0);
+
+        case 4: {
+            this->timer = 0.0f;
+            if (this->target_obj == 0) {
+                this->set_state(0x0D);
+                return;
+            }
+            this->target_x = this->target_obj->world_x;
+            this->target_y = this->target_obj->world_y;
+            this->target_z = this->target_obj->world_z;
+            if (this->target_obj->object_state <= RGE_OBJECT_STATE_ACTIVE) {
+                this->set_state(0x0C);
+                return;
+            }
+            RGE_Action_Move_To* action =
+                new RGE_Action_Move_To(this->obj, this->target_obj, this->task->work_range, this->get_move_sprite());
+            if (action == 0) {
+                this->set_state(0x0D);
+                return;
+            }
+            this->sub_actions->add_action(action);
+            action->setSubAction(1);
+            return;
         }
-        this->set_state(3);
-        return;
 
-    case 1:
-    case 13:
-    case 14:
-        this->timer = 0.0f;
-        this->obj->new_sprite(this->get_wait_sprite());
-        return;
+        case 12: {
+            this->timer = 0.0f;
+            // The action master is stored as a static-master pointer.
+            // These three reads prove the combat-master fields at +0x124, +0x12A,
+            // and +0x138.
+            RGE_Action_Attack* action = new RGE_Action_Attack(
+                this->obj, this->target_obj, this->get_move_sprite(), this->task->work_sprite, 0,
+                this->task->work_range,
+                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
+                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
+                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame
+            );
+            if (action == 0) {
+                this->set_state(0x0D);
+                return;
+            }
+            this->sub_actions->add_action(action);
+            action->setSubAction(1);
+            return;
+        }
 
-    default:
-        return;
+        case 6:
+            this->timer = 0.0f;
+            this->obj->new_sprite(this->get_move_sprite());
+            return;
+
+        case 7:
+            this->timer = 0.0f;
+            // State 7 reads attribute_type_held (+0x4C), then calls
+            // the inherited set_attribute virtual at slot +0x80.
+            if (this->obj->attribute_type_held != this->task->attribute_type) {
+                this->obj->set_attribute(this->task->attribute_type, 0);
+            }
+            this->obj->new_sprite(this->task->work_sprite2);
+            if (this->task->work_sound != 0) {
+                this->task->work_sound->play(1);
+            }
+            return;
+
+        case 8:
+            if (this->obj->attribute_amount_held > g_hunt_empty_amount) {
+                if (this->target_obj2 == 0) {
+                    if (static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site != -1) {
+                        this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
+                            static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site,
+                            static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->backup_drop_site,
+                            this->obj->world_x, this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE,
+                            (RGE_Static_Object*) this->obj
+                        ));
+                    } else {
+                        this->set_target_obj2(0);
+                    }
+                }
+                if (this->target_obj2 != 0) {
+                    RGE_Action_Move_To* action = new RGE_Action_Move_To(
+                        this->obj, this->target_obj2, this->task->work_range, this->get_move_sprite()
+                    );
+                    if (action == 0) {
+                        this->set_state(0x0D);
+                        return;
+                    }
+                    this->sub_actions->add_action(action);
+                    action->setSubAction(1);
+                    return;
+                }
+                this->obj->notify(this->obj->id, this->obj->id, 0x203, UNIT_AI_ACTION_HUNT, 0, 0);
+                if (this->obj->owner->computerPlayer() == 0) {
+                    this->set_state(2);
+                } else {
+                    this->set_state(1);
+                }
+                return;
+            }
+            // The shipped check reads target_obj (+0x10), not
+            // target_obj2 (+0x14), before clearing target_obj.
+            // LIKELY INTENT: Clear the current target before state 3.
+            if (this->target_obj != 0 && this->target_obj->attribute_amount_held <= g_hunt_empty_amount) {
+                this->set_target_obj(0);
+            }
+            this->set_state(3);
+            return;
+
+        case 1:
+        case 13:
+        case 14:
+            this->timer = 0.0f;
+            this->obj->new_sprite(this->get_wait_sprite());
+            return;
+
+        default:
+            return;
     }
 }
 
@@ -261,228 +265,232 @@ unsigned char TRIBE_Action_Hunt::update() {
     }
 
     switch (this->state) {
-    case 3:
-        if (this->timer < 0.0) {
-            this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > 0.0) {
-                this->timer = -10.0f;
-                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HUNT, this->targetType, 0);
-                return RGE_ACTION_UPDATE_CONTINUE;
+        case 3:
+            if (this->timer < 0.0) {
+                this->timer += this->obj->owner->world->world_time_delta_seconds;
+                if (this->timer > 0.0) {
+                    this->timer = -10.0f;
+                    this->obj->notify(
+                        this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HUNT,
+                        this->targetType, 0
+                    );
+                    return RGE_ACTION_UPDATE_CONTINUE;
+                }
             }
-        }
-        break;
+            break;
 
-    case 11:
-    case 15:
-        switch (this->sub_actions->update()) {
-        case RGE_ACTION_UPDATE_TARGET_INVALID:
-            this->set_target_obj(0);
-            if (this->state == 11) {
-                this->set_state(11);
-            } else {
-                this->set_state(15);
-            }
-            return RGE_ACTION_UPDATE_CONTINUE;
-
-        case RGE_ACTION_UPDATE_REMOVE:
-        case RGE_ACTION_UPDATE_COMPLETED:
-        case RGE_ACTION_UPDATE_TARGET_LOST:
-            if (this->state == 11) {
-                this->set_state(3);
-                return RGE_ACTION_UPDATE_CONTINUE;
-            }
-            goto hunt_no_target;
-
-        case RGE_ACTION_UPDATE_FAILED:
-            if (this->obj->owner->computerPlayer() == 1) {
-                this->set_state(13);
-            } else {
-                this->set_state(3);
-            }
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        break;
-
-    case 4:
-        switch (this->sub_actions->update()) {
-        case RGE_ACTION_UPDATE_FAILED:
-            if (this->obj->owner->computerPlayer() == 1) {
-                this->set_state(13);
-            } else {
-                this->set_state(3);
-            }
-            return RGE_ACTION_UPDATE_CONTINUE;
-
-        case RGE_ACTION_UPDATE_REMOVE:
-        case RGE_ACTION_UPDATE_COMPLETED:
-            this->set_state(6);
-            return RGE_ACTION_UPDATE_CONTINUE;
-
-        case RGE_ACTION_UPDATE_TARGET_INVALID:
-        case RGE_ACTION_UPDATE_TARGET_LOST:
-            this->set_target_obj(0);
-            this->set_state(11);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        break;
-
-    case 12:
-        switch (this->sub_actions->update()) {
-        case RGE_ACTION_UPDATE_TARGET_INVALID:
-            this->set_target_obj(0);
-            this->set_state(11);
-            return RGE_ACTION_UPDATE_CONTINUE;
-
-        case RGE_ACTION_UPDATE_REMOVE:
-        case RGE_ACTION_UPDATE_COMPLETED:
-        case RGE_ACTION_UPDATE_TARGET_LOST:
-            if (this->target_obj != 0) {
-                this->set_state(4);
-                return RGE_ACTION_UPDATE_CONTINUE;
-            }
-
-        case RGE_ACTION_UPDATE_FAILED:
-            this->set_state(3);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        break;
-
-    case 6:
-        if (this->target_obj == 0) {
-            this->set_state(3);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        if (this->obj->turn_towards(this->target_obj, 0, 0) != 0) {
-            if (this->target_obj->attribute_amount_held <= g_hunt_empty_amount) {
-                this->set_target_obj(0);
-                this->set_state(3);
-                return RGE_ACTION_UPDATE_CONTINUE;
-            }
-            this->set_state(7);
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        this->set_state(3);
-        return RGE_ACTION_UPDATE_CONTINUE;
-
-    case 7: {
-        float give_amount;
-        float adjusted_amount;
-        float modifier;
-        float max_hold;
-
-        if (this->target_obj == 0) {
-            if (this->obj->attribute_amount_held > g_hunt_empty_amount) {
-                this->set_state(8);
-            } else {
-                this->set_state(3);
-            }
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-
-        if (rge_base_game->quick_build != 0) {
-            give_amount = this->target_obj->attribute_amount_held;
-        } else {
-            give_amount = this->task->work_val1 *
-                ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate *
-                this->obj->owner->world->world_time_delta_seconds;
-        }
-        if (give_amount > this->target_obj->attribute_amount_held) {
-            give_amount = this->target_obj->attribute_amount_held;
-        }
-
-        short attr = this->task->attribute_type2;
-        if (attr == -1) {
-            modifier = 1.0f;
-        } else {
-            modifier = this->obj->owner->attributes[attr];
-        }
-
-        max_hold = (float)this->obj->master_obj->attribute_max_amount;
-        adjusted_amount = modifier * give_amount;
-        max_hold *= modifier;
-        if (adjusted_amount > max_hold - this->obj->attribute_amount_held) {
-            float excess = adjusted_amount -
-                (max_hold - this->obj->attribute_amount_held);
-            adjusted_amount -= excess;
-            give_amount -= excess / modifier;
-        }
-
-        this->target_obj->set_attribute_amount(-give_amount, 1, 1);
-        this->obj->set_attribute_amount(adjusted_amount, 1, 0);
-
-        if (this->obj->attribute_amount_held < max_hold && this->target_obj->attribute_amount_held > g_hunt_empty_amount) {
-            return RGE_ACTION_UPDATE_CONTINUE;
-        }
-        this->set_state(8);
-        return RGE_ACTION_UPDATE_CONTINUE;
-    }
-
-    case 8:
-        if (this->timer < 0.0) {
-            this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > 0.0) {
-                this->timer = 0.0f;
-                this->set_target_obj2(0);
-                this->set_state(8);
-                return RGE_ACTION_UPDATE_CONTINUE;
-            }
-        } else {
+        case 11:
+        case 15:
             switch (this->sub_actions->update()) {
-            case RGE_ACTION_UPDATE_FAILED:
-            case RGE_ACTION_UPDATE_TARGET_INVALID:
-            case RGE_ACTION_UPDATE_TARGET_LOST:
-                this->timer = -3.0f;
-                this->obj->stop_moving();
-                return RGE_ACTION_UPDATE_CONTINUE;
+                case RGE_ACTION_UPDATE_TARGET_INVALID:
+                    this->set_target_obj(0);
+                    if (this->state == 11) {
+                        this->set_state(11);
+                    } else {
+                        this->set_state(15);
+                    }
+                    return RGE_ACTION_UPDATE_CONTINUE;
 
-            case RGE_ACTION_UPDATE_REMOVE:
-            case RGE_ACTION_UPDATE_COMPLETED: {
-                if (this->target_obj2 == 0) {
+                case RGE_ACTION_UPDATE_REMOVE:
+                case RGE_ACTION_UPDATE_COMPLETED:
+                case RGE_ACTION_UPDATE_TARGET_LOST:
+                    if (this->state == 11) {
+                        this->set_state(3);
+                        return RGE_ACTION_UPDATE_CONTINUE;
+                    }
+                    goto hunt_no_target;
+
+                case RGE_ACTION_UPDATE_FAILED:
+                    if (this->obj->owner->computerPlayer() == 1) {
+                        this->set_state(13);
+                    } else {
+                        this->set_state(3);
+                    }
+                    return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            break;
+
+        case 4:
+            switch (this->sub_actions->update()) {
+                case RGE_ACTION_UPDATE_FAILED:
+                    if (this->obj->owner->computerPlayer() == 1) {
+                        this->set_state(13);
+                    } else {
+                        this->set_state(3);
+                    }
+                    return RGE_ACTION_UPDATE_CONTINUE;
+
+                case RGE_ACTION_UPDATE_REMOVE:
+                case RGE_ACTION_UPDATE_COMPLETED:
+                    this->set_state(6);
+                    return RGE_ACTION_UPDATE_CONTINUE;
+
+                case RGE_ACTION_UPDATE_TARGET_INVALID:
+                case RGE_ACTION_UPDATE_TARGET_LOST:
+                    this->set_target_obj(0);
+                    this->set_state(11);
+                    return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            break;
+
+        case 12:
+            switch (this->sub_actions->update()) {
+                case RGE_ACTION_UPDATE_TARGET_INVALID:
+                    this->set_target_obj(0);
+                    this->set_state(11);
+                    return RGE_ACTION_UPDATE_CONTINUE;
+
+                case RGE_ACTION_UPDATE_REMOVE:
+                case RGE_ACTION_UPDATE_COMPLETED:
+                case RGE_ACTION_UPDATE_TARGET_LOST:
+                    if (this->target_obj != 0) {
+                        this->set_state(4);
+                        return RGE_ACTION_UPDATE_CONTINUE;
+                    }
+
+                case RGE_ACTION_UPDATE_FAILED:
+                    this->set_state(3);
+                    return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            break;
+
+        case 6:
+            if (this->target_obj == 0) {
+                this->set_state(3);
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            if (this->obj->turn_towards(this->target_obj, 0, 0) != 0) {
+                if (this->target_obj->attribute_amount_held <= g_hunt_empty_amount) {
+                    this->set_target_obj(0);
+                    this->set_state(3);
+                    return RGE_ACTION_UPDATE_CONTINUE;
+                }
+                this->set_state(7);
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            this->set_state(3);
+            return RGE_ACTION_UPDATE_CONTINUE;
+
+        case 7: {
+            float give_amount;
+            float adjusted_amount;
+            float modifier;
+            float max_hold;
+
+            if (this->target_obj == 0) {
+                if (this->obj->attribute_amount_held > g_hunt_empty_amount) {
+                    this->set_state(8);
+                } else {
+                    this->set_state(3);
+                }
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+
+            if (rge_base_game->quick_build != 0) {
+                give_amount = this->target_obj->attribute_amount_held;
+            } else {
+                give_amount = this->task->work_val1 * ((RGE_Master_Action_Object*) this->obj->master_obj)->work_rate
+                              * this->obj->owner->world->world_time_delta_seconds;
+            }
+            if (give_amount > this->target_obj->attribute_amount_held) {
+                give_amount = this->target_obj->attribute_amount_held;
+            }
+
+            short attr = this->task->attribute_type2;
+            if (attr == -1) {
+                modifier = 1.0f;
+            } else {
+                modifier = this->obj->owner->attributes[attr];
+            }
+
+            max_hold = (float) this->obj->master_obj->attribute_max_amount;
+            adjusted_amount = modifier * give_amount;
+            max_hold *= modifier;
+            if (adjusted_amount > max_hold - this->obj->attribute_amount_held) {
+                float excess = adjusted_amount - (max_hold - this->obj->attribute_amount_held);
+                adjusted_amount -= excess;
+                give_amount -= excess / modifier;
+            }
+
+            this->target_obj->set_attribute_amount(-give_amount, 1, 1);
+            this->obj->set_attribute_amount(adjusted_amount, 1, 0);
+
+            if (this->obj->attribute_amount_held<max_hold&& this->target_obj->attribute_amount_held>
+                    g_hunt_empty_amount) {
+                return RGE_ACTION_UPDATE_CONTINUE;
+            }
+            this->set_state(8);
+            return RGE_ACTION_UPDATE_CONTINUE;
+        }
+
+        case 8:
+            if (this->timer < 0.0) {
+                this->timer += this->obj->owner->world->world_time_delta_seconds;
+                if (this->timer > 0.0) {
+                    this->timer = 0.0f;
+                    this->set_target_obj2(0);
                     this->set_state(8);
                     return RGE_ACTION_UPDATE_CONTINUE;
                 }
-                if (this->obj->distance_to_object(this->target_obj2) > g_hunt_drop_distance_threshold) {
-                    this->timer = -3.0f;
-                    this->obj->stop_moving();
-                    return RGE_ACTION_UPDATE_CONTINUE;
-                }
+            } else {
+                switch (this->sub_actions->update()) {
+                    case RGE_ACTION_UPDATE_FAILED:
+                    case RGE_ACTION_UPDATE_TARGET_INVALID:
+                    case RGE_ACTION_UPDATE_TARGET_LOST:
+                        this->timer = -3.0f;
+                        this->obj->stop_moving();
+                        return RGE_ACTION_UPDATE_CONTINUE;
 
-                if (this->task->work_sound2 != 0) {
-                    this->task->work_sound2->play(1);
-                }
+                    case RGE_ACTION_UPDATE_REMOVE:
+                    case RGE_ACTION_UPDATE_COMPLETED: {
+                        if (this->target_obj2 == 0) {
+                            this->set_state(8);
+                            return RGE_ACTION_UPDATE_CONTINUE;
+                        }
+                        if (this->obj->distance_to_object(this->target_obj2) > g_hunt_drop_distance_threshold) {
+                            this->timer = -3.0f;
+                            this->obj->stop_moving();
+                            return RGE_ACTION_UPDATE_CONTINUE;
+                        }
 
-                short attribute = this->task->attribute_type3;
-                if (attribute == -1) {
-                    attribute = this->obj->attribute_type_held;
-                }
-                this->obj->owner->add_attribute_num(attribute, this->obj->attribute_amount_held, 0);
-                this->obj->owner->trackUnitGather(this->obj->id, attribute, (int)this->obj->attribute_amount_held);
-                this->obj->set_attribute(-1, 0.0f);
+                        if (this->task->work_sound2 != 0) {
+                            this->task->work_sound2->play(1);
+                        }
 
-                if (this->target_obj != 0) {
-                    this->set_target_obj2(0);
-                    this->set_state(4);
-                    return RGE_ACTION_UPDATE_CONTINUE;
+                        short attribute = this->task->attribute_type3;
+                        if (attribute == -1) {
+                            attribute = this->obj->attribute_type_held;
+                        }
+                        this->obj->owner->add_attribute_num(attribute, this->obj->attribute_amount_held, 0);
+                        this->obj->owner->trackUnitGather(
+                            this->obj->id, attribute, (int) this->obj->attribute_amount_held
+                        );
+                        this->obj->set_attribute(-1, 0.0f);
+
+                        if (this->target_obj != 0) {
+                            this->set_target_obj2(0);
+                            this->set_state(4);
+                            return RGE_ACTION_UPDATE_CONTINUE;
+                        }
+                        if (this->target_x != -1.0f && this->target_y != -1.0f) {
+                            this->set_state(11);
+                            return RGE_ACTION_UPDATE_CONTINUE;
+                        }
+                        goto hunt_no_target;
+                    }
                 }
-                if (this->target_x != -1.0f && this->target_y != -1.0f) {
-                    this->set_state(11);
-                    return RGE_ACTION_UPDATE_CONTINUE;
-                }
-                goto hunt_no_target;
             }
+            break;
+
+        case 1:
+            if (this->obj->owner->computerPlayer() == 0) {
+                this->set_state(2);
             }
-        }
-        break;
+            return RGE_ACTION_UPDATE_REMOVE;
 
-    case 1:
-        if (this->obj->owner->computerPlayer() == 0) {
-            this->set_state(2);
-        }
-        return RGE_ACTION_UPDATE_REMOVE;
-
-    case 13:
-        this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_HUNT, 0, 0);
-        return RGE_ACTION_UPDATE_FAILED;
+        case 13:
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_HUNT, 0, 0);
+            return RGE_ACTION_UPDATE_FAILED;
     }
 
     return RGE_ACTION_UPDATE_CONTINUE;
@@ -499,8 +507,8 @@ hunt_no_target:
 RGE_Sprite* TRIBE_Action_Hunt::get_move_sprite(void) {
     RGE_Task* task = this->task;
     short task_facet = task->attribute_type;
-    if (task_facet != -1 && task_facet == this->obj->attribute_type_held &&
-        (int)this->obj->attribute_amount_held > 0 && task->carry_sprite != 0) {
+    if (task_facet != -1 && task_facet == this->obj->attribute_type_held && (int) this->obj->attribute_amount_held > 0
+        && task->carry_sprite != 0) {
         return task->carry_sprite;
     }
     return task->move_sprite;
@@ -509,8 +517,8 @@ RGE_Sprite* TRIBE_Action_Hunt::get_move_sprite(void) {
 RGE_Sprite* TRIBE_Action_Hunt::get_wait_sprite(void) {
     RGE_Task* task = this->task;
     short task_facet = task->attribute_type;
-    if (task_facet != -1 && task_facet == this->obj->attribute_type_held &&
-        (int)this->obj->attribute_amount_held > 0 && task->carry_sprite != 0) {
+    if (task_facet != -1 && task_facet == this->obj->attribute_type_held && (int) this->obj->attribute_amount_held > 0
+        && task->carry_sprite != 0) {
         return task->carry_sprite;
     }
     return this->obj->master_obj->sprite;
@@ -527,11 +535,10 @@ int TRIBE_Action_Hunt::stop(void) {
 
 int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0 && obj_in->owner == this->obj->owner) {
-        RGE_Master_Action_Object* master =
-            static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
+        RGE_Master_Action_Object* master = static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
         short id = obj_in->master_obj->id;
-        if ((id == master->drop_site || id == master->backup_drop_site) &&
-            this->obj->attribute_amount_held > g_hunt_empty_amount) {
+        if ((id == master->drop_site || id == master->backup_drop_site)
+            && this->obj->attribute_amount_held > g_hunt_empty_amount) {
             if (obj_in == this->target_obj2 && this->state == 8) {
                 return 1;
             }
@@ -555,11 +562,10 @@ int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, floa
 int TRIBE_Action_Hunt::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in->owner == this->obj->owner) {
-            RGE_Master_Action_Object* master =
-                static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
+            RGE_Master_Action_Object* master = static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
             short obj_id = obj_in->master_obj->id;
-            if ((obj_id == master->drop_site || obj_id == master->backup_drop_site) &&
-                this->obj->attribute_amount_held > g_hunt_empty_amount) {
+            if ((obj_id == master->drop_site || obj_id == master->backup_drop_site)
+                && this->obj->attribute_amount_held > g_hunt_empty_amount) {
                 this->set_target_obj(0);
                 this->timer = 0.0f;
                 this->target_x = -1.0f;

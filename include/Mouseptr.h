@@ -7,7 +7,7 @@
 typedef unsigned long ulong;
 
 class TMousePointer {
-public:
+  public:
     int custom_draw;
     TDrawArea* render_area;
     TDrawArea* save_area;
@@ -65,7 +65,9 @@ public:
     ~TMousePointer();
     int Shutdown_Mouse();
     int Restore_Mouse(TDrawArea* render_area_in);
-    int setup(int custom_draw_in, TDrawArea* render_area_in, char* cursor_file_name, int cursor_resId, int maxCursors_in);
+    int setup(
+        int custom_draw_in, TDrawArea* render_area_in, char* cursor_file_name, int cursor_resId, int maxCursors_in
+    );
     void set_game_mode(int mode);
     void set_game_enable(int enable);
     int get_game_enable();
@@ -87,8 +89,7 @@ public:
     int GetDDBltError(long theError);
 };
 
-typedef char mouseptr_tmousepointer_size[
-    (sizeof(TMousePointer) == 0x254) ? 1 : -1];
+typedef char mouseptr_tmousepointer_size[(sizeof(TMousePointer) == 0x254) ? 1 : -1];
 
 // Original symbol: ?MouseSystem@@3PAVTMousePointer@@A.
 extern TMousePointer* MouseSystem;

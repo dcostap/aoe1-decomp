@@ -8,7 +8,7 @@ class TShape;
 class TRIBE_Player;
 
 class TRIBE_Panel_Inven : public TPanel {
-public:
+  public:
     TShape* pics;
     TRIBE_Player* player;
     short save_attr_num;
@@ -26,13 +26,14 @@ public:
     void set_text_color(unsigned long font_color_in, unsigned long back_color_in);
     virtual void draw();
     virtual long handle_idle();
-protected:
+
+  protected:
     void save_info();
-public:
+
+  public:
     void set_player(TRIBE_Player* player_in);
 };
 
-typedef char tpnl_inv_panel_size_check[
-    (sizeof(TRIBE_Panel_Inven) == 0x118) ? 1 : -1];
+typedef char tpnl_inv_panel_size_check[(sizeof(TRIBE_Panel_Inven) == 0x118) ? 1 : -1];
 
 #endif

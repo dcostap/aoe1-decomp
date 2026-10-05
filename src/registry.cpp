@@ -38,9 +38,9 @@ int TRegistry::RegSet(int UseUserKey, const char* lptszName, unsigned char* lpDa
 int TRegistry::RegSetInt(int UseUserKey, const char* lptszName, int Value) {
     unsigned long ret;
     if (UseUserKey != 0) {
-        ret = RegSetValueExA(ghUserKey, lptszName, 0, REG_DWORD, (const unsigned char*)&Value, 4);
+        ret = RegSetValueExA(ghUserKey, lptszName, 0, REG_DWORD, (const unsigned char*) &Value, 4);
     } else {
-        ret = RegSetValueExA(ghMachineKey, lptszName, 0, REG_DWORD, (const unsigned char*)&Value, 4);
+        ret = RegSetValueExA(ghMachineKey, lptszName, 0, REG_DWORD, (const unsigned char*) &Value, 4);
     }
     return (ret == 0);
 }
@@ -60,9 +60,9 @@ char* TRegistry::RegGetAscii(int UseUserKey, const char* lptszName) {
     unsigned long dwSize = sizeof(this->Data) - 1;
 
     if (UseUserKey != 0) {
-        return RegQueryValueExA(ghUserKey, lptszName, 0, &dwType, (unsigned char*)Data, &dwSize) ? 0 : Data;
+        return RegQueryValueExA(ghUserKey, lptszName, 0, &dwType, (unsigned char*) Data, &dwSize) ? 0 : Data;
     } else {
-        return RegQueryValueExA(ghMachineKeyRead, lptszName, 0, &dwType, (unsigned char*)Data, &dwSize) ? 0 : Data;
+        return RegQueryValueExA(ghMachineKeyRead, lptszName, 0, &dwType, (unsigned char*) Data, &dwSize) ? 0 : Data;
     }
 }
 
@@ -80,9 +80,9 @@ int TRegistry::RegGetInt(int UseUserKey, const char* lptszName) {
     int Data;
     long err;
     if (UseUserKey) {
-        err = RegQueryValueExA(this->ghUserKey, lptszName, 0, &dwType, (unsigned char*)&Data, &Size);
+        err = RegQueryValueExA(this->ghUserKey, lptszName, 0, &dwType, (unsigned char*) &Data, &Size);
     } else {
-        err = RegQueryValueExA(this->ghMachineKeyRead, lptszName, 0, &dwType, (unsigned char*)&Data, &Size);
+        err = RegQueryValueExA(this->ghMachineKeyRead, lptszName, 0, &dwType, (unsigned char*) &Data, &Size);
     }
     if (err == 0) {
         return Data;

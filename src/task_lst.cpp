@@ -24,7 +24,7 @@ void RGE_Task_List::copy(RGE_Task_List* other_list) {
 
     list_num = other_list->list_num;
     if (list_num > 0) {
-        list = (RGE_Task**)calloc((int)list_num, 4);
+        list = (RGE_Task**) calloc((int) list_num, 4);
         for (short i = 0; i < list_num; i++) {
             list[i] = create_task(other_list->list[i]->task_type, i);
             list[i]->copy(other_list->list[i]);
@@ -43,11 +43,11 @@ void RGE_Task_List::load(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     if (self->list_num <= 0)
         return;
 
-    self->list = (RGE_Task**)calloc(self->list_num, 4);
-    for (int i = 0; (short)i < self->list_num; i++) {
+    self->list = (RGE_Task**) calloc(self->list_num, 4);
+    for (int i = 0; (short) i < self->list_num; i++) {
         rge_read(infile, &task_type, 2);
-        self->list[(short)i] = self->create_task(task_type, i);
-        self->list[(short)i]->load(infile, sprites, sounds);
+        self->list[(short) i] = self->create_task(task_type, i);
+        self->list[(short) i]->load(infile, sprites, sounds);
     }
 }
 
@@ -59,11 +59,11 @@ void RGE_Task_List::load(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds)
 
     fscanf(infile, "%hd", &list_num);
     if (list_num > 0) {
-        list = (RGE_Task**)calloc((int)list_num, 4);
-        for (int i = 0; (short)i < list_num; i++) {
+        list = (RGE_Task**) calloc((int) list_num, 4);
+        for (int i = 0; (short) i < list_num; i++) {
             fscanf(infile, "%hd", &task_type);
-            list[(short)i] = create_task(task_type, i);
-            list[(short)i]->load(infile, sprites, sounds);
+            list[(short) i] = create_task(task_type, i);
+            list[(short) i]->load(infile, sprites, sounds);
         }
     }
 }
@@ -104,8 +104,9 @@ RGE_Task* RGE_Task_List::create_task(short task_type, short index) {
     return task;
 }
 
-RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Object* target_obj,
-                                         float target_x, float target_y, float target_z) {
+RGE_Task* RGE_Task_List::get_target_task(
+    RGE_Action_Object* obj, RGE_Static_Object* target_obj, float target_x, float target_y, float target_z
+) {
     int i;
     short terrain_type;
 
@@ -152,12 +153,12 @@ RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Obje
 
     // A negative-one coordinate skips terrain lookup.
     if (target_x != g_task_invalid_coordinate && target_y != g_task_invalid_coordinate) {
-        short tile_x = (short)(int)target_x;
-        short tile_y = (short)(int)target_y;
+        short tile_x = (short) (int) target_x;
+        short tile_y = (short) (int) target_y;
         RGE_Map* map = obj->owner->world->map;
 
         if (tile_x >= 0 && tile_x < map->map_width && tile_y >= 0 && tile_y < map->map_height) {
-            terrain_type = (unsigned char)map->get_terrain(tile_x, tile_y);
+            terrain_type = (unsigned char) map->get_terrain(tile_x, tile_y);
             for (i = 0; i < list_num; i++) {
                 RGE_Task* task = list[i];
                 if (task->terrain_id == terrain_type)
@@ -176,56 +177,57 @@ int RGE_Task_List::is_attack_task(RGE_Task* task) {
 int RGE_Task_List::check_task(RGE_Task* task, RGE_Action_Object* obj, RGE_Static_Object* target_obj) {
     // Reject a missing held attribute or a non-positive amount.
     if (task->holding_attr == 1) {
-        if (target_obj->attribute_type_held == -1 || target_obj->attribute_amount_held <= g_task_nonpositive_amount_threshold)
+        if (target_obj->attribute_type_held == -1
+            || target_obj->attribute_amount_held <= g_task_nonpositive_amount_threshold)
             return 0;
     }
 
     switch (task->owner_type) {
-    case 1:
-        if (target_obj->owner != obj->owner)
-            return 0;
-        break;
+        case 1:
+            if (target_obj->owner != obj->owner)
+                return 0;
+            break;
 
-    case 2:
-        if (target_obj->owner != obj->owner) {
+        case 2:
+            if (target_obj->owner != obj->owner) {
+                if (target_obj->owner->id != 0) {
+                    if (!obj->owner->relation(target_obj->owner->id))
+                        return 0;
+                    break;
+                }
+            }
+            return 0;
+
+        case 3:
+            if (target_obj->owner->id == 0)
+                break;
+            return 0;
+
+        case 4:
+            if (target_obj->owner == obj->owner)
+                return 1;
+            if (target_obj->owner->id != 0) {
+                if (obj->owner->isAlly(target_obj->owner->id)) {
+                    if (target_obj->owner->isAlly(obj->owner->id))
+                        return 1;
+                }
+            }
+            return 0;
+
+        case 5:
+            if (target_obj->owner == obj->owner)
+                goto case5_failure;
             if (target_obj->owner->id != 0) {
                 if (!obj->owner->relation(target_obj->owner->id))
-                    return 0;
-                break;
+                    goto case5_failure;
             }
-        }
-        return 0;
-
-    case 3:
-        if (target_obj->owner->id == 0)
-            break;
-        return 0;
-
-    case 4:
-        if (target_obj->owner == obj->owner)
-            return 1;
-        if (target_obj->owner->id != 0) {
-            if (obj->owner->isAlly(target_obj->owner->id)) {
-                if (target_obj->owner->isAlly(obj->owner->id))
-                    return 1;
-            }
-        }
-        return 0;
-
-    case 5:
-        if (target_obj->owner == obj->owner)
-            goto case5_failure;
-        if (target_obj->owner->id != 0) {
-            if (!obj->owner->relation(target_obj->owner->id))
+            if (target_obj->owner->id == 0 && obj->master_obj->combat_level == 0)
                 goto case5_failure;
-        }
-        if (target_obj->owner->id == 0 && obj->master_obj->combat_level == 0)
-            goto case5_failure;
-        break;
+            break;
 
-    case5_failure:
-        return 0;
+        case5_failure:
+            return 0;
     }
 
-    return (int)(obj != target_obj);
+    return (int) (obj != target_obj);
 }

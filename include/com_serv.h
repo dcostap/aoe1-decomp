@@ -11,17 +11,16 @@ struct SPs {
     int Active;
 };
 
-typedef char com_serv_sp_size_check[
-    (sizeof(SPs) == 0x60) ? 1 : -1];
+typedef char com_serv_sp_size_check[(sizeof(SPs) == 0x60) ? 1 : -1];
 
 class TCommunications_Services {
-protected:
+  protected:
     SPs Service[100];
 
-private:
+  private:
     int ServiceCount;
 
-public:
+  public:
     TCommunications_Services();
     ~TCommunications_Services();
     int GetServiceCount();
@@ -34,10 +33,8 @@ public:
     void SetServiceActive(int id, int state);
 };
 
-BOOL __stdcall DPEnumCallback(LPGUID pid, LPSTR szName, DWORD major_ver,
-                              DWORD minor_ver, LPVOID lpx);
+BOOL __stdcall DPEnumCallback(LPGUID pid, LPSTR szName, DWORD major_ver, DWORD minor_ver, LPVOID lpx);
 
-typedef char com_serv_services_size_check[
-    (sizeof(TCommunications_Services) == 0x2584) ? 1 : -1];
+typedef char com_serv_services_size_check[(sizeof(TCommunications_Services) == 0x2584) ? 1 : -1];
 
 #endif

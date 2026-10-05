@@ -10,10 +10,8 @@ class TButtonPanel;
 class TVerticalSliderPanel;
 
 class TribeConfigDialog : public TDialogPanel {
-public:
-    enum Mode {
-        InGame = 0
-    };
+  public:
+    enum Mode { InGame = 0 };
 
     Mode modeValue;
     TTextPanel* title;
@@ -47,7 +45,6 @@ public:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
-typedef char dlg_conf_dialog_size_check[
-    (sizeof(TribeConfigDialog) == 0x564) ? 1 : -1];
+typedef char dlg_conf_dialog_size_check[(sizeof(TribeConfigDialog) == 0x564) ? 1 : -1];
 
 #endif

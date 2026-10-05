@@ -8,7 +8,7 @@ class TTextPanel;
 class TButtonPanel;
 
 class TribeSelectTribeScreen : public TScreenPanel {
-public:
+  public:
     TPicturePanel* background;
     TTextPanel* title;
     TTextPanel* tribeText;
@@ -21,13 +21,12 @@ public:
     virtual ~TribeSelectTribeScreen();
     TribeSelectTribeScreen();
 
-protected:
+  protected:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     void fillTribeText(int t);
     char* tribeName(int i);
 };
 
-typedef char scr_trb_screen_size_check[
-    (sizeof(TribeSelectTribeScreen) == 0x4B8) ? 1 : -1];
+typedef char scr_trb_screen_size_check[(sizeof(TribeSelectTribeScreen) == 0x4B8) ? 1 : -1];
 
 #endif

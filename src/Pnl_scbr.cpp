@@ -2,44 +2,13 @@
 
 extern unsigned long __cdecl debug_timeGetTime(char*, int);
 
-TScrollBarPanel::TScrollBarPanel()
-    : TPanel(),
-      list_panel(0),
-      list_len(0),
-      one_step(0),
-      page_step(0),
-      list_num(0),
-      button_pics(0),
-      back_frame(0),
-      up_frame(0),
-      down_frame(0),
-      tab_frame(0),
-      arrowSize(0),
-      tabSize(0),
-      tab_y(0),
-      tab_min_y(0),
-      tab_max_y(0),
-      tab_mouse_y(0),
-      tab_x(0),
-      tab_min_x(0),
-      tab_max_x(0),
-      tab_mouse_x(0),
-      item_down(0),
-      item_is_down(0),
-      item_x(0),
-      item_y(0),
-      item_mode(0),
-      item_last_time(0),
-      item_hold_interval(100),
-      item_down_interval(250),
-      orientationValue(Vertical),
-      bevel_type(1),
-      bevel_color1(0),
-      bevel_color2(0),
-      bevel_color3(0),
-      bevel_color4(0),
-      bevel_color5(0),
-      bevel_color6(0) {
+TScrollBarPanel::TScrollBarPanel() :
+    TPanel(), list_panel(0), list_len(0), one_step(0), page_step(0), list_num(0), button_pics(0), back_frame(0),
+    up_frame(0), down_frame(0), tab_frame(0), arrowSize(0), tabSize(0), tab_y(0), tab_min_y(0), tab_max_y(0),
+    tab_mouse_y(0), tab_x(0), tab_min_x(0), tab_max_x(0), tab_mouse_x(0), item_down(0), item_is_down(0), item_x(0),
+    item_y(0), item_mode(0), item_last_time(0), item_hold_interval(100), item_down_interval(250),
+    orientationValue(Vertical), bevel_type(1), bevel_color1(0), bevel_color2(0), bevel_color3(0), bevel_color4(0),
+    bevel_color5(0), bevel_color6(0) {
     this->panel_type = 5;
     this->mouse_move_tolerance = 0;
     SetRect(&this->up_rect, 0, 0, 0, 0);
@@ -52,10 +21,11 @@ TScrollBarPanel::TScrollBarPanel()
 TScrollBarPanel::~TScrollBarPanel() {
 }
 
-long TScrollBarPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
-                            char* back_pic_in, char* up_pic_in, char* down_pic_in, char* tab_pic_in,
-                            long arrowSizeIn, long tabSizeIn, TPanel* list_panel_in, long list_len_in,
-                            TScrollBarPanel::Orientation orientation) {
+long TScrollBarPanel::setup(
+    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
+    char* back_pic_in, char* up_pic_in, char* down_pic_in, char* tab_pic_in, long arrowSizeIn, long tabSizeIn,
+    TPanel* list_panel_in, long list_len_in, TScrollBarPanel::Orientation orientation
+) {
     long result;
 
     this->orientationValue = orientation;
@@ -167,8 +137,8 @@ void TScrollBarPanel::set_tab_pos(long list_num_in) {
 
     if (this->orientationValue == Horizontal) {
         if (this->list_len > 0) {
-            this->tab_x = ((this->tabSize / 2 + this->tab_max_x - this->tab_min_x) * list_num_in) /
-                          this->list_len + this->tab_min_x;
+            this->tab_x = ((this->tabSize / 2 + this->tab_max_x - this->tab_min_x) * list_num_in) / this->list_len
+                          + this->tab_min_x;
         }
 
         if (this->tab_x < this->tab_min_x) {
@@ -181,8 +151,8 @@ void TScrollBarPanel::set_tab_pos(long list_num_in) {
             if (list_num_in == this->list_len - 1) {
                 this->tab_y = this->tab_max_y;
             } else {
-                this->tab_y = ((this->tabSize / 2 + this->tab_max_y - this->tab_min_y) * list_num_in) /
-                              this->list_len + this->tab_min_y;
+                this->tab_y = ((this->tabSize / 2 + this->tab_max_y - this->tab_min_y) * list_num_in) / this->list_len
+                              + this->tab_min_y;
             }
         }
 
@@ -202,7 +172,9 @@ void TScrollBarPanel::set_list_len(long list_len_in, long list_num_in) {
     this->set_tab_pos(list_num_in);
 }
 
-void TScrollBarPanel::set_buttons(TShape* button_pics_in, int back_frame_in, int up_frame_in, int down_frame_in, int tab_frame_in) {
+void TScrollBarPanel::set_buttons(
+    TShape* button_pics_in, int back_frame_in, int up_frame_in, int down_frame_in, int tab_frame_in
+) {
     this->button_pics = button_pics_in;
     this->back_frame = back_frame_in;
     this->up_frame = up_frame_in;
@@ -212,53 +184,62 @@ void TScrollBarPanel::set_buttons(TShape* button_pics_in, int back_frame_in, int
 
 void TScrollBarPanel::set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c4, int c5, int c6) {
     bevel_type = bevel_type_in;
-    bevel_color1 = (unsigned char)c1;
-    bevel_color2 = (unsigned char)c2;
-    bevel_color3 = (unsigned char)c3;
-    bevel_color4 = (unsigned char)c4;
-    bevel_color5 = (unsigned char)c5;
-    bevel_color6 = (unsigned char)c6;
+    bevel_color1 = (unsigned char) c1;
+    bevel_color2 = (unsigned char) c2;
+    bevel_color3 = (unsigned char) c3;
+    bevel_color4 = (unsigned char) c4;
+    bevel_color5 = (unsigned char) c5;
+    bevel_color6 = (unsigned char) c6;
 }
 
 long TScrollBarPanel::handle_idle() {
     switch (this->item_mode) {
-    case 2: {
-        if (this->item_is_down == 0) return 0;
-        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 306);
-        if (now - this->item_last_time < this->item_hold_interval) return 0;
-        this->item_last_time = now;
-        switch (this->item_down) {
-        case 1:
-            this->scroll(ActionUp, 0); return 0;
-        case 2:
-            this->scroll(ActionDown, 0); return 0;
-        case 3:
-            if (!this->is_inside_rect(this->item_x, this->item_y, &this->top_rect)) {
-                this->item_is_down = 0; this->item_mode = 0;
-                this->set_redraw(TPanel::RedrawNormal);
+        case 2: {
+            if (this->item_is_down == 0)
                 return 0;
-            }
-            this->scroll(ActionPrior, 0); return 0;
-        case 4:
-            this->scroll(ActionPrior, 0); return 0;
-        case 5:
-            if (!this->is_inside_rect(this->item_x, this->item_y, &this->bottom_rect)) {
-                this->item_is_down = 0; this->item_mode = 0;
-                this->set_redraw(TPanel::RedrawNormal);
+            unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 306);
+            if (now - this->item_last_time < this->item_hold_interval)
                 return 0;
+            this->item_last_time = now;
+            switch (this->item_down) {
+                case 1:
+                    this->scroll(ActionUp, 0);
+                    return 0;
+                case 2:
+                    this->scroll(ActionDown, 0);
+                    return 0;
+                case 3:
+                    if (!this->is_inside_rect(this->item_x, this->item_y, &this->top_rect)) {
+                        this->item_is_down = 0;
+                        this->item_mode = 0;
+                        this->set_redraw(TPanel::RedrawNormal);
+                        return 0;
+                    }
+                    this->scroll(ActionPrior, 0);
+                    return 0;
+                case 4:
+                    this->scroll(ActionPrior, 0);
+                    return 0;
+                case 5:
+                    if (!this->is_inside_rect(this->item_x, this->item_y, &this->bottom_rect)) {
+                        this->item_is_down = 0;
+                        this->item_mode = 0;
+                        this->set_redraw(TPanel::RedrawNormal);
+                        return 0;
+                    }
+                    this->scroll(ActionNext, 0);
+                    return 0;
             }
-            this->scroll(ActionNext, 0); return 0;
+            break;
         }
-        break;
-    }
-    case 1: {
-        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 296);
-        if (now - this->item_last_time >= this->item_down_interval) {
-            this->item_mode = 2;
-            this->item_last_time = now - this->item_hold_interval;
+        case 1: {
+            unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 296);
+            if (now - this->item_last_time >= this->item_down_interval) {
+                this->item_mode = 2;
+                this->item_last_time = now - this->item_hold_interval;
+            }
+            break;
         }
-        break;
-    }
     }
     return 0;
 }
@@ -315,140 +296,138 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
     long position;
 
     switch (this->item_down) {
-    case 1:
-        if (this->is_inside_rect(x, y, &this->up_rect) == 0) {
-            if (this->item_is_down != 0) {
-                this->item_is_down = 0;
-                this->item_mode = 0;
+        case 1:
+            if (this->is_inside_rect(x, y, &this->up_rect) == 0) {
+                if (this->item_is_down != 0) {
+                    this->item_is_down = 0;
+                    this->item_mode = 0;
+                    this->set_redraw(TPanel::RedrawNormal);
+                }
+            } else if (this->item_is_down == 0) {
+                this->item_is_down = 1;
+                this->item_mode = 2;
+                this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 410);
+                this->scroll(ActionUp, 0);
                 this->set_redraw(TPanel::RedrawNormal);
             }
-        } else if (this->item_is_down == 0) {
-            this->item_is_down = 1;
-            this->item_mode = 2;
-            this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 410);
-            this->scroll(ActionUp, 0);
-            this->set_redraw(TPanel::RedrawNormal);
-        }
-        break;
+            break;
 
-    case 2:
-        if (this->is_inside_rect(x, y, &this->down_rect) == 0) {
-            if (this->item_is_down != 0) {
-                this->item_is_down = 0;
-                this->item_mode = 0;
+        case 2:
+            if (this->is_inside_rect(x, y, &this->down_rect) == 0) {
+                if (this->item_is_down != 0) {
+                    this->item_is_down = 0;
+                    this->item_mode = 0;
+                    this->set_redraw(TPanel::RedrawNormal);
+                }
+            } else if (this->item_is_down == 0) {
+                this->item_is_down = 1;
+                this->item_mode = 2;
+                this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 429);
+                this->scroll(ActionDown, 0);
                 this->set_redraw(TPanel::RedrawNormal);
             }
-        } else if (this->item_is_down == 0) {
-            this->item_is_down = 1;
-            this->item_mode = 2;
-            this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 429);
-            this->scroll(ActionDown, 0);
-            this->set_redraw(TPanel::RedrawNormal);
-        }
-        break;
+            break;
 
-    case 3:
-        if (this->orientationValue == Horizontal) {
-            delta = x - this->item_x;
-            if (this->tab_x == this->tab_min_x && delta > 0 && x < this->tab_mouse_x + this->tab_x) {
-                delta = 0;
-            } else if (this->tab_x == this->tab_max_x && delta < 0 && this->tab_mouse_x + this->tab_x <= x) {
-                delta = 0;
-            }
+        case 3:
+            if (this->orientationValue == Horizontal) {
+                delta = x - this->item_x;
+                if (this->tab_x == this->tab_min_x && delta > 0 && x < this->tab_mouse_x + this->tab_x) {
+                    delta = 0;
+                } else if (this->tab_x == this->tab_max_x && delta < 0 && this->tab_mouse_x + this->tab_x <= x) {
+                    delta = 0;
+                }
 
-            if (delta == 0) {
-                break;
-            }
+                if (delta == 0) {
+                    break;
+                }
 
-            this->tab_x += delta;
-            if (this->tab_x < this->tab_min_x) {
-                this->tab_x = this->tab_min_x;
-            } else if (this->tab_x > this->tab_max_x) {
-                this->tab_x = this->tab_max_x;
-            }
+                this->tab_x += delta;
+                if (this->tab_x < this->tab_min_x) {
+                    this->tab_x = this->tab_min_x;
+                } else if (this->tab_x > this->tab_max_x) {
+                    this->tab_x = this->tab_max_x;
+                }
 
-            this->calc_item_rects();
-            this->set_redraw(TPanel::RedrawNormal);
+                this->calc_item_rects();
+                this->set_redraw(TPanel::RedrawNormal);
 
-            if (this->tab_min_x == this->tab_max_x) {
-                position = 0;
-            } else {
-                position = ((this->tab_x - this->tab_min_x) * this->list_len) /
-                           (this->tab_max_x - this->tab_min_x);
-                if (position < 0) {
+                if (this->tab_min_x == this->tab_max_x) {
                     position = 0;
-                } else if (position > this->list_len - 1) {
-                    position = this->list_len - 1;
+                } else {
+                    position = ((this->tab_x - this->tab_min_x) * this->list_len) / (this->tab_max_x - this->tab_min_x);
+                    if (position < 0) {
+                        position = 0;
+                    } else if (position > this->list_len - 1) {
+                        position = this->list_len - 1;
+                    }
+                }
+            } else {
+                delta = y - this->item_y;
+                if (this->tab_y == this->tab_min_y && delta > 0 && y < this->tab_mouse_y + this->tab_y) {
+                    delta = 0;
+                } else if (this->tab_y == this->tab_max_y && delta < 0 && this->tab_mouse_y + this->tab_y <= y) {
+                    delta = 0;
+                }
+
+                if (delta == 0) {
+                    break;
+                }
+
+                this->tab_y += delta;
+                if (this->tab_y < this->tab_min_y) {
+                    this->tab_y = this->tab_min_y;
+                } else if (this->tab_y > this->tab_max_y) {
+                    this->tab_y = this->tab_max_y;
+                }
+
+                this->calc_item_rects();
+                this->set_redraw(TPanel::RedrawNormal);
+
+                if (this->tab_min_y == this->tab_max_y) {
+                    position = 0;
+                } else {
+                    position = ((this->tab_y - this->tab_min_y) * this->list_len) / (this->tab_max_y - this->tab_min_y);
+                    if (position < 0) {
+                        position = 0;
+                    } else if (position > this->list_len - 1) {
+                        position = this->list_len - 1;
+                    }
                 }
             }
-        } else {
-            delta = y - this->item_y;
-            if (this->tab_y == this->tab_min_y && delta > 0 && y < this->tab_mouse_y + this->tab_y) {
-                delta = 0;
-            } else if (this->tab_y == this->tab_max_y && delta < 0 && this->tab_mouse_y + this->tab_y <= y) {
-                delta = 0;
-            }
+            this->scroll(ActionPosition, position);
+            break;
 
-            if (delta == 0) {
-                break;
-            }
-
-            this->tab_y += delta;
-            if (this->tab_y < this->tab_min_y) {
-                this->tab_y = this->tab_min_y;
-            } else if (this->tab_y > this->tab_max_y) {
-                this->tab_y = this->tab_max_y;
-            }
-
-            this->calc_item_rects();
-            this->set_redraw(TPanel::RedrawNormal);
-
-            if (this->tab_min_y == this->tab_max_y) {
-                position = 0;
-            } else {
-                position = ((this->tab_y - this->tab_min_y) * this->list_len) /
-                           (this->tab_max_y - this->tab_min_y);
-                if (position < 0) {
-                    position = 0;
-                } else if (position > this->list_len - 1) {
-                    position = this->list_len - 1;
+        case 4:
+            if (this->is_inside_rect(x, y, &this->top_rect) == 0) {
+                if (this->item_is_down != 0) {
+                    this->item_is_down = 0;
+                    this->item_mode = 0;
+                    this->set_redraw(TPanel::RedrawNormal);
                 }
-            }
-        }
-        this->scroll(ActionPosition, position);
-        break;
-
-    case 4:
-        if (this->is_inside_rect(x, y, &this->top_rect) == 0) {
-            if (this->item_is_down != 0) {
-                this->item_is_down = 0;
-                this->item_mode = 0;
+            } else if (this->item_is_down == 0) {
+                this->item_is_down = 1;
+                this->item_mode = 2;
+                this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 448);
+                this->scroll(ActionPrior, 0);
                 this->set_redraw(TPanel::RedrawNormal);
             }
-        } else if (this->item_is_down == 0) {
-            this->item_is_down = 1;
-            this->item_mode = 2;
-            this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 448);
-            this->scroll(ActionPrior, 0);
-            this->set_redraw(TPanel::RedrawNormal);
-        }
-        break;
+            break;
 
-    case 5:
-        if (this->is_inside_rect(x, y, &this->bottom_rect) == 0) {
-            if (this->item_is_down != 0) {
-                this->item_is_down = 0;
-                this->item_mode = 0;
+        case 5:
+            if (this->is_inside_rect(x, y, &this->bottom_rect) == 0) {
+                if (this->item_is_down != 0) {
+                    this->item_is_down = 0;
+                    this->item_mode = 0;
+                    this->set_redraw(TPanel::RedrawNormal);
+                }
+            } else if (this->item_is_down == 0) {
+                this->item_is_down = 1;
+                this->item_mode = 2;
+                this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 467);
+                this->scroll(ActionNext, 0);
                 this->set_redraw(TPanel::RedrawNormal);
             }
-        } else if (this->item_is_down == 0) {
-            this->item_is_down = 1;
-            this->item_mode = 2;
-            this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 467);
-            this->scroll(ActionNext, 0);
-            this->set_redraw(TPanel::RedrawNormal);
-        }
-        break;
+            break;
     }
 
     if (this->item_down != 0) {
@@ -480,23 +459,23 @@ void TScrollBarPanel::scroll(TScrollBarPanel::ActionType action, long val) {
     long new_position = this->list_num;
 
     switch (action) {
-    case 0:
-        new_position -= this->one_step;
-        break;
-    case 1:
-        new_position += this->one_step;
-        break;
-    case 2:
-        new_position -= this->page_step;
-        break;
-    case 3:
-        new_position += this->page_step;
-        break;
-    case 4:
-        new_position = val;
-        break;
-    default:
-        return;
+        case 0:
+            new_position -= this->one_step;
+            break;
+        case 1:
+            new_position += this->one_step;
+            break;
+        case 2:
+            new_position -= this->page_step;
+            break;
+        case 3:
+            new_position += this->page_step;
+            break;
+        case 4:
+            new_position = val;
+            break;
+        default:
+            return;
     }
 
     if (new_position < 0) {
@@ -553,43 +532,53 @@ void TScrollBarPanel::draw_border(int button, int down, long x1, long y1, long x
     if (x1 != x2 && y1 != y2) {
         if (down != 0) {
             switch (this->bevel_type) {
-            case 1:
-                if (button != 0) {
-                    this->render_area->DrawRect(x1 + 1, y1 + 1, x2, y2, 0xff);
-                } else {
-                    this->render_area->DrawRect(x1, y1, x2 - 1, y2, 0xff);
-                }
-                return;
-            case 2:
-                this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
-                return;
-            case 3:
-                this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
-                return;
-            case 4:
-                this->render_area->DrawBevel3(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3, this->bevel_color2, this->bevel_color1);
-                return;
+                case 1:
+                    if (button != 0) {
+                        this->render_area->DrawRect(x1 + 1, y1 + 1, x2, y2, 0xff);
+                    } else {
+                        this->render_area->DrawRect(x1, y1, x2 - 1, y2, 0xff);
+                    }
+                    return;
+                case 2:
+                    this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
+                    return;
+                case 3:
+                    this->render_area->DrawBevel2(
+                        x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1
+                    );
+                    return;
+                case 4:
+                    this->render_area->DrawBevel3(
+                        x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3,
+                        this->bevel_color2, this->bevel_color1
+                    );
+                    return;
             }
         } else {
             switch (this->bevel_type) {
-            case 1:
-                if (button != 0) {
-                    this->render_area->DrawVertLine(x2, y1 + 1, y2 - y1, 0);
-                    this->render_area->DrawHorzLine(x1 + 1, y1, x2 - x1, 0);
-                    this->render_area->DrawRect(x1, y1, x2 - 1, y1 - 1, 0xff);
-                } else {
-                    this->render_area->DrawRect(x1, y1, x2 - 1, y2, 0);
-                }
-                return;
-            case 2:
-                this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
-                return;
-            case 3:
-                this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
-                return;
-            case 4:
-                this->render_area->DrawBevel3(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
-                return;
+                case 1:
+                    if (button != 0) {
+                        this->render_area->DrawVertLine(x2, y1 + 1, y2 - y1, 0);
+                        this->render_area->DrawHorzLine(x1 + 1, y1, x2 - x1, 0);
+                        this->render_area->DrawRect(x1, y1, x2 - 1, y1 - 1, 0xff);
+                    } else {
+                        this->render_area->DrawRect(x1, y1, x2 - 1, y2, 0);
+                    }
+                    return;
+                case 2:
+                    this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
+                    return;
+                case 3:
+                    this->render_area->DrawBevel2(
+                        x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6
+                    );
+                    return;
+                case 4:
+                    this->render_area->DrawBevel3(
+                        x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                        this->bevel_color5, this->bevel_color6
+                    );
+                    return;
             }
         }
     }
@@ -609,8 +598,9 @@ void TScrollBarPanel::draw_back_pic() {
                 int inner = 0;
                 if (this->pnl_wid >= 0) {
                     do {
-                        this->button_pics->shape_draw(this->render_area, this->pnl_x + inner, this->pnl_y + outer,
-                                                      this->back_frame, 0, 0);
+                        this->button_pics->shape_draw(
+                            this->render_area, this->pnl_x + inner, this->pnl_y + outer, this->back_frame, 0, 0
+                        );
                         inner += row_step;
                     } while (inner <= this->pnl_wid);
                 }
@@ -635,13 +625,11 @@ void TScrollBarPanel::draw_button_pic(int frame, int down, tagRECT* rect) {
 
         this->button_pics->shape_minmax(y_max, x_max, x_min, y_min, frame);
 
-        x = (short)((rect->right - rect->left + 1) / 2) -
-            (short)((x_min + (1 - y_max)) / 2);
-        x -= (short)y_max;
-        x += (short)rect->left;
-        y = (short)((rect->bottom - rect->top + 1) / 2) -
-            (short)((y_min - x_max + 1) / 2) -
-            (short)x_max + (short)rect->top;
+        x = (short) ((rect->right - rect->left + 1) / 2) - (short) ((x_min + (1 - y_max)) / 2);
+        x -= (short) y_max;
+        x += (short) rect->left;
+        y = (short) ((rect->bottom - rect->top + 1) / 2) - (short) ((y_min - x_max + 1) / 2) - (short) x_max
+            + (short) rect->top;
 
         if (down != 0) {
             ++x;

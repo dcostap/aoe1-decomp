@@ -32,8 +32,8 @@ RGE_Action::RGE_Action(RGE_Action_Object* obj_in, int do_setup) {
 RGE_Action::~RGE_Action() {
     RGE_Action_List* action_list;
 
-    this->set_target_obj((RGE_Static_Object*)0);
-    this->set_target_obj2((RGE_Static_Object*)0);
+    this->set_target_obj((RGE_Static_Object*) 0);
+    this->set_target_obj2((RGE_Static_Object*) 0);
     action_list = this->sub_actions;
     if (action_list != 0) {
         delete action_list;
@@ -47,7 +47,7 @@ int RGE_Action::setup(int infile, RGE_Action_Object* obj_in) {
 
     this->action_type = 0;
     this->obj = obj_in;
-    this->sub_actions = (RGE_Action_List*)this->create_action_list(obj_in);
+    this->sub_actions = (RGE_Action_List*) this->create_action_list(obj_in);
 
     rge_read(infile, &this->state, 1);
 
@@ -55,14 +55,14 @@ int RGE_Action::setup(int infile, RGE_Action_Object* obj_in) {
     if (long_val == -1) {
         this->target_obj = 0;
     } else {
-        this->target_obj = (RGE_Static_Object*)long_val;
+        this->target_obj = (RGE_Static_Object*) long_val;
     }
 
     rge_read(infile, &long_val, 4);
     if (long_val == -1) {
         this->target_obj2 = 0;
     } else {
-        this->target_obj2 = (RGE_Static_Object*)long_val;
+        this->target_obj2 = (RGE_Static_Object*) long_val;
     }
 
     rge_read(infile, &this->targetID, 4);
@@ -77,8 +77,7 @@ int RGE_Action::setup(int infile, RGE_Action_Object* obj_in) {
         this->task = 0;
     } else {
         // Action-master task data starts at +0xD8.
-        RGE_Master_Action_Object* action_master =
-            (RGE_Master_Action_Object*)this->obj->master_obj;
+        RGE_Master_Action_Object* action_master = (RGE_Master_Action_Object*) this->obj->master_obj;
         RGE_Task_List* task_list = action_master->tasks;
         this->task = task_list->list[short_val];
     }
@@ -88,7 +87,7 @@ int RGE_Action::setup(int infile, RGE_Action_Object* obj_in) {
     this->sub_actions->load(infile);
 
     rge_read(infile, &short_val, 2);
-    this->sprite = ((RGE_Static_Object*)this->obj)->get_sprite_pointer(short_val);
+    this->sprite = ((RGE_Static_Object*) this->obj)->get_sprite_pointer(short_val);
 
     return 1;
 }
@@ -116,13 +115,13 @@ RGE_Action_List* RGE_Action::create_action_list(RGE_Action_Object* obj_in) {
 
 void RGE_Action::rehook(void) {
     if (this->target_obj != 0) {
-        this->target_obj = ((RGE_Static_Object*)this->obj)->get_object_pointer((int)this->target_obj);
+        this->target_obj = ((RGE_Static_Object*) this->obj)->get_object_pointer((int) this->target_obj);
         if (this->target_obj != 0) {
             this->targetID = this->target_obj->id;
         }
     }
     if (this->target_obj2 != 0) {
-        this->target_obj2 = ((RGE_Static_Object*)this->obj)->get_object_pointer((int)this->target_obj2);
+        this->target_obj2 = ((RGE_Static_Object*) this->obj)->get_object_pointer((int) this->target_obj2);
         if (this->target_obj2 != 0) {
             this->target2ID = this->target_obj2->id;
         }
@@ -213,30 +212,30 @@ void RGE_Action::set_state(unsigned char new_state) {
 
 unsigned char RGE_Action::inside_obj_update() {
     if (this->target_obj != 0 && this->target_obj->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
-        this->set_target_obj((RGE_Static_Object*)0);
+        this->set_target_obj((RGE_Static_Object*) 0);
     }
     if (this->target_obj2 != 0 && this->target_obj2->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
-        this->set_target_obj2((RGE_Static_Object*)0);
+        this->set_target_obj2((RGE_Static_Object*) 0);
     }
     return RGE_ACTION_UPDATE_REMOVE;
 }
 
 unsigned char RGE_Action::idle_update() {
     if (this->target_obj != 0 && this->target_obj->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
-        this->set_target_obj((RGE_Static_Object*)0);
+        this->set_target_obj((RGE_Static_Object*) 0);
     }
     if (this->target_obj2 != 0 && this->target_obj2->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL) {
-        this->set_target_obj2((RGE_Static_Object*)0);
+        this->set_target_obj2((RGE_Static_Object*) 0);
     }
     return 1;
 }
 
 unsigned char RGE_Action::update() {
     if (this->target_obj != 0 && this->target_obj->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL)
-        this->set_target_obj((RGE_Static_Object*)0);
+        this->set_target_obj((RGE_Static_Object*) 0);
 
     if (this->target_obj2 != 0 && this->target_obj2->object_state >= RGE_OBJECT_STATE_PENDING_REMOVAL)
-        this->set_target_obj2((RGE_Static_Object*)0);
+        this->set_target_obj2((RGE_Static_Object*) 0);
 
     if (this->sub_actions->list != 0)
         return this->sub_actions->update();
@@ -334,57 +333,57 @@ void RGE_Action::copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* ta
 
 void RGE_Action::get_state_name(char* state_name) {
     switch (this->state) {
-    case 0:
-        strcpy(state_name, "None");
-        return;
-    case 1:
-        strcpy(state_name, "Done");
-        return;
-    case 2:
-        strcpy(state_name, "Wait");
-        return;
-    case 3:
-        strcpy(state_name, "Search");
-        return;
-    case 4:
-        strcpy(state_name, "Goto");
-        return;
-    case 5:
-        strcpy(state_name, "Goto2");
-        return;
-    case 6:
-        strcpy(state_name, "Work");
-        return;
-    case 7:
-        strcpy(state_name, "Work2");
-        return;
-    case 8:
-        strcpy(state_name, "Return");
-        return;
-    case 9:
-        strcpy(state_name, "Turn");
-        return;
-    case 10:
-        strcpy(state_name, "Delay");
-        return;
-    case 11:
-        strcpy(state_name, "Move");
-        return;
-    case 12:
-        strcpy(state_name, "Attack");
-        return;
-    case 13:
-        strcpy(state_name, "Failed");
-        return;
-    case 14:
-        strcpy(state_name, "Invalidated");
-        return;
-    case 15:
-        strcpy(state_name, "MoveNoSearch");
-        return;
-    default:
-        strcpy(state_name, "Unknown");
-        return;
+        case 0:
+            strcpy(state_name, "None");
+            return;
+        case 1:
+            strcpy(state_name, "Done");
+            return;
+        case 2:
+            strcpy(state_name, "Wait");
+            return;
+        case 3:
+            strcpy(state_name, "Search");
+            return;
+        case 4:
+            strcpy(state_name, "Goto");
+            return;
+        case 5:
+            strcpy(state_name, "Goto2");
+            return;
+        case 6:
+            strcpy(state_name, "Work");
+            return;
+        case 7:
+            strcpy(state_name, "Work2");
+            return;
+        case 8:
+            strcpy(state_name, "Return");
+            return;
+        case 9:
+            strcpy(state_name, "Turn");
+            return;
+        case 10:
+            strcpy(state_name, "Delay");
+            return;
+        case 11:
+            strcpy(state_name, "Move");
+            return;
+        case 12:
+            strcpy(state_name, "Attack");
+            return;
+        case 13:
+            strcpy(state_name, "Failed");
+            return;
+        case 14:
+            strcpy(state_name, "Invalidated");
+            return;
+        case 15:
+            strcpy(state_name, "MoveNoSearch");
+            return;
+        default:
+            strcpy(state_name, "Unknown");
+            return;
     }
 }
 

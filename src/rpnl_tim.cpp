@@ -10,8 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 
-RGE_Panel_Time::RGE_Panel_Time(TDrawArea* draw_area_in, TPanel* parent_in, void* font_in)
-    : TPanel() {
+RGE_Panel_Time::RGE_Panel_Time(TDrawArea* draw_area_in, TPanel* parent_in, void* font_in) : TPanel() {
     font = font_in;
     handle_mouse_input = 0;
     game_time = 0;
@@ -31,8 +30,8 @@ void RGE_Panel_Time::draw() {
 
     HGDIOBJ old_font;
     if (render_area->GetDc("rpnl_tim::draw") != 0) {
-        SelectClipRgn(render_area->DrawDc, (HRGN)clip_rgn);
-        old_font = SelectObject(render_area->DrawDc, (HGDIOBJ)font);
+        SelectClipRgn(render_area->DrawDc, (HRGN) clip_rgn);
+        old_font = SelectObject(render_area->DrawDc, (HGDIOBJ) font);
 
         if (rge_base_game->get_paused()) {
             SetBkColor(render_area->DrawDc, 0xFFFFFF);
@@ -62,7 +61,7 @@ void RGE_Panel_Time::draw() {
 
             {
                 char str[100];
-                sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", h, m, t, (double)rge_base_game->world->game_speed);
+                sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", h, m, t, (double) rge_base_game->world->game_speed);
                 TextOutA(render_area->DrawDc, render_rect.left, render_rect.top - 2, str, strlen(str));
             }
 
@@ -78,16 +77,14 @@ void RGE_Panel_Time::draw() {
 
                     if (countdown_timer >= 0) {
                         PALETTEENTRY paletteColor;
-                        unsigned char map_color =
-                            rge_base_game->world->players[pi]->color_table->map_color;
-                        HPALETTE palette = (HPALETTE)rge_base_game->draw_system->Pal;
+                        unsigned char map_color = rge_base_game->world->players[pi]->color_table->map_color;
+                        HPALETTE palette = (HPALETTE) rge_base_game->draw_system->Pal;
 
                         GetPaletteEntries(palette, map_color, 1, &paletteColor);
 
                         COLORREF color =
-                            (((paletteColor.peBlue & 0xFF) << 8 |
-                              (paletteColor.peGreen & 0xFF)) << 8 |
-                             (paletteColor.peRed & 0xFF));
+                            (((paletteColor.peBlue & 0xFF) << 8 | (paletteColor.peGreen & 0xFF)) << 8
+                             | (paletteColor.peRed & 0xFF));
 
                         SetTextColor(render_area->DrawDc, color);
 
@@ -117,7 +114,7 @@ long RGE_Panel_Time::handle_idle() {
     game_time = rge_base_game->world->world_time / 1000;
 
     unsigned long current_old_time = rge_base_game->world->old_time / 1000;
-    if ((int)current_old_time > 0) {
+    if ((int) current_old_time > 0) {
         if (old_time == -1) {
             old_time = current_old_time;
             real_time = 0;
@@ -137,4 +134,5 @@ long RGE_Panel_Time::handle_idle() {
     return 0;
 }
 
-RGE_Panel_Time::~RGE_Panel_Time() {}
+RGE_Panel_Time::~RGE_Panel_Time() {
+}

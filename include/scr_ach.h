@@ -10,7 +10,7 @@ class TButtonPanel;
 class TScrollBarPanel;
 
 class TribeAchievementsScreen : public TScreenPanel {
-public:
+  public:
     int end_game_flag;
     int current_mode;
     int size;
@@ -39,10 +39,10 @@ public:
     TribeAchievementsScreen(char* titleText, int end_flag);
     virtual ~TribeAchievementsScreen();
 
-protected:
+  protected:
     void set_mode(long new_mode);
 
-public:
+  public:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key);
     virtual void draw();
@@ -50,7 +50,6 @@ public:
     virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam);
 };
 
-typedef char tribe_achievements_screen_size_check[
-    (sizeof(TribeAchievementsScreen) == 0x5F8) ? 1 : -1];
+typedef char tribe_achievements_screen_size_check[(sizeof(TribeAchievementsScreen) == 0x5F8) ? 1 : -1];
 
 #endif

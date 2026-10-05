@@ -7,7 +7,7 @@
 #include "panel.h"
 
 class TRIBE_Panel_Text_Line : public TPanel {
-public:
+  public:
     void* font;
     unsigned char text_type;
     char text[200];
@@ -20,7 +20,6 @@ public:
     TRIBE_Panel_Text_Line(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in);
 };
 
-typedef char tpnl_txl_line_size_check[
-    (sizeof(TRIBE_Panel_Text_Line) == 0x1C8) ? 1 : -1];
+typedef char tpnl_txl_line_size_check[(sizeof(TRIBE_Panel_Text_Line) == 0x1C8) ? 1 : -1];
 
 #endif

@@ -5,8 +5,7 @@
 #include "../include/victory.h"
 #include "../include/world.h"
 
-DiplomacyAIModule::DiplomacyAIModule(void* pW, int playerID)
-    : AIModule("Diplomacy AI", 0x3EB, playerID, pW) {
+DiplomacyAIModule::DiplomacyAIModule(void* pW, int playerID) : AIModule("Diplomacy AI", 0x3EB, playerID, pW) {
     this->md = 0;
     for (int i = 0; i <= 9; i++) {
         this->dislikeTable[i] = 49;
@@ -15,8 +14,7 @@ DiplomacyAIModule::DiplomacyAIModule(void* pW, int playerID)
     }
 }
 
-DiplomacyAIModule::DiplomacyAIModule(int playerID, int infile)
-    : AIModule("Diplomacy AI", 0x3EB, playerID, 0), md(0) {
+DiplomacyAIModule::DiplomacyAIModule(int playerID, int infile) : AIModule("Diplomacy AI", 0x3EB, playerID, 0), md(0) {
     unsigned char* changeable_table = this->changeableTable;
     int* like_table = this->likeTable;
     int count = 10;
@@ -80,19 +78,22 @@ int DiplomacyAIModule::save(int outfile) {
 int DiplomacyAIModule::stance(int playerID, int likeType) const {
     if (playerID > 0 && playerID < this->md->player->world->player_num) {
         switch (likeType) {
-        case 0:
-            return this->dislikeTable[playerID];
-        case 1: {
-            int dislike_diff = 0x31 - this->dislikeTable[playerID];
-            if (dislike_diff < 0) dislike_diff = -dislike_diff;
-            int like_diff = 0x31 - this->likeTable[playerID];
-            if (like_diff < 0) like_diff = -like_diff;
-            int result = 100 - dislike_diff - like_diff;
-            if (result < 0) result = 0;
-            return result;
-        }
-        case 2:
-            return this->likeTable[playerID];
+            case 0:
+                return this->dislikeTable[playerID];
+            case 1: {
+                int dislike_diff = 0x31 - this->dislikeTable[playerID];
+                if (dislike_diff < 0)
+                    dislike_diff = -dislike_diff;
+                int like_diff = 0x31 - this->likeTable[playerID];
+                if (like_diff < 0)
+                    like_diff = -like_diff;
+                int result = 100 - dislike_diff - like_diff;
+                if (result < 0)
+                    result = 0;
+                return result;
+            }
+            case 2:
+                return this->likeTable[playerID];
         }
     }
     return -1;
@@ -101,50 +102,50 @@ int DiplomacyAIModule::stance(int playerID, int likeType) const {
 void DiplomacyAIModule::changeStance(int playerID, int likeType, int delta) {
     if (playerID > 0 && playerID < this->md->player->world->player_num) {
         switch (likeType) {
-        case 0:
-            this->dislikeTable[playerID] += delta;
-            if (this->changeableTable[playerID] != 0) {
-                if (this->dislikeTable[playerID] < 0) {
-                    this->dislikeTable[playerID] = 0;
-                    return;
+            case 0:
+                this->dislikeTable[playerID] += delta;
+                if (this->changeableTable[playerID] != 0) {
+                    if (this->dislikeTable[playerID] < 0) {
+                        this->dislikeTable[playerID] = 0;
+                        return;
+                    }
+                    if (this->dislikeTable[playerID] > 100) {
+                        this->dislikeTable[playerID] = 100;
+                        return;
+                    }
+                } else {
+                    if (this->dislikeTable[playerID] < 50) {
+                        this->dislikeTable[playerID] = 50;
+                        return;
+                    }
+                    if (this->dislikeTable[playerID] > 100) {
+                        this->dislikeTable[playerID] = 100;
+                    }
                 }
-                if (this->dislikeTable[playerID] > 100) {
-                    this->dislikeTable[playerID] = 100;
-                    return;
-                }
-            } else {
-                if (this->dislikeTable[playerID] < 50) {
-                    this->dislikeTable[playerID] = 50;
-                    return;
-                }
-                if (this->dislikeTable[playerID] > 100) {
-                    this->dislikeTable[playerID] = 100;
-                }
-            }
-            break;
+                break;
 
-        case 2:
-            this->likeTable[playerID] += delta;
-            if (this->changeableTable[playerID] != 0) {
-                if (this->likeTable[playerID] < 0) {
-                    this->likeTable[playerID] = 0;
-                    return;
+            case 2:
+                this->likeTable[playerID] += delta;
+                if (this->changeableTable[playerID] != 0) {
+                    if (this->likeTable[playerID] < 0) {
+                        this->likeTable[playerID] = 0;
+                        return;
+                    }
+                    if (this->likeTable[playerID] > 100) {
+                        this->likeTable[playerID] = 100;
+                        return;
+                    }
+                } else {
+                    if (this->likeTable[playerID] < 0) {
+                        this->likeTable[playerID] = 0;
+                        return;
+                    }
+                    if (this->likeTable[playerID] > 48) {
+                        this->likeTable[playerID] = 48;
+                        return;
+                    }
                 }
-                if (this->likeTable[playerID] > 100) {
-                    this->likeTable[playerID] = 100;
-                    return;
-                }
-            } else {
-                if (this->likeTable[playerID] < 0) {
-                    this->likeTable[playerID] = 0;
-                    return;
-                }
-                if (this->likeTable[playerID] > 48) {
-                    this->likeTable[playerID] = 48;
-                    return;
-                }
-            }
-            break;
+                break;
         }
     }
 }
@@ -152,50 +153,50 @@ void DiplomacyAIModule::changeStance(int playerID, int likeType, int delta) {
 void DiplomacyAIModule::setStance(int playerID, int likeType, int value) {
     if (playerID > 0 && playerID < this->md->player->world->player_num) {
         switch (likeType) {
-        case 0:
-            this->dislikeTable[playerID] = value;
-            if (this->changeableTable[playerID] != 0) {
-                if (value < 0) {
-                    this->dislikeTable[playerID] = 0;
-                    return;
+            case 0:
+                this->dislikeTable[playerID] = value;
+                if (this->changeableTable[playerID] != 0) {
+                    if (value < 0) {
+                        this->dislikeTable[playerID] = 0;
+                        return;
+                    }
+                    if (value > 100) {
+                        this->dislikeTable[playerID] = 100;
+                        return;
+                    }
+                } else {
+                    if (value < 50) {
+                        this->dislikeTable[playerID] = 50;
+                        return;
+                    }
+                    if (value > 100) {
+                        this->dislikeTable[playerID] = 100;
+                    }
                 }
-                if (value > 100) {
-                    this->dislikeTable[playerID] = 100;
-                    return;
-                }
-            } else {
-                if (value < 50) {
-                    this->dislikeTable[playerID] = 50;
-                    return;
-                }
-                if (value > 100) {
-                    this->dislikeTable[playerID] = 100;
-                }
-            }
-            break;
+                break;
 
-        case 2:
-            this->likeTable[playerID] = value;
-            if (this->changeableTable[playerID] != 0) {
-                if (value < 0) {
-                    this->likeTable[playerID] = 0;
-                    return;
+            case 2:
+                this->likeTable[playerID] = value;
+                if (this->changeableTable[playerID] != 0) {
+                    if (value < 0) {
+                        this->likeTable[playerID] = 0;
+                        return;
+                    }
+                    if (value > 100) {
+                        this->likeTable[playerID] = 100;
+                        return;
+                    }
+                } else {
+                    if (value < 0) {
+                        this->likeTable[playerID] = 0;
+                        return;
+                    }
+                    if (value > 48) {
+                        this->likeTable[playerID] = 48;
+                        return;
+                    }
                 }
-                if (value > 100) {
-                    this->likeTable[playerID] = 100;
-                    return;
-                }
-            } else {
-                if (value < 0) {
-                    this->likeTable[playerID] = 0;
-                    return;
-                }
-                if (value > 48) {
-                    this->likeTable[playerID] = 48;
-                    return;
-                }
-            }
-            break;
+                break;
         }
     }
 }
@@ -224,7 +225,8 @@ int DiplomacyAIModule::isLiked(int playerID) const {
 }
 
 int DiplomacyAIModule::isChangeable(int playerID) const {
-    if (((playerID > 0) && (playerID < this->md->player->world->player_num)) && (this->changeableTable[playerID] == 1)) {
+    if (((playerID > 0) && (playerID < this->md->player->world->player_num))
+        && (this->changeableTable[playerID] == 1)) {
         return 1;
     }
     return 0;
@@ -236,7 +238,9 @@ void DiplomacyAIModule::setChangeable(int playerID, unsigned char v) {
     }
 }
 
-int DiplomacyAIModule::mostHated(int tributeOn, int tributePlayer, int attackWinningPlayer, int attackWinningPlayerFactor) const {
+int DiplomacyAIModule::mostHated(
+    int tributeOn, int tributePlayer, int attackWinningPlayer, int attackWinningPlayerFactor
+) const {
     int highest = -1;
     int highestValue = -1;
     for (int player_index = 1; player_index < this->md->player->world->player_num; ++player_index) {
@@ -244,12 +248,13 @@ int DiplomacyAIModule::mostHated(int tributeOn, int tributePlayer, int attackWin
         //! The engine refuses attacks on allies, so the AI then stays inactive with idle military.
         if (player_index != this->md->player->id && this->md->player->world->players[player_index]->game_status != 2
             && (tributeOn <= 0 || tributePlayer != player_index || !isAlly(player_index))) {
-            int victory_points = this->md->player->world->players[player_index]->victory_conditions->get_victory_points();
+            int victory_points =
+                this->md->player->world->players[player_index]->victory_conditions->get_victory_points();
             int stance_value = this->dislikeTable[player_index];
             //! @bug This gate has no check for attackWinningPlayer == 0.
             //! Value 0 means "ignore score", but the else branch subtracts the victory points.
             //! So a zero SNAttackWinningPlayer lowers hate for the high-score players instead.
-//! The score term is also score / factor; the formula needs score * 100 / factor.
+            //! The score term is also score / factor; the formula needs score * 100 / factor.
             if (attackWinningPlayerFactor > 1) {
                 if (attackWinningPlayer == 1) {
                     stance_value += victory_points / attackWinningPlayerFactor;
@@ -311,8 +316,8 @@ int DiplomacyAIModule::isEnemy(int playerID) const {
 int DiplomacyAIModule::isNeutral(int playerID) const {
     RGE_Player* player;
 
-    if (((0 < playerID) && (player = this->md->player, playerID <= player->world->player_num)) &&
-        (playerID != player->id) && (player->relations[playerID] == 1)) {
+    if (((0 < playerID) && (player = this->md->player, playerID <= player->world->player_num))
+        && (playerID != player->id) && (player->relations[playerID] == 1)) {
         return 1;
     }
     return 0;
@@ -337,7 +342,7 @@ int DiplomacyAIModule::isAlliedWithMe(int playerID) const {
         if (playerID < world->player_num) {
             RGE_Player* other = world->players[playerID];
             if (other != 0) {
-                if (other->isAlly((int)me->id) != 0)
+                if (other->isAlly((int) me->id) != 0)
                     return 1;
             }
         }

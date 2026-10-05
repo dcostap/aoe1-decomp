@@ -15,7 +15,7 @@ class TRIBE_Screen_Campaign_Selection;
 class TribeSPMenuScreen;
 
 class TRIBE_Screen_Name : public TScreenPanel {
-public:
+  public:
     TTextPanel* title;
     TTextPanel* name_text;
     TListPanel* name_list;
@@ -31,20 +31,19 @@ public:
     virtual ~TRIBE_Screen_Name();
     void init_vars();
 
-protected:
+  protected:
     void get_player_names();
     void setup_tab_order();
 
-public:
+  public:
     virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
     virtual long handle_idle();
 };
 
-typedef char scr_name_screen_size_check[
-    (sizeof(TRIBE_Screen_Name) == 0x4A0) ? 1 : -1];
+typedef char scr_name_screen_size_check[(sizeof(TRIBE_Screen_Name) == 0x4A0) ? 1 : -1];
 
 class TRIBE_Dialog_Name : public TDialogPanel {
-public:
+  public:
     TTextPanel* title;
     TTextPanel* name_text;
     TEditPanel* name_input;
@@ -57,7 +56,6 @@ public:
     virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam);
 };
 
-typedef char scr_name_dialog_size_check[
-    (sizeof(TRIBE_Dialog_Name) == 0x4A4) ? 1 : -1];
+typedef char scr_name_dialog_size_check[(sizeof(TRIBE_Dialog_Name) == 0x4A4) ? 1 : -1];
 
 #endif

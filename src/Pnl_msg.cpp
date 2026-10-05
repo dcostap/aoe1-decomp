@@ -8,29 +8,11 @@ extern "C" int strncmp(const char*, const char*, unsigned int);
 extern "C" char* strncpy(char*, const char*, unsigned int);
 unsigned long __cdecl debug_timeGetTime(char*, int);
 
-TMessagePanel::TMessagePanel(void* font_in, long font_wid_in, long font_hgt_in)
-    : TPanel(),
-      message_type(InfoMessage),
-      showing_message(0),
-      start_time(0),
-      show_message_interval(8000),
-      font(font_in),
-      font_wid(font_wid_in),
-      font_hgt(font_hgt_in),
-      font_color(0),
-      back_color(0),
-      horz_just(LeftJust),
-      vert_just(TopJust),
-      word_wrap(0),
-      image_clip_region(0),
-      ImageBuffer(0),
-      ImageTextActive(0),
-      Icon1(0),
-      Icon2(0),
-      IconFrame1(0),
-      IconFrame2(0),
-      LastIBWidth(-1),
-      LastIBHeight(-1) {
+TMessagePanel::TMessagePanel(void* font_in, long font_wid_in, long font_hgt_in) :
+    TPanel(), message_type(InfoMessage), showing_message(0), start_time(0), show_message_interval(8000), font(font_in),
+    font_wid(font_wid_in), font_hgt(font_hgt_in), font_color(0), back_color(0), horz_just(LeftJust), vert_just(TopJust),
+    word_wrap(0), image_clip_region(0), ImageBuffer(0), ImageTextActive(0), Icon1(0), Icon2(0), IconFrame1(0),
+    IconFrame2(0), LastIBWidth(-1), LastIBHeight(-1) {
     this->text[0] = 0;
     this->handle_mouse_input = 0;
     this->set_active(0);
@@ -51,7 +33,8 @@ TMessagePanel::~TMessagePanel(void) {
 void TMessagePanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
     TPanel::set_rect(x_in, y_in, wid_in, hgt_in);
 
-    if (this->pnl_wid > this->LastIBWidth || this->pnl_hgt > this->LastIBHeight || x_in + this->LastIBWidth >= this->render_area->Width) {
+    if (this->pnl_wid > this->LastIBWidth || this->pnl_hgt > this->LastIBHeight
+        || x_in + this->LastIBWidth >= this->render_area->Width) {
         if (this->image_clip_region != 0) {
             DeleteObject(this->image_clip_region);
             this->image_clip_region = 0;
@@ -89,13 +72,18 @@ void TMessagePanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TMessagePanel::set_justification(TMessagePanel::JustType horz_just_in, TMessagePanel::JustType vert_just_in, int word_wrap_in) {
+void TMessagePanel::set_justification(
+    TMessagePanel::JustType horz_just_in, TMessagePanel::JustType vert_just_in, int word_wrap_in
+) {
     this->horz_just = horz_just_in;
     this->vert_just = vert_just_in;
     this->word_wrap = word_wrap_in;
 }
 
-void TMessagePanel::show_message(TMessagePanel::MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn, void* font_in, long font_wid_in, long font_hgt_in) {
+void TMessagePanel::show_message(
+    TMessagePanel::MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn,
+    void* font_in, long font_wid_in, long font_hgt_in
+) {
     if (this->showing_message && this->message_type == message_type_in && strncmp(text_in, this->text, 0x1ff) == 0) {
         if (font_in == 0) {
             return;
@@ -135,14 +123,13 @@ void TMessagePanel::show_message(TMessagePanel::MessageType message_type_in, cha
 }
 
 void TMessagePanel::show_message2(
-    TMessagePanel::MessageType message_type_in, char* text_in,
-    unsigned long color1, unsigned long color2, void* font_in,
-    long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in,
-    TShape* Icon2_in, int Frame2_in) {
+    TMessagePanel::MessageType message_type_in, char* text_in, unsigned long color1, unsigned long color2,
+    void* font_in, long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in, TShape* Icon2_in, int Frame2_in
+) {
     if (this->showing_message && this->message_type == message_type_in && strncmp(text_in, this->text, 0x1ff) == 0) {
         if (font_in == 0 || font_in == this->font) {
-            if (this->Icon1 == Icon1_in && this->Icon2 == Icon2_in && this->IconFrame1 == Frame1_in &&
-                this->IconFrame2 == Frame2_in) {
+            if (this->Icon1 == Icon1_in && this->Icon2 == Icon2_in && this->IconFrame1 == Frame1_in
+                && this->IconFrame2 == Frame2_in) {
                 return;
             }
         }
@@ -222,8 +209,9 @@ void TMessagePanel::draw(void) {
         }
 
         this->ImageBuffer->SetTrans(1, 1);
-        this->ImageBuffer->Copy(this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top,
-                                &this->UsedImageRect, 1);
+        this->ImageBuffer->Copy(
+            this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top, &this->UsedImageRect, 1
+        );
         this->ImageBuffer->SetTrans(0, 1);
         goto finish;
     }
@@ -241,11 +229,11 @@ void TMessagePanel::draw(void) {
 
     if (this->index_color != 0) {
         GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &paletteColor);
-        font_rgb = ((unsigned long)paletteColor.peBlue << 16) |
-                   ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
+        font_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8)
+                   | paletteColor.peRed;
         GetPaletteEntries(rge_base_game->draw_system->Pal, this->back_color, 1, &paletteColor);
-        back_rgb = ((unsigned long)paletteColor.peBlue << 16) |
-                   ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
+        back_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8)
+                   | paletteColor.peRed;
     } else {
         font_rgb = this->font_color1;
         back_rgb = this->font_color2;
@@ -359,8 +347,10 @@ int TMessagePanel::render_to_image_buffer() {
     char* text = this->text;
     if (this->text[0] == 0) {
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
-        SetRect(&this->UsedScreenRect, this->render_rect.left, this->render_rect.top, this->render_rect.left + 1,
-                this->render_rect.top + 1);
+        SetRect(
+            &this->UsedScreenRect, this->render_rect.left, this->render_rect.top, this->render_rect.left + 1,
+            this->render_rect.top + 1
+        );
         this->ImageTextActive = 1;
         return 1;
     }
@@ -375,11 +365,11 @@ int TMessagePanel::render_to_image_buffer() {
 
     if (this->index_color != 0) {
         GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &paletteColor);
-        font_rgb = ((unsigned long)paletteColor.peBlue << 16) |
-                   ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
+        font_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8)
+                   | paletteColor.peRed;
         GetPaletteEntries(rge_base_game->draw_system->Pal, this->back_color, 1, &paletteColor);
-        back_rgb = ((unsigned long)paletteColor.peBlue << 16) |
-                   ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
+        back_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8)
+                   | paletteColor.peRed;
     } else {
         font_rgb = this->font_color1;
         back_rgb = this->font_color2;
@@ -431,26 +421,32 @@ int TMessagePanel::render_to_image_buffer() {
             }
             if (this->horz_just == CenterJust) {
                 flags |= DT_CENTER;
-                if (tight) used_x = ((this->pnl_wid - used_w) >> 1) - 1;
+                if (tight)
+                    used_x = ((this->pnl_wid - used_w) >> 1) - 1;
             } else if (this->horz_just == RightJust) {
                 flags |= DT_RIGHT;
-                if (tight) used_x = (this->pnl_wid - used_w) - 1;
+                if (tight)
+                    used_x = (this->pnl_wid - used_w) - 1;
             } else if (tight) {
                 used_x = 0;
             }
             if (this->vert_just == CenterJust) {
                 flags |= DT_VCENTER;
-                if (tight) used_y = ((this->pnl_hgt - Display_hgt) >> 1) - 1;
+                if (tight)
+                    used_y = ((this->pnl_hgt - Display_hgt) >> 1) - 1;
             } else if (this->vert_just == BottomJust) {
                 flags |= DT_BOTTOM;
-                if (tight) used_y = (this->pnl_hgt - Display_hgt) - 1;
+                if (tight)
+                    used_y = (this->pnl_hgt - Display_hgt) - 1;
             } else if (tight) {
                 used_y = 0;
             }
         }
 
-        if (used_y < 0) used_y = 0;
-        if (used_x < 0) used_x = 0;
+        if (used_y < 0)
+            used_y = 0;
+        if (used_x < 0)
+            used_x = 0;
 
         this->UsedImageRect.left = used_x;
         this->UsedImageRect.top = used_y;
@@ -478,8 +474,10 @@ int TMessagePanel::render_to_image_buffer() {
             Shape_Info* info = this->Icon1->shape_info;
             long frame = this->IconFrame1;
             long width = info[frame].Width;
-            this->Icon1->shape_draw(this->ImageBuffer, info[frame].Hotspot_X - width - 4 + this->UsedImageRect.left,
-                                    info[frame].Hotspot_Y + 6 + this->UsedImageRect.top, frame, 0, 0);
+            this->Icon1->shape_draw(
+                this->ImageBuffer, info[frame].Hotspot_X - width - 4 + this->UsedImageRect.left,
+                info[frame].Hotspot_Y + 6 + this->UsedImageRect.top, frame, 0, 0
+            );
             this->UsedImageRect.left += -4 - width;
         }
         if (this->Icon2 != 0) {
@@ -487,8 +485,10 @@ int TMessagePanel::render_to_image_buffer() {
             long frame = this->IconFrame2;
             Shape_Info* frame_info = info + frame;
             long width = frame_info->Width;
-            this->Icon2->shape_draw(this->ImageBuffer, frame_info->Hotspot_X - width - 4 + this->UsedImageRect.left,
-                                    frame_info->Hotspot_Y + 6 + this->UsedImageRect.top, frame, 0, 0);
+            this->Icon2->shape_draw(
+                this->ImageBuffer, frame_info->Hotspot_X - width - 4 + this->UsedImageRect.left,
+                frame_info->Hotspot_Y + 6 + this->UsedImageRect.top, frame, 0, 0
+            );
             this->UsedImageRect.left += -4 - width;
         }
         this->ImageTextActive = 1;

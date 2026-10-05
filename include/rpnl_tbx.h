@@ -11,7 +11,7 @@ class RGE_View;
 class RGE_Diamond_Map;
 
 class RGE_Panel_Tool_Box : public TPanel {
-public:
+  public:
     TScreenPanel* screen_panel;
     RGE_View* view;
     RGE_Diamond_Map* map;
@@ -24,10 +24,10 @@ public:
     TButtonPanel* command_button;
     TPanel* dialog;
 
-    RGE_Panel_Tool_Box(TDrawArea* draw_area_in, TPanel* parent_in, long x, long y,
-                       long wid, long hgt, void* font, long font_wid, long font_hgt,
-                       TDigital* sound, TScreenPanel* screen_panel_in, RGE_View* view_in,
-                       RGE_Diamond_Map* map_in);
+    RGE_Panel_Tool_Box(
+        TDrawArea* draw_area_in, TPanel* parent_in, long x, long y, long wid, long hgt, void* font, long font_wid,
+        long font_hgt, TDigital* sound, TScreenPanel* screen_panel_in, RGE_View* view_in, RGE_Diamond_Map* map_in
+    );
     virtual ~RGE_Panel_Tool_Box();
     void game_mode_changed(int old_mode, int new_mode);
     virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
@@ -35,7 +35,6 @@ public:
     virtual void draw();
 };
 
-typedef char rpnl_tbx_size_check[
-    (sizeof(RGE_Panel_Tool_Box) == 0x120) ? 1 : -1];
+typedef char rpnl_tbx_size_check[(sizeof(RGE_Panel_Tool_Box) == 0x120) ? 1 : -1];
 
 #endif

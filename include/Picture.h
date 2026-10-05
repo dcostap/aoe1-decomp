@@ -5,7 +5,7 @@
 #include "picture_types.h"
 
 class TPicture {
-public:
+  public:
     tagBITMAPINFOHEADER* Dib;
     BITMAPINFO256* BitmapInfo;
     unsigned char* Bits;
@@ -25,9 +25,10 @@ public:
     void Init(BITMAPINFO256* FromInfo, unsigned char* FromBits, TRANSINFO* FromTrans);
     long AlignedWidth();
     void Draw(TDrawArea* DrawArea, long DestX, long DestY, int Mirror, int Flip);
-    long Tile(TDrawArea* DrawArea, long DestX, long DestY, long DestWid,
-        long DestHgt, long BlockWid, long BlockHgt, long SrcX, long SrcY,
-        long SrcWid, long SrcHgt);
+    long Tile(
+        TDrawArea* DrawArea, long DestX, long DestY, long DestWid, long DestHgt, long BlockWid, long BlockHgt,
+        long SrcX, long SrcY, long SrcWid, long SrcHgt
+    );
     unsigned char GetPixel(long x, long y, int Mirror, int Flip);
 };
 

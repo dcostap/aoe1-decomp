@@ -9,7 +9,7 @@ class TScrollBarPanel;
 class TButtonPanel;
 
 class TribeLoadSavedGameScreen : public TScreenPanel {
-public:
+  public:
     TTextPanel* screenTitle;
     TTextPanel* listTitle;
     TListPanel* list;
@@ -23,11 +23,10 @@ public:
     virtual long handle_idle();
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 
-protected:
+  protected:
     void fillList();
 };
 
-typedef char scr_load_screen_size_check[
-    (sizeof(TribeLoadSavedGameScreen) == 0x494) ? 1 : -1];
+typedef char scr_load_screen_size_check[(sizeof(TribeLoadSavedGameScreen) == 0x494) ? 1 : -1];
 
 #endif

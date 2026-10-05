@@ -2,7 +2,7 @@
 #define AOE1_AIBITM_H
 
 class BaseItem {
-public:
+  public:
     virtual ~BaseItem();
 
     int typeIDValue;

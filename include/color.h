@@ -13,7 +13,7 @@ class TDrawArea;
 // ASM owner: bucket_056C.asm. The routine updates the process color transform.
 
 class RGE_Color_Table {
-public:
+  public:
     virtual ~RGE_Color_Table();
 
     char color_table_name[30];
@@ -34,4 +34,4 @@ typedef char color_table_size_check[(sizeof(RGE_Color_Table) == 0x128) ? 1 : -1]
 
 void __cdecl color_log(unsigned char c1, unsigned char c2, int pos);
 
-#endif  // AOE1_COLOR_H
+#endif // AOE1_COLOR_H

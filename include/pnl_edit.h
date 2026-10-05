@@ -7,11 +7,17 @@
 #include "basegame.h"
 
 class TEditPanel : public TPanel {
-public:
+  public:
     enum FormatType {
-        FormatText = 0, FormatNumber = 1, FormatInteger = 2,
-        FormatUnsignedInt = 3, FormatFile = 4, FormatFileNoExt = 5,
-        FormatPath = 6, FormatMultiLine = 7, FormatPercent = 8
+        FormatText = 0,
+        FormatNumber = 1,
+        FormatInteger = 2,
+        FormatUnsignedInt = 3,
+        FormatFile = 4,
+        FormatFileNoExt = 5,
+        FormatPath = 6,
+        FormatMultiLine = 7,
+        FormatPercent = 8
     };
     TEditPanel();
     virtual ~TEditPanel();
@@ -49,8 +55,7 @@ public:
     int enable_ime;
     int turn_ime_on;
     virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, short,
-               char*, FormatType, int);
+    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, short, char*, FormatType, int);
     long sub_wnd_proc(void*, unsigned int, unsigned int, long);
     void set_text(char*);
     void update_text();
@@ -75,7 +80,6 @@ public:
     void set_ime_info(int, int);
 };
 
-typedef char pnl_edit_teditpanel_size_check[
-    (sizeof(TEditPanel) == 0x16C) ? 1 : -1];
+typedef char pnl_edit_teditpanel_size_check[(sizeof(TEditPanel) == 0x16C) ? 1 : -1];
 
 #endif

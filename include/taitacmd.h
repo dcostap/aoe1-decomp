@@ -25,7 +25,7 @@ struct XYPoint;
 struct Waypoint;
 
 class TribeTacticalAIModule : public TacticalAIModule {
-public:
+  public:
     TribeMainDecisionAIModule* md;
     ManagedArray<int> civilians;
     ManagedArray<int> civilianExplorers;
@@ -182,7 +182,10 @@ public:
     int taskDefender(int uID, int tID, float range, int priority);
     int taskDefender(int defender, int targetID);
     int taskDefender(int defender, float x, float y);
-    int taskAttacker(int soldierID, float xLocation, float yLocation, int targetID, int targetOwner, Waypoint* path, int pathLength, int commanderID, int idleAttackRoundup);
+    int taskAttacker(
+        int soldierID, float xLocation, float yLocation, int targetID, int targetOwner, Waypoint* path, int pathLength,
+        int commanderID, int idleAttackRoundup
+    );
     int moveUnit(int uID, float x, float y, int priority);
     int numberGroups(int type, int action);
     void stuffAvoidancePath(TacticalAIGroup* group, Path* path);

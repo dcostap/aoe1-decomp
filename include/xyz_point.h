@@ -5,13 +5,12 @@
 // CodeView records the complete type as a class, so keep both source facts.
 struct XYZPoint;
 class XYZPoint {
-public:
+  public:
     int x;
     int y;
     int z;
 };
 
-typedef char xyz_point_size_check[
-    (sizeof(XYZPoint) == 0x0C) ? 1 : -1];
+typedef char xyz_point_size_check[(sizeof(XYZPoint) == 0x0C) ? 1 : -1];
 
 #endif

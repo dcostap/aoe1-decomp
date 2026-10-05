@@ -4,7 +4,7 @@
 #include "aimdmod.h"
 
 class DiplomacyAIModule : public AIModule {
-public:
+  public:
     virtual ~DiplomacyAIModule();
     virtual int save(int outfile);
     virtual int update(int timeLimit);
@@ -34,7 +34,6 @@ public:
     unsigned char changeableTable[10];
 };
 
-typedef char aidipmod_diplomacy_ai_module_size[
-    (sizeof(DiplomacyAIModule) == 0x150) ? 1 : -1];
+typedef char aidipmod_diplomacy_ai_module_size[(sizeof(DiplomacyAIModule) == 0x150) ? 1 : -1];
 
 #endif

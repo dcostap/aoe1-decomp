@@ -3,21 +3,13 @@
 #include "../include/debuglog.h"
 #include <string.h>
 
+int __stdcall EnumPlayersCallbackLobby(DPID pidID, DWORD dwPlayerType, DPNAME* lpName, DWORD dwFlags, LPVOID lpContext);
 
-int __stdcall EnumPlayersCallbackLobby(
-    DPID pidID, DWORD dwPlayerType, DPNAME* lpName, DWORD dwFlags,
-    LPVOID lpContext);
-
-typedef char com_loby_size_check[
-    (sizeof(RGE_Lobby) == 0x1c) ? 1 : -1];
-typedef char com_loby_session_size_check[
-    (sizeof(DPSESSIONDESC2) == 0x50) ? 1 : -1];
-typedef char com_loby_name_size_check[
-    (sizeof(DPNAME) == 0x10) ? 1 : -1];
-typedef char com_loby_connection_size_check[
-    (sizeof(DPLCONNECTION) == 0x28) ? 1 : -1];
-typedef char com_loby_caps_size_check[
-    (sizeof(DPCAPS) == 0x28) ? 1 : -1];
+typedef char com_loby_size_check[(sizeof(RGE_Lobby) == 0x1c) ? 1 : -1];
+typedef char com_loby_session_size_check[(sizeof(DPSESSIONDESC2) == 0x50) ? 1 : -1];
+typedef char com_loby_name_size_check[(sizeof(DPNAME) == 0x10) ? 1 : -1];
+typedef char com_loby_connection_size_check[(sizeof(DPLCONNECTION) == 0x28) ? 1 : -1];
+typedef char com_loby_caps_size_check[(sizeof(DPCAPS) == 0x28) ? 1 : -1];
 
 struct LobbySystemMessage {
     DWORD type;
@@ -67,9 +59,9 @@ int RGE_Lobby::IsLobbyLaunched(void) {
     return static_cast<unsigned int>(this->lobby_game);
 }
 
-int __stdcall EnumPlayersCallbackLobby(DPID pidID, DWORD dwPlayerType,
-                                       DPNAME* lpName, DWORD dwFlags,
-                                       LPVOID lpContext) {
+int __stdcall EnumPlayersCallbackLobby(
+    DPID pidID, DWORD dwPlayerType, DPNAME* lpName, DWORD dwFlags, LPVOID lpContext
+) {
     L->Log("ENUMPLAYER: DPID = %ld", pidID);
     L->Log("ENUMPLAYER: NAME = %s", lpName->lpszShortNameA);
     L->Log("+++ Enumeration not done");
@@ -244,8 +236,7 @@ long RGE_Lobby::SendZoneMessage(char* Data, unsigned long dwSize, _GUID guid) {
     L->Log("Sending %d bytes to the Zone (Total message size = %d)", dwSize, total);
 
     char* message = new char[total];
-    ZoneMessageHeader* header =
-        reinterpret_cast<ZoneMessageHeader*>(message);
+    ZoneMessageHeader* header = reinterpret_cast<ZoneMessageHeader*>(message);
     header->type = 5;
     header->flags = 0;
     header->nullGuid = GUID_NULL;

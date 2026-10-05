@@ -1,7 +1,6 @@
 #ifndef AOE1_VICTORY_H
 #define AOE1_VICTORY_H
 
-
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Static_Object;
@@ -10,7 +9,7 @@ struct RGE_Victory_Point_Entry;
 class RGE_Victory_Conditions;
 
 struct RGE_Victory_Entry {
-public:
+  public:
     unsigned char command;         // +0x00
     long obj_type;                 // +0x04
     RGE_Player* target_player;     // +0x08
@@ -30,7 +29,7 @@ public:
 };
 
 struct RGE_Victory_Point_Entry {
-public:
+  public:
     unsigned char command;         // +0x00
     unsigned char state;           // +0x01
     unsigned char id;              // +0x02
@@ -43,13 +42,11 @@ public:
     RGE_Victory_Point_Entry* next; // +0x18
 };
 
-typedef char rge_victory_entry_size_check[
-    (sizeof(RGE_Victory_Entry) == 0x34) ? 1 : -1];
-typedef char rge_victory_point_entry_size_check[
-    (sizeof(RGE_Victory_Point_Entry) == 0x1C) ? 1 : -1];
+typedef char rge_victory_entry_size_check[(sizeof(RGE_Victory_Entry) == 0x34) ? 1 : -1];
+typedef char rge_victory_point_entry_size_check[(sizeof(RGE_Victory_Point_Entry) == 0x1C) ? 1 : -1];
 
 class RGE_Victory_Conditions {
-protected:
+  protected:
     virtual void handle_point_condition(RGE_Victory_Point_Entry* node);
     virtual void handle_condition(RGE_Victory_Entry* node);
     virtual char* condition_description(RGE_Victory_Entry* node);
@@ -77,50 +74,45 @@ protected:
     void handle_points_high_attribute_amount(RGE_Victory_Point_Entry* node);
     void handle_victory_points(RGE_Victory_Entry* node);
 
-public:
+  public:
     virtual void save(int outfile);
 
     RGE_Victory_Conditions(RGE_Player* in_Player);
-    RGE_Victory_Conditions(RGE_Player* in_player, int infile, long* player_id_hash,
-                           unsigned char version_control);
+    RGE_Victory_Conditions(RGE_Player* in_player, int infile, long* player_id_hash, unsigned char version_control);
     ~RGE_Victory_Conditions();
 
-    unsigned char add_attributes(unsigned char v_group, long attribute, long count,
-                                 unsigned char alliance);
-    unsigned char add_bring(unsigned char v_group, RGE_Static_Object* obj,
-                            RGE_Static_Object* target);
-    unsigned char add_bring(unsigned char v_group, RGE_Static_Object* obj,
-                            float x0, float y0, float x1, float y1);
-    unsigned char add_capture(unsigned char v_group, RGE_Static_Object* obj,
-                              unsigned char alliance);
-    unsigned char add_create(unsigned char v_group, long obj_type, long number,
-                             unsigned char alliance);
-    unsigned char add_create(unsigned char v_group, long obj_type, long number,
-                             float x0, float y0, float x1, float y1,
-                             unsigned char alliance);
+    unsigned char add_attributes(unsigned char v_group, long attribute, long count, unsigned char alliance);
+    unsigned char add_bring(unsigned char v_group, RGE_Static_Object* obj, RGE_Static_Object* target);
+    unsigned char add_bring(unsigned char v_group, RGE_Static_Object* obj, float x0, float y0, float x1, float y1);
+    unsigned char add_capture(unsigned char v_group, RGE_Static_Object* obj, unsigned char alliance);
+    unsigned char add_create(unsigned char v_group, long obj_type, long number, unsigned char alliance);
+    unsigned char add_create(
+        unsigned char v_group, long obj_type, long number, float x0, float y0, float x1, float y1,
+        unsigned char alliance
+    );
     unsigned char add_destroy(unsigned char v_group, RGE_Static_Object* obj);
-    unsigned char add_destroy(unsigned char v_group, long obj_type, long num,
-                              RGE_Player* player);
-    unsigned char add_destroy(unsigned char v_group, long obj_type,
-                              RGE_Player* player);
+    unsigned char add_destroy(unsigned char v_group, long obj_type, long num, RGE_Player* player);
+    unsigned char add_destroy(unsigned char v_group, long obj_type, RGE_Player* player);
     unsigned char add_destroy(unsigned char v_group, RGE_Player* player);
-    unsigned char add_explore(unsigned char v_group, long count,
-                              unsigned char alliance);
-    unsigned char add_points_attribute_amount(unsigned char group, unsigned char id,
-                                              long attribute, long count, long points);
-    unsigned char add_points_attribute_first(unsigned char group, unsigned char id,
-                                             long attribute, long count, long points);
-    unsigned char add_points_high_attribute_amount(unsigned char group, unsigned char id,
-                                                    long attribute, long count, long points);
-    unsigned char add_points_high_attribute_once(unsigned char group, unsigned char id,
-                                                 long attribute, long count, long points);
-    unsigned char add_points_highest_attribute(unsigned char group, unsigned char id,
-                                               long attribute, long count, long points);
-    unsigned char add_victory_points(unsigned char v_group, long count,
-                                     unsigned char alliance);
+    unsigned char add_explore(unsigned char v_group, long count, unsigned char alliance);
+    unsigned char add_points_attribute_amount(
+        unsigned char group, unsigned char id, long attribute, long count, long points
+    );
+    unsigned char add_points_attribute_first(
+        unsigned char group, unsigned char id, long attribute, long count, long points
+    );
+    unsigned char add_points_high_attribute_amount(
+        unsigned char group, unsigned char id, long attribute, long count, long points
+    );
+    unsigned char add_points_high_attribute_once(
+        unsigned char group, unsigned char id, long attribute, long count, long points
+    );
+    unsigned char add_points_highest_attribute(
+        unsigned char group, unsigned char id, long attribute, long count, long points
+    );
+    unsigned char add_victory_points(unsigned char v_group, long count, unsigned char alliance);
 
-    unsigned char condition_info(long condition, char** description,
-                                 unsigned char& type);
+    unsigned char condition_info(long condition, char** description, unsigned char& type);
     long condition_number(long condition);
     RGE_Victory_Entry* condition_raw_info(long condition);
     void destroy_all();
@@ -133,7 +125,7 @@ public:
     void update_for_object(RGE_Static_Object* obj);
     unsigned char victory_achieved();
 
-public:
+  public:
     RGE_Victory_Entry* victory_list;             // +0x04
     long list_num;                               // +0x08
     RGE_Player* player;                          // +0x0C
@@ -143,8 +135,7 @@ public:
     long tot_victory_points;                     // +0x1C
 };
 
-typedef char rge_victory_conditions_size_check[
-    (sizeof(RGE_Victory_Conditions) == 0x20) ? 1 : -1];
+typedef char rge_victory_conditions_size_check[(sizeof(RGE_Victory_Conditions) == 0x20) ? 1 : -1];
 
 typedef RGE_Victory_Point_Entry VP_Entry;
 

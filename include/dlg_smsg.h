@@ -14,7 +14,7 @@ class TShape;
 class TScreenPanel;
 
 class TribeSendMessageDialog : public TDialogPanel {
-public:
+  public:
     TTextPanel* title;
     TTextPanel* playerName[8];
     TTextPanel* playerCivilization[8];
@@ -32,17 +32,16 @@ public:
     TribeSendMessageDialog(TScreenPanel* parentPanel);
     virtual ~TribeSendMessageDialog();
 
-protected:
+  protected:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     virtual void draw();
     void checkButtons();
 };
 
-typedef char dlg_smsg_message_size[
-    (sizeof(TribeSendMessageDialog) == 0x54C) ? 1 : -1];
+typedef char dlg_smsg_message_size[(sizeof(TribeSendMessageDialog) == 0x54C) ? 1 : -1];
 
 class TribeSendQuickMessageDialog : public TDialogPanel {
-public:
+  public:
     enum Mode { AsChat = 0, AsTaunt = 1 };
 
     TEditPanel* chatInput;
@@ -55,7 +54,6 @@ public:
     virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key);
 };
 
-typedef char dlg_smsg_quick_size[
-    (sizeof(TribeSendQuickMessageDialog) == 0x49C) ? 1 : -1];
+typedef char dlg_smsg_quick_size[(sizeof(TribeSendQuickMessageDialog) == 0x49C) ? 1 : -1];
 
 #endif

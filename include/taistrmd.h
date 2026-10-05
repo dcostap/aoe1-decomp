@@ -1,7 +1,6 @@
 #ifndef TAISTRMD_H
 #define TAISTRMD_H
 
-
 #include "aivcrule.h"
 #include "aistrmod.h"
 #include "utmarray.h"
@@ -20,7 +19,7 @@ void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* pointer);
 
 class TribeStrategyAIModule : public StrategyAIModule {
-public:
+  public:
     TribeMainDecisionAIModule* md;
     int currentVictoryConditionValue;
     char ruleSetNameValue[257];
@@ -64,10 +63,8 @@ public:
     int isRuleIdle(int ruleNumber);
 };
 
-typedef char taistrmd_strategy_size[
-    (sizeof(TribeStrategyAIModule) == 0x5F8) ? 1 : -1];
+typedef char taistrmd_strategy_size[(sizeof(TribeStrategyAIModule) == 0x5F8) ? 1 : -1];
 
-typedef char taistrmd_rule_set_name_size[
-    (sizeof(((TribeStrategyAIModule*)0)->ruleSetNameValue) == 257) ? 1 : -1];
+typedef char taistrmd_rule_set_name_size[(sizeof(((TribeStrategyAIModule*) 0)->ruleSetNameValue) == 257) ? 1 : -1];
 
 #endif

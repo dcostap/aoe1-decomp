@@ -12,7 +12,7 @@ class TDropDownPanel;
 class TButtonPanel;
 
 class TRIBE_Screen_Campaign_Selection : public TScreenPanel {
-public:
+  public:
     TTextPanel* title;
     int campaignListX;
     int campaignListY;
@@ -39,7 +39,7 @@ public:
     virtual ~TRIBE_Screen_Campaign_Selection();
     virtual long handle_idle();
 
-protected:
+  protected:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     void init_vars();
     void fillCampaigns();
@@ -47,7 +47,6 @@ protected:
     void startGame();
 };
 
-typedef char scr_cams_screen_size_check[
-    (sizeof(TRIBE_Screen_Campaign_Selection) == 0x4CC) ? 1 : -1];
+typedef char scr_cams_screen_size_check[(sizeof(TRIBE_Screen_Campaign_Selection) == 0x4CC) ? 1 : -1];
 
 #endif

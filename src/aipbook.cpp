@@ -46,11 +46,7 @@ AIPlayPhaseCommand::AIPlayPhaseCommand() {
     this->value3Value = 0;
 }
 
-AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char g,
-                                       unsigned char t,
-                                       int v1,
-                                       int v2,
-                                       int v3) {
+AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char g, unsigned char t, int v1, int v2, int v3) {
     this->groupValue = g;
     this->typeValue = t;
     this->value1Value = v1;
@@ -58,8 +54,7 @@ AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char g,
     this->value3Value = v3;
 }
 
-AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char g, char* t,
-                                       int v1, int v2, int v3) {
+AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char g, char* t, int v1, int v2, int v3) {
     this->groupValue = g;
     this->typeValue = this->convertToIntType(t);
     this->value1Value = v1;
@@ -74,35 +69,52 @@ char* AIPlayPhaseCommand::nameType() const {
 unsigned char AIPlayPhaseCommand::convertToIntType(char* t) const {
     int r;
     r = strcmp(t, s_Move);
-    if (r == 0) return AIPlayPhaseCommand::MoveCommand;
+    if (r == 0)
+        return AIPlayPhaseCommand::MoveCommand;
     r = strcmp(t, s_Attack);
-    if (r == 0) return AIPlayPhaseCommand::AttackCommand;
+    if (r == 0)
+        return AIPlayPhaseCommand::AttackCommand;
     r = strcmp(t, s_AttackSavedTarget);
-    if (r == 0) return AIPlayPhaseCommand::AttackSavedTargetCommand;
+    if (r == 0)
+        return AIPlayPhaseCommand::AttackSavedTargetCommand;
     r = strcmp(t, s_Retreat);
-    if (r == 0) return AIPlayPhaseCommand::RetreatCommand;
+    if (r == 0)
+        return AIPlayPhaseCommand::RetreatCommand;
     r = strcmp(t, s_Heal);
-    if (r == 0) return AIPlayPhaseCommand::HealCommand;
+    if (r == 0)
+        return AIPlayPhaseCommand::HealCommand;
     r = strcmp(t, s_ResetHitPoints);
-    if (r == 0) return AIPlayPhaseCommand::ResetHitPointsCommand;
+    if (r == 0)
+        return AIPlayPhaseCommand::ResetHitPointsCommand;
     r = strcmp(t, s_ResetAliveCount);
-    if (r == 0) return AIPlayPhaseCommand::ResetAliveCountCommand;
+    if (r == 0)
+        return AIPlayPhaseCommand::ResetAliveCountCommand;
     r = strcmp(t, s_Wait);
-    if (r == 0) return AIPlayPhaseCommand::WaitCommand;
+    if (r == 0)
+        return AIPlayPhaseCommand::WaitCommand;
     return AIPlayPhaseCommand::InvalidCommand;
 }
 
 char* AIPlayPhaseCommand::convertToNameType(unsigned char t) const {
     switch (t) {
-    case AIPlayPhaseCommand::MoveCommand: return s_Move;
-    case AIPlayPhaseCommand::AttackCommand: return s_Attack;
-    case AIPlayPhaseCommand::AttackSavedTargetCommand: return s_AttackSavedTarget;
-    case AIPlayPhaseCommand::RetreatCommand: return s_Retreat;
-    case AIPlayPhaseCommand::HealCommand: return s_Heal;
-    case AIPlayPhaseCommand::ResetHitPointsCommand: return s_ResetHitPoints;
-    case AIPlayPhaseCommand::ResetAliveCountCommand: return s_ResetAliveCount;
-    case AIPlayPhaseCommand::WaitCommand: return s_Wait;
-    default: return s_Invalid;
+        case AIPlayPhaseCommand::MoveCommand:
+            return s_Move;
+        case AIPlayPhaseCommand::AttackCommand:
+            return s_Attack;
+        case AIPlayPhaseCommand::AttackSavedTargetCommand:
+            return s_AttackSavedTarget;
+        case AIPlayPhaseCommand::RetreatCommand:
+            return s_Retreat;
+        case AIPlayPhaseCommand::HealCommand:
+            return s_Heal;
+        case AIPlayPhaseCommand::ResetHitPointsCommand:
+            return s_ResetHitPoints;
+        case AIPlayPhaseCommand::ResetAliveCountCommand:
+            return s_ResetAliveCount;
+        case AIPlayPhaseCommand::WaitCommand:
+            return s_Wait;
+        default:
+            return s_Invalid;
     }
 }
 
@@ -114,12 +126,7 @@ AIPlayPhaseTrigger::AIPlayPhaseTrigger() {
     nextPhaseValue = 0;
 }
 
-AIPlayPhaseTrigger::AIPlayPhaseTrigger(unsigned char t,
-                                       int v1,
-                                       int v2,
-                                       unsigned char p,
-                                       unsigned char n,
-                                       int r) {
+AIPlayPhaseTrigger::AIPlayPhaseTrigger(unsigned char t, int v1, int v2, unsigned char p, unsigned char n, int r) {
     this->typeValue = t;
     this->value1Value = v1;
     this->value2Value = v2;
@@ -128,10 +135,7 @@ AIPlayPhaseTrigger::AIPlayPhaseTrigger(unsigned char t,
     this->randomnessValue = r;
 }
 
-AIPlayPhaseTrigger::AIPlayPhaseTrigger(char* t, int v1, int v2,
-                                       unsigned char p,
-                                       unsigned char n,
-                                       int r) {
+AIPlayPhaseTrigger::AIPlayPhaseTrigger(char* t, int v1, int v2, unsigned char p, unsigned char n, int r) {
     typeValue = convertToIntType(t);
     value1Value = v1;
     value2Value = v2;
@@ -147,44 +151,67 @@ char* AIPlayPhaseTrigger::nameType() const {
 unsigned char AIPlayPhaseTrigger::convertToIntType(char* t) const {
     int r;
     r = strcmp(t, s_Gather);
-    if (r == 0) return AIPlayPhaseTrigger::GatherTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::GatherTrigger;
     r = strcmp(t, s_Death);
-    if (r == 0) return AIPlayPhaseTrigger::DeathTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::DeathTrigger;
     r = strcmp(t, s_HealthLost);
-    if (r == 0) return AIPlayPhaseTrigger::HealthLostTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::HealthLostTrigger;
     r = strcmp(t, s_DamageToGroup);
-    if (r == 0) return AIPlayPhaseTrigger::DamageToGroupTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::DamageToGroupTrigger;
     r = strcmp(t, s_DamageToAnyGroup);
-    if (r == 0) return AIPlayPhaseTrigger::DamageToAnyGroupTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::DamageToAnyGroupTrigger;
     r = strcmp(t, s_Level1EnemySighted);
-    if (r == 0) return AIPlayPhaseTrigger::Level1EnemySightedTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::Level1EnemySightedTrigger;
     r = strcmp(t, s_Level2EnemySighted);
-    if (r == 0) return AIPlayPhaseTrigger::Level2EnemySightedTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::Level2EnemySightedTrigger;
     r = strcmp(t, s_DeathOfGroup);
-    if (r == 0) return AIPlayPhaseTrigger::DeathOfGroupTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::DeathOfGroupTrigger;
     r = strcmp(t, s_HealOfGroup);
-    if (r == 0) return AIPlayPhaseTrigger::HealOfGroupTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::HealOfGroupTrigger;
     r = strcmp(t, s_Immediate);
-    if (r == 0) return AIPlayPhaseTrigger::ImmediateTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::ImmediateTrigger;
     r = strcmp(t, s_Time);
-    if (r == 0) return AIPlayPhaseTrigger::TimeTrigger;
+    if (r == 0)
+        return AIPlayPhaseTrigger::TimeTrigger;
     return AIPlayPhaseTrigger::InvalidTrigger;
 }
 
 char* AIPlayPhaseTrigger::convertToNameType(unsigned char t) const {
     switch (t) {
-    case AIPlayPhaseTrigger::GatherTrigger: return s_Gather;
-    case AIPlayPhaseTrigger::DeathTrigger: return s_Death;
-    case AIPlayPhaseTrigger::HealthLostTrigger: return s_HealthLost;
-    case AIPlayPhaseTrigger::DamageToGroupTrigger: return s_DamageToGroup;
-    case AIPlayPhaseTrigger::DamageToAnyGroupTrigger: return s_DamageToAnyGroup;
-    case AIPlayPhaseTrigger::Level1EnemySightedTrigger: return s_Level1EnemySighted;
-    case AIPlayPhaseTrigger::Level2EnemySightedTrigger: return s_Level2EnemySighted;
-    case AIPlayPhaseTrigger::DeathOfGroupTrigger: return s_DeathOfGroup;
-    case AIPlayPhaseTrigger::HealOfGroupTrigger: return s_HealOfGroup;
-    case AIPlayPhaseTrigger::ImmediateTrigger: return s_Immediate;
-    case AIPlayPhaseTrigger::TimeTrigger: return s_Time;
-    default: return s_Invalid;
+        case AIPlayPhaseTrigger::GatherTrigger:
+            return s_Gather;
+        case AIPlayPhaseTrigger::DeathTrigger:
+            return s_Death;
+        case AIPlayPhaseTrigger::HealthLostTrigger:
+            return s_HealthLost;
+        case AIPlayPhaseTrigger::DamageToGroupTrigger:
+            return s_DamageToGroup;
+        case AIPlayPhaseTrigger::DamageToAnyGroupTrigger:
+            return s_DamageToAnyGroup;
+        case AIPlayPhaseTrigger::Level1EnemySightedTrigger:
+            return s_Level1EnemySighted;
+        case AIPlayPhaseTrigger::Level2EnemySightedTrigger:
+            return s_Level2EnemySighted;
+        case AIPlayPhaseTrigger::DeathOfGroupTrigger:
+            return s_DeathOfGroup;
+        case AIPlayPhaseTrigger::HealOfGroupTrigger:
+            return s_HealOfGroup;
+        case AIPlayPhaseTrigger::ImmediateTrigger:
+            return s_Immediate;
+        case AIPlayPhaseTrigger::TimeTrigger:
+            return s_Time;
+        default:
+            return s_Invalid;
     }
 }
 
@@ -243,13 +270,13 @@ void AIPlayPhase::initialize() {
     int i;
     char* p;
 
-    p = ((char*)this) + 1;
+    p = ((char*) this) + 1;
     for (i = 0; i < AIPlayPhase::MaxCommands; i++) {
         *p = 0;
         p += 0x10;
     }
 
-    p = ((char*)this) + 0x50;
+    p = ((char*) this) + 0x50;
     for (i = 0; i < AIPlayPhase::MaxTriggers; i++) {
         *p = 0;
         p += 0x14;
@@ -261,12 +288,14 @@ AIPlayGroup::AIPlayGroup() {
 }
 
 unsigned char AIPlayGroup::minimum(int n) const {
-    if (n < 0 || n >= AIPlayGroup::MaxUnitTypes) return 0;
+    if (n < 0 || n >= AIPlayGroup::MaxUnitTypes)
+        return 0;
     return this->minValue[n];
 }
 
 void AIPlayGroup::setMinimum(int n, int v) {
-    if (n < 0 || n >= AIPlayGroup::MaxUnitTypes) return;
+    if (n < 0 || n >= AIPlayGroup::MaxUnitTypes)
+        return;
     this->minValue[n] = v;
 }
 
@@ -277,7 +306,8 @@ unsigned char AIPlayGroup::maximum(int n) const {
 }
 
 void AIPlayGroup::setMaximum(int n, int v) {
-    if (n < 0 || n >= AIPlayGroup::MaxUnitTypes) return;
+    if (n < 0 || n >= AIPlayGroup::MaxUnitTypes)
+        return;
     this->maxValue[n] = v;
 }
 
@@ -288,14 +318,9 @@ void AIPlayGroup::initialize() {
     }
 }
 
-AIPlay::AIPlay()
-    : minimumNumberUnitsValue(1),
-      maximumNumberUnitsValue(0xFF),
-      typeValue(1),
-      powerValue(0),
-      overflowValue(1),
-      intelligenceValue(0x32),
-      deathPercentageValue(0x32) {
+AIPlay::AIPlay() :
+    minimumNumberUnitsValue(1), maximumNumberUnitsValue(0xFF), typeValue(1), powerValue(0), overflowValue(1),
+    intelligenceValue(0x32), deathPercentageValue(0x32) {
     for (int j = 0; j < 5; j++) {
         this->targetTypeValue[j] = 5;
         this->targetCharacteristicValue[j] = 5;
@@ -309,7 +334,8 @@ void AIPlay::setName(char* n) {
 }
 
 int AIPlay::humanPlay() const {
-    if (this->nameValue[0] == 0x48 && this->nameValue[1] == 0x50) return 1;
+    if (this->nameValue[0] == 0x48 && this->nameValue[1] == 0x50)
+        return 1;
     return 0;
 }
 
@@ -384,7 +410,8 @@ int AIPlay::gatherTolerance(int groupID, int phaseID) {
 }
 
 AIPlayGroup* AIPlay::group(int n) {
-    if (n < 0 || n >= 5) return 0;
+    if (n < 0 || n >= 5)
+        return 0;
     return &this->groups[n];
 }
 
@@ -394,9 +421,7 @@ AIPlayPhase* AIPlay::phase(int n) {
     return 0;
 }
 
-int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
-                       int numberGroupMembers,
-                       RGE_Game_World* world) {
+int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers, int numberGroupMembers, RGE_Game_World* world) {
     AIPlay* play = world->playbook->play(playStatus->playNumberValue);
     if (play == 0) {
         return 0;
@@ -417,8 +442,8 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
     for (i = 0; i < numberGroupMembers; i++) {
         RGE_Static_Object* object = world->object(groupMembers[i]);
         int type;
-        if (object == 0 || (type = world->playbook->convertUnitToIntType(object)) < 0 ||
-            type >= AIPlayGroup::MaxUnitTypes) {
+        if (object == 0 || (type = world->playbook->convertUnitToIntType(object)) < 0
+            || type >= AIPlayGroup::MaxUnitTypes) {
             minUnits = 0;
         } else {
             unitsByType[type][unitsByTypeCount[type]] = groupMembers[i];
@@ -440,7 +465,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                 for (int unit = 0; unit < unitsByTypeCount[type] && added < minimum; unit++) {
                     int& id = unitsByType[type][unit];
                     if (id != -1) {
-                        if (playStatus->addGrouping(id, (unsigned char)groupNumber, (unsigned char)type) == 1) {
+                        if (playStatus->addGrouping(id, (unsigned char) groupNumber, (unsigned char) type) == 1) {
                             added++;
                             maximumUnits = play->maximumNumberUnitsValue;
                             id = -1;
@@ -469,17 +494,16 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
 
                 for (groupNumber = 0; groupNumber < play->numberGroupsValue; groupNumber++) {
                     AIPlayGroup* group = play->group(groupNumber);
-                    if (group != 0 && playStatus->numberOfTypeInGroup(groupNumber, overflowType) <
-                        group->maximum(overflowType) && (smallestGroup == -1 || playStatus->numberInGroup(groupNumber) <
-                             smallestGroupSize)) {
-                        smallestGroupSize =
-                            playStatus->numberInGroup(groupNumber);
+                    if (group != 0
+                        && playStatus->numberOfTypeInGroup(groupNumber, overflowType) < group->maximum(overflowType)
+                        && (smallestGroup == -1 || playStatus->numberInGroup(groupNumber) < smallestGroupSize)) {
+                        smallestGroupSize = playStatus->numberInGroup(groupNumber);
                         smallestGroup = groupNumber;
                     }
                 }
 
                 if (smallestGroup != -1) {
-                    if (playStatus->addGrouping(id, (unsigned char)smallestGroup, (unsigned char)overflowType) == 1) {
+                    if (playStatus->addGrouping(id, (unsigned char) smallestGroup, (unsigned char) overflowType) == 1) {
                         maximumUnits = play->maximumNumberUnitsValue;
                         id = -1;
                         if (playStatus->numberInPlay() == maximumUnits) {
@@ -492,9 +516,10 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
             } else if (this->overflowValue == 2) {
                 for (groupNumber = 0; groupNumber < play->numberGroupsValue; groupNumber++) {
                     AIPlayGroup* group = play->group(groupNumber);
-                    if (group != 0 && playStatus->numberOfTypeInGroup(groupNumber, overflowType) <
-                        group->maximum(overflowType)) {
-                        if (playStatus->addGrouping(id, (unsigned char)groupNumber, (unsigned char)overflowType) == 1) {
+                    if (group != 0
+                        && playStatus->numberOfTypeInGroup(groupNumber, overflowType) < group->maximum(overflowType)) {
+                        if (playStatus->addGrouping(id, (unsigned char) groupNumber, (unsigned char) overflowType)
+                            == 1) {
                             maximumUnits = play->maximumNumberUnitsValue;
                             id = -1;
                             if (playStatus->numberInPlay() == maximumUnits) {
@@ -523,7 +548,7 @@ CountDeviation:
             }
         }
     }
-    playStatus->deviationValue = (unsigned char)deviation;
+    playStatus->deviationValue = (unsigned char) deviation;
     return minUnits;
 }
 
@@ -537,10 +562,10 @@ int AIPlay::groupGivenCommandOnPhase(int gID, int cType, int pID) {
     AIPlayPhase* phase = &this->phases[pID];
     for (; i < AIPlayPhase::MaxCommands; i++) {
         AIPlayPhaseCommand* cmd = phase->command(i);
-        if ((unsigned int)cmd->group() == (unsigned int)gID) {
+        if ((unsigned int) cmd->group() == (unsigned int) gID) {
             AIPlayPhaseCommand* cmd2 = phase->command(i);
             int typeTemp;
-            *(unsigned char*)&typeTemp = cmd2->type();
+            *(unsigned char*) &typeTemp = cmd2->type();
             if ((typeTemp & 0xff) == cType) {
                 return i;
             }
@@ -552,28 +577,36 @@ int AIPlay::groupGivenCommandOnPhase(int gID, int cType, int pID) {
 unsigned char AIPlay::convertToIntType(char* t) const {
     int r;
     r = strcmp(t, s_Attack);
-    if (r == 0) return 1;
+    if (r == 0)
+        return 1;
     r = strcmp(t, "Annoy");
-    if (r == 0) return 2;
+    if (r == 0)
+        return 2;
     r = strcmp(t, "Flank");
-    if (r == 0) return 3;
+    if (r == 0)
+        return 3;
     r = strcmp(t, "Recon");
-    if (r == 0) return 4;
+    if (r == 0)
+        return 4;
     return 0;
 }
 
 char* AIPlay::convertToNameType(unsigned char t) const {
     switch (t) {
-    case 1: return s_Attack;
-    case 2: return "Annoy";
-    case 3: return "Flank";
-    case 4: return "Recon";
-    default: return "Invalid";
+        case 1:
+            return s_Attack;
+        case 2:
+            return "Annoy";
+        case 3:
+            return "Flank";
+        case 4:
+            return "Recon";
+        default:
+            return "Invalid";
     }
 }
 
-int AIPlay::locationsOnMap(int targetX, int targetY, int mapXSize,
-                           int mapYSize) {
+int AIPlay::locationsOnMap(int targetX, int targetY, int mapXSize, int mapYSize) {
     int p = 0;
     AIPlayPhase* phase = &this->phases[0];
 
@@ -596,10 +629,7 @@ int AIPlay::locationsOnMap(int targetX, int targetY, int mapXSize,
     return 1;
 }
 
-AIPlayStatus::AIPlayStatus()
-    : playNumberValue(-1),
-      targetValue(-1),
-      originalPointValue(0, 0, 0) {
+AIPlayStatus::AIPlayStatus() : playNumberValue(-1), targetValue(-1), originalPointValue(0, 0, 0) {
     int i;
 
     this->currentPhaseValue = 0xFD;
@@ -619,12 +649,14 @@ AIPlayStatus::AIPlayStatus()
 }
 
 int AIPlayStatus::originalHitPoints(int n) const {
-    if (n < 0 || n >= 5) return -1;
+    if (n < 0 || n >= 5)
+        return -1;
     return this->originalHitPointsValue[n];
 }
 
 void AIPlayStatus::setOriginalHitPoints(int n, int v) {
-    if (n < 0 || n >= 5) return;
+    if (n < 0 || n >= 5)
+        return;
     this->originalHitPointsValue[n] = v;
 }
 
@@ -674,8 +706,7 @@ unsigned char AIPlayStatus::group(int uID) {
     return 0xFF;
 }
 
-int AIPlayStatus::addGrouping(int uID, unsigned char gID,
-                              unsigned char type) {
+int AIPlayStatus::addGrouping(int uID, unsigned char gID, unsigned char type) {
     for (int i = 0; i < 50; i++) {
         if (this->groupings[i].id == -1) {
             this->groupings[i].id = uID;
@@ -811,20 +842,18 @@ void AIPlayStatus::resetHitPoints(int gID, RGE_Game_World* world) {
             if (p->groupings[0].groupID == gID) {
                 RGE_Static_Object* obj = world->object(id);
                 if (obj != 0) {
-                    total += (int)obj->hp;
+                    total += (int) obj->hp;
                 }
             }
         }
-        p = (AIPlayStatus*)(p->groupings + 1);
+        p = (AIPlayStatus*) (p->groupings + 1);
         count--;
     } while (count != 0);
 
     setOriginalHitPoints(gID, total);
 }
 
-AIPlayBook::AIPlayBook()
-   : numberPlaysValue(0),
-      plays(0) {
+AIPlayBook::AIPlayBook() : numberPlaysValue(0), plays(0) {
 }
 
 AIPlayBook::~AIPlayBook() {
@@ -894,8 +923,7 @@ int AIPlayBook::loadPlays(char* filename) {
         char commentTemp1;
         char commentTemp2;
 
-        if (sscanf(temp, " %c%c", &commentTemp1, &commentTemp2) != -1 &&
-            (commentTemp1 != '/' || commentTemp2 != '/')) {
+        if (sscanf(temp, " %c%c", &commentTemp1, &commentTemp2) != -1 && (commentTemp1 != '/' || commentTemp2 != '/')) {
             sscanf(temp, s_format_percent_s_space, temp2);
 
             if (strcmp(temp2, s_Play) == 0) {
@@ -988,18 +1016,20 @@ int AIPlayBook::loadPlays(char* filename) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3, &i, &temp5);
                 if (temp4 >= 0 && temp4 < 5) {
                     AIPlayPhase* phase = this->plays[currentPlay].phase(currentPhase);
-                    AIPlayPhaseCommand command((unsigned char)temp4, temp6, temp3, i, temp5);
+                    AIPlayPhaseCommand command((unsigned char) temp4, temp6, temp3, i, temp5);
                     phase->addCommand(command);
                 }
             } else if (strcmp(temp2, "Trigger") == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, "%*s %d %s %d %d ", &temp4, temp6, &temp3, &temp7);
                 AIPlayPhase* phase = this->plays[currentPlay].phase(currentPhase);
-                AIPlayPhaseTrigger trigger(temp6, temp3, temp7, (unsigned char)currentPhase, (unsigned char)temp4, 0);
+                AIPlayPhaseTrigger trigger(temp6, temp3, temp7, (unsigned char) currentPhase, (unsigned char) temp4, 0);
                 phase->addTrigger(trigger);
             } else if (strcmp(temp2, "RTrigger") == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3, &temp7, &temp5);
                 AIPlayPhase* phase = this->plays[currentPlay].phase(currentPhase);
-                AIPlayPhaseTrigger trigger(temp6, temp3, temp7, (unsigned char)currentPhase, (unsigned char)temp4, temp5);
+                AIPlayPhaseTrigger trigger(
+                    temp6, temp3, temp7, (unsigned char) currentPhase, (unsigned char) temp4, temp5
+                );
                 phase->addTrigger(trigger);
             } else if (strcmp(temp2, "EndPlay") == 0 && currentPlay != -1) {
                 currentPhase = -1;
@@ -1042,16 +1072,14 @@ int AIPlayBook::loadPlays(char* filename) {
                             AIPlayPhase* refPhase = source->phase(iPhases);
                             AIPlayPhase* curPhase = destination->phase(iPhases);
                             for (int a = 0; a < AIPlayPhase::MaxCommands; a++) {
-                                AIPlayPhaseCommand* command =refPhase->command(a);
+                                AIPlayPhaseCommand* command = refPhase->command(a);
                                 if (command->type() == AIPlayPhaseCommand::MoveCommand) {
                                     XYZ origin(0, 0, 0);
                                     XYZ rotatedPoint;
                                     XYZ originalPoint(command->value1(), command->value2(), command->value3());
-                                    originalPoint.rotateXYByFacet(origin, rotatedPoint, (unsigned char)temp8);
+                                    originalPoint.rotateXYByFacet(origin, rotatedPoint, (unsigned char) temp8);
                                     AIPlayPhaseCommand newCommand(
-                                        command->group(), command->type(),
-                                        rotatedPoint.xValue,
-                                        rotatedPoint.yValue,
+                                        command->group(), command->type(), rotatedPoint.xValue, rotatedPoint.yValue,
                                         rotatedPoint.zValue
                                     );
                                     curPhase->addCommand(newCommand);
@@ -1085,7 +1113,8 @@ AIPlay* AIPlayBook::play(int n) {
 }
 
 AIPlay* AIPlayBook::play(char* name) {
-    if (this->plays == 0) return 0;
+    if (this->plays == 0)
+        return 0;
     for (int i = 0; i < this->numberPlaysValue; i++) {
         if (strcmp(this->plays[i].nameValue, name) == 0) {
             return &this->plays[i];
@@ -1112,22 +1141,28 @@ int AIPlayBook::playNumber(char* name) {
 int AIPlayBook::convertTargetNameToIntType(char* t) const {
     int r;
     r = strcmp(t, s_Any);
-    if (r == 0) return 5;
+    if (r == 0)
+        return 5;
     return 0;
 }
 
 int AIPlayBook::convertTargetCharacteristicNameToIntType(char* t) const {
     int r;
     r = strcmp(t, "Stationary");
-    if (r == 0) return 1;
+    if (r == 0)
+        return 1;
     r = strcmp(t, "Moving");
-    if (r == 0) return 2;
+    if (r == 0)
+        return 2;
     r = strcmp(t, "Slow");
-    if (r == 0) return 3;
+    if (r == 0)
+        return 3;
     r = strcmp(t, "Fast");
-    if (r == 0) return 4;
+    if (r == 0)
+        return 4;
     r = strcmp(t, s_Any);
-    if (r == 0) return 5;
+    if (r == 0)
+        return 5;
     return 0;
 }
 

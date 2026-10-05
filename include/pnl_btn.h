@@ -9,7 +9,7 @@ class TShape;
 class TDigital;
 
 class TButtonPanel : public TPanel {
-public:
+  public:
     enum ButtonType { Normal = 1, Radio = 2, State = 3 };
     enum DrawType {
         DrawClear = 1,
@@ -70,8 +70,7 @@ public:
     virtual ~TButtonPanel();
     TButtonPanel();
     virtual void set_rect(long, long, long, long);
-    long setup(TDrawArea*, TPanel*, long, long, long, long, DrawType,
-               TDigital*, NotifyType, long);
+    long setup(TDrawArea*, TPanel*, long, long, long, long, DrawType, TDigital*, NotifyType, long);
     ButtonType buttonType() const;
     DrawType drawType() const;
     NotifyType notifyType() const;
@@ -126,7 +125,6 @@ public:
     void set_sound_number(int);
 };
 
-typedef char pnl_btn_tbutton_size_check[
-    (sizeof(TButtonPanel) == 0x2B8) ? 1 : -1];
+typedef char pnl_btn_tbutton_size_check[(sizeof(TButtonPanel) == 0x2B8) ? 1 : -1];
 
 #endif

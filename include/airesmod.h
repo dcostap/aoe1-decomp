@@ -7,16 +7,17 @@
 class MainDecisionAIModule;
 
 class ResourceAIModule : public AIModule {
-public:
+  public:
     ResourceAIModule(void* pW, int playerID, int n, int iV, int minV, int maxV);
     virtual ~ResourceAIModule();
     virtual int processMessage(AIModuleMessage* m);
     virtual int update(int timeLimit);
     virtual void setCallbackMessage(AIModuleMessage* m);
-protected:
+
+  protected:
     virtual int filterOutMessage(AIModuleMessage* m);
 
-public:
+  public:
     MainDecisionAIModule* md;
     int numberResourcesValue;
     int* resourceValue;
@@ -46,7 +47,6 @@ public:
     int lowestResourceType() const;
 };
 
-typedef char verify_airesmod_ResourceAIModule_size[
-    sizeof(ResourceAIModule) == 0x10C ? 1 : -1];
+typedef char verify_airesmod_ResourceAIModule_size[sizeof(ResourceAIModule) == 0x10C ? 1 : -1];
 
 #endif

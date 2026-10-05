@@ -5,7 +5,7 @@
 
 // Its named fields naturally align to 0x1238 bytes.
 struct RGE_Prog_Info {
-public:
+  public:
     char prog_name[101];
     char prog_version[21];
     char prog_title[121];
@@ -66,7 +66,6 @@ public:
     char avi_dir[261];
 };
 
-typedef char aoe1_main_prog_info_size_check[
-    (sizeof(RGE_Prog_Info) == 0x1238) ? 1 : -1];
+typedef char aoe1_main_prog_info_size_check[(sizeof(RGE_Prog_Info) == 0x1238) ? 1 : -1];
 
 #endif

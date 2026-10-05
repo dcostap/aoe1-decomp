@@ -4,9 +4,8 @@
 
 // The canonical member initializers own the BuildItem,
 // scalar, ManagedArray, and derived virtual setup.
-BuildAIModule::BuildAIModule(void* pW, int playerID)
-    : AIModule("Build AI", 0x3E9, playerID, pW),
-      buildList(), buildListLengthValue(0), numberItemsIntoBuildListValue(0) {
+BuildAIModule::BuildAIModule(void* pW, int playerID) :
+    AIModule("Build AI", 0x3E9, playerID, pW), buildList(), buildListLengthValue(0), numberItemsIntoBuildListValue(0) {
     this->buildList.next = &this->buildList;
     this->buildList.prev = &this->buildList;
     strcpy(this->buildListNameValue, "");
@@ -18,9 +17,8 @@ BuildAIModule::BuildAIModule(void* pW, int playerID)
 // The serialized fields, local declaration order, and name
 // buffer size preserve the original constructor frame and call sequence.
 #include <stdlib.h>
-BuildAIModule::BuildAIModule(int playerID, int infile)
-    : AIModule("Build AI", 0x3e9, playerID, 0), buildList(),
-      buildListLengthValue(0), numberItemsIntoBuildListValue(0) {
+BuildAIModule::BuildAIModule(int playerID, int infile) :
+    AIModule("Build AI", 0x3e9, playerID, 0), buildList(), buildListLengthValue(0), numberItemsIntoBuildListValue(0) {
     int tempInt;
     int buildCap;
     int builtValue;
@@ -100,7 +98,10 @@ BuildAIModule::BuildAIModule(int playerID, int infile)
             }
             rge_read(infile, &numberSkipCycles, 4);
             rge_read(infile, &permanentSkip, 1);
-            BuildItem* item = new BuildItem(buildCategory, typeID, uniqueID, 1, 0, buildFrom, name, xSize, ySize, zSize, terrainSet, terrainAdjOne, terrainAdjTwo, placeOnElevation);
+            BuildItem* item = new BuildItem(
+                buildCategory, typeID, uniqueID, 1, 0, buildFrom, name, xSize, ySize, zSize, terrainSet, terrainAdjOne,
+                terrainAdjTwo, placeOnElevation
+            );
             item->setBuilt(builtValue);
             item->setInProgress(inProgressValue);
             item->setBuildAttempts(buildAttemptsValue);
@@ -155,7 +156,8 @@ int BuildAIModule::save(int outfile) {
     BuildItem* item = this->buildList.next;
     BuildItem* end = &this->buildList;
     while (item != end) {
-        if (item == 0) return 1;
+        if (item == 0)
+            return 1;
         strcpy(tempString, item->name());
         tempInt = strlen(tempString);
         rge_write(outfile, &tempInt, 4);
@@ -206,7 +208,7 @@ int BuildAIModule::save(int outfile) {
         rge_write(outfile, &tempInt, 4);
         tempBYTE = item->permanentSkip();
         rge_write(outfile, &tempBYTE, 1);
-        item = (BuildItem*)item->next;
+        item = (BuildItem*) item->next;
     }
     return 1;
 }
@@ -221,15 +223,17 @@ void BuildAIModule::displayBuildList() {
         if (item->built() == 1) {
             this->logCommonHistory(
                 "BLT Type=%-4d %-20s gID=%-4d Cat=%d uID=%d InPrg=%d BlATmpt=%d Skip=%d NumBld=%d BldCap=%d From=%d PrSkp=%d SkpCyc=%d",
-                item->typeID(), item->name(), item->gameID(), item->buildCategory(), item->uniqueID(), item->inProgress(),
-                item->buildAttempts(), item->skip(), item->numberBuilds(), item->buildCap(), item->buildFrom(),
-                (unsigned int)item->permanentSkip(), item->skipCycles());
+                item->typeID(), item->name(), item->gameID(), item->buildCategory(), item->uniqueID(),
+                item->inProgress(), item->buildAttempts(), item->skip(), item->numberBuilds(), item->buildCap(),
+                item->buildFrom(), (unsigned int) item->permanentSkip(), item->skipCycles()
+            );
         } else {
             this->logCommonHistory(
                 "    Type=%-4d %-20s gID=%-4d Cat=%d uID=%d InPrg=%d BlATmpt=%d Skip=%d NumBld=%d BldCap=%d From=%d PrSkp=%d SkpCyc=%d",
-                item->typeID(), item->name(), item->gameID(), item->buildCategory(), item->uniqueID(), item->inProgress(),
-                item->buildAttempts(), item->skip(), item->numberBuilds(), item->buildCap(), item->buildFrom(),
-                (unsigned int)item->permanentSkip(), item->skipCycles());
+                item->typeID(), item->name(), item->gameID(), item->buildCategory(), item->uniqueID(),
+                item->inProgress(), item->buildAttempts(), item->skip(), item->numberBuilds(), item->buildCap(),
+                item->buildFrom(), (unsigned int) item->permanentSkip(), item->skipCycles()
+            );
         }
 
         item = item->next;
@@ -255,8 +259,8 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
     char commentTemp2;
 
     strncpy(this->buildListNameValue, lName, 63);
-    if (strcmp(this->buildListNameValue, "NONE") == 0 || this->buildListNameValue == 0 ||
-        strlen(this->buildListNameValue) == 0) {
+    if (strcmp(this->buildListNameValue, "NONE") == 0 || this->buildListNameValue == 0
+        || strlen(this->buildListNameValue) == 0) {
         goto no_build_list;
     }
 
@@ -287,39 +291,39 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
 
         int buildCategory;
         switch (buildCategoryAsChar) {
-        case '\n':
-            continue;
-        default:
-            continue;
-        case 'B':
-            buildCategory = 0;
-            break;
-        case 'A':
-            buildCategory = 0;
-            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &buildCap);
-            break;
-        case 'R':
-            buildCategory = 1;
-            break;
-        case 'C':
-            buildCategory = 4;
-            break;
-        case 'U':
-            buildCategory = 2;
-            break;
-        case 'T':
-            buildCategory = 2;
-            sscanf(temp, "%*c%*d %*s %*d %*d %d ", &buildCap);
-            break;
-        case 'L':
-            buildCategory = 3;
-            break;
-        case 'E':
-            buildCategory = 5;
-            break;
-        case 'G':
-            buildCategory = 6;
-            break;
+            case '\n':
+                continue;
+            default:
+                continue;
+            case 'B':
+                buildCategory = 0;
+                break;
+            case 'A':
+                buildCategory = 0;
+                sscanf(temp, "%*c%*d %*s %*d %*d %d ", &buildCap);
+                break;
+            case 'R':
+                buildCategory = 1;
+                break;
+            case 'C':
+                buildCategory = 4;
+                break;
+            case 'U':
+                buildCategory = 2;
+                break;
+            case 'T':
+                buildCategory = 2;
+                sscanf(temp, "%*c%*d %*s %*d %*d %d ", &buildCap);
+                break;
+            case 'L':
+                buildCategory = 3;
+                break;
+            case 'E':
+                buildCategory = 5;
+                break;
+            case 'G':
+                buildCategory = 6;
+                break;
         }
 
         if (buildCategory == 0) {
@@ -328,8 +332,8 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
             }
         }
 
-        if ((buildCategory == 0 || buildCategory == 2) && typeID >= 0 && typeID < player->master_object_num &&
-            player->master_objects[typeID] != 0) {
+        if ((buildCategory == 0 || buildCategory == 2) && typeID >= 0 && typeID < player->master_object_num
+            && player->master_objects[typeID] != 0) {
             RGE_Master_Static_Object* master = player->master_objects[typeID];
             xSize = master->radius_x;
             ySize = master->radius_y;
@@ -339,8 +343,10 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
 
         int i;
         for (i = 0; i < quantity; ++i) {
-            BuildItem* item = new BuildItem(buildCategory, typeID, this->buildListLengthValue,
-                                            1, 0, buildFrom, name, xSize, ySize, 0.0f, -1, -1, -1, 0);
+            BuildItem* item = new BuildItem(
+                buildCategory, typeID, this->buildListLengthValue, 1, 0, buildFrom, name, xSize, ySize, 0.0f, -1, -1,
+                -1, 0
+            );
 
             ++this->buildListLengthValue;
             item->next = &this->buildList;
@@ -351,8 +357,7 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
             this->buildList.prev = item;
         }
 
-    next_line:
-        ;
+    next_line:;
     }
 
     fclose(fileIn);
@@ -369,17 +374,25 @@ no_build_list:
     return 1;
 }
 
-int BuildAIModule::buildListLength() const { return this->buildListLengthValue; }
+int BuildAIModule::buildListLength() const {
+    return this->buildListLengthValue;
+}
 
-char* BuildAIModule::buildListName() { return this->buildListNameValue; }
+char* BuildAIModule::buildListName() {
+    return this->buildListNameValue;
+}
 
 int BuildAIModule::haveBuildList() const {
-    char* name = (char*)this->buildListNameValue;
-    if (name != 0 && strcmp(name, "NONE") != 0 && strcmp(name, "NULL") != 0) return 1;
+    char* name = (char*) this->buildListNameValue;
+    if (name != 0 && strcmp(name, "NONE") != 0 && strcmp(name, "NULL") != 0)
+        return 1;
     return 0;
 }
 
-int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap, int insertAfterItemNumber) {
+int BuildAIModule::insertItem(
+    RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap,
+    int insertAfterItemNumber
+) {
     if (insertAfterItemNumber > this->buildListLengthValue) {
         return 0;
     }
@@ -413,8 +426,8 @@ int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int 
 
     int uniqueID = this->buildListLengthValue;
     for (int i = 0; i < quantity; i++) {
-        BuildItem* item = new BuildItem(buildCategory, typeID, uniqueID, 1, 0, buildFrom, name,
-                                        xSize, ySize, 1.0f, -1, -1, -1, 0);
+        BuildItem* item =
+            new BuildItem(buildCategory, typeID, uniqueID, 1, 0, buildFrom, name, xSize, ySize, 1.0f, -1, -1, -1, 0);
         if (item == 0) {
             return 0;
         }
@@ -484,13 +497,21 @@ int BuildAIModule::numberItemsBuiltOrInProgress(void) const {
     return count;
 }
 
-int BuildAIModule::numberItemsIntoBuildList() const { return this->numberItemsIntoBuildListValue; }
+int BuildAIModule::numberItemsIntoBuildList() const {
+    return this->numberItemsIntoBuildListValue;
+}
 
-char* BuildAIModule::lastBuildItemRequested() const { return (char*)this->lastBuildItemRequestedValue; }
+char* BuildAIModule::lastBuildItemRequested() const {
+    return (char*) this->lastBuildItemRequestedValue;
+}
 
-char* BuildAIModule::currentBuildItemRequested() const { return (char*)this->currentBuildItemRequestedValue; }
+char* BuildAIModule::currentBuildItemRequested() const {
+    return (char*) this->currentBuildItemRequestedValue;
+}
 
-char* BuildAIModule::nextBuildItemRequested() const { return (char*)this->nextBuildItemRequestedValue; }
+char* BuildAIModule::nextBuildItemRequested() const {
+    return (char*) this->nextBuildItemRequestedValue;
+}
 
 int BuildAIModule::numberItemsOfType(int type, int category) {
     BuildItem* cur = this->buildList.next;
@@ -541,7 +562,8 @@ int BuildAIModule::numberBuiltOrInProgressItemsOfType(int type, int category) {
     BuildItem* end = &this->buildList;
 
     while (item != end && item != 0) {
-        if (item->typeID() == type && item->buildCategory() == category && (item->built() == 1 || item->inProgress() == 1)) {
+        if (item->typeID() == type && item->buildCategory() == category
+            && (item->built() == 1 || item->inProgress() == 1)) {
             ++count;
         }
         item = item->next;
@@ -604,12 +626,15 @@ BuildItem* BuildAIModule::anyBuildListItem(int id, int checkBuilt, int buildStat
 // The original checks the sentinel before loading the id.
 BuildItem* BuildAIModule::specificBuildListItem(int id) {
     BuildItem* item = this->buildList.next;
-    if (item == &this->buildList) return 0;
+    if (item == &this->buildList)
+        return 0;
 
     int saveID = id;
     while (item != &this->buildList) {
-        if (item == 0) return 0;
-        if (item->uniqueID() == saveID) return item;
+        if (item == 0)
+            return 0;
+        if (item->uniqueID() == saveID)
+            return item;
         item = item->next;
     }
     return 0;

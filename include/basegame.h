@@ -177,7 +177,7 @@ struct RGE_Font {
 typedef char rge_font_size_check[(sizeof(RGE_Font) == 0x0C) ? 1 : -1];
 
 class RGE_Timing_Info {
-public:
+  public:
     unsigned long accum_time;
     unsigned long last_time;
     unsigned long start_time;
@@ -188,8 +188,7 @@ public:
     unsigned long last_max_time;
 };
 
-typedef char rge_timing_info_size_check[
-    (sizeof(RGE_Timing_Info) == 0x20) ? 1 : -1];
+typedef char rge_timing_info_size_check[(sizeof(RGE_Timing_Info) == 0x20) ? 1 : -1];
 
 class RGE_Base_Game {
     friend class RGE_Action_Gather;
@@ -278,9 +277,9 @@ class RGE_Base_Game {
     friend class TRIBE_Screen_Wait;
     friend class TRIBE_Screen_Disconnect;
 
-public:
+  public:
     struct RGE_Game_Options {
-    public:
+      public:
         float versionValue;
         unsigned char scenarioGameValue;
         char scenarioNameValue[128];
@@ -307,7 +306,9 @@ public:
     virtual ~RGE_Base_Game();
     virtual int run();
     virtual LRESULT CALLBACK wnd_proc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
-    virtual void set_prog_mode(int value) { this->prog_mode = value; }
+    virtual void set_prog_mode(int value) {
+        this->prog_mode = value;
+    }
     virtual void set_game_mode(int new_mode, int new_sub_mode);
     virtual void set_player(short new_player_id);
     virtual int get_error_code();
@@ -316,21 +317,29 @@ public:
     virtual char* get_string(long string_id, char* str, int max_len);
     virtual char* get_string(int string_type, long id, char* str, int max_len);
     virtual char* get_string2(int string_type, long id, long id2, char* str, int max_len);
-    virtual TPanel* get_view_panel() { return 0; }
-    virtual TPanel* get_map_panel() { return 0; }
+    virtual TPanel* get_view_panel() {
+        return 0;
+    }
+    virtual TPanel* get_map_panel() {
+        return 0;
+    }
     // VC5 reverses this adjacent overload pair in the vtable.
     virtual RGE_Scenario_Header* new_scenario_header(int infile);
     virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario_info);
     virtual RGE_Scenario* new_scenario_info(int infile);
-    virtual void notification(int, long, long, long, long) {}
+    virtual void notification(int, long, long, long, long) {
+    }
     virtual int reset_comm();
     virtual void send_game_options();
     virtual void receive_game_options();
     virtual char* gameSummary();
-    virtual int processCheatCode(int, char*) { return 0; }
+    virtual int processCheatCode(int, char*) {
+        return 0;
+    }
     virtual int setup_music_system();
     virtual void shutdown_music_system();
-protected:
+
+  protected:
     virtual int setup();
     virtual int setup_cmd_options();
     virtual int setup_class();
@@ -353,7 +362,9 @@ protected:
     virtual void stop_music_system();
     virtual int restart_music_system();
     virtual RGE_Game_World* create_world();
-    virtual int handle_message(tagMSG*) { return 1; }
+    virtual int handle_message(tagMSG*) {
+        return 1;
+    }
     virtual int handle_idle();
     virtual int handle_mouse_move(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
     virtual int handle_key_down(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
@@ -369,22 +380,48 @@ protected:
     virtual int handle_query_new_palette(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
     virtual int handle_close(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
     virtual int handle_destroy(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
-    virtual int action_update() { return 1; }
-    virtual int action_mouse_move(long, long, int, int, int, int) { return 1; }
-    virtual int action_key_down(unsigned long, int, int, int, int) { return 1; }
-    virtual int action_user_command(unsigned long, unsigned long) { return 1; }
-    virtual int action_command(unsigned long, unsigned long) { return 1; }
-    virtual int action_music_done() { return 1; }
-    virtual int action_activate() { return 1; }
-    virtual int action_deactivate() { return 1; }
-    virtual int action_init_menu() { return 1; }
-    virtual int action_exit_menu() { return 1; }
-    virtual int action_size() { return 1; }
-    virtual int action_close() { return 1; }
-public:
+    virtual int action_update() {
+        return 1;
+    }
+    virtual int action_mouse_move(long, long, int, int, int, int) {
+        return 1;
+    }
+    virtual int action_key_down(unsigned long, int, int, int, int) {
+        return 1;
+    }
+    virtual int action_user_command(unsigned long, unsigned long) {
+        return 1;
+    }
+    virtual int action_command(unsigned long, unsigned long) {
+        return 1;
+    }
+    virtual int action_music_done() {
+        return 1;
+    }
+    virtual int action_activate() {
+        return 1;
+    }
+    virtual int action_deactivate() {
+        return 1;
+    }
+    virtual int action_init_menu() {
+        return 1;
+    }
+    virtual int action_exit_menu() {
+        return 1;
+    }
+    virtual int action_size() {
+        return 1;
+    }
+    virtual int action_close() {
+        return 1;
+    }
+
+  public:
     void disable_input();
     void enable_input();
-protected:
+
+  protected:
     virtual void calc_timings();
     virtual void calc_timing_text();
     virtual void show_timings();
@@ -393,12 +430,14 @@ protected:
     virtual int setup_map_save_area();
     virtual void set_interface_messages();
 
-public:
+  public:
     RGE_Base_Game(RGE_Prog_Info* prog_info_in, int do_setup);
-protected:
+
+  protected:
     int check_expiration();
     int check_multi_copies();
-public:
+
+  public:
     int check_for_cd(int num_players);
     void close();
     int create_dialog(TPanel** dialog_ptr, TPanel* new_dialog);
@@ -476,15 +515,17 @@ public:
     RGE_Scenario* get_scenario_info(char* scenario_file, int from_campaign);
     RGE_Scenario_Header* get_scenario_header(char* scenario_file, int from_campaign);
 
-protected:
+  protected:
     HFONT make_font(HDC dc, long string_id, int strike_out);
     HFONT make_font(HDC dc, char* face_name, int point_size, int wgt, int strike_out);
     int check_paint();
     void clear_window();
 
-public:
+  public:
     void request_pause();
-    void get_mouse_info(WPARAM wparam, LPARAM lparam, tagPOINT& point, int& left_btn, int& right_btn, int& ctrl_key, int& shift_key);
+    void get_mouse_info(
+        WPARAM wparam, LPARAM lparam, tagPOINT& point, int& left_btn, int& right_btn, int& ctrl_key, int& shift_key
+    );
     void set_windows_mouse(int val);
     void set_game_options(RGE_Game_Options* options);
     void get_game_options(RGE_Game_Options*);
@@ -526,7 +567,7 @@ public:
     void set_single_player_difficulty(int val);
     void reload_scenarios_info();
 
-protected:
+  protected:
     RGE_Game_Info* player_game_info;
     RGE_Scenario_File_Info* scenario_info;
     RGE_Prog_Info* prog_info;
@@ -626,9 +667,7 @@ protected:
     TDrawArea* map_save_area;
 };
 
-typedef char rge_game_options_size_check[
-    (sizeof(RGE_Base_Game::RGE_Game_Options) == 0xA8) ? 1 : -1];
-typedef char rge_base_game_size_check[
-    (sizeof(RGE_Base_Game) == 0xA24) ? 1 : -1];
+typedef char rge_game_options_size_check[(sizeof(RGE_Base_Game::RGE_Game_Options) == 0xA8) ? 1 : -1];
+typedef char rge_base_game_size_check[(sizeof(RGE_Base_Game) == 0xA24) ? 1 : -1];
 
 #endif

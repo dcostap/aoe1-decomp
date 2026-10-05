@@ -8,14 +8,11 @@
 #include "../include/task.h"
 #include "../include/world.h"
 
-
-RGE_Action_Make::RGE_Action_Make(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1) {
+RGE_Action_Make::RGE_Action_Make(int infile, RGE_Action_Object* obj_in) : RGE_Action(infile, obj_in, 1) {
     this->action_type = RGE_ACTION_TYPE_MAKE;
 }
 
-RGE_Action_Make::RGE_Action_Make(RGE_Action_Object* obj_in, RGE_Task* task_in)
-    : RGE_Action(obj_in, 1) {
+RGE_Action_Make::RGE_Action_Make(RGE_Action_Object* obj_in, RGE_Task* task_in) : RGE_Action(obj_in, 1) {
     this->action_type = RGE_ACTION_TYPE_MAKE;
     this->task = task_in;
 }
@@ -37,12 +34,12 @@ void RGE_Action_Make::set_state(unsigned char new_state) {
 
 unsigned char RGE_Action_Make::update() {
     switch (this->state) {
-    case 1:
-        goto success;
-    case 6:
-        break;
-    default:
-        goto failure;
+        case 1:
+            goto success;
+        case 6:
+            break;
+        default:
+            goto failure;
     }
     {
         float work;
@@ -50,16 +47,17 @@ unsigned char RGE_Action_Make::update() {
         if (this->timer <= 0.0) {
             if (this->obj->owner->attributes[0x24] > 0.0) {
                 if (this->obj->attribute_amount_held <= 0.0) {
-                    rge_base_game->notification(0x7E, this->obj->owner->id, this->obj->id,
-                                                (int)this->obj->world_x, (int)this->obj->world_y);
+                    rge_base_game->notification(
+                        0x7E, this->obj->owner->id, this->obj->id, (int) this->obj->world_x, (int) this->obj->world_y
+                    );
                     this->obj->die_die_die();
                 }
                 goto failure;
             }
         }
 
-        work = ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate
-             * this->obj->owner->world->world_time_delta_seconds;
+        work = ((RGE_Master_Action_Object*) this->obj->master_obj)->work_rate
+               * this->obj->owner->world->world_time_delta_seconds;
         work *= this->task->work_val1;
         pre_attribute = this->obj->attribute_amount_held;
 

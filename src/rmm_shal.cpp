@@ -7,9 +7,8 @@
 extern int __cdecl debug_rand(char*, int);
 
 RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
-    RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
-    RGE_Shallows_Info* in_info)
-    : RGE_Random_Map_Module(in_map, parent_module, 1) {
+    RGE_Map* in_map, RGE_Random_Map_Module* parent_module, RGE_Shallows_Info* in_info
+) : RGE_Random_Map_Module(in_map, parent_module, 1) {
     this->schedule = 1.1f;
     this->info = *in_info;
 }
@@ -34,10 +33,8 @@ uchar RGE_RMM_Shallows_Generator::generate() {
     do {
         int found = 0;
         do {
-            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 69) *
-                 (this->map_width - 1)) / 0x7FFF;
-            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 70) *
-                 (this->map_height - 1)) / 0x7FFF;
+            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 69) * (this->map_width - 1)) / 0x7FFF;
+            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 70) * (this->map_height - 1)) / 0x7FFF;
             uchar terrain = this->map_row_offset[y][x].terrain_type & 0x1f;
             if (terrain != 1 && terrain != 0x16 && terrain != 4) {
                 this->info.shallows[index1].x = x;
@@ -48,10 +45,8 @@ uchar RGE_RMM_Shallows_Generator::generate() {
 
         found = 0;
         do {
-            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 84) *
-                 (this->map_width - 1)) / 0x7FFF;
-            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 85) *
-                 (this->map_height - 1)) / 0x7FFF;
+            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 84) * (this->map_width - 1)) / 0x7FFF;
+            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 85) * (this->map_height - 1)) / 0x7FFF;
             uchar terrain = this->map_row_offset[y][x].terrain_type & 0x1f;
             if (terrain != 1 && terrain != 0x16 && terrain != 4) {
                 this->info.shallows[index2].x = x;
@@ -67,8 +62,7 @@ uchar RGE_RMM_Shallows_Generator::generate() {
     return 1;
 }
 
-void RGE_RMM_Shallows_Generator::make_tribe_connections(
-    long point1, long point2) {
+void RGE_RMM_Shallows_Generator::make_tribe_connections(long point1, long point2) {
     long start_x = this->info.shallows[point1].x;
     long start_y = this->info.shallows[point1].y;
     long target_x = this->info.shallows[point2].x;
@@ -79,7 +73,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
     long y;
     long done;
     float cost;
-    float terrain[40] = {0};
+    float terrain[40] = { 0 };
     Map_Stack stack;
 
     this->init_stack(stack);
@@ -108,37 +102,37 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
 
     while (!done) {
         switch (this->search_map_rows[ty][tx1]) {
-        case 4:
-            ++x;
-            break;
-        case 5:
-            --x;
-            break;
-        case 6:
-            ++y;
-            break;
-        case 7:
-            --y;
-            break;
-        case 8:
-            ++y;
-            ++x;
-            break;
-        case 9:
-            --y;
-            ++x;
-            break;
-        case 10:
-            ++y;
-            --x;
-            break;
-        case 11:
-            --y;
-            --x;
-            break;
-        default:
-            done = 1;
-            break;
+            case 4:
+                ++x;
+                break;
+            case 5:
+                --x;
+                break;
+            case 6:
+                ++y;
+                break;
+            case 7:
+                --y;
+                break;
+            case 8:
+                ++y;
+                ++x;
+                break;
+            case 9:
+                --y;
+                ++x;
+                break;
+            case 10:
+                ++y;
+                --x;
+                break;
+            case 11:
+                --y;
+                --x;
+                break;
+            default:
+                done = 1;
+                break;
         }
 
         if (x < 0 || x >= this->map_width || y < 0 || y >= this->map_height) {
@@ -149,74 +143,57 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
             break;
         }
 
-        uchar terrain_type =
-            this->map_row_offset[y][x].terrain_type & 0x1f;
+        uchar terrain_type = this->map_row_offset[y][x].terrain_type & 0x1f;
         if (terrain_type == 1 || terrain_type == 0x16) {
-            long min_x =
-                x - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 198) * 2) /
-                        0x7fff -
-                1;
+            long min_x = x - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 198) * 2) / 0x7fff - 1;
             if (min_x < 0) {
                 min_x = 0;
             }
 
-            long min_y =
-                y - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 202) * 2) /
-                        0x7fff -
-                1;
+            long min_y = y - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 202) * 2) / 0x7fff - 1;
             if (min_y < 0) {
                 min_y = 0;
             }
 
-            long max_x =
-                x + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 206) * 2) /
-                        0x7fff +
-                1;
+            long max_x = x + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 206) * 2) / 0x7fff + 1;
             if (max_x >= this->map_width) {
                 max_x = this->map_width - 1;
             }
 
-            long max_y =
-                y + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 210) * 3) /
-                        0x7fff +
-                1;
+            long max_y = y + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 210) * 3) / 0x7fff + 1;
             if (max_y >= this->map_height) {
                 max_y = this->map_height - 1;
             }
 
             for (long fill_y = min_y; fill_y <= max_y; ++fill_y) {
                 for (long fill_x = min_x; fill_x <= max_x; ++fill_x) {
-                    if ((this->map_row_offset[fill_y][fill_x].terrain_type & 0x1f) == 1 ||
-                        (this->map_row_offset[fill_y][fill_x].terrain_type & 0x1f) == 0x16) {
+                    if ((this->map_row_offset[fill_y][fill_x].terrain_type & 0x1f) == 1
+                        || (this->map_row_offset[fill_y][fill_x].terrain_type & 0x1f) == 0x16) {
                         this->push_stack(stack, fill_x, fill_y, 0.0f, 0.0f);
                     }
                 }
             }
         } else {
             if (x > 0) {
-                terrain_type =
-                    this->map_row_offset[y][x - 1].terrain_type & 0x1f;
+                terrain_type = this->map_row_offset[y][x - 1].terrain_type & 0x1f;
                 if (terrain_type == 1 || terrain_type == 0x16) {
                     this->push_stack(stack, x - 1, y, 0.0f, 0.0f);
                 }
             }
             if (x < this->map_width - 1) {
-                terrain_type =
-                    this->map_row_offset[y][x + 1].terrain_type & 0x1f;
+                terrain_type = this->map_row_offset[y][x + 1].terrain_type & 0x1f;
                 if (terrain_type == 1 || terrain_type == 0x16) {
                     this->push_stack(stack, x + 1, y, 0.0f, 0.0f);
                 }
             }
             if (y > 0) {
-                terrain_type =
-                    this->map_row_offset[y - 1][x].terrain_type & 0x1f;
+                terrain_type = this->map_row_offset[y - 1][x].terrain_type & 0x1f;
                 if (terrain_type == 1 || terrain_type == 0x16) {
                     this->push_stack(stack, x, y - 1, 0.0f, 0.0f);
                 }
             }
             if (y < this->map_height - 1) {
-                terrain_type =
-                    this->map_row_offset[y + 1][x].terrain_type & 0x1f;
+                terrain_type = this->map_row_offset[y + 1][x].terrain_type & 0x1f;
                 if (terrain_type == 1 || terrain_type == 0x16) {
                     this->push_stack(stack, x, y + 1, 0.0f, 0.0f);
                 }

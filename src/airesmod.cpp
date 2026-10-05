@@ -5,17 +5,14 @@
 void* operator new(size_t size);
 void operator delete(void* ptr);
 
-ResourceAIModule::ResourceAIModule(void* pW, int playerID, int n, int iV, int minV, int maxV)
-    : AIModule("Resource AI", 0x3EF, playerID, pW), md(0),
-      numberResourcesValue(n) {
+ResourceAIModule::ResourceAIModule(void* pW, int playerID, int n, int iV, int minV, int maxV) :
+    AIModule("Resource AI", 0x3EF, playerID, pW), md(0), numberResourcesValue(n) {
     int bytes = n * 4;
-    this->resourceValue = (int*)operator new(bytes);
-    this->minValue = (int*)operator new(this->numberResourcesValue * 4);
-    this->maxValue = (int*)operator new(this->numberResourcesValue * 4);
-    this->resourceTypesValue =
-        (int**)operator new(this->numberResourcesValue * 4);
-    this->numberResourceTypesValue =
-        (int*)operator new(this->numberResourcesValue * 4);
+    this->resourceValue = (int*) operator new(bytes);
+    this->minValue = (int*) operator new(this->numberResourcesValue * 4);
+    this->maxValue = (int*) operator new(this->numberResourcesValue * 4);
+    this->resourceTypesValue = (int**) operator new(this->numberResourcesValue * 4);
+    this->numberResourceTypesValue = (int*) operator new(this->numberResourcesValue * 4);
 
     for (int i = 0; i < this->numberResourcesValue; i++) {
         this->resourceValue[i] = iV;
@@ -238,7 +235,7 @@ int ResourceAIModule::filterOutMessage(AIModuleMessage* m) {
 }
 
 void ResourceAIModule::addResourceType(int r, int t) {
-    int* newTypes = (int*)operator new(this->numberResourceTypesValue[r] * 4 + 4);
+    int* newTypes = (int*) operator new(this->numberResourceTypesValue[r] * 4 + 4);
 
     int count = 0;
     if (this->numberResourceTypesValue[r] > 0) {

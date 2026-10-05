@@ -44,7 +44,7 @@ RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario* scenario_info) {
     if (scenario_info->Get_description()) {
         char* description_text = scenario_info->Get_description();
         desc_size = strlen(description_text) + 1;
-        this->description = (char*)malloc(desc_size);
+        this->description = (char*) malloc(desc_size);
     } else {
         this->description = 0;
     }
@@ -73,7 +73,7 @@ RGE_Scenario_Header::RGE_Scenario_Header(int infile) {
 
     rge_read_uncompressed(infile, &desc_size, 4);
     if (desc_size > 0) {
-        description = (char*)malloc(desc_size);
+        description = (char*) malloc(desc_size);
         if (description == 0) {
             error_code = 1;
             return;
@@ -164,11 +164,12 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
     this->time_line = new RGE_Timeline(infile, this->world);
 
     rge_read(infile, &length, 2);
-    if (length > 0) rge_read(infile, this->scenario_name, length);
+    if (length > 0)
+        rge_read(infile, this->scenario_name, length);
     this->scenario_name[length] = 0;
     rge_read(infile, &length, 2);
     if (length > 0) {
-        this->description = (char*)calloc(length, 1);
+        this->description = (char*) calloc(length, 1);
         rge_read(infile, this->description, length);
         this->description[length - 1] = 0;
     } else {
@@ -178,7 +179,7 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
     if (this->Version >= 1.11) {
         rge_read(infile, &length, 2);
         if (length > 0) {
-            this->hints = (char*)calloc(length, 1);
+            this->hints = (char*) calloc(length, 1);
             rge_read(infile, this->hints, length);
             this->hints[length - 1] = 0;
         } else {
@@ -186,7 +187,7 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
         }
         rge_read(infile, &length, 2);
         if (length > 0) {
-            this->win_message = (char*)calloc(length, 1);
+            this->win_message = (char*) calloc(length, 1);
             rge_read(infile, this->win_message, length);
             this->win_message[length - 1] = 0;
         } else {
@@ -194,7 +195,7 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
         }
         rge_read(infile, &length, 2);
         if (length > 0) {
-            this->loss_message = (char*)calloc(length, 1);
+            this->loss_message = (char*) calloc(length, 1);
             rge_read(infile, this->loss_message, length);
             this->loss_message[length - 1] = 0;
         } else {
@@ -202,7 +203,7 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
         }
         rge_read(infile, &length, 2);
         if (length > 0) {
-            this->historicle_notes = (char*)calloc(length, 1);
+            this->historicle_notes = (char*) calloc(length, 1);
             rge_read(infile, this->historicle_notes, length);
         } else {
             this->historicle_notes = 0;
@@ -216,28 +217,35 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
 
     if (this->Version < 1.03f) {
         rge_read(infile, &length, 2);
-        if (length > 0) rge_read(infile, text + 4, length);
+        if (length > 0)
+            rge_read(infile, text + 4, length);
         rge_read(infile, &length, 2);
-        if (length > 0) rge_read(infile, text + 4, length);
+        if (length > 0)
+            rge_read(infile, text + 4, length);
         rge_read(infile, &length, 2);
-        if (length > 0) rge_read(infile, text + 4, length);
+        if (length > 0)
+            rge_read(infile, text + 4, length);
     }
 
     rge_read(infile, &length, 2);
-    if (length > 0) rge_read(infile, this->Cine_PreGame, length);
+    if (length > 0)
+        rge_read(infile, this->Cine_PreGame, length);
     this->Cine_PreGame[length] = 0;
 
     rge_read(infile, &length, 2);
-    if (length > 0) rge_read(infile, this->Cine_Victory, length);
+    if (length > 0)
+        rge_read(infile, this->Cine_Victory, length);
     this->Cine_Victory[length] = 0;
 
     rge_read(infile, &length, 2);
-    if (length > 0) rge_read(infile, this->Cine_Loss, length);
+    if (length > 0)
+        rge_read(infile, this->Cine_Loss, length);
     this->Cine_Loss[length] = 0;
 
     if (this->Version >= 1.09) {
         rge_read(infile, &length, 2);
-        if (length > 0) rge_read(infile, this->Mission_Bmp, length);
+        if (length > 0)
+            rge_read(infile, this->Mission_Bmp, length);
         this->Mission_Bmp[length] = 0;
     }
 
@@ -249,18 +257,21 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
 
     for (int n3 = 0; n3 < 16; n3++) {
         rge_read(infile, &length, 2);
-        if (length > 0) rge_read(infile, this->BuildList[n3], length);
+        if (length > 0)
+            rge_read(infile, this->BuildList[n3], length);
         this->BuildList[n3][length] = 0;
     }
     for (int n4 = 0; n4 < 16; n4++) {
         rge_read(infile, &length, 2);
-        if (length > 0) rge_read(infile, this->CityPlan[n4], length);
+        if (length > 0)
+            rge_read(infile, this->CityPlan[n4], length);
         this->CityPlan[n4][length] = 0;
     }
     if (this->Version >= 1.08) {
         for (int n5 = 0; n5 < 16; n5++) {
             rge_read(infile, &length, 2);
-            if (length > 0) rge_read(infile, this->AiRules[n5], length);
+            if (length > 0)
+                rge_read(infile, this->AiRules[n5], length);
             this->AiRules[n5][length] = 0;
         }
     }
@@ -275,21 +286,21 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
         this->AiRulesFile[n6] = 0;
         if (this->Version >= 1.15f) {
             if (this->BuildListFileSize[n6] > 0) {
-                this->BuildListFile[n6] = (unsigned char*)calloc(this->BuildListFileSize[n6], 1);
+                this->BuildListFile[n6] = (unsigned char*) calloc(this->BuildListFileSize[n6], 1);
                 rge_read(infile, this->BuildListFile[n6], this->BuildListFileSize[n6]);
             }
             if (this->CityPlanFileSize[n6] > 0) {
-                this->CityPlanFile[n6] = (unsigned char*)calloc(this->CityPlanFileSize[n6], 1);
+                this->CityPlanFile[n6] = (unsigned char*) calloc(this->CityPlanFileSize[n6], 1);
                 rge_read(infile, this->CityPlanFile[n6], this->CityPlanFileSize[n6]);
             }
             if (this->AiRulesFileSize[n6] > 0) {
-                this->AiRulesFile[n6] = (unsigned char*)calloc(this->AiRulesFileSize[n6], 1);
+                this->AiRulesFile[n6] = (unsigned char*) calloc(this->AiRulesFileSize[n6], 1);
                 rge_read(infile, this->AiRulesFile[n6], this->AiRulesFileSize[n6]);
             }
         }
     }
 
-    *(int*)text = 0;
+    *(int*) text = 0;
     if (this->Version > 1.02f)
         rge_read(infile, text, 4);
 }
@@ -300,11 +311,16 @@ RGE_Scenario::~RGE_Scenario() {
         this->time_line = 0;
     }
 
-    if (this->description != 0) free(this->description);
-    if (this->hints != 0) free(this->hints);
-    if (this->win_message != 0) free(this->win_message);
-    if (this->loss_message != 0) free(this->loss_message);
-    if (this->historicle_notes != 0) free(this->historicle_notes);
+    if (this->description != 0)
+        free(this->description);
+    if (this->hints != 0)
+        free(this->hints);
+    if (this->win_message != 0)
+        free(this->win_message);
+    if (this->loss_message != 0)
+        free(this->loss_message);
+    if (this->historicle_notes != 0)
+        free(this->historicle_notes);
 
     operator delete(this->scenario_name);
 
@@ -315,15 +331,18 @@ RGE_Scenario::~RGE_Scenario() {
         this->mission_picture = 0;
     }
 
-    char** slot = (char**)((char*)this + 0x1308);
+    char** slot = (char**) ((char*) this + 0x1308);
     int remaining = 16;
     do {
         operator delete(slot[-16]);
         operator delete(slot[0]);
         operator delete(slot[16]);
-        if (slot[32] != 0) free(slot[32]);
-        if (slot[48] != 0) free(slot[48]);
-        if (slot[64] != 0) free(slot[64]);
+        if (slot[32] != 0)
+            free(slot[32]);
+        if (slot[48] != 0)
+            free(slot[48]);
+        if (slot[64] != 0)
+            free(slot[64]);
         slot++;
     } while (--remaining != 0);
 }
@@ -343,7 +362,7 @@ void RGE_Scenario::InitializeTextValues() {
     this->loss_message = 0;
     this->historicle_notes = 0;
 
-    this->scenario_name = (char*)operator new(0xE0);
+    this->scenario_name = (char*) operator new(0xE0);
     memset(this->scenario_name, 0, 224);
 
     strcpy(this->Cine_PreGame, none_string);
@@ -359,15 +378,15 @@ void RGE_Scenario::InitializeTextValues() {
         this->PlActive[player_index] = 0;
         this->player_name[player_index][0] = 0;
 
-        this->BuildList[player_index] = (char*)operator new(0xE0);
+        this->BuildList[player_index] = (char*) operator new(0xE0);
         memset(this->BuildList[player_index], 0, 224);
         strcpy(this->BuildList[player_index], default_string);
 
-        this->CityPlan[player_index] = (char*)operator new(0xE0);
+        this->CityPlan[player_index] = (char*) operator new(0xE0);
         memset(this->CityPlan[player_index], 0, 224);
         strcpy(this->CityPlan[player_index], none_string);
 
-        this->AiRules[player_index] = (char*)operator new(0xE0);
+        this->AiRules[player_index] = (char*) operator new(0xE0);
         memset(this->AiRules[player_index], 0, 224);
         strcpy(this->AiRules[player_index], default_string);
 
@@ -390,7 +409,9 @@ void RGE_Scenario::Set_scenario_name(char* str) {
     this->scenario_name[0] = 0;
 }
 
-void RGE_Scenario::Set_description(char* str) { this->Set_message(str, 0); }
+void RGE_Scenario::Set_description(char* str) {
+    this->Set_message(str, 0);
+}
 
 void RGE_Scenario::Set_Cine_PreGame(char* str) {
     if (str != 0) {
@@ -468,20 +489,25 @@ void RGE_Scenario::Set_player_AI(int which_player, char* str, int WithExtension)
     }
 }
 
-void RGE_Scenario::Set_Version(float ver) { this->Version = ver; }
+void RGE_Scenario::Set_Version(float ver) {
+    this->Version = ver;
+}
 
 void RGE_Scenario::Set_player_Type(int which, int t) {
-    if (which < 0 || which >= 16) return;
+    if (which < 0 || which >= 16)
+        return;
     this->PlType[which] = t;
 }
 
 void RGE_Scenario::Set_player_Civ(int which, int c) {
-    if (which < 0 || which >= 16) return;
+    if (which < 0 || which >= 16)
+        return;
     this->PlCivilization[which] = c;
 }
 
 void RGE_Scenario::Set_player_Active(int which, int val) {
-    if (which < 0 || which >= 16) return;
+    if (which < 0 || which >= 16)
+        return;
     this->PlActive[which] = val;
 }
 
@@ -489,17 +515,29 @@ void RGE_Scenario::SetPlayerName(int which, char* Name) {
     memcpy(this->player_name[which], Name, strlen(Name) + 1);
 }
 
-char* RGE_Scenario::Get_scenario_name() { return this->scenario_name; }
+char* RGE_Scenario::Get_scenario_name() {
+    return this->scenario_name;
+}
 
-char* RGE_Scenario::Get_description() { return this->description; }
+char* RGE_Scenario::Get_description() {
+    return this->description;
+}
 
-char* RGE_Scenario::Get_Cine_PreGame() { return this->Cine_PreGame; }
+char* RGE_Scenario::Get_Cine_PreGame() {
+    return this->Cine_PreGame;
+}
 
-char* RGE_Scenario::Get_Cine_Victory() { return this->Cine_Victory; }
+char* RGE_Scenario::Get_Cine_Victory() {
+    return this->Cine_Victory;
+}
 
-char* RGE_Scenario::Get_Cine_Loss() { return this->Cine_Loss; }
+char* RGE_Scenario::Get_Cine_Loss() {
+    return this->Cine_Loss;
+}
 
-char* RGE_Scenario::Get_Mission_Bmp() { return this->Mission_Bmp; }
+char* RGE_Scenario::Get_Mission_Bmp() {
+    return this->Mission_Bmp;
+}
 
 char* RGE_Scenario::Get_BuildList(int which_player, int WithExtension) {
     char random_str[50];
@@ -515,13 +553,13 @@ char* RGE_Scenario::Get_BuildList(int which_player, int WithExtension) {
 
     if (WithExtension == 1 && this->BuildListFileSize[which_player] > 0 && this->BuildListFile[which_player] != 0) {
         sprintf(this->TempText1, "%stemp_buildlist%d.tmp", temp_path, which_player);
-        fd = _open((char*)this->TempText1, _O_BINARY | _O_CREAT | _O_TRUNC | _O_WRONLY, _S_IREAD | _S_IWRITE);
+        fd = _open((char*) this->TempText1, _O_BINARY | _O_CREAT | _O_TRUNC | _O_WRONLY, _S_IREAD | _S_IWRITE);
     }
 
     if (fd != -1) {
         _write(fd, this->BuildListFile[which_player], this->BuildListFileSize[which_player]);
         _close(fd);
-        return (char*)this->TempText1;
+        return (char*) this->TempText1;
     }
 
     if (WithExtension == 1) {
@@ -552,13 +590,13 @@ char* RGE_Scenario::Get_CityPlan(int which_player, int WithExtension) {
 
     if (WithExtension == 1 && this->CityPlanFileSize[which_player] > 0 && this->CityPlanFile[which_player] != 0) {
         sprintf(this->TempText2, "%stemp_CityPlan%d.tmp", temp_path, which_player);
-        fd = _open((char*)this->TempText2, _O_BINARY | _O_CREAT | _O_TRUNC | _O_WRONLY, _S_IREAD | _S_IWRITE);
+        fd = _open((char*) this->TempText2, _O_BINARY | _O_CREAT | _O_TRUNC | _O_WRONLY, _S_IREAD | _S_IWRITE);
     }
 
     if (fd != -1) {
         _write(fd, this->CityPlanFile[which_player], this->CityPlanFileSize[which_player]);
         _close(fd);
-        return (char*)this->TempText2;
+        return (char*) this->TempText2;
     }
 
     if (WithExtension == 1) {
@@ -605,8 +643,8 @@ char* RGE_Scenario::Get_player_AI(int which_player, int WithExtension) {
     }
 
     if (WithExtension == 1) {
-        if (strcmp(this->BuildList[which_player], none_str) != 0 &&
-            strcmp(this->BuildList[which_player], random_str) != 0) {
+        if (strcmp(this->BuildList[which_player], none_str) != 0
+            && strcmp(this->BuildList[which_player], random_str) != 0) {
             sprintf(this->TempText3, "%s%s.per", rge_base_game->prog_info->ai_dir, this->AiRules[which_player]);
             return this->TempText3;
         }
@@ -625,39 +663,42 @@ int RGE_Scenario::GetPlayerPosture(int which) {
     }
 
     switch (this->PlayerPosture[which]) {
-    case 0:
-        return 0;
-    case 1:
-        return 1;
-    case 2:
-        return 2;
-    case 3:
-        return 3;
-    case 4:
-        return 4;
-    case 5:
-        return 5;
+        case 0:
+            return 0;
+        case 1:
+            return 1;
+        case 2:
+            return 2;
+        case 3:
+            return 3;
+        case 4:
+            return 4;
+        case 5:
+            return 5;
     }
 
     return 0;
 }
 
-char *RGE_Scenario::GetPlayerName(int which) {
+char* RGE_Scenario::GetPlayerName(int which) {
     return &this->player_name[which][0];
 }
 
 int RGE_Scenario::Get_player_Type(int which) {
-    if (which < 0 || which >= 16) return 0;
+    if (which < 0 || which >= 16)
+        return 0;
     return this->PlType[which];
 }
 
 int RGE_Scenario::Get_player_Civ(int which) {
-    if (which < 0 || which >= 16) return 0;
+    if (which < 0 || which >= 16)
+        return 0;
     return this->PlCivilization[which];
 }
 
 int RGE_Scenario::Get_player_Active(int which) {
-    if (which < 0 || which >= 16) return 0;
+    if (which < 0 || which >= 16)
+        return 0;
     return this->PlActive[which];
 }
 
@@ -697,7 +738,7 @@ void RGE_Scenario::save(int outfile) {
         this->time_line->save(outfile);
 
     if (this->scenario_name != 0)
-        length = (short)strlen(this->scenario_name);
+        length = (short) strlen(this->scenario_name);
     else
         length = 0;
     rge_write(outfile, &length, 2);
@@ -705,7 +746,7 @@ void RGE_Scenario::save(int outfile) {
         rge_write(outfile, this->scenario_name, length);
 
     if (this->description != 0)
-        length = (short)(strlen(this->description) + 1);
+        length = (short) (strlen(this->description) + 1);
     else
         length = 0;
     rge_write(outfile, &length, 2);
@@ -713,7 +754,7 @@ void RGE_Scenario::save(int outfile) {
         rge_write(outfile, this->description, length);
 
     if (this->hints != 0)
-        length = (short)(strlen(this->hints) + 1);
+        length = (short) (strlen(this->hints) + 1);
     else
         length = 0;
     rge_write(outfile, &length, 2);
@@ -721,7 +762,7 @@ void RGE_Scenario::save(int outfile) {
         rge_write(outfile, this->hints, length);
 
     if (this->win_message != 0)
-        length = (short)(strlen(this->win_message) + 1);
+        length = (short) (strlen(this->win_message) + 1);
     else
         length = 0;
     rge_write(outfile, &length, 2);
@@ -729,7 +770,7 @@ void RGE_Scenario::save(int outfile) {
         rge_write(outfile, this->win_message, length);
 
     if (this->loss_message != 0)
-        length = (short)(strlen(this->loss_message) + 1);
+        length = (short) (strlen(this->loss_message) + 1);
     else
         length = 0;
     rge_write(outfile, &length, 2);
@@ -737,29 +778,29 @@ void RGE_Scenario::save(int outfile) {
         rge_write(outfile, this->loss_message, length);
 
     if (this->historicle_notes != 0)
-        length = (short)(strlen(this->historicle_notes) + 1);
+        length = (short) (strlen(this->historicle_notes) + 1);
     else
         length = 0;
     rge_write(outfile, &length, 2);
     if (length > 0)
         rge_write(outfile, this->historicle_notes, length);
 
-    length = (short)strlen(this->Cine_PreGame);
+    length = (short) strlen(this->Cine_PreGame);
     rge_write(outfile, &length, 2);
     if (length > 0)
         rge_write(outfile, this->Cine_PreGame, length);
 
-    length = (short)strlen(this->Cine_Victory);
+    length = (short) strlen(this->Cine_Victory);
     rge_write(outfile, &length, 2);
     if (length > 0)
         rge_write(outfile, this->Cine_Victory, length);
 
-    length = (short)strlen(this->Cine_Loss);
+    length = (short) strlen(this->Cine_Loss);
     rge_write(outfile, &length, 2);
     if (length > 0)
         rge_write(outfile, this->Cine_Loss, length);
 
-    length = (short)strlen(this->Mission_Bmp);
+    length = (short) strlen(this->Mission_Bmp);
     rge_write(outfile, &length, 2);
     if (length > 0)
         rge_write(outfile, this->Mission_Bmp, length);
@@ -784,14 +825,14 @@ skip_store:
     this->mission_picture->Save(outfile);
 
     for (int c = 0; c < 16; c++) {
-        length = (short)strlen(this->BuildList[c]);
+        length = (short) strlen(this->BuildList[c]);
         rge_write(outfile, &length, 2);
         if (length > 0)
             rge_write(outfile, this->BuildList[c], length);
     }
 
     for (int d = 0; d < 16; d++) {
-        length = (short)strlen(this->CityPlan[d]);
+        length = (short) strlen(this->CityPlan[d]);
         rge_write(outfile, &length, 2);
         if (length > 0)
             rge_write(outfile, this->CityPlan[d], length);
@@ -799,7 +840,7 @@ skip_store:
 
     if (*version >= 1.08) {
         for (int e = 0; e < 16; e++) {
-            length = (short)strlen(this->AiRules[e]);
+            length = (short) strlen(this->AiRules[e]);
             rge_write(outfile, &length, 2);
             if (length > 0)
                 rge_write(outfile, this->AiRules[e], length);
@@ -813,8 +854,9 @@ skip_store:
             if (fd > -1) {
                 lseek(fd, 0, SEEK_END);
                 this->BuildListFileSize[f] = _tell(fd);
-                if (this->BuildListFile[f] != 0) free(this->BuildListFile[f]);
-                this->BuildListFile[f] = (unsigned char*)calloc(this->BuildListFileSize[f], 1);
+                if (this->BuildListFile[f] != 0)
+                    free(this->BuildListFile[f]);
+                this->BuildListFile[f] = (unsigned char*) calloc(this->BuildListFileSize[f], 1);
                 lseek(fd, 0, SEEK_SET);
                 read(fd, this->BuildListFile[f], this->BuildListFileSize[f]);
                 close(fd);
@@ -826,8 +868,9 @@ skip_store:
             if (fd > -1) {
                 lseek(fd, 0, SEEK_END);
                 this->CityPlanFileSize[f] = _tell(fd);
-                if (this->CityPlanFile[f] != 0) free(this->CityPlanFile[f]);
-                this->CityPlanFile[f] = (unsigned char*)calloc(this->CityPlanFileSize[f], 1);
+                if (this->CityPlanFile[f] != 0)
+                    free(this->CityPlanFile[f]);
+                this->CityPlanFile[f] = (unsigned char*) calloc(this->CityPlanFileSize[f], 1);
                 lseek(fd, 0, SEEK_SET);
                 read(fd, this->CityPlanFile[f], this->CityPlanFileSize[f]);
                 close(fd);
@@ -839,8 +882,9 @@ skip_store:
             if (fd > -1) {
                 lseek(fd, 0, SEEK_END);
                 this->AiRulesFileSize[f] = _tell(fd);
-                if (this->AiRulesFile[f] != 0) free(this->AiRulesFile[f]);
-                this->AiRulesFile[f] = (unsigned char*)calloc(this->AiRulesFileSize[f], 1);
+                if (this->AiRulesFile[f] != 0)
+                    free(this->AiRulesFile[f]);
+                this->AiRulesFile[f] = (unsigned char*) calloc(this->AiRulesFileSize[f], 1);
                 lseek(fd, 0, SEEK_SET);
                 read(fd, this->AiRulesFile[f], this->AiRulesFileSize[f]);
                 close(fd);
@@ -908,9 +952,13 @@ int RGE_Scenario::computer_player_count(void) {
     return count;
 }
 
-void RGE_Scenario::Set_conquest_victory(unsigned char flag) { this->victory_conquest = flag; }
+void RGE_Scenario::Set_conquest_victory(unsigned char flag) {
+    this->victory_conquest = flag;
+}
 
-unsigned char RGE_Scenario::Get_conquest_victory() { return this->victory_conquest; }
+unsigned char RGE_Scenario::Get_conquest_victory() {
+    return this->victory_conquest;
+}
 
 void RGE_Scenario::add_description(char* new_text) {
     if (this->description == 0) {
@@ -931,7 +979,7 @@ void RGE_Scenario::Set_message(char* str, long message) {
     }
 
     if (length > 0) {
-        message_copy = (char*)calloc(length, 1);
+        message_copy = (char*) calloc(length, 1);
     } else {
         message_copy = 0;
     }
@@ -939,59 +987,59 @@ void RGE_Scenario::Set_message(char* str, long message) {
     memcpy(message_copy, str, length);
 
     switch (message) {
-    case 0:
-        if (description != 0) {
-            free(description);
-        }
-        description = message_copy;
-        break;
-    case 1:
-        if (hints != 0) {
-            free(hints);
-        }
-        hints = message_copy;
-        break;
-    case 2:
-        //! @bug When win_message is non-null, replacement leaks the old allocation because the original condition frees only null.
-        if (win_message == 0) {
-            //! Preserve the original free(0) no-op call.
-            free(0);
-        }
-        win_message = message_copy;
-        break;
-    case 3:
-        if (loss_message != 0) {
-            free(loss_message);
-        }
-        loss_message = message_copy;
-        break;
-    case 4:
-        if (historicle_notes != 0) {
-            free(historicle_notes);
-        }
-        historicle_notes = message_copy;
-        break;
-    default:
-        if (message_copy != 0) {
-            free(message_copy);
-        }
-        break;
+        case 0:
+            if (description != 0) {
+                free(description);
+            }
+            description = message_copy;
+            break;
+        case 1:
+            if (hints != 0) {
+                free(hints);
+            }
+            hints = message_copy;
+            break;
+        case 2:
+            //! @bug When win_message is non-null, replacement leaks the old allocation because the original condition frees only null.
+            if (win_message == 0) {
+                //! Preserve the original free(0) no-op call.
+                free(0);
+            }
+            win_message = message_copy;
+            break;
+        case 3:
+            if (loss_message != 0) {
+                free(loss_message);
+            }
+            loss_message = message_copy;
+            break;
+        case 4:
+            if (historicle_notes != 0) {
+                free(historicle_notes);
+            }
+            historicle_notes = message_copy;
+            break;
+        default:
+            if (message_copy != 0) {
+                free(message_copy);
+            }
+            break;
     }
 }
 
 char* RGE_Scenario::Get_message(long message) {
     switch (message) {
-    case 0:
-        return this->description;
-    case 1:
-        return this->hints;
-    case 2:
-        return this->win_message;
-    case 3:
-        return this->loss_message;
-    case 4:
-        return this->historicle_notes;
-    default:
-        return 0;
+        case 0:
+            return this->description;
+        case 1:
+            return this->hints;
+        case 2:
+            return this->win_message;
+        case 3:
+            return this->loss_message;
+        case 4:
+            return this->historicle_notes;
+        default:
+            return 0;
     }
 }

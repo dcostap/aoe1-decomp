@@ -13,27 +13,24 @@
 
 #include <stdio.h>
 
-
-TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(
-    TRIBE_Master_Building_Object* other_object, int do_setup)
-    : TRIBE_Master_Combat_Object(static_cast<TRIBE_Master_Combat_Object*>(other_object), 0) {
+TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(TRIBE_Master_Building_Object* other_object, int do_setup) :
+    TRIBE_Master_Combat_Object(static_cast<TRIBE_Master_Combat_Object*>(other_object), 0) {
     if (do_setup != 0) {
         setup(other_object);
     }
 }
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
-    : TRIBE_Master_Combat_Object(infile, sprites, sounds, 0) {
+    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup
+) : TRIBE_Master_Combat_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
         this->setup(infile, sprites, sounds);
     }
 }
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(
-    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id,
-    int do_setup)
-    : TRIBE_Master_Combat_Object(infile, sprites, sounds, in_id, 0) {
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup
+) : TRIBE_Master_Combat_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup != 0) {
         this->setup(infile, sprites, sounds, in_id);
     }
@@ -100,9 +97,11 @@ int TRIBE_Master_Building_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_
     TRIBE_Master_Combat_Object::setup(infile, sprites, sounds, in_id);
     this->master_type = 0x50;
 
-    fscanf(infile, "%hd %hd %hd %hd %hd %hd %hd %hd %hd", &sprite_id, &connect_flag, &this->building_facet,
-           &build_and_go_away, &this->on_build_make_obj, &this->on_build_make_tile, &this->on_build_make_overlay,
-           &this->on_build_make_tech, &sound_id);
+    fscanf(
+        infile, "%hd %hd %hd %hd %hd %hd %hd %hd %hd", &sprite_id, &connect_flag, &this->building_facet,
+        &build_and_go_away, &this->on_build_make_obj, &this->on_build_make_tile, &this->on_build_make_overlay,
+        &this->on_build_make_tech, &sound_id
+    );
 
     this->building_connect_flag = static_cast<unsigned char>(connect_flag);
     this->build_and_go_away = static_cast<unsigned char>(build_and_go_away);
@@ -130,8 +129,7 @@ void TRIBE_Master_Building_Object::copy_obj(RGE_Master_Static_Object* source) {
     TRIBE_Master_Combat_Object::copy_obj(source);
 
     // This virtual copy path receives a building-master source.
-    TRIBE_Master_Building_Object* building_source =
-        static_cast<TRIBE_Master_Building_Object*>(source);
+    TRIBE_Master_Building_Object* building_source = static_cast<TRIBE_Master_Building_Object*>(source);
     this->construction_sprite = building_source->construction_sprite;
     this->construction_sound = building_source->construction_sound;
     this->building_connect_flag = building_source->building_connect_flag;
@@ -192,13 +190,11 @@ void TRIBE_Master_Building_Object::save(int outfile) {
     rge_write(outfile, &sound_num, 2);
 }
 
-RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(
-    RGE_Player* owner, float x, float y, float z, int uID) {
+RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(RGE_Player* owner, float x, float y, float z, int uID) {
     return new TRIBE_Building_Object(this, owner, x, y, z, uID, 1);
 }
 
-RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(
-    RGE_Player* owner, float x, float y, float z) {
+RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(RGE_Player* owner, float x, float y, float z) {
     return new TRIBE_Building_Object(this, owner, x, y, z, 1);
 }
 
@@ -207,8 +203,9 @@ RGE_Master_Static_Object* TRIBE_Master_Building_Object::make_new_master() {
 }
 
 void TRIBE_Master_Building_Object::draw(
-    TDrawArea* render_area, short x, short y, RGE_Color_Table* player_color,
-    long facet, long frame, int draw_frame, unsigned char frame_color) {
+    TDrawArea* render_area, short x, short y, RGE_Color_Table* player_color, long facet, long frame, int draw_frame,
+    unsigned char frame_color
+) {
     RGE_Sprite* sprite = this->sprite;
     if (sprite == 0) {
         return;
@@ -248,6 +245,7 @@ void TRIBE_Master_Building_Object::draw(
 }
 
 unsigned char TRIBE_Master_Building_Object::alignment(
-    float& col, float& row, RGE_Game_World* world, unsigned char center_flag) {
+    float& col, float& row, RGE_Game_World* world, unsigned char center_flag
+) {
     return RGE_Master_Static_Object::alignment(col, row, world, 1);
 }

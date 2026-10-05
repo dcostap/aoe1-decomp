@@ -21,13 +21,13 @@ class RGE_Scenario;
 class AIPlayBook;
 
 class RGE_Game_World {
-public:
+  public:
     RGE_Game_World();
 
     // The load_scenario, setup_player_colors, base_save, and scenario_init
     // overloads below use the original declaration order. addObject and
     // removeObject occupy world vslots 62 and 63.
-protected:
+  protected:
     virtual unsigned char data_load_world(FILE* infile);
     virtual unsigned char data_load_terrain_tables(char* file_name);
     virtual unsigned char data_load_players(char* file_name);
@@ -35,10 +35,14 @@ protected:
     virtual unsigned char data_load_sounds(char* file_name);
     virtual unsigned char data_load_color_tables(char* file_name);
     virtual unsigned char data_load_sprites(char* file_name);
-protected:
+
+  protected:
     virtual void data_load_players_type(short id, short type, FILE* infile);
     virtual void data_load_effects(char* effects_file);
-    virtual void data_load_map(char* border_file, char* overlay_file, char* terrain_file, char* map_file, short tile_width, short tile_height, short elev_height, RGE_Sound** sounds, char* terr_obj_file);
+    virtual void data_load_map(
+        char* border_file, char* overlay_file, char* terrain_file, char* map_file, short tile_width, short tile_height,
+        short elev_height, RGE_Sound** sounds, char* terr_obj_file
+    );
     virtual void data_load_random_map(char* rmm_map_file, char* rmm_land_file, char* rmm_terr_file, char* rmm_obj_file);
     virtual unsigned char init_player_type(int infile, short index, unsigned char type);
     virtual unsigned char init_player(int infile);
@@ -56,7 +60,9 @@ protected:
     virtual void setup_players(RGE_Player_Info& info);
     virtual unsigned char new_random_game(RGE_Player_Info& info);
     virtual void save(int outfile);
-    virtual void scenario_make_player(short index, unsigned char player_type, unsigned char info_type, unsigned char master_player_id, char* name);
+    virtual void scenario_make_player(
+        short index, unsigned char player_type, unsigned char info_type, unsigned char master_player_id, char* name
+    );
     virtual void scenario_make_map(int infile);
     virtual unsigned char load_scenario(char* scenario, RGE_Player_Info& info);
     virtual unsigned char load_scenario(RGE_Player_Info& info);
@@ -68,9 +74,10 @@ protected:
     virtual void load_scenario6(int infile, RGE_Player_Info& info);
     virtual void load_scenario7(int infile, RGE_Player_Info& info);
     virtual void load_scenario8(int infile, RGE_Player_Info& info);
-    virtual void logStatus(FILE*, int) {}
+    virtual void logStatus(FILE*, int) {
+    }
 
-public:
+  public:
     virtual ~RGE_Game_World();
     virtual void setup_player_colors(RGE_Player_Info& info);
     virtual void setup_player_colors();
@@ -185,7 +192,6 @@ public:
     int difficultyLevelValue;
 };
 
-typedef char rge_game_world_size_check[
-    (sizeof(RGE_Game_World) == 0x104) ? 1 : -1];
+typedef char rge_game_world_size_check[(sizeof(RGE_Game_World) == 0x104) ? 1 : -1];
 
 #endif

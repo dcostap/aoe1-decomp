@@ -2,7 +2,7 @@
 #define RGE_TSLC_H
 
 class RGE_TimeSinceLastCall {
-public:
+  public:
     char TBuff[256];
     unsigned long lowTSLC;
     unsigned long highTSLC;

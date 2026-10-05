@@ -1,17 +1,15 @@
 
 #include "../include/pnl_dlg.h"
 
-TDialogPanel::TDialogPanel(char* panel_name_in)
-    : TEasy_Panel(panel_name_in)
-    , dlg_wnd(0)
-    , save_parent_child(0)
-    , text_font_id(0xB)
-    , input_font_id(0xB)
-    , button_font_id(0xB)
-    , button_sound_id(0) {
+TDialogPanel::TDialogPanel(char* panel_name_in) :
+    TEasy_Panel(panel_name_in), dlg_wnd(0), save_parent_child(0), text_font_id(0xB), input_font_id(0xB),
+    button_font_id(0xB), button_sound_id(0) {
 }
 
-int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in, long wid_in, long hgt_in, char* info_file_name, long resource_file_id, int allow_shadow_area_in) {
+int TDialogPanel::setup(
+    TDrawArea* render_area_in, TPanel* parent_in, long wid_in, long hgt_in, char* info_file_name, long resource_file_id,
+    int allow_shadow_area_in
+) {
     int height;
     int width;
 
@@ -25,8 +23,11 @@ int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in, long wid_i
         height = render_area_in->Height;
     }
 
-    if (TEasy_Panel::setup(render_area_in, parent_in, info_file_name, resource_file_id, 0, width / 2 - wid_in / 2,
-                           height / 2 - hgt_in / 2, wid_in, hgt_in, allow_shadow_area_in) == 0) {
+    if (TEasy_Panel::setup(
+            render_area_in, parent_in, info_file_name, resource_file_id, 0, width / 2 - wid_in / 2,
+            height / 2 - hgt_in / 2, wid_in, hgt_in, allow_shadow_area_in
+        )
+        == 0) {
         this->error_code = 1;
         return 0;
     }
@@ -42,7 +43,10 @@ int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in, long wid_i
     return 1;
 }
 
-int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in, long wid_in, long hgt_in, unsigned char color_in, int allow_shadow_area_in) {
+int TDialogPanel::setup(
+    TDrawArea* render_area_in, TPanel* parent_in, long wid_in, long hgt_in, unsigned char color_in,
+    int allow_shadow_area_in
+) {
     int width;
     int height;
 
@@ -54,8 +58,11 @@ int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in, long wid_i
         height = render_area_in->Height;
     }
 
-    if (TEasy_Panel::setup(render_area_in, parent_in, 0, -1, 0, width / 2 - wid_in / 2, height / 2 - hgt_in / 2,
-                           wid_in, hgt_in, allow_shadow_area_in) == 0) {
+    if (TEasy_Panel::setup(
+            render_area_in, parent_in, 0, -1, 0, width / 2 - wid_in / 2, height / 2 - hgt_in / 2, wid_in, hgt_in,
+            allow_shadow_area_in
+        )
+        == 0) {
         this->error_code = 1;
         return 0;
     }

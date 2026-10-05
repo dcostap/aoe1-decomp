@@ -27,7 +27,7 @@ void RGE_Active_Sprite_List::load(int infile, RGE_Sprite** sprites) {
     do {
         // Preserve the original sprite-array pointer while reading the type byte.
         rge_read(infile, &sprites, 1);
-        type = this->load_node(infile, (unsigned char)sprites, sprites_copy);
+        type = this->load_node(infile, (unsigned char) sprites, sprites_copy);
     } while (type != 0);
 
     reversed_list = 0;
@@ -47,24 +47,24 @@ unsigned char RGE_Active_Sprite_List::load_node(int infile, unsigned char type, 
     int type_value = type;
 
     switch (type_value) {
-    case 1:
-        node = (RGE_Active_Sprite_Node*)calloc(12, 1);
-        sprite = new RGE_Active_Sprite(infile, sprites);
-        node->node = sprite;
-        node->next = this->list;
-        this->list = node;
-        break;
+        case 1:
+            node = (RGE_Active_Sprite_Node*) calloc(12, 1);
+            sprite = new RGE_Active_Sprite(infile, sprites);
+            node->node = sprite;
+            node->next = this->list;
+            this->list = node;
+            break;
 
-    case 2:
-        node = (RGE_Active_Sprite_Node*)calloc(12, 1);
-        sprite = new RGE_Active_Animated_Sprite(infile, sprites);
-        node->node = sprite;
-        node->next = this->list;
-        this->list = node;
-        break;
+        case 2:
+            node = (RGE_Active_Sprite_Node*) calloc(12, 1);
+            sprite = new RGE_Active_Animated_Sprite(infile, sprites);
+            node->node = sprite;
+            node->next = this->list;
+            this->list = node;
+            break;
 
-    case 0:
-        return 0;
+        case 0:
+            return 0;
     }
 
     return 1;
@@ -157,7 +157,7 @@ void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* sprite, unsigned char order,
         node = node->next;
     }
 
-    node = (RGE_Active_Sprite_Node*)calloc(12, 1);
+    node = (RGE_Active_Sprite_Node*) calloc(12, 1);
     active_sprite = sprite->make_active_sprite();
     node->node = active_sprite;
     active_sprite->set_offset(x, y);
@@ -206,8 +206,9 @@ void RGE_Active_Sprite_List::update(float time, float speed) {
     }
 }
 
-void RGE_Active_Sprite_List::draw(short facet, short x, short y, short sx, short sy,
-                                  RGE_Color_Table* player_color, TDrawArea* draw_area) {
+void RGE_Active_Sprite_List::draw(
+    short facet, short x, short y, short sx, short sy, RGE_Color_Table* player_color, TDrawArea* draw_area
+) {
     RGE_Active_Sprite_Node* node = this->list;
 
     while (node) {
@@ -216,8 +217,9 @@ void RGE_Active_Sprite_List::draw(short facet, short x, short y, short sx, short
     }
 }
 
-void RGE_Active_Sprite_List::normal_draw(short facet, short x, short y,
-                                         RGE_Color_Table* player_color, TDrawArea* draw_area) {
+void RGE_Active_Sprite_List::normal_draw(
+    short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area
+) {
     RGE_Active_Sprite_Node* node = this->list;
 
     while (node) {
@@ -226,9 +228,9 @@ void RGE_Active_Sprite_List::normal_draw(short facet, short x, short y,
     }
 }
 
-void RGE_Active_Sprite_List::shadow_draw(short facet, short x, short y,
-                                         RGE_Color_Table* player_color, TDrawArea* draw_area,
-                                         unsigned char flag) {
+void RGE_Active_Sprite_List::shadow_draw(
+    short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag
+) {
     RGE_Active_Sprite_Node* node = this->list;
 
     while (node) {
@@ -313,8 +315,9 @@ short RGE_Active_Sprite_List::get_facetindex(RGE_Sprite* sprite, short facet) {
     return 0;
 }
 
-unsigned char RGE_Active_Sprite_List::get_frame(short& min_x, short& min_y, short& max_x,
-                                                short& max_y, RGE_Sprite* sprite, long facet) {
+unsigned char RGE_Active_Sprite_List::get_frame(
+    short& min_x, short& min_y, short& max_x, short& max_y, RGE_Sprite* sprite, long facet
+) {
     RGE_Active_Sprite_Node* node = this->list;
 
     while (node) {

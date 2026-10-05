@@ -16,7 +16,6 @@
 // The target reserves 0x1400 bytes from SrcXTbl to the next global.
 static long SrcXTbl[0x500];
 
-
 extern "C" char* __cdecl strtok(char*, const char*);
 extern "C" long __cdecl atol(const char*);
 extern "C" int __cdecl atoi(const char*);
@@ -24,13 +23,14 @@ extern "C" int __cdecl atoi(const char*);
 #pragma function(memcpy)
 extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
 
-void __cdecl DibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect,
-                    long DestX, long DestY, long DestWid, long DestHgt,
-                    BITMAPINFO256* SrcInfo, uchar* SrcBits,
-                    long SrcX, long SrcY, long SrcWid, long SrcHgt,
-                    int Clip, int Mirror, int Flip) {
-    if (Clip != 0 &&
-        ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt, SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip) == 0)
+void __cdecl DibBlt(
+    BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
+    BITMAPINFO256* SrcInfo, uchar* SrcBits, long SrcX, long SrcY, long SrcWid, long SrcHgt, int Clip, int Mirror,
+    int Flip
+) {
+    if (Clip != 0
+        && ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt, SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip)
+               == 0)
         return;
 
     long DestTotWid;
@@ -127,23 +127,25 @@ void __cdecl DibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect,
     }
 }
 
-void __cdecl TransDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect,
-                         long DestX, long DestY, long DestWid, long DestHgt,
-                         BITMAPINFO256* SrcInfo, uchar* SrcBits,
-                         TRANSINFO* TransInfo,
-                         long SrcX, long SrcY, long SrcWid, long SrcHgt,
-                         int Clip, int Mirror, int Flip, int TransColor) {
+void __cdecl TransDibBlt(
+    BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
+    BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY, long SrcWid, long SrcHgt,
+    int Clip, int Mirror, int Flip, int TransColor
+) {
     if (TransInfo != 0 && TransInfo->AnyTrans == 0) {
-        DibBlt(DestInfo, DestBits, ClipRect, DestX, DestY, DestWid, DestHgt,
-               SrcInfo, SrcBits, SrcX, SrcY, SrcWid, SrcHgt, Clip, Mirror, Flip);
+        DibBlt(
+            DestInfo, DestBits, ClipRect, DestX, DestY, DestWid, DestHgt, SrcInfo, SrcBits, SrcX, SrcY, SrcWid, SrcHgt,
+            Clip, Mirror, Flip
+        );
         return;
     }
 
     if (TransColor < 0)
         TransColor = 0;
 
-    if (Clip != 0 &&
-        ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt, SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip) == 0)
+    if (Clip != 0
+        && ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt, SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip)
+               == 0)
         return;
 
     long xStep = (SrcWid << 8) / DestWid;
@@ -227,7 +229,7 @@ void __cdecl TransDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRec
                             long x = dxSkip;
                             do {
                                 uchar b = srcLine[SrcXTbl[x]];
-                                if ((unsigned int)b != (unsigned int)TransColor)
+                                if ((unsigned int) b != (unsigned int) TransColor)
                                     dstLine[x] = b;
                                 ++x;
                             } while (x < last);
@@ -257,7 +259,7 @@ void __cdecl TransDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRec
             if (DestWid > 0) {
                 do {
                     uchar b = srcLine[SrcXTbl[x]];
-                    if ((unsigned int)b != (unsigned int)TransColor)
+                    if ((unsigned int) b != (unsigned int) TransColor)
                         dstLine[x] = b;
                     ++x;
                 } while (x < DestWid);
@@ -270,10 +272,10 @@ void __cdecl TransDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRec
     }
 }
 
-int __cdecl ClipDibBlt(BITMAPINFO256* DestInfo, RECT* ClipRect,
-    LONG& DestX, LONG& DestY, LONG& DestWid, LONG& DestHgt,
-    LONG& SrcX, LONG& SrcY, LONG& SrcWid, LONG& SrcHgt,
-    int Mirror, int Flip) {
+int __cdecl ClipDibBlt(
+    BITMAPINFO256* DestInfo, RECT* ClipRect, LONG& DestX, LONG& DestY, LONG& DestWid, LONG& DestHgt, LONG& SrcX,
+    LONG& SrcY, LONG& SrcWid, LONG& SrcHgt, int Mirror, int Flip
+) {
     LONG left;
     LONG top;
     LONG ex;
@@ -296,8 +298,8 @@ int __cdecl ClipDibBlt(BITMAPINFO256* DestInfo, RECT* ClipRect,
     ex--;
     ey--;
 
-    if (DestX <= ex && DestY <= ey && DestWid + DestX - 1 >= left &&
-        DestHgt + DestY - 1 >= top && DestWid >= 1 && DestHgt >= 1) {
+    if (DestX <= ex && DestY <= ey && DestWid + DestX - 1 >= left && DestHgt + DestY - 1 >= top && DestWid >= 1
+        && DestHgt >= 1) {
         LONG x_scale = (SrcWid << 8) / DestWid;
         LONG y_scale = (SrcHgt << 8) / DestHgt;
 
@@ -358,11 +360,11 @@ void __cdecl GetDibDim(BITMAPINFO256* Info, long& TotWid, long& TotHgt, long& Or
     Orien = -1;
 }
 
-long __cdecl TileDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits,
-    RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
-    long BlockWid, long BlockHgt, BITMAPINFO256* SrcInfo, uchar* SrcBits,
-    TRANSINFO* TransInfo, long SrcX, long SrcY, long SrcWid, long SrcHgt,
-    int Trans, int Mirror, int Flip) {
+long __cdecl TileDibBlt(
+    BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
+    long BlockWid, long BlockHgt, BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY,
+    long SrcWid, long SrcHgt, int Trans, int Mirror, int Flip
+) {
     long xScale = (SrcWid << 8) / BlockWid;
     long yScale = (SrcHgt << 8) / BlockHgt;
 
@@ -413,22 +415,30 @@ long __cdecl TileDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits,
                     do {
                         if (DestTopHgt != 0) {
                             if (DestLtWid != 0) {
-                                TransDibBlt(DestInfo, DestBits, ClipRect, x, DestY, DestLtWid, DestTopHgt,
-                                            SrcInfo, SrcBits, TransInfo, SrcX, SrcY, SrcRtWid, SrcBotHgt, 1, Mirror, Flip, 0);
+                                TransDibBlt(
+                                    DestInfo, DestBits, ClipRect, x, DestY, DestLtWid, DestTopHgt, SrcInfo, SrcBits,
+                                    TransInfo, SrcX, SrcY, SrcRtWid, SrcBotHgt, 1, Mirror, Flip, 0
+                                );
                             }
                             if (DestRtWid != 0) {
-                                TransDibBlt(DestInfo, DestBits, ClipRect, x + DestLtWid, DestY, DestRtWid, DestTopHgt,
-                                            SrcInfo, SrcBits, TransInfo, sxSkip, SrcY, SrcLtWid, SrcBotHgt, 1, Mirror, Flip, 0);
+                                TransDibBlt(
+                                    DestInfo, DestBits, ClipRect, x + DestLtWid, DestY, DestRtWid, DestTopHgt, SrcInfo,
+                                    SrcBits, TransInfo, sxSkip, SrcY, SrcLtWid, SrcBotHgt, 1, Mirror, Flip, 0
+                                );
                             }
                         }
                         if (DestBotHgt != 0) {
                             if (DestLtWid != 0) {
-                                TransDibBlt(DestInfo, DestBits, ClipRect, x, DestY1, DestLtWid, DestBotHgt,
-                                            SrcInfo, SrcBits, TransInfo, SrcX, sySkip, SrcRtWid, SrcTopHgt, 1, Mirror, Flip, 0);
+                                TransDibBlt(
+                                    DestInfo, DestBits, ClipRect, x, DestY1, DestLtWid, DestBotHgt, SrcInfo, SrcBits,
+                                    TransInfo, SrcX, sySkip, SrcRtWid, SrcTopHgt, 1, Mirror, Flip, 0
+                                );
                             }
                             if (DestRtWid != 0) {
-                                TransDibBlt(DestInfo, DestBits, ClipRect, x + DestLtWid, DestY1, DestRtWid, DestBotHgt,
-                                            SrcInfo, SrcBits, TransInfo, sxSkip, sySkip, SrcLtWid, SrcTopHgt, 1, Mirror, Flip, 0);
+                                TransDibBlt(
+                                    DestInfo, DestBits, ClipRect, x + DestLtWid, DestY1, DestRtWid, DestBotHgt, SrcInfo,
+                                    SrcBits, TransInfo, sxSkip, sySkip, SrcLtWid, SrcTopHgt, 1, Mirror, Flip, 0
+                                );
                             }
                         }
                         x += BlockWid;
@@ -448,22 +458,30 @@ long __cdecl TileDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits,
                 do {
                     if (DestTopHgt != 0) {
                         if (DestLtWid != 0) {
-                            DibBlt(DestInfo, DestBits, ClipRect, x, DestY, DestLtWid, DestTopHgt, SrcInfo, SrcBits,
-                                   SrcX, SrcY, SrcRtWid, SrcBotHgt, 1, Mirror, Flip);
+                            DibBlt(
+                                DestInfo, DestBits, ClipRect, x, DestY, DestLtWid, DestTopHgt, SrcInfo, SrcBits, SrcX,
+                                SrcY, SrcRtWid, SrcBotHgt, 1, Mirror, Flip
+                            );
                         }
                         if (DestRtWid != 0) {
-                            DibBlt(DestInfo, DestBits, ClipRect, x + DestLtWid, DestY, DestRtWid, DestTopHgt,
-                                   SrcInfo, SrcBits, sxSkip, SrcY, SrcLtWid, SrcBotHgt, 1, Mirror, Flip);
+                            DibBlt(
+                                DestInfo, DestBits, ClipRect, x + DestLtWid, DestY, DestRtWid, DestTopHgt, SrcInfo,
+                                SrcBits, sxSkip, SrcY, SrcLtWid, SrcBotHgt, 1, Mirror, Flip
+                            );
                         }
                     }
                     if (DestBotHgt != 0) {
                         if (DestLtWid != 0) {
-                            DibBlt(DestInfo, DestBits, ClipRect, x, DestY1, DestLtWid, DestBotHgt, SrcInfo, SrcBits,
-                                   SrcX, sySkip, SrcRtWid, SrcTopHgt, 1, Mirror, Flip);
+                            DibBlt(
+                                DestInfo, DestBits, ClipRect, x, DestY1, DestLtWid, DestBotHgt, SrcInfo, SrcBits, SrcX,
+                                sySkip, SrcRtWid, SrcTopHgt, 1, Mirror, Flip
+                            );
                         }
                         if (DestRtWid != 0) {
-                            DibBlt(DestInfo, DestBits, ClipRect, x + DestLtWid, DestY1, DestRtWid, DestBotHgt,
-                                   SrcInfo, SrcBits, sxSkip, sySkip, SrcLtWid, SrcTopHgt, 1, Mirror, Flip);
+                            DibBlt(
+                                DestInfo, DestBits, ClipRect, x + DestLtWid, DestY1, DestRtWid, DestBotHgt, SrcInfo,
+                                SrcBits, sxSkip, sySkip, SrcLtWid, SrcTopHgt, 1, Mirror, Flip
+                            );
                         }
                     }
                     x += BlockWid;
@@ -478,8 +496,7 @@ long __cdecl TileDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits,
     return yBlocks * xBlocks;
 }
 
-int __cdecl DibCheckTrans(BITMAPINFO256* DibInfo, TRANSINFO* TransInfo,
-    unsigned char* DibBits) {
+int __cdecl DibCheckTrans(BITMAPINFO256* DibInfo, TRANSINFO* TransInfo, unsigned char* DibBits) {
     int AnyTrans;
     long orien;
     long y;
@@ -489,7 +506,7 @@ int __cdecl DibCheckTrans(BITMAPINFO256* DibInfo, TRANSINFO* TransInfo,
 
     GetDibDim(DibInfo, tw, h, orien);
     w = DibInfo->bmiHeader.biWidth;
-    TransInfo->LineInfo = (LINEINFO*)malloc(h << 4);
+    TransInfo->LineInfo = (LINEINFO*) malloc(h << 4);
     if (TransInfo->LineInfo == 0)
         return 1;
 
@@ -579,7 +596,11 @@ void* __cdecl ReadPalette(char* FileName, long ResourceId, int MakeIdentity) {
     int resDataSize;
     char* tok = 0;
     int n = 0;
-    struct LOGPAL { unsigned short ver; unsigned short cnt; unsigned char e[1]; };
+    struct LOGPAL {
+        unsigned short ver;
+        unsigned short cnt;
+        unsigned char e[1];
+    };
     LOGPAL* lp = 0;
     int i = 0;
     unsigned char* out = 0;
@@ -598,7 +619,7 @@ void* __cdecl ReadPalette(char* FileName, long ResourceId, int MakeIdentity) {
         }
     }
     if (!own_mem && ResourceId != -1) {
-        data = RESFILE_load(RES_TYPE_BINARY, (unsigned long)ResourceId, owns_memory, resDataSize);
+        data = RESFILE_load(RES_TYPE_BINARY, (unsigned long) ResourceId, owns_memory, resDataSize);
         if (owns_memory == 0) {
             own_mem = malloc(resDataSize);
             memcpy(own_mem, data, resDataSize);
@@ -607,49 +628,64 @@ void* __cdecl ReadPalette(char* FileName, long ResourceId, int MakeIdentity) {
             own_mem = data;
         }
     }
-    if (!own_mem) return 0;
+    if (!own_mem)
+        return 0;
     char seps[3] = " \n";
-    tok = strtok((char*)own_mem, seps);
-    if (tok == 0) goto cleanup;
+    tok = strtok((char*) own_mem, seps);
+    if (tok == 0)
+        goto cleanup;
     tok = strtok(0, seps);
-    if (tok == 0) goto cleanup;
+    if (tok == 0)
+        goto cleanup;
     tok = strtok(0, seps);
-    if (tok == 0) goto cleanup;
-    n = (int)atol(tok);
-    lp = (LOGPAL*)malloc(n * 4 + 8);
+    if (tok == 0)
+        goto cleanup;
+    n = (int) atol(tok);
+    lp = (LOGPAL*) malloc(n * 4 + 8);
     ResourceId = 0;
     if (lp) {
         i = 0;
-        lp->cnt = (unsigned short)n;
+        lp->cnt = (unsigned short) n;
         lp->ver = 0x300;
-        if (n <= 0) goto palette_entries_done;
+        if (n <= 0)
+            goto palette_entries_done;
         out = lp->e + 1;
         while (1) {
-            tok = strtok(0, seps); if (!tok) goto palette_entries_done; out[-1] = (unsigned char)atoi(tok);
-            tok = strtok(0, seps); if (!tok) goto palette_entries_done; out[0] = (unsigned char)atoi(tok);
-            tok = strtok(0, seps); if (!tok) goto palette_entries_done; out[1] = (unsigned char)atoi(tok);
+            tok = strtok(0, seps);
+            if (!tok)
+                goto palette_entries_done;
+            out[-1] = (unsigned char) atoi(tok);
+            tok = strtok(0, seps);
+            if (!tok)
+                goto palette_entries_done;
+            out[0] = (unsigned char) atoi(tok);
+            tok = strtok(0, seps);
+            if (!tok)
+                goto palette_entries_done;
+            out[1] = (unsigned char) atoi(tok);
             out[2] = 0;
-            if (i == n-1) ResourceId = 1;
+            if (i == n - 1)
+                ResourceId = 1;
             ++i;
             out += 4;
-            if (i >= n) goto palette_entries_done;
+            if (i >= n)
+                goto palette_entries_done;
         }
-palette_entries_done:
-        ;
+    palette_entries_done:;
         if (ResourceId && n == 256 && System_color_Table[0].index >= 0) {
             int idx = System_color_Table[0].index;
             PAL_TABLE* g = System_color_Table;
             while (idx >= 0) {
-                lp->e[idx*4] = g->red;
-                lp->e[idx*4+1] = g->green;
-                lp->e[idx*4+2] = g->blue;
-                lp->e[idx*4+3] = 0;
+                lp->e[idx * 4] = g->red;
+                lp->e[idx * 4 + 1] = g->green;
+                lp->e[idx * 4 + 2] = g->blue;
+                lp->e[idx * 4 + 3] = 0;
                 ++g;
                 idx = g->index;
             }
         }
         if (ResourceId) {
-            hpal = CreatePalette((const tagLOGPALETTE*)lp);
+            hpal = CreatePalette((const tagLOGPALETTE*) lp);
             if (MakeIdentity) {
                 if (rge_base_game->draw_system->DrawType == 1 || rge_base_game->draw_system->ScreenMode == 1)
                     CreateIdentityPalette(hpal);
@@ -658,7 +694,8 @@ palette_entries_done:
         free(lp);
     }
 cleanup:
-    if (owns_memory == 1) free(own_mem);
+    if (owns_memory == 1)
+        free(own_mem);
     return hpal;
 }
 
@@ -673,7 +710,7 @@ BITMAPINFOHEADER* __cdecl DibOpenFile(char* szFile) {
         HRSRC resource = FindResourceA(GetModuleHandleA(0), szFile, RT_BITMAP);
         if (resource != 0) {
             resource = LoadResource(GetModuleHandleA(0), resource);
-            return (BITMAPINFOHEADER*)LockResource(resource);
+            return (BITMAPINFOHEADER*) LockResource(resource);
         }
     }
     if (fh == -1)
@@ -692,7 +729,7 @@ BITMAPINFOHEADER* __cdecl DibOpenFile(char* szFile) {
     total_size += colors * 4;
     total_size += dib->biSize;
     GlobalUnlock(GlobalHandle(dib));
-    BITMAPINFOHEADER* new_dib = (BITMAPINFOHEADER*)GlobalLock(GlobalReAlloc(GlobalHandle(dib), total_size, 0));
+    BITMAPINFOHEADER* new_dib = (BITMAPINFOHEADER*) GlobalLock(GlobalReAlloc(GlobalHandle(dib), total_size, 0));
     if (new_dib == 0) {
         GlobalUnlock(GlobalHandle(dib));
         GlobalFree(GlobalHandle(dib));
@@ -705,7 +742,7 @@ BITMAPINFOHEADER* __cdecl DibOpenFile(char* szFile) {
         colors = dib->biClrUsed;
         if (colors == 0 && dib->biBitCount <= 8)
             colors = 1 << dib->biBitCount;
-        _hread(fh, (char*)dib + dib->biSize + colors * 4, dwBits);
+        _hread(fh, (char*) dib + dib->biSize + colors * 4, dwBits);
     }
     _lclose(fh);
     return dib;
@@ -716,7 +753,8 @@ unsigned char* __cdecl ReadDibBits(char* szFile) {
     unsigned char* result = 0;
 
     HFILE hf = OpenFile(szFile, &of, OF_READ);
-    if (hf == HFILE_ERROR) return 0;
+    if (hf == HFILE_ERROR)
+        return 0;
 
     BITMAPINFOHEADER* info = DibReadBitmapInfo(hf);
     if (info) {
@@ -724,17 +762,16 @@ unsigned char* __cdecl ReadDibBits(char* szFile) {
         HGLOBAL handle = GlobalHandle(info);
         GlobalUnlock(handle);
         GlobalFree(GlobalHandle(info));
-        result = (unsigned char*)malloc(size);
+        result = (unsigned char*) malloc(size);
         if (result)
-            _hread(hf, (char*)result, size);
+            _hread(hf, (char*) result, size);
     }
     _lclose(hf);
     return result;
 }
 
-int __cdecl DibWriteClipped(BITMAPINFOHEADER* pDIB, char* szFile,
-    long x, long y, long w, long h) {
-    BITMAPINFO256* clipped = (BITMAPINFO256*)DibCreate(8, w, h);
+int __cdecl DibWriteClipped(BITMAPINFOHEADER* pDIB, char* szFile, long x, long y, long w, long h) {
+    BITMAPINFO256* clipped = (BITMAPINFO256*) DibCreate(8, w, h);
     unsigned long colors;
     unsigned char* src_bits;
     unsigned char* dst_bits;
@@ -746,20 +783,19 @@ int __cdecl DibWriteClipped(BITMAPINFOHEADER* pDIB, char* szFile,
     if (colors == 0 && pDIB->biBitCount <= 8)
         colors = 1 << pDIB->biBitCount;
 
-    memcpy((char*)clipped + clipped->bmiHeader.biSize, (char*)pDIB + pDIB->biSize, colors << 2);
+    memcpy((char*) clipped + clipped->bmiHeader.biSize, (char*) pDIB + pDIB->biSize, colors << 2);
 
     if (pDIB->biCompression == 3)
-        src_bits = (unsigned char*)pDIB + pDIB->biSize + 12;
+        src_bits = (unsigned char*) pDIB + pDIB->biSize + 12;
     else
-        src_bits = (unsigned char*)pDIB + pDIB->biSize + pDIB->biClrUsed * 4;
+        src_bits = (unsigned char*) pDIB + pDIB->biSize + pDIB->biClrUsed * 4;
 
     if (clipped->bmiHeader.biCompression == 3)
-        dst_bits = (unsigned char*)clipped + clipped->bmiHeader.biSize + 12;
+        dst_bits = (unsigned char*) clipped + clipped->bmiHeader.biSize + 12;
     else
-        dst_bits = (unsigned char*)clipped + clipped->bmiHeader.biSize +
-            clipped->bmiHeader.biClrUsed * 4;
+        dst_bits = (unsigned char*) clipped + clipped->bmiHeader.biSize + clipped->bmiHeader.biClrUsed * 4;
 
-    DibBlt(clipped, dst_bits, 0, 0, 0, w, h, (BITMAPINFO256*)pDIB, src_bits, x, y, w, h, 1, 0, 0);
+    DibBlt(clipped, dst_bits, 0, 0, 0, w, h, (BITMAPINFO256*) pDIB, src_bits, x, y, w, h, 1, 0, 0);
     DibWriteFile(&clipped->bmiHeader, szFile);
     DibFree(&clipped->bmiHeader);
     return 1;
@@ -776,7 +812,7 @@ int __cdecl DibWriteFile(BITMAPINFOHEADER* pdib, char* szFile) {
         return 0;
 
     file = OpenFile(szFile, &of, OF_CREATE | OF_READWRITE);
-    if (file == (HFILE)-1)
+    if (file == (HFILE) -1)
         return 0;
 
     hdr.bfType = 0x4d42;
@@ -790,8 +826,8 @@ int __cdecl DibWriteFile(BITMAPINFOHEADER* pdib, char* szFile) {
         colors = 1 << pdib->biBitCount;
 
     hdr.bfOffBits = pdib->biSize + colors * 4 + sizeof(BITMAPFILEHEADER);
-    _lwrite(file, (char*)&hdr, sizeof(BITMAPFILEHEADER));
-    _hwrite(file, (char*)pdib, size);
+    _lwrite(file, (char*) &hdr, sizeof(BITMAPFILEHEADER));
+    _hwrite(file, (char*) pdib, size);
     _lclose(file);
     return 1;
 }
@@ -813,10 +849,10 @@ HPALETTE __cdecl DibCreatePalette(BITMAPINFOHEADER* pdib) {
         colors = 0;
 
     if (colors > 0) {
-        rgb = (RGBQUAD*)((char*)pdib + pdib->biSize);
-        log_palette = (LOGPALETTE*)LocalAlloc(LPTR, colors * 4 + 8);
+        rgb = (RGBQUAD*) ((char*) pdib + pdib->biSize);
+        log_palette = (LOGPALETTE*) LocalAlloc(LPTR, colors * 4 + 8);
         if (log_palette != 0) {
-            log_palette->palNumEntries = (WORD)colors;
+            log_palette->palNumEntries = (WORD) colors;
             log_palette->palVersion = 0x300;
             if (0 < colors) {
                 unsigned char* entry = &log_palette->palPalEntry[0].peGreen;
@@ -871,7 +907,7 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh) {
     int i;
     int nNumColors;
 
-    RGBQUAD FAR *pRgb;
+    RGBQUAD FAR* pRgb;
     BITMAPINFOHEADER bi;
     BITMAPCOREHEADER bc;
     BITMAPFILEHEADER bf;
@@ -882,7 +918,7 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh) {
 
     off = _llseek(fh, 0L, SEEK_CUR);
 
-    if (sizeof(bf) != _lread(fh, (LPSTR)&bf, sizeof(bf)))
+    if (sizeof(bf) != _lread(fh, (LPSTR) &bf, sizeof(bf)))
         return FALSE;
 
     if (bf.bfType != BFT_BITMAP) {
@@ -890,21 +926,21 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh) {
         _llseek(fh, off, SEEK_SET);
     }
 
-    if (sizeof(bi) != _lread(fh, (LPSTR)&bi, sizeof(bi)))
+    if (sizeof(bi) != _lread(fh, (LPSTR) &bi, sizeof(bi)))
         return FALSE;
 
-    switch (size = (int)bi.biSize) {
+    switch (size = (int) bi.biSize) {
         default:
         case sizeof(BITMAPINFOHEADER):
             break;
 
         case sizeof(BITMAPCOREHEADER):
-            bc = *(BITMAPCOREHEADER*)&bi;
+            bc = *(BITMAPCOREHEADER*) &bi;
             bi.biSize = sizeof(BITMAPINFOHEADER);
-            bi.biWidth = (DWORD)bc.bcWidth;
-            bi.biHeight = (DWORD)bc.bcHeight;
-            bi.biPlanes = (UINT)bc.bcPlanes;
-            bi.biBitCount = (UINT)bc.bcBitCount;
+            bi.biWidth = (DWORD) bc.bcWidth;
+            bi.biHeight = (DWORD) bc.bcHeight;
+            bi.biPlanes = (UINT) bc.bcPlanes;
+            bi.biBitCount = (UINT) bc.bcBitCount;
             bi.biCompression = BI_RGB;
             bi.biSizeImage = 0;
             bi.biXPelsPerMeter = 0;
@@ -912,7 +948,7 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh) {
             bi.biClrUsed = 0;
             bi.biClrImportant = 0;
 
-            _llseek(fh, (LONG)sizeof(BITMAPCOREHEADER) - sizeof(BITMAPINFOHEADER), SEEK_CUR);
+            _llseek(fh, (LONG) sizeof(BITMAPCOREHEADER) - sizeof(BITMAPINFOHEADER), SEEK_CUR);
             break;
     }
 
@@ -920,7 +956,7 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh) {
 
     FixBitmapInfo(&bi);
 
-    pdib = (PDIB)GlobalAllocPtr(GMEM_MOVEABLE, (LONG)bi.biSize + nNumColors * sizeof(RGBQUAD));
+    pdib = (PDIB) GlobalAllocPtr(GMEM_MOVEABLE, (LONG) bi.biSize + nNumColors * sizeof(RGBQUAD));
 
     if (!pdib)
         return NULL;
@@ -931,21 +967,20 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh) {
 
     if (nNumColors) {
         if (size == sizeof(BITMAPCOREHEADER)) {
-            _lread(fh, (LPVOID)pRgb, nNumColors * sizeof(RGBTRIPLE));
+            _lread(fh, (LPVOID) pRgb, nNumColors * sizeof(RGBTRIPLE));
 
             for (i = nNumColors - 1; i >= 0; i--) {
                 RGBQUAD rgb;
 
-                rgb.rgbRed = ((RGBTRIPLE FAR *)pRgb)[i].rgbtRed;
-                rgb.rgbBlue = ((RGBTRIPLE FAR *)pRgb)[i].rgbtBlue;
-                rgb.rgbGreen = ((RGBTRIPLE FAR *)pRgb)[i].rgbtGreen;
-                rgb.rgbReserved = (BYTE)0;
+                rgb.rgbRed = ((RGBTRIPLE FAR*) pRgb)[i].rgbtRed;
+                rgb.rgbBlue = ((RGBTRIPLE FAR*) pRgb)[i].rgbtBlue;
+                rgb.rgbGreen = ((RGBTRIPLE FAR*) pRgb)[i].rgbtGreen;
+                rgb.rgbReserved = (BYTE) 0;
 
                 pRgb[i] = rgb;
             }
-        }
-        else {
-            _lread(fh, (LPVOID)pRgb, nNumColors * sizeof(RGBQUAD));
+        } else {
+            _lread(fh, (LPVOID) pRgb, nNumColors * sizeof(RGBQUAD));
         }
     }
 
@@ -959,8 +994,7 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh) {
     ((lpbi)->biClrUsed == 0 && (lpbi)->biBitCount <= 8 ? \
         (int)(1 << (int)(lpbi)->biBitCount) : (int)(lpbi)->biClrUsed)
 
-BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
-    UINT biBits, HPALETTE hpal, UINT wUsage) {
+BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle, UINT biBits, HPALETTE hpal, UINT wUsage) {
     BITMAP bm;
     int nColors;
     BITMAPINFOHEADER* lpbi;
@@ -976,15 +1010,15 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
 
     palette = hpal;
     if (palette == NULL)
-        palette = (HPALETTE)GetStockObject(DEFAULT_PALETTE);
+        palette = (HPALETTE) GetStockObject(DEFAULT_PALETTE);
 
-    GetObject(hbm, sizeof(bm), (LPSTR)&bm);
-    GetObject(palette, sizeof(nColors), (LPSTR)&nColors);
+    GetObject(hbm, sizeof(bm), (LPSTR) &bm);
+    GetObject(palette, sizeof(nColors), (LPSTR) &nColors);
 
     if (biBits == 0)
         biBits = bm.bmPlanes * bm.bmBitsPixel;
 
-    lpbi = (BITMAPINFOHEADER*)GlobalLock(GlobalAlloc(GMEM_MOVEABLE, sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD)));
+    lpbi = (BITMAPINFOHEADER*) GlobalLock(GlobalAlloc(GMEM_MOVEABLE, sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD)));
     if (lpbi == NULL)
         return NULL;
 
@@ -992,7 +1026,7 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     lpbi->biWidth = bm.bmWidth;
     lpbi->biHeight = bm.bmHeight;
     lpbi->biPlanes = 1;
-    lpbi->biBitCount = (WORD)biBits;
+    lpbi->biBitCount = (WORD) biBits;
     lpbi->biCompression = biStyle;
     lpbi->biSizeImage = 0;
     lpbi->biXPelsPerMeter = 0;
@@ -1005,67 +1039,65 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     if (biStyle == BI_BITFIELDS) {
         if (biBits != 16) {
             if (biBits == 24 || biBits == 32) {
-                ((DWORD*)(lpbi + 1))[0] = 0x000000FF;
-                ((DWORD*)(lpbi + 1))[1] = 0x0000FF00;
-                ((DWORD*)(lpbi + 1))[2] = 0x00FF0000;
+                ((DWORD*) (lpbi + 1))[0] = 0x000000FF;
+                ((DWORD*) (lpbi + 1))[1] = 0x0000FF00;
+                ((DWORD*) (lpbi + 1))[2] = 0x00FF0000;
             }
-        }
-        else {
-            ((DWORD*)(lpbi + 1))[0] = 0x0000F800;
-            ((DWORD*)(lpbi + 1))[1] = 0x000007E0;
-            ((DWORD*)(lpbi + 1))[2] = 0x0000001F;
+        } else {
+            ((DWORD*) (lpbi + 1))[0] = 0x0000F800;
+            ((DWORD*) (lpbi + 1))[1] = 0x000007E0;
+            ((DWORD*) (lpbi + 1))[2] = 0x0000001F;
         }
     }
 
     hdc = CreateCompatibleDC(NULL);
-    hpal = (HPALETTE)SelectPalette(hdc, palette, FALSE);
+    hpal = (HPALETTE) SelectPalette(hdc, palette, FALSE);
     RealizePalette(hdc);
     SetStretchBltMode(hdc, STRETCH_HALFTONE);
 
-    GetDIBits(hdc, hbm, 0, lpbi->biHeight, NULL, (LPBITMAPINFO)lpbi, wUsage);
+    GetDIBits(hdc, hbm, 0, lpbi->biHeight, NULL, (LPBITMAPINFO) lpbi, wUsage);
 
     lpbi->biClrUsed = DibFromBitmapNumColors(lpbi);
 
-    dwSizeImage = (lpbi->biSizeImage == 0) ?
-        ((((DWORD)lpbi->biBitCount * (DWORD)lpbi->biWidth + 31) >> 3) &
-            0x1FFFFFFC) * lpbi->biHeight : lpbi->biSizeImage;
+    dwSizeImage = (lpbi->biSizeImage == 0)
+                      ? ((((DWORD) lpbi->biBitCount * (DWORD) lpbi->biWidth + 31) >> 3) & 0x1FFFFFFC) * lpbi->biHeight
+                      : lpbi->biSizeImage;
     lpbi->biSizeImage = dwSizeImage;
 
     if (dwSizeImage == 0) {
-        dwSizeImage = ((((DWORD)lpbi->biBitCount * (DWORD)lpbi->biWidth + 31) >> 3) &
-            0x1FFFFFFC) * lpbi->biHeight;
+        dwSizeImage = ((((DWORD) lpbi->biBitCount * (DWORD) lpbi->biWidth + 31) >> 3) & 0x1FFFFFFC) * lpbi->biHeight;
         lpbi->biSizeImage = dwSizeImage;
         if (biStyle)
             lpbi->biSizeImage = (dwSizeImage * 3) / 2;
     }
 
     GlobalUnlock(GlobalHandle(lpbi));
-    lpbiNew = (BITMAPINFOHEADER*)GlobalLock(GlobalReAlloc(
-        GlobalHandle(lpbi), lpbi->biSize + lpbi->biClrUsed * sizeof(RGBQUAD) + lpbi->biSizeImage, 0));
+    lpbiNew = (BITMAPINFOHEADER*) GlobalLock(
+        GlobalReAlloc(GlobalHandle(lpbi), lpbi->biSize + lpbi->biClrUsed * sizeof(RGBQUAD) + lpbi->biSizeImage, 0)
+    );
 
     if (lpbiNew != NULL) {
         BYTE* bits;
         if (lpbiNew->biCompression == BI_BITFIELDS)
-            bits = (LPBYTE)lpbiNew + lpbiNew->biSize + 3 * sizeof(DWORD);
+            bits = (LPBYTE) lpbiNew + lpbiNew->biSize + 3 * sizeof(DWORD);
         else
-            bits = (LPBYTE)lpbiNew + lpbiNew->biSize +
-                lpbiNew->biClrUsed * sizeof(RGBQUAD);
+            bits = (LPBYTE) lpbiNew + lpbiNew->biSize + lpbiNew->biClrUsed * sizeof(RGBQUAD);
 
-        result = GetDIBits(hdc, hbm, 0, lpbiNew->biHeight, bits, (LPBITMAPINFO)lpbiNew, wUsage);
+        result = GetDIBits(hdc, hbm, 0, lpbiNew->biHeight, bits, (LPBITMAPINFO) lpbiNew, wUsage);
 
         lpbiNew->biClrUsed = DibFromBitmapNumColors(lpbiNew);
 
-        dwSizeImage = (lpbiNew->biSizeImage == 0) ?
-            ((((DWORD)lpbiNew->biBitCount * (DWORD)lpbiNew->biWidth + 31) >> 3) &
-                0x1FFFFFFC) * lpbiNew->biHeight : lpbiNew->biSizeImage;
+        dwSizeImage = (lpbiNew->biSizeImage == 0)
+                          ? ((((DWORD) lpbiNew->biBitCount * (DWORD) lpbiNew->biWidth + 31) >> 3) & 0x1FFFFFFC)
+                                * lpbiNew->biHeight
+                          : lpbiNew->biSizeImage;
         lpbiNew->biSizeImage = dwSizeImage;
 
         if (result == 0) {
             DibFree(lpbiNew);
             lpbiNew = NULL;
         }
-    }
-    else {
+    } else {
         GlobalUnlock(GlobalHandle(lpbi));
         GlobalFree(GlobalHandle(lpbi));
         lpbiNew = NULL;
@@ -1094,7 +1126,7 @@ BOOL __cdecl DibSetUsage(UsagePDIB pdib, HPALETTE hpal, UINT wUsage) {
     int n;
 
     if (hpal == NULL)
-        hpal = (HPALETTE)GetStockObject(DEFAULT_PALETTE);
+        hpal = (HPALETTE) GetStockObject(DEFAULT_PALETTE);
 
     if (!pdib)
         return FALSE;
@@ -1106,31 +1138,31 @@ BOOL __cdecl DibSetUsage(UsagePDIB pdib, HPALETTE hpal, UINT wUsage) {
     if (colors > 0) {
         pRgb = DibUsageColors(pdib);
         switch (wUsage) {
-        case DIB_PAL_COLORS:
-            for (pw = (WORD FAR*)pRgb, n = 0; n < colors; n++, pw++)
-                *pw = (WORD)n;
-            break;
+            case DIB_PAL_COLORS:
+                for (pw = (WORD FAR*) pRgb, n = 0; n < colors; n++, pw++)
+                    *pw = (WORD) n;
+                break;
 
-        default:
-        case DIB_RGB_COLORS:
-            colors = (colors < 256) ? colors : 256;
-            GetPaletteEntries(hpal, 0, colors, ape);
-            for (n = 0; n < colors; n++) {
-                pRgb[n].rgbRed = ape[n].peRed;
-                pRgb[n].rgbGreen = ape[n].peGreen;
-                pRgb[n].rgbBlue = ape[n].peBlue;
-                pRgb[n].rgbReserved = 0;
-            }
-            break;
+            default:
+            case DIB_RGB_COLORS:
+                colors = (colors < 256) ? colors : 256;
+                GetPaletteEntries(hpal, 0, colors, ape);
+                for (n = 0; n < colors; n++) {
+                    pRgb[n].rgbRed = ape[n].peRed;
+                    pRgb[n].rgbGreen = ape[n].peGreen;
+                    pRgb[n].rgbBlue = ape[n].peBlue;
+                    pRgb[n].rgbReserved = 0;
+                }
+                break;
         }
     }
     return TRUE;
 }
 
 int __cdecl DibDraw(
-    void* hdc, int x, int y, int dx, int dy,
-    BITMAPINFOHEADER* pdib, int x0, int y0, int dx0, int dy0,
-    long rop, unsigned int wUsage) {
+    void* hdc, int x, int y, int dx, int dy, BITMAPINFOHEADER* pdib, int x0, int y0, int dx0, int dy0, long rop,
+    unsigned int wUsage
+) {
     if (pdib == 0)
         return 0;
 
@@ -1145,12 +1177,12 @@ int __cdecl DibDraw(
 
     void* bits;
     if (pdib->biCompression == 3) {
-        bits = (char*)pdib + pdib->biSize + 12;
+        bits = (char*) pdib + pdib->biSize + 12;
     } else {
-        bits = (char*)pdib + pdib->biSize + pdib->biClrUsed * 4;
+        bits = (char*) pdib + pdib->biSize + pdib->biClrUsed * 4;
     }
 
-    return StretchDIBits(hdc, x, y, dx, dy, x0, y0, dx0, dy0, bits, (const BITMAPINFO*)pdib, wUsage, rop);
+    return StretchDIBits(hdc, x, y, dx, dy, x0, y0, dx0, dy0, bits, (const BITMAPINFO*) pdib, wUsage, rop);
 }
 
 BITMAPINFOHEADER* __cdecl DibCopy(BITMAPINFOHEADER* pdib) {
@@ -1160,8 +1192,9 @@ BITMAPINFOHEADER* __cdecl DibCopy(BITMAPINFOHEADER* pdib) {
         return 0;
     }
 
-    copy = (tagBITMAPINFOHEADER*)GlobalLock(GlobalAlloc(GMEM_MOVEABLE,
-                                                        pdib->biSize + pdib->biClrUsed * 4 + pdib->biSizeImage));
+    copy = (tagBITMAPINFOHEADER*) GlobalLock(
+        GlobalAlloc(GMEM_MOVEABLE, pdib->biSize + pdib->biClrUsed * 4 + pdib->biSizeImage)
+    );
     if (copy != 0) {
         memcpy(copy, pdib, pdib->biSize + pdib->biClrUsed * 4 + pdib->biSizeImage);
     }
@@ -1176,10 +1209,11 @@ CreatePDIB __cdecl DibCreate(int bits, int dx, int dy) {
     int i;
     DWORD FAR* pdw;
 
-    dwSizeImage = dy * (DWORD)((dx * bits / 8 + 3) & ~3);
+    dwSizeImage = dy * (DWORD) ((dx * bits / 8 + 3) & ~3);
 
-    lpbi = (CreatePDIB)GlobalLock(GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT,
-                                              sizeof(BITMAPINFOHEADER) + dwSizeImage + 1024));
+    lpbi = (CreatePDIB) GlobalLock(
+        GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof(BITMAPINFOHEADER) + dwSizeImage + 1024)
+    );
 
     if (lpbi == NULL)
         return NULL;
@@ -1198,14 +1232,13 @@ CreatePDIB __cdecl DibCreate(int bits, int dx, int dy) {
 
     if (bits == 4) {
         lpbi->biClrUsed = 16;
-    }
-    else if (bits == 8) {
+    } else if (bits == 8) {
         lpbi->biClrUsed = 256;
     }
 
-    pdw = (DWORD FAR *)((LPBYTE)lpbi + (int)lpbi->biSize);
+    pdw = (DWORD FAR*) ((LPBYTE) lpbi + (int) lpbi->biSize);
 
-    for (i = 0; i < (int)lpbi->biClrUsed / 16; i++) {
+    for (i = 0; i < (int) lpbi->biClrUsed / 16; i++) {
         *pdw++ = 0x00000000;
         *pdw++ = 0x00800000;
         *pdw++ = 0x00008000;
@@ -1223,11 +1256,10 @@ CreatePDIB __cdecl DibCreate(int bits, int dx, int dy) {
         *pdw++ = 0x0000FFFF;
         *pdw++ = 0x00FFFFFF;
     }
-    return (CreatePDIB)lpbi;
+    return (CreatePDIB) lpbi;
 }
 
-static void __cdecl xlatClut8(unsigned char* pb, unsigned long dwSize,
-    unsigned char* xlat) {
+static void __cdecl xlatClut8(unsigned char* pb, unsigned long dwSize, unsigned char* xlat) {
     if (dwSize <= 0) {
         return;
     }
@@ -1238,8 +1270,7 @@ static void __cdecl xlatClut8(unsigned char* pb, unsigned long dwSize,
     } while (dwSize != 0);
 }
 
-static void __cdecl xlatClut4(unsigned char *pb, unsigned long dwSize,
-    unsigned char *xlat) {
+static void __cdecl xlatClut4(unsigned char* pb, unsigned long dwSize, unsigned char* xlat) {
     if (dwSize <= 0)
         return;
 
@@ -1259,13 +1290,13 @@ static void __cdecl xlatRle8(unsigned char* pb, unsigned long dwSize, unsigned c
         if (code == 0) {
             ++p;
             switch (b) {
-            case 0:
-                continue;
-            case 1:
-                return;
-            case 2:
-                p += 2;
-                continue;
+                case 0:
+                    continue;
+                case 1:
+                    return;
+                case 2:
+                    p += 2;
+                    continue;
             }
             unsigned int count = b;
             if (b > 0) {
@@ -1287,13 +1318,12 @@ static void __cdecl xlatRle8(unsigned char* pb, unsigned long dwSize, unsigned c
     }
 }
 
-static void __cdecl xlatRle4(unsigned char* pb, unsigned long dwSize,
-    unsigned char* xlat) {}
+static void __cdecl xlatRle4(unsigned char* pb, unsigned long dwSize, unsigned char* xlat) {
+}
 
 namespace {
 
-extern "C" static void __cdecl memmove(unsigned char* d, unsigned char* s,
-    long len) {
+extern "C" static void __cdecl memmove(unsigned char* d, unsigned char* s, long len) {
     int count;
 
     d = d + len - 1;
@@ -1313,8 +1343,7 @@ extern "C" static void __cdecl memmove(unsigned char* d, unsigned char* s,
 
 }
 
-void __cdecl DibMapToPalette(BITMAPINFOHEADER* pdib, void* hpal,
-    int TransLogic, int ZeroIsTrans) {
+void __cdecl DibMapToPalette(BITMAPINFOHEADER* pdib, void* hpal, int TransLogic, int ZeroIsTrans) {
     unsigned long SizeImage;
     PALETTEENTRY pe;
     int nDibColors = 0;
@@ -1331,22 +1360,20 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* pdib, void* hpal,
         return;
 
     lpRgb = DibColors(pdib);
-    GetObjectA((HGDIOBJ)hpal, sizeof(nDibColors), &nDibColors);
+    GetObjectA((HGDIOBJ) hpal, sizeof(nDibColors), &nDibColors);
     nPalColors = DibNumColors(pdib);
     SizeImage = DibSizeImage(pdib);
 
     if (pdib->biCompression == BI_BITFIELDS)
-        lpBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+        lpBits = (unsigned char*) pdib + pdib->biSize + 3 * sizeof(DWORD);
     else
-        lpBits = (unsigned char*)pdib + pdib->biSize + pdib->biClrUsed *
-            sizeof(RGBQUAD);
+        lpBits = (unsigned char*) pdib + pdib->biSize + pdib->biClrUsed * sizeof(RGBQUAD);
 
     if (TransLogic) {
         if (ZeroIsTrans)
             TransIndex = 0;
         else
-            TransIndex = lpBits[((pdib->biWidth + 3) & ~3) *
-                (pdib->biHeight - 1)];
+            TransIndex = lpBits[((pdib->biWidth + 3) & ~3) * (pdib->biHeight - 1)];
 
         int ZeroRed = lpRgb->rgbRed;
         int ZeroGreen = lpRgb->rgbGreen;
@@ -1367,7 +1394,7 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* pdib, void* hpal,
                 ZeroBlue = lpRgb->rgbBlue;
                 HitEnd = 1;
             }
-            ZeroIndex = (unsigned char)GetNearestPaletteIndex((HPALETTE)hpal, RGB(ZeroRed, ZeroGreen, ZeroBlue));
+            ZeroIndex = (unsigned char) GetNearestPaletteIndex((HPALETTE) hpal, RGB(ZeroRed, ZeroGreen, ZeroBlue));
         } while (ZeroIndex == 0);
     }
 
@@ -1377,14 +1404,16 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* pdib, void* hpal,
             if (i == TransIndex) {
                 xlat[i] = 0;
             } else {
-                xlat[i] = (unsigned char)GetNearestPaletteIndex((HPALETTE)hpal, RGB(lpRgb[i].rgbRed, lpRgb[i].rgbGreen,
-                                                                                    lpRgb[i].rgbBlue));
+                xlat[i] = (unsigned char) GetNearestPaletteIndex(
+                    (HPALETTE) hpal, RGB(lpRgb[i].rgbRed, lpRgb[i].rgbGreen, lpRgb[i].rgbBlue)
+                );
                 if (xlat[i] == 0)
                     xlat[i] = ZeroIndex;
             }
         } else {
-            xlat[i] = (unsigned char)GetNearestPaletteIndex((HPALETTE)hpal,
-                                                            RGB(lpRgb[i].rgbRed, lpRgb[i].rgbGreen, lpRgb[i].rgbBlue));
+            xlat[i] = (unsigned char) GetNearestPaletteIndex(
+                (HPALETTE) hpal, RGB(lpRgb[i].rgbRed, lpRgb[i].rgbGreen, lpRgb[i].rgbBlue)
+            );
         }
     }
 
@@ -1395,53 +1424,49 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* pdib, void* hpal,
 
         unsigned char* NewBits;
         if (pdib->biCompression == BI_BITFIELDS)
-            NewBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+            NewBits = (unsigned char*) pdib + pdib->biSize + 3 * sizeof(DWORD);
         else
-            NewBits = (unsigned char*)pdib + pdib->biSize +
-                pdib->biClrUsed * sizeof(RGBQUAD);
+            NewBits = (unsigned char*) pdib + pdib->biSize + pdib->biClrUsed * sizeof(RGBQUAD);
         memmove(NewBits, lpBits, SizeImage);
 
         if (pdib->biCompression == BI_BITFIELDS)
-            lpBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+            lpBits = (unsigned char*) pdib + pdib->biSize + 3 * sizeof(DWORD);
         else
-            lpBits = (unsigned char*)pdib + pdib->biSize +
-                pdib->biClrUsed * sizeof(RGBQUAD);
+            lpBits = (unsigned char*) pdib + pdib->biSize + pdib->biClrUsed * sizeof(RGBQUAD);
     } else if (nDibColors < nPalColors) {
         unsigned char* NewBits;
         if (pdib->biCompression == BI_BITFIELDS)
-            NewBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+            NewBits = (unsigned char*) pdib + pdib->biSize + 3 * sizeof(DWORD);
         else
-            NewBits = (unsigned char*)pdib + pdib->biSize +
-                nDibColors * sizeof(RGBQUAD);
+            NewBits = (unsigned char*) pdib + pdib->biSize + nDibColors * sizeof(RGBQUAD);
         memcpy(NewBits, lpBits, SizeImage);
 
         GlobalUnlock(GlobalHandle(pdib));
         GlobalLock(GlobalReAlloc(GlobalHandle(pdib), pdib->biSize + nDibColors * sizeof(RGBQUAD) + SizeImage, 0));
 
         if (pdib->biCompression == BI_BITFIELDS)
-            lpBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+            lpBits = (unsigned char*) pdib + pdib->biSize + 3 * sizeof(DWORD);
         else
-            lpBits = (unsigned char*)pdib + pdib->biSize +
-                pdib->biClrUsed * sizeof(RGBQUAD);
+            lpBits = (unsigned char*) pdib + pdib->biSize + pdib->biClrUsed * sizeof(RGBQUAD);
     }
 
     switch (pdib->biCompression) {
-    case BI_RGB:
-        if (pdib->biBitCount == 8)
-            xlatClut8(lpBits, SizeImage, xlat);
-        else
-            xlatClut4(lpBits, SizeImage, xlat);
-        break;
-    case BI_RLE8:
-        xlatRle8(lpBits, SizeImage, xlat);
-        break;
-    case BI_RLE4:
-        xlatRle4(lpBits, SizeImage, xlat);
-        break;
+        case BI_RGB:
+            if (pdib->biBitCount == 8)
+                xlatClut8(lpBits, SizeImage, xlat);
+            else
+                xlatClut4(lpBits, SizeImage, xlat);
+            break;
+        case BI_RLE8:
+            xlatRle8(lpBits, SizeImage, xlat);
+            break;
+        case BI_RLE4:
+            xlatRle4(lpBits, SizeImage, xlat);
+            break;
     }
 
     for (i = 0; i < nDibColors; ++i) {
-        GetPaletteEntries((HPALETTE)hpal, i, 1, &pe);
+        GetPaletteEntries((HPALETTE) hpal, i, 1, &pe);
         lpRgb[i].rgbRed = pe.peRed;
         lpRgb[i].rgbGreen = pe.peGreen;
         lpRgb[i].rgbBlue = pe.peBlue;
@@ -1470,7 +1495,7 @@ void __cdecl CreateIdentityPalette(void* hpal) {
 
     if (GetSystemPaletteEntries(hdc, 0, 256, palette_locals.new_pal + 1) == 0)
         system_palette_failed = 1;
-    if (GetPaletteEntries((HPALETTE)hpal, 0, 256, from_locals.entries + 1) == 0)
+    if (GetPaletteEntries((HPALETTE) hpal, 0, 256, from_locals.entries + 1) == 0)
         source_palette_failed = 1;
 
     for (int i = 11; i < 247; ++i) {
@@ -1480,41 +1505,44 @@ void __cdecl CreateIdentityPalette(void* hpal) {
         palette_locals.new_pal[i].peFlags = 1;
     }
 
-    if ((system_palette_failed != 0 || source_palette_failed != 0) && *(int*)System_color_Table >= 0) {
-        int index = *(int*)System_color_Table;
+    if ((system_palette_failed != 0 || source_palette_failed != 0) && *(int*) System_color_Table >= 0) {
+        int index = *(int*) System_color_Table;
         unsigned char* colors = &System_color_Table[0].green;
         do {
             palette_locals.new_pal[index + 1].peRed = colors[-1];
             palette_locals.new_pal[index + 1].peGreen = colors[0];
             palette_locals.new_pal[index + 1].peBlue = colors[1];
             palette_locals.new_pal[index + 1].peFlags = 0;
-            index = *(int*)(colors + 3);
+            index = *(int*) (colors + 3);
             colors += 8;
         } while (index >= 0);
     }
 
     ReleaseDC(palette_locals.hwnd, hdc);
-    ResizePalette((HPALETTE)hpal, 256);
-    SetPaletteEntries((HPALETTE)hpal, 0, 256, palette_locals.new_pal + 1);
+    ResizePalette((HPALETTE) hpal, 256);
+    SetPaletteEntries((HPALETTE) hpal, 0, 256, palette_locals.new_pal + 1);
 }
 
 void* __cdecl CopyPalette(void* hpal) {
     int nNumEntries = 0;
 
-    if (!hpal) return 0;
+    if (!hpal)
+        return 0;
 
-    GetObjectA((HGDIOBJ)hpal, 4, &nNumEntries);
-    if (!nNumEntries) return 0;
+    GetObjectA((HGDIOBJ) hpal, 4, &nNumEntries);
+    if (!nNumEntries)
+        return 0;
 
     void* pal = LocalAlloc(LMEM_ZEROINIT, nNumEntries * 4 + 8);
-    if (!pal) return 0;
+    if (!pal)
+        return 0;
 
-    *(short*)pal = 0x300;
-    *(short*)((char*)pal + 2) = (short)nNumEntries;
+    *(short*) pal = 0x300;
+    *(short*) ((char*) pal + 2) = (short) nNumEntries;
 
-    GetPaletteEntries((HPALETTE)hpal, 0, nNumEntries, (PALETTEENTRY*)((char*)pal + 4));
-    void* result = CreatePalette((const tagLOGPALETTE*)pal);
-    LocalFree((HLOCAL)pal);
+    GetPaletteEntries((HPALETTE) hpal, 0, nNumEntries, (PALETTEENTRY*) ((char*) pal + 4));
+    void* result = CreatePalette((const tagLOGPALETTE*) pal);
+    LocalFree((HLOCAL) pal);
     return result;
 }
 

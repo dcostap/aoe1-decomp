@@ -3,9 +3,8 @@
 
 #include "aimodule.h"
 
-
 class StrategyAIModule : public AIModule {
-public:
+  public:
     StrategyAIModule(void* pW, int playerID);
     virtual ~StrategyAIModule();
 };

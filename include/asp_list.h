@@ -10,14 +10,18 @@ class RGE_Static_Object;
 struct RGE_Active_Sprite_Node;
 
 class RGE_Active_Sprite {
-public:
+  public:
     virtual ~RGE_Active_Sprite();
     virtual void set_offset(long x, long y);
     virtual void save(int outfile);
     virtual void update(float time, float speed);
-    virtual void draw(short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    virtual void draw(
+        short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area
+    );
     virtual void normal_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area);
-    virtual void shadow_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag);
+    virtual void shadow_draw(
+        short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag
+    );
     virtual short what_frame();
     virtual unsigned char is_animating();
     virtual void set_frame(short new_frame);
@@ -40,7 +44,7 @@ public:
 };
 
 class RGE_Active_Animated_Sprite : public RGE_Active_Sprite {
-public:
+  public:
     RGE_Active_Animated_Sprite(RGE_Sprite* new_sprite);
     short frame;
     float animate_interval;
@@ -55,9 +59,13 @@ public:
 
     virtual void save(int outfile);
     virtual void update(float time, float speed);
-    virtual void draw(short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    virtual void draw(
+        short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area
+    );
     virtual void normal_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area);
-    virtual void shadow_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag);
+    virtual void shadow_draw(
+        short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag
+    );
     virtual short what_frame();
     virtual unsigned char is_animating();
     virtual void set_frame(short new_frame);
@@ -69,7 +77,7 @@ public:
 };
 
 struct RGE_Active_Sprite_Node {
-public:
+  public:
     RGE_Active_Sprite* node;
     unsigned char order;
     unsigned char count;
@@ -77,23 +85,27 @@ public:
 };
 
 class RGE_Active_Sprite_List {
-public:
+  public:
     virtual ~RGE_Active_Sprite_List();
     virtual short frame(RGE_Sprite* sprite);
     virtual void update(float time, float speed);
-    virtual void draw(short facet, short x, short y, short sx, short sy, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    virtual void draw(
+        short facet, short x, short y, short sx, short sy, RGE_Color_Table* player_color, TDrawArea* draw_area
+    );
     virtual void normal_draw(short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area);
-    virtual void shadow_draw(short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag);
+    virtual void shadow_draw(
+        short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag
+    );
     virtual unsigned char is_animating(RGE_Sprite* sprite);
     virtual void set_frame(RGE_Sprite* sprite, short new_frame);
     virtual unsigned char frame_passed(RGE_Sprite* sprite, short pass_frame);
     virtual unsigned char looped(RGE_Sprite* sprite);
     virtual short get_facetindex(RGE_Sprite* sprite, short facet);
 
-protected:
+  protected:
     virtual unsigned char load_node(int infile, unsigned char type, RGE_Sprite** sprites);
 
-public:
+  public:
     RGE_Active_Sprite_Node* list;
     RGE_Static_Object* owner;
 
@@ -110,13 +122,9 @@ public:
     unsigned char get_frame(short& min_x, short& min_y, short& max_x, short& max_y, RGE_Sprite* sprite, long facet);
 };
 
-typedef char asp_list_active_sprite_size_check[
-    (sizeof(RGE_Active_Sprite) == 0x14) ? 1 : -1];
-typedef char asp_list_active_animated_sprite_size_check[
-    (sizeof(RGE_Active_Animated_Sprite) == 0x28) ? 1 : -1];
-typedef char asp_list_active_sprite_node_size_check[
-    (sizeof(RGE_Active_Sprite_Node) == 0x0C) ? 1 : -1];
-typedef char asp_list_active_sprite_list_size_check[
-    (sizeof(RGE_Active_Sprite_List) == 0x0C) ? 1 : -1];
+typedef char asp_list_active_sprite_size_check[(sizeof(RGE_Active_Sprite) == 0x14) ? 1 : -1];
+typedef char asp_list_active_animated_sprite_size_check[(sizeof(RGE_Active_Animated_Sprite) == 0x28) ? 1 : -1];
+typedef char asp_list_active_sprite_node_size_check[(sizeof(RGE_Active_Sprite_Node) == 0x0C) ? 1 : -1];
+typedef char asp_list_active_sprite_list_size_check[(sizeof(RGE_Active_Sprite_List) == 0x0C) ? 1 : -1];
 
 #endif

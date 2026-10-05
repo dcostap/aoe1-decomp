@@ -8,17 +8,18 @@
 
 #include <string.h>
 
-TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, char* message_in, char* info_file_in, long info_id_in)
-    : TScreenPanel(name) {
+TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
+    char* name, char* message_in, char* info_file_in, long info_id_in
+) : TScreenPanel(name) {
     char info_file[260];
     long info_id;
     TEasy_Panel* current_panel;
 
     message = 0;
-    current_panel = (TEasy_Panel*)panel_system.currentPanel();
+    current_panel = (TEasy_Panel*) panel_system.currentPanel();
 
     if (info_file_in == 0 && info_id_in == -1) {
-        if (current_panel != 0 && current_panel != (TEasy_Panel*)panel_system.panel("Achievements Screen")) {
+        if (current_panel != 0 && current_panel != (TEasy_Panel*) panel_system.panel("Achievements Screen")) {
             strcpy(info_file, current_panel->get_info_file());
             info_id = current_panel->get_info_id();
         } else {
@@ -48,17 +49,18 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, char* messa
     }
 }
 
-TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, long message_in, char* info_file_in, long info_id_in)
-    : TScreenPanel(name) {
+TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
+    char* name, long message_in, char* info_file_in, long info_id_in
+) : TScreenPanel(name) {
     char info_file[260];
     long info_id;
     TEasy_Panel* current_panel;
 
     message = 0;
-    current_panel = (TEasy_Panel*)panel_system.currentPanel();
+    current_panel = (TEasy_Panel*) panel_system.currentPanel();
 
     if (info_file_in == 0 && info_id_in == -1) {
-        if (current_panel != 0 && current_panel != (TEasy_Panel*)panel_system.panel("Achievements Screen")) {
+        if (current_panel != 0 && current_panel != (TEasy_Panel*) panel_system.panel("Achievements Screen")) {
             strcpy(info_file, current_panel->get_info_file());
             info_id = current_panel->get_info_id();
         } else {
@@ -89,7 +91,7 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, long messag
 }
 
 TRIBE_Screen_Status_Message::~TRIBE_Screen_Status_Message() {
-    delete_panel((TPanel**)&message);
+    delete_panel((TPanel**) &message);
 }
 
 void TRIBE_Screen_Status_Message::set_text(char* message_in) {

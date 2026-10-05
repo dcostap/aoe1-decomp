@@ -7,7 +7,7 @@ class TSound_Driver;
 class TDigital;
 
 class RGE_Sound_Info {
-public:
+  public:
     char name[13];
     long resource_id;
     short percent;
@@ -17,7 +17,7 @@ public:
 };
 
 class RGE_Sound {
-public:
+  public:
     short play_at_update_count;
     short sound_num;
     RGE_Sound_Info* sounds;
@@ -41,9 +41,7 @@ public:
     int is_playing();
 };
 
-typedef char sound_rge_sound_size_check[
-    (sizeof(RGE_Sound) == 0x10) ? 1 : -1];
-typedef char sound_rge_sound_info_size_check[
-    (sizeof(RGE_Sound_Info) == 0x24) ? 1 : -1];
+typedef char sound_rge_sound_size_check[(sizeof(RGE_Sound) == 0x10) ? 1 : -1];
+typedef char sound_rge_sound_info_size_check[(sizeof(RGE_Sound_Info) == 0x24) ? 1 : -1];
 
 #endif

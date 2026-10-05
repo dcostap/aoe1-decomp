@@ -4,12 +4,11 @@
 #include "../include/tech.h"
 
 TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(
-    RGE_Player* in_player, int infile, long* player_id_hash, unsigned char version_control)
-    : RGE_Victory_Conditions(in_player, infile, player_id_hash, version_control) {
+    RGE_Player* in_player, int infile, long* player_id_hash, unsigned char version_control
+) : RGE_Victory_Conditions(in_player, infile, player_id_hash, version_control) {
 }
 
-TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(RGE_Player* in_Player)
-    : RGE_Victory_Conditions(in_Player) {
+TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(RGE_Player* in_Player) : RGE_Victory_Conditions(in_Player) {
 }
 
 TRIBE_Victory_Conditions::~TRIBE_Victory_Conditions() {

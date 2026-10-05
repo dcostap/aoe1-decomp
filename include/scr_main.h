@@ -9,7 +9,7 @@ class TButtonPanel;
 class TPicturePanel;
 
 class TRIBE_Screen_Main_Menu : public TScreenPanel {
-public:
+  public:
     TTextPanel* title1;
     TTextPanel* title2;
     TButtonPanel* button[7];
@@ -26,11 +26,10 @@ public:
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
-typedef char scr_main_menu_size_check[
-    (sizeof(TRIBE_Screen_Main_Menu) == 0x4B0) ? 1 : -1];
+typedef char scr_main_menu_size_check[(sizeof(TRIBE_Screen_Main_Menu) == 0x4B0) ? 1 : -1];
 
 class TRIBE_Screen_Main_Error : public TScreenPanel {
-public:
+  public:
     TTextPanel* message;
     TButtonPanel* cancel_button;
     TButtonPanel* close_button;
@@ -43,7 +42,6 @@ public:
     virtual long handle_idle();
 };
 
-typedef char scr_main_error_size_check[
-    (sizeof(TRIBE_Screen_Main_Error) == 0x484) ? 1 : -1];
+typedef char scr_main_error_size_check[(sizeof(TRIBE_Screen_Main_Error) == 0x484) ? 1 : -1];
 
 #endif

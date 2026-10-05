@@ -10,7 +10,7 @@ class TListPanel;
 class TScrollBarPanel;
 
 class TribeMPStartupScreen : public TScreenPanel {
-protected:
+  protected:
     TTextPanel* title;
     TTextPanel* inputTitle;
     TEditPanel* input;
@@ -24,18 +24,17 @@ protected:
     char zone_exec[255];
     char browser_exec[255];
 
-public:
+  public:
     virtual ~TribeMPStartupScreen();
     TribeMPStartupScreen();
     virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     virtual long handle_idle();
     virtual long handle_user_command(unsigned int wParam, long lParam);
 
-protected:
+  protected:
     void fillList();
 };
 
-typedef char scr_mp_startup_screen_size_check[
-    (sizeof(TribeMPStartupScreen) == 0x6A0) ? 1 : -1];
+typedef char scr_mp_startup_screen_size_check[(sizeof(TribeMPStartupScreen) == 0x6A0) ? 1 : -1];
 
 #endif

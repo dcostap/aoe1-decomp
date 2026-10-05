@@ -2,7 +2,7 @@
 #define AOE1_FILE_STF_H
 
 class DriveInformation {
-public:
+  public:
     int initialDriveValue;
     char initialDirectoryValue[0x100];
     int currentDriveValue;
@@ -29,7 +29,7 @@ public:
     int changeDrive(int d);
     int changeDirectory(char* d);
 
-protected:
+  protected:
     void updateDirectory();
 };
 
@@ -37,4 +37,4 @@ int __cdecl compareFilenameStrings(const void* e1, const void* e2);
 char driveAsLetter(int d);
 int driveAsInt(char d);
 
-#endif  // AOE1_FILE_STF_H
+#endif // AOE1_FILE_STF_H

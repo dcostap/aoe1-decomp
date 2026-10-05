@@ -11,7 +11,7 @@ class RGE_Person_Info;
 class RGE_Game_Info;
 
 class RGE_Campaign_Info {
-public:
+  public:
     char name[256];
     int current_scenario;
     int scenario_num;
@@ -34,7 +34,7 @@ public:
 };
 
 class RGE_Person_Info {
-public:
+  public:
     char name[256];
     int current_campaign;
     int campaign_info_num;
@@ -60,7 +60,7 @@ public:
 };
 
 class RGE_Game_Info {
-public:
+  public:
     int current_person;
     int people_num;
     RGE_Person_Info** people_info;
@@ -89,7 +89,6 @@ public:
     void remove_player(long id);
 };
 
-typedef char rge_game_info_size_check[
-    (sizeof(RGE_Game_Info) == 0x118) ? 1 : -1];
+typedef char rge_game_info_size_check[(sizeof(RGE_Game_Info) == 0x118) ? 1 : -1];
 
 #endif
