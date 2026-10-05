@@ -89,11 +89,11 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     this->cancelButton->set_help_info(STRING_ID_HELP_CANCEL, -1);
     TButtonPanel* cancel_local = this->cancelButton;
     int zero = 0;
-    cancel_local->hotkey = 0x1B;
+    cancel_local->hotkey = VK_ESCAPE;
     cancel_local->hotkey_shift = zero;
     TButtonPanel* delete_local = this->deleteButton;
     delete_local->hotkey_shift = zero;
-    delete_local->hotkey = 0x2E;
+    delete_local->hotkey = VK_DELETE;
 
     this->fillList();
     if (this->list->currentLine()[0] == 0) {

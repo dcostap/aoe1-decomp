@@ -388,50 +388,50 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
                 }
                 break;
 
-            case 0x100:
+            case WM_KEYDOWN:
                 if (this->parent_panel != 0) {
                     if (this->parent_panel->wnd_proc(hwnd, msg, wParam, lParam) != 0) {
                         return 0;
                     }
 
-                    if (wParam == 9) {
+                    if (wParam == VK_TAB) {
                         int alt_down = GetKeyState(VK_MENU) < 0;
                         int control_down = GetKeyState(VK_CONTROL) < 0;
                         int shift_down = GetKeyState(VK_SHIFT) < 0;
                         panel_edit_change_active = 1;
-                        this->handle_key_down(9, (short) lParam, alt_down, control_down, shift_down);
+                        this->handle_key_down(VK_TAB, (short) lParam, alt_down, control_down, shift_down);
                         panel_edit_change_active = 0;
                         return 0;
                     }
-                    if (wParam == 0x0d) {
+                    if (wParam == VK_RETURN) {
                         this->parent_panel->action(this, 0, 0, 0);
                         return 0;
                     }
-                    if (wParam == 0x1b) {
+                    if (wParam == VK_ESCAPE) {
                         if (this->parent_panel->action(this, 1, 0, 0) == 0) {
                             SendMessageA(this->edit_wnd, EM_UNDO, 0, 0);
                         }
                         return 0;
                     }
-                } else if (wParam == 0x1b) {
+                } else if (wParam == VK_ESCAPE) {
                     SendMessageA(this->edit_wnd, EM_UNDO, 0, 0);
                     return 0;
                 }
                 break;
 
-            case 0x101:
-                if (wParam == 9) {
+            case WM_KEYUP:
+                if (wParam == VK_TAB) {
                     return 0;
                 }
                 break;
 
-            case 0x102:
+            case WM_CHAR:
                 if (this->verify_char(wParam) == 0) {
                     return 0;
                 }
                 break;
 
-            case 0x104:
+            case WM_SYSKEYDOWN:
                 if (this->imc == 0 || this->enable_ime == 0) {
                     SetFocus((HWND) this->render_area->Wnd);
                     PostMessageA((HWND) this->render_area->Wnd, msg, wParam, lParam);
@@ -488,11 +488,11 @@ int TEditPanel::verify_char(int key) {
         panel_edit_pending_change = 0;
         return 0;
     }
-    if (key == 9)
+    if (key == '\t')
         return 0;
-    if (key == 13 && this->format != 7)
+    if (key == '\r' && this->format != 7)
         return 0;
-    if (key == 8)
+    if (key == '\b')
         return 1;
     this->update_text();
     if (this->sel_len == 0) {

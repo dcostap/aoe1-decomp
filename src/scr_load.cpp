@@ -84,11 +84,11 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
     (*ok_button)->set_help_info(STRING_ID_HELP_OK, -1);
     this->cancelButton->set_help_info(STRING_ID_HELP_CANCEL, -1);
     TButtonPanel* cancel_button = this->cancelButton;
-    cancel_button->hotkey = 0x1B;
+    cancel_button->hotkey = VK_ESCAPE;
     cancel_button->hotkey_shift = 0;
     TButtonPanel* delete_button = this->deleteButton;
     delete_button->hotkey_shift = 0;
-    delete_button->hotkey = 0x2E;
+    delete_button->hotkey = VK_DELETE;
 
     this->fillList();
     if (this->list->currentLine()[0] == 0) {

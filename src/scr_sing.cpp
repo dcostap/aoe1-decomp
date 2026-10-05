@@ -49,7 +49,7 @@ TribeSPMenuScreen::TribeSPMenuScreen() : TScreenPanel("Single Player Menu") {
 
             // Keep one local receiver for the two hotkey stores.
             TButtonPanel* cancel = button[5];
-            cancel->hotkey = 0x1B;
+            cancel->hotkey = VK_ESCAPE;
             cancel->hotkey_shift = 0;
 
             set_curr_child(button[0]);

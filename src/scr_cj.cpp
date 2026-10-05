@@ -70,7 +70,7 @@ TribeJoinScreen::TribeJoinScreen() : TScreenPanel("Join Screen") {
                                     RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
                                 )) {
                                 TButtonPanel* cancel = this->cancelButton;
-                                cancel->hotkey = 0x1B;
+                                cancel->hotkey = VK_ESCAPE;
                                 cancel->hotkey_shift = 0;
 
                                 if (this->create_button(
@@ -311,7 +311,7 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parentPanel) : TDialogPanel("Cr
                                 RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
                             )) {
                             TButtonPanel* cancel = this->cancelButton;
-                            cancel->hotkey = 0x1b;
+                            cancel->hotkey = VK_ESCAPE;
                             cancel->hotkey_shift = 0;
                             TPanel* tab_list[3];
                             tab_list[0] = this->inputGamename;

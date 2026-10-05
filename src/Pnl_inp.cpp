@@ -98,7 +98,7 @@ long TInputPanel::handle_idle() {
 
 long TInputPanel::char_action(long key, short count) {
     short i;
-    if (key == 8 || key == 9 || key == 10 || key == 13 || key == 27 || key < 0x1B)
+    if (key == '\b' || key == '\t' || key == '\n' || key == '\r' || key == '\x1B' || key < '\x1B')
         return 1;
     if (count == 0)
         count = 1;
@@ -332,7 +332,7 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
 
         case VK_RETURN:
             if (this->format_type == FormatMultiLine) {
-                this->insert_character(10);
+                this->insert_character('\n');
             } else if (this->parent_panel != 0) {
                 this->parent_panel->action(this, 0, 0, 0);
             }
@@ -344,7 +344,7 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
             }
             break;
 
-        case 0x56:
+        case 'V':
             if (ctrl_key == 0)
                 return 0;
             this->paste();

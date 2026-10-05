@@ -120,7 +120,7 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel) : TDialogPanel("Ab
     );
 
     TButtonPanel* close_button = this->close_button;
-    close_button->hotkey = 0x1b;
+    close_button->hotkey = VK_ESCAPE;
     close_button->hotkey_shift = 0;
 
     TPanel* tabList[2];

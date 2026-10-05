@@ -4129,18 +4129,18 @@ int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
 int TRIBE_Game::action_key_down(unsigned long key, int repeat_count, int ctrl_key, int alt_key, int shift_key) {
     if (this->prog_mode == ProgModeVideo) {
         switch (key) {
-            case 0x0D:
-            case 0x20:
+            case VK_RETURN:
+            case VK_SPACE:
                 this->stop_video(1);
                 return 0;
-            case 0x1B:
+            case VK_ESCAPE:
                 this->stop_video(0);
                 return 0;
         }
         return 1;
     }
 
-    if (key != 0x70) {
+    if (key != VK_F1) {
         return 1;
     }
     if (!this->multiplayerGame()

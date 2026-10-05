@@ -91,7 +91,7 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen() : TScreenPanel("Cam
         this, &this->cancel_button, STRING_ID_BUTTON_CANCEL, 0, 340, 445, 280, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
     );
     TButtonPanel* cancel = this->cancel_button;
-    cancel->hotkey = 0x1B;
+    cancel->hotkey = VK_ESCAPE;
     cancel->hotkey_shift = 0;
 
     this->create_button(

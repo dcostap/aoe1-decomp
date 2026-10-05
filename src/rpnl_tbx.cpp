@@ -258,7 +258,7 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key, int
         }
 
         switch (key) {
-            case 0x2E: {
+            case VK_DELETE: {
                 if (rge_base_game->game_mode != 0x12) {
                     return 0;
                 }
@@ -282,7 +282,7 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key, int
                 return 1;
             }
 
-            case 0x21:
+            case VK_PRIOR:
                 if (rge_base_game->game_mode != 3) {
                     return 0;
                 }
@@ -292,7 +292,7 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key, int
                 rge_base_game->world->map->clean_elevation(x1, y1, x2, y2, 8);
                 break;
 
-            case 0x22:
+            case VK_NEXT:
                 if (rge_base_game->game_mode != 3) {
                     return 0;
                 }

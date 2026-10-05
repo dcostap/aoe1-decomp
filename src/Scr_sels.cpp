@@ -108,7 +108,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel("Select Sc
                                             )) {
                                             this->cancelButton->set_help_info(STRING_ID_HELP_CANCEL, -1);
                                             TButtonPanel* cancel = this->cancelButton;
-                                            cancel->hotkey = 0x1B;
+                                            cancel->hotkey = VK_ESCAPE;
                                             cancel->hotkey_shift = 0;
 
                                             if (this->create_button(

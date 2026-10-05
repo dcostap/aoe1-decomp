@@ -124,7 +124,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game() : TScreenPanel(s_Game_Screen) {
     this->move_hotkey = *this->get_string(STRING_ID_HOTKEY_MOVE);
     this->attack_hotkey = 0;
     this->ungroup_hotkey = *this->get_string(STRING_ID_HOTKEY_UNGROUP);
-    this->watch_hotkey = 0x41;
+    this->watch_hotkey = 'A';
     for (i = 0; i < 8; i++) {
         this->select_building_hotkey[i] = *this->get_string(i + STRING_ID_HOTKEY_SELECT_BUILDING_BASE);
     }
@@ -1361,7 +1361,7 @@ long TRIBE_Screen_Game::wnd_proc(void* hwnd, unsigned int msg, unsigned int wPar
     }
 
     if (msg == WM_KEYUP && this->have_focus != 0 && this->main_view->get_focus() != 0) {
-        if (wParam == 0x72 || wParam == 0x13) {
+        if (wParam == VK_F3 || wParam == VK_PAUSE) {
             short(__stdcall * get_key_state)(int) = GetKeyState;
             int alt = get_key_state(VK_MENU) < 0;
             int ctrl = get_key_state(VK_CONTROL) < 0;
@@ -1463,9 +1463,9 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
 
     if (ctrl_key != 0 && shift_key != 0 && alt_key != 0) {
         if (game_over == 0) {
-            if ((key <= 0x7A) && (key >= 0x61)) {
+            if ((key <= 'z') && (key >= 'a')) {
                 key -= 0x20;
-            } else if (((key > 0x5A) || (key < 0x41)) && ((key < 0x30) || (key > 0x39))) {
+            } else if (((key > 'Z') || (key < 'A')) && ((key < '0') || (key > '9'))) {
                 key = 0;
             }
 
@@ -1490,66 +1490,66 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
     }
 
     if (rge_base_game->gameDeveloperMode() != 0 && comm->IsHost() != 0) {
-        if (ctrl_key != 0 && shift_key != 0 && key >= 0x32 && key <= 0x38) {
-            comm->Kick(key - 0x30);
+        if (ctrl_key != 0 && shift_key != 0 && key >= '2' && key <= '8') {
+            comm->Kick(key - '0');
             return 1;
         }
     }
-    if (ctrl_key != 0 && key >= 0x30 && key <= 0x39) {
-        key -= 0x30;
+    if (ctrl_key != 0 && key >= '0' && key <= '9') {
+        key -= '0';
         this->command_group_by_number(static_cast<int>(key));
         return 1;
     }
 
     if (shift_key != 0) {
         switch (key) {
-            case 0x30:
-            case 0x31:
-            case 0x32:
-            case 0x33:
-            case 0x34:
-            case 0x35:
-            case 0x36:
-            case 0x37:
-            case 0x38:
-            case 0x39:
-                key -= 0x30;
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                key -= '0';
                 this->command_select_group(static_cast<int>(key), 0);
                 return 1;
-            case 0x70:
+            case VK_F1:
                 this->setup_popup_help();
                 return 1;
-            case 0x71:
+            case VK_F2:
                 if (game_over == 0 && allow_user_commands != 0) {
                     this->command_formation(0);
                 }
                 return 1;
-            case 0x72:
+            case VK_F3:
                 if (game_over == 0 && allow_user_commands != 0) {
                     this->command_formation(1);
                 }
                 return 1;
-            case 0x73:
+            case VK_F4:
                 if (game_over == 0 && allow_user_commands != 0) {
                     this->command_formation(2);
                 }
                 return 1;
-            case 0x74:
+            case VK_F5:
                 if (game_over == 0 && allow_user_commands != 0) {
                     this->command_formation(3);
                 }
                 return 1;
-            case 0x75:
+            case VK_F6:
                 if (game_over == 0 && allow_user_commands != 0) {
                     this->command_formation(4);
                 }
                 return 1;
-            case 0x76:
+            case VK_F7:
                 if (game_over == 0 && allow_user_commands != 0) {
                     this->command_formation(5);
                 }
                 return 1;
-            case 9:
+            case VK_TAB:
                 this->command_tab_selected(0);
                 return 1;
             default:
@@ -1557,54 +1557,54 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
         }
     }
 
-    // Ctrl and Alt 0x49 use different game fields.
+    // Ctrl and Alt I use different game fields.
     if (alt_key != 0) {
         switch (key) {
-            case 0x30:
-            case 0x31:
-            case 0x32:
-            case 0x33:
-            case 0x34:
-            case 0x35:
-            case 0x36:
-            case 0x37:
-            case 0x38:
-            case 0x39:
-                key -= 0x30;
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                key -= '0';
                 this->command_select_group(static_cast<int>(key), 1);
                 this->command_view_selected();
                 return 1;
-            case 0x49:
+            case 'I':
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     rge_base_game->display_selected_ids = (rge_base_game->display_selected_ids == 0);
                 }
                 return 1;
-            case 0x50:
+            case 'P':
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     MapPathsDisplay = (MapPathsDisplay == 0);
                 }
                 return 1;
-            case 0x53:
+            case 'S':
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     view_debug_spans = (view_debug_spans == 0);
                 }
                 return 1;
-            case 0x43:
+            case 'C':
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     view_debug_redraw_all = 1;
                 }
                 return 1;
-            case 0x4F:
+            case 'O':
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     view_debug_ObstructionMap = (view_debug_ObstructionMap == 0);
                 }
                 return 1;
-            case 0x41:
+            case 'A':
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     view_debug_Objects = (view_debug_Objects == 0);
                 }
                 return 1;
-            case 0x58:
+            case 'X':
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     view_debug_palette = (view_debug_palette == 0);
                 }
@@ -1655,59 +1655,59 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
         }
 
         switch (key) {
-            case 0x70:
+            case VK_F1:
                 this->command_player(1);
                 return result;
-            case 0x71:
+            case VK_F2:
                 this->command_player(2);
                 return result;
-            case 0x72:
+            case VK_F3:
                 this->command_player(3);
                 return result;
-            case 0x73:
+            case VK_F4:
                 this->command_player(4);
                 return result;
-            case 0x74:
+            case VK_F5:
                 this->command_player(5);
                 return result;
-            case 0x75:
+            case VK_F6:
                 this->command_player(6);
                 return result;
-            case 0x76:
+            case VK_F7:
                 this->command_player(7);
                 return result;
-            case 0x77:
+            case VK_F8:
                 this->command_player(8);
                 return result;
-            case 0x78:
+            case VK_F9:
                 this->command_player(0);
                 return result;
-            case 0x20:
+            case VK_SPACE:
                 this->command_view_selected();
                 break;
-            case 0x45:
+            case 'E':
                 new TribeSaveGameScreen(TribeSaveGameScreen::SaveGame, 0, 0);
                 panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
                 break;
-            case 0x46:
+            case 'F':
                 if (allow_user_commands != 0) {
                     this->command_add_attribute(0);
                 }
                 break;
-            case 0x47:
+            case 'G':
                 if (allow_user_commands != 0) {
                     this->command_add_attribute(3);
                 }
                 break;
-            case 0x49:
+            case 'I':
                 static_cast<TRIBE_Game*>(rge_base_game)->show_object_id =
                     (static_cast<TRIBE_Game*>(rge_base_game)->show_object_id == 0);
                 this->object_panel->set_redraw(static_cast<TPanel::RedrawMode>(result));
                 return 0;
-            case 0x4A:
+            case 'J':
                 comm->TXDebugPing();
                 break;
-            case 0x4D: {
+            case 'M': {
                 sprintf(str, "Writing out memory info (%d)...", ++memory_dump_sequence);
                 TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
                 game->show_status_message(str, 0, -1);
@@ -1716,24 +1716,24 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
                 static_cast<TRIBE_Game*>(rge_base_game)->close_status_message();
                 break;
             }
-            case 0x4E:
+            case 'N':
                 if (rge_base_game->multiplayerGame() == 0) {
                     static_cast<TRIBE_Game*>(rge_base_game)->restart_game();
                 }
                 break;
-            case 0x4F:
+            case 'O':
                 if (rge_base_game->outline_type != 3) {
                     rge_base_game->outline_type = 3;
                     return result;
                 }
                 rge_base_game->outline_type = 2;
                 return result;
-            case 0x51:
+            case 'Q':
                 if (allow_user_commands != 0) {
                     this->command_quick_build();
                 }
                 break;
-            case 0x52:
+            case 'R':
                 ++View_Grid_Mode;
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     if (View_Grid_Mode > 4) {
@@ -1744,40 +1744,40 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
                 }
                 this->main_view->set_redraw(TPanel::RedrawImmediate);
                 return 0;
-            case 0x53:
+            case 'S':
                 if (allow_user_commands != 0) {
                     this->command_add_attribute(2);
                 }
                 break;
-            case 0x54:
+            case 'T':
                 this->command_tool_box();
                 break;
-            case 0x55:
+            case 'U':
                 if (rge_base_game->gameDeveloperMode() != 0 && rge_base_game->check_prog_argument("ALLOWCTRLU") != 0) {
                     L->Log("*** !!! %%% USER PRESSED CTRL-U TO FORCE OUT OF SYNC %%% !!! ***");
                     displayPathingFlags = (displayPathingFlags == 0);
                 }
                 break;
-            case 0x56:
+            case 'V':
                 new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenario, 0, 0);
                 panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
                 break;
-            case 0x57:
+            case 'W':
                 if (allow_user_commands != 0) {
                     this->command_add_attribute(1);
                 }
                 break;
-            case 0x58:
+            case 'X':
                 if (allow_user_commands != 0) {
                     rge_base_game->get_player()->kickAI(result);
                 }
                 break;
-            case 0x59:
+            case 'Y':
                 if (allow_user_commands != 0) {
                     rge_base_game->get_player()->kickAI(2);
                 }
                 break;
-            case 0x5A:
+            case 'Z':
                 if (allow_user_commands != 0) {
                     rge_base_game->get_player()->kickAI(3);
                 }
@@ -1811,49 +1811,49 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
 
         // this switch is after the work-key fall-through blocks.
         switch (key) {
-            case 0x30:
-            case 0x31:
-            case 0x32:
-            case 0x33:
-            case 0x34:
-            case 0x35:
-            case 0x36:
-            case 0x37:
-            case 0x38:
-            case 0x39:
-                key = key + (-0x30);
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                key = key + (-'0');
                 this->command_select_group(static_cast<int>(key), result);
                 break;
-            case 9:
+            case VK_TAB:
                 this->command_tab_selected(result);
                 return result;
-            case 0x73:
+            case VK_F4:
                 this->command_score(this->world->score_displayed == 0);
                 break;
-            case 0x74:
+            case VK_F5:
                 this->command_fps();
                 break;
-            case 0x75:
+            case VK_F6:
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     this->command_visibility();
                 }
                 break;
-            case 0x76:
+            case VK_F7:
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     this->command_fog_of_war();
                 }
                 break;
-            case 0x77:
+            case VK_F8:
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     this->command_comm_info();
                 }
                 break;
-            case 0x78:
+            case VK_F9:
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     this->command_ai_info();
                 }
                 break;
-            case 0x7A:
+            case VK_F11:
                 if (this->time_panel->get_clock_type() == 0) {
                     this->time_panel->set_clock_type(2, 0);
                     this->pop_panel->set_active(result);
@@ -1864,16 +1864,16 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
                 this->reset_clocks();
                 this->main_view->set_redraw(static_cast<TPanel::RedrawMode>(result));
                 return 0;
-            case 0x20:
+            case VK_SPACE:
                 this->command_view_selected();
                 break;
-            case 0x0D:
+            case VK_RETURN:
                 this->command_quick_chat();
                 break;
-            case 0x24:
+            case VK_HOME:
                 static_cast<TRIBE_Game*>(rge_base_game)->goto_notification_loc();
                 break;
-            case 0x2E:
+            case VK_DELETE:
                 if (game_over == 0 && allow_user_commands != 0) {
                     this->command_cancel_building();
                 }
@@ -1891,13 +1891,13 @@ long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int 
 long TRIBE_Screen_Game::char_action(long key, short count) {
     static_cast<void>(count);
     switch (key) {
-        case 0x2B:
-        case 0x3D:
+        case '+':
+        case '=':
             if (allow_user_commands != 0) {
                 this->command_game_speed(1);
             }
             return 0;
-        case 0x2D:
+        case '-':
             if (allow_user_commands != 0) {
                 this->command_game_speed(0);
             }
@@ -3084,7 +3084,7 @@ void TRIBE_Screen_Game::set_button(
             hotkey = static_cast<int>(*this->get_string(hotkey));
         }
         if (id == 6 || id == 0x0B) {
-            hotkey = 0x1B;
+            hotkey = VK_ESCAPE;
         }
 
         button_panel->hotkey = hotkey;

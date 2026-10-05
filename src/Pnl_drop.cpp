@@ -130,7 +130,7 @@ long TDropDownPanel::handle_mouse_up(unsigned char mouse_button_in, long x, long
 }
 
 long TDropDownPanel::handle_key_down(long key, short count, int alt_key, int ctrl_key, int shift_key) {
-    if (this->have_focus != 0 && (key == 0x28 || key == 0x26) && this->mode == 1) {
+    if (this->have_focus != 0 && (key == VK_DOWN || key == VK_UP) && this->mode == 1) {
         this->set_mode(ModeList);
         return 1;
     }

@@ -69,7 +69,7 @@ TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed* scenario_editor_i
         return;
 
     TButtonPanel* cancel = this->buttons[6];
-    cancel->hotkey = 0x1B;
+    cancel->hotkey = VK_ESCAPE;
     cancel->hotkey_shift = 0;
 }
 

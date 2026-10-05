@@ -79,7 +79,7 @@ TribeMPStartupScreen::TribeMPStartupScreen() : TScreenPanel("MP Startup Screen")
                         )) {
                         (*cancel_button)->set_help_info(STRING_ID_HELP_CANCEL, -1);
                         cancel = *cancel_button;
-                        cancel->hotkey = 0x1B;
+                        cancel->hotkey = VK_ESCAPE;
                         cancel->hotkey_shift = 0;
                         if (this->create_button(
                                 this, &this->help_button, STRING_ID_BUTTON_HELP, 0, 580, 440, 30, 30,

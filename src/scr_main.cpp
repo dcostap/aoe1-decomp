@@ -159,7 +159,7 @@ long TRIBE_Screen_Main_Menu::handle_idle() {
 long TRIBE_Screen_Main_Menu::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     if (ctrl_key != 0) {
         switch (key) {
-            case 0x4C: {
+            case 'L': {
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     if (static_cast<TRIBE_Game*>(rge_base_game)->load_db_files() == 0) {
                         TEasy_Panel::popupOKDialog(STRING_ID_ERROR_LOAD_GAME_DATA, 0, TEASY_POPUP_WIDTH, 100);
@@ -168,7 +168,7 @@ long TRIBE_Screen_Main_Menu::key_down_action(long key, short count, int alt_key,
                 return 1;
             }
 
-            case 0x43:
+            case 'C':
                 new TRIBE_Credits_Screen();
                 panel_system.setCurrentPanel("Credits Screen", 0);
                 panel_system.destroyPanel("Main Menu");

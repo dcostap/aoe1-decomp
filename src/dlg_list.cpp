@@ -81,7 +81,7 @@ long TListDialog::setup(
     }
 
     TButtonPanel* cancel = cancel_btn;
-    cancel->hotkey = 0x1B;
+    cancel->hotkey = VK_ESCAPE;
     cancel->hotkey_shift = 0;
     TPanel::set_curr_child(list);
     return 1;

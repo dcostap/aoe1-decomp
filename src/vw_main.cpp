@@ -68,7 +68,7 @@ int RGE_Main_View::do_auto_scroll() {
         vert_scroll = 0;
         info = rge_base_game->prog_info;
 
-        if (GetAsyncKeyState(1) >= 0 && GetAsyncKeyState(2) >= 0) {
+        if (GetAsyncKeyState(VK_LBUTTON) >= 0 && GetAsyncKeyState(VK_RBUTTON) >= 0) {
             if (point.x < rect.left + info->mouse_scroll_edge)
                 vert_scroll = -1;
             else if (point.x > rect.right - info->mouse_scroll_edge)
@@ -158,27 +158,27 @@ int RGE_Main_View::handle_keys() {
 
         if (rge_base_game->game_mode == 0x12 && this->player != 0 && this->player->selected_obj != 0) {
             RGE_Static_Object* obj = this->player->selected_obj;
-            if (pbKeyState[0x26] > 1) {
+            if (pbKeyState[VK_UP] > 1) {
                 obj->teleport(
                     obj->world_x + info->key_scroll_object_move, obj->world_y - info->key_scroll_object_move, 0
                 );
                 changed = 1;
             }
-            if (pbKeyState[0x28] > 1) {
+            if (pbKeyState[VK_DOWN] > 1) {
                 RGE_Static_Object* obj2 = this->player->selected_obj;
                 obj2->teleport(
                     obj->world_x - info->key_scroll_object_move, obj->world_y + info->key_scroll_object_move, 0
                 );
                 changed = 1;
             }
-            if (pbKeyState[0x25] > 1) {
+            if (pbKeyState[VK_LEFT] > 1) {
                 RGE_Static_Object* obj2 = this->player->selected_obj;
                 obj2->teleport(
                     obj->world_x - info->key_scroll_object_move, obj->world_y - info->key_scroll_object_move, 0
                 );
                 changed = 1;
             }
-            if (pbKeyState[0x27] > 1) {
+            if (pbKeyState[VK_RIGHT] > 1) {
                 RGE_Static_Object* obj2 = this->player->selected_obj;
                 obj2->teleport(
                     obj->world_x + info->key_scroll_object_move, obj->world_y + info->key_scroll_object_move, 0
@@ -186,14 +186,14 @@ int RGE_Main_View::handle_keys() {
                 changed = 1;
             }
         } else if (this->player != 0) {
-            if (pbKeyState[0x25] > 1)
+            if (pbKeyState[VK_LEFT] > 1)
                 horz_scroll = -1;
-            else if (pbKeyState[0x27] > 1)
+            else if (pbKeyState[VK_RIGHT] > 1)
                 horz_scroll = 1;
 
-            if (pbKeyState[0x26] > 1)
+            if (pbKeyState[VK_UP] > 1)
                 vert_scroll = -1;
-            else if (pbKeyState[0x28] > 1)
+            else if (pbKeyState[VK_DOWN] > 1)
                 vert_scroll = 1;
 
             if (horz_scroll != 0 || vert_scroll != 0) {

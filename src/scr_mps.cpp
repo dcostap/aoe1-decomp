@@ -355,7 +355,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
 
     TButtonPanel* cancel = this->cancelButton;
-    cancel->hotkey = 0x1B;
+    cancel->hotkey = VK_ESCAPE;
     cancel->hotkey_shift = 0;
     this->setupTabOrder();
     L->Log("$$$ CHAT SCREEN: UPDATE SUMMARY");

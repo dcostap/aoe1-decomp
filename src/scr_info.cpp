@@ -42,7 +42,7 @@ long TRIBE_Screen_Info::handle_idle() {
 }
 
 long TRIBE_Screen_Info::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
-    if (key != 0x12 && key != 0x11 && key != 0x10) {
+    if (key != VK_MENU && key != VK_CONTROL && key != VK_SHIFT) {
         close_screen();
     }
     return 0;

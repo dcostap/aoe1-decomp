@@ -79,7 +79,7 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
     }
     this->cancel_button->set_help_info(STRING_ID_HELP_CANCEL, -1);
     TButtonPanel* cancel = this->cancel_button;
-    cancel->hotkey = 0x1B;
+    cancel->hotkey = VK_ESCAPE;
     cancel->hotkey_shift = 0;
 
     if (!this->create_button(this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0)) {
@@ -304,7 +304,7 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_panel_in) : TDialogPan
         return;
 
     TButtonPanel* cancel = this->cancel_button;
-    cancel->hotkey = 0x1b;
+    cancel->hotkey = VK_ESCAPE;
     cancel->hotkey_shift = 0;
     TPanel* tab_list[3];
     tab_list[0] = this->name_input;

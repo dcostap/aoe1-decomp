@@ -1688,54 +1688,54 @@ long TRIBE_Screen_Sed::key_down_action(long key, short count, int alt_key, int c
     if (panel_system.modalPanel() == 0) {
         if (ctrl_key != 0) {
             switch (key) {
-                case 0x41:
+                case 'A':
                     if (rge_base_game->outline_type != 3) {
                         rge_base_game->outline_type = 3;
                         return 1;
                     }
                     rge_base_game->outline_type = 0;
                     return 1;
-                case 0x4D:
+                case 'M':
                     this->scenario_mode_button[0]->set_state(1);
                     this->set_scenario_mode(ScenarioModeMap);
                     return 0;
-                case 0x54:
+                case 'T':
                     this->scenario_mode_button[1]->set_state(1);
                     this->set_scenario_mode(ScenarioModeTerrain);
                     return 0;
-                case 0x50:
+                case 'P':
                     this->scenario_mode_button[2]->set_state(1);
                     this->set_scenario_mode(ScenarioModePlayers);
                     return 0;
-                case 0x55:
+                case 'U':
                     this->scenario_mode_button[3]->set_state(1);
                     this->set_scenario_mode(ScenarioModeUnits);
                     return 0;
-                case 0x44:
+                case 'D':
                     this->scenario_mode_button[4]->set_state(1);
                     this->set_scenario_mode(ScenarioModeDiplomacy);
                     return 0;
-                case 0x49:
+                case 'I':
                     this->scenario_mode_button[5]->set_state(1);
                     this->set_scenario_mode(ScenarioModeVictory);
                     return 0;
-                case 0x56:
+                case 'V':
                     this->scenario_mode_button[6]->set_state(1);
                     this->set_scenario_mode(ScenarioModeVictoryMulti);
                     return 0;
-                case 0x4F:
+                case 'O':
                     this->scenario_mode_button[7]->set_state(1);
                     this->set_scenario_mode(ScenarioModeOptions);
                     return 0;
-                case 0x57:
+                case 'W':
                     this->scenario_mode_button[8]->set_state(1);
                     this->set_scenario_mode(ScenarioModeMessages);
                     return 0;
-                case 0x43:
+                case 'C':
                     this->scenario_mode_button[9]->set_state(1);
                     this->set_scenario_mode(ScenarioModeCinematics);
                     return 0;
-                case 0x42:
+                case 'B':
                     ++View_Grid_Mode;
                     if (rge_base_game->gameDeveloperMode() != 0) {
                         if (View_Grid_Mode > 4) {
@@ -1752,17 +1752,17 @@ long TRIBE_Screen_Sed::key_down_action(long key, short count, int alt_key, int c
         }
 
         switch (key) {
-            case 0x30:
-            case 0x31:
-            case 0x32:
-            case 0x33:
-            case 0x34:
-            case 0x35:
-            case 0x36:
-            case 0x37:
-            case 0x38: {
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8': {
                 int mode = this->scenario_mode;
-                int i = key - 0x30;
+                int i = key - '0';
                 short selected = i;
 
                 if ((mode == ScenarioModeOptions) && (0 < i)) {
@@ -1806,7 +1806,7 @@ long TRIBE_Screen_Sed::key_down_action(long key, short count, int alt_key, int c
                     }
                 }
             } break;
-            case 9:
+            case VK_TAB:
                 if (this->scenario_mode == ScenarioModePlayers) {
                     if (this->bottom_panel->curr_child == 0) {
                         this->bottom_panel->set_curr_child(this->player_inven_input[0]);
@@ -1818,10 +1818,10 @@ long TRIBE_Screen_Sed::key_down_action(long key, short count, int alt_key, int c
                     return 0;
                 }
                 break;
-            case 0x1B:
+            case VK_ESCAPE:
                 this->command_cancel();
                 return 0;
-            case 0x2E:
+            case VK_DELETE:
                 if (this->scenario_mode == ScenarioModeUnits) {
                     RGE_Player* player = rge_base_game->get_player();
                     RGE_Static_Object* object = player->selected_obj;
