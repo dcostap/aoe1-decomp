@@ -491,7 +491,8 @@ void __cdecl RGE_Player::sendChatMessage(int playerID, int copySelf, char* textI
     }
 }
 
-//! Same defect as TRIBE_Player::make_scenario_obj(): the status byte is dropped here too.
+//! @bug Same as TRIBE_Player::make_scenario_obj(): the saved state byte only selects an action.
+//! It is never stored in object_state, so objects saved as dying (states 3-6) keep their default state.
 RGE_Static_Object* RGE_Player::make_scenario_obj(
     float world_x, float world_y, float world_z, short master_id, unsigned char state, float new_angle
 ) {

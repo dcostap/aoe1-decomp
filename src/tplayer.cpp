@@ -159,9 +159,10 @@ TRIBE_Player::~TRIBE_Player() {
     }
 }
 
-//! @bug The saved unit status byte arrives here but is never applied to the new object.
-//! The state maps to actions only, so the object keeps its constructor default status.
-//! Dying buildings also keep the construction sprite, which breaks their display.
+//! @bug The saved state byte only selects an action. It is never stored in object_state.
+//! The new object keeps its constructor default state. destroy_obj() (states 7-8) sets its own
+//! state, but die_die_die() (states 3-6) only sets hp to 0.
+//! A building saved as dying also skips build(), so it dies with the construction sprite.
 RGE_Static_Object* TRIBE_Player::make_scenario_obj(
     float world_x, float world_y, float world_z, short master_id, unsigned char state, float new_angle
 ) {
