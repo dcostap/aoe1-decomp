@@ -2570,6 +2570,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg, WPARAM wparam, LPAR
     color_log(0x24, 0x45, 3);
 
     switch (msg) {
+        // SetTimer requests a 50 ms interval. Windows can deliver WM_TIMER later.
         case WM_TIMER:
             this->handle_idle();
             break;
