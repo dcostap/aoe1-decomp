@@ -56,8 +56,10 @@ int RGE_Main_View::do_auto_scroll() {
     unsigned long now;
     unsigned long elapsed;
 
-    if ((rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 || rge_base_game->prog_mode == 7
-         || rge_base_game->prog_mode == 5)
+    if ((rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME
+         || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+         || rge_base_game->prog_mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR
+         || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_OVER)
         && rge_base_game->get_paused() == 0 && rge_base_game->prog_info->auto_scroll != 0
         && GetForegroundWindow() == this->TPanel::render_area->Wnd && panel_system.modalPanel() == 0
         && (panel_system.mouseOwner() == 0 || panel_system.mouseOwner() == this) && this->key_scrolling == 0) {
@@ -147,8 +149,10 @@ int RGE_Main_View::handle_keys() {
     unsigned long elapsed;
 
     if (rge_base_game->get_paused() == 0
-        && (rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 || rge_base_game->prog_mode == 7
-            || rge_base_game->prog_mode == 5)
+        && (rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME
+            || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+            || rge_base_game->prog_mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR
+            || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_OVER)
         && GetForegroundWindow() == this->TPanel::render_area->Wnd && this->have_focus != 0) {
         changed = 0;
         GetKeyboardState(pbKeyState);
@@ -270,7 +274,8 @@ long RGE_Main_View::handle_mouse_up(unsigned char mouse_button_in, long x, long 
 long RGE_Main_View::mouse_move_action(long x, long y, int ctrl_key, int shift_key) {
     RGE_Base_Game* game = rge_base_game;
     int mode = game->prog_mode;
-    if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+    if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+        || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
         mode = game->game_mode;
         if (mode == 1)
             goto call_redraw;
@@ -298,7 +303,8 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
 
     if (rge_base_game->get_paused() == 0) {
         int mode = rge_base_game->prog_mode;
-        if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+        if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+            || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
             mode = rge_base_game->game_mode;
             color_log(0x4C, 0xBA, 1);
 
@@ -410,7 +416,8 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
 
 long RGE_Main_View::mouse_left_move_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
-    if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+    if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+        || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
         if (rge_base_game->get_paused()) {
             if (this->scroll_action)
                 this->end_scroll_view();
@@ -445,7 +452,8 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
     RGE_Pick_Info pick_info;
     int mode = rge_base_game->prog_mode;
 
-    if (mode != 4 && mode != 6 && mode != 7 && mode != 5)
+    if (mode != RGE_PROGRAM_MODE_GAME && mode != RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+        && mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR && mode != RGE_PROGRAM_MODE_GAME_OVER)
         return 0;
 
     color_log(0x4C, 0x16, 1);
@@ -562,8 +570,8 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
 
                 if (status == 0x34) {
                     int prog_mode = rge_base_game->prog_mode;
-                    if (prog_mode != 5 && this->player->sel_count > 0 && prog_mode != 7
-                        && this->command_make_do(x, y, 0, -1) != 0) {
+                    if (prog_mode != RGE_PROGRAM_MODE_GAME_OVER && this->player->sel_count > 0
+                        && prog_mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR && this->command_make_do(x, y, 0, -1) != 0) {
                         return 1;
                     }
 
@@ -592,7 +600,8 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
                         }
                     } else {
                         prog_mode = rge_base_game->prog_mode;
-                        if (prog_mode != 5 && prog_mode != 7 && this->command_make_do(x, y, 1, -1) != 0) {
+                        if (prog_mode != RGE_PROGRAM_MODE_GAME_OVER && prog_mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR
+                            && this->command_make_do(x, y, 1, -1) != 0) {
                             break;
                         }
 
@@ -611,7 +620,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
 
                 if (status == 0x33) {
                     int prog_mode = rge_base_game->prog_mode;
-                    if (prog_mode != 5 && prog_mode != 7) {
+                    if (prog_mode != RGE_PROGRAM_MODE_GAME_OVER && prog_mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR) {
                         if (shift_key == 0) {
                             this->command_make_do(x, y, 1, -1);
                         } else {
@@ -674,7 +683,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
                 else
                     draw_level = 0x14;
 
-                if (rge_base_game->prog_mode == 7) {
+                if (rge_base_game->prog_mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR) {
                     if (object != 0)
                         delete object;
                 } else {
@@ -710,7 +719,8 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
 long RGE_Main_View::mouse_right_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (!rge_base_game->get_paused()) {
         int mode = rge_base_game->prog_mode;
-        if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+        if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+            || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
             color_log(0x4C, 0x24, 1);
             if (rge_base_game->game_mode != 0x13) {
                 this->capture_mouse();
@@ -731,7 +741,8 @@ long RGE_Main_View::mouse_right_down_action(long x, long y, int ctrl_key, int sh
 
 long RGE_Main_View::mouse_right_move_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
-    if (mode != 4 && mode != 6 && mode != 7 && mode != 5)
+    if (mode != RGE_PROGRAM_MODE_GAME && mode != RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+        && mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR && mode != RGE_PROGRAM_MODE_GAME_OVER)
         return 0;
 
     int paused = rge_base_game->get_paused();
@@ -762,7 +773,8 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int shif
     RGE_Pick_Info pick_info;
     int mode = rge_base_game->prog_mode;
 
-    if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+    if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+        || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
         color_log(0x4C, 0x32, 1);
 
         if (this->scroll_action != 0) {
@@ -784,7 +796,8 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int shif
                 }
 
                 if (rge_base_game->prog_info->interface_style == 2) {
-                    if (rge_base_game->prog_mode != 5 && rge_base_game->prog_mode != 7) {
+                    if (rge_base_game->prog_mode != RGE_PROGRAM_MODE_GAME_OVER
+                        && rge_base_game->prog_mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR) {
                         if (rge_base_game->game_mode == 0) {
                             if (shift_key == 0) {
                                 this->command_make_do(x, y, 1, -1);
@@ -815,7 +828,7 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int shif
                             rge_base_game->set_game_mode(0, 0);
                         }
                     }
-                } else if (rge_base_game->prog_mode != 7) {
+                } else if (rge_base_game->prog_mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR) {
                     if (rge_base_game->game_mode != 0) {
                         rge_base_game->set_game_mode(0, 0);
                     } else {

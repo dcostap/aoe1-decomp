@@ -3963,7 +3963,7 @@ int TRIBE_Game::handle_query_new_palette(void* wnd, unsigned int msg, unsigned i
 
     result = 1;
     mode = this->prog_mode;
-    if (mode == result) {
+    if (mode == ProgModeVideo) {
         if (this->video_window != 0 && this->video_hi_color == 0) {
             SendMessageA(this->video_window, TRIBE_MCIWNDM_REALIZE, 0, 0);
         }

@@ -3,6 +3,16 @@
 
 #include <windows.h>
 
+// Program-mode IDs. RGE_Base_Game stores these values as int.
+#define RGE_PROGRAM_MODE_NONE             0
+#define RGE_PROGRAM_MODE_VIDEO            1
+#define RGE_PROGRAM_MODE_MENU             2
+#define RGE_PROGRAM_MODE_MULTIPLAYER_WAIT 3
+#define RGE_PROGRAM_MODE_GAME             4
+#define RGE_PROGRAM_MODE_GAME_OVER        5
+#define RGE_PROGRAM_MODE_GAME_TEMP_PAUSED 6
+#define RGE_PROGRAM_MODE_SCENARIO_EDITOR  7
+
 #define RGE_PATH_FINDING_DEFAULT 0
 #define RGE_PATH_FINDING_MEDIUM  1
 #define RGE_PATH_FINDING_HIGH    2
