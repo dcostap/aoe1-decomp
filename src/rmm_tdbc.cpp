@@ -3,6 +3,7 @@
 #include "../include/rmm_clif.h"
 #include "../include/rmm_shal.h"
 #include "../include/map.h"
+#include "../include/m_s_obj.h"
 #include "../include/tribegam.h"
 #include "../include/rge_base_game_global.h"
 #include "../include/game_globals.h"
@@ -284,11 +285,11 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
 
     if (((TRIBE_Game*) rge_base_game)->startingAge() == TRIBE_Game::NomadAge) {
         for (index = 0; index < this->object_info.object_num; ++index) {
-            if (this->object_info.objects[index].obj_id == 0x53)
+            if (this->object_info.objects[index].obj_id == MASTER_OBJECT_MAN)
                 this->object_info.objects[index].number_of_groups = 1;
         }
         for (index = 0; index < this->object_info.object_num; ++index) {
-            if (this->object_info.objects[index].obj_id == 0x6d)
+            if (this->object_info.objects[index].obj_id == MASTER_OBJECT_TOWN_CENTER1)
                 this->object_info.objects[index].number_of_groups = 0;
         }
     }

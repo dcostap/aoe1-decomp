@@ -70,19 +70,15 @@ The code was not used to choose the names. These uses agree with them:
 
 ## Values left numeric
 
-- `obj_id == 0x53` and `obj_id == 0x6d` in `TRIBE_RMM_Database_Controller::add_object_module`
-  (`rmm_tdbc.cpp`) are `Man` and `Town_Center1`. That file does not include `m_s_obj.h`.
-  Adding the include at line 3, 6, or 10 swapped two `imul` operands in `add_terrain_module`, which is not an
-  exact claim, so the object payload changed. The file keeps the numbers.
 - `obj_id >= 0` bounds checks in `player.cpp` and `stat_obj.cpp`.
 - `trail->master_obj->id > 30` in `move_obj.cpp`. It is a range test, and 30 is a terrain path piece.
 - `master->id == 0x63` in `t_c_obj.cpp`. ID 99 has no record in the pinned data.
 - Object-group values, such as `importantWhenDead`, the `oType` tests in `taiinfmd.cpp`, and the second
   `switch (group)` in `checkDefend`. These already use `OBJECT_GROUP_*` where a name exists.
-- `typeID` values in `taibldmd.cpp` other than `insert`, because those can be technology IDs.
+- `BuildItem::typeID()` tests on research items (categories 1 and 4) in
+  `TribeBuildAIModule`, because those values are technology IDs.
 - `mostDamaged(3, ...)` and `mostDamaged(0x1b, ...)` pass object groups (building and wall), not IDs.
-- Other functions that take a type, such as `gameIDsOfObjectType`, were searched only for the patterns above.
-  Literal arguments to them are candidates for later work.
+- `placementCode` return values stay numeric. They are placement codes, not IDs.
 
 ## Validation
 
@@ -97,3 +93,47 @@ Artifacts are under `build/cleanup-2026-10-10/master-objects`.
 - clang-format 21.1.8 was applied to the edited source files.
 
 No linked executable build, image audit, automated tests, or runtime suites ran.
+
+## Follow-up (second pass)
+
+The starting commit is `e8aeb1358`.
+
+### `rmm_tdbc.cpp`
+
+`add_object_module` (`00487FA0`) now uses `MASTER_OBJECT_MAN` and `MASTER_OBJECT_TOWN_CENTER1`, and the file
+includes `m_s_obj.h` after `map.h`. Adding the include also changes `add_terrain_module` (`00487DD0`).
+Neither function is an exact claim. The rebuilt function now multiplies by `[esi+18h]` before `[esi+14h]`.
+The original executable at `00487DEC` uses that same order (`imul ecx,[esi+18h]`, then `imul ecx,[esi+14h]`).
+The rebuilt function therefore moved closer to the original, from 380 to 378 differing bytes, and
+`add_object_module` stays at 99. The disassembly of the object differs only in that pair of instructions and in
+compiler label numbers. Its data sections are unchanged. The include placement was not further optimized.
+
+### More contexts
+
+`build/cleanup-2026-10-10/name_master_objects2.py` applies these:
+
+- the case labels of `TribeInformationAIModule::placementCode`: towers, walls, `Granary`, `Storage_Pit1`,
+  houses and other 6-code buildings, `Dock_1`, `Farm`, and `Town_Center1`;
+- `storeLot(MASTER_OBJECT_WALL_SMALL, ...)`, which marks wall lots around gates;
+- `BuildItem::typeID()` tests where the item is a building (category 0) or a unit (category 2), and the
+  `typeID` argument of the `number*ItemsOfType(type, 0)` counters;
+- `typeID()` tests on construction items in `taiconmd.cpp` and `TribeTacticalAIModule`;
+- the second `nEvent->p2 == MASTER_OBJECT_FARM` test in the same notify handler in `taiuaimd.cpp`.
+
+The two `item->typeID()` tests next to `storage_pit_count` and `granary_count` do not check the category.
+The names follow the counters they belong to.
+
+The literal-argument search covered `gameIDsOfObjectType`, `numberGameIDsOwnedBy`, the lot functions,
+`higherPriorityObjectToDefend`, the defend and importance helpers, the train and cost functions,
+`command_*` building functions, and `add_to_production_queue`. Only `storeLot` received a literal ID.
+Their bodies have no other literal master-ID tests.
+
+In the first loop of `TribeBuildAIModule`'s list scan (around `taibldmd.cpp:50`), the counter names do not
+fit what they count. For example, `bronzeAgeIndex` counts houses and `fishingBoatCount` counts transports.
+They were not renamed here.
+
+### Second-pass validation
+
+Artifacts are under `build/cleanup-2026-10-10/master-objects-3`.
+The six affected groups compiled, and all 386 exact claims passed.
+Five object payloads equal the baseline. `rmm_tdbc` differs only as described above.

@@ -31,7 +31,7 @@ int TribeConstructionAIModule::canPlace(BuildItem* bi) {
         return this->md->informationAI.influenceCanPlaceStructure(bi);
     }
 
-    if (bi->typeID() == 0x2d) {
+    if (bi->typeID() == MASTER_OBJECT_DOCK_1) {
         return 1;
     }
 
@@ -68,7 +68,7 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(
         );
     }
 
-    if (bi->typeID() == 0x2d) {
+    if (bi->typeID() == MASTER_OBJECT_DOCK_1) {
         ConstructionItem* dock = this->placeDock(bi);
         if (dock != 0) {
             return new ConstructionItem(dock);
@@ -76,8 +76,10 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(
         return 0;
     }
 
-    if (bi->typeID() == 0x67 || bi->typeID() == 0x44 || bi->typeID() == 0x4f || bi->typeID() == 0xc7
-        || bi->typeID() == 0x45 || bi->typeID() == 0x48 || bi->typeID() == 0x75 || bi->typeID() == 0x9b
+    if (bi->typeID() == MASTER_OBJECT_STORAGE_PIT1 || bi->typeID() == MASTER_OBJECT_GRANARY
+        || bi->typeID() == MASTER_OBJECT_WATCH_TOWER || bi->typeID() == MASTER_OBJECT_SENTRY_TOWER
+        || bi->typeID() == MASTER_OBJECT_GUARD_TOWER || bi->typeID() == MASTER_OBJECT_WALL_SMALL
+        || bi->typeID() == MASTER_OBJECT_WALL_MED || bi->typeID() == MASTER_OBJECT_WALL_LARGE
         || useInfluencePlacement == 1 || this->numberConstructionLotsValue == 0) {
         return this->md->informationAI.influencePlaceStructure(
             bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState, startTime
@@ -155,7 +157,7 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(
         ConstructionItem* best = tempLots.next;
         ConstructionItem* candidate = best->next;
 
-        if (bi->typeID() == 0x48) {
+        if (bi->typeID() == MASTER_OBJECT_WALL_SMALL) {
             while (candidate != &tempLots && candidate != 0) {
                 if (best->buildAttempts() > candidate->buildAttempts() + 5) {
                     best = candidate;

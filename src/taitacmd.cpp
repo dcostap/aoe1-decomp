@@ -6079,7 +6079,7 @@ int TribeTacticalAIModule::taskBuilder(int builder, BuildItem* newBuilding, Cons
     this->unitsTaskedThisUpdate.value[this->unitsTaskedThisUpdate.numberValue] = builder;
     this->unitsTaskedThisUpdate.numberValue++;
 have:
-    if (ci->typeID() == 0x114)
+    if (ci->typeID() == MASTER_OBJECT_WONDER)
         this->wonderInProgressValue = 1;
     this->md->aiPlayer->buildObject(builder, ci->typeID(), ci->x(), ci->y(), newBuilding->uniqueID());
     if (ci != 0)
@@ -9313,7 +9313,7 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& numStoragePits, int& 
     int capacity_or_count;
     unsigned int remaining;
 
-    value = this->md->buildAI.numberUnbuiltItemsOfType(0x67, 0);
+    value = this->md->buildAI.numberUnbuiltItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0);
     numUnbuiltStoragePits = value;
     if (value > 0) {
         return 0;
@@ -9331,12 +9331,12 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& numStoragePits, int& 
             capacity_or_count = 1;
         }
         product = capacity_or_count * value;
-        capacity_or_count = this->md->buildAI.numberItemsOfType(0x67, 0);
+        capacity_or_count = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0);
         remaining = product - capacity_or_count;
         numStoragePits = capacity_or_count;
         return ((int) remaining < 0) ? 0 : remaining;
     } else {
-        numStoragePits = this->md->buildAI.numberItemsOfType(0x67, 0);
+        numStoragePits = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0);
         return this->md->informationAI.numberAvailableStoragePits(rType);
     }
 }
@@ -9344,7 +9344,7 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& numStoragePits, int& 
 int TribeTacticalAIModule::numberAvailableGranaries(int& numGranaries, int& numUnbuiltGranaries) {
     int value;
 
-    value = this->md->buildAI.numberUnbuiltItemsOfType(0x44, 0);
+    value = this->md->buildAI.numberUnbuiltItemsOfType(MASTER_OBJECT_GRANARY, 0);
     numUnbuiltGranaries = value;
     if (value > 0) {
         return 0;
@@ -9354,13 +9354,13 @@ int TribeTacticalAIModule::numberAvailableGranaries(int& numGranaries, int& numU
         return 0;
     }
     if (this->sn[0x97] != -1) {
-        value = this->md->buildAI.numberItemsOfType(0x44, 0);
+        value = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_GRANARY, 0);
         numGranaries = value;
         if (value >= this->sn[0x97]) {
             return 0;
         }
     }
-    value = this->md->buildAI.numberItemsOfType(0x44, 0);
+    value = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_GRANARY, 0);
     numGranaries = value;
     return this->md->informationAI.numberAvailableGranaries();
 }
@@ -9394,7 +9394,7 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                 //! This row budget is the game's only farm cap; it counts build-list rows, not live farms.
                 //! Deathmatch holds every other gate open, so the AI claims the full budget and replants.
                 //! RockNROR adds a deathmatch farm maximum here (SNMaxFarms); the default budget is 8.
-                if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(0x32, 0) >= this->sn[0xDC])
+                if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(MASTER_OBJECT_FARM, 0) >= this->sn[0xDC])
                     break;
                 this->md->buildAI.insert(MASTER_OBJECT_FARM, number, position);
             }
@@ -9430,7 +9430,8 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                     break;
                 if (this->md->buildAI.allBuilt(0, 0) == 0)
                     break;
-                if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(0x4F, 0) >= this->sn[0xDE])
+                if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(MASTER_OBJECT_WATCH_TOWER, 0)
+                    >= this->sn[0xDE])
                     break;
                 this->md->buildAI.insert(MASTER_OBJECT_WATCH_TOWER, number, position);
             }

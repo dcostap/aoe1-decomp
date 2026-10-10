@@ -796,7 +796,7 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     }
                     this->stopObject(1);
                     this->notifyCommander(nEvent);
-                } else if (nEvent->p2 == 0x32) {
+                } else if (nEvent->p2 == MASTER_OBJECT_FARM) {
                     RGE_Static_Object* object = this->objectValue;
                     float x;
                     if (object->world_x > 5.0f)

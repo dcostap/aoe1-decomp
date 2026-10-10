@@ -3532,8 +3532,8 @@ void TribeInformationAIModule::setupInfluenceMap(
     iMap.initialize(20);
     iMap.setUnchangeableLimit(0xff);
 
-    this->md->buildAI.numberBuiltItemsOfType(0x44, 0);
-    this->md->buildAI.numberBuiltItemsOfType(0x67, 0);
+    this->md->buildAI.numberBuiltItemsOfType(MASTER_OBJECT_GRANARY, 0);
+    this->md->buildAI.numberBuiltItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0);
 
     min.x = 0;
     min.y = 0;
@@ -4027,29 +4027,29 @@ int TribeInformationAIModule::facetTo(XYPoint& one, XYPoint& two) {
 
 int TribeInformationAIModule::placementCode(int typeID) {
     switch (typeID) {
-        case 0x45:
-        case 0x4f:
-        case 0xc7:
+        case MASTER_OBJECT_GUARD_TOWER:
+        case MASTER_OBJECT_WATCH_TOWER:
+        case MASTER_OBJECT_SENTRY_TOWER:
             return 3;
-        case 0x48:
-        case 0x75:
-        case 0x9b:
+        case MASTER_OBJECT_WALL_SMALL:
+        case MASTER_OBJECT_WALL_MED:
+        case MASTER_OBJECT_WALL_LARGE:
             return 4;
-        case 0x44:
+        case MASTER_OBJECT_GRANARY:
             return 2;
-        case 0x67:
+        case MASTER_OBJECT_STORAGE_PIT1:
             return 1;
-        case 0x46:
-        case 0x52:
-        case 0x54:
-        case 0x6e:
-        case 0x114:
+        case MASTER_OBJECT_HOUSE:
+        case MASTER_OBJECT_GOVERNMENT_CENTER:
+        case MASTER_OBJECT_MARKET1:
+        case MASTER_OBJECT_TRADE_WKSHOP:
+        case MASTER_OBJECT_WONDER:
             return 6;
-        case 0x2d:
+        case MASTER_OBJECT_DOCK_1:
             return 7;
-        case 0x32:
+        case MASTER_OBJECT_FARM:
             return 8;
-        case 0x6d:
+        case MASTER_OBJECT_TOWN_CENTER1:
             return 9;
         default:
             return 5;
@@ -4282,22 +4282,22 @@ void TribeInformationAIModule::setupWalls(
             y = minimum.y;
             while (x < maximum.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 ++x;
             }
             while (y < maximum.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 ++y;
             }
             while (x > minimum.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 --x;
             }
             while (y > minimum.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 --y;
             }
 
@@ -4351,7 +4351,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     --y;
                     --count;
                 } while (count != 0);
@@ -4360,7 +4360,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = sideLength;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     ++x;
                     --count;
                 } while (count != 0);
@@ -4369,7 +4369,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     ++y;
                     --count;
                 } while (count != 0);
@@ -4378,7 +4378,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     ++x;
                     --count;
                 } while (count != 0);
@@ -4387,7 +4387,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = sideLength;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     ++y;
                     --count;
                 } while (count != 0);
@@ -4396,7 +4396,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     --x;
                     --count;
                 } while (count != 0);
@@ -4405,7 +4405,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance + 1;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     ++y;
                     --count;
                 } while (count != 0);
@@ -4414,7 +4414,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = sideLength;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     --x;
                     --count;
                 } while (count != 0);
@@ -4423,7 +4423,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance + 1;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     --y;
                     --count;
                 } while (count != 0);
@@ -4432,7 +4432,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     --x;
                     --count;
                 } while (count != 0);
@@ -4441,7 +4441,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = sideLength;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     --y;
                     --count;
                 } while (count != 0);
@@ -4450,7 +4450,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                        this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                     ++x;
                     --count;
                 } while (count != 0);
@@ -4505,46 +4505,46 @@ void TribeInformationAIModule::setupWalls(
 
             while (x < innerMinimumPoint.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 ++x;
                 --y;
             }
             while (x < innerMaximumPoint.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 ++x;
             }
             while (y < innerMinimumPoint.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 ++x;
                 ++y;
             }
             while (y < innerMaximumPoint.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 ++y;
             }
             while (x > innerMaximumPoint.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 --x;
                 ++y;
             }
             while (x > innerMinimumPoint.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 --x;
             }
             while (y > innerMaximumPoint.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 --x;
                 --y;
             }
             while (y > innerMinimumPoint.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char) x, (unsigned char) y, 0);
+                    this->storeLot(MASTER_OBJECT_WALL_SMALL, (unsigned char) x, (unsigned char) y, 0);
                 --y;
             }
 
@@ -5829,7 +5829,7 @@ int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int dropsiteType) {
     if (dropsiteType == 2)
         return 0;
 
-    if (!md->buildAI.numberBuiltOrInProgressItemsOfType(0x67, 0) && closestDropsiteValue[1] != -1)
+    if (!md->buildAI.numberBuiltOrInProgressItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0) && closestDropsiteValue[1] != -1)
         return 1;
 
     if (dropsiteType == 1) {
