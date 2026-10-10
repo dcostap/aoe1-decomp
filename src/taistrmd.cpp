@@ -361,14 +361,22 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
 
     switch (ruleNumber) {
         case 1:
-            p->playerAI->tacticalAI.setStrategicNumber(0, this->sn[0]);
-            p->playerAI->tacticalAI.setStrategicNumber(1, this->sn[1]);
-            p->playerAI->tacticalAI.setStrategicNumber(2, this->sn[2]);
-            p->playerAI->tacticalAI.setStrategicNumber(3, this->sn[3]);
-            p->playerAI->tacticalAI.setStrategicNumber(4, this->sn[4]);
-            p->playerAI->tacticalAI.setStrategicNumber(5, this->sn[5]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x23, this->sn[0x23]);
-            p->playerAI->tacticalAI.setStrategicNumber(100, this->sn[100]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNPercentCivilianExplorers, this->sn[SNPercentCivilianExplorers]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNPercentCivilianBuilders, this->sn[SNPercentCivilianBuilders]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNPercentCivilianGatherers, this->sn[SNPercentCivilianGatherers]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNCapCivilianExplorers, this->sn[SNCapCivilianExplorers]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNCapCivilianBuilders, this->sn[SNCapCivilianBuilders]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNCapCivilianGatherers, this->sn[SNCapCivilianGatherers]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMinimumCivilianExplorers, this->sn[SNMinimumCivilianExplorers]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMaximumGAIAAttackResponse, this->sn[SNMaximumGAIAAttackResponse]
+            );
             p->playerAI->tacticalAI.setStrategicNumber(0xe1, this->sn[0xe1]);
             p->playerAI->tacticalAI.setStrategicNumber(0x75, this->sn[0x75]);
             p->playerAI->tacticalAI.setStrategicNumber(0x76, this->sn[0x76]);
@@ -392,7 +400,7 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(0xb4, this->sn[0xb4]);
             p->playerAI->tacticalAI.setStrategicNumber(0xcd, this->sn[0xcd]);
             p->playerAI->tacticalAI.setStrategicNumber(0xcf, this->sn[0xcf]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xce, this->sn[0xce]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNAutoBuildFarms, this->sn[SNAutoBuildFarms]);
             p->playerAI->tacticalAI.setStrategicNumber(0xdc, this->sn[0xdc]);
             p->playerAI->tacticalAI.setStrategicNumber(0xde, this->sn[0xde]);
             p->playerAI->tacticalAI.setStrategicNumber(0xd0, this->sn[0xd0]);
@@ -417,144 +425,212 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(0xcc, this->sn[0xcc]);
             break;
         case 2:
-            p->playerAI->tacticalAI.setStrategicNumber(0x10, this->sn[0x10]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x1a, this->sn[0x1a]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x24, this->sn[0x24]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x25, this->sn[0x25]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x5d, this->sn[0x5d]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x5e, this->sn[0x5e]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x62, this->sn[0x62]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMinimumAttackGroupSize, this->sn[SNMinimumAttackGroupSize]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMaximumAttackGroupSize, this->sn[SNMaximumAttackGroupSize]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNNumberAttackGroups, this->sn[SNNumberAttackGroups]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNAttackGroupMakeup, this->sn[SNAttackGroupMakeup]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNScaleMinimumAttackGroupSize, this->sn[SNScaleMinimumAttackGroupSize]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNScaleMaximumAttackGroupSize, this->sn[SNScaleMaximumAttackGroupSize]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNAttackGroupSizeRandomness, this->sn[SNAttackGroupSizeRandomness]
+            );
             p->playerAI->tacticalAI.setStrategicNumber(0x79, this->sn[0x79]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x83, this->sn[0x83]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x8f, this->sn[0x8f]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNGroupLeaderDefenseDistance, this->sn[SNGroupLeaderDefenseDistance]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNTaskUngroupedSoldiers, this->sn[SNTaskUngroupedSoldiers]);
             p->playerAI->tacticalAI.setStrategicNumber(0xa2, this->sn[0xa2]);
             break;
         case 0xc:
-            p->playerAI->tacticalAI.setStrategicNumber(0x12, this->sn[0x12]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTotalNumberExplorers, this->sn[SNTotalNumberExplorers]);
             break;
         case 0xd:
-            p->playerAI->tacticalAI.setStrategicNumber(0x13, this->sn[0x13]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNPercentEnemySightedResponse, this->sn[SNPercentEnemySightedResponse]
+            );
             break;
         case 0xe:
-            p->playerAI->tacticalAI.setStrategicNumber(0x14, this->sn[0x14]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNEnemySightedResponseDistance, this->sn[SNEnemySightedResponseDistance]
+            );
             break;
         case 0x10:
-            p->playerAI->tacticalAI.setStrategicNumber(0x16, this->sn[0x16]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x48, this->sn[0x48]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x39, this->sn[0x39]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x5c, this->sn[0x5c]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSentryDistance, this->sn[SNSentryDistance]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSentryDistanceVariation, this->sn[SNSentryDistanceVariation]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNDefenseDistance, this->sn[SNDefenseDistance]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNDefendOverlapDistance, this->sn[SNDefendOverlapDistance]);
             break;
         case 0x11:
-            p->playerAI->tacticalAI.setStrategicNumber(0x17, this->sn[0x17]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNArtifactReturnDistance, this->sn[SNArtifactReturnDistance]);
             break;
         case 0x12:
-            p->playerAI->tacticalAI.setStrategicNumber(0x18, this->sn[0x18]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNPercentVictoryClamp, this->sn[SNPercentVictoryClamp]);
             break;
         case 0x15:
-            p->playerAI->tacticalAI.setStrategicNumber(0x19, this->sn[0x19]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x1c, this->sn[0x1c]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x26, this->sn[0x26]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x27, this->sn[0x27]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMinimumDefendGroupSize, this->sn[SNMinimumDefendGroupSize]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMaximumDefendGroupSize, this->sn[SNMaximumDefendGroupSize]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNNumberDefendGroups, this->sn[SNNumberDefendGroups]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNDefendGroupMakeup, this->sn[SNDefendGroupMakeup]);
             break;
         case 0x16:
-            p->playerAI->tacticalAI.setStrategicNumber(0x1d, this->sn[0x1d]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMinimumPeaceLikeLevel, this->sn[SNMinimumPeaceLikeLevel]);
             break;
         case 0x17:
-            p->playerAI->tacticalAI.setStrategicNumber(0x20, this->sn[0x20]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNPercentExplorationRequired, this->sn[SNPercentExplorationRequired]
+            );
             p->playerAI->tacticalAI.setStrategicNumber(0x91, this->sn[0x91]);
             break;
         case 0x18:
-            p->playerAI->tacticalAI.setStrategicNumber(0x22, this->sn[0x22]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNZeroPriorityDistance, this->sn[SNZeroPriorityDistance]);
             break;
         case 0x19:
-            p->playerAI->tacticalAI.setStrategicNumber(0x28, this->sn[0x28]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x4b, this->sn[0x4b]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNGroupFillMethod, this->sn[SNGroupFillMethod]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNGroupCommanderSelectionMethod, this->sn[SNGroupCommanderSelectionMethod]
+            );
             break;
         case 0x1a:
-            p->playerAI->tacticalAI.setStrategicNumber(0x29, this->sn[0x29]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNAttackGroupGatherSpacing, this->sn[SNAttackGroupGatherSpacing]
+            );
             break;
         case 0x1b:
-            p->playerAI->tacticalAI.setStrategicNumber(0x2b, this->sn[0x2b]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x2c, this->sn[0x2c]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x2a, this->sn[0x2a]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x2d, this->sn[0x2d]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMinimumExploreGroupSize, this->sn[SNMinimumExploreGroupSize]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMaximumExploreGroupSize, this->sn[SNMaximumExploreGroupSize]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNNumberExploreGroups, this->sn[SNNumberExploreGroups]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNExploreGroupMakeup, this->sn[SNExploreGroupMakeup]);
             break;
         case 0x1c:
-            p->playerAI->tacticalAI.setStrategicNumber(0x1e, this->sn[0x1e]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x1f, this->sn[0x1f]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x5b, this->sn[0x5b]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x5f, this->sn[0x5f]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x60, this->sn[0x60]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x61, this->sn[0x61]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNPercentHealthRetreat, this->sn[SNPercentHealthRetreat]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNPercentDeathRetreat, this->sn[SNPercentDeathRetreat]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNPercentUnitHealthRetreat, this->sn[SNPercentUnitHealthRetreat]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNScalePercentHealthRetreat, this->sn[SNScalePercentHealthRetreat]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNScalePercentDeathRetreat, this->sn[SNScalePercentDeathRetreat]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNScalePercentUnitHealthRetreat, this->sn[SNScalePercentUnitHealthRetreat]
+            );
             break;
         case 0x1d:
-            p->playerAI->tacticalAI.setStrategicNumber(0x2e, this->sn[0x2e]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x66, this->sn[0x66]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x2f, this->sn[0x2f]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x67, this->sn[0x67]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x68, this->sn[0x68]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNAttackSeparationTime, this->sn[SNAttackSeparationTime]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNAttackSeparationTimeRandomness, this->sn[SNAttackSeparationTimeRandomness]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNAttackCoordination, this->sn[SNAttackCoordination]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNAttackIntelligence, this->sn[SNAttackIntelligence]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNInitialAttackDelay, this->sn[SNInitialAttackDelay]);
             p->playerAI->tacticalAI.setStrategicNumber(0x86, this->sn[0x86]);
             break;
         case 0x1e:
-            p->playerAI->tacticalAI.setStrategicNumber(0x30, this->sn[0x30]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNAttackResponseSeparationTime, this->sn[SNAttackResponseSeparationTime]
+            );
             break;
         case 0x1f:
-            p->playerAI->tacticalAI.setStrategicNumber(0x31, this->sn[0x31]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x87, this->sn[0x87]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNRetreatAfterTargetDestroyed, this->sn[SNRetreatAfterTargetDestroyed]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNBlotExplorationMap, this->sn[SNBlotExplorationMap]);
             p->playerAI->tacticalAI.setStrategicNumber(0x88, this->sn[0x88]);
             p->playerAI->tacticalAI.setStrategicNumber(200, this->sn[200]);
             break;
         case 0x20:
-            p->playerAI->tacticalAI.setStrategicNumber(0x32, this->sn[0x32]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x33, this->sn[0x33]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x34, this->sn[0x34]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x35, this->sn[0x35]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x36, this->sn[0x36]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x37, this->sn[0x37]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x38, this->sn[0x38]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x46, this->sn[0x46]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNGoldDefendPriority, this->sn[SNGoldDefendPriority]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNStoneDefendPriority, this->sn[SNStoneDefendPriority]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNForageDefendPriority, this->sn[SNForageDefendPriority]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNChokePointDefendPriority, this->sn[SNChokePointDefendPriority]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNRuinsDefendPriority, this->sn[SNRuinsDefendPriority]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNArtifactDefendPriority, this->sn[SNArtifactDefendPriority]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTownDefendPriority, this->sn[SNTownDefendPriority]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNDockDefendPriority, this->sn[SNDockDefendPriority]);
             break;
         case 0x21:
-            p->playerAI->tacticalAI.setStrategicNumber(0x3a, this->sn[0x3a]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x3b, this->sn[0x3b]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x3c, this->sn[0x3c]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNNumberBoatAttackGroups, this->sn[SNNumberBoatAttackGroups]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMinimumBoatAttackGroupSize, this->sn[SNMinimumBoatAttackGroupSize]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMaximumBoatAttackGroupSize, this->sn[SNMaximumBoatAttackGroupSize]
+            );
             break;
         case 0x22:
-            p->playerAI->tacticalAI.setStrategicNumber(0x3d, this->sn[0x3d]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x3e, this->sn[0x3e]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x3f, this->sn[0x3f]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNNumberBoatExploreGroups, this->sn[SNNumberBoatExploreGroups]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMinimumBoatExploreGroupSize, this->sn[SNMinimumBoatExploreGroupSize]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMaximumBoatExploreGroupSize, this->sn[SNMaximumBoatExploreGroupSize]
+            );
             break;
         case 0x23:
-            p->playerAI->tacticalAI.setStrategicNumber(0x40, this->sn[0x40]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x41, this->sn[0x41]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x42, this->sn[0x42]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNDesiredNumberTradeEscorts, this->sn[SNDesiredNumberTradeEscorts]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNDesiredNumberFishEscorts, this->sn[SNDesiredNumberFishEscorts]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNDesiredNumberTransportEscorts, this->sn[SNDesiredNumberTransportEscorts]
+            );
             p->playerAI->tacticalAI.setStrategicNumber(0xd8, this->sn[0xd8]);
             break;
         case 0x24:
-            p->playerAI->tacticalAI.setStrategicNumber(0x43, this->sn[0x43]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x44, this->sn[0x44]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x45, this->sn[0x45]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNNumberBoatDefendGroups, this->sn[SNNumberBoatDefendGroups]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMinimumBoatDefendGroupSize, this->sn[SNMinimumBoatDefendGroupSize]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMaximumBoatDefendGroupSize, this->sn[SNMaximumBoatDefendGroupSize]
+            );
             break;
         case 0x25:
-            p->playerAI->tacticalAI.setStrategicNumber(0x47, this->sn[0x47]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNLockAttackAndAttackResponse, this->sn[SNLockAttackAndAttackResponse]
+            );
             break;
         case 0x26:
-            p->playerAI->tacticalAI.setStrategicNumber(0x49, this->sn[0x49]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x4a, this->sn[0x4a]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMinimumTownSize, this->sn[SNMinimumTownSize]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMaximumTownSize, this->sn[SNMaximumTownSize]);
             break;
         case 0x27:
-            p->playerAI->tacticalAI.setStrategicNumber(0x4c, this->sn[0x4c]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNConsecutiveIdleUnitLimit, this->sn[SNConsecutiveIdleUnitLimit]
+            );
             break;
         case 0x28:
-            p->playerAI->tacticalAI.setStrategicNumber(0x4d, this->sn[0x4d]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x4e, this->sn[0x4e]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x4f, this->sn[0x4f]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x50, this->sn[0x50]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x51, this->sn[0x51]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x52, this->sn[0x52]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x53, this->sn[0x53]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x59, this->sn[0x59]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x5a, this->sn[0x5a]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNTargetEvaluationDistance, this->sn[SNTargetEvaluationDistance]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNTargetEvaluationHitpoints, this->sn[SNTargetEvaluationHitpoints]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNTargetEvaluationDamageCapability, this->sn[SNTargetEvaluationDamageCapability]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNTargetEvaluationKills, this->sn[SNTargetEvaluationKills]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNTargetEvaluationAllyProximity, this->sn[SNTargetEvaluationAllyProximity]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNTargetEvaluationROF, this->sn[SNTargetEvaluationROF]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNTargetEvaluationRandomness, this->sn[SNTargetEvaluationRandomness]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNTargetEvaluationAttackAttempts, this->sn[SNTargetEvaluationAttackAttempts]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNTargetEvaluationRange, this->sn[SNTargetEvaluationRange]);
             p->playerAI->tacticalAI.setStrategicNumber(0x6a, this->sn[0x6a]);
             p->playerAI->tacticalAI.setStrategicNumber(0x6b, this->sn[0x6b]);
             p->playerAI->tacticalAI.setStrategicNumber(0x6c, this->sn[0x6c]);
@@ -568,13 +644,13 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(0xb9, this->sn[0xb9]);
             break;
         case 0x29:
-            p->playerAI->tacticalAI.setStrategicNumber(0x54, this->sn[0x54]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x55, this->sn[0x55]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNNumberWallGates, this->sn[SNNumberWallGates]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSizeWallGates, this->sn[SNSizeWallGates]);
             p->playerAI->tacticalAI.setStrategicNumber(0x89, this->sn[0x89]);
             break;
         case 0x2a:
-            p->playerAI->tacticalAI.setStrategicNumber(0x56, this->sn[0x56]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x57, this->sn[0x57]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNStoragePitMaxDistance, this->sn[SNStoragePitMaxDistance]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNGranaryMaxDistance, this->sn[SNGranaryMaxDistance]);
             p->playerAI->tacticalAI.setStrategicNumber(0xca, this->sn[0xca]);
             p->playerAI->tacticalAI.setStrategicNumber(0x96, this->sn[0x96]);
             p->playerAI->tacticalAI.setStrategicNumber(0x97, this->sn[0x97]);
@@ -583,11 +659,13 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(0xa8, this->sn[0xa8]);
             break;
         case 0x2b:
-            p->playerAI->tacticalAI.setStrategicNumber(0x58, this->sn[0x58]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x65, this->sn[0x65]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTacticalUpdateFrequency, this->sn[SNTacticalUpdateFrequency]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNBuildFrequency, this->sn[SNBuildFrequency]);
             p->playerAI->tacticalAI.setStrategicNumber(0x9b, this->sn[0x9b]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xaf, this->sn[0xaf]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xb0, this->sn[0xb0]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNSpecificBuildItemToBuild, this->sn[SNSpecificBuildItemToBuild]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNSpecificBuildItemTime, this->sn[SNSpecificBuildItemTime]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb1, this->sn[0xb1]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb5, this->sn[0xb5]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb6, this->sn[0xb6]);
@@ -600,16 +678,22 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(0xbc, this->sn[0xbc]);
             p->playerAI->tacticalAI.setStrategicNumber(0xc3, this->sn[0xc3]);
             p->playerAI->tacticalAI.setStrategicNumber(0xbd, this->sn[0xbd]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xc6, this->sn[0xc6]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNPercentageExploreExterminators, this->sn[SNPercentageExploreExterminators]
+            );
             p->playerAI->tacticalAI.setStrategicNumber(199, this->sn[199]);
             p->playerAI->tacticalAI.setStrategicNumber(0xd7, this->sn[0xd7]);
             p->playerAI->tacticalAI.setStrategicNumber(0xd9, this->sn[0xd9]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xda, this->sn[0xda]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xdb, this->sn[0xdb]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNEasiestReactionPercentage, this->sn[SNEasiestReactionPercentage]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNEasierReactionPercentage, this->sn[SNEasierReactionPercentage]
+            );
             p->playerAI->tacticalAI.setStrategicNumber(0xdd, this->sn[0xdd]);
             break;
         case 0x2c:
-            p->playerAI->tacticalAI.setStrategicNumber(99, this->sn[99]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNScalingFrequency, this->sn[SNScalingFrequency]);
             break;
         case 0x2d:
             p->playerAI->tacticalAI.setStrategicNumber(0x69, this->sn[0x69]);
@@ -622,19 +706,19 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(0x72, this->sn[0x72]);
             p->playerAI->tacticalAI.setStrategicNumber(0x73, this->sn[0x73]);
             p->playerAI->tacticalAI.setStrategicNumber(0x74, this->sn[0x74]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x92, this->sn[0x92]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNNumberMaxSkipCycles, this->sn[SNNumberMaxSkipCycles]);
             p->playerAI->tacticalAI.setStrategicNumber(0x93, this->sn[0x93]);
             break;
         case 0x30:
-            p->playerAI->tacticalAI.setStrategicNumber(0x7c, this->sn[0x7c]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x7d, this->sn[0x7d]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x7e, this->sn[0x7e]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x7f, this->sn[0x7f]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x80, this->sn[0x80]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x81, this->sn[0x81]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x82, this->sn[0x82]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x84, this->sn[0x84]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x85, this->sn[0x85]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTributeAmount, this->sn[SNTributeAmount]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTributeChatFrequency, this->sn[SNTributeChatFrequency]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTributeChatRandomness, this->sn[SNTributeChatRandomness]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTributeTimeout, this->sn[SNTributeTimeout]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTributePlayer, this->sn[SNTributePlayer]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTributeSuccessOutcome, this->sn[SNTributeSuccessOutcome]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTributeFailureOutcome, this->sn[SNTributeFailureOutcome]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTributePersistence, this->sn[SNTributePersistence]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTributeRevokeOnAttack, this->sn[SNTributeRevokeOnAttack]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb2, this->sn[0xb2]);
             p->playerAI->tacticalAI.setStrategicNumber(0xc9, this->sn[0xc9]);
             break;
@@ -705,131 +789,131 @@ void VictoryConditionRuleSystem::modifyForDifficultyLevel(int dL) {
                 return;
         }
 
-        locals.tmp = this->sn[0x24];
+        locals.tmp = this->sn[SNNumberAttackGroups];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x24] = locals.tmp;
+            this->sn[SNNumberAttackGroups] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x24] = 1;
+                this->sn[SNNumberAttackGroups] = 1;
             }
         }
-        locals.tmp = this->sn[0x10];
+        locals.tmp = this->sn[SNMinimumAttackGroupSize];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x10] = locals.tmp;
+            this->sn[SNMinimumAttackGroupSize] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x10] = 1;
+                this->sn[SNMinimumAttackGroupSize] = 1;
             }
         }
-        locals.tmp = this->sn[0x1A];
+        locals.tmp = this->sn[SNMaximumAttackGroupSize];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x1A] = locals.tmp;
+            this->sn[SNMaximumAttackGroupSize] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x1A] = 1;
+                this->sn[SNMaximumAttackGroupSize] = 1;
             }
         }
 
-        this->sn[0x2E] += add1;
-        this->sn[0x30] += add1;
+        this->sn[SNAttackSeparationTime] += add1;
+        this->sn[SNAttackResponseSeparationTime] += add1;
 
-        locals.tmp = this->sn[0x13];
+        locals.tmp = this->sn[SNPercentEnemySightedResponse];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale3);
-            this->sn[0x13] = locals.tmp;
+            this->sn[SNPercentEnemySightedResponse] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x13] = 1;
+                this->sn[SNPercentEnemySightedResponse] = 1;
             }
         }
-        locals.tmp = this->sn[0x14];
+        locals.tmp = this->sn[SNEnemySightedResponseDistance];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale3);
-            this->sn[0x14] = locals.tmp;
+            this->sn[SNEnemySightedResponseDistance] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x14] = 1;
+                this->sn[SNEnemySightedResponseDistance] = 1;
             }
         }
 
-        this->sn[0x68] += add2;
+        this->sn[SNInitialAttackDelay] += add2;
 
-        locals.tmp = this->sn[0x19];
+        locals.tmp = this->sn[SNMinimumDefendGroupSize];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x19] = locals.tmp;
+            this->sn[SNMinimumDefendGroupSize] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x19] = 1;
+                this->sn[SNMinimumDefendGroupSize] = 1;
             }
         }
-        locals.tmp = this->sn[0x1C];
+        locals.tmp = this->sn[SNMaximumDefendGroupSize];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x1C] = locals.tmp;
+            this->sn[SNMaximumDefendGroupSize] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x1C] = 1;
+                this->sn[SNMaximumDefendGroupSize] = 1;
             }
         }
-        locals.tmp = this->sn[0x26];
+        locals.tmp = this->sn[SNNumberDefendGroups];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x26] = locals.tmp;
+            this->sn[SNNumberDefendGroups] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x26] = 1;
+                this->sn[SNNumberDefendGroups] = 1;
             }
         }
-        locals.tmp = this->sn[0x3A];
+        locals.tmp = this->sn[SNNumberBoatAttackGroups];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x3A] = locals.tmp;
+            this->sn[SNNumberBoatAttackGroups] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x3A] = 1;
+                this->sn[SNNumberBoatAttackGroups] = 1;
             }
         }
-        locals.tmp = this->sn[0x3B];
+        locals.tmp = this->sn[SNMinimumBoatAttackGroupSize];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x3B] = locals.tmp;
+            this->sn[SNMinimumBoatAttackGroupSize] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x3B] = 1;
+                this->sn[SNMinimumBoatAttackGroupSize] = 1;
             }
         }
-        locals.tmp = this->sn[0x3C];
+        locals.tmp = this->sn[SNMaximumBoatAttackGroupSize];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x3C] = locals.tmp;
+            this->sn[SNMaximumBoatAttackGroupSize] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x3C] = 1;
+                this->sn[SNMaximumBoatAttackGroupSize] = 1;
             }
         }
-        locals.tmp = this->sn[0x43];
+        locals.tmp = this->sn[SNNumberBoatDefendGroups];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x43] = locals.tmp;
+            this->sn[SNNumberBoatDefendGroups] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x43] = 1;
+                this->sn[SNNumberBoatDefendGroups] = 1;
             }
         }
-        locals.tmp = this->sn[0x44];
+        locals.tmp = this->sn[SNMinimumBoatDefendGroupSize];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x44] = locals.tmp;
+            this->sn[SNMinimumBoatDefendGroupSize] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x44] = 1;
+                this->sn[SNMinimumBoatDefendGroupSize] = 1;
             }
         }
-        locals.tmp = this->sn[0x45];
+        locals.tmp = this->sn[SNMaximumBoatDefendGroupSize];
         if (locals.tmp > 0) {
             locals.tmp = (long) ((float) locals.tmp * locals.scale1);
-            this->sn[0x45] = locals.tmp;
+            this->sn[SNMaximumBoatDefendGroupSize] = locals.tmp;
             if (locals.tmp == 0) {
-                this->sn[0x45] = 1;
+                this->sn[SNMaximumBoatDefendGroupSize] = 1;
             }
         }
 
-        this->sn[0x58] += add3;
+        this->sn[SNTacticalUpdateFrequency] += add3;
         if (dL <= 3) {
-            this->sn[0x67] = 1;
+            this->sn[SNAttackIntelligence] = 1;
         } else {
-            this->sn[0x67] = 0;
+            this->sn[SNAttackIntelligence] = 0;
         }
     }
 }

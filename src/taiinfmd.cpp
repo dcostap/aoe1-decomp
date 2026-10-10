@@ -1964,16 +1964,16 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             } else if (this->md->tacticalAI.inAge(4)) {
                 age = 4;
             }
-            maximumDistance = this->md->tacticalAI.strategicNumber(0x56) * age;
+            maximumDistance = this->md->tacticalAI.strategicNumber(SNStoragePitMaxDistance) * age;
         } else if (placementType == 2) {
             minimumDistance = 4;
-            maximumDistance = this->md->tacticalAI.strategicNumber(0x57);
+            maximumDistance = this->md->tacticalAI.strategicNumber(SNGranaryMaxDistance);
         } else if (placementType == 3 || placementType == 4) {
-            minimumDistance = this->md->tacticalAI.strategicNumber(0x49);
-            maximumDistance = this->md->tacticalAI.strategicNumber(0x4a);
+            minimumDistance = this->md->tacticalAI.strategicNumber(SNMinimumTownSize);
+            maximumDistance = this->md->tacticalAI.strategicNumber(SNMaximumTownSize);
         } else {
             minimumDistance = 4;
-            maximumDistance = this->md->tacticalAI.strategicNumber(0x4a);
+            maximumDistance = this->md->tacticalAI.strategicNumber(SNMaximumTownSize);
         }
 
         RGE_Static_Object* zone_object = townCenter;
@@ -2489,7 +2489,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                     if (playType == 1) {
                         rating = this->md->tacticalAI.strategicNumber(0xBD);
                     } else if (playType == 2) {
-                        rating = this->md->tacticalAI.strategicNumber(0xC6);
+                        rating = this->md->tacticalAI.strategicNumber(SNPercentageExploreExterminators);
                     } else if (playType == 3) {
                         rating = this->md->tacticalAI.strategicNumber(0xC7);
                     }
@@ -2688,18 +2688,19 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
                         boatRating = boatWeapon != 0 ? -1 : 1;
                     }
 
-                    int attack_value = this->md->tacticalAI.strategicNumber(0x59) * memory->attackAttempts;
+                    int attack_value =
+                        this->md->tacticalAI.strategicNumber(SNTargetEvaluationAttackAttempts) * memory->attackAttempts;
                     attack_value += this->md->tacticalAI.strategicNumber(0x90) * boatRating;
                     attack_value += this->md->tacticalAI.strategicNumber(0x7B) * siegeRating;
                     attack_value += this->md->tacticalAI.strategicNumber(0x7A) * zoneRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x50) * killRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x53) * randomRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x4D) * distanceRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationKills) * killRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationRandomness) * randomRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationDistance) * distanceRating;
                     attack_value += this->md->tacticalAI.strategicNumber(0x6F) * specialRating3;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x5A) * rangeRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x4E) * hpRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x4F) * dCRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x52) * rOFRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationRange) * rangeRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationHitpoints) * hpRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationDamageCapability) * dCRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationROF) * rOFRating;
                     attack_value += this->md->tacticalAI.strategicNumber(0x6E) * specialRating2;
                     attack_value += this->md->tacticalAI.strategicNumber(0x6D) * specialRating1;
 
@@ -2877,8 +2878,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                     float killsByTarget = (float) this->importantObjectMemory[i].kills;
 
                                     float targetRandomization;
-                                    if (this->md->tacticalAI.strategicNumber(0x53) > 0) {
-                                        int randomLimit = this->md->tacticalAI.strategicNumber(0x53);
+                                    if (this->md->tacticalAI.strategicNumber(SNTargetEvaluationRandomness) > 0) {
+                                        int randomLimit =
+                                            this->md->tacticalAI.strategicNumber(SNTargetEvaluationRandomness);
                                         targetRandomization =
                                             (float) (debug_rand((char*) "C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 4053)
                                                      % randomLimit);
@@ -2886,8 +2888,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                         targetRandomization = 0.0f;
                                     }
 
-                                    float attackAttemptFactor = (float) this->md->tacticalAI.strategicNumber(0x59)
-                                                                * this->importantObjectMemory[i].attackAttempts;
+                                    float attackAttemptFactor =
+                                        (float) this->md->tacticalAI.strategicNumber(SNTargetEvaluationAttackAttempts)
+                                        * this->importantObjectMemory[i].attackAttempts;
 
                                     float zoneFactor;
                                     if (commanderZone == targetZone) {
@@ -2936,9 +2939,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                     }
 
                                     float overallRating =
-                                        (float) this->md->tacticalAI.strategicNumber(0x50) * killsByTarget;
-                                    overallRating = (float) this->md->tacticalAI.strategicNumber(0x4d) / targetDistance
-                                                    + overallRating;
+                                        (float) this->md->tacticalAI.strategicNumber(SNTargetEvaluationKills)
+                                        * killsByTarget;
+                                    overallRating =
+                                        (float) this->md->tacticalAI.strategicNumber(SNTargetEvaluationDistance)
+                                            / targetDistance
+                                        + overallRating;
                                     overallRating = (float) this->md->tacticalAI.strategicNumber(0xb8) * timeKillRatio
                                                     + overallRating;
                                     overallRating += miscFactor;
@@ -3080,8 +3086,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int ownerID, int*
 
                                 float killsByTarget = (float) memory->kills;
                                 float targetRandomization;
-                                if (this->md->tacticalAI.strategicNumber(0x53) > 0) {
-                                    int randomLimit = this->md->tacticalAI.strategicNumber(0x53);
+                                if (this->md->tacticalAI.strategicNumber(SNTargetEvaluationRandomness) > 0) {
+                                    int randomLimit =
+                                        this->md->tacticalAI.strategicNumber(SNTargetEvaluationRandomness);
                                     targetRandomization =
                                         (float) (debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 4363)
                                                  % randomLimit);
@@ -3090,7 +3097,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int ownerID, int*
                                 }
 
                                 float attackAttemptFactor =
-                                    (float) this->md->tacticalAI.strategicNumber(0x59) * memory->attackAttempts;
+                                    (float) this->md->tacticalAI.strategicNumber(SNTargetEvaluationAttackAttempts)
+                                    * memory->attackAttempts;
 
                                 float zoneFactor;
                                 if (commanderObj->lookupZone((int) target->world_x, (int) target->world_y)
@@ -3121,9 +3129,11 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int ownerID, int*
                                 }
 
                                 float attackValue = (float) this->md->tacticalAI.strategicNumber(0xb8) * timeKillRatio;
-                                attackValue =
-                                    (float) this->md->tacticalAI.strategicNumber(0x4d) / targetDistance + attackValue;
-                                attackValue = (float) this->md->tacticalAI.strategicNumber(0x50) * killsByTarget
+                                attackValue = (float) this->md->tacticalAI.strategicNumber(SNTargetEvaluationDistance)
+                                                  / targetDistance
+                                              + attackValue;
+                                attackValue = (float) this->md->tacticalAI.strategicNumber(SNTargetEvaluationKills)
+                                                  * killsByTarget
                                               + attackValue + inProgressFactor + zoneFactor + attackAttemptFactor
                                               + targetRandomization;
 
@@ -3168,7 +3178,7 @@ ObjectMemory* TribeInformationAIModule::objectToDefend(int unitID) {
                         objPoint.y = (int) this->importantObjectMemory[i].y;
 
                         TacticalAIGroup* bestG = this->md->tacticalAI.bestGroup(
-                            -1, 4, this->md->tacticalAI.strategicNumber(0x5C), objPoint, -1
+                            -1, 4, this->md->tacticalAI.strategicNumber(SNDefendOverlapDistance), objPoint, -1
                         );
 
                         if (bestG == 0) {
@@ -3248,23 +3258,23 @@ ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int unitID,
 int TribeInformationAIModule::defendPriority(int oType, int oGroup) {
     switch (oType) {
         case 0x6D:
-            return md->tacticalAI.strategicNumber(0x38);
+            return md->tacticalAI.strategicNumber(SNTownDefendPriority);
         case 0x2D:
-            return md->tacticalAI.strategicNumber(0x46);
+            return md->tacticalAI.strategicNumber(SNDockDefendPriority);
         case 0x9F:
-            return md->tacticalAI.strategicNumber(0x37);
+            return md->tacticalAI.strategicNumber(SNArtifactDefendPriority);
         case 0x9E:
         case 0xA3:
-            return md->tacticalAI.strategicNumber(0x36);
+            return md->tacticalAI.strategicNumber(SNRuinsDefendPriority);
     }
 
     switch (oGroup) {
         case 7:
-            return md->tacticalAI.strategicNumber(0x34);
+            return md->tacticalAI.strategicNumber(SNForageDefendPriority);
         case OBJECT_GROUP_STONE_SOURCE:
-            return md->tacticalAI.strategicNumber(0x33);
+            return md->tacticalAI.strategicNumber(SNStoneDefendPriority);
         case OBJECT_GROUP_GOLD_SOURCE:
-            return md->tacticalAI.strategicNumber(0x32);
+            return md->tacticalAI.strategicNumber(SNGoldDefendPriority);
         default:
             return -1;
     }
@@ -3280,7 +3290,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
         case 109: {
             if (owner != this->md->player->id)
                 goto checkDefend_fail;
-            if (this->md->tacticalAI.strategicNumber(0x38) <= 0)
+            if (this->md->tacticalAI.strategicNumber(SNTownDefendPriority) <= 0)
                 goto checkDefend_fail;
             id = obj->id;
             {
@@ -3292,7 +3302,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
         case 45: {
             if (owner != this->md->player->id)
                 goto checkDefend_fail;
-            if (this->md->tacticalAI.strategicNumber(0x46) <= 0)
+            if (this->md->tacticalAI.strategicNumber(SNDockDefendPriority) <= 0)
                 goto checkDefend_fail;
             id = obj->id;
             {
@@ -3302,7 +3312,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
             return 1;
         }
         case 0x9f: {
-            if (this->md->tacticalAI.strategicNumber(0x37) <= 0)
+            if (this->md->tacticalAI.strategicNumber(SNArtifactDefendPriority) <= 0)
                 goto checkDefend_fail;
             id = obj->id;
             {
@@ -3313,7 +3323,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
         }
         case 0x9e:
         case 0xa3: {
-            if (this->md->tacticalAI.strategicNumber(0x36) <= 0)
+            if (this->md->tacticalAI.strategicNumber(SNRuinsDefendPriority) <= 0)
                 goto checkDefend_fail;
             id = obj->id;
             {
@@ -3325,12 +3335,12 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
         default:
             switch (group) {
                 case 7:
-                    if (this->md->tacticalAI.strategicNumber(0x34) <= 0)
+                    if (this->md->tacticalAI.strategicNumber(SNForageDefendPriority) <= 0)
                         goto checkDefend_fail;
                     this->itemsToDefend.add(obj->id);
                     return 1;
                 case OBJECT_GROUP_STONE_SOURCE: {
-                    int result8 = this->md->tacticalAI.strategicNumber(0x33);
+                    int result8 = this->md->tacticalAI.strategicNumber(SNStoneDefendPriority);
                     if (result8 <= 0)
                         goto checkDefend_fail;
                     tmp = obj->id;
@@ -3342,7 +3352,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
                     return 1;
                 }
                 case OBJECT_GROUP_GOLD_SOURCE: {
-                    int result32 = this->md->tacticalAI.strategicNumber(0x32);
+                    int result32 = this->md->tacticalAI.strategicNumber(SNGoldDefendPriority);
                     if (result32 <= 0)
                         goto checkDefend_fail;
                     tmp = obj->id;

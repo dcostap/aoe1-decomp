@@ -1323,7 +1323,7 @@ char* TRIBE_Player::aiStatus(int sNum) {
             this->aiStatusInformationValue6,
             "Per: %s, AttEnab=%d, AttDly=%d Min, ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms=%3d, UA=%s.",
             this->playerAI->strategyAI.ruleSetName(), attackEnabled,
-            this->playerAI->tacticalAI.strategicNumber(0x68) / 60,
+            this->playerAI->tacticalAI.strategicNumber(SNInitialAttackDelay) / 60,
             static_cast<TRIBE_World*>(this->world)->controllingComputerPlayer, this->world->currentUpdateComputerPlayer,
             avg, last, ai->tacticalAI.updateAreaName()
         );
@@ -2087,20 +2087,20 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int m
 
     switch (selectedBuildList) {
         case 0x0D:
-            this->playerAI->strategyAI.setRule(0x3B, 4);
-            this->playerAI->strategyAI.setRule(0x3C, 10);
+            this->playerAI->strategyAI.setRule(SNMinimumBoatAttackGroupSize, 4);
+            this->playerAI->strategyAI.setRule(SNMaximumBoatAttackGroupSize, 10);
             ++tplayer_globals::buildListCategoryCount7;
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
         case 0x0E:
-            this->playerAI->strategyAI.setRule(0x3B, 4);
-            this->playerAI->strategyAI.setRule(0x3C, 10);
+            this->playerAI->strategyAI.setRule(SNMinimumBoatAttackGroupSize, 4);
+            this->playerAI->strategyAI.setRule(SNMaximumBoatAttackGroupSize, 10);
             ++tplayer_globals::buildListCategoryCount7;
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
         case 0x0F:
-            this->playerAI->strategyAI.setRule(0x3B, 4);
-            this->playerAI->strategyAI.setRule(0x3C, 10);
+            this->playerAI->strategyAI.setRule(SNMinimumBoatAttackGroupSize, 4);
+            this->playerAI->strategyAI.setRule(SNMaximumBoatAttackGroupSize, 10);
             ++tplayer_globals::buildListCategoryCount7;
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
@@ -2473,47 +2473,47 @@ selectedCountersDone:
     switch (gameType) {
         case TRIBE_Game::VictoryDefault:
         case TRIBE_Game::VictoryConquest:
-            this->playerAI->strategyAI.setRule(0x36, 5);
-            this->playerAI->strategyAI.setRule(0x37, 5);
+            this->playerAI->strategyAI.setRule(SNRuinsDefendPriority, 5);
+            this->playerAI->strategyAI.setRule(SNArtifactDefendPriority, 5);
             break;
         case TRIBE_VICTORY_TYPE_EXPLORATION:
         case TRIBE_VICTORY_TYPE_RUINS:
         case TRIBE_VICTORY_TYPE_ARTIFACTS:
         case TRIBE_VICTORY_TYPE_DISCOVERIES:
-            workingMapType = this->playerAI->strategyAI.rule(1);
+            workingMapType = this->playerAI->strategyAI.rule(SNPercentCivilianBuilders);
             if (workingMapType > 0) {
-                this->playerAI->strategyAI.setRule(0, 0x32);
-                this->playerAI->strategyAI.setRule(1, 0x19);
-                this->playerAI->strategyAI.setRule(2, 0x19);
+                this->playerAI->strategyAI.setRule(SNPercentCivilianExplorers, 0x32);
+                this->playerAI->strategyAI.setRule(SNPercentCivilianBuilders, 0x19);
+                this->playerAI->strategyAI.setRule(SNPercentCivilianGatherers, 0x19);
             } else {
-                this->playerAI->strategyAI.setRule(0, 0x32);
-                this->playerAI->strategyAI.setRule(2, 0x32);
+                this->playerAI->strategyAI.setRule(SNPercentCivilianExplorers, 0x32);
+                this->playerAI->strategyAI.setRule(SNPercentCivilianGatherers, 0x32);
             }
             if (mapType > TRIBE_Game::MostlyWater) {
-                this->playerAI->strategyAI.setRule(3, 5);
+                this->playerAI->strategyAI.setRule(SNCapCivilianExplorers, 5);
             }
-            this->playerAI->strategyAI.setRule(0x2A, 2);
-            this->playerAI->strategyAI.setRule(0x3D, 2);
+            this->playerAI->strategyAI.setRule(SNNumberExploreGroups, 2);
+            this->playerAI->strategyAI.setRule(SNNumberBoatExploreGroups, 2);
             workingMapType = mapType;
             if (gameType != TRIBE_VICTORY_TYPE_EXPLORATION) {
-                this->playerAI->strategyAI.setRule(0x26, mapSize + 1);
-                this->playerAI->strategyAI.setRule(0x24, 1);
+                this->playerAI->strategyAI.setRule(SNNumberDefendGroups, mapSize + 1);
+                this->playerAI->strategyAI.setRule(SNNumberAttackGroups, 1);
                 if (gameType == TRIBE_VICTORY_TYPE_RUINS) {
-                    this->playerAI->strategyAI.setRule(0x36, 1);
+                    this->playerAI->strategyAI.setRule(SNRuinsDefendPriority, 1);
                 } else {
-                    this->playerAI->strategyAI.setRule(0x36, 5);
+                    this->playerAI->strategyAI.setRule(SNRuinsDefendPriority, 5);
                 }
                 if (gameType == TRIBE_VICTORY_TYPE_ARTIFACTS) {
-                    this->playerAI->strategyAI.setRule(0x37, 1);
+                    this->playerAI->strategyAI.setRule(SNArtifactDefendPriority, 1);
                 } else {
-                    this->playerAI->strategyAI.setRule(0x37, 5);
+                    this->playerAI->strategyAI.setRule(SNArtifactDefendPriority, 5);
                 }
             }
             break;
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        this->playerAI->strategyAI.setRule(4, 10);
+        this->playerAI->strategyAI.setRule(SNCapCivilianBuilders, 10);
     }
 
     int attackTime = (debug_rand(tplayerSourceName, 3642) % 12 + 0x1C) * 60;
@@ -2571,11 +2571,11 @@ selectedCountersDone:
     if (gameDifficulty == RGE_DIFFICULTY_HARDEST && debug_rand(tplayerSourceName, 3699) % 3 == 0) {
         attackTime -= 300;
     }
-    this->playerAI->strategyAI.setRule(0x68, attackTime);
-    this->playerAI->strategyAI.setRule(0x10, 2);
-    this->playerAI->strategyAI.setRule(0x1A, 10);
-    this->playerAI->strategyAI.setRule(0x5D, 1);
-    this->playerAI->strategyAI.setRule(99, 4);
+    this->playerAI->strategyAI.setRule(SNInitialAttackDelay, attackTime);
+    this->playerAI->strategyAI.setRule(SNMinimumAttackGroupSize, 2);
+    this->playerAI->strategyAI.setRule(SNMaximumAttackGroupSize, 10);
+    this->playerAI->strategyAI.setRule(SNScaleMinimumAttackGroupSize, 1);
+    this->playerAI->strategyAI.setRule(SNScalingFrequency, 4);
 
     if (debug_rand(tplayerSourceName, 3712) % 3 == 0) {
         this->playerAI->strategyAI.setRule(0xBC, 0);
@@ -2584,7 +2584,9 @@ selectedCountersDone:
     }
     this->playerAI->strategyAI.setRule(0xC3, debug_rand(tplayerSourceName, 3718) % 0x28 + 10);
     this->playerAI->strategyAI.setRule(0xBD, debug_rand(tplayerSourceName, 3722) % 0x46 + 0x1E);
-    this->playerAI->strategyAI.setRule(0xC6, (debug_rand(tplayerSourceName, 3726) % 5 + 5) * gameDifficulty);
+    this->playerAI->strategyAI.setRule(
+        SNPercentageExploreExterminators, (debug_rand(tplayerSourceName, 3726) % 5 + 5) * gameDifficulty
+    );
     this->playerAI->strategyAI.setRule(0xC7, (debug_rand(tplayerSourceName, 3730) % 10 + 10) * gameDifficulty);
     this->playerAI->strategyAI.setRule(0xA1, 4);
 
@@ -2598,45 +2600,45 @@ selectedCountersDone:
     switch (randomValue) {
         case -2:
         case -1:
-            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3746) % 2 + 0x0E);
+            this->playerAI->strategyAI.setRule(SNMinimumTownSize, debug_rand(tplayerSourceName, 3746) % 2 + 0x0E);
             this->playerAI->strategyAI.setRule(
-                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3748) % 4 + 1
+                0x4A, this->playerAI->strategyAI.rule(SNMinimumTownSize) + debug_rand(tplayerSourceName, 3748) % 4 + 1
             );
             break;
         case 0:
-            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3751) % 2 + 0x0F);
+            this->playerAI->strategyAI.setRule(SNMinimumTownSize, debug_rand(tplayerSourceName, 3751) % 2 + 0x0F);
             this->playerAI->strategyAI.setRule(
-                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3753) % 4 + 1
+                0x4A, this->playerAI->strategyAI.rule(SNMinimumTownSize) + debug_rand(tplayerSourceName, 3753) % 4 + 1
             );
             break;
         case 1:
-            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3756) % 3 + 0x10);
+            this->playerAI->strategyAI.setRule(SNMinimumTownSize, debug_rand(tplayerSourceName, 3756) % 3 + 0x10);
             this->playerAI->strategyAI.setRule(
-                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3758) % 5 + 1
+                0x4A, this->playerAI->strategyAI.rule(SNMinimumTownSize) + debug_rand(tplayerSourceName, 3758) % 5 + 1
             );
             break;
         case 2:
-            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3761) % 2 + 0x11);
+            this->playerAI->strategyAI.setRule(SNMinimumTownSize, debug_rand(tplayerSourceName, 3761) % 2 + 0x11);
             this->playerAI->strategyAI.setRule(
-                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3763) % 6 + 1
+                0x4A, this->playerAI->strategyAI.rule(SNMinimumTownSize) + debug_rand(tplayerSourceName, 3763) % 6 + 1
             );
             break;
         case 3:
-            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3766) % 2 + 0x12);
+            this->playerAI->strategyAI.setRule(SNMinimumTownSize, debug_rand(tplayerSourceName, 3766) % 2 + 0x12);
             this->playerAI->strategyAI.setRule(
-                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3768) % 7 + 1
+                0x4A, this->playerAI->strategyAI.rule(SNMinimumTownSize) + debug_rand(tplayerSourceName, 3768) % 7 + 1
             );
             break;
         case 4:
-            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3771) % 4 + 0x12);
+            this->playerAI->strategyAI.setRule(SNMinimumTownSize, debug_rand(tplayerSourceName, 3771) % 4 + 0x12);
             this->playerAI->strategyAI.setRule(
-                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3773) % 8 + 1
+                0x4A, this->playerAI->strategyAI.rule(SNMinimumTownSize) + debug_rand(tplayerSourceName, 3773) % 8 + 1
             );
             break;
         default:
-            this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3777) % 2 + 0x12);
+            this->playerAI->strategyAI.setRule(SNMinimumTownSize, debug_rand(tplayerSourceName, 3777) % 2 + 0x12);
             this->playerAI->strategyAI.setRule(
-                0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3779) % 9 + 1
+                0x4A, this->playerAI->strategyAI.rule(SNMinimumTownSize) + debug_rand(tplayerSourceName, 3779) % 9 + 1
             );
             break;
     }
@@ -2691,10 +2693,10 @@ selectedCountersDone:
     this->playerAI->strategyAI.setRule(0xA2, 0);
     if (gameDifficulty < RGE_DIFFICULTY_EASY) {
         this->playerAI->strategyAI.setRule(0xC2, 1);
-        this->playerAI->strategyAI.setRule(0x2F, 2);
+        this->playerAI->strategyAI.setRule(SNAttackCoordination, 2);
     } else {
         this->playerAI->strategyAI.setRule(0xC2, 0);
-        this->playerAI->strategyAI.setRule(0x2F, 1);
+        this->playerAI->strategyAI.setRule(SNAttackCoordination, 1);
     }
 
     if (gameDifficulty == RGE_DIFFICULTY_HARDEST) {

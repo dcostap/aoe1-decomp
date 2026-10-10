@@ -266,7 +266,7 @@ void TribeBuildAIModule::skipNextBuildListItem() {
                 item->setBuildAttempts(this->md->tacticalAI.strategicNumber(0x72));
                 item->setSkip(1);
                 item->incrementSkipCycles();
-                if (item->skipCycles() == this->md->tacticalAI.strategicNumber(0x92)) {
+                if (item->skipCycles() == this->md->tacticalAI.strategicNumber(SNNumberMaxSkipCycles)) {
                     item->setPermanentSkip(1);
                 }
                 return;

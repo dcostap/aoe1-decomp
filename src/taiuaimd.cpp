@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include "../include/game_globals.h"
+#include "../include/taitacmd.h"
 
 static const char str_taiuaimd_path[] = "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp";
 
@@ -258,7 +259,6 @@ TribeLionUnitAIModule::TribeLionUnitAIModule(RGE_Static_Object* o, int iQS) : Un
 int TribeLionUnitAIModule::canAttackUnitAtNeutrality(int oType) {
     return 1;
 }
-
 
 int TribeLionUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uTime) {
     switch (nEvent->mType) {
@@ -1135,7 +1135,6 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uT
 
 #pragma intrinsic(sqrt)
 
-
 int TribePriestUnitAIModule::processIdle(int doSearch) {
     if (this->objectValue->owner->computerPlayer()) {
         if (UnitAIModule::processIdle(1) == 6) {
@@ -1881,9 +1880,9 @@ int TribeSoldierUnitAIModule::processIdle(int doSearch) {
                 this->objectValue->owner->world->difficultyLevel();
 
                 if ((rge_base_game->scenarioGame() == 1 && rge_base_game->singlePlayerGame() == 1
-                     && this->objectValue->owner->strategicNumber(0x8F) == 0)
+                     && this->objectValue->owner->strategicNumber(SNTaskUngroupedSoldiers) == 0)
                     || (rge_base_game->singlePlayerGame() == 1
-                        && this->objectValue->owner->strategicNumber(0x8F) == 0)) {
+                        && this->objectValue->owner->strategicNumber(SNTaskUngroupedSoldiers) == 0)) {
                     return 5;
                 }
 

@@ -259,6 +259,8 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - Removing them can reverse getter calls or move memory reads across float-to-integer conversions.
 - Shared enum declarations can change VC5 instructions in functions that do not use those constants.
 - A new constants-only header can also change output. Fixed-value macros in an existing natural header can preserve it.
+- Even an empty newly included header changed `taiinfmd` and `tplayer`. A comment or `#define` line at that position did not.
+  Evidence: [strategic-number names](decomp_notes/strategic_numbers.md).
 - Check complete non-debug object sections and relocations, not only exact-function claims, when naming shared values.
   Evidence: [object lifecycle state cleanup](decomp_notes/object_lifecycle_states.md).
 - Audit every header consumer. Unchanged target bytes do not prove unchanged call order or field reads elsewhere.

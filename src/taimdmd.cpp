@@ -178,7 +178,8 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
         this->informationAI.initialize();
         this->setTributeChat();
 
-        if (tactical->strategicNumber(0x81) == 1 && tactical->strategicNumber(0x7D) == 0) {
+        if (tactical->strategicNumber(SNTributeSuccessOutcome) == 1
+            && tactical->strategicNumber(SNTributeChatFrequency) == 0) {
             this->waitingOnTribute = 1;
             this->tributeAmount = 0;
         }
@@ -210,40 +211,43 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
     }
 
     unsigned long tribute_elapsed = (this->player->world->world_time - this->lastTributeChatTime) / 1000;
-    if (tactical->strategicNumber(0x7C) > 0 && this->tributeAddressed == 0) {
-        if (tribute_elapsed >= (unsigned long) this->tributeChatTimeout && tactical->strategicNumber(0x7D) > 0) {
+    if (tactical->strategicNumber(SNTributeAmount) > 0 && this->tributeAddressed == 0) {
+        if (tribute_elapsed >= (unsigned long) this->tributeChatTimeout
+            && tactical->strategicNumber(SNTributeChatFrequency) > 0) {
             if (this->waitingOnTribute == 0) {
                 this->waitingOnTribute = 1;
-                int expiration_timeout = tactical->strategicNumber(0x7F);
+                int expiration_timeout = tactical->strategicNumber(SNTributeTimeout);
                 this->tributeAmount = 0;
                 this->tributeExpirationTimeout = expiration_timeout * 1000;
             }
 
             this->lastTributeChatTime = this->player->world->world_time;
-            if (tactical->strategicNumber(0x82) == 1) {
+            if (tactical->strategicNumber(SNTributeFailureOutcome) == 1) {
                 if (this->tributeAmount > 0) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_MORE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString,
-                        tactical->strategicNumber(0x7C) - this->tributeAmount
+                        tactical->strategicNumber(SNTributePlayer), 0, tempString,
+                        tactical->strategicNumber(SNTributeAmount) - this->tributeAmount
                     );
                 } else {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString, tactical->strategicNumber(0x7C)
+                        tactical->strategicNumber(SNTributePlayer), 0, tempString,
+                        tactical->strategicNumber(SNTributeAmount)
                     );
                 }
-            } else if (tactical->strategicNumber(0x81) == 1) {
+            } else if (tactical->strategicNumber(SNTributeSuccessOutcome) == 1) {
                 if (this->tributeAmount > 0) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString, tactical->strategicNumber(0x7C)
+                        tactical->strategicNumber(SNTributePlayer), 0, tempString,
+                        tactical->strategicNumber(SNTributeAmount)
                     );
                 } else {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE_MORE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString,
-                        tactical->strategicNumber(0x7C) - this->tributeAmount
+                        tactical->strategicNumber(SNTributePlayer), 0, tempString,
+                        tactical->strategicNumber(SNTributeAmount) - this->tributeAmount
                     );
                 }
             }
@@ -251,38 +255,38 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
         } else if (this->waitingOnTribute == 1) {
             this->tributeExpirationTimeout -= this->player->world->world_time_delta;
             if (this->tributeExpirationTimeout <= 0) {
-                if (tactical->strategicNumber(0x82) == 1) {
-                    this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 0, 100);
-                    this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 2, 0);
-                    this->aiPlayer->setDiplomaticStance(tactical->strategicNumber(0x80), 3);
+                if (tactical->strategicNumber(SNTributeFailureOutcome) == 1) {
+                    this->diplomacyAI.setStance(tactical->strategicNumber(SNTributePlayer), 0, 100);
+                    this->diplomacyAI.setStance(tactical->strategicNumber(SNTributePlayer), 2, 0);
+                    this->aiPlayer->setDiplomaticStance(tactical->strategicNumber(SNTributePlayer), 3);
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_THREAT, tempString, 256);
-                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
+                    this->player->sendChatMessage(tactical->strategicNumber(SNTributePlayer), 0, tempString);
                     this->waitingOnTribute = 0;
                     this->tributeAddressed = 1;
                     this->lastTributeChatTime = this->player->world->world_time;
-                } else if (tactical->strategicNumber(0x81) == 1) {
+                } else if (tactical->strategicNumber(SNTributeSuccessOutcome) == 1) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE_MISSED, tempString, 256);
-                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
+                    this->player->sendChatMessage(tactical->strategicNumber(SNTributePlayer), 0, tempString);
                     this->waitingOnTribute = 0;
                     this->lastTributeChatTime = this->player->world->world_time;
-                    this->tributeAddressed = tactical->strategicNumber(0x84) == 0;
+                    this->tributeAddressed = tactical->strategicNumber(SNTributePersistence) == 0;
                 }
-            } else if (this->tributeAmount >= tactical->strategicNumber(0x7C)) {
-                if (tactical->strategicNumber(0x81) == 1) {
-                    this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 0, 0);
-                    this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 2, 100);
-                    this->aiPlayer->setDiplomaticStance(tactical->strategicNumber(0x80), 0);
+            } else if (this->tributeAmount >= tactical->strategicNumber(SNTributeAmount)) {
+                if (tactical->strategicNumber(SNTributeSuccessOutcome) == 1) {
+                    this->diplomacyAI.setStance(tactical->strategicNumber(SNTributePlayer), 0, 0);
+                    this->diplomacyAI.setStance(tactical->strategicNumber(SNTributePlayer), 2, 100);
+                    this->aiPlayer->setDiplomaticStance(tactical->strategicNumber(SNTributePlayer), 0);
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE, tempString, 256);
-                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
+                    this->player->sendChatMessage(tactical->strategicNumber(SNTributePlayer), 0, tempString);
                     this->waitingOnTribute = 0;
                     this->lastTributeChatTime = this->player->world->world_time;
-                    this->tributeAddressed = tactical->strategicNumber(0x84) == 0;
-                } else if (tactical->strategicNumber(0x82) == 1) {
+                    this->tributeAddressed = tactical->strategicNumber(SNTributePersistence) == 0;
+                } else if (tactical->strategicNumber(SNTributeFailureOutcome) == 1) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ACCEPTED, tempString, 256);
-                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
+                    this->player->sendChatMessage(tactical->strategicNumber(SNTributePlayer), 0, tempString);
                     this->waitingOnTribute = 0;
                     this->lastTributeChatTime = this->player->world->world_time;
-                    this->tributeAddressed = tactical->strategicNumber(0x84) == 0;
+                    this->tributeAddressed = tactical->strategicNumber(SNTributePersistence) == 0;
                 }
             }
         }
@@ -395,7 +399,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
     }
 
     if (tactical->strategicNumber(0xD9) == 1) {
-        int diplomacy_start_time = (tactical->strategicNumber(0x68) - 3) * 1000;
+        int diplomacy_start_time = (tactical->strategicNumber(SNInitialAttackDelay) - 3) * 1000;
         if (diplomacy_start_time < 0)
             diplomacy_start_time = 0;
         if (this->player->world->world_time > (unsigned long) diplomacy_start_time) {
@@ -556,14 +560,14 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
 void TribeMainDecisionAIModule::tributeNotify(int playerID, int resourceID, int amount) {
     char tempString[256];
 
-    if (this->waitingOnTribute == 1 && playerID == this->tacticalAI.strategicNumber(0x80)
+    if (this->waitingOnTribute == 1 && playerID == this->tacticalAI.strategicNumber(SNTributePlayer)
         && resourceID == RGE_RESOURCE_GOLD) {
         this->tributeAmount += amount;
         return;
     }
 
     TribeTacticalAIModule* tactical = &this->tacticalAI;
-    if (playerID != tactical->strategicNumber(0x80)) {
+    if (playerID != tactical->strategicNumber(SNTributePlayer)) {
         int tribute = amount / 100;
         this->diplomacyAI.changeStance(playerID, 2, tribute);
         this->diplomacyAI.changeStance(playerID, 0, -tribute);
@@ -598,12 +602,12 @@ void TribeMainDecisionAIModule::revokeTributeAlliance() {
     char tempString[256];
     TribeTacticalAIModule* tactical = &this->tacticalAI;
 
-    if (this->player->isEnemy(tactical->strategicNumber(0x80)) == 0) {
-        this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 0, 0);
-        this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 2, 100);
-        this->aiPlayer->setDiplomaticStance(tactical->strategicNumber(0x80), 3);
+    if (this->player->isEnemy(tactical->strategicNumber(SNTributePlayer)) == 0) {
+        this->diplomacyAI.setStance(tactical->strategicNumber(SNTributePlayer), 0, 0);
+        this->diplomacyAI.setStance(tactical->strategicNumber(SNTributePlayer), 2, 100);
+        this->aiPlayer->setDiplomaticStance(tactical->strategicNumber(SNTributePlayer), 3);
         rge_base_game->get_string(STRING_ID_AI_TRIBUTE_REFUSED, tempString, 256);
-        this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
+        this->player->sendChatMessage(tactical->strategicNumber(SNTributePlayer), 0, tempString);
         this->waitingOnTribute = 0;
         this->tributeAddressed = 1;
     }
@@ -611,12 +615,13 @@ void TribeMainDecisionAIModule::revokeTributeAlliance() {
 
 void TribeMainDecisionAIModule::setTributeChat() {
     TribeTacticalAIModule* tactical = &this->tacticalAI;
-    if (tactical->strategicNumber(0x7E) > 0) {
+    if (tactical->strategicNumber(SNTributeChatRandomness) > 0) {
         int random_value = debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 1053);
-        this->tributeChatTimeout = random_value % tactical->strategicNumber(0x7E) - tactical->strategicNumber(0x7E) / 2
-                                   + tactical->strategicNumber(0x7D);
+        this->tributeChatTimeout = random_value % tactical->strategicNumber(SNTributeChatRandomness)
+                                   - tactical->strategicNumber(SNTributeChatRandomness) / 2
+                                   + tactical->strategicNumber(SNTributeChatFrequency);
     } else {
-        this->tributeChatTimeout = tactical->strategicNumber(0x7D);
+        this->tributeChatTimeout = tactical->strategicNumber(SNTributeChatFrequency);
     }
 }
 
