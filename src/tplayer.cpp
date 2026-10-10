@@ -1856,8 +1856,8 @@ int TRIBE_Player::intelligentCivSelection(int mapType, int gameType, int mapSize
 }
 
 void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int mapType, int gameType, int mapSize) {
+    int i;
     int difficultyLevel;
-    int gameDifficulty;
     int buildLists[125];
     int mostBuiltUnit2;
     char tempString[256];
@@ -1866,7 +1866,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int m
         return;
     }
 
-    gameDifficulty = rge_base_game->difficulty();
+    difficultyLevel = rge_base_game->difficulty();
     memset(buildLists, 0, sizeof(buildLists));
 
     switch (this->master_player_id) {
@@ -1976,11 +1976,13 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int m
     this->playerAI->strategyAI.setRule(0xC9, 1);
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0) {
-        difficultyLevel = -1;
+        int mostBuiltUnit1;
+
+        mostBuiltUnit1 = -1;
         mostBuiltUnit2 = -1;
         this->playerAI->informationAI.loadUnitHistory();
-        this->playerAI->informationAI.unitsThatAreMostBuilt(difficultyLevel, mostBuiltUnit2);
-        switch (difficultyLevel) {
+        this->playerAI->informationAI.unitsThatAreMostBuilt(mostBuiltUnit1, mostBuiltUnit2);
+        switch (mostBuiltUnit1) {
             case 0:
                 buildLists[BUILD_LIST_CAVALRY_BRONZE] += 25;
                 buildLists[BUILD_LIST_CAVALRY_IRON] += 25;
@@ -2039,9 +2041,8 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int m
         }
     }
 
-    difficultyLevel = 0;
-    do {
-        switch (difficultyLevel) {
+    for (i = 0; i < 7; ++i) {
+        switch (i) {
             case 0:
                 if (buildLists[BUILD_LIST_PRIEST_BRONZE] > 0) {
                     buildLists[BUILD_LIST_PRIEST_BRONZE] /= 3;
@@ -2234,8 +2235,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int m
                 }
                 break;
         }
-        ++difficultyLevel;
-    } while (difficultyLevel < 7);
+    }
 
     int total = 0;
     int* cursor = buildLists;
@@ -2753,8 +2753,8 @@ selectedCountersDone:
             break;
     }
 
-    int difficultyCopy = gameDifficulty;
-    if (gameDifficulty == RGE_DIFFICULTY_HARDEST && debug_rand(tplayerSourceName, 3699) % 3 == 0) {
+    int difficultyCopy = difficultyLevel;
+    if (difficultyLevel == RGE_DIFFICULTY_HARDEST && debug_rand(tplayerSourceName, 3699) % 3 == 0) {
         attackTime -= 300;
     }
     this->playerAI->strategyAI.setRule(SNInitialAttackDelay, attackTime);
@@ -2771,9 +2771,9 @@ selectedCountersDone:
     this->playerAI->strategyAI.setRule(0xC3, debug_rand(tplayerSourceName, 3718) % 0x28 + 10);
     this->playerAI->strategyAI.setRule(0xBD, debug_rand(tplayerSourceName, 3722) % 0x46 + 0x1E);
     this->playerAI->strategyAI.setRule(
-        SNPercentageExploreExterminators, (debug_rand(tplayerSourceName, 3726) % 5 + 5) * gameDifficulty
+        SNPercentageExploreExterminators, (debug_rand(tplayerSourceName, 3726) % 5 + 5) * difficultyLevel
     );
-    this->playerAI->strategyAI.setRule(0xC7, (debug_rand(tplayerSourceName, 3730) % 10 + 10) * gameDifficulty);
+    this->playerAI->strategyAI.setRule(0xC7, (debug_rand(tplayerSourceName, 3730) % 10 + 10) * difficultyLevel);
     this->playerAI->strategyAI.setRule(0xA1, 4);
 
     randomValue = mapSize;
@@ -2872,12 +2872,12 @@ selectedCountersDone:
         this->playerAI->strategyAI.setRule(0x8B, cheatWood);
         this->playerAI->strategyAI.setRule(0x8C, cheatStone);
         this->playerAI->strategyAI.setRule(0x8D, cheatGold);
-        gameDifficulty = difficultyCopy;
+        difficultyLevel = difficultyCopy;
     }
 
     this->playerAI->strategyAI.setRule(0xA8, 0);
     this->playerAI->strategyAI.setRule(0xA2, 0);
-    if (gameDifficulty < RGE_DIFFICULTY_EASY) {
+    if (difficultyLevel < RGE_DIFFICULTY_EASY) {
         this->playerAI->strategyAI.setRule(0xC2, 1);
         this->playerAI->strategyAI.setRule(SNAttackCoordination, 2);
     } else {
@@ -2885,16 +2885,16 @@ selectedCountersDone:
         this->playerAI->strategyAI.setRule(SNAttackCoordination, 1);
     }
 
-    if (gameDifficulty == RGE_DIFFICULTY_HARDEST) {
+    if (difficultyLevel == RGE_DIFFICULTY_HARDEST) {
         this->playerAI->strategyAI.setRule(0xBA, 0xB4);
         this->playerAI->strategyAI.setRule(0xBA, 200);
-    } else if (gameDifficulty == RGE_DIFFICULTY_HARD) {
+    } else if (difficultyLevel == RGE_DIFFICULTY_HARD) {
         this->playerAI->strategyAI.setRule(0xBA, 0xB4);
         this->playerAI->strategyAI.setRule(0xBA, 0x96);
-    } else if (gameDifficulty == RGE_DIFFICULTY_MODERATE) {
+    } else if (difficultyLevel == RGE_DIFFICULTY_MODERATE) {
         this->playerAI->strategyAI.setRule(0xBA, 0xB4);
         this->playerAI->strategyAI.setRule(0xBA, 100);
-    } else if (gameDifficulty == RGE_DIFFICULTY_EASY) {
+    } else if (difficultyLevel == RGE_DIFFICULTY_EASY) {
         this->playerAI->strategyAI.setRule(0xBA, 0xB4);
         this->playerAI->strategyAI.setRule(0xBA, 0x32);
     }

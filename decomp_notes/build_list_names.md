@@ -91,9 +91,26 @@ That retry also repeats the counter increments in the selection. No runtime test
 - `b[N]` in the `setup*` functions and the `case` labels of both `switch (selectedBuildList)` statements use the names.
 - The comment that said the build-list range was absent from the DLL was removed.
 
-The local `difficultyLevel` in `intelligentBuildListAndRulesSelection` holds the most-built unit category and
-later a loop index. The PDB places `mostBuiltUnit1` and `i` in one stack slot and `difficultyLevel` in another.
-This change does not rename or move locals.
+## Local names (follow-up)
+
+The PDB stack records for `00515E00` give these names. Offsets are from the frame top, and the
+original body addresses `esp + 0x10 + 0x300 + offset` after its four register pushes:
+
+| PDB offset | PDB name | Original use | Old source name |
+| --- | --- | --- | --- |
+| `-0x300` | `mostBuiltUnit1`, `i` | most-built unit category, then the 0-6 loop index | `difficultyLevel` |
+| `-0x2FC` | `difficultyLevel` | stores `rge_base_game->difficulty()` at `00515E25` | `gameDifficulty` |
+| `-0x2F8` | `buildLists` | `rep stosd` clear | `buildLists` |
+| `-0x104` | `mostBuiltUnit2` | second most-built category | `mostBuiltUnit2` |
+
+The source now uses the PDB names. `mostBuiltUnit1` is declared in the non-death-match block, and
+`i` is a function local. The PDB gives both the same slot.
+The 0-6 adjustment loop is now `for (i = 0; i < 7; ++i)`.
+
+Register-allocated source locals, such as `total`, `cursor`, and `selectionIndex`, have no PDB stack record and keep their names.
+
+Validation: the `tplayer` group compiled. All 92 exact claims passed, and the non-debug object payload
+equals the `c41e6039a` baseline (`build/cleanup-2026-10-10/locals-2`).
 
 ## Validation
 
