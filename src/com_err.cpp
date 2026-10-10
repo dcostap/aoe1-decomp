@@ -1,6 +1,8 @@
 
 #include <windows.h>
 
+#include "../third_party/directplay/include/dplay.h"
+
 #include "../include/com_err.h"
 #include "../include/debuglog.h"
 #include "../include/game_globals.h"
@@ -20,6 +22,9 @@ RGE_Comm_Error::~RGE_Comm_Error() {
 
 // The threshold tree and empty non-match arms preserve the original handler
 // layout and shared default fallthrough.
+// Some original log texts do not describe their codes: DPERR_UNINITIALIZED logs an unknown
+// application, DPERR_NONEWPLAYERS logs connecting, and the NOTLOBBIED and
+// AUTHENTICATIONFAILED messages are swapped.
 void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
     if (hr == 0) {
         return;
@@ -28,9 +33,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
     L->Log("+++COMM______DP CALL FAILED_(Code %u)_____ %s\n", hr, Text);
     this->LastReportedError = hr;
 
-    if (hr <= (long) 0x80004001) {
-        if (hr != (long) 0x80004001) {
-            if (hr == (long) 0x8000000A) {
+    if (hr <= DPERR_UNSUPPORTED) {
+        if (hr != DPERR_UNSUPPORTED) {
+            if (hr == DPERR_PENDING) {
                 L->Log("COM Error pending");
                 return;
             }
@@ -38,21 +43,21 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Unsupported.");
             return;
         }
-    } else if (hr <= (long) 0x80040110) {
-        if (hr != (long) 0x80040110) {
+    } else if (hr <= CLASS_E_NOAGGREGATION) {
+        if (hr != CLASS_E_NOAGGREGATION) {
             switch (hr) {
-                case (long) 0x80004005:
+                case DPERR_GENERIC:
                     L->Log("!!! GENERIC (Undefined) ERROR ");
                     this->NotifyWindowParam(COMM_FATAL_ERROR, 0);
                     return;
-                case (long) 0x80004002:
+                case DPERR_NOINTERFACE:
                     this->NotifyWindowParam(COMM_FATAL_ERROR, 0);
                     L->Log("!!! No Interface");
                     return;
-                case (long) 0x80004003:
+                case E_POINTER:
                     L->Log("COM Invalid Pointer");
                     return;
-                case (long) 0x80004004:
+                case E_ABORT:
                     L->Log("COM Aborted");
                     return;
             }
@@ -60,10 +65,10 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! COMM: CLASS NO AGGREGATION.");
             return;
         }
-    } else if (hr <= (long) 0x8007000E) {
-        if (hr != (long) 0x8007000E) {
-            if (hr != (long) 0x80070005) {
-                if (hr == (long) 0x80070006) {
+    } else if (hr <= DPERR_OUTOFMEMORY) {
+        if (hr != DPERR_OUTOFMEMORY) {
+            if (hr != E_ACCESSDENIED) {
+                if (hr == E_HANDLE) {
                     L->Log("COM Invalid Handle");
                     return;
                 }
@@ -76,9 +81,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Out Of Memory");
             return;
         }
-    } else if (hr <= (long) 0x88770005) {
-        if (hr != (long) 0x88770005) {
-            if (hr == (long) 0x80070057) {
+    } else if (hr <= DPERR_ALREADYINITIALIZED) {
+        if (hr != DPERR_ALREADYINITIALIZED) {
+            if (hr == DPERR_INVALIDPARAMS) {
                 L->Log("!!! Invalid Params");
                 return;
             }
@@ -86,9 +91,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Already Initialized");
             return;
         }
-    } else if (hr <= (long) 0x88770014) {
-        if (hr != (long) 0x88770014) {
-            if (hr == (long) 0x8877000A) {
+    } else if (hr <= DPERR_ACTIVEPLAYERS) {
+        if (hr != DPERR_ACTIVEPLAYERS) {
+            if (hr == DPERR_ACCESSDENIED) {
                 L->Log("!!! Access Denied - busy service or invalid use of host commands.");
                 this->NotifyWindowParam(COMM_NO_LINK, 0);
                 return;
@@ -97,9 +102,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Active Players - command invalid with active players.");
             return;
         }
-    } else if (hr <= (long) 0x88770028) {
-        if (hr != (long) 0x88770028) {
-            if (hr == (long) 0x8877001E) {
+    } else if (hr <= DPERR_CANTADDPLAYER) {
+        if (hr != DPERR_CANTADDPLAYER) {
+            if (hr == DPERR_BUFFERTOOSMALL) {
                 L->Log("!!! Buffer size failure (SMALL)");
                 return;
             }
@@ -108,9 +113,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
             return;
         }
-    } else if (hr <= (long) 0x8877003C) {
-        if (hr != (long) 0x8877003C) {
-            if (hr == (long) 0x88770032) {
+    } else if (hr <= DPERR_CANTCREATEPLAYER) {
+        if (hr != DPERR_CANTCREATEPLAYER) {
+            if (hr == DPERR_CANTCREATEGROUP) {
                 L->Log("!!! Can't Create Group");
                 return;
             }
@@ -118,9 +123,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Can't create player.");
             return;
         }
-    } else if (hr <= (long) 0x88770050) {
-        if (hr != (long) 0x88770050) {
-            if (hr == (long) 0x88770046) {
+    } else if (hr <= DPERR_CAPSNOTAVAILABLEYET) {
+        if (hr != DPERR_CAPSNOTAVAILABLEYET) {
+            if (hr == DPERR_CANTCREATESESSION) {
                 L->Log("!!! Can't create session.");
                 return;
             }
@@ -129,9 +134,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! ERROR!");
             return;
         }
-    } else if (hr <= (long) 0x88770078) {
-        if (hr != (long) 0x88770078) {
-            if (hr == (long) 0x8877005A) {
+    } else if (hr <= DPERR_INVALIDFLAGS) {
+        if (hr != DPERR_INVALIDFLAGS) {
+            if (hr == DPERR_EXCEPTION) {
                 L->Log("!!! Exception Raised");
                 return;
             }
@@ -139,9 +144,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Invalid Flags");
             return;
         }
-    } else if (hr <= (long) 0x88770096) {
-        if (hr != (long) 0x88770096) {
-            if (hr == (long) 0x88770082) {
+    } else if (hr <= DPERR_INVALIDPLAYER) {
+        if (hr != DPERR_INVALIDPLAYER) {
+            if (hr == DPERR_INVALIDOBJECT) {
                 L->Log("!!! Invalid Object");
                 return;
             }
@@ -149,9 +154,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Invalid Player");
             return;
         }
-    } else if (hr <= (long) 0x887700A0) {
-        if (hr != (long) 0x887700A0) {
-            if (hr == (long) 0x8877009B) {
+    } else if (hr <= DPERR_NOCAPS) {
+        if (hr != DPERR_NOCAPS) {
+            if (hr == DPERR_INVALIDGROUP) {
                 L->Log("!!! Invalid Group");
                 return;
             }
@@ -159,9 +164,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Not able to do multipayer!");
             return;
         }
-    } else if (hr <= (long) 0x887700BE) {
-        if (hr != (long) 0x887700BE) {
-            if (hr == (long) 0x887700AA) {
+    } else if (hr <= DPERR_NOMESSAGES) {
+        if (hr != DPERR_NOMESSAGES) {
+            if (hr == DPERR_NOCONNECTION) {
                 L->Log("!!! No Connection");
                 return;
             }
@@ -169,9 +174,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! No messages");
             return;
         }
-    } else if (hr <= (long) 0x887700D2) {
-        if (hr != (long) 0x887700D2) {
-            if (hr == (long) 0x887700C8) {
+    } else if (hr <= DPERR_NOPLAYERS) {
+        if (hr != DPERR_NOPLAYERS) {
+            if (hr == DPERR_NONAMESERVERFOUND) {
                 L->Log("!!! No name server running!");
                 return;
             }
@@ -179,9 +184,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! No players are connected!");
             return;
         }
-    } else if (hr <= (long) 0x887700E6) {
-        if (hr != (long) 0x887700E6) {
-            if (hr == (long) 0x887700DC) {
+    } else if (hr <= DPERR_SENDTOOBIG) {
+        if (hr != DPERR_SENDTOOBIG) {
+            if (hr == DPERR_NOSESSIONS) {
                 L->Log("!!! No sessions are available");
                 return;
             }
@@ -189,9 +194,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Send overflow!");
             return;
         }
-    } else if (hr <= (long) 0x887700FA) {
-        if (hr != (long) 0x887700FA) {
-            if (hr == (long) 0x887700F0) {
+    } else if (hr <= DPERR_UNAVAILABLE) {
+        if (hr != DPERR_UNAVAILABLE) {
+            if (hr == DPERR_TIMEOUT) {
                 L->Log("!!! COMM TIMEOUT Rcvd from HOST connection.");
                 this->NotifyWindowParam(COMM_HOST_BUSY, 0);
                 return;
@@ -201,9 +206,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
             return;
         }
-    } else if (hr <= (long) 0x88770118) {
-        if (hr != (long) 0x88770118) {
-            if (hr == (long) 0x8877010E) {
+    } else if (hr <= DPERR_USERCANCEL) {
+        if (hr != DPERR_USERCANCEL) {
+            if (hr == DPERR_BUSY) {
                 L->Log("!!! Busy Rcvd");
                 return;
             }
@@ -212,9 +217,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! User Cancel");
             return;
         }
-    } else if (hr <= (long) 0x8877012C) {
-        if (hr != (long) 0x8877012C) {
-            if (hr == (long) 0x88770122) {
+    } else if (hr <= DPERR_PLAYERLOST) {
+        if (hr != DPERR_PLAYERLOST) {
+            if (hr == DPERR_CANNOTCREATESERVER) {
                 L->Log("!!! Unable to create server");
                 return;
             }
@@ -222,9 +227,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Player Lost connection.");
             return;
         }
-    } else if (hr <= (long) 0x88770140) {
-        if (hr != (long) 0x88770140) {
-            if (hr == (long) 0x88770136) {
+    } else if (hr <= DPERR_UNINITIALIZED) {
+        if (hr != DPERR_UNINITIALIZED) {
+            if (hr == DPERR_SESSIONLOST) {
                 L->Log("!!! Lost connection to session.");
                 this->NotifyWindowParam(COMM_CANCEL_GAME, 0);
                 return;
@@ -234,9 +239,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             this->NotifyWindowParam(COMM_NO_LINK, 0);
             return;
         }
-    } else if (hr <= (long) 0x88770154) {
-        if (hr != (long) 0x88770154) {
-            if (hr == (long) 0x8877014A) {
+    } else if (hr <= DPERR_INVALIDPASSWORD) {
+        if (hr != DPERR_INVALIDPASSWORD) {
+            if (hr == DPERR_NONEWPLAYERS) {
                 this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
                 L->Log("!!! The session is in the process of connecting");
                 return;
@@ -245,9 +250,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! The secure password is invalid.");
             return;
         }
-    } else if (hr <= (long) 0x887703E8) {
-        if (hr != (long) 0x887703E8) {
-            if (hr == (long) 0x8877015E) {
+    } else if (hr <= DPERR_BUFFERTOOLARGE) {
+        if (hr != DPERR_BUFFERTOOLARGE) {
+            if (hr == DPERR_CONNECTING) {
                 L->Log("!!! The session is in the process of connecting");
                 return;
             }
@@ -255,9 +260,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Buffer size failure (LARGE)");
             return;
         }
-    } else if (hr <= (long) 0x887703FC) {
-        if (hr != (long) 0x887703FC) {
-            if (hr == (long) 0x887703F2) {
+    } else if (hr <= DPERR_APPNOTSTARTED) {
+        if (hr != DPERR_APPNOTSTARTED) {
+            if (hr == DPERR_CANTCREATEPROCESS) {
                 L->Log("!!! Can't start the application.");
                 return;
             }
@@ -265,9 +270,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Application has not been started yet.");
             return;
         }
-    } else if (hr <= (long) 0x8877041A) {
-        if (hr != (long) 0x8877041A) {
-            if (hr != (long) 0x88770410) {
+    } else if (hr <= DPERR_UNKNOWNAPPLICATION) {
+        if (hr != DPERR_UNKNOWNAPPLICATION) {
+            if (hr != DPERR_NOSERVICEPROVIDER) {
             } else {
                 return;
             }
@@ -275,9 +280,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Unknown application specified");
             return;
         }
-    } else if (hr <= (long) 0x887707D0) {
-        if (hr != (long) 0x887707D0) {
-            if (hr == (long) 0x8877042E) {
+    } else if (hr <= DPERR_AUTHENTICATIONFAILED) {
+        if (hr != DPERR_AUTHENTICATIONFAILED) {
+            if (hr == DPERR_NOTLOBBIED) {
                 L->Log("!!! Security authentify failed.");
                 return;
             }
@@ -285,9 +290,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! Not A Lobby Session");
             return;
         }
-    } else if (hr <= (long) 0x887707E4) {
-        if (hr != (long) 0x887707E4) {
-            if (hr == (long) 0x887707DA) {
+    } else if (hr <= DPERR_ENCRYPTIONFAILED) {
+        if (hr != DPERR_ENCRYPTIONFAILED) {
+            if (hr == DPERR_CANTLOADSSPI) {
                 L->Log("!!! Can't load security SSPI package.");
                 return;
             }
@@ -295,9 +300,9 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             L->Log("!!! The encryption failed.");
             return;
         }
-    } else if (hr <= (long) 0x887707F8) {
-        if (hr != (long) 0x887707F8) {
-            if (hr == (long) 0x887707EE) {
+    } else if (hr <= DPERR_CANTLOADSECURITYPACKAGE) {
+        if (hr != DPERR_CANTLOADSECURITYPACKAGE) {
+            if (hr == DPERR_SIGNFAILED) {
                 L->Log("!!! The security sign failed.");
                 return;
             }
@@ -306,8 +311,8 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
             return;
         }
     } else {
-        if (hr != (long) 0x8877080C) {
-            if (hr != (long) 0x88770820) {
+        if (hr != DPERR_CANTLOADCAPI) {
+            if (hr != DPERR_LOGONDENIED) {
             } else {
                 L->Log("!!! The secure logon failed.");
                 return;
