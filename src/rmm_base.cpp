@@ -81,6 +81,7 @@ uchar RGE_Random_Map_Module::generate() {
     RGE_Random_Map_Module_List* current = this->list;
     RGE_Random_Map_Module_List* sorted = 0;
 
+    // Insertion sort
     while (current != 0) {
         RGE_Random_Map_Module_List* next = current->next;
         if (sorted != 0 && current->module->get_schedule() >= sorted->module->get_schedule()) {
