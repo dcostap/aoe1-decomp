@@ -67,8 +67,20 @@ Twelve slot paths name a file that is not in the pinned `XPack/data2` directory:
 | 94, 95 | `data2\Sumeria Bronze Water.ai`, `...Iron Water.ai` | No similar file is shipped. |
 
 Slots 13 and 14 also use `data\` paths. Files with those names exist in the pinned `data2`, but the paths do not point there.
-When a slot's file is missing, the load fails and the selection runs again.
-These notes describe the pinned files only. No runtime test checked the effect.
+
+The local release installation in `runtime/` changes this picture.
+Its `languagex.dll` (SHA256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`) differs from
+the beta file, but its 125 build-list strings are identical.
+Its `data2` has files named `Assyria Archer Bronze.ai`, `Egypt Chariot Archer.ai`, `Persia Bronze Water.ai`,
+and `Sumeria Bronze Water.ai`, as the strings expect. Its `data` has the Trireme lists.
+Only the six Walls slots have no file there.
+
+Those six Walls slots never receive weight. Their only uses are the divide-by-3 adjustment and `case` labels,
+so the draw can never choose them.
+The other six missing beta files are chosen in some games: Assyria and Egypt setups weight them, and Persian and
+Sumerian setups weight them on water maps.
+With the pinned beta `data2`, such a draw fails to load and the selection runs again.
+That retry also repeats the counter increments in the selection. No runtime test checked this.
 
 ## Source form changes
 
