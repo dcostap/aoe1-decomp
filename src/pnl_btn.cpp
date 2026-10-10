@@ -617,7 +617,6 @@ long TButtonPanel::mouse_left_dbl_click_action(long x, long y, int ctrl_key, int
 }
 
 // 00473190_mouse_left_down_action.cpp
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::mouse_left_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (disabled != 0) {

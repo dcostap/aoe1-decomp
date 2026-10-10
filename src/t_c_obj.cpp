@@ -26,7 +26,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-extern int __cdecl debug_rand(char*, int);
 int __cdecl lines_intersect(
     float a_x1, float a_y1, float a_x2, float a_y2, float b_x1, float b_y1, float b_x2, float b_y2
 );

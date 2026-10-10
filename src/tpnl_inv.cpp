@@ -12,7 +12,6 @@ static const char s_fmt_ld[] = "%ld";
 static char s_tpnl_inv_draw[] = "tpnl_inv::draw";
 
 // No current canonical owner header declares this C helper.
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 TRIBE_Panel_Inven::TRIBE_Panel_Inven(
     TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in, TRIBE_Player* player_in

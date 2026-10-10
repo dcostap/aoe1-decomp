@@ -259,7 +259,6 @@ int TribeLionUnitAIModule::canAttackUnitAtNeutrality(int oType) {
     return 1;
 }
 
-extern const char str_fmt_stopObject[];
 
 int TribeLionUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uTime) {
     switch (nEvent->mType) {
@@ -1136,7 +1135,6 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uT
 
 #pragma intrinsic(sqrt)
 
-extern int __cdecl debug_rand(char* file, int line);
 
 int TribePriestUnitAIModule::processIdle(int doSearch) {
     if (this->objectValue->owner->computerPlayer()) {

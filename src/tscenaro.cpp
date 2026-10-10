@@ -12,8 +12,6 @@
 #include "../include/tvictory.h"
 #include "../include/world.h"
 
-extern void rge_read_uncompressed(int file, void* data, int size);
-extern void rge_write_uncompressed(int file, void* data, int size);
 #include "../include/rge_fio.h"
 
 TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario_info) : RGE_Scenario_Header(scenario_info) {

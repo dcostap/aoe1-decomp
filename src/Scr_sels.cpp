@@ -17,7 +17,6 @@
 #include <string.h>
 #include <stdio.h>
 
-extern TPanelSystem panel_system;
 
 static const char s_fmt_range[] = "%d - %d";
 static const char s_fmt_num[] = "%d";

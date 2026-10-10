@@ -14,7 +14,6 @@
 static char s_Scenario_Editor_Menu[] = "Scenario Editor Menu";
 
 extern char s_Scenario_Editor_Open[];
-extern TPanelSystem panel_system;
 
 TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu() : TScreenPanel(s_Scenario_Editor_Menu) {
     title = 0;

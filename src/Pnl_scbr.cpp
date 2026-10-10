@@ -1,6 +1,5 @@
 #include "../include/Pnl_scbr.h"
 
-extern unsigned long __cdecl debug_timeGetTime(char*, int);
 
 TScrollBarPanel::TScrollBarPanel() :
     TPanel(), list_panel(0), list_len(0), one_step(0), page_step(0), list_num(0), button_pics(0), back_frame(0),
