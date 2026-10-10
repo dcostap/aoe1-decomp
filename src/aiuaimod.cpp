@@ -1210,13 +1210,13 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck, float* 
          && (difficulty >= RGE_DIFFICULTY_EASY) && (this->objectValue->owner->id != 1))
         || ((rge_base_game->singlePlayerGame() == 1) && (difficulty >= RGE_DIFFICULTY_EASY)
             && (this->objectValue->owner->type == 3)
-            && ((this->objectValue->owner->strategicNumber(0xDB) != 100)
-                || (this->objectValue->owner->strategicNumber(0xDA) != 100)))) {
+            && ((this->objectValue->owner->strategicNumber(SNEasierReactionPercentage) != 100)
+                || (this->objectValue->owner->strategicNumber(SNEasiestReactionPercentage) != 100)))) {
         if (this->objectValue->owner->id > 1) {
             if (difficulty == RGE_DIFFICULTY_EASY) {
-                maxReactDistance = this->objectValue->owner->strategicNumber(0xDB);
+                maxReactDistance = this->objectValue->owner->strategicNumber(SNEasierReactionPercentage);
             } else {
-                maxReactDistance = this->objectValue->owner->strategicNumber(0xDA);
+                maxReactDistance = this->objectValue->owner->strategicNumber(SNEasiestReactionPercentage);
             }
         } else {
             maxReactDistance = difficulty == RGE_DIFFICULTY_EASY ? 75 : 50;

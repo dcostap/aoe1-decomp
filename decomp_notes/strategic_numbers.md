@@ -45,7 +45,7 @@ The `case` labels in `execute` are rule numbers and remain numeric.
 ## Values left numeric
 
 - **Indices 105 through 225.** 100 indices in this range (396 uses) never appear in a shipped `.per` file.
-- **`src/aiuaimod.cpp`.** Four uses of 218, 219, and 143 stay numeric. See the compiler context below.
+- **`src/aiuaimod.cpp`.** This module was numeric at first. A follow-up named its four uses of 218 and 219.
 
 In `aiuaimod.cpp`, the value of `SNEasierReactionPercentage` (219) is assigned to a local named `maxReactDistance`.
 This note does not decide whether that local name or the original use is unusual.
@@ -71,7 +71,7 @@ Probes on `taiinfmd` and `tplayer` with the numeric source unchanged:
 Opening an additional file changed these objects. Macro count and content did not.
 The retained form places the macros in `taitacmd.h`, which already owns `TribeTacticalAIModule::sn`.
 `taiuaimd.cpp` gains `#include "../include/taitacmd.h"`, and its object is unchanged.
-The same include changed both code and symbols in `aiuaimod.cpp`, so that module stays numeric.
+The same include changed both code and symbols in `aiuaimod.cpp`, so that module stayed numeric at first.
 
 ## Validation
 
@@ -82,5 +82,25 @@ The baseline is the full audit at `c41e6039a`.
 - All category counts equal the baseline.
 - All 225 non-debug object payloads match the baseline.
 - `git diff --check` and the line-ending check passed. clang-format 21.1.8 was applied.
+
+No linked executable build, image audit, automated tests, or runtime suites ran.
+
+## Follow-up: move to `player.h`
+
+The starting commit is `759e8aa20`.
+The 110 macros moved without change from `include/taitacmd.h` to `include/player.h`.
+They now sit beside the base accessor `RGE_Player::strategicNumber`.
+`player.h` was already in every translation unit that uses the names, including `aiuaimod.cpp` through `aiuaimod.h`.
+The move adds no include, so it avoids the new-file effect described above.
+
+`UnitAIModule::bestUnitToAttack` in `aiuaimod.cpp` now uses `SNEasierReactionPercentage` (219) for the Easy
+difficulty and `SNEasiestReactionPercentage` (218) for the lower difficulty.
+The `taiuaimd.cpp` include of `taitacmd.h` from the first change remains.
+
+Validation of the follow-up:
+
+- A full audit, `build/cleanup-2026-10-10/sn-player`, compiled all 225 groups. All 5,013 exact claims passed,
+  and every category count equals the baseline.
+- All 225 non-debug object payloads equal the `c41e6039a` baseline.
 
 No linked executable build, image audit, automated tests, or runtime suites ran.
