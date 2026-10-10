@@ -1679,7 +1679,7 @@ void TRIBE_Player::notifyAI(int callerID, int recipientID, int mType, long p1, l
                 TacticalAIGroup* group = this->playerAI->tacticalAI.groupUnitIsIn(callerID);
                 if (group == 0)
                     return;
-                if (group->type() != 0x6b)
+                if (group->type() != TACTICAL_GROUP_TYPE_FISHING)
                     return;
                 this->playerAI->tacticalAI.removeGroup(group->id());
                 return;

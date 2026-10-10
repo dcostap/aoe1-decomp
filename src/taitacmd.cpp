@@ -1379,7 +1379,8 @@ int TacticalAIGroup::allUnitsIdle(TribeMainDecisionAIModule* md, int countAttack
                 if (countAttackAsIdle == 1) {
                     ai = obj->unitAI();
                     if (ai->currentAction() == UNIT_AI_ACTION_ATTACK) {
-                        if (self->typeValue == 100 || self->typeValue == 0x67) {
+                        if (self->typeValue == TACTICAL_GROUP_TYPE_ATTACK
+                            || self->typeValue == TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
                             goto next;
                         }
                     }
@@ -2977,8 +2978,8 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime, unsigned l
             return;
         }
 
-        if (group->type() == 0x6B || group->type() == 0x6C || group->type() == 0x6A
-            || (group->action() != 0 && group->action() != 1)) {
+        if (group->type() == TACTICAL_GROUP_TYPE_FISHING || group->type() == TACTICAL_GROUP_TYPE_TRADE
+            || group->type() == TACTICAL_GROUP_TYPE_TRANSPORT || (group->action() != 0 && group->action() != 1)) {
             group = group->next;
             continue;
         }
@@ -3010,29 +3011,30 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime, unsigned l
         } else if (group->allUnitsIdle(this->md, 1) == 0) {
             readyToTask = 0;
         } else {
-            if (group->type() == 0x66 || group->type() == 0x69) {
+            if (group->type() == TACTICAL_GROUP_TYPE_EXPLORE || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE) {
                 if (this->md->informationAI.fullyExploredZone(group->commander()) == 0) {
                     readyToTask = 0;
                     goto ready_to_task_check;
                 }
             }
 
-            if (group->type() == 0x64 || group->type() == 0x67) {
+            if (group->type() == TACTICAL_GROUP_TYPE_ATTACK || group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
                 if (this->md->strategyAI.currentVictoryCondition() == 0) {
-                    if (this->itemToCapture() == -1 && group->type() == 0x64) {
+                    if (this->itemToCapture() == -1 && group->type() == TACTICAL_GROUP_TYPE_ATTACK) {
                         readyToTask = 0;
                     } else {
                         group->setSubType(0);
                     }
                 }
                 if (this->md->strategyAI.currentVictoryCondition() == 4) {
-                    if (this->itemToBringToArea() == -1 && group->type() == 0x64) {
+                    if (this->itemToBringToArea() == -1 && group->type() == TACTICAL_GROUP_TYPE_ATTACK) {
                         readyToTask = 0;
                     } else {
                         group->setSubType(4);
                     }
                 }
-            } else if ((group->type() == 0x65 || group->type() == 0x68) && this->numberItemsToDefend() == 0) {
+            } else if ((group->type() == TACTICAL_GROUP_TYPE_DEFEND || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND)
+                       && this->numberItemsToDefend() == 0) {
                 readyToTask = 0;
             }
         }
@@ -3043,18 +3045,20 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime, unsigned l
                 group->task(this, this->md, 9, 1, 0);
             }
         } else {
-            if (group->type() == 0x66 || group->type() == 0x69) {
+            if (group->type() == TACTICAL_GROUP_TYPE_EXPLORE || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE) {
                 group->setAction(8);
-            } else if (group->type() == 0x64 || group->type() == 0x67) {
-                if (this->numberItemsToAttack() == 0 && group->type() == 0x67) {
-                    group->setType(0x69);
+            } else if (group->type() == TACTICAL_GROUP_TYPE_ATTACK
+                       || group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
+                if (this->numberItemsToAttack() == 0 && group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
+                    group->setType(TACTICAL_GROUP_TYPE_BOAT_EXPLORE);
                     group->setAction(8);
                 } else {
                     group->setAction(2);
                 }
-            } else if (group->type() == 0x65 || group->type() == 0x68) {
+            } else if (group->type() == TACTICAL_GROUP_TYPE_DEFEND
+                       || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND) {
                 group->setAction(4);
-            } else if (group->type() == 0x6D) {
+            } else if (group->type() == TACTICAL_GROUP_TYPE_ARTIFACT) {
                 group->setAction(0x13);
             }
         }
@@ -3103,7 +3107,8 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
             }
 
             t = cur->type();
-            if (t == 0x6b || cur->type() == 0x6c || cur->type() == 0x6a || cur->action() == 0 || cur->action() == 1) {
+            if (t == TACTICAL_GROUP_TYPE_FISHING || cur->type() == TACTICAL_GROUP_TYPE_TRADE
+                || cur->type() == TACTICAL_GROUP_TYPE_TRANSPORT || cur->action() == 0 || cur->action() == 1) {
                 cur = cur->next;
                 continue;
             }
@@ -3120,9 +3125,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                 commanderObj = 0;
                 attackAsAttack = 1;
                 t = cur->type();
-                if (t != 100 && cur->type() != 0x67) {
+                if (t != TACTICAL_GROUP_TYPE_ATTACK && cur->type() != TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
                     t = cur->type();
-                    if (t == 0x65 || cur->type() == 0x68) {
+                    if (t == TACTICAL_GROUP_TYPE_DEFEND || cur->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND) {
                         int commander;
                         XYZPoint point;
                         float defendDistance;
@@ -3187,7 +3192,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                         }
                     } else {
                         t = cur->type();
-                        if (t == 0x6d) {
+                        if (t == TACTICAL_GROUP_TYPE_ARTIFACT) {
                             RGE_Static_Object* relic;
                             TribeMainDecisionAIModule* md;
                             unsigned long idle;
@@ -3270,7 +3275,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                         this->attackStateValue.active = 0;
                         goto ContinueLoop;
                     } else {
-                        if (this->sn[0xa2] != 0 && cur->type() != 0x67) {
+                        if (this->sn[0xa2] != 0 && cur->type() != TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
                             mem = this->md->informationAI.objectMemory(*(int*) 0);
                             goto attack_target_ready;
                         }
@@ -3341,7 +3346,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                         )) {
                                         float gatherX2;
                                         float aux2;
-                                        if (cur->type() == 0x67) {
+                                        if (cur->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
                                             goto active_exception_rejected;
                                         }
                                         if (!commanderObj->canPathWithAdditionalPassability(
@@ -3394,8 +3399,8 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                 cur->setInUse(1);
             inactive_post_setup:
                 if (this->md->strategyAI.currentVictoryCondition() == 0x0b
-                    && (cur->type() == 100 || cur->type() == 0x67) && this->sn[0x67] == 1 && mem != 0
-                    && commanderObj != 0) {
+                    && (cur->type() == TACTICAL_GROUP_TYPE_ATTACK || cur->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK)
+                    && this->sn[0x67] == 1 && mem != 0 && commanderObj != 0) {
                     XYZPoint targetTile;
                     Path* avoidancePath;
                     this->md->informationAI.addEnemyInfluences((int) mem->owner, mem->id);
@@ -3432,9 +3437,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                             } else {
                                 commanderPoint2.x = (int) commanderObj2->world_x;
                                 commanderPoint2.y = (int) commanderObj2->world_y;
-                                assist = this->bestGroup(0x6a, 1, -1, commanderPoint2, -1);
+                                assist = this->bestGroup(TACTICAL_GROUP_TYPE_TRANSPORT, 1, -1, commanderPoint2, -1);
                                 if (assist == 0) {
-                                    assist = this->bestGroup(0x6a, 0, -1, commanderPoint2, -1);
+                                    assist = this->bestGroup(TACTICAL_GROUP_TYPE_TRANSPORT, 0, -1, commanderPoint2, -1);
                                 }
                                 if (assist != 0) {
                                     cur->setAssistGroupID(assist->id());
@@ -3634,7 +3639,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                         allOutside = 0;
                                         RGE_Static_Object* targetObj;
                                         targetObj = this->md->object(cur->target());
-                                        if (cur->type() == 100 && targetObj != 0) {
+                                        if (cur->type() == TACTICAL_GROUP_TYPE_ATTACK && targetObj != 0) {
                                             if (unitObj2->unitAI() != 0
                                                 && unitObj2->unitAI()->currentTarget() != cur->target()
                                                 && unitObj2->canPath(
@@ -3685,7 +3690,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                         );
                                     }
                                 }
-                                if (cur->type() == 100) {
+                                if (cur->type() == TACTICAL_GROUP_TYPE_ATTACK) {
                                     RGE_Static_Object* commanderObjT;
                                     commanderObjT = this->md->object(cur->commander());
                                     if (commanderObjT == 0) {
@@ -3711,7 +3716,8 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                         }
                                     }
                                 } else {
-                                    if (cur->type() != 0x65 && cur->type() != 0x6d) {
+                                    if (cur->type() != TACTICAL_GROUP_TYPE_DEFEND
+                                        && cur->type() != TACTICAL_GROUP_TYPE_ARTIFACT) {
                                         goto loss_check;
                                     }
                                     const Waypoint* tloc;
@@ -4114,7 +4120,8 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                         }
                         cur->setAction(1);
                         cur->setInUse(0);
-                        if (cur->type() == 0x65 || cur->type() == 0x68) {
+                        if (cur->type() == TACTICAL_GROUP_TYPE_DEFEND
+                            || cur->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND) {
                             ObjectMemory* oldTarget;
                             oldTarget = this->md->informationAI.objectMemory(cur->target());
                             if (oldTarget != 0) {
@@ -4122,12 +4129,14 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                             }
                         }
                         if (this->md->buildAI.buildListLength() == 0
-                            && ((cur->type() == 100 && this->numberGroups(100, -1) > 1) || cur->type() != 100)) {
-                            if (cur->type() == 0x66) {
+                            && ((cur->type() == TACTICAL_GROUP_TYPE_ATTACK
+                                 && this->numberGroups(TACTICAL_GROUP_TYPE_ATTACK, -1) > 1)
+                                || cur->type() != TACTICAL_GROUP_TYPE_ATTACK)) {
+                            if (cur->type() == TACTICAL_GROUP_TYPE_EXPLORE) {
                                 this->sn[0x2a] = this->sn[0x2a] - 1;
-                            } else if (cur->type() == 0x65) {
+                            } else if (cur->type() == TACTICAL_GROUP_TYPE_DEFEND) {
                                 this->sn[0x26] = this->sn[0x26] - 1;
-                            } else if (cur->type() == 100) {
+                            } else if (cur->type() == TACTICAL_GROUP_TYPE_ATTACK) {
                                 this->sn[0x24] = this->sn[0x24] - 1;
                             }
                             cur->removeUnits(this->md);
@@ -4202,7 +4211,7 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long startTime, unsigned l
         countUnplayedSoldiers = 0;
         for (i = 0; i < this->soldiers.number(); i++) {
             TacticalAIGroup* group = this->groupUnitIsIn(this->soldiers[i]);
-            if ((group == 0) || (group->type() != 100)) {
+            if ((group == 0) || (group->type() != TACTICAL_GROUP_TYPE_ATTACK)) {
                 unplayedSoldiers[countUnplayedSoldiers++] = this->soldiers[i];
             }
         }
@@ -4220,7 +4229,7 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long startTime, unsigned l
                 if (playObj != 0) {
                     TacticalAIGroup* group = this->createGroup(1);
                     if (group != 0) {
-                        group->setType(100);
+                        group->setType(TACTICAL_GROUP_TYPE_ATTACK);
                         group->setDesiredNumberUnits(numberPlayUnits);
                         for (i = 0; i < numberPlayUnits; i++) {
                             group->addUnit(playUnits[i], this->md);
@@ -4296,8 +4305,10 @@ void TribeTacticalAIModule::taskBoats() {
             if (group == 0)
                 break;
 
-            if (group->type() != 100 && group->type() != 0x65 && group->type() != 0x66 && group->type() != 0x67
-                && group->type() != 0x68 && group->type() != 0x69 && (group->action() == 0 || group->action() == 1)) {
+            if (group->type() != TACTICAL_GROUP_TYPE_ATTACK && group->type() != TACTICAL_GROUP_TYPE_DEFEND
+                && group->type() != TACTICAL_GROUP_TYPE_EXPLORE && group->type() != TACTICAL_GROUP_TYPE_BOAT_ATTACK
+                && group->type() != TACTICAL_GROUP_TYPE_BOAT_DEFEND && group->type() != TACTICAL_GROUP_TYPE_BOAT_EXPLORE
+                && (group->action() == 0 || group->action() == 1)) {
                 int numberUnits;
                 int desiredNumberUnits;
 
@@ -4313,11 +4324,11 @@ void TribeTacticalAIModule::taskBoats() {
                 if (ready == 0) {
                     if (gathered == 0)
                         group->task(this, this->md, 9, 1, 0);
-                } else if (group->type() == 0x6b) {
+                } else if (group->type() == TACTICAL_GROUP_TYPE_FISHING) {
                     group->setAction(10);
-                } else if (group->type() == 0x6c) {
+                } else if (group->type() == TACTICAL_GROUP_TYPE_TRADE) {
                     group->setAction(11);
-                } else if (group->type() == 0x6a) {
+                } else if (group->type() == TACTICAL_GROUP_TYPE_TRANSPORT) {
                     group->setAction(1);
                 }
             }
@@ -4332,12 +4343,14 @@ void TribeTacticalAIModule::taskBoats() {
             if (group == 0)
                 return;
 
-            if (group->type() == 100 || group->type() == 0x65 || group->type() == 0x66 || group->type() == 0x67
-                || group->type() == 0x68 || group->type() == 0x69 || group->action() == 0 || group->action() == 1)
+            if (group->type() == TACTICAL_GROUP_TYPE_ATTACK || group->type() == TACTICAL_GROUP_TYPE_DEFEND
+                || group->type() == TACTICAL_GROUP_TYPE_EXPLORE || group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK
+                || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE
+                || group->action() == 0 || group->action() == 1)
                 goto next_group;
 
             if (group->inUse() == 0) {
-                if (group->type() == 0x6b) {
+                if (group->type() == TACTICAL_GROUP_TYPE_FISHING) {
                     RGE_Static_Object* commanderObject;
                     RGE_Static_Object* targetObject;
                     int resourceID;
@@ -4410,7 +4423,7 @@ void TribeTacticalAIModule::taskBoats() {
                     goto next_group;
                 }
 
-                if (group->type() == 0x6c) {
+                if (group->type() == TACTICAL_GROUP_TYPE_TRADE) {
                     RGE_Static_Object* commanderObject;
                     ObjectMemory* tradeObject;
 
@@ -4459,11 +4472,12 @@ void TribeTacticalAIModule::taskBoats() {
                 int hasWork;
 
                 hasWork = 0;
-                if (group->type() == 0x6c && this->md->informationAI.objectToTradeWith(group->commander()) != 0) {
+                if (group->type() == TACTICAL_GROUP_TYPE_TRADE
+                    && this->md->informationAI.objectToTradeWith(group->commander()) != 0) {
                     hasWork = 1;
                 }
 
-                if (group->type() == 0x6b) {
+                if (group->type() == TACTICAL_GROUP_TYPE_FISHING) {
                     if (this->numberWaterExplorers() > 1) {
                         float rXPos;
                         float rYPos;
@@ -4685,7 +4699,7 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
             return;
         }
 
-        if (group->type() == 0x6A && group->action() == 0xC) {
+        if (group->type() == TACTICAL_GROUP_TYPE_TRANSPORT && group->action() == 0xC) {
             TacticalAIGroup* assistGroup = this->group(group->assistGroupID(), minusOne, minusOne, minusOne);
             int currentAssistGroupID = group->assistGroupID();
 
@@ -4780,10 +4794,10 @@ int TribeTacticalAIModule::numberSoldiers() const {
     return this->soldiers.numberValue;
 }
 
-// The body calls TribeTacticalAIModule::numberUnitsInGroups(0x66).
+// The body calls TribeTacticalAIModule::numberUnitsInGroups(TACTICAL_GROUP_TYPE_EXPLORE).
 
 int TribeTacticalAIModule::numberSoldierExplorers() {
-    return this->numberUnitsInGroups(0x66);
+    return this->numberUnitsInGroups(TACTICAL_GROUP_TYPE_EXPLORE);
 }
 
 int TribeTacticalAIModule::numberBoats() const {
@@ -4949,11 +4963,11 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType, lon
 
     TacticalAIGroup* responseGroup;
     if (this->md->informationAI.isBoat(attacker) == 1) {
-        responseGroup = this->readyAndIdleGroup(0x67, this->sn[0x14], attackPoint);
+        responseGroup = this->readyAndIdleGroup(TACTICAL_GROUP_TYPE_BOAT_ATTACK, this->sn[0x14], attackPoint);
     } else {
-        responseGroup = this->readyAndIdleGroup(100, this->sn[0x14], attackPoint);
+        responseGroup = this->readyAndIdleGroup(TACTICAL_GROUP_TYPE_ATTACK, this->sn[0x14], attackPoint);
         if (responseGroup == 0)
-            responseGroup = this->readyAndIdleGroup(0x67, this->sn[0x14], attackPoint);
+            responseGroup = this->readyAndIdleGroup(TACTICAL_GROUP_TYPE_BOAT_ATTACK, this->sn[0x14], attackPoint);
     }
 
     if (responseGroup != 0) {
@@ -7063,7 +7077,7 @@ void TribeTacticalAIModule::setupSoldierGroups() {
         this->lastGroupRebalanceTime = now;
         group = this->groups.next;
         while (group != sentinel && group != 0) {
-            if (group->type() == 100) {
+            if (group->type() == TACTICAL_GROUP_TYPE_ATTACK) {
                 appendUniqueGroupID(groupsToRemove, group->id());
             }
             group = group->next;
@@ -7079,14 +7093,14 @@ void TribeTacticalAIModule::setupSoldierGroups() {
     //! @bug soldiers[0] is unguarded, and the list is empty at game start.
     //! The stale id selects a zone map, so save bytes vary between runs.
     if (this->md->informationAI.fullyExploredZone(this->soldiers[0]) == 0) {
-        this->removeAllGroups(102);
+        this->removeAllGroups(TACTICAL_GROUP_TYPE_EXPLORE);
         this->setStrategicNumber(0x2a, 0);
     }
 
-    int numAGroups = this->numberGroups(100, -1);
-    int numDGroups = this->numberGroups(101, -1);
-    int numEGroups = this->numberGroups(102, -1);
-    this->numberGroups(109, -1);
+    int numAGroups = this->numberGroups(TACTICAL_GROUP_TYPE_ATTACK, -1);
+    int numDGroups = this->numberGroups(TACTICAL_GROUP_TYPE_DEFEND, -1);
+    int numEGroups = this->numberGroups(TACTICAL_GROUP_TYPE_EXPLORE, -1);
+    this->numberGroups(TACTICAL_GROUP_TYPE_ARTIFACT, -1);
 
     this->numberUngroupedArtifacts();
     while (this->workingArea.numberValue > 0) {
@@ -7103,7 +7117,7 @@ void TribeTacticalAIModule::setupSoldierGroups() {
                 if (newGroup == 0) {
                     break;
                 }
-                newGroup->setType(109);
+                newGroup->setType(TACTICAL_GROUP_TYPE_ARTIFACT);
                 newGroup->setDesiredNumberUnits(1);
                 newGroup->addUnit(artifactID, this->md);
                 newGroup->setSpecificCommander(artifactID, this->md);
@@ -7168,11 +7182,11 @@ void TribeTacticalAIModule::setupSoldierGroups() {
     for (; numAGroups < numPotentialAGroups; ++numAGroups) {
         TacticalAIGroup* newGroup = 0;
         if (numDGroups > 0) {
-            newGroup = this->group(-1, 101, -1, -1);
+            newGroup = this->group(-1, TACTICAL_GROUP_TYPE_DEFEND, -1, -1);
             if (newGroup != 0) {
                 --numDGroups;
             } else {
-                newGroup = this->group(-1, 102, -1, -1);
+                newGroup = this->group(-1, TACTICAL_GROUP_TYPE_EXPLORE, -1, -1);
                 if (newGroup != 0) {
                     --numEGroups;
                 }
@@ -7184,7 +7198,7 @@ void TribeTacticalAIModule::setupSoldierGroups() {
                 break;
             }
         }
-        newGroup->setType(100);
+        newGroup->setType(TACTICAL_GROUP_TYPE_ATTACK);
         newGroup->setTarget(-1);
         newGroup->setTargetType(-1);
         newGroup->setAction(1);
@@ -7197,9 +7211,9 @@ void TribeTacticalAIModule::setupSoldierGroups() {
     }
 
     while (numAGroups > numPotentialAGroups) {
-        TacticalAIGroup* oldGroup = this->group(-1, 100, 0, -1);
+        TacticalAIGroup* oldGroup = this->group(-1, TACTICAL_GROUP_TYPE_ATTACK, 0, -1);
         if (oldGroup == 0) {
-            oldGroup = this->group(-1, 100, 1, -1);
+            oldGroup = this->group(-1, TACTICAL_GROUP_TYPE_ATTACK, 1, -1);
         }
         if (oldGroup == 0) {
             break;
@@ -7211,7 +7225,7 @@ void TribeTacticalAIModule::setupSoldierGroups() {
     for (; numDGroups < numPotentialDGroups; ++numDGroups) {
         TacticalAIGroup* newGroup = 0;
         if (numEGroups > 0) {
-            newGroup = this->group(-1, 102, -1, -1);
+            newGroup = this->group(-1, TACTICAL_GROUP_TYPE_EXPLORE, -1, -1);
             if (newGroup != 0) {
                 --numEGroups;
             }
@@ -7222,7 +7236,7 @@ void TribeTacticalAIModule::setupSoldierGroups() {
                 break;
             }
         }
-        newGroup->setType(101);
+        newGroup->setType(TACTICAL_GROUP_TYPE_DEFEND);
         newGroup->setTarget(-1);
         newGroup->setTargetType(-1);
         newGroup->setAction(1);
@@ -7231,7 +7245,7 @@ void TribeTacticalAIModule::setupSoldierGroups() {
     }
 
     while (numDGroups > numPotentialDGroups) {
-        TacticalAIGroup* oldGroup = this->group(-1, 101, -1, -1);
+        TacticalAIGroup* oldGroup = this->group(-1, TACTICAL_GROUP_TYPE_DEFEND, -1, -1);
         if (oldGroup == 0) {
             break;
         }
@@ -7244,13 +7258,13 @@ void TribeTacticalAIModule::setupSoldierGroups() {
         if (newGroup == 0) {
             break;
         }
-        newGroup->setType(102);
+        newGroup->setType(TACTICAL_GROUP_TYPE_EXPLORE);
         newGroup->setDesiredNumberUnits(this->sn[0x2b]);
         ++numEGroups;
     }
 
     while (numEGroups > numPotentialEGroups) {
-        TacticalAIGroup* oldGroup = this->group(-1, 102, -1, -1);
+        TacticalAIGroup* oldGroup = this->group(-1, TACTICAL_GROUP_TYPE_EXPLORE, -1, -1);
         if (oldGroup == 0) {
             break;
         }
@@ -7271,7 +7285,9 @@ void TribeTacticalAIModule::fillSoldierGroups() {
 
     TacticalAIGroup* group = this->groups.next;
     while (group != &this->groups && group != 0) {
-        if ((group->type() == 100 || group->type() == 101 || group->type() == 102) && group->commander() == -1) {
+        if ((group->type() == TACTICAL_GROUP_TYPE_ATTACK || group->type() == TACTICAL_GROUP_TYPE_DEFEND
+             || group->type() == TACTICAL_GROUP_TYPE_EXPLORE)
+            && group->commander() == -1) {
             int ungrouped = this->numberUngroupedSoldiers();
             if (group->numberUnits() > 0) {
                 int commander = this->selectBestCommander(group);
@@ -7294,7 +7310,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
     }
 
     if (this->sn[0x28] == 0) {
-        bestUnit = 100;
+        bestUnit = TACTICAL_GROUP_TYPE_ATTACK;
         do {
             bestGroup = this->groups.next;
             while (bestGroup != &this->groups && bestGroup != 0) {
@@ -7422,7 +7438,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                 bestGroup = bestGroup->next;
             }
             ++bestUnit;
-        } while (bestUnit <= 102);
+        } while (bestUnit <= TACTICAL_GROUP_TYPE_EXPLORE);
     }
 
     if (this->numberUngroupedSoldiers() == 0)
@@ -7440,7 +7456,9 @@ void TribeTacticalAIModule::fillSoldierGroups() {
             group = this->groups.next;
 
             while (group != &this->groups && group != 0) {
-                if ((group->type() == 100 || group->type() == 101 || group->type() == 102) && group->inUse() != 1) {
+                if ((group->type() == TACTICAL_GROUP_TYPE_ATTACK || group->type() == TACTICAL_GROUP_TYPE_DEFEND
+                     || group->type() == TACTICAL_GROUP_TYPE_EXPLORE)
+                    && group->inUse() != 1) {
                     RGE_Static_Object* groupCommander = this->md->object(group->commander());
                     if (groupCommander != 0 && groupCommander->currentZone() == unitZone) {
                         int desired = group->desiredNumberUnits();
@@ -7463,11 +7481,12 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                 group = this->groups.next;
                 bestDifference = 0;
                 while (group != &this->groups && group != 0) {
-                    if ((group->type() == 100 || group->type() == 101 || group->type() == 102) && group->inUse() != 1
-                        && (group->action() == 1 || group->action() == 0)
-                        && (group->type() != 100 || group->numberUnits() < this->sn[0x1a])
-                        && (group->type() != 101 || group->numberUnits() < this->sn[0x1c])
-                        && (group->type() != 102 || group->numberUnits() < this->sn[0x2c])) {
+                    if ((group->type() == TACTICAL_GROUP_TYPE_ATTACK || group->type() == TACTICAL_GROUP_TYPE_DEFEND
+                         || group->type() == TACTICAL_GROUP_TYPE_EXPLORE)
+                        && group->inUse() != 1 && (group->action() == 1 || group->action() == 0)
+                        && (group->type() != TACTICAL_GROUP_TYPE_ATTACK || group->numberUnits() < this->sn[0x1a])
+                        && (group->type() != TACTICAL_GROUP_TYPE_DEFEND || group->numberUnits() < this->sn[0x1c])
+                        && (group->type() != TACTICAL_GROUP_TYPE_EXPLORE || group->numberUnits() < this->sn[0x2c])) {
                         RGE_Static_Object* groupCommander = this->md->object(group->commander());
                         if (groupCommander != 0 && groupCommander->currentZone() == unitZone) {
                             int desired = group->desiredNumberUnits();
@@ -7521,7 +7540,8 @@ int TribeTacticalAIModule::numberExtraGroupedSoldiers() {
         if (group == 0)
             return result;
 
-        if ((group->type() == 100 || group->type() == 101 || group->type() == 102)
+        if ((group->type() == TACTICAL_GROUP_TYPE_ATTACK || group->type() == TACTICAL_GROUP_TYPE_DEFEND
+             || group->type() == TACTICAL_GROUP_TYPE_EXPLORE)
             && (group->action() == 1 || group->action() == 0)) {
             int desiredUnits = group->desiredNumberUnits();
             int numberUnits = group->numberUnits();
@@ -7576,14 +7596,15 @@ void TribeTacticalAIModule::displaySoldierGroups() {
     while (g != &this->groups) {
         if (!g)
             return;
-        if (g->type() == 100 || g->type() == 101 || g->type() == 102 || g->type() == 109) {
-            if (g->type() == 100)
+        if (g->type() == TACTICAL_GROUP_TYPE_ATTACK || g->type() == TACTICAL_GROUP_TYPE_DEFEND
+            || g->type() == TACTICAL_GROUP_TYPE_EXPLORE || g->type() == TACTICAL_GROUP_TYPE_ARTIFACT) {
+            if (g->type() == TACTICAL_GROUP_TYPE_ATTACK)
                 this->logCommonHistory("  Group ID#%d:  Attack Group (Type=%d).", g->id(), g->type());
-            else if (g->type() == 101)
+            else if (g->type() == TACTICAL_GROUP_TYPE_DEFEND)
                 this->logCommonHistory("  Group ID#%d:  Defend Group (Type=%d).", g->id(), g->type());
-            else if (g->type() == 102)
+            else if (g->type() == TACTICAL_GROUP_TYPE_EXPLORE)
                 this->logCommonHistory("  Group ID#%d:  Explore Group (Type=%d).", g->id(), g->type());
-            else if (g->type() == 109)
+            else if (g->type() == TACTICAL_GROUP_TYPE_ARTIFACT)
                 this->logCommonHistory("  Group ID#%d:  Artifact Group (Type=%d).", g->id(), g->type());
 
             this->logCommonHistory(
@@ -7678,7 +7699,9 @@ void TribeTacticalAIModule::setupBoatGroups() {
 
     group = this->groups.next;
     while (group != &this->groups && group != 0) {
-        if ((group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69) && group->numberUnits() == 0) {
+        if ((group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND
+             || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE)
+            && group->numberUnits() == 0) {
             appendUniqueGroupID(groupsToRemove, group->id());
         }
         group = group->next;
@@ -7690,12 +7713,12 @@ void TribeTacticalAIModule::setupBoatGroups() {
         ++i;
     }
 
-    numAGroups = this->numberGroups(0x67, -1);
-    numDGroups = this->numberGroups(0x68, -1);
-    numEGroups = this->numberGroups(0x69, -1);
-    this->numberGroups(0x6B, -1);
-    this->numberGroups(0x6C, -1);
-    this->numberGroups(0x6A, -1);
+    numAGroups = this->numberGroups(TACTICAL_GROUP_TYPE_BOAT_ATTACK, -1);
+    numDGroups = this->numberGroups(TACTICAL_GROUP_TYPE_BOAT_DEFEND, -1);
+    numEGroups = this->numberGroups(TACTICAL_GROUP_TYPE_BOAT_EXPLORE, -1);
+    this->numberGroups(TACTICAL_GROUP_TYPE_FISHING, -1);
+    this->numberGroups(TACTICAL_GROUP_TYPE_TRADE, -1);
+    this->numberGroups(TACTICAL_GROUP_TYPE_TRANSPORT, -1);
 
     this->numberUngroupedFishingBoats();
     while (this->workingArea.numberValue > 0) {
@@ -7708,7 +7731,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
             if (newGroup == 0) {
                 break;
             }
-            newGroup->setType(0x6B);
+            newGroup->setType(TACTICAL_GROUP_TYPE_FISHING);
             newGroup->setDesiredNumberUnits(this->sn[0x41] + 1);
             newGroup->addUnit(objectID, this->md);
             newGroup->setSpecificCommander(objectID, this->md);
@@ -7730,7 +7753,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
             if (newGroup == 0) {
                 break;
             }
-            newGroup->setType(0x6C);
+            newGroup->setType(TACTICAL_GROUP_TYPE_TRADE);
             newGroup->setDesiredNumberUnits(this->sn[0x40] + 1);
             newGroup->addUnit(objectID, this->md);
             newGroup->setSpecificCommander(objectID, this->md);
@@ -7752,7 +7775,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
             if (newGroup == 0) {
                 break;
             }
-            newGroup->setType(0x6A);
+            newGroup->setType(TACTICAL_GROUP_TYPE_TRANSPORT);
             newGroup->setDesiredNumberUnits(this->sn[0x42] + 1);
             newGroup->addUnit(objectID, this->md);
             newGroup->setSpecificCommander(objectID, this->md);
@@ -7764,7 +7787,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
     }
 
     if (this->md->informationAI.fullyExploredZone(this->boats[0]) == 0) {
-        this->removeAllGroups(0x69);
+        this->removeAllGroups(TACTICAL_GROUP_TYPE_BOAT_EXPLORE);
         this->setStrategicNumber(0x3D, 0);
     }
 
@@ -7814,11 +7837,11 @@ void TribeTacticalAIModule::setupBoatGroups() {
     for (; numAGroups < numPotentialAGroups; ++numAGroups) {
         TacticalAIGroup* newGroup = 0;
         if (numDGroups > 0) {
-            newGroup = this->group(-1, 0x68, -1, -1);
+            newGroup = this->group(-1, TACTICAL_GROUP_TYPE_BOAT_DEFEND, -1, -1);
             if (newGroup != 0) {
                 --numDGroups;
             } else {
-                newGroup = this->group(-1, 0x69, -1, -1);
+                newGroup = this->group(-1, TACTICAL_GROUP_TYPE_BOAT_EXPLORE, -1, -1);
                 if (newGroup != 0) {
                     --numEGroups;
                 }
@@ -7830,7 +7853,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
                 break;
             }
         }
-        newGroup->setType(0x67);
+        newGroup->setType(TACTICAL_GROUP_TYPE_BOAT_ATTACK);
         newGroup->setTarget(-1);
         newGroup->setTargetType(-1);
         newGroup->setAction(1);
@@ -7839,9 +7862,9 @@ void TribeTacticalAIModule::setupBoatGroups() {
     }
 
     while (numAGroups > numPotentialAGroups) {
-        TacticalAIGroup* oldGroup = this->group(-1, 0x67, 0, -1);
+        TacticalAIGroup* oldGroup = this->group(-1, TACTICAL_GROUP_TYPE_BOAT_ATTACK, 0, -1);
         if (oldGroup == 0) {
-            oldGroup = this->group(-1, 0x67, 1, -1);
+            oldGroup = this->group(-1, TACTICAL_GROUP_TYPE_BOAT_ATTACK, 1, -1);
         }
         if (oldGroup == 0) {
             break;
@@ -7853,7 +7876,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
     for (; numDGroups < numPotentialDGroups; ++numDGroups) {
         TacticalAIGroup* newGroup = 0;
         if (numEGroups > 0) {
-            newGroup = this->group(-1, 0x69, -1, -1);
+            newGroup = this->group(-1, TACTICAL_GROUP_TYPE_BOAT_EXPLORE, -1, -1);
             if (newGroup != 0) {
                 --numEGroups;
             }
@@ -7864,7 +7887,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
                 break;
             }
         }
-        newGroup->setType(0x68);
+        newGroup->setType(TACTICAL_GROUP_TYPE_BOAT_DEFEND);
         newGroup->setTarget(-1);
         newGroup->setTargetType(-1);
         newGroup->setAction(1);
@@ -7873,7 +7896,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
     }
 
     while (numDGroups > numPotentialDGroups) {
-        TacticalAIGroup* oldGroup = this->group(-1, 0x68, -1, -1);
+        TacticalAIGroup* oldGroup = this->group(-1, TACTICAL_GROUP_TYPE_BOAT_DEFEND, -1, -1);
         if (oldGroup == 0) {
             break;
         }
@@ -7886,12 +7909,12 @@ void TribeTacticalAIModule::setupBoatGroups() {
         if (newGroup == 0) {
             break;
         }
-        newGroup->setType(0x69);
+        newGroup->setType(TACTICAL_GROUP_TYPE_BOAT_EXPLORE);
         newGroup->setDesiredNumberUnits(this->sn[0x3E]);
     }
 
     while (numEGroups > numPotentialEGroups) {
-        TacticalAIGroup* oldGroup = this->group(-1, 0x69, -1, -1);
+        TacticalAIGroup* oldGroup = this->group(-1, TACTICAL_GROUP_TYPE_BOAT_EXPLORE, -1, -1);
         if (oldGroup == 0) {
             break;
         }
@@ -7909,7 +7932,9 @@ void TribeTacticalAIModule::fillBoatGroups() {
 
     TacticalAIGroup* group = this->groups.next;
     while (group != &this->groups && group != 0) {
-        if ((group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69) && group->commander() == -1) {
+        if ((group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND
+             || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE)
+            && group->commander() == -1) {
             int ungrouped = this->numberUngroupedWarBoats();
             if (group->numberUnits() > 0) {
                 int commander = this->selectBestCommander(group);
@@ -7932,7 +7957,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
     }
 
     if (this->sn[0x28] == 0) {
-        bestUnit = 0x67;
+        bestUnit = TACTICAL_GROUP_TYPE_BOAT_ATTACK;
         do {
             bestGroup = this->groups.next;
             while (bestGroup != &this->groups && bestGroup != 0) {
@@ -8043,7 +8068,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
                 bestGroup = bestGroup->next;
             }
             ++bestUnit;
-        } while (bestUnit <= 0x6a);
+        } while (bestUnit <= TACTICAL_GROUP_TYPE_TRANSPORT);
     }
 
     if (this->numberUngroupedWarBoats() == 0)
@@ -8057,8 +8082,9 @@ void TribeTacticalAIModule::fillBoatGroups() {
         bestGroup = 0;
         group = this->groups.next;
         while (group != &this->groups && group != 0) {
-            if (group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69 || group->type() == 0x6a
-                || group->type() == 0x6b || group->type() == 0x6c) {
+            if (group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND
+                || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE || group->type() == TACTICAL_GROUP_TYPE_TRANSPORT
+                || group->type() == TACTICAL_GROUP_TYPE_FISHING || group->type() == TACTICAL_GROUP_TYPE_TRADE) {
                 int number = group->numberUnits();
                 int desired = group->desiredNumberUnits();
                 if (number < desired && (group->action() == 1 || group->action() == 0)) {
@@ -8078,12 +8104,15 @@ void TribeTacticalAIModule::fillBoatGroups() {
             group = this->groups.next;
             bestDifference = 0;
             while (group != &this->groups && group != 0) {
-                if ((group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69 || group->type() == 0x6a
-                     || group->type() == 0x6b || group->type() == 0x6c)
+                if ((group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK
+                     || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND
+                     || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE
+                     || group->type() == TACTICAL_GROUP_TYPE_TRANSPORT || group->type() == TACTICAL_GROUP_TYPE_FISHING
+                     || group->type() == TACTICAL_GROUP_TYPE_TRADE)
                     && (group->action() == 1 || group->action() == 0)
-                    && (group->type() != 0x67 || group->numberUnits() < this->sn[0x3c])
-                    && (group->type() != 0x68 || group->numberUnits() < this->sn[0x45])
-                    && (group->type() != 0x69 || group->numberUnits() < this->sn[0x3f])) {
+                    && (group->type() != TACTICAL_GROUP_TYPE_BOAT_ATTACK || group->numberUnits() < this->sn[0x3c])
+                    && (group->type() != TACTICAL_GROUP_TYPE_BOAT_DEFEND || group->numberUnits() < this->sn[0x45])
+                    && (group->type() != TACTICAL_GROUP_TYPE_BOAT_EXPLORE || group->numberUnits() < this->sn[0x3f])) {
                     int number = group->numberUnits();
                     int desired = group->desiredNumberUnits();
                     int difference = number - desired;
@@ -8136,8 +8165,9 @@ int TribeTacticalAIModule::numberExtraGroupedWarBoats() {
         if (group == 0)
             return result;
 
-        if ((group->type() == 103 || group->type() == 104 || group->type() == 105 || group->type() == 106
-             || group->type() == 107 || group->type() == 108)
+        if ((group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND
+             || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE || group->type() == TACTICAL_GROUP_TYPE_TRANSPORT
+             || group->type() == TACTICAL_GROUP_TYPE_FISHING || group->type() == TACTICAL_GROUP_TYPE_TRADE)
             && (group->action() == 1 || group->action() == 0)) {
             numberUnitsValue = group->numberUnits();
             if (numberUnitsValue > group->desiredNumberUnits()) {
@@ -8228,19 +8258,20 @@ void TribeTacticalAIModule::displayBoatGroups() {
         if (group == 0)
             return;
 
-        if (group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69 || group->type() == 0x6B
-            || group->type() == 0x6C || group->type() == 0x6A) {
-            if (group->type() == 0x67)
+        if (group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND
+            || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE || group->type() == TACTICAL_GROUP_TYPE_FISHING
+            || group->type() == TACTICAL_GROUP_TYPE_TRADE || group->type() == TACTICAL_GROUP_TYPE_TRANSPORT) {
+            if (group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK)
                 this->logCommonHistory("  Group ID#%d:  Attack Group (Type=%d).", group->id(), group->type());
-            else if (group->type() == 0x68)
+            else if (group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND)
                 this->logCommonHistory("  Group ID#%d:  Defend Group (Type=%d).", group->id(), group->type());
-            else if (group->type() == 0x69)
+            else if (group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE)
                 this->logCommonHistory("  Group ID#%d:  Explore Group (Type=%d).", group->id(), group->type());
-            else if (group->type() == 0x6B)
+            else if (group->type() == TACTICAL_GROUP_TYPE_FISHING)
                 this->logCommonHistory("  Group ID#%d:  Fishing Group (Type=%d).", group->id(), group->type());
-            else if (group->type() == 0x6C)
+            else if (group->type() == TACTICAL_GROUP_TYPE_TRADE)
                 this->logCommonHistory("  Group ID#%d:  Trade Group (Type=%d).", group->id(), group->type());
-            else if (group->type() == 0x6A)
+            else if (group->type() == TACTICAL_GROUP_TYPE_TRANSPORT)
                 this->logCommonHistory("  Group ID#%d:  Transport Group (Type=%d).", group->id(), group->type());
 
             this->logCommonHistory(
@@ -8412,7 +8443,7 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(int type, int action, int dist
                 return best;
 
             if ((type == -1 || group->type() == type) && (action == -1 || group->action() == action)) {
-                if (type == 0x6A) {
+                if (type == TACTICAL_GROUP_TYPE_TRANSPORT) {
                     int valid = 1;
                     TacticalAIGroup* assist = this->groups.next;
 
@@ -8676,15 +8707,15 @@ int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* g) {
         return 0;
 
     int flag;
-    if (g->type() == 100) {
+    if (g->type() == TACTICAL_GROUP_TYPE_ATTACK) {
         flag = 1;
     } else {
-        if (g->type() == 101) {
+        if (g->type() == TACTICAL_GROUP_TYPE_DEFEND) {
             flag = 1;
         } else {
             int gtype = g->type();
             flag = 0;
-            if (gtype == 102)
+            if (gtype == TACTICAL_GROUP_TYPE_EXPLORE)
                 flag = 1;
         }
     }
@@ -8716,15 +8747,15 @@ int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* g) {
         return 0;
 
     int flag;
-    if (g->type() == 100) {
+    if (g->type() == TACTICAL_GROUP_TYPE_ATTACK) {
         flag = 1;
     } else {
-        if (g->type() == 101) {
+        if (g->type() == TACTICAL_GROUP_TYPE_DEFEND) {
             flag = 1;
         } else {
             int gtype = g->type();
             flag = 0;
-            if (gtype == 102)
+            if (gtype == TACTICAL_GROUP_TYPE_EXPLORE)
                 flag = 1;
         }
     }
@@ -9792,7 +9823,7 @@ int TribeTacticalAIModule::processCoopAttack(int caller, int playerToAttack, int
     for (; group != sentinel; group = group->next) {
         if (group == 0)
             break;
-        if (group->type() == 100 || group->type() == 0x67) {
+        if (group->type() == TACTICAL_GROUP_TYPE_ATTACK || group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
             current = group->numberUnits();
             if (group->desiredNumberUnits() > current) {
                 group->setDesiredNumberUnits(group->numberUnits());
@@ -9951,7 +9982,7 @@ void TribeTacticalAIModule::checkStaleAttackGroups() {
         group = this->groups.next;
         sentinel = &this->groups;
         while (group != sentinel && group != 0) {
-            if (group->type() == 100 && group->inUse() != 1) {
+            if (group->type() == TACTICAL_GROUP_TYPE_ATTACK && group->inUse() != 1) {
                 numberUnits = group->numberUnits();
                 desiredNumberUnits = group->desiredNumberUnits();
                 missing = desiredNumberUnits - numberUnits;
@@ -9978,8 +10009,9 @@ int TribeTacticalAIModule::numberWaterExplorers() {
     group = this->groups.next;
     sentinel = &this->groups;
     while (group != sentinel && group != 0) {
-        if ((group->type() == 0x67 || group->type() == 0x68 || group->type() == 0x69 || group->type() == 0x6a
-             || group->type() == 0x6b || group->type() == 0x6c)
+        if ((group->type() == TACTICAL_GROUP_TYPE_BOAT_ATTACK || group->type() == TACTICAL_GROUP_TYPE_BOAT_DEFEND
+             || group->type() == TACTICAL_GROUP_TYPE_BOAT_EXPLORE || group->type() == TACTICAL_GROUP_TYPE_TRANSPORT
+             || group->type() == TACTICAL_GROUP_TYPE_FISHING || group->type() == TACTICAL_GROUP_TYPE_TRADE)
             && group->action() == 8) {
             count = count + 1;
         }
@@ -10001,9 +10033,9 @@ void TribeTacticalAIModule::saveTheTown(int idToKill) {
         objectPosition.x = (int) targetObject->world_x;
         objectPosition.y = (int) targetObject->world_y;
 
-        TacticalAIGroup* group = this->readyAndIdleGroup(100, this->sn[0x14], objectPosition);
+        TacticalAIGroup* group = this->readyAndIdleGroup(TACTICAL_GROUP_TYPE_ATTACK, this->sn[0x14], objectPosition);
         if (group == 0)
-            group = this->readyAndIdleGroup(0x67, this->sn[0x14], objectPosition);
+            group = this->readyAndIdleGroup(TACTICAL_GROUP_TYPE_BOAT_ATTACK, this->sn[0x14], objectPosition);
 
         if (group != 0) {
             int commanderID = group->commander();

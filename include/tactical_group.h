@@ -6,6 +6,18 @@
 class TribeMainDecisionAIModule;
 class TribeTacticalAIModule;
 
+// TacticalAIGroup::typeValue IDs. The group-status log names soldier and boat groups separately.
+#define TACTICAL_GROUP_TYPE_ATTACK        100
+#define TACTICAL_GROUP_TYPE_DEFEND        101
+#define TACTICAL_GROUP_TYPE_EXPLORE       102
+#define TACTICAL_GROUP_TYPE_BOAT_ATTACK   103
+#define TACTICAL_GROUP_TYPE_BOAT_DEFEND   104
+#define TACTICAL_GROUP_TYPE_BOAT_EXPLORE  105
+#define TACTICAL_GROUP_TYPE_TRANSPORT     106
+#define TACTICAL_GROUP_TYPE_FISHING       107
+#define TACTICAL_GROUP_TYPE_TRADE         108
+#define TACTICAL_GROUP_TYPE_ARTIFACT      109
+
 class TacticalAIGroup {
   public:
     virtual ~TacticalAIGroup();
