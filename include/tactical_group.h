@@ -18,6 +18,23 @@ class TribeTacticalAIModule;
 #define TACTICAL_GROUP_TYPE_TRADE         108
 #define TACTICAL_GROUP_TYPE_ARTIFACT      109
 
+// TacticalAIGroup::actionValue IDs, also passed to task(). These are cleanup names inferred from
+// what each task() case does; the original task log strings are empty. Unclear values stay numeric:
+// 5, 6, 13, 14, 15, 16, 21, and 22.
+#define TACTICAL_GROUP_ACTION_NONE              0
+#define TACTICAL_GROUP_ACTION_IDLE              1
+#define TACTICAL_GROUP_ACTION_ATTACK            2
+#define TACTICAL_GROUP_ACTION_RETREAT           3
+#define TACTICAL_GROUP_ACTION_DEFEND            4
+#define TACTICAL_GROUP_ACTION_ESCORTED_EXPLORE  7
+#define TACTICAL_GROUP_ACTION_EXPLORE           8
+#define TACTICAL_GROUP_ACTION_GATHER            9
+#define TACTICAL_GROUP_ACTION_FISH              10
+#define TACTICAL_GROUP_ACTION_TRADE             11
+#define TACTICAL_GROUP_ACTION_TRANSPORT         12
+#define TACTICAL_GROUP_ACTION_ARTIFACT          19
+#define TACTICAL_GROUP_ACTION_ATTACK_ROUNDUP    20
+
 class TacticalAIGroup {
   public:
     virtual ~TacticalAIGroup();

@@ -3178,7 +3178,8 @@ ObjectMemory* TribeInformationAIModule::objectToDefend(int unitID) {
                         objPoint.y = (int) this->importantObjectMemory[i].y;
 
                         TacticalAIGroup* bestG = this->md->tacticalAI.bestGroup(
-                            -1, 4, this->md->tacticalAI.strategicNumber(SNDefendOverlapDistance), objPoint, -1
+                            -1, TACTICAL_GROUP_ACTION_DEFEND,
+                            this->md->tacticalAI.strategicNumber(SNDefendOverlapDistance), objPoint, -1
                         );
 
                         if (bestG == 0) {
