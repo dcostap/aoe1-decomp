@@ -61,7 +61,7 @@ TRIBE_Combat_Object::~TRIBE_Combat_Object() {
     if (group == OBJECT_GROUP_CIVILIAN || group == OBJECT_GROUP_FISHING_BOAT || group == OBJECT_GROUP_TRADE_BOAT) {
         this->owner->attributes[37] -= g_combat_one_float;
     } else if ((group != OBJECT_GROUP_PRIEST && master->master_type == 'F') || master->id == 'O' || master->id == 'E'
-               || master->id == 0xC7) {
+               || master->id == MASTER_OBJECT_SENTRY_TOWER) {
         this->owner->attributes[40] -= g_combat_one_float;
     }
 }
@@ -82,7 +82,8 @@ int TRIBE_Combat_Object::setup(TRIBE_Master_Combat_Object* tobj, RGE_Player* obj
         || this->master_obj->object_group == OBJECT_GROUP_TRADE_BOAT) {
         this->owner->attributes[37] -= g_combat_negative_one;
     } else if ((this->master_obj->object_group != OBJECT_GROUP_PRIEST && this->master_obj->master_type == 'F')
-               || this->master_obj->id == 0x4F || this->master_obj->id == 0x45 || this->master_obj->id == 0xC7) {
+               || this->master_obj->id == MASTER_OBJECT_WATCH_TOWER || this->master_obj->id == MASTER_OBJECT_GUARD_TOWER
+               || this->master_obj->id == MASTER_OBJECT_SENTRY_TOWER) {
         this->owner->attributes[40] -= g_combat_negative_one;
     }
 
@@ -301,7 +302,7 @@ float TRIBE_Combat_Object::calc_attack_modifier(RGE_Static_Object* target) {
 unsigned char TRIBE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Object* attacker) {
     RGE_Master_Combat_Object* master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     if (master->missile_id >= 0 && target != 0 && target->owner->id > 0) {
-        target->owner->make_new_object(0x70, this->world_x, this->world_y, this->world_z, 0);
+        target->owner->make_new_object(MASTER_OBJECT_FLARE, this->world_x, this->world_y, this->world_z, 0);
     }
     return RGE_Combat_Object::attack(target, attacker);
 }
@@ -313,7 +314,8 @@ unsigned char TRIBE_Combat_Object::do_attack(
         return 0;
     }
 
-    if (rge_base_game->quick_build != 0 && (this->master_obj->id == 0x7A || this->master_obj->id == 0x7B)) {
+    if (rge_base_game->quick_build != 0
+        && (this->master_obj->id == MASTER_OBJECT_HUNTER || this->master_obj->id == MASTER_OBJECT_LUMBERJACK)) {
         this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, target->id, 0);
         target->die_die_die();
         return 1;
@@ -596,7 +598,7 @@ int TRIBE_Combat_Object::repair(int targetID, int unconditional) {
         return 1;
     }
 
-    RGE_Master_Static_Object* repair_master = this->owner->master_objects[0x9C];
+    RGE_Master_Static_Object* repair_master = this->owner->master_objects[MASTER_OBJECT_REPAIR_MAN];
     if (repair_master != 0) {
         this->transform(repair_master);
     }
@@ -672,7 +674,7 @@ int TRIBE_Combat_Object::trade(int targetID, int unconditional) {
 
 unsigned char TRIBE_Combat_Object::keepGatheringWhenObjectIsOut(int oType) const {
     //! Trade keep-working accepts only farm and dock; the dock id is hard-coded here too.
-    if (oType != 0x32 && oType != 0x2D) {
+    if (oType != MASTER_OBJECT_FARM && oType != MASTER_OBJECT_DOCK_1) {
         return 0;
     }
     return 1;
@@ -701,7 +703,7 @@ void TRIBE_Combat_Object::initUnitAI() {
     RGE_Master_Static_Object* master = this->master_obj;
     switch (master->object_group) {
         case OBJECT_GROUP_ARTIFACT:
-            if (master->id == 0x63 || master->id == 0x0A)
+            if (master->id == 0x63 || master->id == MASTER_OBJECT_ARTIFACT_DISCOVERY1)
                 return;
             this->unitAIValue = new TribeArtifactUnitAIModule(this, 5);
             return;
@@ -715,11 +717,11 @@ void TRIBE_Combat_Object::initUnitAI() {
             this->unitAIValue = new TribeHuntedAnimalUnitAIModule(this, 10);
             return;
         case OBJECT_GROUP_PREDATOR:
-            if (master->id == 0x9D) {
+            if (master->id == MASTER_OBJECT_HORSE) {
                 this->unitAIValue = new TribeHuntedAnimalUnitAIModule(this, 10);
-            } else if (master->id == 0x30) {
+            } else if (master->id == MASTER_OBJECT_ELEPHANT) {
                 this->unitAIValue = new TribeElephantUnitAIModule(this, 10);
-            } else if (master->id == 0x7E) {
+            } else if (master->id == MASTER_OBJECT_LION) {
                 this->unitAIValue = new TribeLionUnitAIModule(this, 10);
             } else {
                 this->unitAIValue = new TribePreditorUnitAIModule(this, 10);
@@ -736,8 +738,9 @@ void TRIBE_Combat_Object::initUnitAI() {
             return;
         case OBJECT_GROUP_BUILDING:
         case OBJECT_GROUP_WALL:
-            if (master->id == 0x4F || master->id == 0xC7 || master->id == 0x45 || master->id == 0x116
-                || master->id == 0x17F || master->id == 0x17C) {
+            if (master->id == MASTER_OBJECT_WATCH_TOWER || master->id == MASTER_OBJECT_SENTRY_TOWER
+                || master->id == MASTER_OBJECT_GUARD_TOWER || master->id == MASTER_OBJECT_GUARD_TOWER2
+                || master->id == MASTER_OBJECT_MIRROR_TOWER || master->id == MASTER_OBJECT_HERO_ZENOBIA_S_TOWER) {
                 this->unitAIValue = new TribeTowerUnitAIModule(this, 10);
             } else {
                 this->unitAIValue = new TribeBuildingUnitAIModule(this, 10);
@@ -944,7 +947,9 @@ unsigned char TRIBE_Combat_Object::area_attack(
                 RGE_Combat_Object* object = static_cast<RGE_Combat_Object*>(link->node);
                 if (object != ignore_object) {
                     const short master_id = this->master_obj->id;
-                    if (!(((master_id == 0x2E || master_id == 0x28 || master_id == 0x153 || master_id == 0x159)
+                    if (!(((master_id == MASTER_OBJECT_SOLDIER_ELEPHANT || master_id == MASTER_OBJECT_SOLDIER_CHARIOT1
+                            || master_id == MASTER_OBJECT_SOLDIER_HVY_CHARIOT
+                            || master_id == MASTER_OBJECT_SOLDIER_ARMOR_ELEPHANT)
                            && object->owner == this->owner)
                           || object == this)
                         && object->master_obj->area_effect_object_level
@@ -1030,8 +1035,8 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* obj) {
     int current_action;
 
     if (static_cast<RGE_Action_Object*>(obj) != this) {
-        if (this->master_obj->id != 0x9C) {
-            this->transform(this->owner->master_objects[0x9C]);
+        if (this->master_obj->id != MASTER_OBJECT_REPAIR_MAN) {
+            this->transform(this->owner->master_objects[MASTER_OBJECT_REPAIR_MAN]);
         }
 
         repair_list = static_cast<RGE_Master_Action_Object*>(this->master_obj)->tasks;

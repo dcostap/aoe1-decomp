@@ -475,7 +475,7 @@ void TribeMainDecisionAIModule::kick(int m) {
         this->buildAI.skipNextBuildListItem();
     }
     if (m == 2) {
-        this->buildAI.insert(0x53, 1, -1);
+        this->buildAI.insert(MASTER_OBJECT_MAN, 1, -1);
     }
     if (m == 3) {
         this->logCommonHistory("Current Build list is:");
@@ -547,7 +547,7 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
         RGE_Static_Object* object = this->object(this->objects[i]);
         if (object != 0) {
             this->buildAI.addItem(object, 0);
-            if (object->master_obj->id == 0x6d) {
+            if (object->master_obj->id == MASTER_OBJECT_TOWN_CENTER1) {
                 this->constructionAI.setReferencePoint(
                     this->player->world->map->map_width, this->player->world->map->map_height, object->world_x,
                     object->world_y, object->world_z

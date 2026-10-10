@@ -748,11 +748,12 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
         } while (n != 0);
     }
 
-    if (obj_cat == 0x76 && this->attributes[0x30] == 0.0f && this->master_objects[0x6d]->available == 0) {
+    if (obj_cat == MASTER_OBJECT_BUILDER && this->attributes[0x30] == 0.0f
+        && this->master_objects[MASTER_OBJECT_TOWN_CENTER1]->available == 0) {
         tribe_flag = 1;
         RGE_Object_Node* node = this->objects->list;
         while (node != 0) {
-            if (node->node->master_obj->id == 0x6d)
+            if (node->node->master_obj->id == MASTER_OBJECT_TOWN_CENTER1)
                 tribe_flag = 0;
             node = node->next;
         }
@@ -796,8 +797,8 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
 
     if (tribe_flag != 0) {
         (*item_list)[list_n].id = 0x6d;
-        (*item_list)[list_n].pict = this->master_objects[0x6d]->button_pict;
-        (*item_list)[list_n].name = this->master_objects[0x6d]->name;
+        (*item_list)[list_n].pict = this->master_objects[MASTER_OBJECT_TOWN_CENTER1]->button_pict;
+        (*item_list)[list_n].name = this->master_objects[MASTER_OBJECT_TOWN_CENTER1]->name;
         this->obj_cost(0x6d, 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
         (*item_list)[list_n].inventory_item_1 = inv_1;
         (*item_list)[list_n].inventory_cost_1 = inv_amt_1;
@@ -805,8 +806,8 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
         (*item_list)[list_n].inventory_cost_2 = inv_amt_2;
         (*item_list)[list_n].inventory_item_3 = inv_3;
         (*item_list)[list_n].inventory_cost_3 = inv_amt_3;
-        (*item_list)[list_n].help_string_id = this->master_objects[0x6d]->get_help_message();
-        (*item_list)[list_n].help_page_id = this->master_objects[0x6d]->get_help_page();
+        (*item_list)[list_n].help_string_id = this->master_objects[MASTER_OBJECT_TOWN_CENTER1]->get_help_message();
+        (*item_list)[list_n].help_page_id = this->master_objects[MASTER_OBJECT_TOWN_CENTER1]->get_help_page();
     }
 }
 
@@ -823,7 +824,7 @@ void TRIBE_Player::interface_trade_avail(Trade_Avail** list, short* list_num) {
                     RGE_Static_Object** output = dock_list + dock_count;
                     do {
                         //! Trade targets only docks (master id 0x2D); RockNROR allows other trade-partner units.
-                        if (node->node->master_obj->id == 0x2D) {
+                        if (node->node->master_obj->id == MASTER_OBJECT_DOCK_1) {
                             if (this->visible->get_visible(
                                     static_cast<short>(node->node->world_x), static_cast<short>(node->node->world_y)
                                 )) {
@@ -872,9 +873,9 @@ unsigned char TRIBE_Player::command_make_building(short obj_id, float x, float y
     short unused_list_num;
 
     RGE_Master_Static_Object* info = this->master_objects[obj_id];
-    if (info != 0 && (info->available != 0 || obj_id == 0x6d)) {
+    if (info != 0 && (info->available != 0 || obj_id == MASTER_OBJECT_TOWN_CENTER1)) {
         if (get_selected_objects_to_command(&list, &list_num, 4, 4, -1, -1)) {
-            this->master_objects[0x76]->play_command_sound();
+            this->master_objects[MASTER_OBJECT_BUILDER]->play_command_sound();
             static_cast<TRIBE_Command*>(this->world->commands)->command_build(list, list_num, obj_id, x, y);
             free(list);
             return 1;
@@ -891,7 +892,7 @@ unsigned char TRIBE_Player::command_make_wall(short obj_id, long x1, long y1, lo
     RGE_Master_Static_Object* info = this->master_objects[obj_id];
     if (info != 0 && info->available != 0) {
         if (get_selected_objects_to_command(&list, &list_num, 4, 4, -1, -1)) {
-            this->master_objects[0x76]->play_command_sound();
+            this->master_objects[MASTER_OBJECT_BUILDER]->play_command_sound();
             static_cast<TRIBE_Command*>(this->world->commands)
                 ->command_build_wall(list, list_num, obj_id, x1, y1, x2, y2);
             free(list);
@@ -1189,7 +1190,10 @@ void TRIBE_Player::random_start() {
         h = ((debug_rand(tplayerSourceName, 1586) * (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf) + 0.5f;
         int tries = 1;
         while (tries < 5000) {
-            if (this->master_objects[0x6d]->check_placement(this, h + 0.5f, w1 + 0.5f, 0, 0, 1, 1, 1, 1, 1) == 0)
+            if (this->master_objects[MASTER_OBJECT_TOWN_CENTER1]->check_placement(
+                    this, h + 0.5f, w1 + 0.5f, 0, 0, 1, 1, 1, 1, 1
+                )
+                == 0)
                 break;
             w1 = ((debug_rand(tplayerSourceName, 1585) * (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf) + 0.5f;
             h = ((debug_rand(tplayerSourceName, 1586) * (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf) + 0.5f;
@@ -1197,8 +1201,9 @@ void TRIBE_Player::random_start() {
         }
 
         if (tries < 5000) {
-            TRIBE_Building_Object* town_center_object =
-                static_cast<TRIBE_Building_Object*>(this->master_objects[0x6d]->make_new_obj(this, h, w1, 0));
+            TRIBE_Building_Object* town_center_object = static_cast<TRIBE_Building_Object*>(
+                this->master_objects[MASTER_OBJECT_TOWN_CENTER1]->make_new_obj(this, h, w1, 0)
+            );
             this->set_map_loc(static_cast<short>(h), static_cast<short>(w1));
             this->set_view_loc(h, w1);
             town_center_object->build(10000.0f);
@@ -1218,8 +1223,9 @@ void TRIBE_Player::random_start() {
 
                     if (w >= 0.0f && w < static_cast<float>(this->world->map->map_height) && h1 >= 0.0f
                         && h1 < static_cast<float>(this->world->map->map_width)
-                        && this->master_objects[0x53]->check_placement(this, h1, w, 0, 0, 1, 1, 1, 1, 1) == 0) {
-                        this->master_objects[0x53]->make_new_obj(this, h1, w, 0);
+                        && this->master_objects[MASTER_OBJECT_MAN]->check_placement(this, h1, w, 0, 0, 1, 1, 1, 1, 1)
+                               == 0) {
+                        this->master_objects[MASTER_OBJECT_MAN]->make_new_obj(this, h1, w, 0);
                         bad = 0;
                     }
                 } while (bad);
@@ -1248,7 +1254,7 @@ void TRIBE_Player::random_start() {
                     town_center_object->explore_terrain(this->world->players[i], 0, -1);
                     town_center_object->unexplore_terrain(this->world->players[i], 0, -1);
                 }
-                this->world->players[i]->make_new_object(0x70, this->view_x, this->view_y, 0, 0);
+                this->world->players[i]->make_new_object(MASTER_OBJECT_FLARE, this->view_x, this->view_y, 0, 0);
                 found_ally = 1;
             }
         }

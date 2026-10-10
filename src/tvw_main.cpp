@@ -623,7 +623,7 @@ long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int sh
 }
 
 int TRIBE_Main_View::pick_through_fog(RGE_Static_Object* obj) {
-    if ((obj != 0) && (obj->master_obj->id == 0x2D)) {
+    if ((obj != 0) && (obj->master_obj->id == MASTER_OBJECT_DOCK_1)) {
         return 1;
     }
     return RGE_View::pick_through_fog(obj);
@@ -632,8 +632,8 @@ int TRIBE_Main_View::pick_through_fog(RGE_Static_Object* obj) {
 int TRIBE_Main_View::pick_weight(RGE_Static_Object* obj, int confidence) {
     unsigned char select_level = obj->master_obj->select_level;
 
-    if (obj->master_obj->id == 0x4F || obj->master_obj->id == 0xC7 || obj->master_obj->id == 0x45
-        || obj->master_obj->id == 0x116) {
+    if (obj->master_obj->id == MASTER_OBJECT_WATCH_TOWER || obj->master_obj->id == MASTER_OBJECT_SENTRY_TOWER
+        || obj->master_obj->id == MASTER_OBJECT_GUARD_TOWER || obj->master_obj->id == MASTER_OBJECT_GUARD_TOWER2) {
         select_level = 3;
     }
 

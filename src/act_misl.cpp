@@ -78,8 +78,9 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
                 float target_speed = this->target_obj->getSpeed();
 
                 if (this->target_obj2 != 0
-                    && (this->target_obj2->master_obj->id == 0x23 || this->target_obj2->master_obj->id == 0x24
-                        || this->target_obj2->master_obj->id == 0x118)
+                    && (this->target_obj2->master_obj->id == MASTER_OBJECT_SOLDIER_CATAPULT1
+                        || this->target_obj2->master_obj->id == MASTER_OBJECT_SOLDIER_CATAPULT2
+                        || this->target_obj2->master_obj->id == MASTER_OBJECT_SOLDIER_CATAPULT3)
                     && target_speed > g_missile_target_speed_normalization_limit) {
                     target_speed = 1.0f;
                 }

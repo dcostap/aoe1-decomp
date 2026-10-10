@@ -686,7 +686,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                 do {
                     RGE_Object_Node* node = (*player)->objects->list;
                     while (node != 0) {
-                        if (node->node->master_obj->id == 0x9f) {
+                        if (node->node->master_obj->id == MASTER_OBJECT_ARTIFACT1) {
                             ++count;
                         }
                         node = node->next;
@@ -708,7 +708,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                 do {
                     RGE_Object_Node* node = (*player)->objects->list;
                     while (node != 0) {
-                        if (node->node->master_obj->id == 10) {
+                        if (node->node->master_obj->id == MASTER_OBJECT_ARTIFACT_DISCOVERY1) {
                             ++count;
                         }
                         node = node->next;
@@ -764,7 +764,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                 do {
                     RGE_Object_Node* node = (*player)->objects->list;
                     while (node != 0) {
-                        if (node->node->master_obj->id == 0x9f) {
+                        if (node->node->master_obj->id == MASTER_OBJECT_ARTIFACT1) {
                             ++this->artifact_count;
                         }
                         node = node->next;

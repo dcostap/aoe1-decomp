@@ -227,7 +227,7 @@ unsigned char TRIBE_Action_Build::update() {
                 //! @bug The farm completion branch arms timer = -1 instead of finishing the build.
                 //! The next update then forces the builder to work the farm before any deposit.
                 //! If the carry is not food, the gather start discards it with no owner credit.
-                if (this->target_obj != 0 && this->target_obj->master_obj->id == 0x32) {
+                if (this->target_obj != 0 && this->target_obj->master_obj->id == MASTER_OBJECT_FARM) {
                     this->timer = -1.0f;
                     return RGE_ACTION_UPDATE_CONTINUE;
                 }

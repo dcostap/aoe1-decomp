@@ -467,7 +467,7 @@ void TRIBE_Panel_Object::draw() {
                     this->draw_item(row, 9, ValueTypePercent, progress, 0);
                     ++row;
                 } else {
-                    if (this->game_obj->master_obj->id == 0x46) {
+                    if (this->game_obj->master_obj->id == MASTER_OBJECT_HOUSE) {
                         int value = (int) (this->player->attributes[4] + this->player->attributes[11]);
                         int max_value = (int) this->player->attributes[32];
                         if (max_value < value)
@@ -477,7 +477,7 @@ void TRIBE_Panel_Object::draw() {
                         ++row;
                     }
 
-                    if (this->game_obj->master_obj->id == 0x32) {
+                    if (this->game_obj->master_obj->id == MASTER_OBJECT_FARM) {
                         RGE_Action* action = bldg_obj->actions->get_action();
                         if (action != 0) {
                             this->draw_item(
@@ -498,14 +498,15 @@ void TRIBE_Panel_Object::draw() {
             int show_resource = 0;
             if (this->game_obj->owner == this->player) {
                 if (work_type != 0x67 && work_type != 0x66) {
-                    if (this->game_obj->master_obj->id == 0x2d) {
+                    if (this->game_obj->master_obj->id == MASTER_OBJECT_DOCK_1) {
                         show_resource = 1;
-                    } else if (this->game_obj->master_obj->id != 0x32 && this->game_obj->attribute_type_held != -1
+                    } else if (this->game_obj->master_obj->id != MASTER_OBJECT_FARM
+                               && this->game_obj->attribute_type_held != -1
                                && (int) this->game_obj->attribute_amount_held > 0) {
                         show_resource = 1;
                     }
                 }
-            } else if (this->game_obj->master_obj->id == 0x2d) {
+            } else if (this->game_obj->master_obj->id == MASTER_OBJECT_DOCK_1) {
                 show_resource = 1;
             }
 
@@ -535,7 +536,7 @@ void TRIBE_Panel_Object::draw() {
                         goto resource_done;
                 }
 
-                if (this->game_obj->master_obj->id == 0x2d) {
+                if (this->game_obj->master_obj->id == MASTER_OBJECT_DOCK_1) {
                     this->draw_item(
                         row, item_type, ValueTypeNumber,
                         (int) (this->game_obj->owner->attributes[9] - g_tactical_panel_rounding_offset), 0
@@ -551,7 +552,7 @@ void TRIBE_Panel_Object::draw() {
         }
 
     resource_done:
-        if (this->game_obj->master_obj->id == 0x2d && this->game_obj->owner != this->player) {
+        if (this->game_obj->master_obj->id == MASTER_OBJECT_DOCK_1 && this->game_obj->owner != this->player) {
             RGE_Static_Object* nearby = rge_base_game->get_player()->objects->find_by_master_id(
                 0x2d, this->game_obj->world_x, this->game_obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE, this->game_obj
             );
@@ -785,7 +786,8 @@ long TRIBE_Panel_Object::handle_idle() {
                 } else if (object->attribute_type_held != this->save_attr_type) {
                     changed = 1;
                 } else if (object->attribute_amount_held != this->save_attr_amount || object->hp != this->save_hp
-                           || objects->list != this->save_list || master->los != this->save_los || master->id == 0x2D) {
+                           || objects->list != this->save_list || master->los != this->save_los
+                           || master->id == MASTER_OBJECT_DOCK_1) {
                     changed = 1;
                 }
             }
@@ -870,7 +872,7 @@ long TRIBE_Panel_Object::handle_idle() {
                     }
                 }
 
-                if ((changed == 0 || do_buttons == 0) && this->game_obj->master_obj->id == 0x46) {
+                if ((changed == 0 || do_buttons == 0) && this->game_obj->master_obj->id == MASTER_OBJECT_HOUSE) {
                     if ((int) this->player->attributes[11] != this->save_pop
                         || (int) this->player->attributes[4] != this->save_max_pop) {
                         changed = 1;
@@ -878,7 +880,7 @@ long TRIBE_Panel_Object::handle_idle() {
                 }
 
                 if ((changed == 0 || do_buttons == 0) && this->game_obj->owner == this->player
-                    && this->game_obj->master_obj->id == 0x32) {
+                    && this->game_obj->master_obj->id == MASTER_OBJECT_FARM) {
                     RGE_Action* action = bldg_obj->actions->get_action();
                     if (action != 0
                         && (int) (action->timer + this->game_obj->attribute_amount_held
@@ -960,7 +962,7 @@ void TRIBE_Panel_Object::save_object_info() {
         this->save_pop = (int) player->attributes[11];
         this->save_max_pop = (int) player->attributes[4];
 
-        if (this->game_obj->owner == player && this->game_obj->master_obj->id == 0x32) {
+        if (this->game_obj->owner == player && this->game_obj->master_obj->id == MASTER_OBJECT_FARM) {
             RGE_Action* action = building->actions->get_action();
             if (action != 0) {
                 float action_amount = action->timer;

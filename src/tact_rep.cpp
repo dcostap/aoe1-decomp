@@ -369,7 +369,7 @@ void TRIBE_Action_Repair::meet_target() {
         RGE_Object_Node* node = this->obj->owner->objects->list;
         while (node != 0) {
             RGE_Static_Object* action = node->node;
-            if (action != this->obj && action->master_obj->id == 0x9C) {
+            if (action != this->obj && action->master_obj->id == MASTER_OBJECT_REPAIR_MAN) {
                 if (action->get_target_obj() == this->target_obj && action->actionState() != 2) {
                     if (this->target_obj->actionState() == 0x0B) {
                         this->target_x = ((RGE_Action_Object*) this->target_obj)->actions->get_action()->targetX();

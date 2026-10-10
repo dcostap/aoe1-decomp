@@ -51,7 +51,7 @@ TRIBE_Building_Object::TRIBE_Building_Object(
     }
 
     TRIBE_Master_Building_Object* master_object = static_cast<TRIBE_Master_Building_Object*>(this->master_obj);
-    if (master_object->id == 0x114) {
+    if (master_object->id == MASTER_OBJECT_WONDER) {
         set_task(master_object->default_task);
     }
 
@@ -798,8 +798,9 @@ void TRIBE_Building_Object::damage(
     RGE_Master_Static_Object* master = attacking_object->master_obj;
     short group = master->object_group;
 
-    if (group == 0 || group == 0x17 || group == 0x24 || group == 0x1A || master->id == 0x4F || master->id == 0x45
-        || master->id == 0xC7 || master->id == 0x17F || master->id == 0x17C) {
+    if (group == 0 || group == 0x17 || group == 0x24 || group == 0x1A || master->id == MASTER_OBJECT_WATCH_TOWER
+        || master->id == MASTER_OBJECT_GUARD_TOWER || master->id == MASTER_OBJECT_SENTRY_TOWER
+        || master->id == MASTER_OBJECT_MIRROR_TOWER || master->id == MASTER_OBJECT_HERO_ZENOBIA_S_TOWER) {
         if (temp_hp - hp < g_building_small_damage_threshold) {
             hp = temp_hp - g_building_small_damage_amount;
         }

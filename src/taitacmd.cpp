@@ -1165,7 +1165,7 @@ int TacticalAIGroup::task(
                 priority = t->calculatePriority(
                     object->distance_to_position(targetLocationValue.x, targetLocationValue.y, targetLocationValue.z)
                 );
-                if (targetTypeValue == 109) {
+                if (targetTypeValue == MASTER_OBJECT_TOWN_CENTER1) {
                     t->taskDefender(*unit, targetValue, (float) t->strategicNumber(SNSentryDistance), priority);
                 } else {
                     t->taskDefender(*unit, targetValue, (float) t->strategicNumber(SNDefenseDistance), priority);
@@ -1377,7 +1377,7 @@ int TacticalAIGroup::allUnitsIdle(TribeMainDecisionAIModule* md, int countAttack
             obj = md->object(unit);
             if (obj == 0 || obj->unitAI() == 0) {
                 self->removeUnitByIndex(i, md);
-            } else if (obj->master_obj->id != 0x7D) {
+            } else if (obj->master_obj->id != MASTER_OBJECT_PRIEST) {
                 if (countAttackAsIdle == 1) {
                     ai = obj->unitAI();
                     if (ai->currentAction() == UNIT_AI_ACTION_ATTACK) {
@@ -2326,8 +2326,9 @@ int TribeTacticalAIModule::doSomething() {
                     break;
 
                 case 10: {
-                    RGE_Static_Object* object =
-                        this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+                    RGE_Static_Object* object = this->md->object(
+                        -1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1
+                    );
                     if (object != 0) {
                         int id = this->md->informationAI.withinXTilesOfObject(object, 0x14, 0x4f, 0xc7, 0x45, 0x116);
                         if (id != -1)
@@ -2624,7 +2625,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* bo) {
             && objectGroup != 0x27) {
             if (objectGroup != OBJECT_GROUP_TRADE_BOAT && objectGroup != OBJECT_GROUP_TRANSPORT_BOAT
                 && objectGroup != OBJECT_GROUP_WAR_BOAT && objectGroup != OBJECT_GROUP_FISHING_BOAT) {
-                if (objectToAdd->master_obj->id != 0x9F)
+                if (objectToAdd->master_obj->id != MASTER_OBJECT_ARTIFACT1)
                     return;
                 if (this->md->player->world->difficultyLevel() >= RGE_DIFFICULTY_EASIEST)
                     return;
@@ -2862,7 +2863,8 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime, unsigned long 
     taskedCount = 0;
     if (this->nextCivilianToTaskValue == -1) {
         while (this->civilianExplorers.numberValue < this->civilianExplorers.desiredNumberValue) {
-            townCenter = this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+            townCenter =
+                this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
             if (townCenter != 0) {
                 tcPosition.x = (int) townCenter->world_x;
                 tcPosition.y = (int) townCenter->world_y;
@@ -2905,7 +2907,8 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime, unsigned long 
         }
 
         while (this->numberGatherersValue < this->desiredNumberGatherersValue) {
-            townCenter = this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+            townCenter =
+                this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
             if (townCenter != 0) {
                 tcPosition.x = (int) townCenter->world_x;
                 tcPosition.y = (int) townCenter->world_y;
@@ -3006,7 +3009,8 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime, unsigned l
         number = group->numberUnits();
         if (desired > number) {
             RGE_Static_Object* commanderObj = this->md->object(group->commander());
-            RGE_Static_Object* targetObj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+            RGE_Static_Object* targetObj =
+                this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
             if (commanderObj == 0 || targetObj == 0) {
                 readyToTask = 0;
             } else {
@@ -3159,7 +3163,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                 cur->setAction(TACTICAL_GROUP_ACTION_IDLE);
                                 goto clear_attack_state;
                             } else {
-                                if (mem->type == 0x6d) {
+                                if (mem->type == MASTER_OBJECT_TOWN_CENTER1) {
                                     defendDistance = (float) this->sn[SNSentryDistance];
                                 } else {
                                     defendDistance = (float) this->sn[SNDefenseDistance];
@@ -3217,7 +3221,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                 cur->setAction(TACTICAL_GROUP_ACTION_IDLE);
                                 goto clear_attack_state;
                             } else {
-                                relic = md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+                                relic = md->object(
+                                    -1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1
+                                );
                                 if (relic == 0) {
                                     cur->setAction(TACTICAL_GROUP_ACTION_IDLE);
                                     goto clear_attack_state;
@@ -3700,8 +3706,9 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                     resetAssist->setAction(TACTICAL_GROUP_ACTION_IDLE);
                                     resetAssist->setInUse(0);
                                     RGE_Static_Object* relicObj;
-                                    relicObj =
-                                        this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+                                    relicObj = this->md->object(
+                                        -1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1
+                                    );
                                     if (relicObj != 0) {
                                         this->moveUnit(
                                             resetAssist->commander(), relicObj->world_x, relicObj->world_y, 50
@@ -4283,7 +4290,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
         return;
 
     this->lastUngroupedSoldierTaskTime = this->md->player->world->world_time;
-    centerObject = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    centerObject = this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     if (centerObject == 0)
         return;
 
@@ -4758,7 +4765,7 @@ void TribeTacticalAIModule::evaluateBuildListInsertions() {
     if (this->sn[0xCD] == one) {
         if (this->md->buildAI.haveBuildList() != 0 && this->builtFirstStoragePit == 0
             && this->md->informationAI.numberFoundForestTilesValue >= this->sn[0xA9]) {
-            this->md->buildAI.insert(0x67, one, 0);
+            this->md->buildAI.insert(MASTER_OBJECT_STORAGE_PIT1, one, 0);
             this->builtFirstStoragePit = one;
         }
 
@@ -4769,7 +4776,7 @@ void TribeTacticalAIModule::evaluateBuildListInsertions() {
                 }
 
                 if (this->md->informationAI.closestDropsiteValue[0] != -1) {
-                    this->md->buildAI.insert(0x44, one, one);
+                    this->md->buildAI.insert(MASTER_OBJECT_GRANARY, one, one);
                     this->builtFirstGranary = one;
                     goto after_granary;
                 }
@@ -4779,7 +4786,7 @@ void TribeTacticalAIModule::evaluateBuildListInsertions() {
 
 check_granary:
     if (this->builtFirstGranary == one)
-        this->checkForBuildInsertion(0x44, one, 0);
+        this->checkForBuildInsertion(MASTER_OBJECT_GRANARY, one, 0);
 
 after_granary:
     int insertID = this->sn[SNSpecificBuildItemToBuild];
@@ -4788,8 +4795,8 @@ after_granary:
         this->sn[SNSpecificBuildItemToBuild] = -1;
     }
 
-    this->checkForBuildInsertion(0x32, one, 0);
-    this->checkForBuildInsertion(0x4F, one, 0);
+    this->checkForBuildInsertion(MASTER_OBJECT_FARM, one, 0);
+    this->checkForBuildInsertion(MASTER_OBJECT_WATCH_TOWER, one, 0);
 }
 
 int TribeTacticalAIModule::numberCivilians() const {
@@ -4918,7 +4925,8 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType, lon
         return;
 
     if (attacker->owner->id == 0) {
-        if ((this->zoomingToNextAge == 0 || (attacker->master_obj->id != 0x7e && attacker->master_obj->id != 0x59))
+        if ((this->zoomingToNextAge == 0
+             || (attacker->master_obj->id != MASTER_OBJECT_LION && attacker->master_obj->id != MASTER_OBJECT_LION_KING))
             && this->dealWithGAIAAttacker(attacker, target) == 1)
             return;
     }
@@ -5019,7 +5027,8 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType, lon
         }
     }
 
-    RGE_Static_Object* townCenter = this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* townCenter =
+        this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     int townDistance = 1000;
     if (townCenter != 0) {
         float xDistance = townCenter->world_x - attacker->world_x;
@@ -5385,7 +5394,7 @@ int TribeTacticalAIModule::civilian(XYPoint& point, int closestToPoint, int a1, 
 
             obj = this->md->player->world->object(this->civilians[i]);
             if (obj != 0 && obj->unitAI() != 0) {
-                if (useFarmers != 0 || obj->master_obj->id != 0x103) {
+                if (useFarmers != 0 || obj->master_obj->id != MASTER_OBJECT_FARMER) {
                     if (obj->unitAI()->currentOrder() != a1 && obj->unitAI()->currentOrder() != a2
                         && obj->unitAI()->currentOrder() != a3) {
                         float dist = obj->distance_to_position((float) point.x, (float) point.y, obj->world_z);
@@ -5579,7 +5588,7 @@ void TribeTacticalAIModule::updateGathererDistribution() {
                 gAction = this->gatherers[gatherer_index].data1;
                 this->gatherers[gatherer_index].target = object->unitAI()->currentTarget();
 
-                if (gSTT == UNIT_AI_ACTION_GATHER && object->master_obj->id == 0x103 && gAction != 0) {
+                if (gSTT == UNIT_AI_ACTION_GATHER && object->master_obj->id == MASTER_OBJECT_FARMER && gAction != 0) {
                     int taskedCount = this->unitsTaskedThisUpdate.numberValue;
                     int objectID = object->id;
                     int j = 0;
@@ -6095,7 +6104,7 @@ int TribeTacticalAIModule::taskBuilder(int builder, RGE_Static_Object* building)
             return 0;
     } else {
         if (!obj->canPath(point, 1.0f, builderObj->id, 0, 1, -1, -1)) {
-            if (builderObj->master_obj->id != 0x114)
+            if (builderObj->master_obj->id != MASTER_OBJECT_WONDER)
                 this->deleteUnit(builderObj->id);
             return 0;
         }
@@ -6262,7 +6271,7 @@ int TribeTacticalAIModule::taskGatherer(
     if (this->sn[0xCD] == 1) {
         if (resourceType == 0 && this->builtFirstGranary == 1) {
             if (this->builtFirstStoragePit == 1) {
-                if (resource->master_obj->id == 0x3B) {
+                if (resource->master_obj->id == MASTER_OBJECT_FORAGE_FRUIT) {
                     int granaryCount = 0;
                     int unbuiltGranaries = 0;
                     int available = this->numberAvailableGranaries(granaryCount, unbuiltGranaries);
@@ -6273,7 +6282,7 @@ int TribeTacticalAIModule::taskGatherer(
                             && this->md->informationAI.acceptablePotentialDropsiteArea(
                                    (int) resource->world_x, (int) resource->world_y
                                ) == 1) {
-                            this->md->buildAI.insert(0x44, 1, -1);
+                            this->md->buildAI.insert(MASTER_OBJECT_GRANARY, 1, -1);
                         }
                     }
                 } else if (resource->master_obj->object_group != 0x1F && resource->master_obj->object_group != 5
@@ -6283,7 +6292,7 @@ int TribeTacticalAIModule::taskGatherer(
                     int available = this->numberAvailableStoragePits(storagePitCount, unbuiltStoragePits, 0);
                     if (unbuiltStoragePits == 0 && available > 0
                         && ((int) unit->distance_to_object(resource) > 15 || storagePitCount == 0)) {
-                        this->md->buildAI.insert(0x67, 1, -1);
+                        this->md->buildAI.insert(MASTER_OBJECT_STORAGE_PIT1, 1, -1);
                     }
                 }
             }
@@ -6294,7 +6303,7 @@ int TribeTacticalAIModule::taskGatherer(
             if (unbuiltStoragePits == 0 && available > 0) {
                 int maximumDistance = this->sn[resource->attribute_type_held + 0xA3];
                 if ((int) unit->distance_to_object(resource) > maximumDistance || storagePitCount == 0) {
-                    this->md->buildAI.insert(0x67, 1, -1);
+                    this->md->buildAI.insert(MASTER_OBJECT_STORAGE_PIT1, 1, -1);
                 }
             }
         }
@@ -6315,7 +6324,7 @@ int TribeTacticalAIModule::taskGatherer(
         amount = 10;
     } else {
         if (this->sn[0xCB] == 1) {
-            if (resource->master_obj->id == 0x3B)
+            if (resource->master_obj->id == MASTER_OBJECT_FORAGE_FRUIT)
                 amount = (int) resource->attribute_amount_held;
             else if (resourceType == 1)
                 amount = 75;
@@ -6339,11 +6348,11 @@ int TribeTacticalAIModule::taskGatherer(
 
     this->md->aiPlayer->taskResourceGatherer(id, resourceID, (int) resource->owner->id, resourceX, resourceY);
 
-    if (resource->master_obj->id == 0x30) {
+    if (resource->master_obj->id == MASTER_OBJECT_ELEPHANT) {
         this->taskElephantGatherers(id, this->sn[0xCC] - 1, resourceID);
     }
 
-    if (resource->master_obj->id == 0x32)
+    if (resource->master_obj->id == MASTER_OBJECT_FARM)
         this->md->informationAI.farmsTaskedThisUpdate.add(resource->id);
 
     return 1;
@@ -7137,7 +7146,8 @@ void TribeTacticalAIModule::setupSoldierGroups() {
         if (artifact == 0) {
             this->workingArea.remove(artifactID);
         } else {
-            RGE_Static_Object* target = this->md->object(-1, 109, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+            RGE_Static_Object* target =
+                this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
             if (target == 0) {
                 this->workingArea.remove(artifactID);
             } else {
@@ -8766,7 +8776,8 @@ int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* g) {
         }
     }
 
-    RGE_Static_Object* target = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* target =
+        this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     if (target == 0)
         return 0;
 
@@ -8807,7 +8818,8 @@ int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* g) {
         }
     }
 
-    RGE_Static_Object* target = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* target =
+        this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     if (target != 0) {
         XYPoint centerPoint;
         XYPoint gatherPoint;
@@ -8916,7 +8928,7 @@ int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* temp) {
         do {
             obj = self->md->object(temp->unit(i));
             if (obj != 0) {
-                if (obj->master_obj->id != 0x7D) {
+                if (obj->master_obj->id != MASTER_OBJECT_PRIEST) {
                     if (self->sn[SNGroupCommanderSelectionMethod] == 2) {
                         score = (int) obj->weaponRange();
                     } else {
@@ -8965,7 +8977,7 @@ int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>& temp) {
             int id = temp.value[i];
             RGE_Static_Object* obj = this->md->object(id);
             if (obj != 0) {
-                if (obj->master_obj->id != 0x7d) {
+                if (obj->master_obj->id != MASTER_OBJECT_PRIEST) {
                     int score;
                     if (this->sn[SNGroupCommanderSelectionMethod] == 2) {
                         score = (int) obj->weaponRange();
@@ -9097,7 +9109,8 @@ int TribeTacticalAIModule::unexploredArea(int uID, XYPoint& rPoint) {
         return 0;
     }
     unsigned char unitZone = unit->currentZone();
-    RGE_Static_Object* explorer = this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* explorer =
+        this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     float bestDistance = -1.0f;
     XYPoint bestPoint = { -1, -1 };
     if (explorer != 0) {
@@ -9364,7 +9377,7 @@ int TribeTacticalAIModule::initialExplorationSatisfied() {
 
 void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int position) {
     switch (type) {
-        case 0x32:
+        case MASTER_OBJECT_FARM:
             if (this->sn[SNAutoBuildFarms] != 1 || this->inAge(4) == 0)
                 break;
             {
@@ -9383,11 +9396,11 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                 //! RockNROR adds a deathmatch farm maximum here (SNMaxFarms); the default budget is 8.
                 if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(0x32, 0) >= this->sn[0xDC])
                     break;
-                this->md->buildAI.insert(0x32, number, position);
+                this->md->buildAI.insert(MASTER_OBJECT_FARM, number, position);
             }
             break;
 
-        case 0x44:
+        case MASTER_OBJECT_GRANARY:
             if (this->sn[0xCD] != 1)
                 break;
             if (this->md->informationAI.closestDropsiteValue[0] == -1)
@@ -9398,12 +9411,12 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                 int available = this->numberAvailableGranaries(unbuilt, granaries);
                 if (granaries <= 0 && available > 0
                     && this->sn[0xA3] < this->md->informationAI.closestDropsiteValue[0]) {
-                    this->md->buildAI.insert(0x44, number, position);
+                    this->md->buildAI.insert(MASTER_OBJECT_GRANARY, number, position);
                 }
             }
             break;
 
-        case 0x4F:
+        case MASTER_OBJECT_WATCH_TOWER:
             if (this->sn[0xCF] != 1)
                 break;
             {
@@ -9419,7 +9432,7 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                     break;
                 if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(0x4F, 0) >= this->sn[0xDE])
                     break;
-                this->md->buildAI.insert(0x4F, number, position);
+                this->md->buildAI.insert(MASTER_OBJECT_WATCH_TOWER, number, position);
             }
             break;
     }
@@ -9429,7 +9442,7 @@ int TribeTacticalAIModule::isFarmer(RGE_Static_Object* temp) {
     UnitAIModule* ai;
     int action;
 
-    if (temp != 0 && (ai = temp->unitAI()) != 0 && temp->master_obj->id == 0x103) {
+    if (temp != 0 && (ai = temp->unitAI()) != 0 && temp->master_obj->id == MASTER_OBJECT_FARMER) {
         ai = temp->unitAI();
         action = ai->currentAction();
         if (action != UNIT_AI_ACTION_GATHER) {
@@ -9454,7 +9467,7 @@ int TribeTacticalAIModule::numberFarmers() {
     if (this->civilians.numberValue > 0) {
         do {
             RGE_Static_Object* obj = this->md->object(this->civilians[i]);
-            if ((obj != 0) && (obj->unitAI() != 0) && (obj->master_obj->id == 0x103)) {
+            if ((obj != 0) && (obj->unitAI() != 0) && (obj->master_obj->id == MASTER_OBJECT_FARMER)) {
                 if (obj->unitAI()->currentAction() == UNIT_AI_ACTION_GATHER
                     || obj->unitAI()->currentAction() == UNIT_AI_ACTION_MOVE) {
                     rVal = rVal + 1;
@@ -9507,7 +9520,8 @@ void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID) 
         return;
 
     this->lastAttackResponseBuildInsertionTime = currentTime;
-    RGE_Static_Object* object = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* object =
+        this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     if (object == 0)
         return;
 
@@ -9529,7 +9543,7 @@ void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID) 
         switch (insertedUnit) {
             case 0:
                 if (this->md->resourceAI.resource(RGE_RESOURCE_STONE) >= 150 && this->civilians.numberValue > 2) {
-                    this->md->buildAI.insert(0x4F, 1, 0);
+                    this->md->buildAI.insert(MASTER_OBJECT_WATCH_TOWER, 1, 0);
                     unitsToInsert -= 2;
                 }
                 insertedUnit = 1;

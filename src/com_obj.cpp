@@ -554,7 +554,7 @@ int RGE_Combat_Object::attack(int targetID, int unconditional) {
     }
 
     if (this->master_obj->object_group == OBJECT_GROUP_CIVILIAN) {
-        RGE_Master_Static_Object* transform_master = this->owner->master_objects[0x53];
+        RGE_Master_Static_Object* transform_master = this->owner->master_objects[MASTER_OBJECT_MAN];
         if (transform_master != 0) {
             this->transform(transform_master);
         }

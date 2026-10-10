@@ -772,8 +772,8 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                 int targetID;
                 if (resourceType != -1) {
                     targetID = this->closestResourceObject(resourceType, 0);
-                } else if (nEvent->p2 == 0x32) {
-                    targetID = this->closestObject(targetType, -1, RGE_OBJECT_STATE_ACTIVE, 0x32, 0);
+                } else if (nEvent->p2 == MASTER_OBJECT_FARM) {
+                    targetID = this->closestObject(targetType, -1, RGE_OBJECT_STATE_ACTIVE, MASTER_OBJECT_FARM, 0);
                 } else {
                     targetID = this->closestObject(targetType, -1, RGE_OBJECT_STATE_ANY, -1, 0);
                 }
@@ -1867,10 +1867,12 @@ int TribeSoldierUnitAIModule::processIdle(int doSearch) {
     }
 
     if (this->objectValue->owner->id != 0
-        && (this->objectValue->owner->computerPlayer() != 0 || this->objectValue->master_obj->id != 0x12B)) {
+        && (this->objectValue->owner->computerPlayer() != 0
+            || this->objectValue->master_obj->id != MASTER_OBJECT_SOLDIER_SCOUT)) {
         if (this->currentOrderValue != UNIT_AI_ORDER_STAND_GROUND
-            || (this->objectValue->master_obj->id != 0x23 && this->objectValue->master_obj->id != 0x24
-                && this->objectValue->master_obj->id != 0xFA)) {
+            || (this->objectValue->master_obj->id != MASTER_OBJECT_SOLDIER_CATAPULT1
+                && this->objectValue->master_obj->id != MASTER_OBJECT_SOLDIER_CATAPULT2
+                && this->objectValue->master_obj->id != MASTER_OBJECT_BOAT_WAR4)) {
             int targetID = this->bestUnitToAttack(1, 0, 0);
             if (targetID != -1 && this->attackObject(targetID, 1) == 1) {
                 return 6;

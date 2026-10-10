@@ -415,7 +415,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
                 ObjectMemory* memory = this->importantObjectMemory;
                 int remaining = this->maxImportantObjectMemory;
                 do {
-                    if (memory->id != -1 && memory->type == 0x6d)
+                    if (memory->id != -1 && memory->type == MASTER_OBJECT_TOWN_CENTER1)
                         count++;
                     memory++;
                     remaining--;
@@ -963,7 +963,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                 int dy = gathererY - (int) resource->y;
                                 value = dx * dx + dy * dy + resource->gatherValue * 10;
 
-                                if (object->master_obj->id == 0x3b) {
+                                if (object->master_obj->id == MASTER_OBJECT_FORAGE_FRUIT) {
                                     if (resource->dropDistance > 0x14)
                                         goto next_resource;
                                     value += resource->gatherAttempts / 0x96;
@@ -993,7 +993,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                 if (attacked == 1)
                                     value += 0x1f4;
 
-                                if (object->master_obj->id == 0x32) {
+                                if (object->master_obj->id == MASTER_OBJECT_FARM) {
                                     if (object->owner->id != this->md->player->id
                                         || object->object_state != RGE_OBJECT_STATE_ACTIVE
                                         || this->md->tacticalAI.numberGatherersWithTarget(object->id) > 0) {
@@ -1023,7 +1023,8 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                     goto next_resource;
                                 }
 
-                                if (object->master_obj->id == 0x30 && object->object_state == RGE_OBJECT_STATE_ACTIVE) {
+                                if (object->master_obj->id == MASTER_OBJECT_ELEPHANT
+                                    && object->object_state == RGE_OBJECT_STATE_ACTIVE) {
                                     int desired = this->md->tacticalAI.strategicNumber(0xcc);
                                     int actual = this->md->tacticalAI.actualGathererCountByRealResourceID(0);
                                     if (actual < desired)
@@ -1203,7 +1204,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(BuildItem* bi, float cX, f
     memset(zoneCounter, -1, sizeof(zoneCounter));
 
     zoneMap = gMap->map_zones->get_zone_map(
-        this->md->player->world->terrains[this->md->player->master_objects[0x13]->terrain],
+        this->md->player->world->terrains[this->md->player->master_objects[MASTER_OBJECT_BOAT_WAR1]->terrain],
         this->md->player->world->terrain_size, zoneMapIndex
     );
 
@@ -1284,7 +1285,7 @@ int TribeInformationAIModule::numberDocksInZone(int zone, RGE_Zone_Map* zoneMap)
     if (this->playerBuildings.numberValue > 0) {
         do {
             RGE_Static_Object* obj = this->md->object(this->playerBuildings[i]);
-            if (obj != 0 && obj->master_obj->id == 0x2D) {
+            if (obj != 0 && obj->master_obj->id == MASTER_OBJECT_DOCK_1) {
                 unsigned char dockZone = zoneMap->get_zone_info((int) obj->world_x, (int) obj->world_y);
                 if (dockZone == zone) {
                     count++;
@@ -1311,7 +1312,7 @@ int TribeInformationAIModule::closestDockDistance(int x, int y) {
     if (this->playerBuildings.numberValue > 0) {
         do {
             RGE_Static_Object* obj = this->md->object(this->playerBuildings[i]);
-            if (obj != 0 && obj->master_obj->id == 0x2D) {
+            if (obj != 0 && obj->master_obj->id == MASTER_OBJECT_DOCK_1) {
                 int distanceSquared = (x - (int) obj->world_x) * (x - (int) obj->world_x)
                                       + (y - (int) obj->world_y) * (y - (int) obj->world_y);
                 int currentDistance = (int) sqrt((float) distanceSquared);
@@ -1852,7 +1853,7 @@ int TribeInformationAIModule::isBoatAccessible(RGE_Static_Object* unit, int targ
     if (obj->master_obj->object_group == OBJECT_GROUP_FISHING_BOAT
         || obj->master_obj->object_group == OBJECT_GROUP_TRADE_BOAT
         || obj->master_obj->object_group == OBJECT_GROUP_TRANSPORT_BOAT
-        || obj->master_obj->object_group == OBJECT_GROUP_WAR_BOAT || obj->master_obj->id == 0x2d) {
+        || obj->master_obj->object_group == OBJECT_GROUP_WAR_BOAT || obj->master_obj->id == MASTER_OBJECT_DOCK_1) {
         return 1;
     }
     return 0;
@@ -1917,7 +1918,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         return 0;
     }
 
-    RGE_Static_Object* townCenter = this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* townCenter =
+        this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     int actual_builder_id = builderID;
     if (placementState.active == 1) {
         actual_builder_id = placementState.builderID;
@@ -2364,7 +2366,7 @@ void TribeInformationAIModule::addObject(RGE_Static_Object* obj) {
             if (type == 0x6d || type == 0x67 || type == 0x44) {
                 this->updateAllResourceDropsites();
             }
-            if (object->master_obj->id == 0x32) {
+            if (object->master_obj->id == MASTER_OBJECT_FARM) {
                 this->addResourceObject(object);
             }
         }
@@ -2535,7 +2537,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
 
     unsigned char unitZone = unit->currentZone();
     int siegeWeapon = 0;
-    if (unit->master_obj->id == 0x23 || unit->master_obj->id == 0x24 || unit->master_obj->id == 0x0B) {
+    if (unit->master_obj->id == MASTER_OBJECT_SOLDIER_CATAPULT1
+        || unit->master_obj->id == MASTER_OBJECT_SOLDIER_CATAPULT2
+        || unit->master_obj->id == MASTER_OBJECT_SOLDIER_BALISTA) {
         siegeWeapon = 1;
     }
     int boatWeapon = this->isBoat(unit);
@@ -2582,7 +2586,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
 
                     if (boatWeapon == 0 && ignoreBoatTargets != 0) {
                         RGE_Master_Static_Object* object_master = tempObj->master_obj;
-                        int boat_target = object_master->id == 0x2D;
+                        int boat_target = object_master->id == MASTER_OBJECT_DOCK_1;
                         if (boat_target == 0) {
                             int object_group = object_master->object_group;
                             boat_target =
@@ -2679,7 +2683,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
                     }
 
                     int boatRating;
-                    if (object_master->id == 0x2D || rating_object_group == OBJECT_GROUP_TRADE_BOAT
+                    if (object_master->id == MASTER_OBJECT_DOCK_1 || rating_object_group == OBJECT_GROUP_TRADE_BOAT
                         || rating_object_group == OBJECT_GROUP_FISHING_BOAT
                         || rating_object_group == OBJECT_GROUP_WAR_BOAT
                         || rating_object_group == OBJECT_GROUP_TRANSPORT_BOAT) {
@@ -2844,7 +2848,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                     unsigned char targetZone =
                         commanderObj->lookupZone((int) oTDObject->world_x, (int) oTDObject->world_y);
 
-                    if ((commanderIsBoat != 0 || this->importantObjectMemory[i].type != 0x2d
+                    if ((commanderIsBoat != 0 || this->importantObjectMemory[i].type != MASTER_OBJECT_DOCK_1
                          || commanderZone == targetZone)
                         && (attackState.phase != 0 || this->importantObjectMemory[i].group != 0x1b)
                         && (attackState.phase != 1 || this->importantObjectMemory[i].group == 0x1b)) {
@@ -2932,7 +2936,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                     }
 
                                     if (this->isUnitBuilding(oTDObject) == 1) {
-                                        if (oTDObject->master_obj->id == 0x6d || oTDObject->master_obj->id == 0x2d)
+                                        if (oTDObject->master_obj->id == MASTER_OBJECT_TOWN_CENTER1
+                                            || oTDObject->master_obj->id == MASTER_OBJECT_DOCK_1)
                                             miscFactor -= (-200.0f);
                                         else
                                             miscFactor -= (-300.0f);
@@ -3258,14 +3263,14 @@ ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int unitID,
 
 int TribeInformationAIModule::defendPriority(int oType, int oGroup) {
     switch (oType) {
-        case 0x6D:
+        case MASTER_OBJECT_TOWN_CENTER1:
             return md->tacticalAI.strategicNumber(SNTownDefendPriority);
-        case 0x2D:
+        case MASTER_OBJECT_DOCK_1:
             return md->tacticalAI.strategicNumber(SNDockDefendPriority);
-        case 0x9F:
+        case MASTER_OBJECT_ARTIFACT1:
             return md->tacticalAI.strategicNumber(SNArtifactDefendPriority);
-        case 0x9E:
-        case 0xA3:
+        case MASTER_OBJECT_ARTIFACT_RUINS1:
+        case MASTER_OBJECT_ARTIFACT_RUINS2:
             return md->tacticalAI.strategicNumber(SNRuinsDefendPriority);
     }
 
@@ -3288,7 +3293,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
     int tmp;
 
     switch (obj->master_obj->id) {
-        case 109: {
+        case MASTER_OBJECT_TOWN_CENTER1: {
             if (owner != this->md->player->id)
                 goto checkDefend_fail;
             if (this->md->tacticalAI.strategicNumber(SNTownDefendPriority) <= 0)
@@ -3300,7 +3305,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
             }
             return 1;
         }
-        case 45: {
+        case MASTER_OBJECT_DOCK_1: {
             if (owner != this->md->player->id)
                 goto checkDefend_fail;
             if (this->md->tacticalAI.strategicNumber(SNDockDefendPriority) <= 0)
@@ -3312,7 +3317,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
             }
             return 1;
         }
-        case 0x9f: {
+        case MASTER_OBJECT_ARTIFACT1: {
             if (this->md->tacticalAI.strategicNumber(SNArtifactDefendPriority) <= 0)
                 goto checkDefend_fail;
             id = obj->id;
@@ -3322,8 +3327,8 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
             }
             return 1;
         }
-        case 0x9e:
-        case 0xa3: {
+        case MASTER_OBJECT_ARTIFACT_RUINS1:
+        case MASTER_OBJECT_ARTIFACT_RUINS2: {
             if (this->md->tacticalAI.strategicNumber(SNRuinsDefendPriority) <= 0)
                 goto checkDefend_fail;
             id = obj->id;
@@ -3390,7 +3395,7 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int unitID) {
             continue;
         if (this->importantObjectMemory[i].owner == this->md->player->id)
             continue;
-        if (this->importantObjectMemory[i].type != 0x2D)
+        if (this->importantObjectMemory[i].type != MASTER_OBJECT_DOCK_1)
             continue;
 
         RGE_Static_Object* dock = this->md->object(this->importantObjectMemory[i].id);
@@ -3673,7 +3678,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                     bMin.y = (int) building->world_y - 1;
                     bMax.x = (int) building->world_x + 1;
                     bMax.y = (int) building->world_y + 1;
-                } else if (buildingType == 0x46) {
+                } else if (buildingType == MASTER_OBJECT_HOUSE) {
                     bMin.x = (int) building->world_x - 3;
                     bMin.y = (int) building->world_y - 3;
                     bMax.x = (int) building->world_x + 3;
@@ -3941,7 +3946,7 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(
                                 numberNonSiegeTargets++;
                             group = this->importantObjectMemory[i].group;
                             if (group != 2 && group != 0x15 && group != 0x16 && group != 0x14
-                                && this->importantObjectMemory[i].type != 0x2D)
+                                && this->importantObjectMemory[i].type != MASTER_OBJECT_DOCK_1)
                                 numberNonBoatTargets++;
                             dist = unit->distance_to_position(
                                 (float) this->importantObjectMemory[i].x, (float) this->importantObjectMemory[i].y,
@@ -4884,7 +4889,7 @@ int TribeInformationAIModule::withinXTilesOfEnemyTowncenter(RGE_Static_Object* o
     int y = (int) obj->world_y;
 
     for (int i = 0; i < this->maxImportantObjectMemory; i++) {
-        if (this->importantObjectMemory[i].type != 109)
+        if (this->importantObjectMemory[i].type != MASTER_OBJECT_TOWN_CENTER1)
             continue;
         if (!this->md->player->isEnemy(this->importantObjectMemory[i].owner))
             continue;
@@ -5319,9 +5324,11 @@ float TribeInformationAIModule::findClosestDropsite(
                 if (resourceObj->lookupZone((int) dropsite->world_x, (int) dropsite->world_y) == resourceZone) {
                     int group = dropsite->master_obj->id;
                     if ((group == 0x6D && countTownCenter != 0)
-                        || (group == 0x67 && resourceObj->master_obj->id != 0x3B && resourceObj->master_obj->id != 0x32)
+                        || (group == 0x67 && resourceObj->master_obj->id != MASTER_OBJECT_FORAGE_FRUIT
+                            && resourceObj->master_obj->id != MASTER_OBJECT_FARM)
                         || (group == 0x44
-                            && (resourceObj->master_obj->id == 0x3B || resourceObj->master_obj->id == 0x32))) {
+                            && (resourceObj->master_obj->id == MASTER_OBJECT_FORAGE_FRUIT
+                                || resourceObj->master_obj->id == MASTER_OBJECT_FARM))) {
                         float dx = dropsite->world_x - resourceObj->world_x;
                         float dy = dropsite->world_y - resourceObj->world_y;
                         float dist = (float) sqrt(dx * dx + dy * dy);
@@ -5496,7 +5503,7 @@ int TribeInformationAIModule::numberStoragePits() {
     if (playerBuildings.numberValue > 0) {
         do {
             RGE_Static_Object* obj = md->object(playerBuildings[i]);
-            if (obj != 0 && obj->master_obj->id == 0x67) {
+            if (obj != 0 && obj->master_obj->id == MASTER_OBJECT_STORAGE_PIT1) {
                 count++;
             }
 
@@ -5516,7 +5523,7 @@ int TribeInformationAIModule::numberGranaries() {
     if (playerBuildings.numberValue > 0) {
         do {
             RGE_Static_Object* obj = md->object(playerBuildings[i]);
-            if (obj != 0 && obj->master_obj->id == 0x44) {
+            if (obj != 0 && obj->master_obj->id == MASTER_OBJECT_GRANARY) {
                 result++;
             }
 
@@ -5536,7 +5543,7 @@ int TribeInformationAIModule::amountForageBushesInXTiles(int x, int y, int dista
         do {
             if (this->resources[0][i].gone != 1) {
                 RGE_Static_Object* obj = this->md->object(this->resources[0][i].id);
-                if (obj != 0 && obj->master_obj->id == 0x3B) {
+                if (obj != 0 && obj->master_obj->id == MASTER_OBJECT_FORAGE_FRUIT) {
                     float dX = obj->world_x - (float) x;
                     float dy = obj->world_y - (float) y;
                     if ((int) (sqrt(dX * dX + dy * dy)) <= distance)
@@ -5559,7 +5566,7 @@ int TribeInformationAIModule::amountResourceTypesInXTiles(int type, int x, int y
         do {
             if (this->resources[type][i].gone != 1) {
                 RGE_Static_Object* obj = this->md->object(this->resources[type][i].id);
-                if (obj != 0 && (type != 0 || obj->master_obj->id != 0x3B)) {
+                if (obj != 0 && (type != 0 || obj->master_obj->id != MASTER_OBJECT_FORAGE_FRUIT)) {
                     float dx = obj->world_x - (float) x;
                     float dy = obj->world_y - (float) y;
                     if ((int) (sqrt(dx * dx + dy * dy)) <= distance) {
@@ -5672,7 +5679,7 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int playerID) {
     i = 0;
     if (this->maxImportantObjectMemory > 0) {
         do {
-            if (this->importantObjectMemory[i].type == 0x114) {
+            if (this->importantObjectMemory[i].type == MASTER_OBJECT_WONDER) {
                 if (playerID == -1 || this->importantObjectMemory[i].owner == playerID) {
                     if (playerID != -1 || this->md->player->isEnemy(this->importantObjectMemory[i].owner)) {
                         RGE_Static_Object* obj = this->md->object(this->importantObjectMemory[i].id);
@@ -5731,14 +5738,15 @@ ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerID) {
     int i;
     ObjectMemory* bestMem;
 
-    townCenter = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    townCenter = this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     bestMem = 0;
     bestValue = -1;
     i = 0;
 
     if (this->maxImportantObjectMemory > 0) {
         do {
-            if (this->importantObjectMemory[i].type == 0x9E || this->importantObjectMemory[i].type == 0xA3) {
+            if (this->importantObjectMemory[i].type == MASTER_OBJECT_ARTIFACT_RUINS1
+                || this->importantObjectMemory[i].type == MASTER_OBJECT_ARTIFACT_RUINS2) {
                 if ((playerID == -1 || (unsigned int) this->importantObjectMemory[i].owner == (unsigned int) playerID)
                     && (playerID != -1 || this->md->player->isEnemy(this->importantObjectMemory[i].owner) != 0)) {
                     RGE_Static_Object* object = this->md->object(this->importantObjectMemory[i].id);
@@ -5778,7 +5786,7 @@ ObjectMemory* TribeInformationAIModule::artifactToCapture(int playerID) {
     int i;
     RGE_Visible_Map* vMap;
 
-    townCenter = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    townCenter = this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     bestMem = 0;
     bestValue = -1;
     i = 0;
@@ -5786,7 +5794,7 @@ ObjectMemory* TribeInformationAIModule::artifactToCapture(int playerID) {
 
     if (this->maxImportantObjectMemory > 0) {
         do {
-            if (this->importantObjectMemory[i].type == 0x9F) {
+            if (this->importantObjectMemory[i].type == MASTER_OBJECT_ARTIFACT1) {
                 if (playerID == -1 || (int) this->importantObjectMemory[i].owner == playerID) {
                     if (playerID != -1 || this->md->player->isEnemy(this->importantObjectMemory[i].owner) != 0) {
                         RGE_Static_Object* artifact = this->md->object(this->importantObjectMemory[i].id);
@@ -5896,7 +5904,8 @@ int TribeInformationAIModule::numberAvailableStoragePits(int rType) {
         return 0;
     }
 
-    RGE_Static_Object* town_center = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* town_center =
+        this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
 
     if (town_center != 0) {
         RGE_Static_Object* closest_dropsite = this->md->object(this->closestDropsiteResourceID[rType]);
@@ -5921,7 +5930,8 @@ int TribeInformationAIModule::numberAvailableGranaries() {
         return 0;
     }
 
-    RGE_Static_Object* town_center = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* town_center =
+        this->md->object(-1, MASTER_OBJECT_TOWN_CENTER1, -1, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
 
     if (town_center != 0) {
         RGE_Static_Object* closest_dropsite = this->md->object(this->closestDropsiteResourceID[0]);

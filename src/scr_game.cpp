@@ -2881,7 +2881,7 @@ void TRIBE_Screen_Game::setup_buttons() {
                         if (queue_active) {
                             continue_setup = 0;
                         } else {
-                            if ((building->master_obj->id == 0x6D) && (tech_cnt == 0)
+                            if ((building->master_obj->id == MASTER_OBJECT_TOWN_CENTER1) && (tech_cnt == 0)
                                 && (static_cast<int>(rge_base_game->get_player()->attributes[6]) < 4)) {
                                 short tech_id = static_cast<short>(
                                     static_cast<int>(rge_base_game->get_player()->attributes[6]) + 100
@@ -4384,7 +4384,8 @@ void TRIBE_Screen_Game::command_view_selected() {
 
 void TRIBE_Screen_Game::command_view_tribe() {
     if (rge_base_game->get_paused() == 0) {
-        RGE_Static_Object* obj = static_cast<TRIBE_Player*>(rge_base_game->get_player())->find_obj(0x6d, 0);
+        RGE_Static_Object* obj =
+            static_cast<TRIBE_Player*>(rge_base_game->get_player())->find_obj(MASTER_OBJECT_TOWN_CENTER1, 0);
         if (obj != 0) {
             rge_base_game->get_player()->unselect_object();
             rge_base_game->get_player()->select_object(obj);

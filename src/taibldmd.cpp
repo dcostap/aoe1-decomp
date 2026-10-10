@@ -805,64 +805,64 @@ int TribeBuildAIModule::insert(int typeID, int buildCap, int insertionPoint) {
     int buildCategory;
 
     switch (typeID) {
-        case 4:
-        case 5:
-        case 0x19:
-        case 0x27:
-        case 0x29:
-            buildCategory = 0x57;
+        case MASTER_OBJECT_SOLDIER_ARCHER1:
+        case MASTER_OBJECT_SOLDIER_ARCHER2:
+        case MASTER_OBJECT_SOLDIER_EL_ARCHER:
+        case MASTER_OBJECT_SOLDIER_CAVALRY3_ARCH:
+        case MASTER_OBJECT_SOLDIER_CHARIOT2:
+            buildCategory = MASTER_OBJECT_RANGE1;
             flags = 2;
             break;
-        case 0x0B:
-        case 0x23:
-        case 0x24:
-            buildCategory = 0x31;
+        case MASTER_OBJECT_SOLDIER_BALISTA:
+        case MASTER_OBJECT_SOLDIER_CATAPULT1:
+        case MASTER_OBJECT_SOLDIER_CATAPULT2:
+            buildCategory = MASTER_OBJECT_SIEGE_WORKSHOP;
             flags = 2;
             break;
-        case 0x53:
-            buildCategory = 0x6D;
+        case MASTER_OBJECT_MAN:
+            buildCategory = MASTER_OBJECT_TOWN_CENTER1;
             flags = 2;
             break;
-        case 0x49:
-        case 0x4B:
-            buildCategory = 0x0C;
+        case MASTER_OBJECT_SOLDIER_INF1:
+        case MASTER_OBJECT_SOLDIER_INF3:
+            buildCategory = MASTER_OBJECT_BARRACKS1;
             flags = 2;
             break;
-        case 0x5D:
-            buildCategory = 0;
+        case MASTER_OBJECT_SOLDIER_PHAL1:
+            buildCategory = MASTER_OBJECT_ACADEMY;
             flags = 2;
             break;
-        case 0x7D:
-            buildCategory = 0x68;
+        case MASTER_OBJECT_PRIEST:
+            buildCategory = MASTER_OBJECT_TEMPLE1;
             flags = 2;
             break;
-        case 0x25:
-        case 0x28:
-        case 0x2E:
-        case 0x12B:
-            buildCategory = 0x65;
+        case MASTER_OBJECT_SOLDIER_CAVALRY1:
+        case MASTER_OBJECT_SOLDIER_CHARIOT1:
+        case MASTER_OBJECT_SOLDIER_ELEPHANT:
+        case MASTER_OBJECT_SOLDIER_SCOUT:
+            buildCategory = MASTER_OBJECT_STABLE;
             flags = 2;
             break;
-        case 0x0D:
-        case 0x0F:
-        case 0x11:
-        case 0x12:
-        case 0x13:
-        case 0xFA:
-            buildCategory = 0x2D;
+        case MASTER_OBJECT_BOAT_FISHING1:
+        case MASTER_OBJECT_BOAT_TRADE1:
+        case MASTER_OBJECT_BOAT_TRANSPORT1:
+        case MASTER_OBJECT_BOAT_TRANSPORT2:
+        case MASTER_OBJECT_BOAT_WAR1:
+        case MASTER_OBJECT_BOAT_WAR4:
+            buildCategory = MASTER_OBJECT_DOCK_1;
             flags = 2;
             break;
-        case 0x2D:
-        case 0x31:
-        case 0x32:
-        case 0x4F:
-        case 0x67:
-        case 0xC7:
-        case 0x114:
-        case 0x116:
-        case 0x44:
-        case 0x45:
-        case 0x46:
+        case MASTER_OBJECT_DOCK_1:
+        case MASTER_OBJECT_SIEGE_WORKSHOP:
+        case MASTER_OBJECT_FARM:
+        case MASTER_OBJECT_WATCH_TOWER:
+        case MASTER_OBJECT_STORAGE_PIT1:
+        case MASTER_OBJECT_SENTRY_TOWER:
+        case MASTER_OBJECT_WONDER:
+        case MASTER_OBJECT_GUARD_TOWER2:
+        case MASTER_OBJECT_GRANARY:
+        case MASTER_OBJECT_GUARD_TOWER:
+        case MASTER_OBJECT_HOUSE:
             buildCategory = -1;
             flags = 0;
             break;

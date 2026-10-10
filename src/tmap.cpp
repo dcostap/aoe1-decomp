@@ -322,7 +322,8 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1][x1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= 0x108 && node->node->master_obj->id <= 0x111)
+            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1
+                && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
                 return node->node;
             node = node->next;
         }
@@ -330,7 +331,8 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1 + 1][x1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= 0x108 && node->node->master_obj->id <= 0x111)
+            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1
+                && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
                 return node->node;
             node = node->next;
         }
@@ -338,7 +340,8 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1][x1 + 1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= 0x108 && node->node->master_obj->id <= 0x111)
+            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1
+                && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
                 return node->node;
             node = node->next;
         }
@@ -346,7 +349,8 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1 + 1][x1 + 1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= 0x108 && node->node->master_obj->id <= 0x111)
+            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1
+                && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
                 return node->node;
             node = node->next;
         }

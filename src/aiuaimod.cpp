@@ -1150,7 +1150,7 @@ void UnitAIModule::search() {
     obj = this->objectValue;
     master = obj->master_obj;
     range = (int) master->los;
-    if (master->id == 0x76)
+    if (master->id == MASTER_OBJECT_BUILDER)
         range += range;
 
     numberVisibleObjects = VisibleUnitManager->GetVisibleUnits(
@@ -1262,7 +1262,8 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck, float* 
                     && ((
                         target->master_obj->object_group != OBJECT_GROUP_BUILDING
                         || target->hp > g_unit_ai_map_boundary_adjustment
-                        || (this->objectValue->master_obj->id != 0x23 && this->objectValue->master_obj->id != 0x24)
+                        || (this->objectValue->master_obj->id != MASTER_OBJECT_SOLDIER_CATAPULT1
+                            && this->objectValue->master_obj->id != MASTER_OBJECT_SOLDIER_CATAPULT2)
                     ))
                     && this->canAttackUnit(target) != 0
                     && (i != 3 || this->canAttackUnitAtNeutrality(target->master_obj->object_group) != 0)) {
@@ -1314,7 +1315,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck, float* 
             target = world->object(this->currentTargetValue);
             if (target != 0 && target->object_state == RGE_OBJECT_STATE_ACTIVE
                 && this->objectValue->owner->isAlly(target->owner->id) == 0) {
-                if (target->master_obj->id == 0x114) {
+                if (target->master_obj->id == MASTER_OBJECT_WONDER) {
                     return target->id;
                 }
                 numberNonCurrentTargets = this->currentTargetValue;
@@ -1374,7 +1375,8 @@ skipCurrentTarget:
                     && ((
                         target->master_obj->object_group != OBJECT_GROUP_BUILDING
                         || target->hp > g_unit_ai_map_boundary_adjustment
-                        || (this->objectValue->master_obj->id != 0x23 && this->objectValue->master_obj->id != 0x24)
+                        || (this->objectValue->master_obj->id != MASTER_OBJECT_SOLDIER_CATAPULT1
+                            && this->objectValue->master_obj->id != MASTER_OBJECT_SOLDIER_CATAPULT2)
                     ))
                     && this->canAttackUnit(target) != 0
                     && (i != 3 || this->canAttackUnitAtNeutrality(target->master_obj->object_group) != 0)) {
@@ -2754,7 +2756,7 @@ int UnitAIModule::processOrder(OrderEvent* oEvent, int orderNumber) {
         } else {
             if (orderType == UNIT_AI_ORDER_ATTACK_ROUNDUP) {
                 this->currentOrderValue = UNIT_AI_ORDER_ATTACK;
-            } else if (orderType == UNIT_AI_ORDER_ATTACK && this->objectValue->master_obj->id == 0x7d) {
+            } else if (orderType == UNIT_AI_ORDER_ATTACK && this->objectValue->master_obj->id == MASTER_OBJECT_PRIEST) {
                 this->currentOrderValue = -1;
                 this->currentTargetValue = -1;
             } else {
@@ -2880,8 +2882,10 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
 
                 if (target != 0) {
                     short group = target->master_obj->object_group;
-                    if ((group == OBJECT_GROUP_BUILDING || group == OBJECT_GROUP_WALL) && target->master_obj->id != 0x4f
-                        && target->master_obj->id != 0xc7 && target->master_obj->id != 0x45
+                    if ((group == OBJECT_GROUP_BUILDING || group == OBJECT_GROUP_WALL)
+                        && target->master_obj->id != MASTER_OBJECT_WATCH_TOWER
+                        && target->master_obj->id != MASTER_OBJECT_SENTRY_TOWER
+                        && target->master_obj->id != MASTER_OBJECT_GUARD_TOWER
                         && this->objectValue->owner->computerPlayer() == 0) {
                         if (this->canAttackUnit(attacker) != 1) {
                             this->runAwayFromAttackers(1);
@@ -2902,7 +2906,7 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     if (this->objectValue->owner->computerPlayer() != 1) {
                         return 2;
                     }
-                    if (target->master_obj->id == 0x114) {
+                    if (target->master_obj->id == MASTER_OBJECT_WONDER) {
                         return 2;
                     }
 
@@ -3541,13 +3545,13 @@ int UnitAIModule::processMisc() {
             if (taskedThisUpdate != 1 && this->objectValue->owner->computerPlayer() != 0
                 && this->objectValue->can_attack() != 0) {
                 RGE_Static_Object* oldTarget = this->lookupObject(this->currentTargetValue);
-                if (oldTarget == 0 || oldTarget->master_obj->id != 0x114) {
+                if (oldTarget == 0 || oldTarget->master_obj->id != MASTER_OBJECT_WONDER) {
                     int candidateID = this->bestUnitToAttack(0, 0, 0);
                     RGE_Static_Object* candidate = this->lookupObject(candidateID);
                     if (candidateID != invalidValue && candidate != 0 && candidateID != this->currentTargetValue) {
                         short group = candidate->master_obj->object_group;
                         if (group == OBJECT_GROUP_BUILDING || group == OBJECT_GROUP_WALL) {
-                            if (candidate->master_obj->id == 0x114) {
+                            if (candidate->master_obj->id == MASTER_OBJECT_WONDER) {
                                 this->order(
                                     this->objectValue->id, UNIT_AI_ORDER_ATTACK, candidateID, candidate->owner->id,
                                     candidate->world_x, candidate->world_y, candidate->world_z,

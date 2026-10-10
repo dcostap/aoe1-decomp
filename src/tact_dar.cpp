@@ -116,7 +116,7 @@ void TRIBE_Action_Discovery_Artifact::check_objects() {
                 //! The flags reset when the action rebuilds, so one find can award twice.
                 if (node->node->owner != this->obj->owner && this->flags[node->node->owner->id] == 0) {
                     this->flags[node->node->owner->id] = 1;
-                    node->node->owner->master_objects[162]->make_new_obj(
+                    node->node->owner->master_objects[MASTER_OBJECT_FLAG]->make_new_obj(
                         node->node->owner, node->node->world_x, node->node->world_y, node->node->world_z
                     );
                 }

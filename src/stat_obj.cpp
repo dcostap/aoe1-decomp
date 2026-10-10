@@ -1889,7 +1889,7 @@ void RGE_Static_Object::remove_visible_resource() {
                     if (this->master_obj->create_doppleganger_on_death == 1 && (ExploredVal & 1) == 0
                         && player_index > 0) {
                         player = this->owner->world->players[player_index];
-                        static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[243])
+                        static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
                             ->make_new_obj(player, this->world_x, this->world_y, this->world_z, this);
                     }
                 }
@@ -1917,7 +1917,7 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
             do {
                 if ((explored & 1) == 1 && (ExploredVal & 1) == 0 && i > 0) {
                     RGE_Player* player = this->owner->world->players[i];
-                    static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[243])
+                    static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
                         ->make_new_obj(player, this->world_x, this->world_y, this->world_z, this);
                 }
                 i++;
