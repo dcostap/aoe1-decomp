@@ -36,13 +36,31 @@ They remain separate names.
 
 ## Resource text
 
-None of the thirteen IDs has text in the checked files:
+The first version of this note said these IDs had no text. That was wrong.
+The search used the full IDs, which are above 0xFFFF. `LoadStringA` uses only the low 16 bits,
+so `0x1D4D7` loads the text at `0xD4D7`. See `decomp_notes/build_list_names.md` for the evidence.
 
-- `runtime/language.dll`, SHA256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
-- `orig/.../XPack/languagex.dll`, SHA256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
+With the low 16 bits, every ID has text that agrees with its name:
 
-The neighbouring `STRING_ID_HELP_GAME_*` IDs, from `0x1D4CD` to `0x1D4DC`, are also missing from these files.
-The names describe the call-site purpose. They do not describe any resource text.
+| ID | Loaded ID | Module | Text |
+| --- | --- | --- | --- |
+| `0x1D4D7` | `0xD4D7` | base | Click to display more buildings. |
+| `0x1D4D9` | `0xD4D9` | base | Click to unselect a unit. |
+| `0x1D4DD` | `0xD4DD` | base | Click to stop the current action. |
+| `0x1D4DF` | `0xD4DF` | base | Click to construct a building. |
+| `0x1D4E1` | `0xD4E1` | base | Click to group selected units. |
+| `0x1D4E3` | `0xD4E3` | base | Click to ungroup selected units. |
+| `0x1D4E5` | `0xD4E5` | base | Click to cancel the current action. |
+| `0x1D4E9` | `0xD4E9` | base | Click to unload a transport vessel. |
+| `0x1D4EA` | `0xD4EA` | base | Click to order units to stand ground instead of attacking ... |
+| `0x1D4EB` | `0xD4EB` | base | Click to order catapult units to target a location, ... |
+| `0x1D4F1` | `0xD4F1` | expansion | Click to order the Priest to heal a friendly or allied unit. |
+| `0x1D4F2` | `0xD4F2` | expansion | Click to order the priest to convert an enemy unit. |
+| `0x1D4F6` | `0xD4F6` | expansion | Click to order units to repair a building or boat. |
+
+Modules: base is `runtime/language.dll`, SHA256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
+The expansion module is `orig/.../XPack/languagex.dll`, SHA256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
+`TRIBE_Game::get_string` tries the expansion module first.
 
 ## Validation
 

@@ -44,6 +44,134 @@
 #include <string.h>
 #include <stdarg.h>
 
+// Build-list slots for TRIBE_Player::intelligentBuildListAndRulesSelection. Each name is the
+// file loaded for that slot, from string STRING_ID_AI_BUILD_LIST_FIRST + slot.
+#define BUILD_LIST_ARCHERS_BRONZE              0
+#define BUILD_LIST_ARCHERS_IRON                1
+#define BUILD_LIST_ARCHERS_WALLS               2
+#define BUILD_LIST_PHALANX_BRONZE              3
+#define BUILD_LIST_PHALANX_IRON                4
+#define BUILD_LIST_PHALANX_WALLS               5
+#define BUILD_LIST_CAVALRY_BRONZE              6
+#define BUILD_LIST_CAVALRY_IRON                7
+#define BUILD_LIST_CAVALRY_WALLS               8
+#define BUILD_LIST_INFANTRY_STONE              9
+#define BUILD_LIST_INFANTRY_TOOL               10
+#define BUILD_LIST_INFANTRY_BRONZE             11
+#define BUILD_LIST_INFANTRY_WALLS              12
+#define BUILD_LIST_TRIREME_BRONZE              13
+#define BUILD_LIST_TRIREME_IRON                14
+#define BUILD_LIST_TRIREME_WALLS               15
+#define BUILD_LIST_CAV_ARCHER_IRON             16
+#define BUILD_LIST_WAR_ELEPHANT_IRON           17
+#define BUILD_LIST_ELEPHANT_ARCHER_IRON        18
+#define BUILD_LIST_PRIEST_BRONZE               19
+#define BUILD_LIST_PRIEST_IRON                 20
+#define BUILD_LIST_PRIEST_WALLS                21
+#define BUILD_LIST_DEATH_MATCH_ASSYRIA         22
+#define BUILD_LIST_DEATH_MATCH_BABYLON         23
+#define BUILD_LIST_DEATH_MATCH_CHOSON          24
+#define BUILD_LIST_DEATH_MATCH_EGYPT           25
+#define BUILD_LIST_DEATH_MATCH_GREEK           26
+#define BUILD_LIST_DEATH_MATCH_HITTITE         27
+#define BUILD_LIST_DEATH_MATCH_MINOA           28
+#define BUILD_LIST_DEATH_MATCH_PERSIA          29
+#define BUILD_LIST_DEATH_MATCH_PHOENICIA       30
+#define BUILD_LIST_DEATH_MATCH_SHANG           31
+#define BUILD_LIST_DEATH_MATCH_SUMERIA         32
+#define BUILD_LIST_DEATH_MATCH_YAMATO          33
+#define BUILD_LIST_IMMORTAL_ASSYRIA            34
+#define BUILD_LIST_IMMORTAL_EGYPT              35
+#define BUILD_LIST_IMMORTAL_GREEK              36
+#define BUILD_LIST_IMMORTAL_MINOA              37
+#define BUILD_LIST_IMMORTAL_SUMERIA            38
+#define BUILD_LIST_IMMORTAL_YAMATO             39
+#define BUILD_LIST_ASSYRIA_BALLISTA            40
+#define BUILD_LIST_ASSYRIA_BOWMEN              41
+#define BUILD_LIST_BABYLON_SWORDSMEN           42
+#define BUILD_LIST_BABYLON_SCOUTS              43
+#define BUILD_LIST_CHOSON_SWORDSMEN            44
+#define BUILD_LIST_CHOSON_AXEMEN               45
+#define BUILD_LIST_EGYPT_WAR_ELEPHANTS         46
+#define BUILD_LIST_EGYPT_CHARIOTS              47
+#define BUILD_LIST_GREEK_PHALANX               48
+#define BUILD_LIST_HITTITE_HORSE_ARCHERS       49
+#define BUILD_LIST_HITTITE_BOWMEN              50
+#define BUILD_LIST_MINOA_COMPOSITE_BOWMEN      51
+#define BUILD_LIST_PERSIA_ELEPHANT_ARCHERS     52
+#define BUILD_LIST_PHOENICIA_ELEPHANTS         53
+#define BUILD_LIST_SHANG_HEAVY_CAVALRY         54
+#define BUILD_LIST_SHANG_CAVALRY               55
+#define BUILD_LIST_SHANG_CLUBMEN               56
+#define BUILD_LIST_SUMERIA_CATAPULTS           57
+#define BUILD_LIST_SUMERIA_SCOUTS              58
+#define BUILD_LIST_YAMATO_HEAVY_CAVALRY        59
+#define BUILD_LIST_DEATH_MATCH_ASSYRIA_WATER   60
+#define BUILD_LIST_DEATH_MATCH_BABYLON_WATER   61
+#define BUILD_LIST_DEATH_MATCH_CHOSON_WATER    62
+#define BUILD_LIST_DEATH_MATCH_EGYPT_WATER     63
+#define BUILD_LIST_DEATH_MATCH_GREEK_WATER     64
+#define BUILD_LIST_DEATH_MATCH_HITTITE_WATER   65
+#define BUILD_LIST_DEATH_MATCH_MINOA_WATER     66
+#define BUILD_LIST_DEATH_MATCH_PERSIA_WATER    67
+#define BUILD_LIST_DEATH_MATCH_PHOENICIA_WATER 68
+#define BUILD_LIST_DEATH_MATCH_SHANG_WATER     69
+#define BUILD_LIST_DEATH_MATCH_SUMERIA_WATER   70
+#define BUILD_LIST_DEATH_MATCH_YAMATO_WATER    71
+#define BUILD_LIST_ASSYRIA_ARCHER_BRONZE       72
+#define BUILD_LIST_ASSYRIA_ARCHER_IRON         73
+#define BUILD_LIST_ASSYRIA_INFANTRY_BRONZE     74
+#define BUILD_LIST_ASSYRIA_BRONZE_WATER        75
+#define BUILD_LIST_ASSYRIA_IRON_WATER          76
+#define BUILD_LIST_BABYLON_WATER               77
+#define BUILD_LIST_CHOSON_BRONZE_WATER         78
+#define BUILD_LIST_CHOSON_IRON_WATER           79
+#define BUILD_LIST_EGYPT_CHARIOT_ARCHER        80
+#define BUILD_LIST_EGYPT_ARCHERS_BRONZE        81
+#define BUILD_LIST_EGYPT_ARCHERS_IRON          82
+#define BUILD_LIST_EGYPT_WATER                 83
+#define BUILD_LIST_GREEK_SIEGE                 84
+#define BUILD_LIST_GREEK_BRONZE_WATER          85
+#define BUILD_LIST_GREEK_IRON_WATER            86
+#define BUILD_LIST_HITTITE_WATER               87
+#define BUILD_LIST_MINOA_BRONZE_WATER          88
+#define BUILD_LIST_MINOA_IRON_WATER            89
+#define BUILD_LIST_PERSIA_BRONZE_WATER         90
+#define BUILD_LIST_PERSIA_IRON_WATER           91
+#define BUILD_LIST_PHOENICIA_WATER             92
+#define BUILD_LIST_SHANG_WATER                 93
+#define BUILD_LIST_SUMERIA_BRONZE_WATER        94
+#define BUILD_LIST_SUMERIA_IRON_WATER          95
+#define BUILD_LIST_YAMATO_BRONZE_WATER         96
+#define BUILD_LIST_YAMATO_IRON_WATER           97
+#define BUILD_LIST_CARTHAGE_PHALANX            98
+#define BUILD_LIST_CARTHAGE_WAR_ELEPHANT       99
+#define BUILD_LIST_CARTHAGE_BRONZE_WATER       100
+#define BUILD_LIST_CARTHAGE_IRON_WATER         101
+#define BUILD_LIST_MACEDON_ELEPHANT            102
+#define BUILD_LIST_MACEDON_PHALANX             103
+#define BUILD_LIST_MACEDON_CAVALRY             104
+#define BUILD_LIST_MACEDON_BRONZE_WATER        105
+#define BUILD_LIST_MACEDON_IRON_WATER          106
+#define BUILD_LIST_PALMYRA_COMPOSITE_BOW       107
+#define BUILD_LIST_PALMYRA_HORSE_ARCHER        108
+#define BUILD_LIST_PALMYRA_ELEPHANT            109
+#define BUILD_LIST_PALMYRA_BRONZE_WATER        110
+#define BUILD_LIST_PALMYRA_IRON_WATER          111
+#define BUILD_LIST_ROME_LEGION                 112
+#define BUILD_LIST_ROME_AXEMEN                 113
+#define BUILD_LIST_ROME_SIEGE                  114
+#define BUILD_LIST_ROME_BRONZE_WATER           115
+#define BUILD_LIST_ROME_IRON_WATER             116
+#define BUILD_LIST_DEATH_MATCH_CARTHAGE        117
+#define BUILD_LIST_DEATH_MATCH_MACEDON         118
+#define BUILD_LIST_DEATH_MATCH_PALMYRA         119
+#define BUILD_LIST_DEATH_MATCH_ROME            120
+#define BUILD_LIST_DEATH_MATCH_CARTHAGE_WATER  121
+#define BUILD_LIST_DEATH_MATCH_MACEDON_WATER   122
+#define BUILD_LIST_DEATH_MATCH_PALMYRA_WATER   123
+#define BUILD_LIST_DEATH_MATCH_ROME_WATER      124
+
 // TPlayer owns the object-group selection property table at 0058ABA0.
 unsigned long tribe_group_properties[0x28] = { 7, 0, 4, 0, 0x67, 0, 7, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0x10, 0x96, 0,
                                                0, 0, 1, 7, 7,    7, 7, 0, 7, 0, 0, 0, 0, 0, 0, 7, 7, 0,    0,    7 };
@@ -1803,43 +1931,43 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int m
             if (mapType == TRIBE_Game::AllWater) {
                 if (selectedBuildLists > 0) {
                     if (aggressiveSelections == 0) {
-                        buildLists[(0x0E) - 1] += 300;
-                        buildLists[(0x0F) - 1] += 300;
+                        buildLists[BUILD_LIST_TRIREME_BRONZE] += 300;
+                        buildLists[BUILD_LIST_TRIREME_IRON] += 300;
                     } else {
-                        buildLists[(0x0E) - 1] += 100;
-                        buildLists[(0x0F) - 1] += 100;
+                        buildLists[BUILD_LIST_TRIREME_BRONZE] += 100;
+                        buildLists[BUILD_LIST_TRIREME_IRON] += 100;
                     }
                 } else {
-                    buildLists[(0x0E) - 1] = 0;
-                    buildLists[(0x0F) - 1] = 0;
+                    buildLists[BUILD_LIST_TRIREME_BRONZE] = 0;
+                    buildLists[BUILD_LIST_TRIREME_IRON] = 0;
                 }
             }
             if (mapType == TRIBE_Game::MostlyWater) {
                 if (selectedBuildLists > 0) {
                     if (aggressiveSelections == 0) {
-                        buildLists[(0x0E) - 1] += 250;
-                        buildLists[(0x0F) - 1] += 250;
+                        buildLists[BUILD_LIST_TRIREME_BRONZE] += 250;
+                        buildLists[BUILD_LIST_TRIREME_IRON] += 250;
                     } else {
-                        buildLists[(0x0E) - 1] += 75;
-                        buildLists[(0x0F) - 1] += 75;
+                        buildLists[BUILD_LIST_TRIREME_BRONZE] += 75;
+                        buildLists[BUILD_LIST_TRIREME_IRON] += 75;
                     }
                 } else {
-                    buildLists[(0x0E) - 1] = 0;
-                    buildLists[(0x0F) - 1] = 0;
+                    buildLists[BUILD_LIST_TRIREME_BRONZE] = 0;
+                    buildLists[BUILD_LIST_TRIREME_IRON] = 0;
                 }
             }
             if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas) {
                 if (selectedBuildLists > 0) {
                     if (aggressiveSelections == 0) {
-                        buildLists[(0x0E) - 1] += 200;
-                        buildLists[(0x0F) - 1] += 200;
+                        buildLists[BUILD_LIST_TRIREME_BRONZE] += 200;
+                        buildLists[BUILD_LIST_TRIREME_IRON] += 200;
                     } else {
-                        buildLists[(0x0E) - 1] += 50;
-                        buildLists[(0x0F) - 1] += 50;
+                        buildLists[BUILD_LIST_TRIREME_BRONZE] += 50;
+                        buildLists[BUILD_LIST_TRIREME_IRON] += 50;
                     }
                 } else {
-                    buildLists[(0x0E) - 1] = 0;
-                    buildLists[(0x0F) - 1] = 0;
+                    buildLists[BUILD_LIST_TRIREME_BRONZE] = 0;
+                    buildLists[BUILD_LIST_TRIREME_IRON] = 0;
                 }
             }
         }
@@ -1854,59 +1982,59 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int m
         this->playerAI->informationAI.unitsThatAreMostBuilt(difficultyLevel, mostBuiltUnit2);
         switch (difficultyLevel) {
             case 0:
-                buildLists[(7) - 1] += 25;
-                buildLists[(8) - 1] += 25;
+                buildLists[BUILD_LIST_CAVALRY_BRONZE] += 25;
+                buildLists[BUILD_LIST_CAVALRY_IRON] += 25;
                 break;
             case 1:
-                buildLists[(7) - 1] += 30;
-                buildLists[(8) - 1] += 30;
+                buildLists[BUILD_LIST_CAVALRY_BRONZE] += 30;
+                buildLists[BUILD_LIST_CAVALRY_IRON] += 30;
                 break;
             case 2:
-                buildLists[(0x12) - 1] += 20;
-                buildLists[(0x13) - 1] += 20;
-                buildLists[(4) - 1] += 40;
-                buildLists[(5) - 1] += 40;
+                buildLists[BUILD_LIST_WAR_ELEPHANT_IRON] += 20;
+                buildLists[BUILD_LIST_ELEPHANT_ARCHER_IRON] += 20;
+                buildLists[BUILD_LIST_PHALANX_BRONZE] += 40;
+                buildLists[BUILD_LIST_PHALANX_IRON] += 40;
                 break;
             case 3:
-                buildLists[(1) - 1] += 40;
-                buildLists[(2) - 1] += 20;
-                buildLists[(0x14) - 1] += 20;
-                buildLists[(0x15) - 1] += 20;
-                buildLists[(0x12) - 1] -= 60;
-                buildLists[(0x13) - 1] -= 60;
+                buildLists[BUILD_LIST_ARCHERS_BRONZE] += 40;
+                buildLists[BUILD_LIST_ARCHERS_IRON] += 20;
+                buildLists[BUILD_LIST_PRIEST_BRONZE] += 20;
+                buildLists[BUILD_LIST_PRIEST_IRON] += 20;
+                buildLists[BUILD_LIST_WAR_ELEPHANT_IRON] -= 60;
+                buildLists[BUILD_LIST_ELEPHANT_ARCHER_IRON] -= 60;
                 break;
             case 4:
-                buildLists[(7) - 1] += 15;
-                buildLists[(8) - 1] += 15;
-                buildLists[(0x14) - 1] += 20;
-                buildLists[(0x15) - 1] += 20;
+                buildLists[BUILD_LIST_CAVALRY_BRONZE] += 15;
+                buildLists[BUILD_LIST_CAVALRY_IRON] += 15;
+                buildLists[BUILD_LIST_PRIEST_BRONZE] += 20;
+                buildLists[BUILD_LIST_PRIEST_IRON] += 20;
                 break;
             case 5:
-                buildLists[(7) - 1] += 15;
-                buildLists[(8) - 1] += 15;
-                buildLists[(1) - 1] += 10;
-                buildLists[(2) - 1] += 10;
+                buildLists[BUILD_LIST_CAVALRY_BRONZE] += 15;
+                buildLists[BUILD_LIST_CAVALRY_IRON] += 15;
+                buildLists[BUILD_LIST_ARCHERS_BRONZE] += 10;
+                buildLists[BUILD_LIST_ARCHERS_IRON] += 10;
                 break;
             case 6:
-                buildLists[(7) - 1] += 15;
-                buildLists[(8) - 1] += 15;
+                buildLists[BUILD_LIST_CAVALRY_BRONZE] += 15;
+                buildLists[BUILD_LIST_CAVALRY_IRON] += 15;
                 break;
             case 7:
             case 10:
-                buildLists[(0x14) - 1] -= 60;
-                buildLists[(0x15) - 1] -= 60;
+                buildLists[BUILD_LIST_PRIEST_BRONZE] -= 60;
+                buildLists[BUILD_LIST_PRIEST_IRON] -= 60;
                 break;
             case 8:
-                buildLists[(0x14) - 1] += 40;
-                buildLists[(0x15) - 1] += 40;
+                buildLists[BUILD_LIST_PRIEST_BRONZE] += 40;
+                buildLists[BUILD_LIST_PRIEST_IRON] += 40;
                 if (tplayer_globals::selectedBuildListCount > 0) {
-                    buildLists[(0x0E) - 1] += 50;
-                    buildLists[(0x0F) - 1] += 50;
+                    buildLists[BUILD_LIST_TRIREME_BRONZE] += 50;
+                    buildLists[BUILD_LIST_TRIREME_IRON] += 50;
                 }
                 break;
             case 9:
-                buildLists[(0x14) - 1] += 100;
-                buildLists[(0x15) - 1] += 100;
+                buildLists[BUILD_LIST_PRIEST_BRONZE] += 100;
+                buildLists[BUILD_LIST_PRIEST_IRON] += 100;
                 break;
         }
     }
@@ -1915,136 +2043,195 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int m
     do {
         switch (difficultyLevel) {
             case 0:
-                if (0 < (buildLists[(0x14) - 1]))
-                    (buildLists[(0x14) - 1]) = (buildLists[(0x14) - 1]) / 3;
-                if (0 < (buildLists[(0x15) - 1]))
-                    (buildLists[(0x15) - 1]) = (buildLists[(0x15) - 1]) / 3;
-                if (0 < (buildLists[(0x16) - 1]))
-                    (buildLists[(0x16) - 1]) = (buildLists[(0x16) - 1]) / 3;
+                if (buildLists[BUILD_LIST_PRIEST_BRONZE] > 0) {
+                    buildLists[BUILD_LIST_PRIEST_BRONZE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_PRIEST_IRON] > 0) {
+                    buildLists[BUILD_LIST_PRIEST_IRON] /= 3;
+                }
+                if (buildLists[BUILD_LIST_PRIEST_WALLS] > 0) {
+                    buildLists[BUILD_LIST_PRIEST_WALLS] /= 3;
+                }
                 break;
             case 1:
-                if (0 < (buildLists[(7) - 1]))
-                    (buildLists[(7) - 1]) = (buildLists[(7) - 1]) / 3;
-                if (0 < (buildLists[(8) - 1]))
-                    (buildLists[(8) - 1]) = (buildLists[(8) - 1]) / 3;
-                if (0 < (buildLists[(9) - 1]))
-                    (buildLists[(9) - 1]) = (buildLists[(9) - 1]) / 3;
-                if (0 < (buildLists[(0x3C) - 1]))
-                    (buildLists[(0x3C) - 1]) = (buildLists[(0x3C) - 1]) / 3;
-                if (0 < (buildLists[(0x3B) - 1]))
-                    (buildLists[(0x3B) - 1]) = (buildLists[(0x3B) - 1]) / 3;
-                if (0 < (buildLists[(0x37) - 1]))
-                    (buildLists[(0x37) - 1]) = (buildLists[(0x37) - 1]) / 3;
-                if (0 < (buildLists[(0x38) - 1]))
-                    (buildLists[(0x38) - 1]) = (buildLists[(0x38) - 1]) / 3;
-                if (0 < (buildLists[(0x69) - 1]))
-                    (buildLists[(0x69) - 1]) = (buildLists[(0x69) - 1]) / 3;
+                if (buildLists[BUILD_LIST_CAVALRY_BRONZE] > 0) {
+                    buildLists[BUILD_LIST_CAVALRY_BRONZE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_CAVALRY_IRON] > 0) {
+                    buildLists[BUILD_LIST_CAVALRY_IRON] /= 3;
+                }
+                if (buildLists[BUILD_LIST_CAVALRY_WALLS] > 0) {
+                    buildLists[BUILD_LIST_CAVALRY_WALLS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_YAMATO_HEAVY_CAVALRY] > 0) {
+                    buildLists[BUILD_LIST_YAMATO_HEAVY_CAVALRY] /= 3;
+                }
+                if (buildLists[BUILD_LIST_SUMERIA_SCOUTS] > 0) {
+                    buildLists[BUILD_LIST_SUMERIA_SCOUTS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_SHANG_HEAVY_CAVALRY] > 0) {
+                    buildLists[BUILD_LIST_SHANG_HEAVY_CAVALRY] /= 3;
+                }
+                if (buildLists[BUILD_LIST_SHANG_CAVALRY] > 0) {
+                    buildLists[BUILD_LIST_SHANG_CAVALRY] /= 3;
+                }
+                if (buildLists[BUILD_LIST_MACEDON_CAVALRY] > 0) {
+                    buildLists[BUILD_LIST_MACEDON_CAVALRY] /= 3;
+                }
                 break;
             case 2:
-                if (0 < (buildLists[(0x11) - 1]))
-                    (buildLists[(0x11) - 1]) = (buildLists[(0x11) - 1]) / 3;
-                if (0 < (buildLists[(0x32) - 1]))
-                    (buildLists[(0x32) - 1]) = (buildLists[(0x32) - 1]) / 3;
-                if (0 < (buildLists[(0x6D) - 1]))
-                    (buildLists[(0x6D) - 1]) = (buildLists[(0x6D) - 1]) / 3;
+                if (buildLists[BUILD_LIST_CAV_ARCHER_IRON] > 0) {
+                    buildLists[BUILD_LIST_CAV_ARCHER_IRON] /= 3;
+                }
+                if (buildLists[BUILD_LIST_HITTITE_HORSE_ARCHERS] > 0) {
+                    buildLists[BUILD_LIST_HITTITE_HORSE_ARCHERS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_PALMYRA_HORSE_ARCHER] > 0) {
+                    buildLists[BUILD_LIST_PALMYRA_HORSE_ARCHER] /= 3;
+                }
                 break;
             case 3:
-                if (0 < (buildLists[(0x2F) - 1]))
-                    (buildLists[(0x2F) - 1]) = (buildLists[(0x2F) - 1]) / 3;
-                if (0 < (buildLists[(0x36) - 1]))
-                    (buildLists[(0x36) - 1]) = (buildLists[(0x36) - 1]) / 3;
-                if (0 < (buildLists[(0x12) - 1]))
-                    (buildLists[(0x12) - 1]) = (buildLists[(0x12) - 1]) / 3;
-                if (0 < (buildLists[(0x13) - 1]))
-                    (buildLists[(0x13) - 1]) = (buildLists[(0x13) - 1]) / 3;
-                if (0 < (buildLists[(100) - 1]))
-                    (buildLists[(100) - 1]) = (buildLists[(100) - 1]) / 3;
-                if (0 < (buildLists[(0x67) - 1]))
-                    (buildLists[(0x67) - 1]) = (buildLists[(0x67) - 1]) / 3;
-                if (0 < (buildLists[(0x6E) - 1]))
-                    (buildLists[(0x6E) - 1]) = (buildLists[(0x6E) - 1]) / 3;
-                if (0 < (buildLists[(0x13) - 1]))
-                    (buildLists[(0x13) - 1]) = (buildLists[(0x13) - 1]) / 3;
+                if (buildLists[BUILD_LIST_EGYPT_WAR_ELEPHANTS] > 0) {
+                    buildLists[BUILD_LIST_EGYPT_WAR_ELEPHANTS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_PHOENICIA_ELEPHANTS] > 0) {
+                    buildLists[BUILD_LIST_PHOENICIA_ELEPHANTS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_WAR_ELEPHANT_IRON] > 0) {
+                    buildLists[BUILD_LIST_WAR_ELEPHANT_IRON] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ELEPHANT_ARCHER_IRON] > 0) {
+                    buildLists[BUILD_LIST_ELEPHANT_ARCHER_IRON] /= 3;
+                }
+                if (buildLists[BUILD_LIST_CARTHAGE_WAR_ELEPHANT] > 0) {
+                    buildLists[BUILD_LIST_CARTHAGE_WAR_ELEPHANT] /= 3;
+                }
+                if (buildLists[BUILD_LIST_MACEDON_ELEPHANT] > 0) {
+                    buildLists[BUILD_LIST_MACEDON_ELEPHANT] /= 3;
+                }
+                if (buildLists[BUILD_LIST_PALMYRA_ELEPHANT] > 0) {
+                    buildLists[BUILD_LIST_PALMYRA_ELEPHANT] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ELEPHANT_ARCHER_IRON] > 0) {
+                    buildLists[BUILD_LIST_ELEPHANT_ARCHER_IRON] /= 3;
+                }
                 break;
             case 4:
-                if (0 < (buildLists[(4) - 1]))
-                    (buildLists[(4) - 1]) = (buildLists[(4) - 1]) / 3;
-                if (0 < (buildLists[(5) - 1]))
-                    (buildLists[(5) - 1]) = (buildLists[(5) - 1]) / 3;
-                if (0 < (buildLists[(6) - 1]))
-                    (buildLists[(6) - 1]) = (buildLists[(6) - 1]) / 3;
-                if (0 < (buildLists[(10) - 1]))
-                    (buildLists[(10) - 1]) = (buildLists[(10) - 1]) / 3;
-                if (0 < (buildLists[(0x0B) - 1]))
-                    (buildLists[(0x0B) - 1]) = (buildLists[(0x0B) - 1]) / 3;
-                if (0 < (buildLists[(0x0C) - 1]))
-                    (buildLists[(0x0C) - 1]) = (buildLists[(0x0C) - 1]) / 3;
-                if (0 < (buildLists[(0x0D) - 1]))
-                    (buildLists[(0x0D) - 1]) = (buildLists[(0x0D) - 1]) / 3;
-                if (0 < (buildLists[(0x2B) - 1]))
-                    (buildLists[(0x2B) - 1]) = (buildLists[(0x2B) - 1]) / 3;
-                if (0 < (buildLists[(0x2D) - 1]))
-                    (buildLists[(0x2D) - 1]) = (buildLists[(0x2D) - 1]) / 3;
-                if (0 < (buildLists[(0x2E) - 1]))
-                    (buildLists[(0x2E) - 1]) = (buildLists[(0x2E) - 1]) / 3;
-                if (0 < (buildLists[(0x30) - 1]))
-                    (buildLists[(0x30) - 1]) = (buildLists[(0x30) - 1]) / 3;
-                if (0 < (buildLists[(0x31) - 1]))
-                    (buildLists[(0x31) - 1]) = (buildLists[(0x31) - 1]) / 3;
-                if (0 < (buildLists[(0x39) - 1]))
-                    (buildLists[(0x39) - 1]) = (buildLists[(0x39) - 1]) / 3;
-                if (0 < (buildLists[(0x4B) - 1]))
-                    (buildLists[(0x4B) - 1]) = (buildLists[(0x4B) - 1]) / 3;
-                if (0 < (buildLists[(99) - 1]))
-                    (buildLists[(99) - 1]) = (buildLists[(99) - 1]) / 3;
-                if (0 < (buildLists[(0x68) - 1]))
-                    (buildLists[(0x68) - 1]) = (buildLists[(0x68) - 1]) / 3;
-                if (0 < (buildLists[(0x71) - 1]))
-                    (buildLists[(0x71) - 1]) = (buildLists[(0x71) - 1]) / 3;
-                if (0 < (buildLists[(0x72) - 1]))
-                    (buildLists[(0x72) - 1]) = (buildLists[(0x72) - 1]) / 3;
+                if (buildLists[BUILD_LIST_PHALANX_BRONZE] > 0) {
+                    buildLists[BUILD_LIST_PHALANX_BRONZE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_PHALANX_IRON] > 0) {
+                    buildLists[BUILD_LIST_PHALANX_IRON] /= 3;
+                }
+                if (buildLists[BUILD_LIST_PHALANX_WALLS] > 0) {
+                    buildLists[BUILD_LIST_PHALANX_WALLS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_INFANTRY_STONE] > 0) {
+                    buildLists[BUILD_LIST_INFANTRY_STONE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_INFANTRY_TOOL] > 0) {
+                    buildLists[BUILD_LIST_INFANTRY_TOOL] /= 3;
+                }
+                if (buildLists[BUILD_LIST_INFANTRY_BRONZE] > 0) {
+                    buildLists[BUILD_LIST_INFANTRY_BRONZE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_INFANTRY_WALLS] > 0) {
+                    buildLists[BUILD_LIST_INFANTRY_WALLS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_BABYLON_SWORDSMEN] > 0) {
+                    buildLists[BUILD_LIST_BABYLON_SWORDSMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_CHOSON_SWORDSMEN] > 0) {
+                    buildLists[BUILD_LIST_CHOSON_SWORDSMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_CHOSON_AXEMEN] > 0) {
+                    buildLists[BUILD_LIST_CHOSON_AXEMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_EGYPT_CHARIOTS] > 0) {
+                    buildLists[BUILD_LIST_EGYPT_CHARIOTS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_GREEK_PHALANX] > 0) {
+                    buildLists[BUILD_LIST_GREEK_PHALANX] /= 3;
+                }
+                if (buildLists[BUILD_LIST_SHANG_CLUBMEN] > 0) {
+                    buildLists[BUILD_LIST_SHANG_CLUBMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ASSYRIA_INFANTRY_BRONZE] > 0) {
+                    buildLists[BUILD_LIST_ASSYRIA_INFANTRY_BRONZE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_CARTHAGE_PHALANX] > 0) {
+                    buildLists[BUILD_LIST_CARTHAGE_PHALANX] /= 3;
+                }
+                if (buildLists[BUILD_LIST_MACEDON_PHALANX] > 0) {
+                    buildLists[BUILD_LIST_MACEDON_PHALANX] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ROME_LEGION] > 0) {
+                    buildLists[BUILD_LIST_ROME_LEGION] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ROME_AXEMEN] > 0) {
+                    buildLists[BUILD_LIST_ROME_AXEMEN] /= 3;
+                }
                 break;
             case 5:
-                if (0 < (buildLists[(0x2A) - 1]))
-                    (buildLists[(0x2A) - 1]) = (buildLists[(0x2A) - 1]) / 3;
-                if (0 < (buildLists[(1) - 1]))
-                    (buildLists[(1) - 1]) = (buildLists[(1) - 1]) / 3;
-                if (0 < (buildLists[(2) - 1]))
-                    (buildLists[(2) - 1]) = (buildLists[(2) - 1]) / 3;
-                if (0 < (buildLists[(3) - 1]))
-                    (buildLists[(3) - 1]) = (buildLists[(3) - 1]) / 3;
-                if (0 < (buildLists[(0x2A) - 1]))
-                    (buildLists[(0x2A) - 1]) = (buildLists[(0x2A) - 1]) / 3;
-                if (0 < (buildLists[(0x33) - 1]))
-                    (buildLists[(0x33) - 1]) = (buildLists[(0x33) - 1]) / 3;
-                if (0 < (buildLists[(0x34) - 1]))
-                    (buildLists[(0x34) - 1]) = (buildLists[(0x34) - 1]) / 3;
-                if (0 < (buildLists[(0x49) - 1]))
-                    (buildLists[(0x49) - 1]) = (buildLists[(0x49) - 1]) / 3;
-                if (0 < (buildLists[(0x4A) - 1]))
-                    (buildLists[(0x4A) - 1]) = (buildLists[(0x4A) - 1]) / 3;
-                if (0 < (buildLists[(0x33) - 1]))
-                    (buildLists[(0x33) - 1]) = (buildLists[(0x33) - 1]) / 3;
-                if (0 < (buildLists[(0x34) - 1]))
-                    (buildLists[(0x34) - 1]) = (buildLists[(0x34) - 1]) / 3;
-                if (0 < (buildLists[(0x51) - 1]))
-                    (buildLists[(0x51) - 1]) = (buildLists[(0x51) - 1]) / 3;
-                if (0 < (buildLists[(0x52) - 1]))
-                    (buildLists[(0x52) - 1]) = (buildLists[(0x52) - 1]) / 3;
-                if (0 < (buildLists[(0x53) - 1]))
-                    (buildLists[(0x53) - 1]) = (buildLists[(0x53) - 1]) / 3;
-                if (0 < (buildLists[(0x6C) - 1]))
-                    (buildLists[(0x6C) - 1]) = (buildLists[(0x6C) - 1]) / 3;
+                if (buildLists[BUILD_LIST_ASSYRIA_BOWMEN] > 0) {
+                    buildLists[BUILD_LIST_ASSYRIA_BOWMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ARCHERS_BRONZE] > 0) {
+                    buildLists[BUILD_LIST_ARCHERS_BRONZE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ARCHERS_IRON] > 0) {
+                    buildLists[BUILD_LIST_ARCHERS_IRON] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ARCHERS_WALLS] > 0) {
+                    buildLists[BUILD_LIST_ARCHERS_WALLS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ASSYRIA_BOWMEN] > 0) {
+                    buildLists[BUILD_LIST_ASSYRIA_BOWMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_HITTITE_BOWMEN] > 0) {
+                    buildLists[BUILD_LIST_HITTITE_BOWMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_MINOA_COMPOSITE_BOWMEN] > 0) {
+                    buildLists[BUILD_LIST_MINOA_COMPOSITE_BOWMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ASSYRIA_ARCHER_BRONZE] > 0) {
+                    buildLists[BUILD_LIST_ASSYRIA_ARCHER_BRONZE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ASSYRIA_ARCHER_IRON] > 0) {
+                    buildLists[BUILD_LIST_ASSYRIA_ARCHER_IRON] /= 3;
+                }
+                if (buildLists[BUILD_LIST_HITTITE_BOWMEN] > 0) {
+                    buildLists[BUILD_LIST_HITTITE_BOWMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_MINOA_COMPOSITE_BOWMEN] > 0) {
+                    buildLists[BUILD_LIST_MINOA_COMPOSITE_BOWMEN] /= 3;
+                }
+                if (buildLists[BUILD_LIST_EGYPT_CHARIOT_ARCHER] > 0) {
+                    buildLists[BUILD_LIST_EGYPT_CHARIOT_ARCHER] /= 3;
+                }
+                if (buildLists[BUILD_LIST_EGYPT_ARCHERS_BRONZE] > 0) {
+                    buildLists[BUILD_LIST_EGYPT_ARCHERS_BRONZE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_EGYPT_ARCHERS_IRON] > 0) {
+                    buildLists[BUILD_LIST_EGYPT_ARCHERS_IRON] /= 3;
+                }
+                if (buildLists[BUILD_LIST_PALMYRA_COMPOSITE_BOW] > 0) {
+                    buildLists[BUILD_LIST_PALMYRA_COMPOSITE_BOW] /= 3;
+                }
                 break;
             case 6:
-                if (0 < (buildLists[(0x29) - 1]))
-                    (buildLists[(0x29) - 1]) = (buildLists[(0x29) - 1]) / 3;
-                if (0 < (buildLists[(0x3A) - 1]))
-                    (buildLists[(0x3A) - 1]) = (buildLists[(0x3A) - 1]) / 3;
-                if (0 < (buildLists[(0x73) - 1]))
-                    (buildLists[(0x73) - 1]) = (buildLists[(0x73) - 1]) / 3;
-                if (0 < (buildLists[(0x55) - 1]))
-                    (buildLists[(0x55) - 1]) = (buildLists[(0x55) - 1]) / 3;
+                if (buildLists[BUILD_LIST_ASSYRIA_BALLISTA] > 0) {
+                    buildLists[BUILD_LIST_ASSYRIA_BALLISTA] /= 3;
+                }
+                if (buildLists[BUILD_LIST_SUMERIA_CATAPULTS] > 0) {
+                    buildLists[BUILD_LIST_SUMERIA_CATAPULTS] /= 3;
+                }
+                if (buildLists[BUILD_LIST_ROME_SIEGE] > 0) {
+                    buildLists[BUILD_LIST_ROME_SIEGE] /= 3;
+                }
+                if (buildLists[BUILD_LIST_GREEK_SIEGE] > 0) {
+                    buildLists[BUILD_LIST_GREEK_SIEGE] /= 3;
+                }
                 break;
         }
         ++difficultyLevel;
@@ -2082,373 +2269,372 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r, int m
         }
     }
 
-    // This AI build-list resource range is absent from the checked DLL.
-    rge_base_game->get_string(selectedBuildList + 0x26930, b, 256);
+    rge_base_game->get_string(selectedBuildList + STRING_ID_AI_BUILD_LIST_FIRST, b, 256);
 
     switch (selectedBuildList) {
-        case 0x0D:
+        case BUILD_LIST_TRIREME_BRONZE:
             this->playerAI->strategyAI.setRule(SNMinimumBoatAttackGroupSize, 4);
             this->playerAI->strategyAI.setRule(SNMaximumBoatAttackGroupSize, 10);
             ++tplayer_globals::buildListCategoryCount7;
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x0E:
+        case BUILD_LIST_TRIREME_IRON:
             this->playerAI->strategyAI.setRule(SNMinimumBoatAttackGroupSize, 4);
             this->playerAI->strategyAI.setRule(SNMaximumBoatAttackGroupSize, 10);
             ++tplayer_globals::buildListCategoryCount7;
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x0F:
+        case BUILD_LIST_TRIREME_WALLS:
             this->playerAI->strategyAI.setRule(SNMinimumBoatAttackGroupSize, 4);
             this->playerAI->strategyAI.setRule(SNMaximumBoatAttackGroupSize, 10);
             ++tplayer_globals::buildListCategoryCount7;
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x13:
+        case BUILD_LIST_PRIEST_BRONZE:
             ++computerPlayerSetup[0];
             break;
-        case 0x14:
+        case BUILD_LIST_PRIEST_IRON:
             ++computerPlayerSetup[0];
             break;
-        case 0x15:
+        case BUILD_LIST_PRIEST_WALLS:
             ++computerPlayerSetup[0];
             break;
-        case 0x16:
+        case BUILD_LIST_DEATH_MATCH_ASSYRIA:
             break;
-        case 0x17:
+        case BUILD_LIST_DEATH_MATCH_BABYLON:
             break;
-        case 0x18:
+        case BUILD_LIST_DEATH_MATCH_CHOSON:
             break;
-        case 0x19:
+        case BUILD_LIST_DEATH_MATCH_EGYPT:
             break;
-        case 0x1A:
+        case BUILD_LIST_DEATH_MATCH_GREEK:
             break;
-        case 0x1B:
+        case BUILD_LIST_DEATH_MATCH_HITTITE:
             break;
-        case 0x1C:
+        case BUILD_LIST_DEATH_MATCH_MINOA:
             break;
-        case 0x1D:
+        case BUILD_LIST_DEATH_MATCH_PERSIA:
             break;
-        case 0x1E:
+        case BUILD_LIST_DEATH_MATCH_PHOENICIA:
             break;
-        case 0x1F:
+        case BUILD_LIST_DEATH_MATCH_SHANG:
             break;
-        case 0x20:
+        case BUILD_LIST_DEATH_MATCH_SUMERIA:
             break;
-        case 0x21:
+        case BUILD_LIST_DEATH_MATCH_YAMATO:
             break;
-        case 0x22:
+        case BUILD_LIST_IMMORTAL_ASSYRIA:
             break;
-        case 0x23:
+        case BUILD_LIST_IMMORTAL_EGYPT:
             break;
-        case 0x24:
+        case BUILD_LIST_IMMORTAL_GREEK:
             break;
-        case 0x25:
+        case BUILD_LIST_IMMORTAL_MINOA:
             break;
-        case 0x26:
+        case BUILD_LIST_IMMORTAL_SUMERIA:
             break;
-        case 0x27:
+        case BUILD_LIST_IMMORTAL_YAMATO:
             break;
-        case 0x75:
+        case BUILD_LIST_DEATH_MATCH_CARTHAGE:
             break;
-        case 0x76:
+        case BUILD_LIST_DEATH_MATCH_MACEDON:
             break;
-        case 0x77:
+        case BUILD_LIST_DEATH_MATCH_PALMYRA:
             break;
-        case 0x78:
+        case BUILD_LIST_DEATH_MATCH_ROME:
             break;
-        case 0x3C:
+        case BUILD_LIST_DEATH_MATCH_ASSYRIA_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x3D:
+        case BUILD_LIST_DEATH_MATCH_BABYLON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x3E:
+        case BUILD_LIST_DEATH_MATCH_CHOSON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x3F:
+        case BUILD_LIST_DEATH_MATCH_EGYPT_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x40:
+        case BUILD_LIST_DEATH_MATCH_GREEK_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x41:
+        case BUILD_LIST_DEATH_MATCH_HITTITE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x42:
+        case BUILD_LIST_DEATH_MATCH_MINOA_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x43:
+        case BUILD_LIST_DEATH_MATCH_PERSIA_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x44:
+        case BUILD_LIST_DEATH_MATCH_PHOENICIA_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x45:
+        case BUILD_LIST_DEATH_MATCH_SHANG_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x46:
+        case BUILD_LIST_DEATH_MATCH_SUMERIA_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x47:
+        case BUILD_LIST_DEATH_MATCH_YAMATO_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x4B:
+        case BUILD_LIST_ASSYRIA_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x4C:
+        case BUILD_LIST_ASSYRIA_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x4D:
+        case BUILD_LIST_BABYLON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x4E:
+        case BUILD_LIST_CHOSON_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x4F:
+        case BUILD_LIST_CHOSON_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x53:
+        case BUILD_LIST_EGYPT_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x55:
+        case BUILD_LIST_GREEK_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x56:
+        case BUILD_LIST_GREEK_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x57:
+        case BUILD_LIST_HITTITE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x58:
+        case BUILD_LIST_MINOA_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x59:
+        case BUILD_LIST_MINOA_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x5A:
+        case BUILD_LIST_PERSIA_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x5B:
+        case BUILD_LIST_PERSIA_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x5C:
+        case BUILD_LIST_PHOENICIA_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x5D:
+        case BUILD_LIST_SHANG_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x5E:
+        case BUILD_LIST_SUMERIA_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x5F:
+        case BUILD_LIST_SUMERIA_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x60:
+        case BUILD_LIST_YAMATO_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x61:
+        case BUILD_LIST_YAMATO_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 100:
+        case BUILD_LIST_CARTHAGE_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x65:
+        case BUILD_LIST_CARTHAGE_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x69:
+        case BUILD_LIST_MACEDON_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x6A:
+        case BUILD_LIST_MACEDON_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x6E:
+        case BUILD_LIST_PALMYRA_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x6F:
+        case BUILD_LIST_PALMYRA_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x73:
+        case BUILD_LIST_ROME_BRONZE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x74:
+        case BUILD_LIST_ROME_IRON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x79:
+        case BUILD_LIST_DEATH_MATCH_CARTHAGE_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x7A:
+        case BUILD_LIST_DEATH_MATCH_MACEDON_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x7B:
+        case BUILD_LIST_DEATH_MATCH_PALMYRA_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x7C:
+        case BUILD_LIST_DEATH_MATCH_ROME_WATER:
             ++tplayer_globals::aggressiveBuildListCount;
             goto selectedCountersDone;
-        case 0x48:
+        case BUILD_LIST_ASSYRIA_ARCHER_BRONZE:
             ++tplayer_globals::selectedBuildListCount;
             ++tplayer_globals::buildListCategoryCount5;
             goto selectedCountersDone;
-        case 0x49:
+        case BUILD_LIST_ASSYRIA_ARCHER_IRON:
             ++tplayer_globals::selectedBuildListCount;
             ++tplayer_globals::buildListCategoryCount5;
             goto selectedCountersDone;
-        case 0x4A:
+        case BUILD_LIST_ASSYRIA_INFANTRY_BRONZE:
             ++tplayer_globals::selectedBuildListCount;
             ++tplayer_globals::buildListCategoryCount4;
             goto selectedCountersDone;
-        case 6:
+        case BUILD_LIST_CAVALRY_BRONZE:
             ++tplayer_globals::buildListCategoryCount1;
             break;
-        case 7:
+        case BUILD_LIST_CAVALRY_IRON:
             ++tplayer_globals::buildListCategoryCount1;
             break;
-        case 8:
+        case BUILD_LIST_CAVALRY_WALLS:
             ++tplayer_globals::buildListCategoryCount1;
             break;
-        case 0x2B:
+        case BUILD_LIST_BABYLON_SCOUTS:
             ++tplayer_globals::buildListCategoryCount1;
             break;
-        case 0x36:
+        case BUILD_LIST_SHANG_HEAVY_CAVALRY:
             ++tplayer_globals::buildListCategoryCount1;
             break;
-        case 0x37:
+        case BUILD_LIST_SHANG_CAVALRY:
             ++tplayer_globals::buildListCategoryCount1;
             break;
-        case 0x3A:
+        case BUILD_LIST_SUMERIA_SCOUTS:
             ++tplayer_globals::buildListCategoryCount1;
             break;
-        case 0x3B:
+        case BUILD_LIST_YAMATO_HEAVY_CAVALRY:
             ++tplayer_globals::buildListCategoryCount1;
             break;
-        case 0x68:
+        case BUILD_LIST_MACEDON_CAVALRY:
             ++tplayer_globals::buildListCategoryCount1;
             break;
-        case 0:
+        case BUILD_LIST_ARCHERS_BRONZE:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 1:
+        case BUILD_LIST_ARCHERS_IRON:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 2:
+        case BUILD_LIST_ARCHERS_WALLS:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 0x29:
+        case BUILD_LIST_ASSYRIA_BOWMEN:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 0x32:
+        case BUILD_LIST_HITTITE_BOWMEN:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 0x33:
+        case BUILD_LIST_MINOA_COMPOSITE_BOWMEN:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 0x50:
+        case BUILD_LIST_EGYPT_CHARIOT_ARCHER:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 0x51:
+        case BUILD_LIST_EGYPT_ARCHERS_BRONZE:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 0x52:
+        case BUILD_LIST_EGYPT_ARCHERS_IRON:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 0x6B:
+        case BUILD_LIST_PALMYRA_COMPOSITE_BOW:
             ++tplayer_globals::buildListCategoryCount5;
             break;
-        case 0x10:
+        case BUILD_LIST_CAV_ARCHER_IRON:
             ++tplayer_globals::buildListCategoryCount2;
             break;
-        case 0x31:
+        case BUILD_LIST_HITTITE_HORSE_ARCHERS:
             ++tplayer_globals::buildListCategoryCount2;
             break;
-        case 0x6C:
+        case BUILD_LIST_PALMYRA_HORSE_ARCHER:
             ++tplayer_globals::buildListCategoryCount2;
             break;
-        case 0x11:
+        case BUILD_LIST_WAR_ELEPHANT_IRON:
             ++tplayer_globals::buildListCategoryCount3;
             break;
-        case 0x12:
+        case BUILD_LIST_ELEPHANT_ARCHER_IRON:
             ++tplayer_globals::buildListCategoryCount3;
             break;
-        case 0x2E:
+        case BUILD_LIST_EGYPT_WAR_ELEPHANTS:
             ++tplayer_globals::buildListCategoryCount3;
             break;
-        case 0x34:
+        case BUILD_LIST_PERSIA_ELEPHANT_ARCHERS:
             ++tplayer_globals::buildListCategoryCount3;
             break;
-        case 0x35:
+        case BUILD_LIST_PHOENICIA_ELEPHANTS:
             ++tplayer_globals::buildListCategoryCount3;
             break;
-        case 99:
+        case BUILD_LIST_CARTHAGE_WAR_ELEPHANT:
             ++tplayer_globals::buildListCategoryCount3;
             break;
-        case 0x66:
+        case BUILD_LIST_MACEDON_ELEPHANT:
             ++tplayer_globals::buildListCategoryCount3;
             break;
-        case 0x6D:
+        case BUILD_LIST_PALMYRA_ELEPHANT:
             ++tplayer_globals::buildListCategoryCount3;
             break;
-        case 0x28:
+        case BUILD_LIST_ASSYRIA_BALLISTA:
             ++tplayer_globals::buildListCategoryCount6;
             break;
-        case 0x39:
+        case BUILD_LIST_SUMERIA_CATAPULTS:
             ++tplayer_globals::buildListCategoryCount6;
             break;
-        case 0x54:
+        case BUILD_LIST_GREEK_SIEGE:
             ++tplayer_globals::buildListCategoryCount6;
             break;
-        case 0x72:
+        case BUILD_LIST_ROME_SIEGE:
             ++tplayer_globals::buildListCategoryCount6;
             break;
-        case 3:
+        case BUILD_LIST_PHALANX_BRONZE:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 4:
+        case BUILD_LIST_PHALANX_IRON:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 5:
+        case BUILD_LIST_PHALANX_WALLS:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 9:
+        case BUILD_LIST_INFANTRY_STONE:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 10:
+        case BUILD_LIST_INFANTRY_TOOL:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x0B:
+        case BUILD_LIST_INFANTRY_BRONZE:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x0C:
+        case BUILD_LIST_INFANTRY_WALLS:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x2A:
+        case BUILD_LIST_BABYLON_SWORDSMEN:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x2C:
+        case BUILD_LIST_CHOSON_SWORDSMEN:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x2D:
+        case BUILD_LIST_CHOSON_AXEMEN:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x2F:
+        case BUILD_LIST_EGYPT_CHARIOTS:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x30:
+        case BUILD_LIST_GREEK_PHALANX:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x38:
+        case BUILD_LIST_SHANG_CLUBMEN:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x62:
+        case BUILD_LIST_CARTHAGE_PHALANX:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x67:
+        case BUILD_LIST_MACEDON_PHALANX:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x70:
+        case BUILD_LIST_ROME_LEGION:
             ++tplayer_globals::buildListCategoryCount4;
             break;
-        case 0x71:
+        case BUILD_LIST_ROME_AXEMEN:
             ++tplayer_globals::buildListCategoryCount4;
             break;
         default:
@@ -2518,47 +2704,47 @@ selectedCountersDone:
 
     int attackTime = (debug_rand(tplayerSourceName, 3642) % 12 + 0x1C) * 60;
     switch (selectedBuildList) {
-        case 0:
-        case 3:
-        case 0x0B:
-        case 0x0C:
-        case 0x0D:
-        case 0x13:
-        case 0x2F:
-        case 0x30:
-        case 0x33:
-        case 0x37:
-        case 0x39:
-        case 0x48:
-        case 0x4A:
-        case 0x4B:
-        case 0x4E:
-        case 0x51:
-        case 0x55:
-        case 0x58:
-        case 0x5A:
-        case 0x5E:
-        case 0x60:
-        case 100:
-        case 0x69:
-        case 0x6E:
-        case 0x73:
+        case BUILD_LIST_ARCHERS_BRONZE:
+        case BUILD_LIST_PHALANX_BRONZE:
+        case BUILD_LIST_INFANTRY_BRONZE:
+        case BUILD_LIST_INFANTRY_WALLS:
+        case BUILD_LIST_TRIREME_BRONZE:
+        case BUILD_LIST_PRIEST_BRONZE:
+        case BUILD_LIST_EGYPT_CHARIOTS:
+        case BUILD_LIST_GREEK_PHALANX:
+        case BUILD_LIST_MINOA_COMPOSITE_BOWMEN:
+        case BUILD_LIST_SHANG_CAVALRY:
+        case BUILD_LIST_SUMERIA_CATAPULTS:
+        case BUILD_LIST_ASSYRIA_ARCHER_BRONZE:
+        case BUILD_LIST_ASSYRIA_INFANTRY_BRONZE:
+        case BUILD_LIST_ASSYRIA_BRONZE_WATER:
+        case BUILD_LIST_CHOSON_BRONZE_WATER:
+        case BUILD_LIST_EGYPT_ARCHERS_BRONZE:
+        case BUILD_LIST_GREEK_BRONZE_WATER:
+        case BUILD_LIST_MINOA_BRONZE_WATER:
+        case BUILD_LIST_PERSIA_BRONZE_WATER:
+        case BUILD_LIST_SUMERIA_BRONZE_WATER:
+        case BUILD_LIST_YAMATO_BRONZE_WATER:
+        case BUILD_LIST_CARTHAGE_BRONZE_WATER:
+        case BUILD_LIST_MACEDON_BRONZE_WATER:
+        case BUILD_LIST_PALMYRA_BRONZE_WATER:
+        case BUILD_LIST_ROME_BRONZE_WATER:
             ++tplayer_globals::fastAttackListCount;
             attackTime = (debug_rand(tplayerSourceName, 3672) % 6 + 0x14) * 60;
             break;
-        case 10:
-        case 0x29:
-        case 0x2B:
-        case 0x2C:
-        case 0x2D:
-        case 0x32:
-        case 0x3A:
-        case 0x71:
+        case BUILD_LIST_INFANTRY_TOOL:
+        case BUILD_LIST_ASSYRIA_BOWMEN:
+        case BUILD_LIST_BABYLON_SCOUTS:
+        case BUILD_LIST_CHOSON_SWORDSMEN:
+        case BUILD_LIST_CHOSON_AXEMEN:
+        case BUILD_LIST_HITTITE_BOWMEN:
+        case BUILD_LIST_SUMERIA_SCOUTS:
+        case BUILD_LIST_ROME_AXEMEN:
             ++tplayer_globals::attackTimingCategoryCount;
             attackTime = (debug_rand(tplayerSourceName, 3684) % 4 + 0x0B) * 60;
             break;
-        case 9:
-        case 0x38:
+        case BUILD_LIST_INFANTRY_STONE:
+        case BUILD_LIST_SHANG_CLUBMEN:
             attackTime = (debug_rand(tplayerSourceName, 3689) % 2 + 5) * 60;
             ++tplayer_globals::attackTimingCategoryCount;
             break;
@@ -2730,37 +2916,37 @@ void TRIBE_Player::setupEgyptian(int* b, int mapType, int gameType, int mapSize)
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x3F] = 100;
+            b[BUILD_LIST_DEATH_MATCH_EGYPT_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x19] = 0x3C;
-            b[0x3F] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_EGYPT] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_EGYPT_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x19] = 0x50;
-            b[0x3F] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_EGYPT] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_EGYPT_WATER] = 0x14;
         } else {
-            b[0x19] = 100;
+            b[BUILD_LIST_DEATH_MATCH_EGYPT] = 100;
         }
     } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
-        b[0x23] = 100;
+        b[BUILD_LIST_IMMORTAL_EGYPT] = 100;
     } else {
-        b[3] = 10;
-        b[9] = 10;
-        b[10] = 10;
-        b[0x11] = 0x28;
-        b[0x12] = 0x28;
-        b[0x2E] = 100;
-        b[0x13] = 0x32;
-        b[0x14] = 0x32;
-        b[0x2F] = 100;
-        b[0x50] = 100;
-        b[0x51] = 0x1E;
-        b[0x52] = 0x14;
+        b[BUILD_LIST_PHALANX_BRONZE] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_WAR_ELEPHANT_IRON] = 0x28;
+        b[BUILD_LIST_ELEPHANT_ARCHER_IRON] = 0x28;
+        b[BUILD_LIST_EGYPT_WAR_ELEPHANTS] = 100;
+        b[BUILD_LIST_PRIEST_BRONZE] = 0x32;
+        b[BUILD_LIST_PRIEST_IRON] = 0x32;
+        b[BUILD_LIST_EGYPT_CHARIOTS] = 100;
+        b[BUILD_LIST_EGYPT_CHARIOT_ARCHER] = 100;
+        b[BUILD_LIST_EGYPT_ARCHERS_BRONZE] = 0x1E;
+        b[BUILD_LIST_EGYPT_ARCHERS_IRON] = 0x14;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x53] = 200;
+            b[BUILD_LIST_EGYPT_WATER] = 200;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x53] = 100;
+            b[BUILD_LIST_EGYPT_WATER] = 100;
         }
     }
 }
@@ -2770,38 +2956,38 @@ void TRIBE_Player::setupGreek(int* b, int mapType, int gameType, int mapSize) {
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x40] = 100;
+            b[BUILD_LIST_DEATH_MATCH_GREEK_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x1A] = 0x3C;
-            b[0x40] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_GREEK] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_GREEK_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x1A] = 0x50;
-            b[0x40] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_GREEK] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_GREEK_WATER] = 0x14;
         } else {
-            b[0x1A] = 100;
+            b[BUILD_LIST_DEATH_MATCH_GREEK] = 100;
         }
     } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
-        b[0x24] = 100;
+        b[BUILD_LIST_IMMORTAL_GREEK] = 100;
     } else {
-        b[6] = 0x1E;
-        b[0xB] = 0x1E;
-        b[0x14] = 0x1E;
-        b[9] = 10;
-        b[10] = 10;
-        b[3] = 0x46;
-        b[4] = 0x32;
-        b[7] = 0x14;
-        b[0x13] = 0x32;
-        b[0x30] = 100;
-        b[0x54] = 100;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 0x1E;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 0x1E;
+        b[BUILD_LIST_PRIEST_IRON] = 0x1E;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_PHALANX_BRONZE] = 0x46;
+        b[BUILD_LIST_PHALANX_IRON] = 0x32;
+        b[BUILD_LIST_CAVALRY_IRON] = 0x14;
+        b[BUILD_LIST_PRIEST_BRONZE] = 0x32;
+        b[BUILD_LIST_GREEK_PHALANX] = 100;
+        b[BUILD_LIST_GREEK_SIEGE] = 100;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x55] = 200;
-            b[0x56] = 200;
+            b[BUILD_LIST_GREEK_BRONZE_WATER] = 200;
+            b[BUILD_LIST_GREEK_IRON_WATER] = 200;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x55] = 100;
-            b[0x56] = 100;
+            b[BUILD_LIST_GREEK_BRONZE_WATER] = 100;
+            b[BUILD_LIST_GREEK_IRON_WATER] = 100;
         }
     }
 }
@@ -2811,35 +2997,35 @@ void TRIBE_Player::setupBabylonian(int* b, int mapType, int gameType, int mapSiz
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[61] = 100;
+            b[BUILD_LIST_DEATH_MATCH_BABYLON_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[23] = 60;
-            b[61] = 40;
+            b[BUILD_LIST_DEATH_MATCH_BABYLON] = 60;
+            b[BUILD_LIST_DEATH_MATCH_BABYLON_WATER] = 40;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[23] = 80;
-            b[61] = 20;
+            b[BUILD_LIST_DEATH_MATCH_BABYLON] = 80;
+            b[BUILD_LIST_DEATH_MATCH_BABYLON_WATER] = 20;
         } else {
-            b[23] = 100;
+            b[BUILD_LIST_DEATH_MATCH_BABYLON] = 100;
         }
     } else {
-        b[1] = 10;
-        b[6] = 10;
-        b[9] = 10;
-        b[11] = 10;
-        b[0] = 20;
-        b[19] = 40;
-        b[20] = 40;
-        b[16] = 30;
-        b[42] = 100;
-        b[43] = 100;
-        b[3] = 20;
-        b[10] = 20;
+        b[BUILD_LIST_ARCHERS_IRON] = 10;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 10;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 20;
+        b[BUILD_LIST_PRIEST_BRONZE] = 40;
+        b[BUILD_LIST_PRIEST_IRON] = 40;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 30;
+        b[BUILD_LIST_BABYLON_SWORDSMEN] = 100;
+        b[BUILD_LIST_BABYLON_SCOUTS] = 100;
+        b[BUILD_LIST_PHALANX_BRONZE] = 20;
+        b[BUILD_LIST_INFANTRY_TOOL] = 20;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater)
-            b[77] = 60;
+            b[BUILD_LIST_BABYLON_WATER] = 60;
         else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                  || mapType == TRIBE_Game::Continental)
-            b[77] = 30;
+            b[BUILD_LIST_BABYLON_WATER] = 30;
     }
 }
 
@@ -2848,41 +3034,41 @@ void TRIBE_Player::setupAssyrian(int* b, int mapType, int gameType, int mapSize)
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x3C] = 100;
+            b[BUILD_LIST_DEATH_MATCH_ASSYRIA_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x16] = 0x3C;
-            b[0x3C] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_ASSYRIA] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_ASSYRIA_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x16] = 0x50;
-            b[0x3C] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_ASSYRIA] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_ASSYRIA_WATER] = 0x14;
         } else {
-            b[0x16] = 100;
+            b[BUILD_LIST_DEATH_MATCH_ASSYRIA] = 100;
         }
     } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
-        b[0x22] = 100;
+        b[BUILD_LIST_IMMORTAL_ASSYRIA] = 100;
     } else {
-        b[3] = 10;
-        b[7] = 10;
-        b[9] = 10;
-        b[10] = 10;
-        b[0x14] = 10;
-        b[0x48] = 0x50;
-        b[0x49] = 0x50;
-        b[0x4A] = 0x50;
-        b[0x10] = 0x28;
-        b[0x0B] = 0x28;
-        b[6] = 0x14;
-        b[0x13] = 0x14;
-        b[0x28] = 100;
-        b[0x29] = 100;
+        b[BUILD_LIST_PHALANX_BRONZE] = 10;
+        b[BUILD_LIST_CAVALRY_IRON] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_PRIEST_IRON] = 10;
+        b[BUILD_LIST_ASSYRIA_ARCHER_BRONZE] = 0x50;
+        b[BUILD_LIST_ASSYRIA_ARCHER_IRON] = 0x50;
+        b[BUILD_LIST_ASSYRIA_INFANTRY_BRONZE] = 0x50;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 0x28;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 0x28;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 0x14;
+        b[BUILD_LIST_PRIEST_BRONZE] = 0x14;
+        b[BUILD_LIST_ASSYRIA_BALLISTA] = 100;
+        b[BUILD_LIST_ASSYRIA_BOWMEN] = 100;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x4B] = 100;
-            b[0x4C] = 100;
+            b[BUILD_LIST_ASSYRIA_BRONZE_WATER] = 100;
+            b[BUILD_LIST_ASSYRIA_IRON_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x4B] = 0x32;
-            b[0x4C] = 0x32;
+            b[BUILD_LIST_ASSYRIA_BRONZE_WATER] = 0x32;
+            b[BUILD_LIST_ASSYRIA_IRON_WATER] = 0x32;
         }
     }
 }
@@ -2892,36 +3078,36 @@ void TRIBE_Player::setupMinoan(int* b, int mapType, int gameType, int mapSize) {
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x42] = 100;
+            b[BUILD_LIST_DEATH_MATCH_MINOA_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x1C] = 0x3C;
-            b[0x42] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_MINOA] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_MINOA_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x1C] = 0x50;
-            b[0x42] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_MINOA] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_MINOA_WATER] = 0x14;
         } else {
-            b[0x1C] = 100;
+            b[BUILD_LIST_DEATH_MATCH_MINOA] = 100;
         }
     } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
-        b[0x25] = 100;
+        b[BUILD_LIST_IMMORTAL_MINOA] = 100;
     } else {
-        b[4] = 10;
-        b[6] = 10;
-        b[9] = 10;
-        b[10] = 10;
-        b[0xB] = 10;
-        b[0] = 0x3C;
-        b[1] = 0x50;
-        b[3] = 0x14;
-        b[0x33] = 100;
+        b[BUILD_LIST_PHALANX_IRON] = 10;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 10;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 0x3C;
+        b[BUILD_LIST_ARCHERS_IRON] = 0x50;
+        b[BUILD_LIST_PHALANX_BRONZE] = 0x14;
+        b[BUILD_LIST_MINOA_COMPOSITE_BOWMEN] = 100;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x58] = 200;
-            b[0x59] = 200;
+            b[BUILD_LIST_MINOA_BRONZE_WATER] = 200;
+            b[BUILD_LIST_MINOA_IRON_WATER] = 200;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x58] = 100;
-            b[0x59] = 100;
+            b[BUILD_LIST_MINOA_BRONZE_WATER] = 100;
+            b[BUILD_LIST_MINOA_IRON_WATER] = 100;
         }
     }
 }
@@ -2931,37 +3117,37 @@ void TRIBE_Player::setupHittite(int* b, int mapType, int gameType, int mapSize) 
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x41] = 100;
+            b[BUILD_LIST_DEATH_MATCH_HITTITE_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x1B] = 60;
-            b[0x41] = 40;
+            b[BUILD_LIST_DEATH_MATCH_HITTITE] = 60;
+            b[BUILD_LIST_DEATH_MATCH_HITTITE_WATER] = 40;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x1B] = 80;
-            b[0x41] = 20;
+            b[BUILD_LIST_DEATH_MATCH_HITTITE] = 80;
+            b[BUILD_LIST_DEATH_MATCH_HITTITE_WATER] = 20;
         } else {
-            b[0x1B] = 100;
+            b[BUILD_LIST_DEATH_MATCH_HITTITE] = 100;
         }
     } else {
-        b[4] = 0x28;
-        b[0x12] = 0x28;
-        b[0x10] = 80;
-        b[0x31] = 100;
-        b[0x32] = 100;
-        b[3] = 30;
+        b[BUILD_LIST_PHALANX_IRON] = 0x28;
+        b[BUILD_LIST_ELEPHANT_ARCHER_IRON] = 0x28;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 80;
+        b[BUILD_LIST_HITTITE_HORSE_ARCHERS] = 100;
+        b[BUILD_LIST_HITTITE_BOWMEN] = 100;
+        b[BUILD_LIST_PHALANX_BRONZE] = 30;
 
-        b[6] = 0x14;
-        b[9] = 10;
-        b[10] = 10;
-        b[11] = 10;
-        b[0x11] = 0x14;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 0x14;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 10;
+        b[BUILD_LIST_WAR_ELEPHANT_IRON] = 0x14;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x57] = 0xA0;
-            b[0] = 0x14;
+            b[BUILD_LIST_HITTITE_WATER] = 0xA0;
+            b[BUILD_LIST_ARCHERS_BRONZE] = 0x14;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x57] = 0x50;
-            b[0] = 10;
+            b[BUILD_LIST_HITTITE_WATER] = 0x50;
+            b[BUILD_LIST_ARCHERS_BRONZE] = 10;
         }
     }
 }
@@ -2971,36 +3157,36 @@ void TRIBE_Player::setupPhoenician(int* b, int mapType, int gameType, int mapSiz
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x44] = 100;
+            b[BUILD_LIST_DEATH_MATCH_PHOENICIA_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x1E] = 60;
-            b[0x44] = 40;
+            b[BUILD_LIST_DEATH_MATCH_PHOENICIA] = 60;
+            b[BUILD_LIST_DEATH_MATCH_PHOENICIA_WATER] = 40;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x1E] = 80;
-            b[0x44] = 20;
+            b[BUILD_LIST_DEATH_MATCH_PHOENICIA] = 80;
+            b[BUILD_LIST_DEATH_MATCH_PHOENICIA_WATER] = 20;
         } else {
-            b[0x1E] = 100;
+            b[BUILD_LIST_DEATH_MATCH_PHOENICIA] = 100;
         }
     } else {
-        b[3] = 10;
-        b[4] = 10;
-        b[9] = 10;
-        b[10] = 10;
-        b[11] = 10;
-        b[0x11] = 70;
-        b[0x12] = 70;
-        b[0] = 20;
-        b[6] = 20;
-        b[0x13] = 20;
-        b[1] = 40;
-        b[0x14] = 30;
-        b[0x35] = 100;
+        b[BUILD_LIST_PHALANX_BRONZE] = 10;
+        b[BUILD_LIST_PHALANX_IRON] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 10;
+        b[BUILD_LIST_WAR_ELEPHANT_IRON] = 70;
+        b[BUILD_LIST_ELEPHANT_ARCHER_IRON] = 70;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 20;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 20;
+        b[BUILD_LIST_PRIEST_BRONZE] = 20;
+        b[BUILD_LIST_ARCHERS_IRON] = 40;
+        b[BUILD_LIST_PRIEST_IRON] = 30;
+        b[BUILD_LIST_PHOENICIA_ELEPHANTS] = 100;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x5C] = 200;
+            b[BUILD_LIST_PHOENICIA_WATER] = 200;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x5C] = 100;
+            b[BUILD_LIST_PHOENICIA_WATER] = 100;
         }
     }
 }
@@ -3010,36 +3196,36 @@ void TRIBE_Player::setupSumerian(int* b, int mapType, int gameType, int mapSize)
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x46] = 100;
+            b[BUILD_LIST_DEATH_MATCH_SUMERIA_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x20] = 0x3C;
-            b[0x46] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_SUMERIA] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_SUMERIA_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x20] = 0x50;
-            b[0x46] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_SUMERIA] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_SUMERIA_WATER] = 0x14;
         } else {
-            b[0x20] = 100;
+            b[BUILD_LIST_DEATH_MATCH_SUMERIA] = 100;
         }
     } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
-        b[0x26] = 100;
+        b[BUILD_LIST_IMMORTAL_SUMERIA] = 100;
     } else {
-        b[0x10] = 0x1E;
-        b[3] = 10;
-        b[9] = 10;
-        b[10] = 10;
-        b[11] = 10;
-        b[4] = 0x14;
-        b[0x11] = 0x14;
-        b[0x39] = 100;
-        b[0x3A] = 100;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 0x1E;
+        b[BUILD_LIST_PHALANX_BRONZE] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 10;
+        b[BUILD_LIST_PHALANX_IRON] = 0x14;
+        b[BUILD_LIST_WAR_ELEPHANT_IRON] = 0x14;
+        b[BUILD_LIST_SUMERIA_CATAPULTS] = 100;
+        b[BUILD_LIST_SUMERIA_SCOUTS] = 100;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x5E] = 200;
-            b[0x5F] = 200;
+            b[BUILD_LIST_SUMERIA_BRONZE_WATER] = 200;
+            b[BUILD_LIST_SUMERIA_IRON_WATER] = 200;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x5E] = 100;
-            b[0x5F] = 100;
+            b[BUILD_LIST_SUMERIA_BRONZE_WATER] = 100;
+            b[BUILD_LIST_SUMERIA_IRON_WATER] = 100;
         }
     }
 }
@@ -3049,38 +3235,38 @@ void TRIBE_Player::setupPersian(int* b, int mapType, int gameType, int mapSize) 
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x43] = 100;
+            b[BUILD_LIST_DEATH_MATCH_PERSIA_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x1D] = 0x3C;
-            b[0x43] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_PERSIA] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_PERSIA_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x1D] = 0x50;
-            b[0x43] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_PERSIA] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_PERSIA_WATER] = 0x14;
         } else {
-            b[0x1D] = 0x64;
+            b[BUILD_LIST_DEATH_MATCH_PERSIA] = 0x64;
         }
     } else {
-        b[6] = 10;
-        b[9] = 10;
-        b[10] = 10;
-        b[0x11] = 0x3C;
-        b[0x12] = 0x3C;
-        b[1] = 0x28;
-        b[0xB] = 0x28;
-        b[0x14] = 0x28;
-        b[0] = 0x14;
-        b[0x10] = 0x14;
-        b[7] = 0x32;
-        b[0x13] = 0x14;
-        b[0x34] = 0x64;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_WAR_ELEPHANT_IRON] = 0x3C;
+        b[BUILD_LIST_ELEPHANT_ARCHER_IRON] = 0x3C;
+        b[BUILD_LIST_ARCHERS_IRON] = 0x28;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 0x28;
+        b[BUILD_LIST_PRIEST_IRON] = 0x28;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 0x14;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 0x14;
+        b[BUILD_LIST_CAVALRY_IRON] = 0x32;
+        b[BUILD_LIST_PRIEST_BRONZE] = 0x14;
+        b[BUILD_LIST_PERSIA_ELEPHANT_ARCHERS] = 0x64;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x5A] = 0xC8;
-            b[0x5B] = 0xC8;
+            b[BUILD_LIST_PERSIA_BRONZE_WATER] = 0xC8;
+            b[BUILD_LIST_PERSIA_IRON_WATER] = 0xC8;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x5A] = 0x64;
-            b[0x5B] = 0x64;
+            b[BUILD_LIST_PERSIA_BRONZE_WATER] = 0x64;
+            b[BUILD_LIST_PERSIA_IRON_WATER] = 0x64;
         }
     }
 }
@@ -3090,38 +3276,38 @@ void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize) {
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x45] = 100;
+            b[BUILD_LIST_DEATH_MATCH_SHANG_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x1F] = 0x3C;
-            b[0x45] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_SHANG] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_SHANG_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x1F] = 0x50;
-            b[0x45] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_SHANG] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_SHANG_WATER] = 0x14;
         } else {
-            b[0x1F] = 100;
+            b[BUILD_LIST_DEATH_MATCH_SHANG] = 100;
         }
     } else {
-        b[0] = 10;
-        b[3] = 10;
-        b[9] = 10;
-        b[10] = 10;
-        b[6] = 50;
-        b[7] = 50;
-        b[0x38] = 50;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 10;
+        b[BUILD_LIST_PHALANX_BRONZE] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 50;
+        b[BUILD_LIST_CAVALRY_IRON] = 50;
+        b[BUILD_LIST_SHANG_CLUBMEN] = 50;
 
-        b[11] = 30;
-        b[0x14] = 30;
-        b[1] = 0x14;
-        b[0x10] = 0x14;
-        b[0x13] = 0x14;
-        b[0x36] = 100;
-        b[0x37] = 100;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 30;
+        b[BUILD_LIST_PRIEST_IRON] = 30;
+        b[BUILD_LIST_ARCHERS_IRON] = 0x14;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 0x14;
+        b[BUILD_LIST_PRIEST_BRONZE] = 0x14;
+        b[BUILD_LIST_SHANG_HEAVY_CAVALRY] = 100;
+        b[BUILD_LIST_SHANG_CAVALRY] = 100;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x5D] = 0xA0;
+            b[BUILD_LIST_SHANG_WATER] = 0xA0;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x5D] = 0x50;
+            b[BUILD_LIST_SHANG_WATER] = 0x50;
         }
     }
 }
@@ -3131,43 +3317,43 @@ void TRIBE_Player::setupYamato(int* b, int mapType, int gameType, int mapSize) {
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x47] = 100;
+            b[BUILD_LIST_DEATH_MATCH_YAMATO_WATER] = 100;
             return;
         }
         if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x21] = 60;
-            b[0x47] = 40;
+            b[BUILD_LIST_DEATH_MATCH_YAMATO] = 60;
+            b[BUILD_LIST_DEATH_MATCH_YAMATO_WATER] = 40;
             return;
         }
         if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x21] = 80;
-            b[0x47] = 20;
+            b[BUILD_LIST_DEATH_MATCH_YAMATO] = 80;
+            b[BUILD_LIST_DEATH_MATCH_YAMATO_WATER] = 20;
             return;
         }
-        b[0x21] = 100;
+        b[BUILD_LIST_DEATH_MATCH_YAMATO] = 100;
         return;
     } else if (rge_base_game->difficulty() < RGE_DIFFICULTY_HARD) {
-        b[0x27] = 100;
+        b[BUILD_LIST_IMMORTAL_YAMATO] = 100;
     } else {
-        b[3] = 10;
-        b[4] = 10;
-        b[9] = 10;
-        b[10] = 10;
-        b[6] = 50;
-        b[7] = 50;
-        b[0] = 20;
-        b[1] = 20;
-        b[0x10] = 40;
-        b[0x0B] = 20;
-        b[0x3B] = 100;
+        b[BUILD_LIST_PHALANX_BRONZE] = 10;
+        b[BUILD_LIST_PHALANX_IRON] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 50;
+        b[BUILD_LIST_CAVALRY_IRON] = 50;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 20;
+        b[BUILD_LIST_ARCHERS_IRON] = 20;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 40;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 20;
+        b[BUILD_LIST_YAMATO_HEAVY_CAVALRY] = 100;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x60] = 200;
-            b[0x61] = 200;
+            b[BUILD_LIST_YAMATO_BRONZE_WATER] = 200;
+            b[BUILD_LIST_YAMATO_IRON_WATER] = 200;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x60] = 100;
-            b[0x61] = 100;
+            b[BUILD_LIST_YAMATO_BRONZE_WATER] = 100;
+            b[BUILD_LIST_YAMATO_IRON_WATER] = 100;
         }
     }
 }
@@ -3177,38 +3363,38 @@ void TRIBE_Player::setupChoson(int* b, int mapType, int gameType, int mapSize) {
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x3E] = 100;
+            b[BUILD_LIST_DEATH_MATCH_CHOSON_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x18] = 0x3C;
-            b[0x3E] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_CHOSON] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_CHOSON_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x18] = 0x50;
-            b[0x3E] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_CHOSON] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_CHOSON_WATER] = 0x14;
         } else {
-            b[0x18] = 100;
+            b[BUILD_LIST_DEATH_MATCH_CHOSON] = 100;
         }
     } else {
-        b[1] = 10;
-        b[0x10] = 10;
-        b[3] = 10;
-        b[7] = 0x1E;
-        b[9] = 0x1E;
-        b[10] = 0x1E;
-        b[0] = 0x14;
-        b[6] = 0x14;
-        b[0xB] = 0x46;
-        b[0x13] = 0x32;
-        b[0x14] = 0x5A;
-        b[0x2C] = 100;
-        b[0x2D] = 100;
+        b[BUILD_LIST_ARCHERS_IRON] = 10;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 10;
+        b[BUILD_LIST_PHALANX_BRONZE] = 10;
+        b[BUILD_LIST_CAVALRY_IRON] = 0x1E;
+        b[BUILD_LIST_INFANTRY_STONE] = 0x1E;
+        b[BUILD_LIST_INFANTRY_TOOL] = 0x1E;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 0x14;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 0x14;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 0x46;
+        b[BUILD_LIST_PRIEST_BRONZE] = 0x32;
+        b[BUILD_LIST_PRIEST_IRON] = 0x5A;
+        b[BUILD_LIST_CHOSON_SWORDSMEN] = 100;
+        b[BUILD_LIST_CHOSON_AXEMEN] = 100;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x4E] = 200;
-            b[0x4F] = 200;
+            b[BUILD_LIST_CHOSON_BRONZE_WATER] = 200;
+            b[BUILD_LIST_CHOSON_IRON_WATER] = 200;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x4E] = 100;
-            b[0x4F] = 100;
+            b[BUILD_LIST_CHOSON_BRONZE_WATER] = 100;
+            b[BUILD_LIST_CHOSON_IRON_WATER] = 100;
         }
     }
 }
@@ -3218,37 +3404,37 @@ void TRIBE_Player::setupRoman(int* b, int mapType, int gameType, int mapSize) {
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x7C] = 0x64;
+            b[BUILD_LIST_DEATH_MATCH_ROME_WATER] = 0x64;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x78] = 0x3C;
-            b[0x7C] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_ROME] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_ROME_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x78] = 0x50;
-            b[0x7C] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_ROME] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_ROME_WATER] = 0x14;
         } else {
-            b[0x78] = 0x64;
+            b[BUILD_LIST_DEATH_MATCH_ROME] = 0x64;
         }
     } else {
-        b[0] = 0x0A;
-        b[6] = 0x0A;
-        b[9] = 0x0A;
-        b[10] = 0x0A;
-        b[0x13] = 0x0A;
-        b[0x14] = 0x0A;
-        b[3] = 0x14;
-        b[4] = 0x14;
-        b[0x0B] = 0x50;
-        b[0x70] = 0x64;
-        b[0x71] = 0x3C;
-        b[0x72] = 0x50;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 0x0A;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 0x0A;
+        b[BUILD_LIST_INFANTRY_STONE] = 0x0A;
+        b[BUILD_LIST_INFANTRY_TOOL] = 0x0A;
+        b[BUILD_LIST_PRIEST_BRONZE] = 0x0A;
+        b[BUILD_LIST_PRIEST_IRON] = 0x0A;
+        b[BUILD_LIST_PHALANX_BRONZE] = 0x14;
+        b[BUILD_LIST_PHALANX_IRON] = 0x14;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 0x50;
+        b[BUILD_LIST_ROME_LEGION] = 0x64;
+        b[BUILD_LIST_ROME_AXEMEN] = 0x3C;
+        b[BUILD_LIST_ROME_SIEGE] = 0x50;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x73] = 0xC8;
-            b[0x74] = 0xC8;
+            b[BUILD_LIST_ROME_BRONZE_WATER] = 0xC8;
+            b[BUILD_LIST_ROME_IRON_WATER] = 0xC8;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x73] = 0x64;
-            b[0x74] = 0x64;
+            b[BUILD_LIST_ROME_BRONZE_WATER] = 0x64;
+            b[BUILD_LIST_ROME_IRON_WATER] = 0x64;
         }
     }
 }
@@ -3258,39 +3444,39 @@ void TRIBE_Player::setupCarthaginian(int* b, int mapType, int gameType, int mapS
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x79] = 100;
+            b[BUILD_LIST_DEATH_MATCH_CARTHAGE_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x75] = 0x3C;
-            b[0x79] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_CARTHAGE] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_CARTHAGE_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x75] = 0x50;
-            b[0x79] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_CARTHAGE] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_CARTHAGE_WATER] = 0x14;
         } else {
-            b[0x75] = 100;
+            b[BUILD_LIST_DEATH_MATCH_CARTHAGE] = 100;
         }
     } else {
-        b[0] = 10;
-        b[1] = 10;
-        b[0x10] = 10;
-        b[7] = 10;
-        b[9] = 10;
-        b[10] = 10;
-        b[11] = 10;
-        b[0x11] = 0x3C;
-        b[0x12] = 0x3C;
-        b[3] = 0x46;
-        b[0x62] = 0x50;
-        b[99] = 0x50;
-        b[4] = 0x32;
-        b[6] = 0x1E;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 10;
+        b[BUILD_LIST_ARCHERS_IRON] = 10;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 10;
+        b[BUILD_LIST_CAVALRY_IRON] = 10;
+        b[BUILD_LIST_INFANTRY_STONE] = 10;
+        b[BUILD_LIST_INFANTRY_TOOL] = 10;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 10;
+        b[BUILD_LIST_WAR_ELEPHANT_IRON] = 0x3C;
+        b[BUILD_LIST_ELEPHANT_ARCHER_IRON] = 0x3C;
+        b[BUILD_LIST_PHALANX_BRONZE] = 0x46;
+        b[BUILD_LIST_CARTHAGE_PHALANX] = 0x50;
+        b[BUILD_LIST_CARTHAGE_WAR_ELEPHANT] = 0x50;
+        b[BUILD_LIST_PHALANX_IRON] = 0x32;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 0x1E;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[100] = 200;
-            b[101] = 200;
+            b[BUILD_LIST_CARTHAGE_BRONZE_WATER] = 200;
+            b[BUILD_LIST_CARTHAGE_IRON_WATER] = 200;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[100] = 100;
-            b[101] = 100;
+            b[BUILD_LIST_CARTHAGE_BRONZE_WATER] = 100;
+            b[BUILD_LIST_CARTHAGE_IRON_WATER] = 100;
         }
     }
 }
@@ -3300,39 +3486,39 @@ void TRIBE_Player::setupPalmyran(int* b, int mapType, int gameType, int mapSize)
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x7B] = 0x64;
+            b[BUILD_LIST_DEATH_MATCH_PALMYRA_WATER] = 0x64;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x77] = 0x3C;
-            b[0x7B] = 0x28;
+            b[BUILD_LIST_DEATH_MATCH_PALMYRA] = 0x3C;
+            b[BUILD_LIST_DEATH_MATCH_PALMYRA_WATER] = 0x28;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x77] = 0x50;
-            b[0x7B] = 0x14;
+            b[BUILD_LIST_DEATH_MATCH_PALMYRA] = 0x50;
+            b[BUILD_LIST_DEATH_MATCH_PALMYRA_WATER] = 0x14;
         } else {
-            b[0x77] = 0x64;
+            b[BUILD_LIST_DEATH_MATCH_PALMYRA] = 0x64;
         }
     } else {
-        b[3] = 0x28;
-        b[6] = 0x28;
-        b[0] = 0x1E;
-        b[7] = 0x0A;
-        b[9] = 0x0A;
-        b[10] = 0x0A;
-        b[11] = 0x0A;
-        b[1] = 0x1E;
-        b[0x6B] = 0x50;
-        b[0x6C] = 0x50;
-        b[0x6D] = 0x50;
-        b[0x10] = 0x3C;
-        b[4] = 0x14;
-        b[0x11] = 0x3C;
+        b[BUILD_LIST_PHALANX_BRONZE] = 0x28;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 0x28;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 0x1E;
+        b[BUILD_LIST_CAVALRY_IRON] = 0x0A;
+        b[BUILD_LIST_INFANTRY_STONE] = 0x0A;
+        b[BUILD_LIST_INFANTRY_TOOL] = 0x0A;
+        b[BUILD_LIST_INFANTRY_BRONZE] = 0x0A;
+        b[BUILD_LIST_ARCHERS_IRON] = 0x1E;
+        b[BUILD_LIST_PALMYRA_COMPOSITE_BOW] = 0x50;
+        b[BUILD_LIST_PALMYRA_HORSE_ARCHER] = 0x50;
+        b[BUILD_LIST_PALMYRA_ELEPHANT] = 0x50;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 0x3C;
+        b[BUILD_LIST_PHALANX_IRON] = 0x14;
+        b[BUILD_LIST_WAR_ELEPHANT_IRON] = 0x3C;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x6E] = 0xC8;
-            b[0x6F] = 0xC8;
+            b[BUILD_LIST_PALMYRA_BRONZE_WATER] = 0xC8;
+            b[BUILD_LIST_PALMYRA_IRON_WATER] = 0xC8;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x6E] = 0x64;
-            b[0x6F] = 0x64;
+            b[BUILD_LIST_PALMYRA_BRONZE_WATER] = 0x64;
+            b[BUILD_LIST_PALMYRA_IRON_WATER] = 0x64;
         }
     }
 }
@@ -3342,36 +3528,36 @@ void TRIBE_Player::setupMacedonian(int* b, int mapType, int gameType, int mapSiz
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x7A] = 100;
+            b[BUILD_LIST_DEATH_MATCH_MACEDON_WATER] = 100;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake) {
-            b[0x76] = 60;
-            b[0x7A] = 40;
+            b[BUILD_LIST_DEATH_MATCH_MACEDON] = 60;
+            b[BUILD_LIST_DEATH_MATCH_MACEDON_WATER] = 40;
         } else if (mapType == TRIBE_Game::Continental || mapType == TRIBE_Game::Isthmas) {
-            b[0x76] = 80;
-            b[0x7A] = 20;
+            b[BUILD_LIST_DEATH_MATCH_MACEDON] = 80;
+            b[BUILD_LIST_DEATH_MATCH_MACEDON_WATER] = 20;
         } else {
-            b[0x76] = 100;
+            b[BUILD_LIST_DEATH_MATCH_MACEDON] = 100;
         }
     } else {
-        b[3] = 0x28;
-        b[4] = 0x28;
-        b[0] = 0x0A;
-        b[6] = 0x1E;
-        b[7] = 0x1E;
-        b[0x11] = 0x1E;
-        b[0x68] = 0x50;
-        b[0x66] = 0x50;
-        b[0x67] = 0x50;
-        b[1] = 0x0A;
-        b[0x10] = 0x14;
+        b[BUILD_LIST_PHALANX_BRONZE] = 0x28;
+        b[BUILD_LIST_PHALANX_IRON] = 0x28;
+        b[BUILD_LIST_ARCHERS_BRONZE] = 0x0A;
+        b[BUILD_LIST_CAVALRY_BRONZE] = 0x1E;
+        b[BUILD_LIST_CAVALRY_IRON] = 0x1E;
+        b[BUILD_LIST_WAR_ELEPHANT_IRON] = 0x1E;
+        b[BUILD_LIST_MACEDON_CAVALRY] = 0x50;
+        b[BUILD_LIST_MACEDON_ELEPHANT] = 0x50;
+        b[BUILD_LIST_MACEDON_PHALANX] = 0x50;
+        b[BUILD_LIST_ARCHERS_IRON] = 0x0A;
+        b[BUILD_LIST_CAV_ARCHER_IRON] = 0x14;
 
         if (mapType == TRIBE_Game::AllWater || mapType == TRIBE_Game::MostlyWater) {
-            b[0x69] = 0xC8;
-            b[0x6A] = 0xC8;
+            b[BUILD_LIST_MACEDON_BRONZE_WATER] = 0xC8;
+            b[BUILD_LIST_MACEDON_IRON_WATER] = 0xC8;
         } else if (mapType == TRIBE_Game::WaterAndLand || mapType == TRIBE_Game::Lake || mapType == TRIBE_Game::Isthmas
                    || mapType == TRIBE_Game::Continental) {
-            b[0x69] = 100;
-            b[0x6A] = 100;
+            b[BUILD_LIST_MACEDON_BRONZE_WATER] = 100;
+            b[BUILD_LIST_MACEDON_IRON_WATER] = 100;
         }
     }
 }

@@ -179,16 +179,17 @@
 #define STRING_ID_HELP_EDIT_VICTORY_MESSAGE       0x7772
 #define STRING_ID_HELP_EDIT_LOSS_MESSAGE          0x7773
 #define STRING_ID_HELP_EDIT_HISTORY               0x7774
-// These help IDs are missing from the checked language DLL.
+// String IDs above 0xFFFF in this file reach LoadStringA, which uses only the low 16 bits.
+// For example, 0x19BB8 loads the text at 0x9BB8.
 #define STRING_ID_HELP_OBJECT_PANEL               0x19BB8
 #define STRING_ID_HELP_OBJECT_PANEL_MORE          0x265AC
-// These game-button help texts are also absent from that DLL.
+// Game-button help texts.
 #define STRING_ID_HELP_GAME_CHAT                  0x1D4CF
 #define STRING_ID_HELP_GAME_DIPLOMACY             0x1D4D1
 #define STRING_ID_HELP_GAME_MENU                  0x1D4CD
 #define STRING_ID_HELP_GAME_HELP                  0x1D4DB
 #define STRING_ID_HELP_GAME_SCORE                 0x1D4DC
-// Command-button help IDs from the same absent range. Cancel and unselect share one ID.
+// Command-button help texts. Cancel and unselect share one ID.
 #define STRING_ID_HELP_GAME_MORE                  0x1D4D7
 #define STRING_ID_HELP_GAME_CANCEL_UNSELECT       0x1D4D9
 #define STRING_ID_HELP_GAME_STOP                  0x1D4DD
@@ -202,7 +203,7 @@
 #define STRING_ID_HELP_GAME_HEAL                  0x1D4F1
 #define STRING_ID_HELP_GAME_CONVERT               0x1D4F2
 #define STRING_ID_HELP_GAME_REPAIR                0x1D4F6
-// These extended help IDs have no text in the checked language DLL.
+// Extended help IDs.
 #define STRING_ID_HELP_MP_CIVILIZATION_MORE       0x25F09
 #define STRING_ID_HELP_MP_CONNECTION_TYPE_MORE    0x25F08
 #define STRING_ID_HELP_VICTORY_CONDITION_MORE     0x25F0A
@@ -743,6 +744,9 @@
 #define STRING_ID_ERROR_SYNC     0x0966
 #define STRING_ID_FILE_NONE      0x2775
 #define STRING_ID_AI_FILE_RANDOM 0x277B
+// First of 125 AI build-list file paths, indexed by build-list slot. LoadStringA uses the low
+// 16 bits, so the texts are at IDs 0x6930 through 0x69AC.
+#define STRING_ID_AI_BUILD_LIST_FIRST 0x26930
 
 // World setup descriptions, option labels, and formats.
 #define STRING_ID_VICTORY_LOG_BASE               0x28A6
