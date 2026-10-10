@@ -47,7 +47,8 @@ The corresponding uses in `src/scr_game.cpp` provide the purpose; the single cha
 
 String-table IDs are 16 bits wide. `LoadStringA` uses only the low 16 bits of the ID it receives.
 The executable passes some IDs above `0xFFFF`, such as `0x1D4D7` and `0x26930`.
-Look these up by their low 16 bits (`0xD4D7`, `0x6930`). A lookup of the full ID always reports it missing.
+`tools/inspect_pe_strings.py --id` applies this rule and lists the mapping under `loaded_ids`.
+When a report says such an ID is missing, it means the low-16-bit ID is missing.
 Keep the full value in the macro, because the executable passes that value.
 
 ## Naming convention

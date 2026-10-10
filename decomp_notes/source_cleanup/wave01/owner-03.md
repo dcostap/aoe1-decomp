@@ -258,6 +258,12 @@ All requested IDs are missing from both checked expansion files. Runtime lookup 
 | `0x07DA` | `STRING_ID_ERROR_INSERT_CD_SCENARIO_BUILDER` | Scenario-builder CD error. | Empty | Missing |
 | `0x1D4F7` | `STRING_ID_HELP_NOTICE` | Displayed help notice; exact text unknown. | Missing | Missing |
 
+**Correction (2026-10-11).** `0x1D4F7` is not missing. `LoadStringA` uses only the low 16 bits of a string ID. See `docs/resource_ids.md` and `decomp_notes/build_list_names.md`.
+It loads `0xD4F7`. The pinned beta `XPack/languagex.dll` has
+`NOTE: The help system has not been updated for Rise of Rome.`
+The runtime expansion file has a longer `The Help system has not been updated for Age of Empires Expansion.` text,
+and the base slot is empty.
+
 ### `scr_cam`
 
 All requested IDs are missing from both checked expansion files. Runtime lookup falls back to the base file.

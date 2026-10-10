@@ -66,6 +66,11 @@ I reviewed the owner-19 resource checks:
 All three owner-19 files report IDs `0x1D4ED` through `0x1D4F0` as missing
 for language `0x0409`.
 
+**Correction (2026-10-11).** These IDs are not missing. `LoadStringA` uses only the low 16 bits of a string ID. See `docs/resource_ids.md` and `decomp_notes/build_list_names.md`.
+They load `0xD4ED` through `0xD4F0`. The base `runtime/language.dll` has
+`Food inventory: %d`, `Wood inventory: %d`, `Gold inventory: %d`, and `Stone inventory: %d`.
+Both expansion files have an empty `0xD4F0` slot and no `0xD4ED` through `0xD4EF`, so the base text is used.
+
 The original executable remains the behavior oracle:
 
 - `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`

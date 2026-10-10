@@ -151,6 +151,9 @@ For the full build-list range `0x26930..0x269AC`, every ID is missing in all
 three selected files. The complete JSON outputs contain each requested ID in
 `missing_ids`, so the range result is not an extrapolation.
 
+**Correction (2026-10-11).** The range is not missing. `LoadStringA` uses only the low 16 bits of a string ID. See `docs/resource_ids.md` and `decomp_notes/build_list_names.md`.
+These IDs load `0x6930` through `0x69AC`, which hold the 125 build-list file paths.
+
 The inspected PE files and hashes are:
 
 - Runtime base `runtime/language.dll`: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.

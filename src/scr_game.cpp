@@ -2512,8 +2512,8 @@ void TRIBE_Screen_Game::setup_buttons() {
                 Item_Avail* item = &this->bldg_list[item_index];
                 this->set_button(
                     this->button_bldg_pics[culture], button, static_cast<short>(master->building_facet + item->pict),
-                    TRIBE_UI_COMMAND_PLACE_BUILDING, item->id, master->string_id2 + 100000, item->help_page_id,
-                    master->hotkey_id, player->color_table->table, name + 4, msg_str + 4, 0
+                    TRIBE_UI_COMMAND_PLACE_BUILDING, item->id, master->string_id2 + STRING_ID_CREATION_HELP_OFFSET,
+                    item->help_page_id, master->hotkey_id, player->color_table->table, name + 4, msg_str + 4, 0
                 );
             }
 
@@ -2740,16 +2740,16 @@ void TRIBE_Screen_Game::setup_buttons() {
                     continue_setup = 0;
                 } else if (level == 5) {
                     this->set_button(
-                        this->button_tech_pic, 1, 0x57, TRIBE_UI_COMMAND_TRADE_FOOD_FOR_GOLD, 0, 0x1A25C, 0x265AF, 0, 0,
-                        0, 0, 0
+                        this->button_tech_pic, 1, 0x57, TRIBE_UI_COMMAND_TRADE_FOOD_FOR_GOLD, 0,
+                        STRING_ID_HELP_GAME_TRADE_FOOD_FOR_GOLD, 0x265AF, 0, 0, 0, 0, 0
                     );
                     this->set_button(
-                        this->button_tech_pic, 2, 0x56, TRIBE_UI_COMMAND_TRADE_WOOD_FOR_GOLD, 0, 0x1A25D, 0x265AF, 0, 0,
-                        0, 0, 0
+                        this->button_tech_pic, 2, 0x56, TRIBE_UI_COMMAND_TRADE_WOOD_FOR_GOLD, 0,
+                        STRING_ID_HELP_GAME_TRADE_WOOD_FOR_GOLD, 0x265AF, 0, 0, 0, 0, 0
                     );
                     this->set_button(
-                        this->button_tech_pic, 3, 0x58, TRIBE_UI_COMMAND_TRADE_STONE_FOR_GOLD, 0, 0x1A25E, 0x265AF, 0,
-                        0, 0, 0, 0
+                        this->button_tech_pic, 3, 0x58, TRIBE_UI_COMMAND_TRADE_STONE_FOR_GOLD, 0,
+                        STRING_ID_HELP_GAME_TRADE_STONE_FOR_GOLD, 0x265AF, 0, 0, 0, 0, 0
                     );
                     if (this->any_selected_have_action()) {
                         this->set_button(
@@ -2865,8 +2865,8 @@ void TRIBE_Screen_Game::setup_buttons() {
                                 Item_Avail* item = &this->make_list[make_index];
                                 this->set_button(
                                     this->button_unit_pic, button, item->pict, TRIBE_UI_COMMAND_TRAIN, item->id,
-                                    master->string_id2 + 100000, item->help_page_id, master->hotkey_id,
-                                    player->color_table->table, name + 4, msg_str + 4, 0
+                                    master->string_id2 + STRING_ID_CREATION_HELP_OFFSET, item->help_page_id,
+                                    master->hotkey_id, player->color_table->table, name + 4, msg_str + 4, 0
                                 );
                                 if ((!queue_active) || (queued < 1)) {
                                     this->button_panel[button]->set_display_garrison(0);

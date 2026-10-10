@@ -54,13 +54,14 @@ With the low 16 bits, every ID has text that agrees with its name:
 | `0x1D4E9` | `0xD4E9` | base | Click to unload a transport vessel. |
 | `0x1D4EA` | `0xD4EA` | base | Click to order units to stand ground instead of attacking ... |
 | `0x1D4EB` | `0xD4EB` | base | Click to order catapult units to target a location, ... |
-| `0x1D4F1` | `0xD4F1` | expansion | Click to order the Priest to heal a friendly or allied unit. |
-| `0x1D4F2` | `0xD4F2` | expansion | Click to order the priest to convert an enemy unit. |
-| `0x1D4F6` | `0xD4F6` | expansion | Click to order units to repair a building or boat. |
+| `0x1D4F1` | `0xD4F1` | base | Click to order the Priest to heal a friendly or allied unit. |
+| `0x1D4F2` | `0xD4F2` | base | Click to order the priest to convert an enemy unit. |
+| `0x1D4F6` | `0xD4F6` | base | Click to order units to repair a building or boat. |
 
 Modules: base is `runtime/language.dll`, SHA256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
 The expansion module is `orig/.../XPack/languagex.dll`, SHA256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
-`TRIBE_Game::get_string` tries the expansion module first.
+`TRIBE_Game::get_string` tries the expansion module first. The expansion slots for these IDs are empty,
+so `LoadStringA` returns 0 and the base module supplies all thirteen texts.
 
 ## Validation
 

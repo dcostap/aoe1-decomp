@@ -251,6 +251,9 @@ Its arithmetic reaches empty `0x2803`, `Unknown` at `0x2804`, and `Tribe Name` a
 It reaches `Roman` at `0x2806`, not the full expansion civilization mapping. Preserve the literal and original arithmetic.
 Root also defers the missing build-list range `0x26930` through `0x269AC`.
 An unchecked `STRING=` override could supply that range. The checked DLLs do not prove its payloads.
+
+**Correction (2026-10-11).** The range is not missing. `LoadStringA` uses only the low 16 bits of a string ID. See `docs/resource_ids.md` and `decomp_notes/build_list_names.md`.
+These IDs load `0x6930` through `0x69AC`, which hold the 125 build-list file paths.
 Owner 26's reviewer received these shared decisions. The groups remain unmerged and unvalidated.
 
 ## Owner 26: delegated review started

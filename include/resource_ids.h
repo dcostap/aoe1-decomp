@@ -203,6 +203,13 @@
 #define STRING_ID_HELP_GAME_HEAL                  0x1D4F1
 #define STRING_ID_HELP_GAME_CONVERT               0x1D4F2
 #define STRING_ID_HELP_GAME_REPAIR                0x1D4F6
+// Market trade-button help texts.
+#define STRING_ID_HELP_GAME_TRADE_FOOD_FOR_GOLD   0x1A25C
+#define STRING_ID_HELP_GAME_TRADE_WOOD_FOR_GOLD   0x1A25D
+#define STRING_ID_HELP_GAME_TRADE_STONE_FOR_GOLD  0x1A25E
+// Train and build buttons add this to the object's creation string ID (for example 6016, "Build War Galley").
+// After LoadStringA drops the high bits, the sum loads the button help text (40480, "Click to build a War Galley.").
+#define STRING_ID_CREATION_HELP_OFFSET            100000
 // Extended help IDs.
 #define STRING_ID_HELP_MP_CIVILIZATION_MORE       0x25F09
 #define STRING_ID_HELP_MP_CONNECTION_TYPE_MORE    0x25F08

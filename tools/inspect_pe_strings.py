@@ -54,7 +54,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dll', type=Path, required=True, help='Explicit PE file whose string resources should be read')
     select = parser.add_mutually_exclusive_group(required=True)
-    select.add_argument('--id', type=number, nargs='+', help='One or more decimal or 0x-prefixed string IDs')
+    select.add_argument('--id', type=number, nargs='+',
+                        help='One or more decimal or 0x-prefixed string IDs; IDs above 0xFFFF are read by their '
+                             'low 16 bits, as LoadStringA does, and listed under loaded_ids')
     select.add_argument('--contains', help='Case-insensitive text search; returned text stays unchanged')
     select.add_argument('--list', action='store_true', help='List nonempty string-table slots')
     parser.add_argument('--language', type=number, help='Optional decimal or hexadecimal language ID')
@@ -66,16 +68,23 @@ def main() -> int:
         sha, rows = read_strings(args.dll)
         if args.language is not None:
             rows = [row for row in rows if row['language_id'] == args.language]
+        loaded_ids = []
         if args.id is not None:
-            selected = set(args.id)
+            # LoadStringA uses only the low 16 bits of the ID, so look up the ID it would load.
+            loaded = {requested: requested & 0xFFFF for requested in args.id}
+            loaded_ids = [{'requested_id': requested, 'requested_hex': f'0x{requested:X}',
+                           'loaded_id': target, 'loaded_hex': f'0x{target:04X}'}
+                          for requested, target in sorted(loaded.items()) if requested != target]
+            selected = set(loaded.values())
             rows = [row for row in rows if row['id'] in selected]
-            missing = sorted(selected - {row['id'] for row in rows})
+            found = {row['id'] for row in rows}
+            missing = sorted(requested for requested, target in loaded.items() if target not in found)
         else:
             missing = []
             rows = [row for row in rows if row['text'] and
                     (args.contains is None or args.contains.casefold() in row['text'].casefold())]
         result = {'file': str(args.dll.resolve()), 'sha256': sha, 'resource_type': 'RT_STRING',
-                  'strings': rows, 'missing_ids': missing,
+                  'strings': rows, 'missing_ids': missing, 'loaded_ids': loaded_ids,
                   'scope': 'Exact resource text only; not recovered macro names or proof of which module a caller loads.',
                   'empty_slots': 'An empty slot does not distinguish an intentionally empty string from an unused ID.'}
         text = json.dumps(result, indent=2, ensure_ascii=True) + '\n'

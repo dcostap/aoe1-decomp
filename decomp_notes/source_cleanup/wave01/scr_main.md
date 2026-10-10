@@ -117,7 +117,13 @@ All mappings use these lookup facts:
 | `0x07DA` | `STRING_ID_ERROR_INSERT_CD_SCENARIO_BUILDER` | The scenario-builder path reports a missing game CD. | `You must insert a game CD to use the scenario builder.` | Empty; falls back to base. | Missing. |
 | `0x1D4F7` | `STRING_ID_HELP_NOTICE` | The Help button loads this ID into the `Confirm Dialog` message before `WinHelpA`. | Missing. | Missing. | Missing. |
 
-The checked DLLs contain no text for `0x1D4F7`. The main-menu action passes the
+**Correction (2026-10-11).** `0x1D4F7` is not missing. `LoadStringA` uses only the low 16 bits of a string ID. See `docs/resource_ids.md` and `decomp_notes/build_list_names.md`.
+It loads `0xD4F7`. The pinned beta `XPack/languagex.dll` has
+`NOTE: The help system has not been updated for Rise of Rome.`
+The runtime expansion file has a longer `The Help system has not been updated for Age of Empires Expansion.` text,
+and the base slot is empty.
+
+Original finding: the checked DLLs contain no text for `0x1D4F7`. The main-menu action passes the
 ID to `TEasy_Panel::popupOKDialog(long, char*, int, int)`. That overload loads
 the string into its local `title[256]` buffer, then passes the buffer to the
 character overload.

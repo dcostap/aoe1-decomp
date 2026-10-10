@@ -59,6 +59,12 @@ The runtime hashes agree with the module reports:
 - Expansion: `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`.
 
 Returned entries use language `0x0409`. ID `0x1D4F7` is absent from both runtime files; its exact text remains unknown.
+
+**Correction (2026-10-11).** `0x1D4F7` is not missing. `LoadStringA` uses only the low 16 bits of a string ID. See `docs/resource_ids.md` and `decomp_notes/build_list_names.md`.
+It loads `0xD4F7`. The pinned beta `XPack/languagex.dll` has
+`NOTE: The help system has not been updated for Rise of Rome.`
+The runtime expansion file has a longer `The Help system has not been updated for Age of Empires Expansion.` text,
+and the base slot is empty.
 IDs `0x2419` and `0x241C` have nonempty expansion overrides.
 Expansion IDs `0x07D7`, `0x07D8`, `0x07DA`, `0x241B`, `0x2424`, and `0x2425` have empty slots.
 ID `0x2424` also has an empty base slot. Other requested base IDs have the reported text.
