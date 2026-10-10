@@ -128,12 +128,50 @@ The literal-argument search covered `gameIDsOfObjectType`, `numberGameIDsOwnedBy
 `command_*` building functions, and `add_to_production_queue`. Only `storeLot` received a literal ID.
 Their bodies have no other literal master-ID tests.
 
-In the first loop of `TribeBuildAIModule`'s list scan (around `taibldmd.cpp:50`), the counter names do not
-fit what they count. For example, `bronzeAgeIndex` counts houses and `fishingBoatCount` counts transports.
-They were not renamed here.
+The `TribeBuildAIModule::initialize` locals are covered in the next section.
 
 ### Second-pass validation
 
 Artifacts are under `build/cleanup-2026-10-10/master-objects-3`.
 The six affected groups compiled, and all 386 exact claims passed.
 Five object payloads equal the baseline. `rmm_tdbc` differs only as described above.
+
+## `TribeBuildAIModule::initialize` locals (third pass)
+
+The starting commit is `fdaed181e`.
+`initialize` (`004D3D60`) is a behavior-recovered function, not an exact claim.
+Its eleven list-scan locals had the right PDB names in the wrong places.
+For example, the house counter was named `bronzeAgeIndex`.
+
+After the SEH prologue, `sub esp,9Ch`, and four pushes, a PDB offset `off` is at `esp + 0xB8 + off`.
+The original body gives each slot one role:
+
+| esp slot | PDB offset | PDB name | Original role | Old source name |
+| --- | --- | --- | --- | --- |
+| `[esp+10h]` | `-0xA8` | `houseCount` | counts category-0 `House` items, then gates the house insertion | `bronzeAgeIndex` |
+| `[esp+28h]` | `-0x90` | `dockCount` | counts `Dock_1` items | `transportCount` |
+| `[esp+30h]` | `-0x88` | `fishingBoatCount` | counts `Boat_Fishing1` items | `toolAgeIndex` |
+| `[esp+2Ch]` | `-0x8C` | `transportCount` | counts `Boat_Transport1` and `2` items | `fishingBoatCount` |
+| `[esp+38h]` | `-0x80` | `warshipCount` | counts `Boat_War1` and `Boat_War4` items | `resource_building_count` |
+| `[esp+34h]` | `-0x84` | `toolAgeIndex` | unique ID of research `0x65` | `warshipCount` |
+| `ebp`, then `[esp+14h]` | `-0xA4` | `bronzeAgeIndex` | unique ID of research `0x66` | `triremeUpgrade` |
+| `[esp+20h]` | `-0x98` | `ironAgeIndex` | unique ID of research `0x67` | `transportUpgrade` |
+| `[esp+1Ch]` | `-0x9C` | `warshipUpgrade` | flag for research 5 | `ironAgeIndex` |
+| `[esp+18h]` | `-0xA0` | `triremeUpgrade` | flag for research 7 | `warshipUpgrade` |
+| `[esp+24h]` | `-0x94` | `transportUpgrade` | flag for research 8 | `dockCount` |
+
+The new names agree with the existing `@bug` comment. It describes research 7 as Trireme and anchors it to the
+Iron Age entry. The code now reads `if (!triremeUpgrade && ironAgeIndex != -1) insertResearch(7, ironAgeIndex + 5)`.
+
+The house-insertion block declared its own `houseCount`, which would now shadow the outer variable.
+In the original, that capacity counter is in `ebx`, a register, and the PDB records no name for it.
+It is now `housingCapacity`, a cleanup name. The block's trained-unit counter reuses slot `-0xA8`, and
+the PDB lists only `houseCount` and `requiredPop` there. It keeps the cleanup name `trainedCount`.
+
+The pass also names the master IDs in `this->insert(...)` (`Dock_1`, `Boat_Fishing1`, `Boat_Transport1`, `House`)
+and in `loadBuildList`'s `typesToIgnore.add(...)`. `BuildAIModule::loadBuildList` checks that list only for
+category-0 lines. The research IDs passed to `insertResearch` stay numeric.
+
+Validation: the `taibldmd` group compiled, all 25 exact claims passed, and the object payload is unchanged
+(`build/cleanup-2026-10-10/initialize-locals`). `build/cleanup-2026-10-10/rename_initialize_locals.py`
+applies the rename.

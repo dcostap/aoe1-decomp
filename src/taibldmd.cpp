@@ -27,56 +27,56 @@ void TribeBuildAIModule::setMainDecisionAI(TribeMainDecisionAIModule* m) {
 }
 
 int TribeBuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
-    this->typesToIgnore.add(0x46);
-    this->typesToIgnore.add(0x67);
-    this->typesToIgnore.add(0x44);
+    this->typesToIgnore.add(MASTER_OBJECT_HOUSE);
+    this->typesToIgnore.add(MASTER_OBJECT_STORAGE_PIT1);
+    this->typesToIgnore.add(MASTER_OBJECT_GRANARY);
     return BuildAIModule::loadBuildList(lName, player);
 }
 
 void TribeBuildAIModule::initialize() {
-    int bronzeAgeIndex = 0;
-    int transportCount = 0;
-    int toolAgeIndex = 0;
-    int fishingBoatCount = 0;
-    int resource_building_count = 0;
-    int warshipCount = -1;
-    int triremeUpgrade = -1;
-    int transportUpgrade = -1;
-    int ironAgeIndex = 0;
-    int warshipUpgrade = 0;
+    int houseCount = 0;
     int dockCount = 0;
+    int fishingBoatCount = 0;
+    int transportCount = 0;
+    int warshipCount = 0;
+    int toolAgeIndex = -1;
+    int bronzeAgeIndex = -1;
+    int ironAgeIndex = -1;
+    int warshipUpgrade = 0;
+    int triremeUpgrade = 0;
+    int transportUpgrade = 0;
 
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
     while (item != sentinel && item != 0) {
         if (item->buildCategory() == 0) {
             if (item->typeID() == MASTER_OBJECT_HOUSE) {
-                ++bronzeAgeIndex;
+                ++houseCount;
             } else if (item->typeID() == MASTER_OBJECT_DOCK_1) {
-                ++transportCount;
+                ++dockCount;
             }
         } else if (item->buildCategory() == 2) {
             if (item->typeID() == MASTER_OBJECT_BOAT_FISHING1) {
-                ++toolAgeIndex;
+                ++fishingBoatCount;
             } else if (item->typeID() == MASTER_OBJECT_BOAT_TRANSPORT1
                        || item->typeID() == MASTER_OBJECT_BOAT_TRANSPORT2) {
-                ++fishingBoatCount;
+                ++transportCount;
             } else if (item->typeID() == MASTER_OBJECT_BOAT_WAR1 || item->typeID() == MASTER_OBJECT_BOAT_WAR4) {
-                ++resource_building_count;
+                ++warshipCount;
             }
         } else if (item->buildCategory() == 1 || item->buildCategory() == 4) {
             if (item->typeID() == 0x65) {
-                warshipCount = item->uniqueID();
+                toolAgeIndex = item->uniqueID();
             } else if (item->typeID() == 0x66) {
-                triremeUpgrade = item->uniqueID();
+                bronzeAgeIndex = item->uniqueID();
             } else if (item->typeID() == 0x67) {
-                transportUpgrade = item->uniqueID();
+                ironAgeIndex = item->uniqueID();
             } else if (item->typeID() == 5) {
-                ironAgeIndex = 1;
-            } else if (item->typeID() == 7) {
                 warshipUpgrade = 1;
+            } else if (item->typeID() == 7) {
+                triremeUpgrade = 1;
             } else if (item->typeID() == 8) {
-                dockCount = 1;
+                transportUpgrade = 1;
             }
         }
 
@@ -87,53 +87,53 @@ void TribeBuildAIModule::initialize() {
     int spacing;
     int index;
 
-    if (transportCount < this->md->tacticalAI.strategicNumber(0xD4)
-        && this->md->tacticalAI.strategicNumber(0xD0) == 1) {
-        count = this->md->tacticalAI.strategicNumber(0xD4) - transportCount;
-        if (triremeUpgrade != -1) {
-            spacing = triremeUpgrade / count;
-        } else if (warshipCount != -1) {
-            spacing = warshipCount / count;
+    if (dockCount < this->md->tacticalAI.strategicNumber(0xD4) && this->md->tacticalAI.strategicNumber(0xD0) == 1) {
+        count = this->md->tacticalAI.strategicNumber(0xD4) - dockCount;
+        if (bronzeAgeIndex != -1) {
+            spacing = bronzeAgeIndex / count;
+        } else if (toolAgeIndex != -1) {
+            spacing = toolAgeIndex / count;
         } else {
             spacing = 10;
         }
 
         index = spacing;
         while (count > 0) {
-            this->insert(0x2D, -1, index);
+            this->insert(MASTER_OBJECT_DOCK_1, -1, index);
             index += spacing;
             --count;
         }
     }
 
-    if (toolAgeIndex < this->md->tacticalAI.strategicNumber(0xD5) && this->md->tacticalAI.strategicNumber(0xD1) == 1) {
-        count = this->md->tacticalAI.strategicNumber(0xD5) - toolAgeIndex;
+    if (fishingBoatCount < this->md->tacticalAI.strategicNumber(0xD5)
+        && this->md->tacticalAI.strategicNumber(0xD1) == 1) {
+        count = this->md->tacticalAI.strategicNumber(0xD5) - fishingBoatCount;
         if (count > 0) {
-            if (triremeUpgrade != -1) {
-                spacing = triremeUpgrade / count;
-            } else if (warshipCount != -1) {
-                spacing = warshipCount / count;
+            if (bronzeAgeIndex != -1) {
+                spacing = bronzeAgeIndex / count;
+            } else if (toolAgeIndex != -1) {
+                spacing = toolAgeIndex / count;
             } else {
                 spacing = 10;
             }
 
             index = spacing;
             while (count > 0) {
-                this->insert(0x0D, -1, index);
+                this->insert(MASTER_OBJECT_BOAT_FISHING1, -1, index);
                 index += spacing;
                 --count;
             }
         }
     }
 
-    if (fishingBoatCount < this->md->tacticalAI.strategicNumber(0xD6)
+    if (transportCount < this->md->tacticalAI.strategicNumber(0xD6)
         && this->md->tacticalAI.strategicNumber(0xD2) == 1) {
-        count = this->md->tacticalAI.strategicNumber(0xD6) - fishingBoatCount;
-        if (warshipCount != -1) {
-            spacing = (this->buildListLengthValue - warshipCount) / (count * 2);
-            index = triremeUpgrade;
-        } else if (triremeUpgrade != -1) {
-            spacing = (this->buildListLengthValue - triremeUpgrade) / (count * 2);
+        count = this->md->tacticalAI.strategicNumber(0xD6) - transportCount;
+        if (toolAgeIndex != -1) {
+            spacing = (this->buildListLengthValue - toolAgeIndex) / (count * 2);
+            index = bronzeAgeIndex;
+        } else if (bronzeAgeIndex != -1) {
+            spacing = (this->buildListLengthValue - bronzeAgeIndex) / (count * 2);
             index = -1;
         } else {
             spacing = 10;
@@ -142,22 +142,22 @@ void TribeBuildAIModule::initialize() {
 
         while (count > 0) {
             index += spacing;
-            this->insert(0x11, -1, index);
+            this->insert(MASTER_OBJECT_BOAT_TRANSPORT1, -1, index);
             --count;
         }
 
-        if (!dockCount && transportUpgrade != -1) {
-            this->insertResearch(8, transportUpgrade + 2);
+        if (!transportUpgrade && ironAgeIndex != -1) {
+            this->insertResearch(8, ironAgeIndex + 2);
         }
     }
 
-    if (resource_building_count < this->md->tacticalAI.strategicNumber(0xE0)
-        && this->md->tacticalAI.strategicNumber(0xDF) == 1 && (transportUpgrade != -1 || triremeUpgrade != -1)) {
-        count = this->md->tacticalAI.strategicNumber(0xE0) - resource_building_count;
-        if (transportUpgrade != -1) {
-            spacing = transportUpgrade / count;
+    if (warshipCount < this->md->tacticalAI.strategicNumber(0xE0) && this->md->tacticalAI.strategicNumber(0xDF) == 1
+        && (ironAgeIndex != -1 || bronzeAgeIndex != -1)) {
+        count = this->md->tacticalAI.strategicNumber(0xE0) - warshipCount;
+        if (ironAgeIndex != -1) {
+            spacing = ironAgeIndex / count;
         } else {
-            spacing = triremeUpgrade / count;
+            spacing = bronzeAgeIndex / count;
         }
 
         index = spacing;
@@ -167,42 +167,42 @@ void TribeBuildAIModule::initialize() {
             --count;
         }
 
-        if (!ironAgeIndex && triremeUpgrade != -1) {
-            this->insertResearch(5, triremeUpgrade + 5);
+        if (!warshipUpgrade && bronzeAgeIndex != -1) {
+            this->insertResearch(5, bronzeAgeIndex + 5);
         }
-        if (!warshipUpgrade && transportUpgrade != -1) {
+        if (!triremeUpgrade && ironAgeIndex != -1) {
             //! @bug This anchor is the Iron Age entry's load-time index, but earlier inserts shift the list.
             //! Six or more splices then place Trireme before the Iron Age entry and break the dependency order.
             //! The same stale-anchor defect affects the Heavy Transport and Medium War Ship inserts above.
-            this->insertResearch(7, transportUpgrade + 5);
+            this->insertResearch(7, ironAgeIndex + 5);
         }
     }
 
-    if (bronzeAgeIndex == 0 && this->md->tacticalAI.strategicNumber(0xB4) == 1) {
+    if (houseCount == 0 && this->md->tacticalAI.strategicNumber(0xB4) == 1) {
         item = this->buildList.next;
         int buildIndex = 0;
-        int houseCount = 0;
+        int housingCapacity = 0;
         int trainedCount = 0;
 
         while (item != sentinel && item != 0) {
             if (item->buildCategory() == 0 && item->typeID() == MASTER_OBJECT_TOWN_CENTER1) {
-                houseCount += 4;
+                housingCapacity += 4;
             }
             if (item->buildCategory() == 2) {
                 ++trainedCount;
             }
-            if (trainedCount > houseCount) {
+            if (trainedCount > housingCapacity) {
                 int insertIndex;
                 if (buildIndex > 1) {
                     insertIndex = buildIndex - 1;
                 } else {
                     insertIndex = 1;
                 }
-                if (this->insert(0x46, -1, insertIndex) == 1) {
-                    houseCount += 4;
+                if (this->insert(MASTER_OBJECT_HOUSE, -1, insertIndex) == 1) {
+                    housingCapacity += 4;
                 }
             }
-            if (houseCount > this->md->tacticalAI.strategicNumber(0x98) + 50) {
+            if (housingCapacity > this->md->tacticalAI.strategicNumber(0x98) + 50) {
                 break;
             }
 
