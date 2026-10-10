@@ -188,6 +188,20 @@
 #define STRING_ID_HELP_GAME_MENU                  0x1D4CD
 #define STRING_ID_HELP_GAME_HELP                  0x1D4DB
 #define STRING_ID_HELP_GAME_SCORE                 0x1D4DC
+// Command-button help IDs from the same absent range. Cancel and unselect share one ID.
+#define STRING_ID_HELP_GAME_MORE                  0x1D4D7
+#define STRING_ID_HELP_GAME_CANCEL_UNSELECT       0x1D4D9
+#define STRING_ID_HELP_GAME_STOP                  0x1D4DD
+#define STRING_ID_HELP_GAME_BUILD                 0x1D4DF
+#define STRING_ID_HELP_GAME_GROUP                 0x1D4E1
+#define STRING_ID_HELP_GAME_UNGROUP               0x1D4E3
+#define STRING_ID_HELP_GAME_CANCEL_CONSTRUCTION   0x1D4E5
+#define STRING_ID_HELP_GAME_UNLOAD                0x1D4E9
+#define STRING_ID_HELP_GAME_STAND_GROUND          0x1D4EA
+#define STRING_ID_HELP_GAME_ATTACK_GROUND         0x1D4EB
+#define STRING_ID_HELP_GAME_HEAL                  0x1D4F1
+#define STRING_ID_HELP_GAME_CONVERT               0x1D4F2
+#define STRING_ID_HELP_GAME_REPAIR                0x1D4F6
 // These extended help IDs have no text in the checked language DLL.
 #define STRING_ID_HELP_MP_CIVILIZATION_MORE       0x25F09
 #define STRING_ID_HELP_MP_CONNECTION_TYPE_MORE    0x25F08
