@@ -1,6 +1,6 @@
 # AI build-list categories
 
-`BuildItem::buildCategory()` returns a small integer. `AIBuildList::loadBuildList` sets it from the
+`BuildItem::buildCategory()` returns a small integer. `BuildAIModule::loadBuildList` sets it from the
 first letter of each line of a `.ai` or `.bld` file. `include/aiblditm.h` now names the values.
 
 | Value | Letters | Macro | What the code does |
