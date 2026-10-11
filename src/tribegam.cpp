@@ -2428,7 +2428,6 @@ int TRIBE_Game::load_game(char* fileName) {
 
             for (i = 0; i < this->world->player_num; ++i) {
                 RGE_Player* p = this->world->players[i];
-                char* p_bytes = reinterpret_cast<char*>(p);
                 char* player_name;
                 RGE_Victory_Conditions* victory_conditions;
                 float* attributes;
@@ -2445,21 +2444,20 @@ int TRIBE_Game::load_game(char* fileName) {
                 long action_checksum;
                 float temp_position_checksum;
 
-                player_name = *reinterpret_cast<char**>(p_bytes + 0x44);
-                victory_conditions = *reinterpret_cast<RGE_Victory_Conditions**>(p_bytes + 0x34);
+                player_name = p->name;
+                victory_conditions = p->victory_conditions;
 
                 fprintf(
-                    debug_file, "player %d, civ=%d, score=%d, %s\n", i,
-                    static_cast<int>(*reinterpret_cast<unsigned char*>(p_bytes + 0x105)),
+                    debug_file, "player %d, civ=%d, score=%d, %s\n", i, static_cast<int>(p->master_player_id),
                     victory_conditions->get_victory_points(), player_name
                 );
-                attributes = *reinterpret_cast<float**>(p_bytes + 0x50);
+                attributes = p->attributes;
                 fprintf(debug_file, "  Writing=%f\n", static_cast<double>(attributes[PLAYER_ATTRIBUTE_ALLIED_LOS]));
-                sleeping_objects = *reinterpret_cast<RGE_Object_List**>(p_bytes + 0x2C);
-                doppleganger_objects = *reinterpret_cast<RGE_Object_List**>(p_bytes + 0x30);
+                sleeping_objects = p->sleeping_objects;
+                doppleganger_objects = p->doppleganger_objects;
                 sleeping_count = sleeping_objects->number_of_objects;
                 doppleganger_count = doppleganger_objects->number_of_objects;
-                player_id = *reinterpret_cast<short*>(p_bytes + 0x4A);
+                player_id = p->id;
 
                 num1 = 0;
                 num2 = 0;
@@ -2469,14 +2467,13 @@ int TRIBE_Game::load_game(char* fileName) {
                 temp_position_checksum = 0.0f;
                 fprintf(debug_file, "  num_sleep_obj=%d\n", static_cast<int>(sleeping_count));
                 fprintf(
-                    debug_file, "  num_dopple_obj=%d\n",
-                    static_cast<int>((*reinterpret_cast<RGE_Object_List**>(p_bytes + 0x30))->number_of_objects)
+                    debug_file, "  num_dopple_obj=%d\n", static_cast<int>(p->doppleganger_objects->number_of_objects)
                 );
 
-                for (int attribute = 0; attribute < *reinterpret_cast<short*>(p_bytes + 0x4C); ++attribute) {
-                    float* attribute_value = *reinterpret_cast<float**>(p_bytes + 0x50) + attribute;
+                for (int attribute = 0; attribute < p->attribute_num; ++attribute) {
+                    float* attribute_value = p->attributes + attribute;
                     num1 += static_cast<long>(*attribute_value);
-                    short report_player_id = *reinterpret_cast<short*>(p_bytes + 0x4A);
+                    short report_player_id = p->id;
                     float report_attribute = *attribute_value;
                     fprintf(
                         debug_file, "  p#%d attr[%d]=%12.8f\n", static_cast<int>(report_player_id), attribute,
@@ -2484,7 +2481,7 @@ int TRIBE_Game::load_game(char* fileName) {
                     );
                 }
 
-                objects = *reinterpret_cast<RGE_Object_List**>(p_bytes + 0x28);
+                objects = p->objects;
                 RGE_Object_Node* list = objects->list;
                 while (list != 0) {
                     RGE_Static_Object* object = list->node;
@@ -2511,11 +2508,10 @@ int TRIBE_Game::load_game(char* fileName) {
                     object = list->node;
                     fprintf(
                         debug_file, "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                        static_cast<int>(*reinterpret_cast<short*>(p_bytes + 0x4A)), static_cast<int>(object->id),
-                        object->master_obj->name, static_cast<int>(object->object_state),
-                        static_cast<double>(object->attribute_amount_held), static_cast<double>(object->world_x),
-                        static_cast<double>(object->world_y), static_cast<double>(object->world_z),
-                        static_cast<int>(target_id), target_name
+                        static_cast<int>(p->id), static_cast<int>(object->id), object->master_obj->name,
+                        static_cast<int>(object->object_state), static_cast<double>(object->attribute_amount_held),
+                        static_cast<double>(object->world_x), static_cast<double>(object->world_y),
+                        static_cast<double>(object->world_z), static_cast<int>(target_id), target_name
                     );
 
                     object = list->node;
@@ -2583,7 +2579,7 @@ int TRIBE_Game::load_game(char* fileName) {
                     list = list->next;
                 }
 
-                doppleganger_objects = *reinterpret_cast<RGE_Object_List**>(p_bytes + 0x30);
+                doppleganger_objects = p->doppleganger_objects;
                 list = doppleganger_objects->list;
                 while (list != 0) {
                     RGE_Static_Object* object = list->node;
@@ -2610,11 +2606,10 @@ int TRIBE_Game::load_game(char* fileName) {
                     object = list->node;
                     fprintf(
                         debug_file, "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                        static_cast<int>(*reinterpret_cast<short*>(p_bytes + 0x4A)), static_cast<int>(object->id),
-                        object->master_obj->name, static_cast<int>(object->object_state),
-                        static_cast<double>(object->attribute_amount_held), static_cast<double>(object->world_x),
-                        static_cast<double>(object->world_y), static_cast<double>(object->world_z),
-                        static_cast<int>(target_id), target_name
+                        static_cast<int>(p->id), static_cast<int>(object->id), object->master_obj->name,
+                        static_cast<int>(object->object_state), static_cast<double>(object->attribute_amount_held),
+                        static_cast<double>(object->world_x), static_cast<double>(object->world_y),
+                        static_cast<double>(object->world_z), static_cast<int>(target_id), target_name
                     );
 
                     object = list->node;
@@ -2696,7 +2691,7 @@ int TRIBE_Game::load_game(char* fileName) {
                     list = list->next;
                 }
 
-                sleeping_objects = *reinterpret_cast<RGE_Object_List**>(p_bytes + 0x2C);
+                sleeping_objects = p->sleeping_objects;
                 list = sleeping_objects->list;
                 while (list != 0) {
                     RGE_Static_Object* object = list->node;
@@ -2713,11 +2708,10 @@ int TRIBE_Game::load_game(char* fileName) {
                     object = list->node;
                     fprintf(
                         debug_file, "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                        static_cast<int>(*reinterpret_cast<short*>(p_bytes + 0x4A)), static_cast<int>(object->id),
-                        object->master_obj->name, static_cast<int>(object->object_state),
-                        static_cast<double>(object->attribute_amount_held), static_cast<double>(object->world_x),
-                        static_cast<double>(object->world_y), static_cast<double>(object->world_z),
-                        static_cast<int>(target_id), target_name
+                        static_cast<int>(p->id), static_cast<int>(object->id), object->master_obj->name,
+                        static_cast<int>(object->object_state), static_cast<double>(object->attribute_amount_held),
+                        static_cast<double>(object->world_x), static_cast<double>(object->world_y),
+                        static_cast<double>(object->world_z), static_cast<int>(target_id), target_name
                     );
                     list = list->next;
                 }
@@ -2726,10 +2720,9 @@ int TRIBE_Game::load_game(char* fileName) {
                 total_checksum += checksum;
                 total_action_checksum += action_checksum;
                 fprintf(
-                    debug_file, "  p#%d checksum=%d, 1=%d, 2=%d, 3=%d, 4=%d, act=%d\n",
-                    static_cast<int>(*reinterpret_cast<short*>(p_bytes + 0x4A)), static_cast<int>(checksum),
-                    static_cast<int>(num1), static_cast<int>(num2), static_cast<int>(num3), static_cast<int>(num4),
-                    static_cast<int>(action_checksum)
+                    debug_file, "  p#%d checksum=%d, 1=%d, 2=%d, 3=%d, 4=%d, act=%d\n", static_cast<int>(p->id),
+                    static_cast<int>(checksum), static_cast<int>(num1), static_cast<int>(num2), static_cast<int>(num3),
+                    static_cast<int>(num4), static_cast<int>(action_checksum)
                 );
             }
 
