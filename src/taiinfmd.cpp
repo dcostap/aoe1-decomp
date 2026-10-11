@@ -5440,12 +5440,11 @@ void TribeInformationAIModule::updateResourceDropsites(int rType) {
     this->closestDropsiteResourceID[rType] = -1;
 
     int i = 0;
-    int a = 0;
 
     if (this->numResources[rType] > 0) {
         do {
-            if (*(unsigned char*) ((char*) this->resources[rType] + a + 0x0D) != 1) {
-                int obj_id = *(int*) ((char*) this->resources[rType] + a);
+            if (this->resources[rType][i].gone != 1) {
+                int obj_id = this->resources[rType][i].id;
                 RGE_Static_Object* obj = this->md->object(obj_id);
 
                 if (obj != 0) {
@@ -5453,9 +5452,9 @@ void TribeInformationAIModule::updateResourceDropsites(int rType) {
                     float dist = this->findClosestDropsite(obj, 1, dropsiteID);
 
                     int val = (int) (10.0f - (-2.0f) * dist);
-                    *(int*) ((char*) this->resources[rType] + a + 8) = val;
-                    *(unsigned char*) ((char*) this->resources[rType] + a + 0x0E) = (unsigned char) (int) dist;
-                    *(int*) ((char*) this->resources[rType] + a + 0x10) = dropsiteID;
+                    this->resources[rType][i].gatherValue = val;
+                    this->resources[rType][i].dropDistance = (unsigned char) (int) dist;
+                    this->resources[rType][i].dropsiteID = dropsiteID;
 
                     int grp = obj->master_obj->object_group;
 
@@ -5488,7 +5487,6 @@ void TribeInformationAIModule::updateResourceDropsites(int rType) {
             }
 
             i++;
-            a += 0x14;
         } while (i < this->numResources[rType]);
     }
 }

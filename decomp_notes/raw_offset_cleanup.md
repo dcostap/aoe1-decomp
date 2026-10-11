@@ -59,3 +59,10 @@ Results:
   `*File` buffers. It is now a `for` loop over the six named arrays.
 - `TribeGameSettingsScreen::~TribeGameSettingsScreen`: the cursor at 0x534
   walked `optionText` and `optionButton` (0x524). It is now a `for` loop.
+
+## `TribeInformationAIModule::updateResourceDropsites`
+
+The loop walked `resources[rType]` with a byte counter `a` (+0x14 per step) and
+read `ResourceMemory` fields at +0, +8, +0xD, +0xE and +0x10. It now indexes
+`resources[rType][i]` and uses `id`, `gatherValue`, `gone`, `dropDistance` and
+`dropsiteID`. Byte-identical.
