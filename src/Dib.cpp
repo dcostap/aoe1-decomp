@@ -1533,15 +1533,15 @@ void* __cdecl CopyPalette(void* hpal) {
     if (!nNumEntries)
         return 0;
 
-    void* pal = LocalAlloc(LMEM_ZEROINIT, nNumEntries * 4 + 8);
+    LOGPALETTE* pal = (LOGPALETTE*) LocalAlloc(LMEM_ZEROINIT, nNumEntries * 4 + 8);
     if (!pal)
         return 0;
 
-    *(short*) pal = 0x300;
-    *(short*) ((char*) pal + 2) = (short) nNumEntries;
+    pal->palVersion = 0x300;
+    pal->palNumEntries = (WORD) nNumEntries;
 
-    GetPaletteEntries((HPALETTE) hpal, 0, nNumEntries, (PALETTEENTRY*) ((char*) pal + 4));
-    void* result = CreatePalette((const tagLOGPALETTE*) pal);
+    GetPaletteEntries((HPALETTE) hpal, 0, nNumEntries, pal->palPalEntry);
+    void* result = CreatePalette(pal);
     LocalFree((HLOCAL) pal);
     return result;
 }

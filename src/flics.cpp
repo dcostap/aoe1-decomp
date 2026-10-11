@@ -21,7 +21,7 @@ RGE_Flic_Player::RGE_Flic_Player(char* filename) {
         // The shipped constructor copies the complete 0x84-byte
         // FLIC header before it reads the width field.
         flichead = *(FlicHead*) flic_buffer;
-        flic_width = (int) *(short*) ((char*) &flichead + 0x08);
+        flic_width = (int) (short) flichead.width;
         start();
         close(fd);
     } else {

@@ -73,3 +73,12 @@ The ranking loop used a byte counter (`offset += 4` up to 0x10) to fill
 `tempNeededResource` and `tempResourceDifference`. It now uses a `rank` index.
 Byte-identical. The `diffPtr` cursor over `resourceDifferenceValue` stays.
 Indexing it costs 18 bytes and the exact match.
+
+## Header-field offsets
+
+- `RGE_Flic_Player::RGE_Flic_Player(char*)`: `&flichead + 0x08` is
+  `FlicHead::width`. The handle constructor already reads it that way.
+- `Dib.cpp` palette copy: the `LocalAlloc` buffer is a `LOGPALETTE`. It now sets
+  `palVersion` and `palNumEntries` and passes `palPalEntry`.
+
+Both objects are byte-identical.
