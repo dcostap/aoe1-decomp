@@ -1160,8 +1160,9 @@ void UnitAIModule::search() {
 }
 
 int UnitAIModule::importantWhenDead(int objectType) {
-    if (objectType == 0x7 || objectType == 0x9 || objectType == 0xA || objectType == 0xF || objectType == 0x8
-        || objectType == 0x20)
+    if (objectType == OBJECT_GROUP_FORAGE || objectType == OBJECT_GROUP_HUNTED_ANIMAL
+        || objectType == OBJECT_GROUP_PREDATOR || objectType == OBJECT_GROUP_TREE
+        || objectType == OBJECT_GROUP_STONE_SOURCE || objectType == OBJECT_GROUP_GOLD_SOURCE)
         return 1;
     return 0;
 }

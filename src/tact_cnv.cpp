@@ -67,8 +67,9 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             this->was_same_owner = 0;
         }
         short target_id = target->master_obj->id;
-        if (target_id == 0x6d || object_group == OBJECT_GROUP_WALL || target_id == 0x9f || target_id == 0x9e
-            || target_id == 0xa3 || target_id == 0x114) {
+        if (target_id == MASTER_OBJECT_TOWN_CENTER1 || object_group == OBJECT_GROUP_WALL
+            || target_id == MASTER_OBJECT_ARTIFACT1 || target_id == MASTER_OBJECT_ARTIFACT_RUINS1
+            || target_id == MASTER_OBJECT_ARTIFACT_RUINS2 || target_id == MASTER_OBJECT_WONDER) {
             if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
@@ -95,7 +96,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
         } else {
             this->requiredRange = static_cast<RGE_Master_Combat_Object*>(object->master_obj)->weapon_range;
         }
-        if (object_group == 0x1e) {
+        if (object_group == OBJECT_GROUP_FLAG) {
             this->set_state(0x0d);
             return;
         }

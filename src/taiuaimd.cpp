@@ -506,8 +506,9 @@ TribeCivilianUnitAIModule::TribeCivilianUnitAIModule(RGE_Static_Object* o, int i
 }
 
 int TribeCivilianUnitAIModule::importantWhenDead(int objectType) {
-    if (objectType == 0x7 || objectType == 0x9 || objectType == 0xA || objectType == 0xF || objectType == 0x8
-        || objectType == 0x20)
+    if (objectType == OBJECT_GROUP_FORAGE || objectType == OBJECT_GROUP_HUNTED_ANIMAL
+        || objectType == OBJECT_GROUP_PREDATOR || objectType == OBJECT_GROUP_TREE
+        || objectType == OBJECT_GROUP_STONE_SOURCE || objectType == OBJECT_GROUP_GOLD_SOURCE)
         return 1;
     return 0;
 }
@@ -547,7 +548,7 @@ int TribeCivilianUnitAIModule::retryableOrder(int orderType) {
 //! The map can then misroute, and villagers pick wrong gather targets (gold at stone age).
 int TribeCivilianUnitAIModule::convertToLOSResourceType(int oType) {
     switch (oType) {
-        case 7:
+        case OBJECT_GROUP_FORAGE:
             return 1;
         case OBJECT_GROUP_GOLD_SOURCE:
             return 4;
@@ -555,7 +556,7 @@ int TribeCivilianUnitAIModule::convertToLOSResourceType(int oType) {
             return 3;
         case OBJECT_GROUP_TREE:
             return 0;
-        case 5:
+        case OBJECT_GROUP_FISH:
         case 0x1F:
         case 0x21:
             return 2;
@@ -1535,14 +1536,14 @@ TribeFishingShipUnitAIModule::TribeFishingShipUnitAIModule(RGE_Static_Object* o,
 }
 
 int TribeFishingShipUnitAIModule::importantWhenDead(int objectType) {
-    if (objectType != 0x1F && objectType != 5) {
+    if (objectType != 0x1F && objectType != OBJECT_GROUP_FISH) {
         return 0;
     }
     return 1;
 }
 
 int TribeFishingShipUnitAIModule::convertToLOSResourceType(int oType) {
-    if (oType == 0x1F || oType == 0x5 || oType == 0x21)
+    if (oType == 0x1F || oType == OBJECT_GROUP_FISH || oType == 0x21)
         return 2;
     return -1;
 }
@@ -1691,7 +1692,9 @@ int TribeSoldierUnitAIModule::canAttackUnit(RGE_Static_Object* unit) {
 }
 
 int TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int oType) {
-    if (oType == 0x3 || oType == 0x1B || oType == 0x4 || oType == 0x15 || oType == 0x2 || oType == 0x14)
+    if (oType == OBJECT_GROUP_BUILDING || oType == OBJECT_GROUP_WALL || oType == OBJECT_GROUP_CIVILIAN
+        || oType == OBJECT_GROUP_FISHING_BOAT || oType == OBJECT_GROUP_TRADE_BOAT
+        || oType == OBJECT_GROUP_TRANSPORT_BOAT)
         return 0;
     return 1;
 }

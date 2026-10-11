@@ -40,11 +40,11 @@ int TribeAIPlayBook::convertUnitToIntType(RGE_Static_Object* obj) const {
     short group = obj->master_obj->object_group;
     if (group == OBJECT_GROUP_PRIEST)
         return 4;
-    if (group == 0x1C)
+    if (group == OBJECT_GROUP_PHALANX)
         return 3;
-    if (group == 0x0D)
+    if (group == OBJECT_GROUP_SIEGE_WEAPON)
         return 5;
-    if (group == 0x0C || group == 0x23)
+    if (group == OBJECT_GROUP_CAVALRY || group == OBJECT_GROUP_CHARIOT)
         return 2;
 
     float result = obj->weaponRange();

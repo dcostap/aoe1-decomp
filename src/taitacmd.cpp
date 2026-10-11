@@ -2401,8 +2401,8 @@ int TribeTacticalAIModule::doSomething() {
                     if (this->initialExplorationSatisfied() != 0
                         && (this->md->numberObjectsWithAction(UNIT_AI_ACTION_BUILD) < this->sn[SNCapCivilianBuilders]
                             || this->wonderInProgressValue != 0 || this->wonderBuiltValue != 0)) {
-                        int type = this->wonderBuiltValue == 1 ? 0x114 : -1;
-                        RGE_Static_Object* object = this->md->mostDamaged(3, type);
+                        int type = this->wonderBuiltValue == 1 ? MASTER_OBJECT_WONDER : -1;
+                        RGE_Static_Object* object = this->md->mostDamaged(OBJECT_GROUP_BUILDING, type);
                         if (object != 0 && object->object_state == RGE_OBJECT_STATE_ACTIVE
                             && this->md->object(
                                    -1, -1, -1, UNIT_AI_ACTION_REPAIR, -1, (int) object->id, -1, -1,
@@ -2424,7 +2424,7 @@ int TribeTacticalAIModule::doSomething() {
                     if (this->initialExplorationSatisfied() != 0
                         && (this->md->numberObjectsWithAction(UNIT_AI_ACTION_BUILD) < this->sn[SNCapCivilianBuilders]
                             || this->wonderInProgressValue != 0 || this->wonderBuiltValue != 0)) {
-                        RGE_Static_Object* object = this->md->mostDamaged(0x1b, -1);
+                        RGE_Static_Object* object = this->md->mostDamaged(OBJECT_GROUP_WALL, -1);
                         if (object != 0 && object->object_state == RGE_OBJECT_STATE_ACTIVE
                             && this->md->object(
                                    -1, -1, -1, UNIT_AI_ACTION_REPAIR, -1, (int) object->id, -1, -1,
@@ -2619,10 +2619,13 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* bo) {
         if (number <= list->maximumSizeValue - 1)
             goto add_to_list;
     } else {
-        if (objectGroup != 0 && objectGroup != 0x18 && objectGroup != 6 && objectGroup != 0x19 && objectGroup != 0x1A
-            && objectGroup != 0x0C && objectGroup != 0x23 && objectGroup != 0x17 && objectGroup != 0x24
-            && objectGroup != 0x1C && objectGroup != OBJECT_GROUP_PRIEST && objectGroup != 0x0D
-            && objectGroup != 0x27) {
+        if (objectGroup != OBJECT_GROUP_ARCHER && objectGroup != OBJECT_GROUP_WAR_ELEPHANT
+            && objectGroup != OBJECT_GROUP_INFANTRY && objectGroup != OBJECT_GROUP_HERO
+            && objectGroup != OBJECT_GROUP_ELEPHANT_ARCHER && objectGroup != OBJECT_GROUP_CAVALRY
+            && objectGroup != OBJECT_GROUP_CHARIOT && objectGroup != OBJECT_GROUP_CHARIOT_ARCHER
+            && objectGroup != OBJECT_GROUP_HORSE_ARCHER && objectGroup != OBJECT_GROUP_PHALANX
+            && objectGroup != OBJECT_GROUP_PRIEST && objectGroup != OBJECT_GROUP_SIEGE_WEAPON
+            && objectGroup != OBJECT_GROUP_SLINGER) {
             if (objectGroup != OBJECT_GROUP_TRADE_BOAT && objectGroup != OBJECT_GROUP_TRANSPORT_BOAT
                 && objectGroup != OBJECT_GROUP_WAR_BOAT && objectGroup != OBJECT_GROUP_FISHING_BOAT) {
                 if (objectToAdd->master_obj->id != MASTER_OBJECT_ARTIFACT1)
@@ -5220,7 +5223,8 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int flag) {
     for (i = 0; i < this->soldiers.number(); i++) {
         object = this->md->aiPlayer->world->object(this->soldiers[i]);
         if (object != 0 && object->unitAI() != 0 && this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0
-            && (object->master_obj->object_group == OBJECT_GROUP_PRIEST || object->master_obj->object_group == 0x0D)) {
+            && (object->master_obj->object_group == OBJECT_GROUP_PRIEST
+                || object->master_obj->object_group == OBJECT_GROUP_SIEGE_WEAPON)) {
             if (flag < 0) {
                 if (object->unitAI()->currentAction() == -1 || object->unitAI()->currentOrderPriority() < priority) {
                     this->workingArea.add(this->soldiers[i]);
@@ -6285,7 +6289,8 @@ int TribeTacticalAIModule::taskGatherer(
                             this->md->buildAI.insert(MASTER_OBJECT_GRANARY, 1, -1);
                         }
                     }
-                } else if (resource->master_obj->object_group != 0x1F && resource->master_obj->object_group != 5
+                } else if (resource->master_obj->object_group != 0x1F
+                           && resource->master_obj->object_group != OBJECT_GROUP_FISH
                            && resource->master_obj->object_group != 0x21) {
                     int storagePitCount = 0;
                     int unbuiltStoragePits = 0;

@@ -946,13 +946,13 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                             } else {
                                 if (fishingBoat == 1) {
                                     short group = object->master_obj->object_group;
-                                    if (group != 5 && group != 0x1f && group != 0x21) {
+                                    if (group != OBJECT_GROUP_FISH && group != 0x1f && group != 0x21) {
                                         goto next_resource;
                                     }
                                 }
                                 if (fishingBoat == 0) {
                                     short group = object->master_obj->object_group;
-                                    if (group == 5 || group == 0x1f || group == 0x21) {
+                                    if (group == OBJECT_GROUP_FISH || group == 0x1f || group == 0x21) {
                                         goto next_resource;
                                     }
                                 }
@@ -1773,12 +1773,14 @@ int TribeInformationAIModule::importantObject(int oType) {
 }
 
 int TribeInformationAIModule::importantUnit(int oType) {
-    if (oType != 0 && oType != OBJECT_GROUP_BUILDING && oType != OBJECT_GROUP_CIVILIAN && oType != 0x18
-        && oType != OBJECT_GROUP_FISHING_BOAT && oType != 6 && oType != 0x19 && oType != 0x11 && oType != 0x1A
-        && oType != 0xC && oType != 0x23 && oType != 0x17 && oType != 0x24 && oType != 0x1C
-        && oType != OBJECT_GROUP_PRIEST && oType != 0xD && oType != OBJECT_GROUP_TRADE_BOAT
+    if (oType != OBJECT_GROUP_ARCHER && oType != OBJECT_GROUP_BUILDING && oType != OBJECT_GROUP_CIVILIAN
+        && oType != OBJECT_GROUP_WAR_ELEPHANT && oType != OBJECT_GROUP_FISHING_BOAT && oType != OBJECT_GROUP_INFANTRY
+        && oType != OBJECT_GROUP_HERO && oType != 0x11 && oType != OBJECT_GROUP_ELEPHANT_ARCHER
+        && oType != OBJECT_GROUP_CAVALRY && oType != OBJECT_GROUP_CHARIOT && oType != OBJECT_GROUP_CHARIOT_ARCHER
+        && oType != OBJECT_GROUP_HORSE_ARCHER && oType != OBJECT_GROUP_PHALANX && oType != OBJECT_GROUP_PRIEST
+        && oType != OBJECT_GROUP_SIEGE_WEAPON && oType != OBJECT_GROUP_TRADE_BOAT
         && oType != OBJECT_GROUP_TRANSPORT_BOAT && oType != OBJECT_GROUP_WALL && oType != OBJECT_GROUP_WAR_BOAT
-        && oType != 0x27) {
+        && oType != OBJECT_GROUP_SLINGER) {
         return 0;
     }
     return 1;
@@ -1788,15 +1790,16 @@ int TribeInformationAIModule::importantUnit(int oType) {
 //! taskGatherer reads only that memory, and the group-10 carcass bonus in gameIDOfResourceObject is unreachable.
 //! Hunting animals (group 9) register fine; RockNROR adds dead predators to the food list.
 int TribeInformationAIModule::importantResource(int oType) {
-    if (oType == 0x1F || oType == 5 || oType == 0x21 || oType == 7 || oType == OBJECT_GROUP_HUNTED_ANIMAL
-        || oType == OBJECT_GROUP_STONE_SOURCE || oType == OBJECT_GROUP_GOLD_SOURCE || oType == OBJECT_GROUP_TREE) {
+    if (oType == 0x1F || oType == OBJECT_GROUP_FISH || oType == 0x21 || oType == OBJECT_GROUP_FORAGE
+        || oType == OBJECT_GROUP_HUNTED_ANIMAL || oType == OBJECT_GROUP_STONE_SOURCE
+        || oType == OBJECT_GROUP_GOLD_SOURCE || oType == OBJECT_GROUP_TREE) {
         return 1;
     }
     return 0;
 }
 
 int TribeInformationAIModule::importantMisc(int oType) {
-    if (oType != OBJECT_GROUP_ARTIFACT && oType != 0x1E) {
+    if (oType != OBJECT_GROUP_ARTIFACT && oType != OBJECT_GROUP_FLAG) {
         return 0;
     }
     return 1;
@@ -2850,8 +2853,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
 
                     if ((commanderIsBoat != 0 || this->importantObjectMemory[i].type != MASTER_OBJECT_DOCK_1
                          || commanderZone == targetZone)
-                        && (attackState.phase != 0 || this->importantObjectMemory[i].group != 0x1b)
-                        && (attackState.phase != 1 || this->importantObjectMemory[i].group == 0x1b)) {
+                        && (attackState.phase != 0 || this->importantObjectMemory[i].group != OBJECT_GROUP_WALL)
+                        && (attackState.phase != 1 || this->importantObjectMemory[i].group == OBJECT_GROUP_WALL)) {
                         int targetX = (int) oTDObject->world_x;
                         int dx = (int) this->importantObjectMemory[i].x - targetX;
                         if (dx < 0)
@@ -3275,7 +3278,7 @@ int TribeInformationAIModule::defendPriority(int oType, int oGroup) {
     }
 
     switch (oGroup) {
-        case 7:
+        case OBJECT_GROUP_FORAGE:
             return md->tacticalAI.strategicNumber(SNForageDefendPriority);
         case OBJECT_GROUP_STONE_SOURCE:
             return md->tacticalAI.strategicNumber(SNStoneDefendPriority);
@@ -3340,7 +3343,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj) {
         }
         default:
             switch (group) {
-                case 7:
+                case OBJECT_GROUP_FORAGE:
                     if (this->md->tacticalAI.strategicNumber(SNForageDefendPriority) <= 0)
                         goto checkDefend_fail;
                     this->itemsToDefend.add(obj->id);
@@ -3591,7 +3594,7 @@ void TribeInformationAIModule::setupInfluenceMap(
 
                 short group = master->object_group;
                 if (placementType == 1) {
-                    if (group == 7) {
+                    if (group == OBJECT_GROUP_FORAGE) {
                         rMin.x -= 5;
                         rMin.y -= 5;
                         this->mapBound(rMin);
@@ -3639,7 +3642,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                             iMap.incrementValue(rMin.x, rMin.y, rMax.x, rMax.y, 2);
                         }
                     }
-                } else if (placementType == 2 && group == 7) {
+                } else if (placementType == 2 && group == OBJECT_GROUP_FORAGE) {
                     rMin.x -= 3;
                     rMin.y -= 3;
                     this->mapBound(rMin);
@@ -3942,10 +3945,11 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(
                                        != 0x0F)
                                 goto skip_visible;
                             group = this->importantObjectMemory[i].group;
-                            if (group != 3 && group != 0x1B)
+                            if (group != OBJECT_GROUP_BUILDING && group != OBJECT_GROUP_WALL)
                                 numberNonSiegeTargets++;
                             group = this->importantObjectMemory[i].group;
-                            if (group != 2 && group != 0x15 && group != 0x16 && group != 0x14
+                            if (group != OBJECT_GROUP_TRADE_BOAT && group != OBJECT_GROUP_FISHING_BOAT
+                                && group != OBJECT_GROUP_WAR_BOAT && group != OBJECT_GROUP_TRANSPORT_BOAT
                                 && this->importantObjectMemory[i].type != MASTER_OBJECT_DOCK_1)
                                 numberNonBoatTargets++;
                             dist = unit->distance_to_position(
@@ -5242,7 +5246,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj) {
                 this->closestDropsiteResourceID[2] = this->resources[resourceType][i].id;
                 return 1;
             }
-            if (object_group == 7) {
+            if (object_group == OBJECT_GROUP_FORAGE) {
                 int value = (int) distance;
                 if (value >= this->closestDropsiteValue[0] && this->closestDropsiteValue[0] != -1) {
                     return 1;
@@ -5293,7 +5297,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj) {
             this->closestDropsiteResourceID[2] = obj->id;
             return 1;
         }
-    } else if (object_group == 7) {
+    } else if (object_group == OBJECT_GROUP_FORAGE) {
         int value = (int) distance;
         if (value < this->closestDropsiteValue[0] || this->closestDropsiteValue[0] == -1) {
             this->closestDropsiteValue[0] = value;
@@ -5323,10 +5327,11 @@ float TribeInformationAIModule::findClosestDropsite(
             if (dropsite != 0) {
                 if (resourceObj->lookupZone((int) dropsite->world_x, (int) dropsite->world_y) == resourceZone) {
                     int group = dropsite->master_obj->id;
-                    if ((group == 0x6D && countTownCenter != 0)
-                        || (group == 0x67 && resourceObj->master_obj->id != MASTER_OBJECT_FORAGE_FRUIT
+                    if ((group == MASTER_OBJECT_TOWN_CENTER1 && countTownCenter != 0)
+                        || (group == MASTER_OBJECT_STORAGE_PIT1
+                            && resourceObj->master_obj->id != MASTER_OBJECT_FORAGE_FRUIT
                             && resourceObj->master_obj->id != MASTER_OBJECT_FARM)
-                        || (group == 0x44
+                        || (group == MASTER_OBJECT_GRANARY
                             && (resourceObj->master_obj->id == MASTER_OBJECT_FORAGE_FRUIT
                                 || resourceObj->master_obj->id == MASTER_OBJECT_FARM))) {
                         float dx = dropsite->world_x - resourceObj->world_x;

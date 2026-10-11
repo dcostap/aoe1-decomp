@@ -3,21 +3,43 @@
 
 // Master-object groups, not master-object IDs or tactical-group types.
 // Keep the short object_group field and existing integer parameter types.
+// The names are cleanup labels taken from the empires.dat members of each group, not developer names.
+// Group 11 (missiles, rubble, corpses, smoke) and the memberless groups 0x11, 0x1F, 0x21, and 0x26 stay
+// numeric. See decomp_notes/object_groups.md.
+#define OBJECT_GROUP_ARCHER          0
 #define OBJECT_GROUP_ARTIFACT        1
 #define OBJECT_GROUP_TRADE_BOAT      2
 #define OBJECT_GROUP_BUILDING        3
 #define OBJECT_GROUP_CIVILIAN        4
+#define OBJECT_GROUP_FISH            5
+#define OBJECT_GROUP_INFANTRY        6
+#define OBJECT_GROUP_FORAGE          7
 #define OBJECT_GROUP_STONE_SOURCE    8
 #define OBJECT_GROUP_HUNTED_ANIMAL   9
 #define OBJECT_GROUP_PREDATOR        10
+#define OBJECT_GROUP_CAVALRY         0x0C
+#define OBJECT_GROUP_SIEGE_WEAPON    0x0D
+#define OBJECT_GROUP_TERRAIN         0x0E
 #define OBJECT_GROUP_TREE            0x0F
+#define OBJECT_GROUP_TREE_STUMP      0x10
 #define OBJECT_GROUP_PRIEST          0x12
 #define OBJECT_GROUP_TRANSPORT_BOAT  0x14
 #define OBJECT_GROUP_FISHING_BOAT    0x15
 #define OBJECT_GROUP_WAR_BOAT        0x16
+#define OBJECT_GROUP_CHARIOT_ARCHER  0x17
+#define OBJECT_GROUP_WAR_ELEPHANT    0x18
+#define OBJECT_GROUP_HERO            0x19
+#define OBJECT_GROUP_ELEPHANT_ARCHER 0x1A
 #define OBJECT_GROUP_WALL            0x1B
+#define OBJECT_GROUP_PHALANX         0x1C
+#define OBJECT_GROUP_TRAINED_LION    0x1D
+#define OBJECT_GROUP_FLAG            0x1E
 #define OBJECT_GROUP_GOLD_SOURCE     0x20
 #define OBJECT_GROUP_CLIFF           0x22
+#define OBJECT_GROUP_CHARIOT         0x23
+#define OBJECT_GROUP_HORSE_ARCHER    0x24
+#define OBJECT_GROUP_DOPPLEGANGER    0x25
+#define OBJECT_GROUP_SLINGER         0x27
 
 // Master-object IDs, the index into RGE_Player::master_objects. Each name is the internal name that
 // the pinned XPack/data2/empires.dat gives that ID, spelled as a macro. 158, 159, and 163 use the

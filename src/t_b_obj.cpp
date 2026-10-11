@@ -798,7 +798,8 @@ void TRIBE_Building_Object::damage(
     RGE_Master_Static_Object* master = attacking_object->master_obj;
     short group = master->object_group;
 
-    if (group == 0 || group == 0x17 || group == 0x24 || group == 0x1A || master->id == MASTER_OBJECT_WATCH_TOWER
+    if (group == OBJECT_GROUP_ARCHER || group == OBJECT_GROUP_CHARIOT_ARCHER || group == OBJECT_GROUP_HORSE_ARCHER
+        || group == OBJECT_GROUP_ELEPHANT_ARCHER || master->id == MASTER_OBJECT_WATCH_TOWER
         || master->id == MASTER_OBJECT_GUARD_TOWER || master->id == MASTER_OBJECT_SENTRY_TOWER
         || master->id == MASTER_OBJECT_MIRROR_TOWER || master->id == MASTER_OBJECT_HERO_ZENOBIA_S_TOWER) {
         if (temp_hp - hp < g_building_small_damage_threshold) {

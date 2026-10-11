@@ -534,9 +534,10 @@ int TribeMainDecisionAIModule::isMoveable(int o) {
         return 0;
 
     short group = obj->master_obj->object_group;
-    if (group == OBJECT_GROUP_BUILDING || group == OBJECT_GROUP_WALL || group == 0x1E || group == 0x1F || group == 5
-        || group == 0x21 || group == 7 || group == OBJECT_GROUP_STONE_SOURCE || group == OBJECT_GROUP_GOLD_SOURCE
-        || group == 0x10 || group == 0x0E || group == OBJECT_GROUP_TREE)
+    if (group == OBJECT_GROUP_BUILDING || group == OBJECT_GROUP_WALL || group == OBJECT_GROUP_FLAG || group == 0x1F
+        || group == OBJECT_GROUP_FISH || group == 0x21 || group == OBJECT_GROUP_FORAGE
+        || group == OBJECT_GROUP_STONE_SOURCE || group == OBJECT_GROUP_GOLD_SOURCE || group == OBJECT_GROUP_TREE_STUMP
+        || group == OBJECT_GROUP_TERRAIN || group == OBJECT_GROUP_TREE)
         return 0;
 
     return 1;
