@@ -123,7 +123,8 @@ unsigned char TRIBE_Action_Make_Obj::update() {
                 if (!this->place_obj(&newObject)) {
                     static_cast<TRIBE_Player*>(this->obj->owner)->reimburse_obj_cost(this->obj_id);
                     rge_base_game->notification(
-                        0x68, static_cast<TRIBE_Player*>(this->obj->owner)->id, this->obj_id, 0, 0
+                        GAME_NOTIFY_NO_ROOM_FOR_UNIT, static_cast<TRIBE_Player*>(this->obj->owner)->id, this->obj_id, 0,
+                        0
                     );
                     static_cast<TRIBE_Player*>(this->obj->owner)
                         ->logMessage(
@@ -139,7 +140,7 @@ unsigned char TRIBE_Action_Make_Obj::update() {
                     return RGE_ACTION_UPDATE_REMOVE;
                 } else {
                     rge_base_game->notification(
-                        0x66, static_cast<TRIBE_Player*>(this->obj->owner)->id, (int) this->obj_id,
+                        GAME_NOTIFY_UNIT_TRAINED, static_cast<TRIBE_Player*>(this->obj->owner)->id, (int) this->obj_id,
                         (long) this->obj->world_x, (long) this->obj->world_y
                     );
                     static_cast<TRIBE_Player*>(this->obj->owner)
@@ -245,7 +246,9 @@ int TRIBE_Action_Make_Obj::stop() {
         }
     }
 
-    rge_base_game->notification(0x67, static_cast<TRIBE_Player*>(this->obj->owner)->id, (int) this->obj_id, 0, 0);
+    rge_base_game->notification(
+        GAME_NOTIFY_TRAINING_STOPPED, static_cast<TRIBE_Player*>(this->obj->owner)->id, (int) this->obj_id, 0, 0
+    );
     this->obj->notify(
         (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long) UNIT_AI_ACTION_TRAIN, (long) 0,
         (long) 0

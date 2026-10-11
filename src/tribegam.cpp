@@ -953,8 +953,8 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
                             return this->get_string(STRING_ID_ERROR_POPULATION_LIMIT, str, max_len);
                     }
                     break;
-                case RGE_ATTRIBUTE_MESSAGE_TRIBUTE_RECEIVED:
-                    return this->get_string(STRING_ID_MESSAGE_TRIBUTE_RECEIVED, str, max_len);
+                case RGE_ATTRIBUTE_MESSAGE_TRIBUTE_GOLD:
+                    return this->get_string(STRING_ID_MESSAGE_TRIBUTE_GOLD, str, max_len);
                 case RGE_ATTRIBUTE_ERROR_NO_ROOM_FOR_UNIT:
                     return this->get_string(STRING_ID_ERROR_NOT_ENOUGH_ROOM_FOR_UNIT, str, max_len);
                 case RGE_ATTRIBUTE_ERROR_NO_DOCKS:
@@ -1741,7 +1741,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     char temp_str[256];
 
     switch (notify_type) {
-        case 0x7E:
+        case GAME_NOTIFY_OBJECT_DEPLETED:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(0x10);
                 this->add_notification_loc(val3, val4);
@@ -1749,14 +1749,14 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x7C:
+        case GAME_NOTIFY_PRODUCTION_QUEUE_CHANGED:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->game_screen->setup_buttons();
                 return;
             }
             break;
 
-        case 0x7D:
+        case GAME_NOTIFY_ATTRIBUTE_NEEDED:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1, val2, msg, 256);
                 this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
@@ -1764,7 +1764,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x64:
+        case GAME_NOTIFY_RESEARCH_COMPLETED:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 if (val2 == 0x65 || val2 == 0x66 || val2 == 0x67) {
                     this->play_sound(5);
@@ -1777,8 +1777,8 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x66:
-        case 0x69:
+        case GAME_NOTIFY_UNIT_TRAINED:
+        case GAME_NOTIFY_BUILDING_COMPLETED:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->game_screen->setup_buttons();
                 this->add_notification_loc(val3, val4);
@@ -1786,7 +1786,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x68:
+        case GAME_NOTIFY_NO_ROOM_FOR_UNIT:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, RGE_ATTRIBUTE_ERROR_NO_ROOM_FOR_UNIT, val2, msg, 256);
@@ -1795,7 +1795,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x6B:
+        case GAME_NOTIFY_CANNOT_REPAIR:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, RGE_ATTRIBUTE_ERROR_CANNOT_REPAIR, 0, msg, 256);
@@ -1804,7 +1804,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 1:
+        case GAME_NOTIFY_NOT_CLOSE_ENOUGH_TO_LAND:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, RGE_ATTRIBUTE_ERROR_NOT_CLOSE_ENOUGH_TO_LAND, 0, msg, 256);
@@ -1813,7 +1813,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 2:
+        case GAME_NOTIFY_CANNOT_TRADE_WITH_ENEMY:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, RGE_ATTRIBUTE_ERROR_CANNOT_TRADE_WITH_ENEMY, 0, msg, 256);
@@ -1822,7 +1822,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 3:
+        case GAME_NOTIFY_NOT_ENOUGH_UNLOAD_SPACE:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, RGE_ATTRIBUTE_ERROR_NOT_ENOUGH_UNLOAD_SPACE, 0, msg, 256);
@@ -1831,7 +1831,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 4:
+        case GAME_NOTIFY_PLAYER_DISCONNECTED:
             if (this->playerID(val1) != this->world->curr_player && this->game_screen != 0
                 && player_dropped[val1] == 0) {
                 player_dropped[val1] = 1;
@@ -1845,7 +1845,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 5:
+        case GAME_NOTIFY_PLAYER_RESIGNED:
             if (val1 != this->world->curr_player && this->game_screen != 0 && val1 > 0) {
                 this->play_sound(6);
                 if (val2 != 0) {
@@ -1859,7 +1859,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 6:
+        case GAME_NOTIFY_PLAYER_DEFEATED:
             if (val1 != this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(6);
                 if (val1 > 0) {
@@ -1871,18 +1871,18 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 7:
+        case GAME_NOTIFY_TRIBUTE_PAID:
             if (val2 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(4);
                 switch (val3) {
-                    case 0:
+                    case RGE_RESOURCE_FOOD:
                         this->get_string(STRING_ID_MESSAGE_TRIBUTE_FOOD, temp_str, 256);
                         break;
-                    case 1:
+                    case RGE_RESOURCE_WOOD:
                         this->get_string(STRING_ID_MESSAGE_TRIBUTE_WOOD, temp_str, 256);
                         break;
-                    case 3:
-                        this->get_string(STRING_ID_MESSAGE_TRIBUTE_RECEIVED, temp_str, 256);
+                    case RGE_RESOURCE_GOLD:
+                        this->get_string(STRING_ID_MESSAGE_TRIBUTE_GOLD, temp_str, 256);
                         break;
                     default:
                         this->get_string(STRING_ID_MESSAGE_TRIBUTE_STONE, temp_str, 256);
@@ -1894,7 +1894,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 8:
+        case GAME_NOTIFY_DIPLOMACY_CHANGED:
             if (this->game_screen != 0) {
                 this->game_screen->reset_clocks();
             }
@@ -1905,13 +1905,13 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
                 return;
             }
             switch (val3) {
-                case 0:
+                case RGE_RELATION_ALLY:
                     this->get_string(STRING_ID_MESSAGE_DIPLOMACY_ALLY, temp_str, 256);
                     break;
-                case 1:
+                case RGE_RELATION_NEUTRAL:
                     this->get_string(STRING_ID_MESSAGE_DIPLOMACY_NEUTRAL, temp_str, 256);
                     break;
-                case 3:
+                case RGE_RELATION_ENEMY:
                     this->get_string(STRING_ID_MESSAGE_DIPLOMACY_ENEMY, temp_str, 256);
                     break;
             }
@@ -1919,7 +1919,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             this->game_screen->display_system_message(msg);
             return;
 
-        case 0x6C:
+        case GAME_NOTIFY_WONDER_STARTED:
             if (this->game_screen != 0) {
                 this->play_sound(8);
                 if (val1 == this->world->curr_player) {
@@ -1936,7 +1936,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x6D: {
+        case GAME_NOTIFY_WONDER_COMPLETED: {
             RGE_Player* p1;
             RGE_Player* p2;
 
@@ -1973,7 +1973,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             return;
         }
 
-        case 0x6E: {
+        case GAME_NOTIFY_WONDER_DESTROYED: {
             RGE_Player* p1;
             RGE_Player* p2;
 
@@ -2004,7 +2004,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             return;
         }
 
-        case 0x72: {
+        case GAME_NOTIFY_ARTIFACTS_CAPTURED: {
             RGE_Player* p1;
             RGE_Player* p2;
             int i;
@@ -2041,7 +2041,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             return;
         }
 
-        case 0x73:
+        case GAME_NOTIFY_ARTIFACTS_LOST:
             if (this->game_screen == 0) {
                 return;
             }
@@ -2054,7 +2054,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             this->game_screen->reset_clocks();
             return;
 
-        case 0x74: {
+        case GAME_NOTIFY_RUINS_CAPTURED: {
             RGE_Player* p1;
             RGE_Player* p2;
             int i;
@@ -2091,7 +2091,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             return;
         }
 
-        case 0x75:
+        case GAME_NOTIFY_RUINS_LOST:
             if (this->game_screen == 0) {
                 return;
             }
@@ -2104,7 +2104,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             this->game_screen->reset_clocks();
             return;
 
-        case 0x76:
+        case GAME_NOTIFY_CONVERSION_NO_FAITH:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string(STRING_ID_ERROR_CONVERSION_NO_FAITH, msg, 256);
@@ -2113,7 +2113,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x77:
+        case GAME_NOTIFY_CONVERSION_PRIEST_NEEDS_MONOTHEISM:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string(STRING_ID_ERROR_CONVERSION_NO_MONOTHEISM_PRIESTS, msg, 256);
@@ -2122,7 +2122,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x78:
+        case GAME_NOTIFY_CONVERSION_BUILDING_NEEDS_MONOTHEISM:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string(STRING_ID_ERROR_CONVERSION_NO_MONOTHEISM_BUILDINGS, msg, 256);
@@ -2131,7 +2131,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x79:
+        case GAME_NOTIFY_CONVERSION_TOWN_CENTER:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string(STRING_ID_ERROR_CONVERSION_TOWN_CENTER, msg, 256);
@@ -2140,7 +2140,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x7A:
+        case GAME_NOTIFY_CONVERSION_WONDER:
             if (val1 == this->world->curr_player && this->game_screen != 0) {
                 this->play_sound(3);
                 this->get_string(STRING_ID_ERROR_CONVERSION_WONDER, msg, 256);
@@ -2149,7 +2149,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             }
             break;
 
-        case 0x7B:
+        case GAME_NOTIFY_CONVERSION_SUCCEEDED:
             if (this->game_screen != 0 && val1 != this->world->curr_player && val2 == this->world->curr_player) {
                 this->play_sound(0x0D);
             }

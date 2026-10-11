@@ -77,18 +77,18 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             }
             target_id = this->target_obj->master_obj->id;
             if (target_id == 0x6d) {
-                rge_base_game->notification(0x79, (int) this->obj->owner->id, 0, 0, 0);
+                rge_base_game->notification(GAME_NOTIFY_CONVERSION_TOWN_CENTER, (int) this->obj->owner->id, 0, 0, 0);
                 return;
             }
             if (target_id == 0x114) {
-                rge_base_game->notification(0x7a, (int) this->obj->owner->id, 0, 0, 0);
+                rge_base_game->notification(GAME_NOTIFY_CONVERSION_WONDER, (int) this->obj->owner->id, 0, 0, 0);
                 return;
             }
             return;
         }
         if (object->attribute_amount_held < 100.0) {
             this->set_state(0x0d);
-            rge_base_game->notification(0x76, (int) this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(GAME_NOTIFY_CONVERSION_NO_FAITH, (int) this->obj->owner->id, 0, 0, 0);
             return;
         }
         if (object_group == OBJECT_GROUP_BUILDING) {
@@ -107,7 +107,9 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notification(0x77, (int) this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(
+                GAME_NOTIFY_CONVERSION_PRIEST_NEEDS_MONOTHEISM, (int) this->obj->owner->id, 0, 0, 0
+            );
             return;
         }
         if (object_group == OBJECT_GROUP_BUILDING
@@ -117,7 +119,9 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notification(0x78, (int) this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(
+                GAME_NOTIFY_CONVERSION_BUILDING_NEEDS_MONOTHEISM, (int) this->obj->owner->id, 0, 0, 0
+            );
             return;
         }
     }
@@ -329,7 +333,9 @@ uchar TRIBE_Action_Convert::update() {
                 // Direct field ownership preserves the original x87 order.
                 if (chance <= this->task->work_val1
                                   * static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate) {
-                    rge_base_game->notification(0x7b, this->obj->owner->id, this->target_obj->owner->id, 0, 0);
+                    rge_base_game->notification(
+                        GAME_NOTIFY_CONVERSION_SUCCEEDED, this->obj->owner->id, this->target_obj->owner->id, 0, 0
+                    );
                     this->target_obj->change_ownership(this->obj->owner);
                     this->obj->owner->add_attribute_num(PLAYER_ATTRIBUTE_CONVERSIONS, 1.0f, 0);
                     this->obj->set_attribute(0x22, 0);
@@ -387,7 +393,7 @@ void TRIBE_Action_Convert::martyrdom() {
     int target_id = this->target_obj->owner->id;
     int source_id = this->obj->owner->id;
 
-    rge_base_game->notification(0x7B, source_id, target_id, 0, 0);
+    rge_base_game->notification(GAME_NOTIFY_CONVERSION_SUCCEEDED, source_id, target_id, 0, 0);
     this->target_obj->change_ownership(this->obj->owner);
     this->obj->owner->add_attribute_num(PLAYER_ATTRIBUTE_CONVERSIONS, 1.0f, 0);
     this->obj->set_attribute(0x22, 0);

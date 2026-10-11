@@ -381,7 +381,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* order) {
             break;
         case TRIBE_GAME_COMMAND_ID_RELATION:
             this->world->players[order->var1]->set_relation(order->var2, order->var3);
-            rge_base_game->notification(8, order->var1, order->var2, order->var4, 0);
+            rge_base_game->notification(GAME_NOTIFY_DIPLOMACY_CHANGED, order->var1, order->var2, order->var4, 0);
             this->world->update_mutual_allies();
             break;
         case TRIBE_GAME_COMMAND_ID_GAME_SPEED:
@@ -490,7 +490,9 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* orde
     this->world->players[order->player_id]->add_attribute_num(order->attr_id, -(tribute_amount + cost), 0);
     this->world->players[order->player_id]->add_attribute_num(PLAYER_ATTRIBUTE_TRIBUTE_SENT, tribute_amount + cost, 0);
     this->world->players[order->to_player_id]->add_attribute_num(PLAYER_ATTRIBUTE_TRIBUTE_SENT, -tribute_amount, 0);
-    rge_base_game->notification(7, order->player_id, order->to_player_id, order->attr_id, (long) tribute_amount);
+    rge_base_game->notification(
+        GAME_NOTIFY_TRIBUTE_PAID, order->player_id, order->to_player_id, order->attr_id, (long) tribute_amount
+    );
     this->world->players[order->to_player_id]->notify(
         order->player_id, order->to_player_id, 0x20A, order->attr_id, (long) order->attr_amount, 0
     );

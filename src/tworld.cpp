@@ -1038,7 +1038,7 @@ unsigned char TRIBE_World::check_game_state() {
                             if (this->victory_type == 0) {
                                 for (j = 0; j < team_size[i]; ++j)
                                     team_player[i][j]->artifact_held_time = 2000.0f;
-                                rge_base_game->notification(0x72, first_player->id, 0, 0, 0);
+                                rge_base_game->notification(GAME_NOTIFY_ARTIFACTS_CAPTURED, first_player->id, 0, 0, 0);
                             }
                         } else if (held_time >= 1.0f && this->victory_type == 0) {
                             held_time -= this->world_time_delta_seconds * 2.0f;
@@ -1056,7 +1056,7 @@ unsigned char TRIBE_World::check_game_state() {
                         if (this->victory_type == 0) {
                             for (j = 0; j < team_size[i]; ++j)
                                 team_player[i][j]->artifact_held_time = -1.0f;
-                            rge_base_game->notification(0x73, first_player->id, 0, 0, 0);
+                            rge_base_game->notification(GAME_NOTIFY_ARTIFACTS_LOST, first_player->id, 0, 0, 0);
                         }
                     }
                 }
@@ -1079,7 +1079,7 @@ unsigned char TRIBE_World::check_game_state() {
                             if (this->victory_type == 0) {
                                 for (j = 0; j < team_size[i]; ++j)
                                     team_player[i][j]->ruin_held_time = 2000.0f;
-                                rge_base_game->notification(0x74, first_player->id, 0, 0, 0);
+                                rge_base_game->notification(GAME_NOTIFY_RUINS_CAPTURED, first_player->id, 0, 0, 0);
                             }
                         } else if (held_time >= 1.0f && this->victory_type == 0) {
                             held_time -= this->world_time_delta_seconds * 2.0f;
@@ -1097,7 +1097,7 @@ unsigned char TRIBE_World::check_game_state() {
                         if (this->victory_type == 0) {
                             for (j = 0; j < team_size[i]; ++j)
                                 team_player[i][j]->ruin_held_time = -1.0f;
-                            rge_base_game->notification(0x75, first_player->id, 0, 0, 0);
+                            rge_base_game->notification(GAME_NOTIFY_RUINS_LOST, first_player->id, 0, 0, 0);
                         }
                     }
                 }

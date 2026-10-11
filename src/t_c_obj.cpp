@@ -206,7 +206,7 @@ void TRIBE_Combat_Object::cancel_object() {
 void TRIBE_Combat_Object::die_die_die() {
     if (this->object_state == RGE_OBJECT_STATE_ACTIVE && this->owner->attributes[PLAYER_ATTRIBUTE_MARTYRDOM] >= 1.0f) {
         RGE_Action* action = this->actions->get_action();
-        if (action != 0 && action->type() == 0x68) {
+        if (action != 0 && action->type() == TRIBE_ACTION_TYPE_CONVERT) {
             static_cast<TRIBE_Action_Convert*>(action)->martyrdom();
         }
     }

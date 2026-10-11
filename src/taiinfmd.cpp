@@ -5694,7 +5694,7 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int playerID) {
                                 RGE_Action_Object* actionObject = static_cast<RGE_Action_Object*>(obj);
                                 if (actionObject->actions->have_action()) {
                                     RGE_Action* action = actionObject->actions->get_action();
-                                    if (action->type() == 0x78) {
+                                    if (action->type() == TRIBE_ACTION_TYPE_WONDER) {
                                         action = actionObject->actions->get_action();
                                         int state = action->state;
                                         action = actionObject->actions->get_action();

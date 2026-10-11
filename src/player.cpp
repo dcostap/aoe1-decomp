@@ -253,7 +253,7 @@ void RGE_Player::set_game_status(unsigned char new_status) {
         return;
     player->game_status = new_status;
     if (new_status == 2 && !player->resigned) {
-        rge_base_game->notification(6, player->id, 0, 0, 0);
+        rge_base_game->notification(GAME_NOTIFY_PLAYER_DEFEATED, player->id, 0, 0, 0);
     }
 }
 
@@ -262,7 +262,7 @@ void RGE_Player::do_resign(int dropped) {
     this->resigned = 1;
     this->set_game_status(2);
     if (!resigned) {
-        rge_base_game->notification(5, this->id, dropped, 0, 0);
+        rge_base_game->notification(GAME_NOTIFY_PLAYER_RESIGNED, this->id, dropped, 0, 0);
     }
 }
 

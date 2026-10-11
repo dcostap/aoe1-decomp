@@ -458,7 +458,9 @@ void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* order) {
         player->add_attribute_num(order->attr_id, -order->amount, 0);
         this->world->players[order->to_player_id]->add_attribute_num(order->attr_id, order->amount, 0);
 
-        rge_base_game->notification(7, order->player_id, order->to_player_id, order->attr_id, (long) order->amount);
+        rge_base_game->notification(
+            GAME_NOTIFY_TRIBUTE_PAID, order->player_id, order->to_player_id, order->attr_id, (long) order->amount
+        );
 
         this->world->players[order->to_player_id]->notify(
             order->player_id, order->to_player_id, 0x20A, order->attr_id, (long) order->amount, 0

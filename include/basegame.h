@@ -156,7 +156,7 @@ enum RGE_String_Type {
 
 enum RGE_Attribute_String_Id {
     RGE_ATTRIBUTE_ERROR_POPULATION_LIMIT = 0x20,
-    RGE_ATTRIBUTE_MESSAGE_TRIBUTE_RECEIVED = 0x68,
+    RGE_ATTRIBUTE_MESSAGE_TRIBUTE_GOLD = 0x68,
     RGE_ATTRIBUTE_ERROR_NO_ROOM_FOR_UNIT = 1000,
     RGE_ATTRIBUTE_ERROR_NO_DOCKS = 0x65,
     RGE_ATTRIBUTE_ERROR_NOT_CLOSE_ENOUGH_TO_LAND = 0x66,
@@ -164,6 +164,41 @@ enum RGE_Attribute_String_Id {
     RGE_ATTRIBUTE_ERROR_CANNOT_TRADE_WITH_ENEMY = 0x69,
     RGE_ATTRIBUTE_ERROR_CANNOT_REPAIR = 0x6A
 };
+
+// Event types passed to RGE_Base_Game::notification(). TRIBE_Game::notification handles them.
+// The names are cleanup labels from the message each case shows and the code that sends it.
+// Types 2 and 3 are named by the message shown, which the senders swap; see TRIBE_Player::notify.
+#define GAME_NOTIFY_NOT_CLOSE_ENOUGH_TO_LAND          1
+#define GAME_NOTIFY_CANNOT_TRADE_WITH_ENEMY           2
+#define GAME_NOTIFY_NOT_ENOUGH_UNLOAD_SPACE           3
+#define GAME_NOTIFY_PLAYER_DISCONNECTED               4
+#define GAME_NOTIFY_PLAYER_RESIGNED                   5
+#define GAME_NOTIFY_PLAYER_DEFEATED                   6
+#define GAME_NOTIFY_TRIBUTE_PAID                      7
+#define GAME_NOTIFY_DIPLOMACY_CHANGED                 8
+#define GAME_NOTIFY_RESEARCH_COMPLETED                0x64
+#define GAME_NOTIFY_RESEARCH_STOPPED                  0x65
+#define GAME_NOTIFY_UNIT_TRAINED                      0x66
+#define GAME_NOTIFY_TRAINING_STOPPED                  0x67
+#define GAME_NOTIFY_NO_ROOM_FOR_UNIT                  0x68
+#define GAME_NOTIFY_BUILDING_COMPLETED                0x69
+#define GAME_NOTIFY_CANNOT_REPAIR                     0x6B
+#define GAME_NOTIFY_WONDER_STARTED                    0x6C
+#define GAME_NOTIFY_WONDER_COMPLETED                  0x6D
+#define GAME_NOTIFY_WONDER_DESTROYED                  0x6E
+#define GAME_NOTIFY_ARTIFACTS_CAPTURED                0x72
+#define GAME_NOTIFY_ARTIFACTS_LOST                    0x73
+#define GAME_NOTIFY_RUINS_CAPTURED                    0x74
+#define GAME_NOTIFY_RUINS_LOST                        0x75
+#define GAME_NOTIFY_CONVERSION_NO_FAITH               0x76
+#define GAME_NOTIFY_CONVERSION_PRIEST_NEEDS_MONOTHEISM 0x77
+#define GAME_NOTIFY_CONVERSION_BUILDING_NEEDS_MONOTHEISM 0x78
+#define GAME_NOTIFY_CONVERSION_TOWN_CENTER            0x79
+#define GAME_NOTIFY_CONVERSION_WONDER                 0x7A
+#define GAME_NOTIFY_CONVERSION_SUCCEEDED              0x7B
+#define GAME_NOTIFY_PRODUCTION_QUEUE_CHANGED          0x7C
+#define GAME_NOTIFY_ATTRIBUTE_NEEDED                  0x7D
+#define GAME_NOTIFY_OBJECT_DEPLETED                   0x7E
 
 // These values index the font array loaded by RGE_Base_Game::setup_fonts().
 enum RGE_Font_Index {

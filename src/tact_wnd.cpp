@@ -84,7 +84,7 @@ TRIBE_Action_Wonder::~TRIBE_Action_Wonder() {
         }
 
         rge_base_game->notification(
-            0x6E, this->obj->owner->id, (long) this->obj->world_x, (long) this->obj->world_y, 0
+            GAME_NOTIFY_WONDER_DESTROYED, this->obj->owner->id, (long) this->obj->world_x, (long) this->obj->world_y, 0
         );
     }
 }
@@ -121,7 +121,8 @@ void TRIBE_Action_Wonder::set_state(unsigned char new_state) {
             }
 
             rge_base_game->notification(
-                0x6D, this->obj->owner->id, (long) this->obj->world_x, (long) this->obj->world_y, 0
+                GAME_NOTIFY_WONDER_COMPLETED, this->obj->owner->id, (long) this->obj->world_x,
+                (long) this->obj->world_y, 0
             );
             return;
         }
@@ -143,7 +144,8 @@ void TRIBE_Action_Wonder::set_state(unsigned char new_state) {
             }
 
             rge_base_game->notification(
-                0x6C, this->obj->owner->id, (long) this->obj->world_x, (long) this->obj->world_y, 0
+                GAME_NOTIFY_WONDER_STARTED, this->obj->owner->id, (long) this->obj->world_x, (long) this->obj->world_y,
+                0
             );
             return;
         }

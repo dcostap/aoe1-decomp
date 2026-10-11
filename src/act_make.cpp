@@ -48,7 +48,8 @@ unsigned char RGE_Action_Make::update() {
             if (this->obj->owner->attributes[0x24] > 0.0) {
                 if (this->obj->attribute_amount_held <= 0.0) {
                     rge_base_game->notification(
-                        0x7E, this->obj->owner->id, this->obj->id, (int) this->obj->world_x, (int) this->obj->world_y
+                        GAME_NOTIFY_OBJECT_DEPLETED, this->obj->owner->id, this->obj->id, (int) this->obj->world_x,
+                        (int) this->obj->world_y
                     );
                     this->obj->die_die_die();
                 }

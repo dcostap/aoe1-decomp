@@ -276,7 +276,9 @@ unsigned char TRIBE_Action_Repair::update() {
                 this->obj->notify(
                     this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_REPAIR, 0, 0
                 );
-                rge_base_game->notification(0x6B, this->obj->owner->id, this->target_obj->id, 0, 0);
+                rge_base_game->notification(
+                    GAME_NOTIFY_CANNOT_REPAIR, this->obj->owner->id, this->target_obj->id, 0, 0
+                );
                 this->set_state(2);
                 return RGE_ACTION_UPDATE_CONTINUE;
             }

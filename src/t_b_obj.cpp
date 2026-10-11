@@ -112,7 +112,7 @@ TRIBE_Building_Object::~TRIBE_Building_Object() {
     if (production_queue != 0) {
         free(production_queue);
         production_queue = 0;
-        if (production_queue_need_attr == 4) {
+        if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
             production_queue_need_attr = -1;
             int id = owner->id;
             TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
@@ -304,7 +304,8 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
         }
 
         rge_base_game->notification(
-            0x69, owner->id, static_cast<TRIBE_Master_Building_Object*>(master_obj)->id, (long) world_x, (long) world_y
+            GAME_NOTIFY_BUILDING_COMPLETED, owner->id, static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
+            (long) world_x, (long) world_y
         );
         static_cast<TRIBE_Player*>(owner)->registerBuild(this, unique_build_id);
     }
@@ -417,7 +418,7 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* new_owner) {
     }
 
     if (production_queue_count > 0) {
-        if (production_queue_need_attr == 4) {
+        if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
             production_queue_need_attr = -1;
             int id = owner->id;
             long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
@@ -743,10 +744,10 @@ int TRIBE_Building_Object::work_status(
     }
 
     switch (work_type) {
-        case 0x66:
+        case TRIBE_ACTION_TYPE_MAKE_OBJECT:
             static_cast<TRIBE_Action_Make_Obj*>(action)->get_info(work_target, progress, name, name_size);
             return 1;
-        case 0x67:
+        case TRIBE_ACTION_TYPE_MAKE_TECH:
             static_cast<TRIBE_Action_Make_Tech*>(action)->get_info(work_target, progress, name, name_size);
             return 1;
         default:
@@ -826,7 +827,7 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short unit_
         }
 
         if (static_cast<TRIBE_Player*>(owner)->check_obj_cost(original_master_id, &master_id, 1.0f, 1) == 0) {
-            rge_base_game->notification(0x7D, owner->id, master_id, 0, 0);
+            rge_base_game->notification(GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, master_id, 0, 0);
             return;
         }
 
@@ -850,7 +851,7 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short unit_
         production_queue[production_queue_count].unit_count = 0;
         for (int i = 0; i < unit_count; ++i) {
             if (static_cast<TRIBE_Player*>(owner)->check_obj_cost(original_master_id, &master_id, 1.0f, 1) == 0) {
-                rge_base_game->notification(0x7D, owner->id, master_id, 0, 0);
+                rge_base_game->notification(GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, master_id, 0, 0);
                 break;
             }
             static_cast<TRIBE_Player*>(owner)->pay_obj_cost(original_master_id, 1.0f, 1);
@@ -859,11 +860,11 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short unit_
         production_queue[production_queue_count].master_id = original_master_id;
         production_queue_count++;
         production_queue_change_flag++;
-        rge_base_game->notification(0x7C, owner->id, 0, 0, 0);
+        rge_base_game->notification(GAME_NOTIFY_PRODUCTION_QUEUE_CHANGED, owner->id, 0, 0, 0);
     } else {
         for (int i = 0; i < unit_count; ++i) {
             if (static_cast<TRIBE_Player*>(owner)->check_obj_cost(original_master_id, &master_id, 1.0f, 1) == 0) {
-                rge_base_game->notification(0x7D, owner->id, master_id, 0, 0);
+                rge_base_game->notification(GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, master_id, 0, 0);
                 break;
             }
             static_cast<TRIBE_Player*>(owner)->pay_obj_cost(original_master_id, 1.0f, 1);
@@ -872,7 +873,7 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short unit_
         }
         if (queue_changed == 1) {
             production_queue_change_flag++;
-            rge_base_game->notification(0x7C, owner->id, 0, 0, 0);
+            rge_base_game->notification(GAME_NOTIFY_PRODUCTION_QUEUE_CHANGED, owner->id, 0, 0, 0);
         }
     }
 }
@@ -915,7 +916,7 @@ void TRIBE_Building_Object::remove_from_production_queue(short master_id, short 
 
                     if (index == 0) {
                         if (production_queue_need_attr != -1) {
-                            if (production_queue_need_attr == 4) {
+                            if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
                                 int id = owner->id;
                                 long* value =
                                     &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
@@ -934,7 +935,7 @@ void TRIBE_Building_Object::remove_from_production_queue(short master_id, short 
             index--;
         }
 
-        rge_base_game->notification(0x7C, owner->id, 0, 0, 0);
+        rge_base_game->notification(GAME_NOTIFY_PRODUCTION_QUEUE_CHANGED, owner->id, 0, 0, 0);
     }
 }
 
@@ -952,12 +953,12 @@ void TRIBE_Building_Object::advance_production_queue() {
             production_queue[i].unit_count = production_queue[i + 1].unit_count;
         }
     }
-    rge_base_game->notification(0x7C, owner->id, 0, 0, 0);
+    rge_base_game->notification(GAME_NOTIFY_PRODUCTION_QUEUE_CHANGED, owner->id, 0, 0, 0);
 }
 
 void TRIBE_Building_Object::empty_production_queue() {
     if (production_queue_need_attr != -1) {
-        if (production_queue_need_attr == 4) {
+        if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
             int id = owner->id;
             long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
             long old = *value;
@@ -981,7 +982,7 @@ void TRIBE_Building_Object::update_production_queue() {
     short progress;
 
     if (production_queue_enabled == 0 || production_queue_count == 0) {
-        if (production_queue_need_attr == 4) {
+        if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
             production_queue_need_attr = -1;
             int id = owner->id;
             long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
@@ -992,21 +993,24 @@ void TRIBE_Building_Object::update_production_queue() {
         return;
     }
 
-    if (work_status(work_type, work_target, progress, 0, 0) == 0 || (work_type != 0x66 && work_type != 0x67)) {
+    if (work_status(work_type, work_target, progress, 0, 0) == 0
+        || (work_type != TRIBE_ACTION_TYPE_MAKE_OBJECT && work_type != TRIBE_ACTION_TYPE_MAKE_TECH)) {
         if (production_queue_actions->list == 0) {
             float* attributes = owner->attributes;
-            if (attributes[0x2C / 4] >= attributes[0x80 / 4]) {
-                if (production_queue_need_attr == 0x20) {
+            if (attributes[PLAYER_ATTRIBUTE_POPULATION] >= attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]) {
+                if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_LIMIT) {
                     return;
                 }
-                production_queue_need_attr = 0x20;
-                rge_base_game->notification(0x7D, owner->id, 0x20, 0, 0);
+                production_queue_need_attr = PLAYER_ATTRIBUTE_POPULATION_LIMIT;
+                rge_base_game->notification(
+                    GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, PLAYER_ATTRIBUTE_POPULATION_LIMIT, 0, 0
+                );
                 static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[owner->id]++;
                 return;
             }
 
-            if (attributes[0x10 / 4] > g_building_zero_hp) {
-                if (production_queue_need_attr == 4) {
+            if (attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM] > g_building_zero_hp) {
+                if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
                     int id = owner->id;
                     long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
                     long old = *value;
@@ -1019,11 +1023,13 @@ void TRIBE_Building_Object::update_production_queue() {
                     production_queue_actions->add_action(action);
                 }
             } else {
-                if (production_queue_need_attr == 4) {
+                if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
                     return;
                 }
-                production_queue_need_attr = 4;
-                rge_base_game->notification(0x7D, owner->id, 4, 0, 0);
+                production_queue_need_attr = PLAYER_ATTRIBUTE_POPULATION_HEADROOM;
+                rge_base_game->notification(
+                    GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, PLAYER_ATTRIBUTE_POPULATION_HEADROOM, 0, 0
+                );
                 int id = owner->id;
                 long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
                 long old = *value;

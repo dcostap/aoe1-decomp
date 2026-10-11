@@ -28,7 +28,9 @@ TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech() {
         static_cast<TRIBE_Player*>(this->obj->owner)->tech_tree->cancel_research(this->tech_id, 0);
 
         if (rge_base_game->world->game_state == 0) {
-            rge_base_game->notification(0x65, static_cast<TRIBE_Player*>(this->obj->owner)->id, this->tech_id, 0, 0);
+            rge_base_game->notification(
+                GAME_NOTIFY_RESEARCH_STOPPED, static_cast<TRIBE_Player*>(this->obj->owner)->id, this->tech_id, 0, 0
+            );
 
             static_cast<TRIBE_Player*>(this->obj->owner)
                 ->cancelResearch((int) this->tech_id, this->obj->id, -1, this->unique_id);
@@ -96,8 +98,8 @@ unsigned char TRIBE_Action_Make_Tech::update() {
         this->set_state(1);
         action_object = this->obj;
         rge_base_game->notification(
-            0x64, static_cast<TRIBE_Player*>(action_object->owner)->id, this->tech_id, (int) action_object->world_x,
-            (int) action_object->world_y
+            GAME_NOTIFY_RESEARCH_COMPLETED, static_cast<TRIBE_Player*>(action_object->owner)->id, this->tech_id,
+            (int) action_object->world_x, (int) action_object->world_y
         );
         static_cast<TRIBE_Player*>(this->obj->owner)
             ->registerResearch((int) this->tech_id, this->obj->id, this->unique_id);
@@ -117,7 +119,9 @@ int TRIBE_Action_Make_Tech::stop() {
 
     static_cast<TRIBE_Player*>(this->obj->owner)->tech_tree->cancel_research(this->tech_id, 1);
 
-    rge_base_game->notification(0x65, static_cast<TRIBE_Player*>(this->obj->owner)->id, this->tech_id, 0, 0);
+    rge_base_game->notification(
+        GAME_NOTIFY_RESEARCH_STOPPED, static_cast<TRIBE_Player*>(this->obj->owner)->id, this->tech_id, 0, 0
+    );
 
     static_cast<TRIBE_Player*>(this->obj->owner)
         ->cancelResearch((int) this->tech_id, this->obj->id, -1, this->unique_id);

@@ -1782,15 +1782,21 @@ void TRIBE_Player::notify(int caller, int recipient, int mType, long p1, long p2
                 }
             }
             break;
+        //! @bug The transport-failure message types are swapped. A transport that still holds units after
+        //! unloading (0x206) shows "You cannot trade with an enemy", and a failed trade (0x20C) shows "Not
+        //! enough room to unload all." The original dispatch (005159D0) sends these same types.
         case 0x20C:
             if (p1 == UNIT_AI_ACTION_TRADE)
-                static_cast<TRIBE_Game*>(rge_base_game)->notification(3, this->id, 0, 0, 0);
+                static_cast<TRIBE_Game*>(rge_base_game)
+                    ->notification(GAME_NOTIFY_NOT_ENOUGH_UNLOAD_SPACE, this->id, 0, 0, 0);
             break;
         case 0x207:
-            static_cast<TRIBE_Game*>(rge_base_game)->notification(1, this->id, 0, 0, 0);
+            static_cast<TRIBE_Game*>(rge_base_game)
+                ->notification(GAME_NOTIFY_NOT_CLOSE_ENOUGH_TO_LAND, this->id, 0, 0, 0);
             break;
         case 0x206:
-            static_cast<TRIBE_Game*>(rge_base_game)->notification(2, this->id, 0, 0, 0);
+            static_cast<TRIBE_Game*>(rge_base_game)
+                ->notification(GAME_NOTIFY_CANNOT_TRADE_WITH_ENEMY, this->id, 0, 0, 0);
             break;
     }
     int seed = debug_rand(tplayerSourceName, 2377);

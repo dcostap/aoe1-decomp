@@ -630,7 +630,7 @@ int RGE_Combat_Object::moveTo(int targetID, float minRange, int unconditional) {
             action = (RGE_Action*) this->actions->get_action();
             if (action->get_target_obj() == obj) {
                 action = (RGE_Action*) this->actions->get_action();
-                if (action->type() == 1)
+                if (action->type() == RGE_ACTION_TYPE_MOVE)
                     goto success;
             }
         }
@@ -668,7 +668,7 @@ int RGE_Combat_Object::moveTo(float x, float y, float z, float minRange, int unc
                     action = (RGE_Action*) this->actions->get_action();
                     if (action->targetZ() == z) {
                         action = (RGE_Action*) this->actions->get_action();
-                        if (action->type() == 1) {
+                        if (action->type() == RGE_ACTION_TYPE_MOVE) {
                             goto success;
                         }
                     }
@@ -746,14 +746,14 @@ int RGE_Combat_Object::explore(int tX, int tY, int unconditional) {
     if (unconditional == 0) {
         if (actions->have_action() == 1) {
             RGE_Action* action = (RGE_Action*) actions->get_action();
-            if (action->type() == 4)
+            if (action->type() == RGE_ACTION_TYPE_EXPLORE)
                 goto done;
         }
     }
 
     if (actions->have_action() == 1) {
         RGE_Action* action = (RGE_Action*) actions->get_action();
-        if (action->type() == 4) {
+        if (action->type() == RGE_ACTION_TYPE_EXPLORE) {
             action = (RGE_Action*) actions->get_action();
             action->work(0, (float) tX, (float) tY, this->world_z);
             goto done;
@@ -809,7 +809,7 @@ success:
 int RGE_Combat_Object::transport(float tX, float tY, float tZ, int unconditional) {
     if (actions->have_action() == 1) {
         RGE_Action* action = (RGE_Action*) actions->get_action();
-        if (action->type() == 0x0C) {
+        if (action->type() == RGE_ACTION_TYPE_TRANSPORT) {
             // Call get_action() AGAIN (original does this)
             RGE_Action* action2 = (RGE_Action*) actions->get_action();
             action2->work(0, tX, tY, tZ);
@@ -830,7 +830,7 @@ int RGE_Combat_Object::transport(float tX, float tY, float tZ, int unconditional
 int RGE_Combat_Object::unload(int unconditional, float x, float y, float z) {
     if (actions->have_action() == 1) {
         RGE_Action* action = (RGE_Action*) actions->get_action();
-        if (action->type() == 0x0C) {
+        if (action->type() == RGE_ACTION_TYPE_TRANSPORT) {
             // Call get_action() again. The original does this.
             RGE_Action* action2 = (RGE_Action*) actions->get_action();
             action2->work((RGE_Static_Object*) this, world_x, world_y, world_z);
