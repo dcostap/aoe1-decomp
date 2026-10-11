@@ -466,6 +466,8 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - Value-cursor versus type-cursor assignment order can control setup moves.
 - Index-primary `i*N+j` loops can keep count saved and derive two stepping cursors.
 - Independent manual cursors can spill the count instead.
+- A loop rewrite can change a neighboring function's bytes even when the edited function still matches. Compare every object section, not only the edited function's row.
+- A guarded `do/while` over a bounded count can convert to `for` with identical bytes, but the same rewrite can fail when the body re-reads a member or walks a pointer.
 
 ## Dynamic arrays and fixed-stride collections
 
