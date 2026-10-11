@@ -498,7 +498,13 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                     this->statistics[player_index][0]->set_text(temptxt);
                     itoa(player->victory_conditions->get_attribute_id(1), temptxt, 10);
                     this->statistics[player_index][1]->set_text(temptxt);
-                    itoa(static_cast<long>(player->attributes[19] - player->attributes[11]), temptxt, 10);
+                    itoa(
+                        static_cast<long>(
+                            player->attributes[PLAYER_ATTRIBUTE_TOTAL_UNITS_OWNED]
+                            - player->attributes[PLAYER_ATTRIBUTE_POPULATION]
+                        ),
+                        temptxt, 10
+                    );
                     this->statistics[player_index][2]->set_text(temptxt);
 
                     itoa(player->victory_conditions->get_attribute_id(2), temptxt, 10);

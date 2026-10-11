@@ -7,6 +7,42 @@
 #define RGE_RESOURCE_STONE  2
 #define RGE_RESOURCE_GOLD   3
 
+// Other player attribute slots. These are cleanup labels taken from how the code uses each slot;
+// the developer names are not in the PDB or the expansion language DLL. Slots 29, 30, 36, 45, and
+// 48 stay numeric. See decomp_notes/player_attributes.md.
+#define PLAYER_ATTRIBUTE_POPULATION_HEADROOM   4
+#define PLAYER_ATTRIBUTE_CURRENT_AGE           6
+#define PLAYER_ATTRIBUTE_ARTIFACTS             7
+#define PLAYER_ATTRIBUTE_TRADE_GOODS           9
+#define PLAYER_ATTRIBUTE_TRADE_PRODUCTION      10
+#define PLAYER_ATTRIBUTE_POPULATION            11
+#define PLAYER_ATTRIBUTE_DISCOVERIES           13
+#define PLAYER_ATTRIBUTE_RUINS                 14
+#define PLAYER_ATTRIBUTE_TOTAL_UNITS_OWNED     19
+#define PLAYER_ATTRIBUTE_KILLS                 20
+#define PLAYER_ATTRIBUTE_TECHNOLOGY_COUNT      21
+#define PLAYER_ATTRIBUTE_PERCENT_EXPLORED      22
+#define PLAYER_ATTRIBUTE_BRONZE_AGE_TECH       23
+#define PLAYER_ATTRIBUTE_IRON_AGE_TECH         24
+#define PLAYER_ATTRIBUTE_TOOL_AGE_TECH         25
+#define PLAYER_ATTRIBUTE_ATTACK_WARNING_SOUND  26
+#define PLAYER_ATTRIBUTE_PRIEST_CONVERSION     27
+#define PLAYER_ATTRIBUTE_BUILDING_CONVERSION   28
+#define PLAYER_ATTRIBUTE_POPULATION_LIMIT      32
+#define PLAYER_ATTRIBUTE_FOOD_MAINTENANCE      33
+#define PLAYER_ATTRIBUTE_FAITH_RECHARGE_RATE   35
+#define PLAYER_ATTRIBUTE_CIVILIAN_POPULATION   37
+#define PLAYER_ATTRIBUTE_ALL_TECHNOLOGIES      39
+#define PLAYER_ATTRIBUTE_MILITARY_POPULATION   40
+#define PLAYER_ATTRIBUTE_KILLS_MINUS_LOSSES    44
+#define PLAYER_ATTRIBUTE_TRIBUTE_FEE           46
+#define PLAYER_ATTRIBUTE_GOLD_EARNED           49
+#define PLAYER_ATTRIBUTE_ALLIED_LOS            50
+#define PLAYER_ATTRIBUTE_ALL_RUINS             54
+#define PLAYER_ATTRIBUTE_ALL_ARTIFACTS         55
+#define PLAYER_ATTRIBUTE_HEAL_RATE             56
+#define PLAYER_ATTRIBUTE_MARTYRDOM             57
+
 // Visual cultures select building and interface art, not civilization IDs.
 // These cleanup names describe shared styles; several civilizations can use one culture.
 #define RGE_CULTURE_EGYPTIAN   0

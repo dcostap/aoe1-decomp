@@ -635,7 +635,7 @@ int TribeMainDecisionAIModule::processAICommand(int caller, int mType, int p1, i
         case 1:
             if (caller != this->player->id
                 && this->aiPlayer->objects->find_by_master_id(0x54, -1.0f, -1.0f, 0, RGE_OBJECT_STATE_ACTIVE, 0) != 0) {
-                float current = this->aiPlayer->attributes[0x2E];
+                float current = this->aiPlayer->attributes[PLAYER_ATTRIBUTE_TRIBUTE_FEE];
                 this->aiPlayer->command_give_attribute(caller, p1, (float) p2, current);
                 return 1;
             }

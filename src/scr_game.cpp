@@ -1320,7 +1320,8 @@ void TRIBE_Screen_Game::handle_game_update() {
         calc_game_time = debug_timeGetTime(s_scr_game_cpp, 1948);
 
         if (update_counter != 0) {
-            if (static_cast<long>(rge_base_game->get_player()->attributes[6]) != this->save_age) {
+            if (static_cast<long>(rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_CURRENT_AGE])
+                != this->save_age) {
                 this->age_changed();
             }
 
@@ -2382,7 +2383,7 @@ void TRIBE_Screen_Game::age_changed() {
 
     if (this->age_panel != 0) {
         RGE_Player* player = rge_base_game->get_player();
-        this->save_age = player->attributes[6];
+        this->save_age = player->attributes[PLAYER_ATTRIBUTE_CURRENT_AGE];
         rge_base_game->get_string2(RGE_STRING_TYPE_AGE, this->save_age, 0, str, 512);
         this->age_panel->set_text(str);
         this->age_panel->set_redraw(TPanel::RedrawNormal);
@@ -2882,9 +2883,15 @@ void TRIBE_Screen_Game::setup_buttons() {
                             continue_setup = 0;
                         } else {
                             if ((building->master_obj->id == MASTER_OBJECT_TOWN_CENTER1) && (tech_cnt == 0)
-                                && (static_cast<int>(rge_base_game->get_player()->attributes[6]) < 4)) {
+                                && (static_cast<int>(
+                                        rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_CURRENT_AGE]
+                                    )
+                                    < 4)) {
                                 short tech_id = static_cast<short>(
-                                    static_cast<int>(rge_base_game->get_player()->attributes[6]) + 100
+                                    static_cast<int>(
+                                        rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_CURRENT_AGE]
+                                    )
+                                    + 100
                                 );
                                 if (player->tech_tree->get_tech_state(tech_id) != -1) {
                                     if (this->tech_list != 0) {

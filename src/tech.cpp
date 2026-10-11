@@ -522,8 +522,8 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech() {
             }
         }
     } while (changed);
-    if (active_count == 0 && this->owner->attributes[0x27] == g_tech_zero_attribute) {
-        this->owner->attributes[0x27] = 1.0f;
+    if (active_count == 0 && this->owner->attributes[PLAYER_ATTRIBUTE_ALL_TECHNOLOGIES] == g_tech_zero_attribute) {
+        this->owner->attributes[PLAYER_ATTRIBUTE_ALL_TECHNOLOGIES] = 1.0f;
     }
     return 1;
 }

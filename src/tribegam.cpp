@@ -2454,7 +2454,7 @@ int TRIBE_Game::load_game(char* fileName) {
                     victory_conditions->get_victory_points(), player_name
                 );
                 attributes = *reinterpret_cast<float**>(p_bytes + 0x50);
-                fprintf(debug_file, "  Writing=%f\n", static_cast<double>(attributes[50]));
+                fprintf(debug_file, "  Writing=%f\n", static_cast<double>(attributes[PLAYER_ATTRIBUTE_ALLIED_LOS]));
                 sleeping_objects = *reinterpret_cast<RGE_Object_List**>(p_bytes + 0x2C);
                 doppleganger_objects = *reinterpret_cast<RGE_Object_List**>(p_bytes + 0x30);
                 sleeping_count = sleeping_objects->number_of_objects;

@@ -3404,7 +3404,7 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int unitID) {
         RGE_Static_Object* dock = this->md->object(this->importantObjectMemory[i].id);
         if (dock == 0)
             continue;
-        if (!(dock->owner->attributes[9] > 0.0f))
+        if (!(dock->owner->attributes[PLAYER_ATTRIBUTE_TRADE_GOODS] > 0.0f))
             continue;
 
         ObjectMemory* candidate = &this->importantObjectMemory[i];
@@ -5896,7 +5896,7 @@ int TribeInformationAIModule::dropsitesWithinRequiredDistance(int& numDS, int rT
 }
 
 int TribeInformationAIModule::numberAvailableStoragePits(int rType) {
-    int age_idx = (int) (this->md->player->attributes[6]);
+    int age_idx = (int) (this->md->player->attributes[PLAYER_ATTRIBUTE_CURRENT_AGE]);
     age_idx--;
 
     if (age_idx < 0) {

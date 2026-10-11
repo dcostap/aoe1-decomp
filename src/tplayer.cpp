@@ -356,23 +356,25 @@ void TRIBE_Player::update() {
         ++this->update_history_count;
         if (this->update_history_count >= 15) {
             this->update_history_count -= 15;
-            if (this->attributes[11] < 0.0f)
+            if (this->attributes[PLAYER_ATTRIBUTE_POPULATION] < 0.0f)
                 this->history->add_history_entry(0, 0);
             else
                 this->history->add_history_entry(
-                    0, static_cast<unsigned char>(static_cast<long>(this->attributes[11]))
+                    0, static_cast<unsigned char>(static_cast<long>(this->attributes[PLAYER_ATTRIBUTE_POPULATION]))
                 );
         }
         if (rge_base_game->fullVisibility())
-            this->attributes[22] = 100.0f;
+            this->attributes[PLAYER_ATTRIBUTE_PERCENT_EXPLORED] = 100.0f;
         else
-            this->attributes[22] = this->visible->percentExplored() * 100.0f;
-        this->attributes[44] = this->attributes[20] - (this->attributes[19] - this->attributes[11]);
-        if (this->attributes[44] < 0.0)
-            this->attributes[44] = 0.0f;
-        this->attributes[9] += this->attributes[10];
-        if (this->attributes[9] > 100.0)
-            this->attributes[9] = 100.0f;
+            this->attributes[PLAYER_ATTRIBUTE_PERCENT_EXPLORED] = this->visible->percentExplored() * 100.0f;
+        this->attributes[PLAYER_ATTRIBUTE_KILLS_MINUS_LOSSES] =
+            this->attributes[PLAYER_ATTRIBUTE_KILLS]
+            - (this->attributes[PLAYER_ATTRIBUTE_TOTAL_UNITS_OWNED] - this->attributes[PLAYER_ATTRIBUTE_POPULATION]);
+        if (this->attributes[PLAYER_ATTRIBUTE_KILLS_MINUS_LOSSES] < 0.0)
+            this->attributes[PLAYER_ATTRIBUTE_KILLS_MINUS_LOSSES] = 0.0f;
+        this->attributes[PLAYER_ATTRIBUTE_TRADE_GOODS] += this->attributes[PLAYER_ATTRIBUTE_TRADE_PRODUCTION];
+        if (this->attributes[PLAYER_ATTRIBUTE_TRADE_GOODS] > 100.0)
+            this->attributes[PLAYER_ATTRIBUTE_TRADE_GOODS] = 100.0f;
         if (this->update_count > 0)
             --this->update_count;
         if (this->updateCountNeedHelp > 0)
@@ -396,8 +398,9 @@ void TRIBE_Player::update() {
         }
     }
     RGE_Player::update();
-    this->attributes[RGE_RESOURCE_FOOD] -=
-        this->world->world_time_delta_seconds * this->attributes[33] * this->attributes[11] * 0.016666667f;
+    this->attributes[RGE_RESOURCE_FOOD] -= this->world->world_time_delta_seconds
+                                           * this->attributes[PLAYER_ATTRIBUTE_FOOD_MAINTENANCE]
+                                           * this->attributes[PLAYER_ATTRIBUTE_POPULATION] * 0.016666667f;
     if (this->attributes[RGE_RESOURCE_FOOD] < 0.0)
         this->attributes[RGE_RESOURCE_FOOD] = 0.0f;
     int seed = debug_rand(tplayerSourceName, 607);
@@ -458,7 +461,7 @@ void TRIBE_Player::scenario_load(int infile, long* player_id_hash, float version
     }
 
     this->attributes[30] = 0.0f;
-    this->attributes[21] = 0.0f;
+    this->attributes[PLAYER_ATTRIBUTE_TECHNOLOGY_COUNT] = 0.0f;
 
     if (version <= 1.03) {
         this->tech_tree = new TRIBE_Player_Tech(infile, static_cast<TRIBE_World*>(this->world)->tech, this, 1);
@@ -1056,20 +1059,21 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed
         if (type < 0)
             continue;
         float amount = combat->build_inventory[i].amount * modifier;
-        if (type == 4 && ignore_pop == 0 && this->attributes[11] >= this->attributes[32]) {
+        if (type == PLAYER_ATTRIBUTE_POPULATION_HEADROOM && ignore_pop == 0
+            && this->attributes[PLAYER_ATTRIBUTE_POPULATION] >= this->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]) {
             if (attribute_needed != 0)
-                *attribute_needed = 0x20;
+                *attribute_needed = PLAYER_ATTRIBUTE_POPULATION_LIMIT;
             return 0;
         }
-        if (population_available && type == 3) {
+        if (population_available && type == RGE_RESOURCE_GOLD) {
             population -= amount;
             if (population < 0.0f) {
                 if (attribute_needed != 0)
-                    *attribute_needed = 3;
+                    *attribute_needed = RGE_RESOURCE_GOLD;
                 return 0;
             }
         }
-        if (this->attributes[type] < amount && (type != 4 || ignore_pop == 0)) {
+        if (this->attributes[type] < amount && (type != PLAYER_ATTRIBUTE_POPULATION_HEADROOM || ignore_pop == 0)) {
             if (combat->build_inventory[i].flag == 0 || population + this->attributes[type] < amount) {
                 if (attribute_needed != 0)
                     *attribute_needed = static_cast<short>(type);
@@ -1135,35 +1139,35 @@ void TRIBE_Player::tech_abling(long tech_id, unsigned char able_flag) {
 
 void TRIBE_Player::rev_tech(long age) {
     switch (age) {
-        case 0x19:
-            this->tech_tree->do_tech(static_cast<short>(this->attributes[25]));
+        case PLAYER_ATTRIBUTE_TOOL_AGE_TECH:
+            this->tech_tree->do_tech(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_TOOL_AGE_TECH]));
             return;
 
-        case 0x17:
-            this->tech_tree->disable(static_cast<short>(this->attributes[23]));
-            this->tech_tree->rev_tech(static_cast<short>(this->attributes[25]));
-            this->tech_tree->enable(static_cast<short>(this->attributes[23]));
-            this->tech_tree->do_tech(static_cast<short>(this->attributes[23]));
+        case PLAYER_ATTRIBUTE_BRONZE_AGE_TECH:
+            this->tech_tree->disable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_BRONZE_AGE_TECH]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_TOOL_AGE_TECH]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_BRONZE_AGE_TECH]));
+            this->tech_tree->do_tech(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_BRONZE_AGE_TECH]));
             return;
 
-        case 0x18:
-            this->tech_tree->disable(static_cast<short>(this->attributes[23]));
-            this->tech_tree->disable(static_cast<short>(this->attributes[24]));
-            this->tech_tree->rev_tech(static_cast<short>(this->attributes[25]));
-            this->tech_tree->enable(static_cast<short>(this->attributes[23]));
-            this->tech_tree->rev_tech(static_cast<short>(this->attributes[23]));
-            this->tech_tree->enable(static_cast<short>(this->attributes[24]));
-            this->tech_tree->do_tech(static_cast<short>(this->attributes[24]));
+        case PLAYER_ATTRIBUTE_IRON_AGE_TECH:
+            this->tech_tree->disable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_BRONZE_AGE_TECH]));
+            this->tech_tree->disable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_IRON_AGE_TECH]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_TOOL_AGE_TECH]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_BRONZE_AGE_TECH]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_BRONZE_AGE_TECH]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_IRON_AGE_TECH]));
+            this->tech_tree->do_tech(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_IRON_AGE_TECH]));
             return;
 
         case 1:
-            this->tech_tree->disable(static_cast<short>(this->attributes[23]));
-            this->tech_tree->disable(static_cast<short>(this->attributes[24]));
-            this->tech_tree->rev_tech(static_cast<short>(this->attributes[25]));
-            this->tech_tree->enable(static_cast<short>(this->attributes[23]));
-            this->tech_tree->rev_tech(static_cast<short>(this->attributes[23]));
-            this->tech_tree->enable(static_cast<short>(this->attributes[24]));
-            this->tech_tree->rev_tech(static_cast<short>(this->attributes[24]));
+            this->tech_tree->disable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_BRONZE_AGE_TECH]));
+            this->tech_tree->disable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_IRON_AGE_TECH]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_TOOL_AGE_TECH]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_BRONZE_AGE_TECH]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_BRONZE_AGE_TECH]));
+            this->tech_tree->enable(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_IRON_AGE_TECH]));
+            this->tech_tree->rev_tech(static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_IRON_AGE_TECH]));
             return;
 
         default:
@@ -1172,12 +1176,12 @@ void TRIBE_Player::rev_tech(long age) {
 }
 
 void TRIBE_Player::add_population_entry() {
-    if (this->attributes[11] < 0.0f) {
+    if (this->attributes[PLAYER_ATTRIBUTE_POPULATION] < 0.0f) {
         this->history->add_history_entry(0, 0);
         return;
     }
 
-    this->history->add_history_entry(0, static_cast<int>(this->attributes[11]));
+    this->history->add_history_entry(0, static_cast<int>(this->attributes[PLAYER_ATTRIBUTE_POPULATION]));
 }
 
 void TRIBE_Player::random_start() {
@@ -1762,7 +1766,9 @@ void TRIBE_Player::notify(int caller, int recipient, int mType, long p1, long p2
                         //! @bug The alert sound index comes from attribute 26 with no validation or default.
                         //! The gaia master row leaves attribute 26 at 0, so player 0 plays sounds[0].
                         //! Normal players play the attack sound. This runs when player 0 is current.
-                        RGE_Sound* sound = this->world->sounds[static_cast<short>(this->attributes[26])];
+                        RGE_Sound* sound =
+                            this->world
+                                ->sounds[static_cast<short>(this->attributes[PLAYER_ATTRIBUTE_ATTACK_WARNING_SOUND])];
                         if (sound != 0)
                             sound->play(1);
                         static_cast<TRIBE_Game*>(rge_base_game)
@@ -3597,7 +3603,7 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime) {
     fprintf(out, "    Survival       %d.\n", this->victory_conditions->get_victory_points_id(0x16));
     fprintf(out, "    Wonder         %d.\n", this->victory_conditions->get_victory_points_id(0x17));
     fprintf(out, "      Total:       %d.\n", this->victory_conditions->get_victory_points());
-    fprintf(out, "  Population:      %d.\n", static_cast<int>(this->attributes[11]));
+    fprintf(out, "  Population:      %d.\n", static_cast<int>(this->attributes[PLAYER_ATTRIBUTE_POPULATION]));
     fprintf(out, "  Kills:           %d.\n", this->victory_conditions->get_attribute_id(0));
     fprintf(out, "  Kill Ratio:      %d.\n", this->victory_conditions->get_attribute_id(2));
     fprintf(out, "  Razings:         %d.\n", this->victory_conditions->get_attribute_id(1));
@@ -3639,13 +3645,15 @@ void TRIBE_Player::get_achievement(unsigned char achievement, char* info) {
             strcpy(info, name);
             break;
         case 1:
-            sprintf(info, "%4.f", attributes[19] - attributes[11]);
+            sprintf(
+                info, "%4.f", attributes[PLAYER_ATTRIBUTE_TOTAL_UNITS_OWNED] - attributes[PLAYER_ATTRIBUTE_POPULATION]
+            );
             break;
         case 2:
-            sprintf(info, "%4.f", attributes[20]);
+            sprintf(info, "%4.f", attributes[PLAYER_ATTRIBUTE_KILLS]);
             break;
         case 3:
-            sprintf(info, "%4.f", attributes[11]);
+            sprintf(info, "%4.f", attributes[PLAYER_ATTRIBUTE_POPULATION]);
             break;
         case 4:
             sprintf(info, "%5.f", attributes[RGE_RESOURCE_GOLD]);
@@ -3656,13 +3664,16 @@ void TRIBE_Player::get_achievement(unsigned char achievement, char* info) {
             break;
         }
         case 6:
-            sprintf(info, "%4.f", attributes[19]);
+            sprintf(info, "%4.f", attributes[PLAYER_ATTRIBUTE_TOTAL_UNITS_OWNED]);
             break;
         case 7:
-            sprintf(info, "%4.f/%4.f/%4.f", attributes[7], attributes[13], attributes[14]);
+            sprintf(
+                info, "%4.f/%4.f/%4.f", attributes[PLAYER_ATTRIBUTE_ARTIFACTS],
+                attributes[PLAYER_ATTRIBUTE_DISCOVERIES], attributes[PLAYER_ATTRIBUTE_RUINS]
+            );
             break;
         case 8:
-            sprintf(info, "%4.f", attributes[21]);
+            sprintf(info, "%4.f", attributes[PLAYER_ATTRIBUTE_TECHNOLOGY_COUNT]);
             break;
     }
 }
@@ -3678,10 +3689,10 @@ void TRIBE_Player::new_victory() {
 }
 
 void TRIBE_Player::add_attribute_num(short attribute, float amount, unsigned char earned) {
-    if ((attribute == 3) && (earned != 0)) {
-        this->attributes[49] = amount + this->attributes[49];
+    if ((attribute == RGE_RESOURCE_GOLD) && (earned != 0)) {
+        this->attributes[PLAYER_ATTRIBUTE_GOLD_EARNED] = amount + this->attributes[PLAYER_ATTRIBUTE_GOLD_EARNED];
     }
-    if (attribute == 0x32) {
+    if (attribute == PLAYER_ATTRIBUTE_ALLIED_LOS) {
         this->allied_LOS_Enable = 1;
         this->world->update_mutual_allies();
     }
@@ -3924,10 +3935,13 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
                     if ((this->sel_object_properties & 0x80) == 0) {
                         goto finish;
                     }
-                    if (ObjPlayer == 0x12 && this->attributes[27] == g_player_selection_zero_attribute) {
+                    if (ObjPlayer == OBJECT_GROUP_PRIEST
+                        && this->attributes[PLAYER_ATTRIBUTE_PRIEST_CONVERSION] == g_player_selection_zero_attribute) {
                         goto finish;
                     }
-                    if (ObjPlayer == 3 && this->attributes[28] == g_player_selection_zero_attribute) {
+                    if (ObjPlayer == OBJECT_GROUP_BUILDING
+                        && this->attributes[PLAYER_ATTRIBUTE_BUILDING_CONVERSION]
+                               == g_player_selection_zero_attribute) {
                         goto finish;
                     }
                     if (ObjPlayer == 3 && (MstrObjId == 0x6D || MstrObjId == 0x114)) {
@@ -4005,7 +4019,7 @@ void TRIBE_Gaia::random_start() {
 
 void TRIBE_Player::scenario_postload(int infile, long* player_id_hash, float version) {
     RGE_Player::scenario_postload(infile, player_id_hash, version);
-    if (0.0 < this->attributes[50]) {
+    if (0.0 < this->attributes[PLAYER_ATTRIBUTE_ALLIED_LOS]) {
         this->allied_LOS_Enable = 1;
         this->world->update_mutual_allies();
     }

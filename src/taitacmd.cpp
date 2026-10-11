@@ -2348,7 +2348,8 @@ int TribeTacticalAIModule::doSomething() {
                     break;
 
                 case 12:
-                    if (this->md->player->attributes[11] < this->md->player->attributes[32]
+                    if (this->md->player->attributes[PLAYER_ATTRIBUTE_POPULATION]
+                            < this->md->player->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]
                         && this->md->buildAI.buildListLength() > 0
                         && this->numberBuildUpdatesSkipped >= this->sn[SNBuildFrequency]) {
                         BuildItem* item = this->md->buildAI.nextBuildableItem(2);
@@ -9331,7 +9332,7 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& numStoragePits, int& 
 
     value = this->sn[0x96];
     if (value != -1) {
-        capacity_or_count = (int) this->md->player->attributes[6];
+        capacity_or_count = (int) this->md->player->attributes[PLAYER_ATTRIBUTE_CURRENT_AGE];
         if (capacity_or_count == 0) {
             capacity_or_count = 1;
         }
@@ -9487,7 +9488,7 @@ int TribeTacticalAIModule::numberFarmers() {
 }
 
 int TribeTacticalAIModule::inAge(int age) {
-    int currentAge = (int) this->md->player->attributes[6];
+    int currentAge = (int) this->md->player->attributes[PLAYER_ATTRIBUTE_CURRENT_AGE];
     return currentAge == age ? 1 : 0;
 }
 
@@ -9788,7 +9789,7 @@ void TribeTacticalAIModule::checkForCoopTributeGift() {
             if (bestCP != -1) {
                 float amount = (float) (this->md->resourceAI.resource(i) - *minimum);
                 TRIBE_Player* aiPlayer = this->md->aiPlayer;
-                float current = aiPlayer->attributes[0x2e];
+                float current = aiPlayer->attributes[PLAYER_ATTRIBUTE_TRIBUTE_FEE];
                 aiPlayer->command_give_attribute(bestCP, i, amount, current);
             }
         }

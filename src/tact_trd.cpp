@@ -319,19 +319,19 @@ unsigned char TRIBE_Action_Trade::update() {
             if (this->obj->owner->attributes[attribute] < give_amount) {
                 give_amount = this->obj->owner->attributes[attribute];
             }
-            if (this->target_obj->owner->attributes[9] < give_amount) {
-                give_amount = this->target_obj->owner->attributes[9];
+            if (this->target_obj->owner->attributes[PLAYER_ATTRIBUTE_TRADE_GOODS] < give_amount) {
+                give_amount = this->target_obj->owner->attributes[PLAYER_ATTRIBUTE_TRADE_GOODS];
             }
 
             this->obj->owner->add_attribute_num(attribute, -give_amount, 1);
-            this->target_obj->owner->attributes[9] -= give_amount;
+            this->target_obj->owner->attributes[PLAYER_ATTRIBUTE_TRADE_GOODS] -= give_amount;
             this->obj->attribute_amount_held += give_amount;
 
             if (this->obj->attribute_amount_held >= max_hold) {
                 this->set_state(8);
                 return RGE_ACTION_UPDATE_CONTINUE;
             }
-            if (this->target_obj->owner->attributes[9] <= g_trade_positive_amount_threshold
+            if (this->target_obj->owner->attributes[PLAYER_ATTRIBUTE_TRADE_GOODS] <= g_trade_positive_amount_threshold
                 && this->obj->keepGatheringWhenObjectIsOut((short) this->target_obj->master_obj->id) == 0) {
                 this->set_state(8);
                 return RGE_ACTION_UPDATE_CONTINUE;

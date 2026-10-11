@@ -100,7 +100,8 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             this->set_state(0x0d);
             return;
         }
-        if (object_group == OBJECT_GROUP_PRIEST && object->owner->attributes[0x1b] <= 0.0f) {
+        if (object_group == OBJECT_GROUP_PRIEST
+            && object->owner->attributes[PLAYER_ATTRIBUTE_PRIEST_CONVERSION] <= 0.0f) {
             if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
@@ -109,7 +110,8 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             rge_base_game->notification(0x77, (int) this->obj->owner->id, 0, 0, 0);
             return;
         }
-        if (object_group == OBJECT_GROUP_BUILDING && object->owner->attributes[0x1c] <= 0.0f) {
+        if (object_group == OBJECT_GROUP_BUILDING
+            && object->owner->attributes[PLAYER_ATTRIBUTE_BUILDING_CONVERSION] <= 0.0f) {
             if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {

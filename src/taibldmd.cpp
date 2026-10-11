@@ -412,7 +412,9 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
                 }
             }
 
-            if (this->md->player->attributes[11] < this->md->player->attributes[32] || item->buildCategory() != 2) {
+            if (this->md->player->attributes[PLAYER_ATTRIBUTE_POPULATION]
+                    < this->md->player->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]
+                || item->buildCategory() != 2) {
                 ++realCount;
             }
 

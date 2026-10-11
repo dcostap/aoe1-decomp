@@ -112,7 +112,9 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel) : TDialogP
 
     sprintf(
         temp_str, this->get_string(STRING_ID_DIPLOMACY_PAY_TRIBUTE_FORMAT),
-        static_cast<long>(rge_base_game->get_player()->attributes[46] * g_diplomacy_attribute_percent_scale)
+        static_cast<long>(
+            rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_TRIBUTE_FEE] * g_diplomacy_attribute_percent_scale
+        )
     );
     if (!this->create_text(this, &this->title[6], temp_str, 440, 50, 180, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
@@ -489,25 +491,29 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
                         if (this->goldTributeAmount[row] > 0.0f) {
                             TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
                             player->command_give_attribute(
-                                player_id, 3, this->goldTributeAmount[row], rge_base_game->get_player()->attributes[46]
+                                player_id, 3, this->goldTributeAmount[row],
+                                rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_TRIBUTE_FEE]
                             );
                         }
                         if (this->woodTributeAmount[row] > 0.0f) {
                             TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
                             player->command_give_attribute(
-                                player_id, 1, this->woodTributeAmount[row], rge_base_game->get_player()->attributes[46]
+                                player_id, 1, this->woodTributeAmount[row],
+                                rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_TRIBUTE_FEE]
                             );
                         }
                         if (this->foodTributeAmount[row] > 0.0f) {
                             TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
                             player->command_give_attribute(
-                                player_id, 0, this->foodTributeAmount[row], rge_base_game->get_player()->attributes[46]
+                                player_id, 0, this->foodTributeAmount[row],
+                                rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_TRIBUTE_FEE]
                             );
                         }
                         if (this->stoneTributeAmount[row] > 0.0f) {
                             TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
                             player->command_give_attribute(
-                                player_id, 2, this->stoneTributeAmount[row], rge_base_game->get_player()->attributes[46]
+                                player_id, 2, this->stoneTributeAmount[row],
+                                rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_TRIBUTE_FEE]
                             );
                         }
                     }
@@ -583,8 +589,8 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
     }
 
     cost = 0.0f;
-    if (rge_base_game->get_player()->attributes[46] > 0.0) {
-        cost = rge_base_game->get_player()->attributes[46];
+    if (rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_TRIBUTE_FEE] > 0.0) {
+        cost = rge_base_game->get_player()->attributes[PLAYER_ATTRIBUTE_TRIBUTE_FEE];
     }
 
     int player_count = rge_base_game->world->player_num - 1;

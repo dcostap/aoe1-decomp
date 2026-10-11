@@ -207,8 +207,8 @@ unsigned char TRIBE_Action_Heal::update() {
 
             work = this->task->work_val1 * ((RGE_Master_Action_Object*) this->obj->master_obj)->work_rate;
             work *= this->obj->owner->world->world_time_delta_seconds;
-            if (this->obj->owner->attributes[0x38] > g_heal_attribute_threshold) {
-                work *= this->obj->owner->attributes[0x38];
+            if (this->obj->owner->attributes[PLAYER_ATTRIBUTE_HEAL_RATE] > g_heal_attribute_threshold) {
+                work *= this->obj->owner->attributes[PLAYER_ATTRIBUTE_HEAL_RATE];
             }
 
             unsigned char result = this->target_obj->heal(work);

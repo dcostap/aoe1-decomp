@@ -1021,14 +1021,14 @@ unsigned char TRIBE_World::check_game_state() {
                     int total = 0;
                     int j;
                     for (j = 0; j < team_size[i]; ++j)
-                        total += static_cast<int>(team_player[i][j]->attributes[7]);
+                        total += static_cast<int>(team_player[i][j]->attributes[PLAYER_ATTRIBUTE_ARTIFACTS]);
 
                     TRIBE_Player* first_player = team_player[i][0];
                     if (total == this->artifact_count) {
                         float held_time = first_player->artifact_held_time;
                         if (held_time == -1.0f) {
                             for (j = 0; j < team_size[i]; ++j)
-                                team_player[i][j]->attributes[55] = 1.0f;
+                                team_player[i][j]->attributes[PLAYER_ATTRIBUTE_ALL_ARTIFACTS] = 1.0f;
 
                             if (this->victory_type == 0) {
                                 for (j = 0; j < team_size[i]; ++j)
@@ -1046,7 +1046,7 @@ unsigned char TRIBE_World::check_game_state() {
                         }
                     } else if (first_player->artifact_held_time != -1.0f) {
                         for (j = 0; j < team_size[i]; ++j)
-                            team_player[i][j]->attributes[55] = 0.0f;
+                            team_player[i][j]->attributes[PLAYER_ATTRIBUTE_ALL_ARTIFACTS] = 0.0f;
 
                         if (this->victory_type == 0) {
                             for (j = 0; j < team_size[i]; ++j)
@@ -1062,14 +1062,14 @@ unsigned char TRIBE_World::check_game_state() {
                     int total = 0;
                     int j;
                     for (j = 0; j < team_size[i]; ++j)
-                        total += static_cast<int>(team_player[i][j]->attributes[14]);
+                        total += static_cast<int>(team_player[i][j]->attributes[PLAYER_ATTRIBUTE_RUINS]);
 
                     TRIBE_Player* first_player = team_player[i][0];
                     if (total == this->ruin_count) {
                         float held_time = first_player->ruin_held_time;
                         if (held_time == -1.0f) {
                             for (j = 0; j < team_size[i]; ++j)
-                                team_player[i][j]->attributes[54] = 1.0f;
+                                team_player[i][j]->attributes[PLAYER_ATTRIBUTE_ALL_RUINS] = 1.0f;
 
                             if (this->victory_type == 0) {
                                 for (j = 0; j < team_size[i]; ++j)
@@ -1087,7 +1087,7 @@ unsigned char TRIBE_World::check_game_state() {
                         }
                     } else if (first_player->ruin_held_time != -1.0f) {
                         for (j = 0; j < team_size[i]; ++j)
-                            team_player[i][j]->attributes[54] = 0.0f;
+                            team_player[i][j]->attributes[PLAYER_ATTRIBUTE_ALL_RUINS] = 0.0f;
 
                         if (this->victory_type == 0) {
                             for (j = 0; j < team_size[i]; ++j)

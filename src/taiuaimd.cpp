@@ -946,9 +946,11 @@ int TribePriestUnitAIModule::canConvert(int targetID) {
             if (og == 0x1E)
                 return 0;
 
-            if (og == OBJECT_GROUP_PRIEST && this->objectValue->owner->attributes[0x1B] <= 0.0f)
+            if (og == OBJECT_GROUP_PRIEST
+                && this->objectValue->owner->attributes[PLAYER_ATTRIBUTE_PRIEST_CONVERSION] <= 0.0f)
                 return 0;
-            if (og == OBJECT_GROUP_BUILDING && this->objectValue->owner->attributes[0x1C] <= 0.0f)
+            if (og == OBJECT_GROUP_BUILDING
+                && this->objectValue->owner->attributes[PLAYER_ATTRIBUTE_BUILDING_CONVERSION] <= 0.0f)
                 return 0;
 
             return 1;

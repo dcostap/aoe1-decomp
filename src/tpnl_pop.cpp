@@ -99,9 +99,9 @@ void TRIBE_Panel_Pop::startup() {
     TRIBE_Player* p = static_cast<TRIBE_Player*>(rge_base_game->get_player());
     this->player = p;
 
-    this->pop = static_cast<int>(p->attributes[0xB]);
-    this->max_pop = this->pop + static_cast<int>(p->attributes[0x4]);
-    int limit = static_cast<int>(p->attributes[0x20]);
+    this->pop = static_cast<int>(p->attributes[PLAYER_ATTRIBUTE_POPULATION]);
+    this->max_pop = this->pop + static_cast<int>(p->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM]);
+    int limit = static_cast<int>(p->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]);
     if (this->max_pop > limit) {
         this->max_pop = limit;
     }
@@ -153,9 +153,9 @@ void TRIBE_Panel_Pop::draw() {
     }
 
     {
-        int pop = static_cast<int>(player->attributes[0xB]);
-        int max_pop = pop + static_cast<int>(player->attributes[0x4]);
-        int max_available = static_cast<int>(player->attributes[0x20]);
+        int pop = static_cast<int>(player->attributes[PLAYER_ATTRIBUTE_POPULATION]);
+        int max_pop = pop + static_cast<int>(player->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM]);
+        int max_available = static_cast<int>(player->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]);
         if (max_pop > max_available)
             max_pop = max_available;
 

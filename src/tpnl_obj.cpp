@@ -468,11 +468,12 @@ void TRIBE_Panel_Object::draw() {
                     ++row;
                 } else {
                     if (this->game_obj->master_obj->id == MASTER_OBJECT_HOUSE) {
-                        int value = (int) (this->player->attributes[4] + this->player->attributes[11]);
-                        int max_value = (int) this->player->attributes[32];
+                        int value = (int) (this->player->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM]
+                                           + this->player->attributes[PLAYER_ATTRIBUTE_POPULATION]);
+                        int max_value = (int) this->player->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT];
                         if (max_value < value)
                             value = max_value;
-                        int current_value = (int) this->player->attributes[11];
+                        int current_value = (int) this->player->attributes[PLAYER_ATTRIBUTE_POPULATION];
                         this->draw_item(row, 4, ValueTypeCompare, current_value, value);
                         ++row;
                     }
@@ -539,7 +540,9 @@ void TRIBE_Panel_Object::draw() {
                 if (this->game_obj->master_obj->id == MASTER_OBJECT_DOCK_1) {
                     this->draw_item(
                         row, item_type, ValueTypeNumber,
-                        (int) (this->game_obj->owner->attributes[9] - g_tactical_panel_rounding_offset), 0
+                        (int) (this->game_obj->owner->attributes[PLAYER_ATTRIBUTE_TRADE_GOODS]
+                               - g_tactical_panel_rounding_offset),
+                        0
                     );
                 } else {
                     this->draw_item(
@@ -873,8 +876,8 @@ long TRIBE_Panel_Object::handle_idle() {
                 }
 
                 if ((changed == 0 || do_buttons == 0) && this->game_obj->master_obj->id == MASTER_OBJECT_HOUSE) {
-                    if ((int) this->player->attributes[11] != this->save_pop
-                        || (int) this->player->attributes[4] != this->save_max_pop) {
+                    if ((int) this->player->attributes[PLAYER_ATTRIBUTE_POPULATION] != this->save_pop
+                        || (int) this->player->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM] != this->save_max_pop) {
                         changed = 1;
                     }
                 }
@@ -959,8 +962,8 @@ void TRIBE_Panel_Object::save_object_info() {
         }
 
         TRIBE_Player* player = this->player;
-        this->save_pop = (int) player->attributes[11];
-        this->save_max_pop = (int) player->attributes[4];
+        this->save_pop = (int) player->attributes[PLAYER_ATTRIBUTE_POPULATION];
+        this->save_max_pop = (int) player->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM];
 
         if (this->game_obj->owner == player && this->game_obj->master_obj->id == MASTER_OBJECT_FARM) {
             RGE_Action* action = building->actions->get_action();

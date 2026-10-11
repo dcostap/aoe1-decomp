@@ -59,10 +59,10 @@ TRIBE_Combat_Object::~TRIBE_Combat_Object() {
     RGE_Master_Static_Object* master = this->master_obj;
     const short group = master->object_group;
     if (group == OBJECT_GROUP_CIVILIAN || group == OBJECT_GROUP_FISHING_BOAT || group == OBJECT_GROUP_TRADE_BOAT) {
-        this->owner->attributes[37] -= g_combat_one_float;
-    } else if ((group != OBJECT_GROUP_PRIEST && master->master_type == 'F') || master->id == 'O' || master->id == 'E'
-               || master->id == MASTER_OBJECT_SENTRY_TOWER) {
-        this->owner->attributes[40] -= g_combat_one_float;
+        this->owner->attributes[PLAYER_ATTRIBUTE_CIVILIAN_POPULATION] -= g_combat_one_float;
+    } else if ((group != OBJECT_GROUP_PRIEST && master->master_type == 'F') || master->id == MASTER_OBJECT_WATCH_TOWER
+               || master->id == MASTER_OBJECT_GUARD_TOWER || master->id == MASTER_OBJECT_SENTRY_TOWER) {
+        this->owner->attributes[PLAYER_ATTRIBUTE_MILITARY_POPULATION] -= g_combat_one_float;
     }
 }
 
@@ -80,11 +80,11 @@ int TRIBE_Combat_Object::setup(TRIBE_Master_Combat_Object* tobj, RGE_Player* obj
     if (this->master_obj->object_group == OBJECT_GROUP_CIVILIAN
         || this->master_obj->object_group == OBJECT_GROUP_FISHING_BOAT
         || this->master_obj->object_group == OBJECT_GROUP_TRADE_BOAT) {
-        this->owner->attributes[37] -= g_combat_negative_one;
+        this->owner->attributes[PLAYER_ATTRIBUTE_CIVILIAN_POPULATION] -= g_combat_negative_one;
     } else if ((this->master_obj->object_group != OBJECT_GROUP_PRIEST && this->master_obj->master_type == 'F')
                || this->master_obj->id == MASTER_OBJECT_WATCH_TOWER || this->master_obj->id == MASTER_OBJECT_GUARD_TOWER
                || this->master_obj->id == MASTER_OBJECT_SENTRY_TOWER) {
-        this->owner->attributes[40] -= g_combat_negative_one;
+        this->owner->attributes[PLAYER_ATTRIBUTE_MILITARY_POPULATION] -= g_combat_negative_one;
     }
 
     if (this->master_obj->object_group == OBJECT_GROUP_PRIEST) {
@@ -147,7 +147,8 @@ void TRIBE_Combat_Object::save(int outfile) {
 
 unsigned char TRIBE_Combat_Object::update() {
     if (this->master_obj->object_group == OBJECT_GROUP_PRIEST && this->object_state == RGE_OBJECT_STATE_ACTIVE) {
-        this->attribute_amount_held += this->owner->attributes[35] * this->owner->world->world_time_delta_seconds;
+        this->attribute_amount_held += this->owner->attributes[PLAYER_ATTRIBUTE_FAITH_RECHARGE_RATE]
+                                       * this->owner->world->world_time_delta_seconds;
         if (this->attribute_amount_held >= 100.0f) {
             this->attribute_amount_held = 100.0f;
         }
@@ -160,16 +161,18 @@ void TRIBE_Combat_Object::modify(float amount, unsigned char flag) {
     if (flag == 0x65) {
         for (int i = 0; i < 3; ++i) {
             if (this->master_obj->attribute_type_held[i] == 4) {
-                this->owner->attributes[4] -= this->master_obj->attribute_amount_held[i];
-                this->owner->attributes[4] += amount;
+                this->owner->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM] -=
+                    this->master_obj->attribute_amount_held[i];
+                this->owner->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM] += amount;
             }
             if (this->master_obj->attribute_type_held[i] == 0x0B) {
-                this->owner->attributes[11] -= this->master_obj->attribute_amount_held[i];
-                this->owner->attributes[11] -= amount;
+                this->owner->attributes[PLAYER_ATTRIBUTE_POPULATION] -= this->master_obj->attribute_amount_held[i];
+                this->owner->attributes[PLAYER_ATTRIBUTE_POPULATION] -= amount;
             }
             if (this->master_obj->attribute_type_held[i] == 0x13) {
-                this->owner->attributes[19] -= this->master_obj->attribute_amount_held[i];
-                this->owner->attributes[19] -= amount;
+                this->owner->attributes[PLAYER_ATTRIBUTE_TOTAL_UNITS_OWNED] -=
+                    this->master_obj->attribute_amount_held[i];
+                this->owner->attributes[PLAYER_ATTRIBUTE_TOTAL_UNITS_OWNED] -= amount;
             }
         }
     }
@@ -201,7 +204,7 @@ void TRIBE_Combat_Object::cancel_object() {
 }
 
 void TRIBE_Combat_Object::die_die_die() {
-    if (this->object_state == RGE_OBJECT_STATE_ACTIVE && this->owner->attributes[57] >= 1.0f) {
+    if (this->object_state == RGE_OBJECT_STATE_ACTIVE && this->owner->attributes[PLAYER_ATTRIBUTE_MARTYRDOM] >= 1.0f) {
         RGE_Action* action = this->actions->get_action();
         if (action != 0 && action->type() == 0x68) {
             static_cast<TRIBE_Action_Convert*>(action)->martyrdom();

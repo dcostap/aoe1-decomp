@@ -834,13 +834,13 @@ void T_Scenario::set_player_tech(TRIBE_Player* player) {
         //! The cascade also completes researches the civ can never use (yamato armored elephants).
         switch (this->PlayerAge[i]) {
             case 1:
-                player->rev_tech(0x19);
+                player->rev_tech(PLAYER_ATTRIBUTE_TOOL_AGE_TECH);
                 break;
             case 2:
-                player->rev_tech(0x17);
+                player->rev_tech(PLAYER_ATTRIBUTE_BRONZE_AGE_TECH);
                 break;
             case 3:
-                player->rev_tech(0x18);
+                player->rev_tech(PLAYER_ATTRIBUTE_IRON_AGE_TECH);
                 break;
             case 4:
                 player->rev_tech(1);
