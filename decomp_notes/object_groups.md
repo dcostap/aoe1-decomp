@@ -53,7 +53,7 @@ These look like group checks but are not:
   `master_obj->id`. Its values are master IDs: Town Center, Storage Pit, and Granary. The food
   resources Forage-Fruit and Farm go to the Granary. The code now uses those names.
 
-`TribeConvertAction`, the conversion code in `tact_cnv.cpp`, also tests master IDs. Those IDs are
+`TRIBE_Action_Convert` in `tact_cnv.cpp` also tests master IDs. Those IDs are
 now named: Town Center, Artifact, both ruins, and Wonder.
 
 Validation: a full translation-unit audit kept all 5,013 exact claims. 224 of 225 object payloads
