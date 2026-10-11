@@ -133,12 +133,8 @@ void ResourceAIModule::setResource(int n, int v) {
 
 void ResourceAIModule::setResources(ResourceItem* ri) {
     if (ri && this->numberResourcesValue == ri->number()) {
-        int i = 0;
-        if (ri->number() > 0) {
-            do {
-                this->setResource(i, ri->value(i));
-                i++;
-            } while (i < ri->number());
+        for (int i = 0; i < ri->number(); i++) {
+            this->setResource(i, ri->value(i));
         }
     }
 }
@@ -167,15 +163,9 @@ void ResourceAIModule::incrementResources(ResourceItem* ri) {
     if (ri != 0) {
         count = ri->number();
         if (this->numberResourcesValue == count) {
-            i = 0;
-            count = ri->number();
-            if (count > 0) {
-                do {
-                    value = ri->value(i);
-                    this->incrementResource(i, value);
-                    i++;
-                    count = ri->number();
-                } while (i < count);
+            for (i = 0; i < ri->number(); i++) {
+                value = ri->value(i);
+                this->incrementResource(i, value);
             }
         }
     }
@@ -204,15 +194,9 @@ void ResourceAIModule::decrementResources(ResourceItem* ri) {
     if (ri != 0) {
         count = ri->number();
         if (this->numberResourcesValue == count) {
-            index = 0;
-            count = ri->number();
-            if (count > 0) {
-                do {
-                    count = ri->value(index);
-                    this->decrementResource(index, count);
-                    index = index + 1;
-                    count = ri->number();
-                } while (index < count);
+            for (index = 0; index < ri->number(); index++) {
+                count = ri->value(index);
+                this->decrementResource(index, count);
             }
         }
     }
@@ -237,12 +221,9 @@ int ResourceAIModule::filterOutMessage(AIModuleMessage* m) {
 void ResourceAIModule::addResourceType(int r, int t) {
     int* newTypes = (int*) operator new(this->numberResourceTypesValue[r] * 4 + 4);
 
-    int count = 0;
-    if (this->numberResourceTypesValue[r] > 0) {
-        do {
-            newTypes[count] = this->resourceTypesValue[r][count];
-            count++;
-        } while (count < this->numberResourceTypesValue[r]);
+    int count;
+    for (count = 0; count < this->numberResourceTypesValue[r]; count++) {
+        newTypes[count] = this->resourceTypesValue[r][count];
     }
 
     newTypes[count] = t;
