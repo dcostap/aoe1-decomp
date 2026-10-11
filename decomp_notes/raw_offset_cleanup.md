@@ -66,3 +66,10 @@ The loop walked `resources[rType]` with a byte counter `a` (+0x14 per step) and
 read `ResourceMemory` fields at +0, +8, +0xD, +0xE and +0x10. It now indexes
 `resources[rType][i]` and uses `id`, `gatherValue`, `gone`, `dropDistance` and
 `dropsiteID`. Byte-identical.
+
+## `TribeTacticalAIModule::updateNeededResources` (004F8C40)
+
+The ranking loop used a byte counter (`offset += 4` up to 0x10) to fill
+`tempNeededResource` and `tempResourceDifference`. It now uses a `rank` index.
+Byte-identical. The `diffPtr` cursor over `resourceDifferenceValue` stays.
+Indexing it costs 18 bytes and the exact match.

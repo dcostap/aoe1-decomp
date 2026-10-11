@@ -5491,11 +5491,12 @@ void TribeTacticalAIModule::updateNeededResources() {
     int* diffPtr;
     int bestResource;
     int bestDifference;
-    int offset;
+    int rank;
 
     this->md->buildAI.mostNeededResource(this->neededResources, this->sn[0x93]);
 
     i = 0;
+    // Indexing resourceDifferenceValue[i] here instead of the cursor changes this function by 18 bytes.
     diffPtr = this->resourceDifferenceValue;
     for (int init = 0; init < 4; init++) {
         assignedResource[init] = 0;
@@ -5509,7 +5510,7 @@ void TribeTacticalAIModule::updateNeededResources() {
         diffPtr++;
     } while (i < 4);
 
-    offset = 0;
+    rank = 0;
     do {
         bestResource = -1;
         bestDifference = 0x7fffffff;
@@ -5560,10 +5561,10 @@ void TribeTacticalAIModule::updateNeededResources() {
         }
 
         assignedResource[bestResource] = 1;
-        *(int*) ((char*) tempNeededResource + offset) = bestResource;
-        *(int*) ((char*) tempResourceDifference + offset) = bestDifference;
-        offset += 4;
-    } while (offset < 0x10);
+        tempNeededResource[rank] = bestResource;
+        tempResourceDifference[rank] = bestDifference;
+        rank++;
+    } while (rank < 4);
 
     i = 0;
     for (; i < 4; i++) {
