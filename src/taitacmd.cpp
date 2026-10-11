@@ -2341,7 +2341,7 @@ int TribeTacticalAIModule::doSomething() {
                     this->numberBuildUpdatesSkipped++;
                     if (this->md->buildAI.buildListLength() > 0
                         && this->numberBuildUpdatesSkipped >= this->sn[SNBuildFrequency]) {
-                        BuildItem* item = this->md->buildAI.nextBuildableItem(1);
+                        BuildItem* item = this->md->buildAI.nextBuildableItem(BUILD_CATEGORY_RESEARCH);
                         if (item != 0)
                             this->taskResearch(item);
                     }
@@ -2352,7 +2352,7 @@ int TribeTacticalAIModule::doSomething() {
                             < this->md->player->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]
                         && this->md->buildAI.buildListLength() > 0
                         && this->numberBuildUpdatesSkipped >= this->sn[SNBuildFrequency]) {
-                        BuildItem* item = this->md->buildAI.nextBuildableItem(2);
+                        BuildItem* item = this->md->buildAI.nextBuildableItem(BUILD_CATEGORY_UNIT);
                         if (item != 0)
                             this->taskTrain(item);
                     }
@@ -2361,7 +2361,7 @@ int TribeTacticalAIModule::doSomething() {
                 case 13:
                     if (this->md->buildAI.buildListLength() > 0
                         && this->numberBuildUpdatesSkipped >= this->sn[SNBuildFrequency]) {
-                        BuildItem* item = this->md->buildAI.nextBuildableItem(3);
+                        BuildItem* item = this->md->buildAI.nextBuildableItem(BUILD_CATEGORY_LOAD_BUILD_LIST);
                         if (item != 0) {
                             char tempName[256];
                             sprintf(tempName, "%s.bld", item->name());
@@ -2448,7 +2448,7 @@ int TribeTacticalAIModule::doSomething() {
                         && (this->md->numberObjectsWithAction(UNIT_AI_ACTION_BUILD) < this->sn[SNCapCivilianBuilders]
                             || (this->wonderInProgressValue == 0 && this->wonderBuiltValue != 0))
                         && this->wonderInProgressValue == 0) {
-                        BuildItem* item = this->md->buildAI.nextBuildableItem(0);
+                        BuildItem* item = this->md->buildAI.nextBuildableItem(BUILD_CATEGORY_BUILDING);
                         if (item != 0 && this->taskBuilder(-1, item, 0, startTime) == 1) {
                             this->lastBuildTime = this->md->player->world->world_time;
                         }
@@ -6008,7 +6008,7 @@ dispatch:
 
 int TribeTacticalAIModule::taskBuilder(int builder, BuildItem* newBuilding, ConstructionItem* ci, ulong startTime) {
     if (newBuilding == 0) {
-        newBuilding = this->md->buildAI.nextBuildableItem(0);
+        newBuilding = this->md->buildAI.nextBuildableItem(BUILD_CATEGORY_BUILDING);
         if (newBuilding == 0)
             return 0;
     }
@@ -9319,7 +9319,7 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& numStoragePits, int& 
     int capacity_or_count;
     unsigned int remaining;
 
-    value = this->md->buildAI.numberUnbuiltItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0);
+    value = this->md->buildAI.numberUnbuiltItemsOfType(MASTER_OBJECT_STORAGE_PIT1, BUILD_CATEGORY_BUILDING);
     numUnbuiltStoragePits = value;
     if (value > 0) {
         return 0;
@@ -9337,12 +9337,12 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& numStoragePits, int& 
             capacity_or_count = 1;
         }
         product = capacity_or_count * value;
-        capacity_or_count = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0);
+        capacity_or_count = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_STORAGE_PIT1, BUILD_CATEGORY_BUILDING);
         remaining = product - capacity_or_count;
         numStoragePits = capacity_or_count;
         return ((int) remaining < 0) ? 0 : remaining;
     } else {
-        numStoragePits = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0);
+        numStoragePits = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_STORAGE_PIT1, BUILD_CATEGORY_BUILDING);
         return this->md->informationAI.numberAvailableStoragePits(rType);
     }
 }
@@ -9350,7 +9350,7 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& numStoragePits, int& 
 int TribeTacticalAIModule::numberAvailableGranaries(int& numGranaries, int& numUnbuiltGranaries) {
     int value;
 
-    value = this->md->buildAI.numberUnbuiltItemsOfType(MASTER_OBJECT_GRANARY, 0);
+    value = this->md->buildAI.numberUnbuiltItemsOfType(MASTER_OBJECT_GRANARY, BUILD_CATEGORY_BUILDING);
     numUnbuiltGranaries = value;
     if (value > 0) {
         return 0;
@@ -9360,13 +9360,13 @@ int TribeTacticalAIModule::numberAvailableGranaries(int& numGranaries, int& numU
         return 0;
     }
     if (this->sn[0x97] != -1) {
-        value = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_GRANARY, 0);
+        value = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_GRANARY, BUILD_CATEGORY_BUILDING);
         numGranaries = value;
         if (value >= this->sn[0x97]) {
             return 0;
         }
     }
-    value = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_GRANARY, 0);
+    value = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_GRANARY, BUILD_CATEGORY_BUILDING);
     numGranaries = value;
     return this->md->informationAI.numberAvailableGranaries();
 }
@@ -9395,12 +9395,13 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                     break;
                 if (this->md->aiPlayer->objectAvailable(0x32) == 0)
                     break;
-                if (this->md->buildAI.allBuilt(0, 0) == 0)
+                if (this->md->buildAI.allBuilt(BUILD_CATEGORY_BUILDING, BUILD_CATEGORY_BUILDING) == 0)
                     break;
                 //! This row budget is the game's only farm cap; it counts build-list rows, not live farms.
                 //! Deathmatch holds every other gate open, so the AI claims the full budget and replants.
                 //! RockNROR adds a deathmatch farm maximum here (SNMaxFarms); the default budget is 8.
-                if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(MASTER_OBJECT_FARM, 0) >= this->sn[0xDC])
+                if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(MASTER_OBJECT_FARM, BUILD_CATEGORY_BUILDING)
+                    >= this->sn[0xDC])
                     break;
                 this->md->buildAI.insert(MASTER_OBJECT_FARM, number, position);
             }
@@ -9434,9 +9435,11 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int number, int pos
                     break;
                 if (this->md->aiPlayer->objectAvailable(0x4F) == 0)
                     break;
-                if (this->md->buildAI.allBuilt(0, 0) == 0)
+                if (this->md->buildAI.allBuilt(BUILD_CATEGORY_BUILDING, BUILD_CATEGORY_BUILDING) == 0)
                     break;
-                if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(MASTER_OBJECT_WATCH_TOWER, 0)
+                if (this->md->buildAI.numberBuiltOrInProgressItemsOfType(
+                        MASTER_OBJECT_WATCH_TOWER, BUILD_CATEGORY_BUILDING
+                    )
                     >= this->sn[0xDE])
                     break;
                 this->md->buildAI.insert(MASTER_OBJECT_WATCH_TOWER, number, position);
@@ -9807,12 +9810,12 @@ void TribeTacticalAIModule::checkForCoopTributeGift() {
 void TribeTacticalAIModule::checkForASAPAgeResearch() {
     if (this->inAge(1) != 0 && this->sn[0xB5] == 1 && this->md->buildAI.readyToResearch(2, 1) != 0
         && this->md->resourceAI.resource(RGE_RESOURCE_FOOD) >= 500) {
-        BuildItem* item = this->md->buildAI.buildItem(0x65, 1, 4);
+        BuildItem* item = this->md->buildAI.buildItem(0x65, BUILD_CATEGORY_RESEARCH, BUILD_CATEGORY_BLOCKING_RESEARCH);
         if (item != 0)
             this->taskResearch(item);
     } else if (this->inAge(2) != 0 && this->sn[0xB6] == 1 && this->md->buildAI.readyToResearch(3, 1) != 0
                && this->md->resourceAI.resource(RGE_RESOURCE_FOOD) >= 800) {
-        BuildItem* item = this->md->buildAI.buildItem(0x66, 1, 4);
+        BuildItem* item = this->md->buildAI.buildItem(0x66, BUILD_CATEGORY_RESEARCH, BUILD_CATEGORY_BLOCKING_RESEARCH);
         if (item != 0)
             this->taskResearch(item);
     }
@@ -9820,7 +9823,7 @@ void TribeTacticalAIModule::checkForASAPAgeResearch() {
     if (this->inAge(3) != 0 && this->sn[0xB7] == 1 && this->md->buildAI.readyToResearch(4, 1) != 0
         && this->md->resourceAI.resource(RGE_RESOURCE_FOOD) >= 900
         && this->md->resourceAI.resource(RGE_RESOURCE_GOLD) >= 700) {
-        BuildItem* item = this->md->buildAI.buildItem(0x67, 1, 4);
+        BuildItem* item = this->md->buildAI.buildItem(0x67, BUILD_CATEGORY_RESEARCH, BUILD_CATEGORY_BLOCKING_RESEARCH);
         if (item != 0)
             this->taskResearch(item);
     }

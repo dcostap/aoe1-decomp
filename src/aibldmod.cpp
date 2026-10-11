@@ -296,44 +296,44 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
             default:
                 continue;
             case 'B':
-                buildCategory = 0;
+                buildCategory = BUILD_CATEGORY_BUILDING;
                 break;
             case 'A':
-                buildCategory = 0;
+                buildCategory = BUILD_CATEGORY_BUILDING;
                 sscanf(temp, "%*c%*d %*s %*d %*d %d ", &buildCap);
                 break;
             case 'R':
-                buildCategory = 1;
+                buildCategory = BUILD_CATEGORY_RESEARCH;
                 break;
             case 'C':
-                buildCategory = 4;
+                buildCategory = BUILD_CATEGORY_BLOCKING_RESEARCH;
                 break;
             case 'U':
-                buildCategory = 2;
+                buildCategory = BUILD_CATEGORY_UNIT;
                 break;
             case 'T':
-                buildCategory = 2;
+                buildCategory = BUILD_CATEGORY_UNIT;
                 sscanf(temp, "%*c%*d %*s %*d %*d %d ", &buildCap);
                 break;
             case 'L':
-                buildCategory = 3;
+                buildCategory = BUILD_CATEGORY_LOAD_BUILD_LIST;
                 break;
             case 'E':
-                buildCategory = 5;
+                buildCategory = BUILD_CATEGORY_ENABLE_ATTACK;
                 break;
             case 'G':
-                buildCategory = 6;
+                buildCategory = BUILD_CATEGORY_GATHERER_PERCENTAGE;
                 break;
         }
 
-        if (buildCategory == 0) {
+        if (buildCategory == BUILD_CATEGORY_BUILDING) {
             if (this->typesToIgnore.contains(typeID)) {
                 goto next_line;
             }
         }
 
-        if ((buildCategory == 0 || buildCategory == 2) && typeID >= 0 && typeID < player->master_object_num
-            && player->master_objects[typeID] != 0) {
+        if ((buildCategory == BUILD_CATEGORY_BUILDING || buildCategory == BUILD_CATEGORY_UNIT) && typeID >= 0
+            && typeID < player->master_object_num && player->master_objects[typeID] != 0) {
             RGE_Master_Static_Object* master = player->master_objects[typeID];
             xSize = master->radius_x;
             ySize = master->radius_y;

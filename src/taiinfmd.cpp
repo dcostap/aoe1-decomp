@@ -3535,8 +3535,8 @@ void TribeInformationAIModule::setupInfluenceMap(
     iMap.initialize(20);
     iMap.setUnchangeableLimit(0xff);
 
-    this->md->buildAI.numberBuiltItemsOfType(MASTER_OBJECT_GRANARY, 0);
-    this->md->buildAI.numberBuiltItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0);
+    this->md->buildAI.numberBuiltItemsOfType(MASTER_OBJECT_GRANARY, BUILD_CATEGORY_BUILDING);
+    this->md->buildAI.numberBuiltItemsOfType(MASTER_OBJECT_STORAGE_PIT1, BUILD_CATEGORY_BUILDING);
 
     min.x = 0;
     min.y = 0;
@@ -5834,7 +5834,8 @@ int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int dropsiteType) {
     if (dropsiteType == 2)
         return 0;
 
-    if (!md->buildAI.numberBuiltOrInProgressItemsOfType(MASTER_OBJECT_STORAGE_PIT1, 0) && closestDropsiteValue[1] != -1)
+    if (!md->buildAI.numberBuiltOrInProgressItemsOfType(MASTER_OBJECT_STORAGE_PIT1, BUILD_CATEGORY_BUILDING)
+        && closestDropsiteValue[1] != -1)
         return 1;
 
     if (dropsiteType == 1) {

@@ -3,6 +3,18 @@
 
 #include "aibitm.h"
 
+// Build-list categories. AIBuildList::loadBuildList maps the leading letter of each line to one:
+// B and A to BUILDING, R to RESEARCH, U and T to UNIT, L to LOAD_BUILD_LIST, C to BLOCKING_RESEARCH,
+// E to ENABLE_ATTACK, and G to GATHERER_PERCENTAGE. Only GATHERER_PERCENTAGE has a developer name
+// (insertGathererPercentage); the others are cleanup labels. See decomp_notes/build_categories.md.
+#define BUILD_CATEGORY_BUILDING            0
+#define BUILD_CATEGORY_RESEARCH            1
+#define BUILD_CATEGORY_UNIT                2
+#define BUILD_CATEGORY_LOAD_BUILD_LIST     3
+#define BUILD_CATEGORY_BLOCKING_RESEARCH   4
+#define BUILD_CATEGORY_ENABLE_ATTACK       5
+#define BUILD_CATEGORY_GATHERER_PERCENTAGE 6
+
 class BuildItem : public BaseItem {
   public:
     BuildItem* next;
