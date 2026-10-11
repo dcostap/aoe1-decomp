@@ -2150,13 +2150,11 @@ int RGE_Base_Game::check_for_cd(int num_players) {
 
     if (num_players > 0) {
         int cd_count = 0;
-        int i = 0;
-        do {
+        for (int i = 0; i < 9; i++) {
             if (this->comm_handler->GetPlayerHumanity(i + 1) == ME_HUMAN && this->playerHasCD(i) != 0) {
                 ++cd_count;
             }
-            ++i;
-        } while (i < 9);
+        }
 
         return num_players <= this->prog_info->max_players_per_cd * cd_count;
     }
