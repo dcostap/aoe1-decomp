@@ -849,47 +849,41 @@ void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager* List1, TSpan_List_Man
 }
 
 void TSpan_List_Manager::AlignamizeSpans() {
-    int i = 0;
+    for (int i = 0; i < this->Num_Lines; i++) {
+        VSpan_Node* node = this->Line_Head_Ptrs[i];
 
-    if (0 < this->Num_Lines) {
-        do {
-            VSpan_Node* node = this->Line_Head_Ptrs[i];
+        while (node != 0) {
+            VSpan_Node* next = node->Next;
 
-            while (node != 0) {
-                VSpan_Node* next = node->Next;
+            node->StartPx = node->StartPx & ~3;
+            int end = node->EndPx | 3;
+            node->EndPx = end;
 
-                node->StartPx = node->StartPx & ~3;
-                int end = node->EndPx | 3;
-                node->EndPx = end;
+            if (next != 0) {
+                if (end >= ((next->StartPx & 0x7FFFFFFC) - 1)) {
+                    node->EndPx = next->EndPx | 3;
+                    node->Next = next->Next;
 
-                if (next != 0) {
-                    if (end >= ((next->StartPx & 0x7FFFFFFC) - 1)) {
-                        node->EndPx = next->EndPx | 3;
-                        node->Next = next->Next;
-
-                        if (next == this->Line_Tail_Ptrs[i]) {
-                            this->Line_Tail_Ptrs[i] = node;
-                        }
-
-                        if (next->Next != 0) {
-                            next->Next->Prev = node;
-                        }
-
-                        this->VSList.FreeNode(next);
-                        this->Span_Count[i] = this->Span_Count[i] - 1;
-                    } else {
-                        node = node->Next;
+                    if (next == this->Line_Tail_Ptrs[i]) {
+                        this->Line_Tail_Ptrs[i] = node;
                     }
-                } else {
-                    node = 0;
-                }
-            }
 
-            int next_i = i + 1;
-            this->LeftMostPx[i] = this->Line_Head_Ptrs[i]->StartPx;
-            this->RightMostPx[i] = this->Line_Tail_Ptrs[i]->EndPx;
-            i = next_i;
-        } while (i < this->Num_Lines);
+                    if (next->Next != 0) {
+                        next->Next->Prev = node;
+                    }
+
+                    this->VSList.FreeNode(next);
+                    this->Span_Count[i] = this->Span_Count[i] - 1;
+                } else {
+                    node = node->Next;
+                }
+            } else {
+                node = 0;
+            }
+        }
+
+        this->LeftMostPx[i] = this->Line_Head_Ptrs[i]->StartPx;
+        this->RightMostPx[i] = this->Line_Tail_Ptrs[i]->EndPx;
     }
 }
 
@@ -1069,11 +1063,8 @@ int TSpan_List_Manager::DecodeLine(unsigned char* LineBuf, int Line, unsigned ch
     while (node != 0) {
         int x = node->StartPx;
         int end = node->EndPx;
-        if (x <= end) {
-            do {
-                LineBuf[x] = LineBuf[x] + fillC;
-                ++x;
-            } while (x <= end);
+        for (; x <= end; x++) {
+            LineBuf[x] = LineBuf[x] + fillC;
         }
         node = node->Next;
         ++count;
