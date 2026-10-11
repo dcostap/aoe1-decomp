@@ -487,7 +487,9 @@ TribeInformationAIModule::~TribeInformationAIModule() {
 #include <string.h>
 
 int TribeInformationAIModule::initialize() {
-    // Pointer chain: md->field_F0->field_3C->field_28 = terrain
+    // This is md->player->world->map, then map_width and map_height, and 0xFF90 below is
+    // unitHistoryFilename. Typed member access keeps this function exact but changes the later
+    // objectToTradeWith (004DEA80) and storeAttackMemory (004E0FD0), so the raw offsets stay.
     void* terrain = *(void**) (*(char**) (*(char**) ((char*) this->md + 0xF0) + 0x3C) + 0x28);
     this->mapXSizeValue = *(int*) ((char*) terrain + 8);
     this->mapYSizeValue = *(int*) ((char*) terrain + 0x0C);
@@ -2425,6 +2427,7 @@ void TribeInformationAIModule::removeObject(int objID) {
     if (obj != 0) {
         ObjectMemory* mem = objectMemory(objID);
         if (mem != 0) {
+            // obj->owner->id, kept raw for the same reason as in initialize.
             unsigned char owner_id = *(unsigned char*) (*(int*) ((char*) obj + 0x0C) + 0x4A);
             mem->owner = owner_id;
         }
@@ -6166,7 +6169,7 @@ void TribeInformationAIModule::loadUnitHistory() {
 
     int fd = rge_open(historyFileName, _O_BINARY);
     if (fd != -1) {
-        rge_read(fd, (char*) this + 0xFF64, 44);
+        rge_read(fd, this->unitHistory, 44);
         rge_close(fd);
     }
 }

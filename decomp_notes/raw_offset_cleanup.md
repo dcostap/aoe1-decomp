@@ -24,3 +24,26 @@ offset:
 3111 to 3125 bytes, and resync similarity from 51.8% to 51.5%. That is
 noise-level for a function that is about half matched. No other function or
 object payload changed.
+
+## AI module pointer chains
+
+`offsetof` checks confirmed these members:
+
+- `TribeMainDecisionAIModule::player` at 0xF0, `RGE_Player::world` at 0x3C,
+  `RGE_Game_World::map` at 0x28 and `world_time` at 4, and `RGE_Map::map_width`/`map_height` at 8/0xC.
+- `TribeInformationAIModule::unitHistory` at 0xFF64 and `unitHistoryFilename` at 0xFF90.
+- `RGE_Static_Object::owner` at 0xC.
+
+Results:
+
+- `taiinfmd.cpp` `loadUnitHistory` read: now `this->unitHistory`, byte-identical.
+- `taiinfmd.cpp` `initialize` (map size and filename) and the owner read in
+  the object-memory update: typed access keeps the edited function exact but
+  changes the later `objectToTradeWith` (004DEA80) and makes
+  `storeAttackMemory` (004E0FD0) lose its exact match by swapping two argument
+  loads. Tried a typed local named `map` or `terrain`, no local, a `world` local,
+  and swapping the `x1 + x2` order in `storeAttackMemory`. None restored it. The
+  raw chains stay with comments naming the members.
+- `taibldmd.cpp` `cancelTrainUnit`/`cancelResearch` (`world_time`): the file
+  does not include `world.h`. Adding it, at either include position, makes
+  `mostNeededResource` (004D4F80) lose its exact match. Kept raw with comments.
