@@ -282,20 +282,12 @@ void RGE_Active_Animated_Sprite::set_frame(short new_frame) {
 unsigned char RGE_Active_Animated_Sprite::frame_passed(short passed_frame) {
     int result;
 
-    if (this->frame_changed == 0)
-        goto ret0;
-    if (this->frame_looped != 0)
-        goto ret1;
-    if (this->frame < passed_frame)
-        goto ret0;
-    if (this->last_frame < passed_frame)
-        goto ret1;
-ret0:
-    result = 0;
-    goto done;
-ret1:
-    result = 1;
-done:
+    if (this->frame_changed != 0
+        && (this->frame_looped != 0 || (this->frame >= passed_frame && this->last_frame < passed_frame))) {
+        result = 1;
+    } else {
+        result = 0;
+    }
     return result;
 }
 

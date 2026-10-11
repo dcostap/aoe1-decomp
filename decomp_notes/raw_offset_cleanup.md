@@ -90,3 +90,11 @@ original's control flow fits a simple `if (list) { for ... return 1; } else if
 (draw_level == 0) return 1; return 0;`. That form is byte-identical.
 Writing separate `return 0`/`return 1` tails costs 24 bytes: VC5 turns
 `if (x == 0) return 1; return 0;` into `sete`, which the original does not have.
+
+## `RGE_Active_Animated_Sprite::frame_passed` (0041B560)
+
+The four-label goto chain is now one condition that assigns an `int result`.
+That matches the style of `RGE_Active_Animated_Sprite::is_animating` just
+above it, and is byte-identical. The `int` local matters. Returning `1`/`0`
+directly as `unsigned char` emits `mov al,1`/`xor al,al` instead of the
+original's full-register `mov eax,1`/`xor eax,eax` (14 bytes).
