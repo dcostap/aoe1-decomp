@@ -98,3 +98,19 @@ That matches the style of `RGE_Active_Animated_Sprite::is_animating` just
 above it, and is byte-identical. The `int` local matters. Returning `1`/`0`
 directly as `unsigned char` emits `mov al,1`/`xor al,al` instead of the
 original's full-register `mov eax,1`/`xor eax,eax` (14 bytes).
+
+## Paired-array cursor loops
+
+These countdown loops walked one array with a pointer and reached a sibling
+array through negative offsets (`ptr - 40`, `like_table - 10`). They are now
+indexed `for` loops over the named members. All are byte-identical.
+
+- `TacticalAIGroup::load`, `save` and `currentHitPoints`: `unitsValue` and
+  `unitsOriginalHitPointsValue`.
+- `DiplomacyAIModule` load constructor and `save`: `dislikeTable`, `likeTable`
+  and `changeableTable`.
+- `TRIBE_Master_Combat_Object::modify_delta`: `build_inventory[i]`.
+
+`RGE_Sprite::get_lowest_draw_level` (004C0C50) keeps its raw
+`(char*) draw_list + 4` cursor. Indexed and typed-cursor forms move the
+count register and change the pointer setup (50–53 bytes).

@@ -15,17 +15,11 @@ DiplomacyAIModule::DiplomacyAIModule(void* pW, int playerID) : AIModule("Diploma
 }
 
 DiplomacyAIModule::DiplomacyAIModule(int playerID, int infile) : AIModule("Diplomacy AI", 0x3EB, playerID, 0), md(0) {
-    unsigned char* changeable_table = this->changeableTable;
-    int* like_table = this->likeTable;
-    int count = 10;
-    do {
-        rge_read(infile, like_table - 10, 4);
-        rge_read(infile, like_table, 4);
-        rge_read(infile, changeable_table, 1);
-        like_table++;
-        changeable_table++;
-        count--;
-    } while (count != 0);
+    for (int i = 0; i < 10; i++) {
+        rge_read(infile, &this->dislikeTable[i], 4);
+        rge_read(infile, &this->likeTable[i], 4);
+        rge_read(infile, &this->changeableTable[i], 1);
+    }
 }
 
 DiplomacyAIModule::~DiplomacyAIModule() {
@@ -60,17 +54,11 @@ int DiplomacyAIModule::update(int timeLimit) {
 }
 
 int DiplomacyAIModule::save(int outfile) {
-    unsigned char* changeable_table = this->changeableTable;
-    int* like_table = this->likeTable;
-    int count = 10;
-
-    do {
-        rge_write(outfile, like_table - 10, 4);
-        rge_write(outfile, like_table, 4);
-        rge_write(outfile, changeable_table, 1);
-        ++like_table;
-        ++changeable_table;
-    } while (--count != 0);
+    for (int i = 0; i < 10; i++) {
+        rge_write(outfile, &this->dislikeTable[i], 4);
+        rge_write(outfile, &this->likeTable[i], 4);
+        rge_write(outfile, &this->changeableTable[i], 1);
+    }
 
     return 1;
 }

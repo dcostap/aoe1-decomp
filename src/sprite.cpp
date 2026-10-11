@@ -788,6 +788,8 @@ unsigned char RGE_Sprite::get_lowest_draw_level(void) {
 
     unsigned char lowest = 0x14;
     if (count > 0) {
+        // Walks draw_list[i].sprite. A typed RGE_Picture_List cursor, with or without a sprite local,
+        // starts with lea instead of the original mov/add and moves count to edx (50 bytes).
         char* entry = (char*) this->draw_list + 4;
         int i = count;
         do {

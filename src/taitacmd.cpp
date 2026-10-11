@@ -71,13 +71,10 @@ int TacticalAIGroup::load(int infile) {
     rge_read(infile, &this->idValue, 4);
     rge_read(infile, &this->inUseValue, 4);
 
-    int* ptr = this->unitsOriginalHitPointsValue;
-    int count = 40;
-    do {
-        rge_read(infile, ptr - 40, 4);
-        rge_read(infile, ptr, 4);
-        ++ptr;
-    } while (--count != 0);
+    for (int i = 0; i < 40; i++) {
+        rge_read(infile, &this->unitsValue[i], 4);
+        rge_read(infile, &this->unitsOriginalHitPointsValue[i], 4);
+    }
 
     rge_read(infile, &this->numberUnitsValue, 4);
     rge_read(infile, &this->desiredNumberUnitsValue, 4);
@@ -135,14 +132,10 @@ int TacticalAIGroup::save(int outfile) {
     rge_write(outfile, &this->idValue, 4);
     rge_write(outfile, &this->inUseValue, 4);
 
-    // Write unitsValue and unitsOriginalHitPointsValue in paired entries.
-    int* ptr = this->unitsOriginalHitPointsValue;
-    int count = 40;
-    do {
-        rge_write(outfile, ptr - 40, 4);
-        rge_write(outfile, ptr, 4);
-        ++ptr;
-    } while (--count != 0);
+    for (int i = 0; i < 40; i++) {
+        rge_write(outfile, &this->unitsValue[i], 4);
+        rge_write(outfile, &this->unitsOriginalHitPointsValue[i], 4);
+    }
 
     rge_write(outfile, &this->numberUnitsValue, 4);
     rge_write(outfile, &this->desiredNumberUnitsValue, 4);
@@ -456,19 +449,15 @@ void TacticalAIGroup::setSpecificCommander(int id, TribeMainDecisionAIModule* md
 
 int TacticalAIGroup::currentHitPoints(TribeMainDecisionAIModule* md) const {
     int total = 0;
-    const int* unit = unitsValue;
-    int remaining = 0x28;
 
-    do {
-        int unitId = *unit;
-        if (unitId != -1) {
-            RGE_Static_Object* object = md->object(unitId);
+    for (int i = 0; i < 40; i++) {
+        if (this->unitsValue[i] != -1) {
+            RGE_Static_Object* object = md->object(this->unitsValue[i]);
             if (object != 0) {
                 total += (int) object->hp;
             }
         }
-        ++unit;
-    } while (--remaining != 0);
+    }
 
     return total;
 }

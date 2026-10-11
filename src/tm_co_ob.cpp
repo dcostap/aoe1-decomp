@@ -247,14 +247,11 @@ void TRIBE_Master_Combat_Object::modify_delta(float amount, unsigned char flag) 
         return;
     }
 
-    Attribute_Cost* entry = build_inventory;
-    int remaining = 3;
-    do {
-        if (entry->flag != 0) {
-            entry->amount = entry->amount + (short) amount;
+    for (int i = 0; i < 3; i++) {
+        if (this->build_inventory[i].flag != 0) {
+            this->build_inventory[i].amount += (short) amount;
         }
-        ++entry;
-    } while (--remaining != 0);
+    }
 }
 
 void TRIBE_Master_Combat_Object::modify_percent(float amount, unsigned char flag) {
