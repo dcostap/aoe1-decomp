@@ -30,6 +30,7 @@ is the technology that shares allied line of sight.
 | 26 | `ATTACK_WARNING_SOUND` | Indexes `world->sounds` for the attack warning. |
 | 27 | `PRIEST_CONVERSION` | When it is zero, priests (group 0x12) cannot be converted. |
 | 28 | `BUILDING_CONVERSION` | When it is zero, buildings (group 3) cannot be converted. |
+| 29 | `GOLD_REPLACEMENT` | When it is below 1, `TRIBE_Player::check_obj_cost` and `TRIBE_Player_Tech::tech_cost` cannot cover a missing resource with gold. |
 | 32 | `POPULATION_LIMIT` | Training stops when slot 11 reaches it. `check_obj_cost` reports it as the missing attribute. |
 | 33 | `FOOD_MAINTENANCE` | Food drains by `dt * [33] * [11] / 60`. |
 | 35 | `FAITH_RECHARGE_RATE` | Each tick, priests regain `[35] * dt` faith. |
@@ -49,7 +50,6 @@ These slots stay numeric because their use does not identify them:
 
 | Slot | What the code does |
 | --- | --- |
-| 29 | When it is below 1, `check_obj_cost` and the technology cost checks cannot pay with the gold substitute. |
 | 30 | Reset to 0 on load. |
 | 36 | The timer of `RGE_Action_Make`. |
 | 45 | Set to 0 when the player loses all qualifying units. |
@@ -63,6 +63,19 @@ The same pass named related literals:
 - the priest and building groups in the conversion check;
 - `'O'` and `'E'` in `TRIBE_Combat_Object`, which are master IDs 79 (Watch Tower) and 69 (Guard
   Tower).
+
+## `TRIBE_Player::check_obj_cost` locals
+
+The PDB names two locals in this function: `inventory_cost` and `gold_replace`. In the source they
+were called `amount` and `population`. The local called `population` held
+`attributes[RGE_RESOURCE_GOLD]`, or 0 when slot 29 is below 1. The function uses it to cover a
+missing resource with gold, so it is `gold_replace`. The local called `amount` held
+`build_inventory[i].amount * modifier`, so it is `inventory_cost`. The bool that records whether
+slot 29 allows this is held in a register, so it has no PDB name; it is now
+`gold_replace_allowed`.
+
+The PDB stack offsets for these two locals do not match the original stack slots (`00513AF0`), so
+the names were matched to the locals by their use, not by their offsets.
 
 Validation: a full translation-unit audit kept all 5,013 exact claims. 224 of 225 object payloads
 equal the baseline. The one difference is `rmm_tdbc.obj`, from the earlier include change.

@@ -8,8 +8,8 @@
 #define RGE_RESOURCE_GOLD   3
 
 // Other player attribute slots. These are cleanup labels taken from how the code uses each slot;
-// the developer names are not in the PDB or the expansion language DLL. Slots 29, 30, 36, 45, and
-// 48 stay numeric. See decomp_notes/player_attributes.md.
+// the developer names are not in the PDB or the expansion language DLL. Slots 30, 36, 45, and 48
+// stay numeric. See decomp_notes/player_attributes.md.
 #define PLAYER_ATTRIBUTE_POPULATION_HEADROOM   4
 #define PLAYER_ATTRIBUTE_CURRENT_AGE           6
 #define PLAYER_ATTRIBUTE_ARTIFACTS             7
@@ -28,6 +28,7 @@
 #define PLAYER_ATTRIBUTE_ATTACK_WARNING_SOUND  26
 #define PLAYER_ATTRIBUTE_PRIEST_CONVERSION     27
 #define PLAYER_ATTRIBUTE_BUILDING_CONVERSION   28
+#define PLAYER_ATTRIBUTE_GOLD_REPLACEMENT      29
 #define PLAYER_ATTRIBUTE_POPULATION_LIMIT      32
 #define PLAYER_ATTRIBUTE_FOOD_MAINTENANCE      33
 #define PLAYER_ATTRIBUTE_FAITH_RECHARGE_RATE   35

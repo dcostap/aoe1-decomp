@@ -312,7 +312,7 @@ void TRIBE_Player_Tech::tech_cost(
     cost3 = 0;
 
     can_use_carry = this->check_tech_cost(tech_id, 0);
-    if (this->owner->attributes[0x1d] < 1.0) {
+    if (this->owner->attributes[PLAYER_ATTRIBUTE_GOLD_REPLACEMENT] < 1.0) {
         can_use_carry = 0;
     }
 
@@ -350,14 +350,14 @@ void TRIBE_Player_Tech::tech_cost(
     }
 
     if (total > 0) {
-        if (attr1 == 3 || attr1 == -1) {
-            attr1 = 3;
+        if (attr1 == RGE_RESOURCE_GOLD || attr1 == -1) {
+            attr1 = RGE_RESOURCE_GOLD;
             cost1 += total;
-        } else if (attr2 == 3 || attr2 == -1) {
-            attr2 = 3;
+        } else if (attr2 == RGE_RESOURCE_GOLD || attr2 == -1) {
+            attr2 = RGE_RESOURCE_GOLD;
             cost2 += total;
-        } else if (attr3 == 3 || attr3 == -1) {
-            attr3 = 3;
+        } else if (attr3 == RGE_RESOURCE_GOLD || attr3 == -1) {
+            attr3 = RGE_RESOURCE_GOLD;
             cost3 = total;
         }
     }
@@ -381,7 +381,7 @@ unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id, short* missing_a
     tech = this->base_tech->tech_tree + tech_id;
     carry = this->owner->attributes[RGE_RESOURCE_GOLD];
 
-    if (this->owner->attributes[0x1d] < 1.0) {
+    if (this->owner->attributes[PLAYER_ATTRIBUTE_GOLD_REPLACEMENT] < 1.0) {
         carry = 0.0f;
         has_carry = 0;
     } else {

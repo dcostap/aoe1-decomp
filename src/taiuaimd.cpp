@@ -931,19 +931,19 @@ int TribePriestUnitAIModule::canConvert(int targetID) {
             int og = obj->master_obj->object_group;
             short sid = obj->master_obj->id;
 
-            if (sid == 0x6D)
+            if (sid == MASTER_OBJECT_TOWN_CENTER1)
                 return 0;
             if (og == OBJECT_GROUP_WALL)
                 return 0;
-            if (sid == 0x9F)
+            if (sid == MASTER_OBJECT_ARTIFACT1)
                 return 0;
-            if (sid == 0x114)
+            if (sid == MASTER_OBJECT_WONDER)
                 return 0;
-            if (sid == 0x9E)
+            if (sid == MASTER_OBJECT_ARTIFACT_RUINS1)
                 return 0;
-            if (sid == 0xA3)
+            if (sid == MASTER_OBJECT_ARTIFACT_RUINS2)
                 return 0;
-            if (og == 0x1E)
+            if (og == OBJECT_GROUP_FLAG)
                 return 0;
 
             if (og == OBJECT_GROUP_PRIEST
@@ -1764,7 +1764,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
             //! RockNROR skips the back-off when the target outranges the unit.
             if (this->objectValue->owner->computerPlayer() != 0
                 && this->objectValue->weaponRange() >= g_soldier_evasive_distance_threshold
-                && this->objectValue->master_obj->object_group != 0x1A) {
+                && this->objectValue->master_obj->object_group != OBJECT_GROUP_ELEPHANT_ARCHER) {
                 if (this->currentActionValue == UNIT_AI_ACTION_ATTACK) {
 
                     target = this->objectValue->owner->world->object(this->currentTargetValue);

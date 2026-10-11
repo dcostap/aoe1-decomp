@@ -9559,48 +9559,48 @@ void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID) 
                 insertedUnit = 1;
                 continue;
             case 1:
-                unitType = 0x25;
-                objectType = 0x65;
+                unitType = MASTER_OBJECT_SOLDIER_CAVALRY1;
+                objectType = MASTER_OBJECT_STABLE;
                 break;
             case 2:
-                unitType = 0x4B;
-                objectType = 0x0C;
+                unitType = MASTER_OBJECT_SOLDIER_INF3;
+                objectType = MASTER_OBJECT_BARRACKS1;
                 break;
             case 3:
-                unitType = 0x5D;
-                objectType = 0;
+                unitType = MASTER_OBJECT_SOLDIER_PHAL1;
+                objectType = MASTER_OBJECT_ACADEMY;
                 break;
             case 4:
-                unitType = 0x27;
-                objectType = 0x57;
+                unitType = MASTER_OBJECT_SOLDIER_CAVALRY3_ARCH;
+                objectType = MASTER_OBJECT_RANGE1;
                 break;
             case 5:
-                unitType = 0x49;
-                objectType = 0x0C;
+                unitType = MASTER_OBJECT_SOLDIER_INF1;
+                objectType = MASTER_OBJECT_BARRACKS1;
                 break;
             case 6:
-                unitType = 5;
-                objectType = 0x57;
+                unitType = MASTER_OBJECT_SOLDIER_ARCHER2;
+                objectType = MASTER_OBJECT_RANGE1;
                 break;
             case 7:
-                unitType = 0x12B;
-                objectType = 0x65;
+                unitType = MASTER_OBJECT_SOLDIER_SCOUT;
+                objectType = MASTER_OBJECT_STABLE;
                 break;
             case 8:
-                unitType = 4;
-                objectType = 0x57;
+                unitType = MASTER_OBJECT_SOLDIER_ARCHER1;
+                objectType = MASTER_OBJECT_RANGE1;
                 break;
             case 9:
-                unitType = 0x7D;
-                objectType = 0x68;
+                unitType = MASTER_OBJECT_PRIEST;
+                objectType = MASTER_OBJECT_TEMPLE1;
                 break;
             case 10:
-                unitType = 0x29;
-                objectType = 0x57;
+                unitType = MASTER_OBJECT_SOLDIER_CHARIOT2;
+                objectType = MASTER_OBJECT_RANGE1;
                 break;
             case 11:
-                unitType = 0x28;
-                objectType = 0x65;
+                unitType = MASTER_OBJECT_SOLDIER_CHARIOT1;
+                objectType = MASTER_OBJECT_STABLE;
                 break;
             default:
                 if (itemCostFlag != 1)

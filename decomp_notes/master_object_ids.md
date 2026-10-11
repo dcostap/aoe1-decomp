@@ -175,3 +175,22 @@ category-0 lines. The research IDs passed to `insertResearch` stay numeric.
 Validation: the `taibldmd` group compiled, all 25 exact claims passed, and the object payload is unchanged
 (`build/cleanup-2026-10-10/initialize-locals`). `build/cleanup-2026-10-10/rename_initialize_locals.py`
 applies the rename.
+
+## Fourth pass
+
+These raw unit IDs and object groups were named:
+
+- `TribeInformationAIModule::convertUnitToIntType`;
+- the target filter in `TribeSoldierUnitAIModule`;
+- the selection and conversion checks in `TRIBE_Player`;
+- the unit and building pairs in `TribeTacticalAIModule::checkForAttackResponseBuildInsertions`.
+
+In that switch, each unit is paired with the building that trains it: Stable for cavalry, scouts,
+and chariots; Range for archers, horse archers, and chariot archers; Barracks for infantry; Academy
+for the phalanx; Temple for the priest. This agrees with the name table.
+
+`checkForASAPAgeResearch` keeps the research IDs 0x65 to 0x67 numeric. Naming them needs
+`tech.h` in `taitacmd.cpp`. That include changes two functions that are not exact claims.
+`taskActiveSoldiers` moves 8 bytes closer to the original, and `idleCivilian` moves 8 bytes further
+away. The PDB has no include list for this module, so nothing shows that the original included
+`tech.h`.

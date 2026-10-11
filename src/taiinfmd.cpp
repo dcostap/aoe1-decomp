@@ -6122,30 +6122,30 @@ int TribeInformationAIModule::convertUnitToIntType(RGE_Static_Object* obj) const
 
     if (og == OBJECT_GROUP_PRIEST)
         return 5;
-    if (og == 0x1C)
+    if (og == OBJECT_GROUP_PHALANX)
         return 3;
-    if (og == 0x0D)
+    if (og == OBJECT_GROUP_SIEGE_WEAPON)
         return 4;
-    if (og == 0x0C)
+    if (og == OBJECT_GROUP_CAVALRY)
         return 2;
-    if (og == 0x23)
+    if (og == OBJECT_GROUP_CHARIOT)
         return 7;
 
-    if (id == 0x49)
+    if (id == MASTER_OBJECT_SOLDIER_INF1)
         return 0;
-    if (id == 0x4B)
+    if (id == MASTER_OBJECT_SOLDIER_INF3)
         return 1;
 
-    if (id == 4 || id == 5 || id == 0x27)
+    if (id == MASTER_OBJECT_SOLDIER_ARCHER1 || id == MASTER_OBJECT_SOLDIER_ARCHER2
+        || id == MASTER_OBJECT_SOLDIER_CAVALRY3_ARCH)
         return 6;
 
-    if (id == 0x29)
+    if (id == MASTER_OBJECT_SOLDIER_CHARIOT2)
         return 10;
 
-    if (id == 0x2E || id == 0x19)
+    if (id == MASTER_OBJECT_SOLDIER_ELEPHANT || id == MASTER_OBJECT_SOLDIER_EL_ARCHER)
         return 9;
 
-    // Fallback: returns 8 if object_group == 0x16, otherwise -1
     return (og == OBJECT_GROUP_WAR_BOAT) ? 8 : -1;
 }
 

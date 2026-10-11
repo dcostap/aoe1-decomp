@@ -384,10 +384,10 @@ void TRIBE_Player::update() {
             while (node != 0) {
                 RGE_Static_Object* object = node->node;
                 int group = object->master_obj->object_group;
-                if (group != 0xb && group != 0x1e && group != OBJECT_GROUP_WALL && group != OBJECT_GROUP_ARTIFACT
-                    && group != OBJECT_GROUP_FISHING_BOAT && group != OBJECT_GROUP_TRANSPORT_BOAT
-                    && group != OBJECT_GROUP_TRADE_BOAT && group != 0x25
-                    && object->object_state == RGE_OBJECT_STATE_ACTIVE)
+                if (group != 0xb && group != OBJECT_GROUP_FLAG && group != OBJECT_GROUP_WALL
+                    && group != OBJECT_GROUP_ARTIFACT && group != OBJECT_GROUP_FISHING_BOAT
+                    && group != OBJECT_GROUP_TRANSPORT_BOAT && group != OBJECT_GROUP_TRADE_BOAT
+                    && group != OBJECT_GROUP_DOPPLEGANGER && object->object_state == RGE_OBJECT_STATE_ACTIVE)
                     break;
                 node = node->next;
             }
@@ -668,7 +668,7 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, 
                 static_cast<TRIBE_Building_Object*>(object)->build(10000.0f);
         }
         if (rge_base_game->prog_mode == ProgModeScenarioEditor
-            && (object->master_obj->object_group == 5 || object->master_obj->object_group == 0x21))
+            && (object->master_obj->object_group == OBJECT_GROUP_FISH || object->master_obj->object_group == 0x21))
             object->sprite_list->set_frame(object->sprite, 5);
     }
     return object;
@@ -1037,15 +1037,15 @@ unsigned char TRIBE_Player::command_make_unload(float x, float y) {
 }
 
 unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed, float modifier, int ignore_pop) {
-    float population = this->attributes[RGE_RESOURCE_GOLD];
+    float gold_replace = this->attributes[RGE_RESOURCE_GOLD];
     if (attribute_needed != 0)
         *attribute_needed = static_cast<short>(-1);
-    bool population_available;
-    if (this->attributes[29] < 1.0) {
-        population = 0.0f;
-        population_available = false;
+    bool gold_replace_allowed;
+    if (this->attributes[PLAYER_ATTRIBUTE_GOLD_REPLACEMENT] < 1.0) {
+        gold_replace = 0.0f;
+        gold_replace_allowed = false;
     } else {
-        population_available = true;
+        gold_replace_allowed = true;
     }
     RGE_Master_Static_Object* object = this->master_objects[obj_id];
     TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
@@ -1058,28 +1058,29 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed
         int type = combat->build_inventory[i].type;
         if (type < 0)
             continue;
-        float amount = combat->build_inventory[i].amount * modifier;
+        float inventory_cost = combat->build_inventory[i].amount * modifier;
         if (type == PLAYER_ATTRIBUTE_POPULATION_HEADROOM && ignore_pop == 0
             && this->attributes[PLAYER_ATTRIBUTE_POPULATION] >= this->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]) {
             if (attribute_needed != 0)
                 *attribute_needed = PLAYER_ATTRIBUTE_POPULATION_LIMIT;
             return 0;
         }
-        if (population_available && type == RGE_RESOURCE_GOLD) {
-            population -= amount;
-            if (population < 0.0f) {
+        if (gold_replace_allowed && type == RGE_RESOURCE_GOLD) {
+            gold_replace -= inventory_cost;
+            if (gold_replace < 0.0f) {
                 if (attribute_needed != 0)
                     *attribute_needed = RGE_RESOURCE_GOLD;
                 return 0;
             }
         }
-        if (this->attributes[type] < amount && (type != PLAYER_ATTRIBUTE_POPULATION_HEADROOM || ignore_pop == 0)) {
-            if (combat->build_inventory[i].flag == 0 || population + this->attributes[type] < amount) {
+        if (this->attributes[type] < inventory_cost
+            && (type != PLAYER_ATTRIBUTE_POPULATION_HEADROOM || ignore_pop == 0)) {
+            if (combat->build_inventory[i].flag == 0 || gold_replace + this->attributes[type] < inventory_cost) {
                 if (attribute_needed != 0)
                     *attribute_needed = static_cast<short>(type);
                 return 0;
             }
-            population -= amount - this->attributes[type];
+            gold_replace -= inventory_cost - this->attributes[type];
         }
     }
     return 1;
@@ -3718,7 +3719,7 @@ void TRIBE_Player::analyize_selected_objects() {
             if ((*p)->owner->id == this->id) {
                 int group = (*p)->master_obj->object_group;
                 if (group >= 0 && group < tribe_group_properties_num) {
-                    if (group == 0x12) {
+                    if (group == OBJECT_GROUP_PRIEST) {
                         this->sel_object_properties |= 0x16;
                         ++tplayer_globals::selectedObjectCount;
                         tplayer_globals::selectedObjectId = (*p)->id;
@@ -3781,7 +3782,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
         }
 
         this->analyize_selected_objects();
-        if (MstrObjId == 0x9E || MstrObjId == 0xA3) {
+        if (MstrObjId == MASTER_OBJECT_ARTIFACT_RUINS1 || MstrObjId == MASTER_OBJECT_ARTIFACT_RUINS2) {
             current = 50;
         }
 
@@ -3944,7 +3945,8 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
                                == g_player_selection_zero_attribute) {
                         goto finish;
                     }
-                    if (ObjPlayer == 3 && (MstrObjId == 0x6D || MstrObjId == 0x114)) {
+                    if (ObjPlayer == 3
+                        && (MstrObjId == MASTER_OBJECT_TOWN_CENTER1 || MstrObjId == MASTER_OBJECT_WONDER)) {
                         goto finish;
                     }
                     newFacet = 5;
