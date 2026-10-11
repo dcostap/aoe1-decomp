@@ -37,10 +37,12 @@ is the technology that shares allied line of sight.
 | 37 | `CIVILIAN_POPULATION` | Counts civilians, fishing boats, and trade boats as they are created and destroyed. |
 | 39 | `ALL_TECHNOLOGIES` | Set to 1 when no technology is left to research. |
 | 40 | `MILITARY_POPULATION` | Counts military units and towers as they are created and destroyed. |
+| 41 | `CONVERSIONS` | `TRIBE_Action_Convert` adds 1 after each successful conversion. |
 | 44 | `KILLS_MINUS_LOSSES` | `[20] - ([19] - [11])`, clamped at 0. |
 | 46 | `TRIBUTE_FEE` | The fraction charged on tribute. The diplomacy dialog shows it as a percent. |
 | 49 | `GOLD_EARNED` | `add_attribute_num` adds earned gold to it. |
 | 50 | `ALLIED_LOS` | Adding to it or loading a positive value turns on `allied_LOS_Enable`. The debug label is "Writing". |
+| 53 | `TRIBUTE_SENT` | A tribute command adds the amount plus the fee to the sender, and subtracts the amount from the receiver. |
 | 54 | `ALL_RUINS` | Set when one team holds every ruin. |
 | 55 | `ALL_ARTIFACTS` | Set when one team holds every artifact. |
 | 56 | `HEAL_RATE` | Multiplies the heal work in `tact_hea.cpp`. |
@@ -50,7 +52,8 @@ These slots stay numeric because their use does not identify them:
 
 | Slot | What the code does |
 | --- | --- |
-| 30 | Reset to 0 on load. |
+| 30 | Reset to 0 on load. The `nofoodcap` argument sets it to 500. |
+| 31 | The `nofoodcap` argument sets it to 5000. |
 | 36 | The timer of `RGE_Action_Make`. |
 | 45 | Set to 0 when the player loses all qualifying units. |
 | 48 | Set by a scenario disabled-technology slot. It changes builder handling when the Town Center is unavailable. |

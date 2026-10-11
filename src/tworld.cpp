@@ -865,35 +865,38 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     switch (static_cast<TRIBE_Game*>(rge_base_game)->startingAge()) {
         case TRIBE_Game::ToolAge:
             for (i = 1; i < this->player_num; ++i)
-                static_cast<TRIBE_Player*>(this->players[i])->rev_tech(0x19);
+                static_cast<TRIBE_Player*>(this->players[i])->rev_tech(PLAYER_ATTRIBUTE_TOOL_AGE_TECH);
             break;
         case TRIBE_Game::BronzeAge:
             for (i = 1; i < this->player_num; ++i)
-                static_cast<TRIBE_Player*>(this->players[i])->rev_tech(0x17);
+                static_cast<TRIBE_Player*>(this->players[i])->rev_tech(PLAYER_ATTRIBUTE_BRONZE_AGE_TECH);
             break;
         case TRIBE_Game::IronAge:
             for (i = 1; i < this->player_num; ++i)
-                static_cast<TRIBE_Player*>(this->players[i])->rev_tech(0x18);
+                static_cast<TRIBE_Player*>(this->players[i])->rev_tech(PLAYER_ATTRIBUTE_IRON_AGE_TECH);
             break;
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->check_prog_argument(nofoodcap_argument)) {
         for (i = 1; i < this->player_num; ++i) {
-            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x20, 50.0f);
-            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x21, 0.0f);
+            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(PLAYER_ATTRIBUTE_POPULATION_LIMIT, 50.0f);
+            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(PLAYER_ATTRIBUTE_FOOD_MAINTENANCE, 0.0f);
             static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x1e, 500.0f);
             static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x1f, 5000.0f);
         }
     } else if (static_cast<TRIBE_Game*>(rge_base_game)->check_prog_argument(system2_argument)) {
         for (i = 1; i < this->player_num; ++i) {
-            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x20, 50.0f);
-            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x21, 0.0f);
+            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(PLAYER_ATTRIBUTE_POPULATION_LIMIT, 50.0f);
+            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(PLAYER_ATTRIBUTE_FOOD_MAINTENANCE, 0.0f);
         }
     } else {
         for (i = 1; i < this->player_num; ++i) {
             static_cast<TRIBE_Player*>(this->players[i])
-                ->new_attribute_num(0x20, static_cast<float>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit()));
-            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x21, 0.0f);
+                ->new_attribute_num(
+                    PLAYER_ATTRIBUTE_POPULATION_LIMIT,
+                    static_cast<float>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit())
+                );
+            static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(PLAYER_ATTRIBUTE_FOOD_MAINTENANCE, 0.0f);
             static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x1e, 500.0f);
             static_cast<TRIBE_Player*>(this->players[i])->new_attribute_num(0x2d, 1.0f);
             this->players[i]->victory_conditions->add_points_attribute_amount(0, 0, 0x14, 2, 1);
@@ -960,7 +963,8 @@ unsigned char TRIBE_World::check_game_state() {
 
                     if (this->players[i]->allied_victory != 0) {
                         for (int j = 1; j < this->player_num; ++j) {
-                            if (j != i && this->players[i]->relation(j) == 0 && this->players[j]->relation(i) == 0
+                            if (j != i && this->players[i]->relation(j) == RGE_RELATION_ALLY
+                                && this->players[j]->relation(i) == RGE_RELATION_ALLY
                                 && this->players[j]->allied_victory != 0) {
                                 team_score[i] += this->players[j]->victory_conditions->get_victory_points();
                                 ++player_count;
@@ -1005,7 +1009,8 @@ unsigned char TRIBE_World::check_game_state() {
                     if (this->players[i]->allied_victory != 0) {
                         for (int j = 1; j < this->player_num; ++j) {
                             if (player_team[j] == -1 && this->players[j]->allied_victory != 0
-                                && this->players[i]->relation(j) == 0 && this->players[j]->relation(i) == 0) {
+                                && this->players[i]->relation(j) == RGE_RELATION_ALLY
+                                && this->players[j]->relation(i) == RGE_RELATION_ALLY) {
                                 player_team[j] = team_count;
                                 team_player[team_count][team_size[team_count]++] =
                                     static_cast<TRIBE_Player*>(this->players[j]);
@@ -1339,8 +1344,8 @@ void TRIBE_World::fill_in_score(TRIBE_Zone_High_Score_Info& info, long score_gro
     player = 1;
     if (1 < this->player_num) {
         do {
-            if ((player != hi_player) && (this->players[player]->relation(hi_player) == 0)
-                && (this->players[hi_player]->relation(player) == 0)) {
+            if ((player != hi_player) && (this->players[player]->relation(hi_player) == RGE_RELATION_ALLY)
+                && (this->players[hi_player]->relation(player) == RGE_RELATION_ALLY)) {
                 count++;
             }
             player++;

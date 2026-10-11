@@ -1440,9 +1440,9 @@ int UnitAIModule::mostDangerousEnemy(float* threatSlot) {
     int best = -1;
     float largestThreat = 0.0f;
     int i = 0;
-    if (VisibleUnitList_Size[4] > 0) {
+    if (VisibleUnitList_Size[UNIT_DIPLOMACY_ENEMY] > 0) {
         do {
-            RGE_Static_Object* obj = lookupObject(VisibleUnitList[4][i].object_id);
+            RGE_Static_Object* obj = lookupObject(VisibleUnitList[UNIT_DIPLOMACY_ENEMY][i].object_id);
             if (obj) {
                 float f = objectValue->calculateDamage(
                     ((RGE_Master_Combat_Object*) obj->master_obj)->weapon_num,
@@ -1451,11 +1451,11 @@ int UnitAIModule::mostDangerousEnemy(float* threatSlot) {
                 );
                 if (best == -1 || f > largestThreat) {
                     largestThreat = f;
-                    best = VisibleUnitList[4][i].object_id;
+                    best = VisibleUnitList[UNIT_DIPLOMACY_ENEMY][i].object_id;
                 }
             }
             i++;
-        } while (i < VisibleUnitList_Size[4]);
+        } while (i < VisibleUnitList_Size[UNIT_DIPLOMACY_ENEMY]);
     }
 
     if (threatSlot) {
@@ -1469,18 +1469,18 @@ int UnitAIModule::weakestEnemy(float* threatSlot) {
     int bestId = -1;
     float smallestHP = 0.0f;
     int i = 0;
-    if (VisibleUnitList_Size[4] > 0) {
+    if (VisibleUnitList_Size[UNIT_DIPLOMACY_ENEMY] > 0) {
         do {
-            int id = VisibleUnitList[4][i].object_id;
+            int id = VisibleUnitList[UNIT_DIPLOMACY_ENEMY][i].object_id;
             RGE_Static_Object* obj = this->lookupObject(id);
             if (obj != 0) {
                 if (bestId == -1 || obj->hp < smallestHP) {
                     smallestHP = obj->hp;
-                    bestId = VisibleUnitList[4][i].object_id;
+                    bestId = VisibleUnitList[UNIT_DIPLOMACY_ENEMY][i].object_id;
                 }
             }
             i++;
-        } while (i < VisibleUnitList_Size[4]);
+        } while (i < VisibleUnitList_Size[UNIT_DIPLOMACY_ENEMY]);
     }
     if (threatSlot != 0) {
         *threatSlot = smallestHP;
@@ -1535,7 +1535,7 @@ int UnitAIModule::closestObject(
     float closestDistance = -1.0f;
 
     int category;
-    for (category = 0; category <= 4; ++category) {
+    for (category = UNIT_DIPLOMACY_GAIA; category <= UNIT_DIPLOMACY_ENEMY; ++category) {
         i = 0;
         if (VisibleUnitList_Size[category] > 0) {
             do {
@@ -1544,9 +1544,10 @@ int UnitAIModule::closestObject(
                     RGE_Static_Object* object =
                         this->objectValue->owner->world->object(VisibleUnitList[category][i].object_id);
                     if (object != 0 && object->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
-                        if ((desiredRelation != 0 || category == 2 || category == 1)
-                            && (desiredRelation != 2 || category == 4) && (desiredRelation != 3 || category == 1)
-                            && (desiredRelation != 1 || category == 3)
+                        if ((desiredRelation != 0 || category == UNIT_DIPLOMACY_ALLY || category == UNIT_DIPLOMACY_SELF)
+                            && (desiredRelation != 2 || category == UNIT_DIPLOMACY_ENEMY)
+                            && (desiredRelation != 3 || category == UNIT_DIPLOMACY_SELF)
+                            && (desiredRelation != 1 || category == UNIT_DIPLOMACY_NEUTRAL)
                             && (objectGroup == -1 || object->master_obj->object_group == objectGroup)
                             && (objectType == -1 || object->master_obj->id == objectType)
                             && (objectState == RGE_OBJECT_STATE_ANY || object->object_state == objectState)) {
@@ -2411,7 +2412,7 @@ int UnitAIModule::isEnemyOwner(int oID) {
     if (owner->id == oID) {
         return 0;
     }
-    return owner->relations[oID] == 3;
+    return owner->relations[oID] == RGE_RELATION_ENEMY;
 }
 
 // compact ally-owner check first
@@ -2421,7 +2422,8 @@ int UnitAIModule::isAllyOwner(int oID) {
     if (owner->id == oID) {
         return 1;
     }
-    if (owner->relations[oID] == 0 && owner->world->players[oID]->relations[owner->id] == 0) {
+    if (owner->relations[oID] == RGE_RELATION_ALLY
+        && owner->world->players[oID]->relations[owner->id] == RGE_RELATION_ALLY) {
         return 1;
     }
     return 0;
@@ -2432,7 +2434,7 @@ int UnitAIModule::isNeutralOwner(int oID) {
     if (owner->id == oID) {
         return 0;
     }
-    return owner->relations[oID] == 1;
+    return owner->relations[oID] == RGE_RELATION_NEUTRAL;
 }
 
 // __thiscall with 3 params: RGE_Visible_Map* vMap, int x, int y

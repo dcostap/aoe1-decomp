@@ -86,7 +86,8 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(
         );
     }
 
-    RGE_Static_Object* protoBuilder = this->md->object(-1, -1, 4, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* protoBuilder =
+        this->md->object(-1, -1, OBJECT_GROUP_CIVILIAN, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     if (protoBuilder == 0) {
         return 0;
     }

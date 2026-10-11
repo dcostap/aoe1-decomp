@@ -203,9 +203,9 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel) : TDialogP
             }
 
             unsigned char relation = rge_base_game->get_player()->relation(player_id);
-            if (player_id == world->curr_player || relation == 0) {
+            if (player_id == world->curr_player || relation == RGE_RELATION_ALLY) {
                 buttons[0]->set_radio_button();
-            } else if (relation == 1) {
+            } else if (relation == RGE_RELATION_NEUTRAL) {
                 buttons[1]->set_radio_button();
             } else {
                 buttons[2]->set_radio_button();

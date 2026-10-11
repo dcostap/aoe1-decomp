@@ -1887,7 +1887,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     BuildItem* bi, int builderID, int alternateType, float alternateSize, char* alternateName, int alternateMinD,
     int alternateMaxD, int alternateX, int alternateY, PlacementState& placementState, unsigned long startTime
 ) {
-    RGE_Static_Object* protoBuilder = this->md->object(-1, -1, 4, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
+    RGE_Static_Object* protoBuilder =
+        this->md->object(-1, -1, OBJECT_GROUP_CIVILIAN, -1, -1, -1, -1, -1, RGE_OBJECT_STATE_ANY, -1);
     if (protoBuilder == 0) {
         placementState.active = 0;
         return 0;

@@ -554,10 +554,18 @@ void T_Scenario::SaveAttributesIntoPlayers() {
     int other;
     if (player < this->world->player_num) {
         do {
-            this->world->players[player]->new_attribute_num(0, (float) this->Get_player_Food(player - 1));
-            this->world->players[player]->new_attribute_num(2, (float) this->Get_player_Stone(player - 1));
-            this->world->players[player]->new_attribute_num(3, (float) this->Get_player_Gold(player - 1));
-            this->world->players[player]->new_attribute_num(1, (float) this->Get_player_Wood(player - 1));
+            this->world->players[player]->new_attribute_num(
+                RGE_RESOURCE_FOOD, (float) this->Get_player_Food(player - 1)
+            );
+            this->world->players[player]->new_attribute_num(
+                RGE_RESOURCE_STONE, (float) this->Get_player_Stone(player - 1)
+            );
+            this->world->players[player]->new_attribute_num(
+                RGE_RESOURCE_GOLD, (float) this->Get_player_Gold(player - 1)
+            );
+            this->world->players[player]->new_attribute_num(
+                RGE_RESOURCE_WOOD, (float) this->Get_player_Wood(player - 1)
+            );
 
             other = 1;
             if (other < this->world->player_num) {

@@ -1023,7 +1023,7 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                         id1 = rge_base_game->playerID(i);
                         id2 = rge_base_game->playerID(j);
                         if (id1 != id2) {
-                            this->players[id1]->set_relation(id2, 0);
+                            this->players[id1]->set_relation(id2, RGE_RELATION_ALLY);
                             this->players[id1]->set_allied_victory(1);
                         }
                     }
@@ -1043,7 +1043,7 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                             id1 = rge_base_game->playerID(i);
                             id2 = rge_base_game->playerID(j);
                             if (id1 != id2) {
-                                this->players[id1]->set_relation(id2, 1);
+                                this->players[id1]->set_relation(id2, RGE_RELATION_NEUTRAL);
                                 this->players[id1]->set_allied_victory(1);
                             }
                         }
@@ -1392,8 +1392,9 @@ unsigned char RGE_Game_World::check_game_state(void) {
                 if (candidate <= 0 || candidate_state == 0) {
                     candidate = i;
                     candidate_state = 1;
-                } else if (this->players[i]->allied_victory == 0 || this->players[candidate]->relation(i) != 0
-                           || this->players[i]->relation(candidate) != 0) {
+                } else if (this->players[i]->allied_victory == 0
+                           || this->players[candidate]->relation(i) != RGE_RELATION_ALLY
+                           || this->players[i]->relation(candidate) != RGE_RELATION_ALLY) {
                     candidate_state = -1;
                 }
                 break;

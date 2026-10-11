@@ -253,7 +253,7 @@ TRIBE_Player::TRIBE_Player(
     if (this->world->player_num > 1) {
         do {
             if (i != this->id) {
-                this->set_relation(i, 3);
+                this->set_relation(i, RGE_RELATION_ENEMY);
             }
             ++i;
         } while (i < this->world->player_num);

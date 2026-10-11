@@ -7,6 +7,18 @@
 #define RGE_RESOURCE_STONE  2
 #define RGE_RESOURCE_GOLD   3
 
+// Diplomatic stances stored in RGE_Player::relations. isAlly, isNeutral, and isEnemy test these values.
+#define RGE_RELATION_ALLY    0
+#define RGE_RELATION_NEUTRAL 1
+#define RGE_RELATION_ENEMY   3
+
+// RGE_Player::unitDiplomacy sorts each player into one of these visible-unit lists.
+#define UNIT_DIPLOMACY_GAIA    0
+#define UNIT_DIPLOMACY_SELF    1
+#define UNIT_DIPLOMACY_ALLY    2
+#define UNIT_DIPLOMACY_NEUTRAL 3
+#define UNIT_DIPLOMACY_ENEMY   4
+
 // Other player attribute slots. These are cleanup labels taken from how the code uses each slot;
 // the developer names are not in the PDB or the expansion language DLL. Slots 30, 36, 45, and 48
 // stay numeric. See decomp_notes/player_attributes.md.
@@ -35,10 +47,12 @@
 #define PLAYER_ATTRIBUTE_CIVILIAN_POPULATION   37
 #define PLAYER_ATTRIBUTE_ALL_TECHNOLOGIES      39
 #define PLAYER_ATTRIBUTE_MILITARY_POPULATION   40
+#define PLAYER_ATTRIBUTE_CONVERSIONS           41
 #define PLAYER_ATTRIBUTE_KILLS_MINUS_LOSSES    44
 #define PLAYER_ATTRIBUTE_TRIBUTE_FEE           46
 #define PLAYER_ATTRIBUTE_GOLD_EARNED           49
 #define PLAYER_ATTRIBUTE_ALLIED_LOS            50
+#define PLAYER_ATTRIBUTE_TRIBUTE_SENT          53
 #define PLAYER_ATTRIBUTE_ALL_RUINS             54
 #define PLAYER_ATTRIBUTE_ALL_ARTIFACTS         55
 #define PLAYER_ATTRIBUTE_HEAL_RATE             56

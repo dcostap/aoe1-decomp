@@ -1953,8 +1953,8 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
                     this->get_string(STRING_ID_MESSAGE_WONDER_COMPLETED, msg, 256);
                 }
             } else {
-                if ((p1->allied_victory == 0 || p1->relation(p2->id) != 0)
-                    || (p2->allied_victory == 0 || p2->relation(p1->id) != 0)) {
+                if ((p1->allied_victory == 0 || p1->relation(p2->id) != RGE_RELATION_ALLY)
+                    || (p2->allied_victory == 0 || p2->relation(p1->id) != RGE_RELATION_ALLY)) {
                     if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
                         this->get_string(STRING_ID_MESSAGE_WONDER_COMPLETED_OTHER_LOSS, temp_str, 256);
                     } else {
@@ -1989,8 +1989,8 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             if (p1 == p2) {
                 this->get_string(STRING_ID_MESSAGE_WONDER_DESTROYED_SELF, msg, 256);
             } else {
-                if ((p1->allied_victory == 0 || p1->relation(p2->id) != 0)
-                    || (p2->allied_victory == 0 || p2->relation(p1->id) != 0)) {
+                if ((p1->allied_victory == 0 || p1->relation(p2->id) != RGE_RELATION_ALLY)
+                    || (p2->allied_victory == 0 || p2->relation(p1->id) != RGE_RELATION_ALLY)) {
                     this->get_string(STRING_ID_MESSAGE_WONDER_DESTROYED_OTHER, temp_str, 256);
                     sprintf(msg, temp_str, p1->name);
                 } else {
@@ -2019,8 +2019,8 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
                 if (p1 == p2) {
                     this->get_string(STRING_ID_MESSAGE_ARTIFACTS_CAPTURED_SELF, msg, 256);
                 } else {
-                    if ((p1->allied_victory == 0 || p1->relation(p2->id) != 0)
-                        || (p2->allied_victory == 0 || p2->relation(p1->id) != 0)) {
+                    if ((p1->allied_victory == 0 || p1->relation(p2->id) != RGE_RELATION_ALLY)
+                        || (p2->allied_victory == 0 || p2->relation(p1->id) != RGE_RELATION_ALLY)) {
                         this->get_string(STRING_ID_MESSAGE_ARTIFACTS_CAPTURED_OTHER, msg, 256);
                     } else {
                         this->get_string(STRING_ID_MESSAGE_ARTIFACTS_CAPTURED_SELF, msg, 256);
@@ -2069,8 +2069,8 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
                 if (p1 == p2) {
                     this->get_string(STRING_ID_MESSAGE_RUINS_CAPTURED_SELF, msg, 256);
                 } else {
-                    if ((p1->allied_victory == 0 || p1->relation(p2->id) != 0)
-                        || (p2->allied_victory == 0 || p2->relation(p1->id) != 0)) {
+                    if ((p1->allied_victory == 0 || p1->relation(p2->id) != RGE_RELATION_ALLY)
+                        || (p2->allied_victory == 0 || p2->relation(p1->id) != RGE_RELATION_ALLY)) {
                         this->get_string(STRING_ID_MESSAGE_RUINS_CAPTURED_OTHER, msg, 256);
                     } else {
                         this->get_string(STRING_ID_MESSAGE_RUINS_CAPTURED_SELF, msg, 256);

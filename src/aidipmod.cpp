@@ -303,7 +303,7 @@ int DiplomacyAIModule::isEnemy(int playerID) const {
         RGE_Player* player = this->md->player;
         if (playerID <= player->world->player_num) {
             if (playerID != player->id) {
-                if (player->relations[playerID] == 3) {
+                if (player->relations[playerID] == RGE_RELATION_ENEMY) {
                     return 1;
                 }
             }
@@ -317,7 +317,7 @@ int DiplomacyAIModule::isNeutral(int playerID) const {
     RGE_Player* player;
 
     if (((0 < playerID) && (player = this->md->player, playerID <= player->world->player_num))
-        && (playerID != player->id) && (player->relations[playerID] == 1)) {
+        && (playerID != player->id) && (player->relations[playerID] == RGE_RELATION_NEUTRAL)) {
         return 1;
     }
     return 0;
@@ -328,7 +328,8 @@ int DiplomacyAIModule::isAlly(int playerID) const {
         return 1;
     }
 
-    if (playerID > 0 && playerID <= this->md->player->world->player_num && this->md->player->relations[playerID] == 0) {
+    if (playerID > 0 && playerID <= this->md->player->world->player_num
+        && this->md->player->relations[playerID] == RGE_RELATION_ALLY) {
         return 1;
     }
 

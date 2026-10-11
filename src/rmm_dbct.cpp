@@ -538,7 +538,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
             player_teams[index] = current_team;
             team_size[current_team] = 1;
             for (index1 = 0; index1 < this->land_info.land_num; ++index1) {
-                if (this->world->players[index + 1]->relation(index1 + 1) == 0) {
+                if (this->world->players[index + 1]->relation(index1 + 1) == RGE_RELATION_ALLY) {
                     player_teams[index1] = current_team;
                     ++team_size[current_team];
                 }

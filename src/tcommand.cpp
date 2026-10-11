@@ -488,8 +488,8 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* orde
 
     this->world->players[order->to_player_id]->add_attribute_num(order->attr_id, tribute_amount, 0);
     this->world->players[order->player_id]->add_attribute_num(order->attr_id, -(tribute_amount + cost), 0);
-    this->world->players[order->player_id]->add_attribute_num(0x35, tribute_amount + cost, 0);
-    this->world->players[order->to_player_id]->add_attribute_num(0x35, -tribute_amount, 0);
+    this->world->players[order->player_id]->add_attribute_num(PLAYER_ATTRIBUTE_TRIBUTE_SENT, tribute_amount + cost, 0);
+    this->world->players[order->to_player_id]->add_attribute_num(PLAYER_ATTRIBUTE_TRIBUTE_SENT, -tribute_amount, 0);
     rge_base_game->notification(7, order->player_id, order->to_player_id, order->attr_id, (long) tribute_amount);
     this->world->players[order->to_player_id]->notify(
         order->player_id, order->to_player_id, 0x20A, order->attr_id, (long) order->attr_amount, 0

@@ -331,7 +331,7 @@ uchar TRIBE_Action_Convert::update() {
                                   * static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate) {
                     rge_base_game->notification(0x7b, this->obj->owner->id, this->target_obj->owner->id, 0, 0);
                     this->target_obj->change_ownership(this->obj->owner);
-                    this->obj->owner->add_attribute_num(0x29, 1.0f, 0);
+                    this->obj->owner->add_attribute_num(PLAYER_ATTRIBUTE_CONVERSIONS, 1.0f, 0);
                     this->obj->set_attribute(0x22, 0);
                     this->set_state(3);
                 }
@@ -389,7 +389,7 @@ void TRIBE_Action_Convert::martyrdom() {
 
     rge_base_game->notification(0x7B, source_id, target_id, 0, 0);
     this->target_obj->change_ownership(this->obj->owner);
-    this->obj->owner->add_attribute_num(0x29, 1.0f, 0);
+    this->obj->owner->add_attribute_num(PLAYER_ATTRIBUTE_CONVERSIONS, 1.0f, 0);
     this->obj->set_attribute(0x22, 0);
     this->set_state(3);
 }

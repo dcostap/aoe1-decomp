@@ -3275,8 +3275,9 @@ void TRIBE_Screen_Game::reset_clocks() {
                 if (static_cast<TRIBE_Player*>(this->world->players[player_id])->allied_victory != 0) {
                     int other_player = 1;
                     for (; other_player < player_id; ++other_player) {
-                        if (static_cast<TRIBE_Player*>(this->world->players[player_id])->relation(other_player) == 0
-                            && this->world->players[other_player]->relation(player_id) == 0
+                        if (static_cast<TRIBE_Player*>(this->world->players[player_id])->relation(other_player)
+                                == RGE_RELATION_ALLY
+                            && this->world->players[other_player]->relation(player_id) == RGE_RELATION_ALLY
                             && this->world->players[other_player]->allied_victory != 0) {
                             found = 1;
                             break;
@@ -3298,8 +3299,9 @@ void TRIBE_Screen_Game::reset_clocks() {
                 if (static_cast<TRIBE_Player*>(this->world->players[player_id])->allied_victory != 0) {
                     int other_player = 1;
                     for (; other_player < player_id; ++other_player) {
-                        if (static_cast<TRIBE_Player*>(this->world->players[player_id])->relation(other_player) == 0
-                            && this->world->players[other_player]->relation(player_id) == 0
+                        if (static_cast<TRIBE_Player*>(this->world->players[player_id])->relation(other_player)
+                                == RGE_RELATION_ALLY
+                            && this->world->players[other_player]->relation(player_id) == RGE_RELATION_ALLY
                             && this->world->players[other_player]->allied_victory != 0) {
                             found = 1;
                             break;
@@ -3402,8 +3404,8 @@ void TRIBE_Screen_Game::reset_score_display() {
                             if (allied_player_num != player_num) {
                                 int allied_player_id = rge_base_game->playerID(allied_player_num);
                                 if (allied_player_id != 0 && allied_player_id < this->world->player_num
-                                    && this->world->players[player_id]->relation(allied_player_id) == 0
-                                    && this->world->players[allied_player_id]->relation(player_id) == 0
+                                    && this->world->players[player_id]->relation(allied_player_id) == RGE_RELATION_ALLY
+                                    && this->world->players[allied_player_id]->relation(player_id) == RGE_RELATION_ALLY
                                     && this->world->players[allied_player_id]->allied_victory != 0) {
                                     int allied_score_index = allied_player_num - 1;
                                     if (player_score[allied_score_index].team_id == 0) {

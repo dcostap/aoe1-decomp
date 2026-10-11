@@ -814,7 +814,8 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
             } else if (action == UNIT_AI_ACTION_BUILD) {
                 int targetID = this->closestObject(this->currentTargetTypeValue, 3, RGE_OBJECT_STATE_UNBUILT, -1, 0);
                 if (targetID == -1) {
-                    int type = this->currentTargetTypeValue == 0x1b ? 3 : 0x1b;
+                    int type =
+                        this->currentTargetTypeValue == OBJECT_GROUP_WALL ? OBJECT_GROUP_BUILDING : OBJECT_GROUP_WALL;
                     targetID = this->closestObject(type, 3, RGE_OBJECT_STATE_UNBUILT, -1, 0);
                 }
                 if (targetID != -1 && this->objectValue->canPath(targetID, 1.0f, 0, 0, -1, -1) == 1) {
@@ -1032,14 +1033,14 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* distance) {
     float targetValue = 0.0f;
     int i = 0;
 
-    if (VisibleUnitList_Size[4] > 0) {
+    if (VisibleUnitList_Size[UNIT_DIPLOMACY_ENEMY] > 0) {
         do {
-            if (this->objectValue->owner->isEnemy((int) VisibleUnitList[4][i].player) != 0) {
-                RGE_Static_Object* found = this->lookupObject(VisibleUnitList[4][i].object_id);
+            if (this->objectValue->owner->isEnemy((int) VisibleUnitList[UNIT_DIPLOMACY_ENEMY][i].player) != 0) {
+                RGE_Static_Object* found = this->lookupObject(VisibleUnitList[UNIT_DIPLOMACY_ENEMY][i].object_id);
 
                 if (found != 0 && found->object_state < RGE_OBJECT_STATE_DYING) {
                     if (this->canConvert(found->id) != 0) {
-                        float priority = (float) VisibleUnitList[4][i].distance;
+                        float priority = (float) VisibleUnitList[UNIT_DIPLOMACY_ENEMY][i].distance;
                         if (priority < 1.0f)
                             priority = 1.0f;
 
@@ -1058,7 +1059,7 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* distance) {
             }
 
             i++;
-        } while (i < VisibleUnitList_Size[4]);
+        } while (i < VisibleUnitList_Size[UNIT_DIPLOMACY_ENEMY]);
     }
 
     return best_id;
@@ -1144,7 +1145,7 @@ int TribePriestUnitAIModule::processIdle(int doSearch) {
             return 6;
         }
 
-        int range = VisibleUnitList_Size[4];
+        int range = VisibleUnitList_Size[UNIT_DIPLOMACY_ENEMY];
         int r = debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 1708) % (range + 2);
         if (range > 0 && r > range) {
             float allyDistance;
@@ -1248,12 +1249,12 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) 
         case UNIT_AI_NOTIFY_REQUEST_TASK:
             if (this->currentActionValue == UNIT_AI_ACTION_TRADE) {
                 //! The trade ship searches only for dock id 0x2d; other drop-site units never match.
-                int id = this->closestObject(-1, 0, RGE_OBJECT_STATE_ACTIVE, 0x2d, 0);
+                int id = this->closestObject(-1, 0, RGE_OBJECT_STATE_ACTIVE, MASTER_OBJECT_DOCK_1, 0);
                 if (id != -1 && this->tradeWithObject(id, 1) == 1) {
                     return 6;
                 }
 
-                id = this->closestObject(-1, 1, RGE_OBJECT_STATE_ACTIVE, 0x2d, 0);
+                id = this->closestObject(-1, 1, RGE_OBJECT_STATE_ACTIVE, MASTER_OBJECT_DOCK_1, 0);
                 if (id != -1 && this->tradeWithObject(id, 1) == 1) {
                     return 6;
                 }

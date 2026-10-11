@@ -119,13 +119,13 @@ RGE_Player::RGE_Player(
     this->relations = (unsigned char*) calloc(1, (int) this->world->player_num);
     memset(this->unitDiplomacy, -1, sizeof(this->unitDiplomacy));
     for (short i = 0; i < this->world->player_num; ++i) {
-        this->relations[i] = 1;
+        this->relations[i] = RGE_RELATION_NEUTRAL;
         if (i == this->id) {
-            this->unitDiplomacy[i] = 1;
+            this->unitDiplomacy[i] = UNIT_DIPLOMACY_SELF;
         } else if (i == 0) {
-            this->unitDiplomacy[0] = 0;
+            this->unitDiplomacy[0] = UNIT_DIPLOMACY_GAIA;
         } else {
-            this->unitDiplomacy[i] = 3;
+            this->unitDiplomacy[i] = UNIT_DIPLOMACY_NEUTRAL;
         }
     }
 
@@ -280,7 +280,7 @@ int RGE_Player::computerPlayer() const {
 
 int RGE_Player::isEnemy(int playerNum) {
     if ((((playerNum != this->id) && (playerNum > 0)) && (playerNum < this->world->player_num))
-        && (this->relations[playerNum] == 3)) {
+        && (this->relations[playerNum] == RGE_RELATION_ENEMY)) {
         return 1;
     }
     return 0;
@@ -290,7 +290,8 @@ int RGE_Player::isAlly(int playerNum) {
     if (playerNum == this->id) {
         return 1;
     }
-    if ((((0 < playerNum) && (playerNum < this->world->player_num)) && (this->relations[playerNum] == 0))) {
+    if ((((0 < playerNum) && (playerNum < this->world->player_num))
+         && (this->relations[playerNum] == RGE_RELATION_ALLY))) {
         return 1;
     }
     return 0;
@@ -298,7 +299,7 @@ int RGE_Player::isAlly(int playerNum) {
 
 int RGE_Player::isNeutral(int playerNum) {
     if ((((playerNum != this->id) && (playerNum > 0)) && (playerNum < this->world->player_num))
-        && (this->relations[playerNum] == 1)) {
+        && (this->relations[playerNum] == RGE_RELATION_NEUTRAL)) {
         return 1;
     }
     return 0;
@@ -576,16 +577,16 @@ void RGE_Player::scenario_load(int infile, long* player_id_hash, float version) 
                     if (*player_id < this->world->player_num && *player_id >= 0) {
                         this->relations[*player_id] = temp_byte;
                         if (*player_id == 0) {
-                            this->unitDiplomacy[0] = 0;
+                            this->unitDiplomacy[0] = UNIT_DIPLOMACY_GAIA;
                         } else if (i == this->id) {
                             // The executable compares the entry index here.
-                            this->unitDiplomacy[*player_id] = 1;
+                            this->unitDiplomacy[*player_id] = UNIT_DIPLOMACY_SELF;
                         } else if (temp_byte == 0) {
-                            this->unitDiplomacy[*player_id] = 2;
+                            this->unitDiplomacy[*player_id] = UNIT_DIPLOMACY_ALLY;
                         } else if (temp_byte == 1) {
-                            this->unitDiplomacy[*player_id] = 3;
+                            this->unitDiplomacy[*player_id] = UNIT_DIPLOMACY_NEUTRAL;
                         } else {
-                            this->unitDiplomacy[*player_id] = 4;
+                            this->unitDiplomacy[*player_id] = UNIT_DIPLOMACY_ENEMY;
                         }
                     }
                 }
@@ -685,15 +686,15 @@ void RGE_Player::scenario_postload(int infile, long* player_id_hash, float versi
                 if (player_id < this->world->player_num && player_id >= 0) {
                     this->relations[player_id] = temp_byte;
                     if (player_id == 0) {
-                        this->unitDiplomacy[0] = 0;
+                        this->unitDiplomacy[0] = UNIT_DIPLOMACY_GAIA;
                     } else if (player_id == this->id) {
-                        this->unitDiplomacy[player_id] = 1;
+                        this->unitDiplomacy[player_id] = UNIT_DIPLOMACY_SELF;
                     } else if (temp_byte == 0) {
-                        this->unitDiplomacy[player_id] = 2;
+                        this->unitDiplomacy[player_id] = UNIT_DIPLOMACY_ALLY;
                     } else if (temp_byte == 1) {
-                        this->unitDiplomacy[player_id] = 3;
+                        this->unitDiplomacy[player_id] = UNIT_DIPLOMACY_NEUTRAL;
                     } else {
-                        this->unitDiplomacy[player_id] = 4;
+                        this->unitDiplomacy[player_id] = UNIT_DIPLOMACY_ENEMY;
                     }
                 }
             }
@@ -1070,8 +1071,9 @@ unsigned char RGE_Player::check_ally_group(long& count) {
         int i = 1;
         if (world->player_num > 1) {
             do {
-                if (this->relations[i] == 0
-                    && (world->players[i]->relation(this->id) != 0 || this->world->players[i]->allied_victory == 0)) {
+                if (this->relations[i] == RGE_RELATION_ALLY
+                    && (world->players[i]->relation(this->id) != RGE_RELATION_ALLY
+                        || this->world->players[i]->allied_victory == 0)) {
                     ok = 0;
                     break;
                 }
@@ -1095,7 +1097,7 @@ unsigned char RGE_Player::check_victory(void) {
         unsigned char found = 0;
         if (this->allied_victory) {
             for (int i = 1; i < this->world->player_num; i++) {
-                if ((i == this->id || this->relations[i] == 0)
+                if ((i == this->id || this->relations[i] == RGE_RELATION_ALLY)
                     && this->world->players[i]->check_ally_group(count) == 0) {
                     found = 1;
                     break;
@@ -1106,7 +1108,8 @@ unsigned char RGE_Player::check_victory(void) {
             if (found)
                 return this->game_status;
             for (int i = 1; i < this->world->player_num; i++) {
-                if (this->relations[i] == 0 && this->world->players[i]->check_victory_conditions() == 0) {
+                if (this->relations[i] == RGE_RELATION_ALLY
+                    && this->world->players[i]->check_victory_conditions() == 0) {
                     found = 1;
                     break;
                 }
@@ -1265,15 +1268,15 @@ void RGE_Player::set_relation(long player_id, unsigned char relation) {
     this->relations[player_id] = relation;
 
     if (player_id == 0) {
-        this->unitDiplomacy[0] = 0;
+        this->unitDiplomacy[0] = UNIT_DIPLOMACY_GAIA;
     } else if (player_id == this->id) {
-        this->unitDiplomacy[player_id] = 1;
-    } else if (relation == 0) {
-        this->unitDiplomacy[player_id] = 2;
-    } else if (relation == 1) {
-        this->unitDiplomacy[player_id] = 3;
+        this->unitDiplomacy[player_id] = UNIT_DIPLOMACY_SELF;
+    } else if (relation == RGE_RELATION_ALLY) {
+        this->unitDiplomacy[player_id] = UNIT_DIPLOMACY_ALLY;
+    } else if (relation == RGE_RELATION_NEUTRAL) {
+        this->unitDiplomacy[player_id] = UNIT_DIPLOMACY_NEUTRAL;
     } else {
-        this->unitDiplomacy[player_id] = 4;
+        this->unitDiplomacy[player_id] = UNIT_DIPLOMACY_ENEMY;
     }
 
     RGE_Object_Node* node = this->objects->list;
