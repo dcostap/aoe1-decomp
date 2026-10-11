@@ -445,14 +445,10 @@ TribeGameSettingsScreen::~TribeGameSettingsScreen() {
     this->delete_panel((TPanel**) &this->limitLabel);
     this->delete_panel((TPanel**) &this->limitDrop);
 
-    char* p = (char*) this + 0x534;
-    int n = 4;
-    do {
-        this->delete_panel((TPanel**) (p - 0x10));
-        this->delete_panel((TPanel**) p);
-        p += 4;
-        --n;
-    } while (n != 0);
+    for (int i = 0; i < 4; i++) {
+        this->delete_panel((TPanel**) &this->optionButton[i]);
+        this->delete_panel((TPanel**) &this->optionText[i]);
+    }
 
     this->delete_panel((TPanel**) &this->okButton);
     this->delete_panel((TPanel**) &this->cancelButton);

@@ -1167,7 +1167,7 @@ int TribeStrategyAIModule::loadRules(char* rName) {
         return (int) rName;
     }
     strncpy(this->ruleSetNameValue, rName, 255);
-    return ((VictoryConditionRuleSystem*) ((char*) this + 0x268))->loadRules(this->ruleSetNameValue);
+    return this->vcRules.loadRules(this->ruleSetNameValue);
 }
 
 void TribeStrategyAIModule::setRule(int ruleIndex, int value) {

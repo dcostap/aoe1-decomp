@@ -47,3 +47,15 @@ Results:
 - `taibldmd.cpp` `cancelTrainUnit`/`cancelResearch` (`world_time`): the file
   does not include `world.h`. Adding it, at either include position, makes
   `mostNeededResource` (004D4F80) lose its exact match. Kept raw with comments.
+
+## Small member offsets
+
+`offsetof` checks confirmed each member. All four objects are byte-identical.
+
+- `TribeStrategyAIModule::loadRules`: `this + 0x268` is `vcRules`.
+- `TDrawSystem::HandleQueryNewPalette`: `this + 0x78` is `palette`.
+- `RGE_Scenario::~RGE_Scenario`: the `slot` cursor at 0x1308 walked
+  `CityPlan` with ±16-entry strides into `BuildList`, `AiRules`, and the three
+  `*File` buffers. It is now a `for` loop over the six named arrays.
+- `TribeGameSettingsScreen::~TribeGameSettingsScreen`: the cursor at 0x534
+  walked `optionText` and `optionButton` (0x524). It is now a `for` loop.

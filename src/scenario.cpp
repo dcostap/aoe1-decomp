@@ -331,20 +331,17 @@ RGE_Scenario::~RGE_Scenario() {
         this->mission_picture = 0;
     }
 
-    char** slot = (char**) ((char*) this + 0x1308);
-    int remaining = 16;
-    do {
-        operator delete(slot[-16]);
-        operator delete(slot[0]);
-        operator delete(slot[16]);
-        if (slot[32] != 0)
-            free(slot[32]);
-        if (slot[48] != 0)
-            free(slot[48]);
-        if (slot[64] != 0)
-            free(slot[64]);
-        slot++;
-    } while (--remaining != 0);
+    for (int i = 0; i < 16; i++) {
+        operator delete(this->BuildList[i]);
+        operator delete(this->CityPlan[i]);
+        operator delete(this->AiRules[i]);
+        if (this->BuildListFile[i] != 0)
+            free(this->BuildListFile[i]);
+        if (this->CityPlanFile[i] != 0)
+            free(this->CityPlanFile[i]);
+        if (this->AiRulesFile[i] != 0)
+            free(this->AiRulesFile[i]);
+    }
 }
 
 void RGE_Scenario::InitializeTextValues() {

@@ -582,7 +582,7 @@ int TDrawSystem::HandleQueryNewPalette(void* hwnd, unsigned int msg, unsigned in
             return 1;
         }
     }
-    this->ModifyPalette(0, 256, (tagPALETTEENTRY*) ((char*) this + 0x78));
+    this->ModifyPalette(0, 256, this->palette);
     return 0;
 }
 
