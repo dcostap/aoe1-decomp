@@ -348,7 +348,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel) : TDialogP
         this->playerStone->set_active(0);
     }
 
-    if (static_cast<TRIBE_Player*>(rge_base_game->get_player())->tech_tree->get_tech_state(0x1E) == 3) {
+    if (static_cast<TRIBE_Player*>(rge_base_game->get_player())->tech_tree->get_tech_state(TECH_COINAGE) == 3) {
         this->title[6]->set_active(0);
     }
 

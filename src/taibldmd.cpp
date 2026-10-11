@@ -9,6 +9,7 @@
 #include "../include/player.h"
 #include "../include/stat_obj.h"
 #include "../include/tplayer.h"
+#include "../include/tech.h"
 #include "../include/taibldmd.h"
 #include "../include/taimdmd.h"
 #include <string.h>
@@ -65,17 +66,17 @@ void TribeBuildAIModule::initialize() {
                 ++warshipCount;
             }
         } else if (item->buildCategory() == 1 || item->buildCategory() == 4) {
-            if (item->typeID() == 0x65) {
+            if (item->typeID() == TECH_TOOL_AGE) {
                 toolAgeIndex = item->uniqueID();
-            } else if (item->typeID() == 0x66) {
+            } else if (item->typeID() == TECH_BRONZE_AGE) {
                 bronzeAgeIndex = item->uniqueID();
-            } else if (item->typeID() == 0x67) {
+            } else if (item->typeID() == TECH_IRON_AGE) {
                 ironAgeIndex = item->uniqueID();
-            } else if (item->typeID() == 5) {
+            } else if (item->typeID() == TECH_MEDIUM_WAR_SHIP) {
                 warshipUpgrade = 1;
-            } else if (item->typeID() == 7) {
+            } else if (item->typeID() == TECH_TRIREME) {
                 triremeUpgrade = 1;
-            } else if (item->typeID() == 8) {
+            } else if (item->typeID() == TECH_HEAVY_TRANSPORT) {
                 transportUpgrade = 1;
             }
         }
@@ -147,7 +148,7 @@ void TribeBuildAIModule::initialize() {
         }
 
         if (!transportUpgrade && ironAgeIndex != -1) {
-            this->insertResearch(8, ironAgeIndex + 2);
+            this->insertResearch(TECH_HEAVY_TRANSPORT, ironAgeIndex + 2);
         }
     }
 
@@ -161,20 +162,22 @@ void TribeBuildAIModule::initialize() {
         }
 
         index = spacing;
+        //! @bug This block compares warshipCount with SN 0xE0, but each call passes research ID 19, Monotheism.
+        //! insertResearch accepts only research 5, 7, and 8, so every call returns 0 and no item is inserted.
         while (count > 0) {
-            this->insertResearch(0x13, index);
+            this->insertResearch(TECH_MONOTHEISM, index);
             index += spacing;
             --count;
         }
 
         if (!warshipUpgrade && bronzeAgeIndex != -1) {
-            this->insertResearch(5, bronzeAgeIndex + 5);
+            this->insertResearch(TECH_MEDIUM_WAR_SHIP, bronzeAgeIndex + 5);
         }
         if (!triremeUpgrade && ironAgeIndex != -1) {
             //! @bug This anchor is the Iron Age entry's load-time index, but earlier inserts shift the list.
             //! Six or more splices then place Trireme before the Iron Age entry and break the dependency order.
             //! The same stale-anchor defect affects the Heavy Transport and Medium War Ship inserts above.
-            this->insertResearch(7, ironAgeIndex + 5);
+            this->insertResearch(TECH_TRIREME, ironAgeIndex + 5);
         }
     }
 
@@ -800,7 +803,7 @@ int TribeBuildAIModule::cancelResearch(int reason, int rType, int location, int 
 }
 
 int TribeBuildAIModule::isAgeResearch(int rID) {
-    if (rID == 0x65 || rID == 0x66 || rID == 0x67)
+    if (rID == TECH_TOOL_AGE || rID == TECH_BRONZE_AGE || rID == TECH_IRON_AGE)
         return 1;
     return 0;
 }
@@ -891,7 +894,7 @@ int TribeBuildAIModule::insert(int typeID, int buildCap, int insertionPoint) {
 }
 
 int TribeBuildAIModule::insertResearch(int typeID, int insertionPoint) {
-    if (typeID != 5 && (typeID <= 6 || typeID > 8)) {
+    if (typeID != TECH_MEDIUM_WAR_SHIP && (typeID <= 6 || typeID > TECH_HEAVY_TRANSPORT)) {
         return 0;
     }
 
@@ -903,9 +906,9 @@ int TribeBuildAIModule::insertResearch(int typeID, int insertionPoint) {
             item = item->next;
             count++;
         }
-        return this->insertItem(this->md->player, typeID, 1, 1, 0x2d, 1, count);
+        return this->insertItem(this->md->player, typeID, 1, 1, MASTER_OBJECT_DOCK_1, 1, count);
     }
-    return this->insertItem(this->md->player, typeID, 1, 1, 0x2d, 1, insertionPoint);
+    return this->insertItem(this->md->player, typeID, 1, 1, MASTER_OBJECT_DOCK_1, 1, insertionPoint);
 }
 
 int TribeBuildAIModule::insertGathererPercentage(int rType, int percentage, int insertionPoint) {

@@ -330,9 +330,9 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
                     static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech
                 );
             }
-            static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(0x4A);
-            static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(0x4B);
-            static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(0x4C);
+            static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(TECH_A01_B01_F01_I01_TOOL_AGE);
+            static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(TECH_D01_H01_J01_BRONZE_AGE);
+            static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(TECH_B3_C1_D1_IRON_AGE);
         }
     }
 }
