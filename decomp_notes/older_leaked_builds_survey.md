@@ -159,6 +159,35 @@ This explains the intended profiling use of maps. It does not establish compiler
 The folder also includes `MAKE_SHP.EXE`, `SHA_FLI.EXE`, and `shapescn.exe`.
 These are possible asset-tool references. Their names alone do not establish supported formats or behavior.
 
+## VC5 sibling builds
+
+Two later trial builds were linked with VC5, like the target. Unlike the 1997
+betas (VC 4.20), they are close to compiler-identical siblings.
+
+| Build | Game executable SHA-256 | PE date | Linker |
+| --- | --- | --- | --- |
+| RoR trial (`msaoex/msaoex.exe` installer) | `ac89e7feeda8177eecd16719f137a41e1c57732f37176aa7eef33330b4f5f2cb` (`EMPIRESX.EXE`) | 1998-10-07 | 5.00 |
+| AoE trial (`MSAoE/MSAoE.exe` installer) | `7fef7a3b08d7cae284bc44645221f9d53a0702667ac783c5af1abb2468f917df` (`Empires.exe`) | 1997-10-01 | 5.02 |
+| Target `empiresx.exe` | `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90` | 1998-07-17 | 5.00 |
+
+Of the 4,660 target functions with at least 12 instructions, the RoR trial
+contains 2,831 (60.8%) with an identical instruction stream after normalizing
+image addresses. The AoE trial contains 2,352 (50.5%). The 1997 betas match
+about 1%. The script is `build/leak_survey/sibling_match.py`
+(target exe, `inventory/all_functions.csv`, sibling exe).
+
+Use: where a sibling's copy of a function differs from the target, the change
+is a source change, not compiler noise; where it is identical, the sibling adds
+no new evidence. Neither trial has a map or PDB, so `config/reference_builds.json`
+(which requires a map) does not register them.
+
+## Late additions (October 2026)
+
+- `GAME/ZTRIBE.NCB` in the alpha is a VC 4.2 browse database. See
+  [ZTRIBE.NCB evidence](ztribe_ncb.md).
+- The 1997 `.VC`/`.PER` comments name strategic numbers 105-180. See
+  [strategic numbers](strategic_numbers.md).
+
 ## What did not add new evidence
 
 The downloaded Rise of Rome files match the repo-local originals byte for byte:
