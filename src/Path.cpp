@@ -185,18 +185,13 @@ void Path::setTimeStamp(unsigned long v) {
 
 float Path::length() const {
     float total = 0.0f;
-    if (currentSizeValue > 1) {
-        Waypoint* waypoint = pathValue + 1;
-        int remaining = currentSizeValue - 1;
-        do {
-            // The first z term uses the previous x value.
-            total += sqrtf(
-                (waypoint[0].x - waypoint[-1].x) * (waypoint[0].x - waypoint[-1].x)
-                + (waypoint[0].y - waypoint[-1].y) * (waypoint[0].y - waypoint[-1].y)
-                + (waypoint[0].z - waypoint[-1].x) * (waypoint[0].z - waypoint[-1].z)
-            );
-            ++waypoint;
-        } while (--remaining != 0);
+    for (int i = 1; i < currentSizeValue; i++) {
+        //! @bug The first z term subtracts the previous waypoint's x instead of its z.
+        total += sqrtf(
+            (pathValue[i].x - pathValue[i - 1].x) * (pathValue[i].x - pathValue[i - 1].x)
+            + (pathValue[i].y - pathValue[i - 1].y) * (pathValue[i].y - pathValue[i - 1].y)
+            + (pathValue[i].z - pathValue[i - 1].x) * (pathValue[i].z - pathValue[i - 1].z)
+        );
     }
     return total;
 }

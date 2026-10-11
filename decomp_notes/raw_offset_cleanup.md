@@ -120,3 +120,5 @@ count register and change the pointer setup (50–53 bytes).
 
 `RGE_Command::do_command_move` keeps its pointer walk. The unit list follows the
 order header in the command packet, so that cursor reflects the wire format.
+- `Path::length`: indexes `pathValue[i]` and `pathValue[i - 1]` instead of a
+  `waypoint[-1]` cursor. The wrong z term (previous x) is now marked `@bug`.
