@@ -104,3 +104,38 @@ Validation of the follow-up:
 - All 225 non-debug object payloads equal the `c41e6039a` baseline.
 
 No linked executable build, image audit, automated tests, or runtime suites ran.
+
+## 1997 names for 105-180
+
+Source: the trailing comments in the leaked 1997 personality files, for example
+`aoe 7 16 1997/AoE_beta_July1997/GAME/DATA/DEFAULT.VC` and the June 1997
+`GAME/DATA/*.VC` files. 45 names were added to `include/player.h`, each marked
+`// 1997`.
+
+The 1997 numbering is the same as the 1998 numbering in this range. Every
+shipped `data2/*.per` name here (124-133, 135, 143, 146, 175, 176) has the same
+number in the 1997 files; seven older names elsewhere differ only in wording,
+e.g. "Party" became "Group". The 152 `src/` uses were each checked against
+their code:
+
+- 0x70 is read as `minimumTiles` for dock placement.
+- 0x6A-0x6F feed `specialRating1-3`.
+- 0x7A, 0x7B and 0x90 weight `zoneRating`, `siegeRating` and `boatRating`.
+- 0x8A-0x8D set the initial resources.
+- 0x88 is the blot radius.
+- 0x96 and 0x97 cap storage pits and granaries.
+- 121 sits beside `importantGroupLeader()`.
+
+### Gold/wood build-plan pairing
+
+The July file labels 156-159 as BuildPlan Food, Gold, Stone, Wood, the same
+order as 117-120. `TribeTacticalAIModule`'s gatherer distribution reads the
+extras as 0x9C + resource index (food 0, wood 1, stone 2, gold 3). So wood adds
+157 (`SNBuildPlanGoldGathererPercentage`) and gold adds 159
+(`SNBuildPlanWoodGathererPercentage`). The `TRIBE_Player` AI status string
+pairs them the same way. Either the labels or the code are swapped. Both read
+sites carry a comment. The shipped 1998 `.per` files do not set 155-160.
+
+Validation: a full audit (`build/cleanup-2026-10-10/sn`) passed all 5,013
+exact claims. All 225 object payloads equal the previous commit's. No linked
+executable build, image audit, automated tests, or runtime suites ran.

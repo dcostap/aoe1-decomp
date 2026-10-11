@@ -1069,7 +1069,7 @@ int TacticalAIGroup::task(
 
                         t->logGroupDebug(idValue, s_log_15, *unit, targetValue);
                         if (*unit == commanderValue || t->importantGroupLeader(commanderValue) == 0
-                            || t->strategicNumber(121) == 0) {
+                            || t->strategicNumber(SNDefendImportantGroupLeaders) == 0) {
                             t->logGroupDebug(idValue, s_log_16);
                             if (taskID == 21) {
                                 t->moveUnit(*unit, targetLocationValue.x, targetLocationValue.y, 100);
@@ -2801,7 +2801,8 @@ void TribeTacticalAIModule::evaluateCivilianDistribution() {
             this->civilianExplorers.desiredNumberValue = 0;
         }
 
-        if (percentExplored >= this->sn[SNPercentExplorationRequired] && enemyObjects > this->sn[0x91]) {
+        if (percentExplored >= this->sn[SNPercentExplorationRequired]
+            && enemyObjects > this->sn[SNNumberEnemyObjectsRequired]) {
             if (this->civilianExplorers.desiredNumberValue > this->sn[SNMinimumCivilianExplorers]) {
                 this->civilianExplorers.desiredNumberValue = this->sn[SNMinimumCivilianExplorers];
             }
@@ -3287,7 +3288,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                         this->attackStateValue.active = 0;
                         goto ContinueLoop;
                     } else {
-                        if (this->sn[0xa2] != 0 && cur->type() != TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
+                        if (this->sn[SNUsePlayAttacking] != 0 && cur->type() != TACTICAL_GROUP_TYPE_BOAT_ATTACK) {
                             mem = this->md->informationAI.objectMemory(*(int*) 0);
                             goto attack_target_ready;
                         }
@@ -3960,7 +3961,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                                             int cy;
                                             int radius;
                                             cy = (int) replacementCommander->world_y;
-                                            radius = this->sn[0x88];
+                                            radius = this->sn[SNBlotSize];
                                             cx = (int) replacementCommander->world_x;
                                             this->md->informationAI.blotExploredMap(
                                                 cx - radius, cy - radius, cx + radius, cy + radius
@@ -4228,7 +4229,7 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long startTime, unsigned l
     int playUnits[50];
     int i;
 
-    if (this->sn[0xa2] != 0) {
+    if (this->sn[SNUsePlayAttacking] != 0) {
         countUnplayedSoldiers = 0;
         for (i = 0; i < this->soldiers.number(); i++) {
             TacticalAIGroup* group = this->groupUnitIsIn(this->soldiers[i]);
@@ -5482,7 +5483,7 @@ void TribeTacticalAIModule::updateNeededResources() {
     int bestDifference;
     int rank;
 
-    this->md->buildAI.mostNeededResource(this->neededResources, this->sn[0x93]);
+    this->md->buildAI.mostNeededResource(this->neededResources, this->sn[SNMostNeededResourceLookAhead]);
 
     i = 0;
     // Indexing resourceDifferenceValue[i] here instead of the cursor changes this function by 18 bytes.
@@ -5702,24 +5703,27 @@ void TribeTacticalAIModule::updateGathererDistribution() {
     }
 
     if (distribution_set == 0) {
-        int desired2Percent = this->sn[0x77];
-        int desired2ExtraPercent = this->sn[0x9E];
+        // The build-plan extras are read as 0x9C + resource index (food, wood, stone, gold), but
+        // the 1997 .per labels order 0x9C-0x9F as food, gold, stone, wood. So the wood share adds
+        // SNBuildPlanGoldGathererPercentage and the gold share adds SNBuildPlanWoodGathererPercentage.
+        int desired2Percent = this->sn[SNStoneGathererPercentage];
+        int desired2ExtraPercent = this->sn[SNBuildPlanStoneGathererPercentage];
         int desired = this->desiredNumberGatherersValue;
         int desired2Amount = (desired2Percent + desired2ExtraPercent) * desired;
 
-        int desired3Percent = this->sn[0x76];
+        int desired3Percent = this->sn[SNGoldGathererPercentage];
         this->desiredGathererDistribution[2] = desired2Amount / 100;
-        int desired3ExtraPercent = this->sn[0x9F];
+        int desired3ExtraPercent = this->sn[SNBuildPlanWoodGathererPercentage];
         int desired3Amount = (desired3Percent + desired3ExtraPercent) * desired;
 
-        int desired1Percent = this->sn[0x78];
+        int desired1Percent = this->sn[SNWoodGathererPercentage];
         this->desiredGathererDistribution[3] = desired3Amount / 100;
-        int desired1ExtraPercent = this->sn[0x9D];
+        int desired1ExtraPercent = this->sn[SNBuildPlanGoldGathererPercentage];
         int desired1Amount = (desired1Percent + desired1ExtraPercent) * desired;
 
-        int desired0Percent = this->sn[0x75];
+        int desired0Percent = this->sn[SNFoodGathererPercentage];
         int desired1 = desired1Amount / 100;
-        int desired0ExtraPercent = this->sn[0x9C];
+        int desired0ExtraPercent = this->sn[SNBuildPlanFoodGathererPercentage];
         int desired0Amount = (desired0Percent + desired0ExtraPercent) * desired;
 
         this->desiredGathererDistribution[1] = desired1;
@@ -6329,10 +6333,10 @@ int TribeTacticalAIModule::taskGatherer(
             else if (resourceType == 2)
                 amount = 50;
         } else {
-            if (amount < this->sn[0x94])
-                amount = this->sn[0x94];
-            else if (amount > this->sn[0x95])
-                amount = this->sn[0x95];
+            if (amount < this->sn[SNRetaskGatherAmount])
+                amount = this->sn[SNRetaskGatherAmount];
+            else if (amount > this->sn[SNMaxRetaskGatherAmount])
+                amount = this->sn[SNMaxRetaskGatherAmount];
         }
 
         if (this->zoomingToNextAge == 1)
@@ -7211,7 +7215,7 @@ void TribeTacticalAIModule::setupSoldierGroups() {
         }
     }
 
-    if (this->sn[0xa2] == 1) {
+    if (this->sn[SNUsePlayAttacking] == 1) {
         numPotentialAGroups = 0;
     }
 
@@ -9093,7 +9097,7 @@ int TribeTacticalAIModule::importantGroupLeader(int cID) {
 void TribeTacticalAIModule::enableAttack(int type) {
     if (this->attackEnabledValue == 1)
         return;
-    int field3AC = this->sn[0x86];
+    int field3AC = this->sn[SNInitialAttackDelayType];
     if (field3AC != 0 && field3AC != type)
         return;
     this->attackEnabledValue = 1;
@@ -9269,7 +9273,7 @@ int TribeTacticalAIModule::isGatherer(int id) {
 
 int TribeTacticalAIModule::requiredGatherAmount(int rType) {
     if (this->desiredGathererDistribution[rType] == 0) {
-        return this->sn[0x94];
+        return this->sn[SNRetaskGatherAmount];
     }
     int value = this->neededResources.value(rType);
     return value / this->desiredGathererDistribution[rType];
@@ -9320,7 +9324,7 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& numStoragePits, int& 
         return 0;
     }
 
-    value = this->sn[0x96];
+    value = this->sn[SNMaxStoragePits];
     if (value != -1) {
         capacity_or_count = (int) this->md->player->attributes[PLAYER_ATTRIBUTE_CURRENT_AGE];
         if (capacity_or_count == 0) {
@@ -9349,10 +9353,10 @@ int TribeTacticalAIModule::numberAvailableGranaries(int& numGranaries, int& numU
     if (this->sn[0xBE] <= value) {
         return 0;
     }
-    if (this->sn[0x97] != -1) {
+    if (this->sn[SNMaxGranaries] != -1) {
         value = this->md->buildAI.numberItemsOfType(MASTER_OBJECT_GRANARY, BUILD_CATEGORY_BUILDING);
         numGranaries = value;
-        if (value >= this->sn[0x97]) {
+        if (value >= this->sn[SNMaxGranaries]) {
             return 0;
         }
     }

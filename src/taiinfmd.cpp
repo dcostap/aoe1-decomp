@@ -1224,7 +1224,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(BuildItem* bi, float cX, f
                             if (centerType == -1 || (gMap->map_row_offset[y][x].terrain_type & 0x1F) == centerType) {
                                 unsigned char currentZone = zoneMap->get_zone_info(x, y);
                                 int numberTiles = zoneMap->numberTilesInZone(currentZone);
-                                int minimumTiles = this->md->tacticalAI.strategicNumber(0x70);
+                                int minimumTiles = this->md->tacticalAI.strategicNumber(SNMinimumWaterBodySizeForDock);
                                 if (numberTiles >= minimumTiles && this->hasAdjacentTileType(x, y, edgeType)) {
                                     ConstructionItem* lot =
                                         this->md->constructionAI.randomLot((float) x - (-0.5f), (float) y - (-0.5f));
@@ -2674,9 +2674,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
                     }
 
                     int randomRating = debug_rand((char*) "C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 3638) % 100;
-                    int specialRating1 = memory->type == this->md->tacticalAI.strategicNumber(0x6A);
-                    int specialRating2 = memory->type == this->md->tacticalAI.strategicNumber(0x6B);
-                    int specialRating3 = memory->type == this->md->tacticalAI.strategicNumber(0x6C);
+                    int specialRating1 = memory->type == this->md->tacticalAI.strategicNumber(SNSpecialAttackType1);
+                    int specialRating2 = memory->type == this->md->tacticalAI.strategicNumber(SNSpecialAttackType2);
+                    int specialRating3 = memory->type == this->md->tacticalAI.strategicNumber(SNSpecialAttackType3);
                     int zoneRating = unitZone == unit->lookupZone((int) tempObj->world_x, (int) tempObj->world_y);
 
                     RGE_Master_Static_Object* object_master = tempObj->master_obj;
@@ -2701,19 +2701,19 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
 
                     int attack_value =
                         this->md->tacticalAI.strategicNumber(SNTargetEvaluationAttackAttempts) * memory->attackAttempts;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x90) * boatRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x7B) * siegeRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x7A) * zoneRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationBoat) * boatRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationSiegeWeapon) * siegeRating;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationContinent) * zoneRating;
                     attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationKills) * killRating;
                     attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationRandomness) * randomRating;
                     attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationDistance) * distanceRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x6F) * specialRating3;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNSpecialAttackInfluence3) * specialRating3;
                     attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationRange) * rangeRating;
                     attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationHitpoints) * hpRating;
                     attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationDamageCapability) * dCRating;
                     attack_value += this->md->tacticalAI.strategicNumber(SNTargetEvaluationROF) * rOFRating;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x6E) * specialRating2;
-                    attack_value += this->md->tacticalAI.strategicNumber(0x6D) * specialRating1;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNSpecialAttackInfluence2) * specialRating2;
+                    attack_value += this->md->tacticalAI.strategicNumber(SNSpecialAttackInfluence1) * specialRating1;
 
                     if ((timeToKill > timeToBeKilled && timeToBeKilled != -1.0f) || timeToKill == -1.0f) {
                         attack_value = 1;
@@ -2905,7 +2905,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
 
                                     float zoneFactor;
                                     if (commanderZone == targetZone) {
-                                        zoneFactor = (float) this->md->tacticalAI.strategicNumber(0x7a);
+                                        zoneFactor =
+                                            (float) this->md->tacticalAI.strategicNumber(SNTargetEvaluationContinent);
                                     } else {
                                         zoneFactor = 0.0f;
                                     }
@@ -3115,7 +3116,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int ownerID, int*
                                 float zoneFactor;
                                 if (commanderObj->lookupZone((int) target->world_x, (int) target->world_y)
                                     == commanderZone) {
-                                    zoneFactor = (float) this->md->tacticalAI.strategicNumber(0x7a);
+                                    zoneFactor =
+                                        (float) this->md->tacticalAI.strategicNumber(SNTargetEvaluationContinent);
                                 } else {
                                     zoneFactor = 0.0f;
                                 }

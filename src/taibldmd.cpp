@@ -182,7 +182,7 @@ void TribeBuildAIModule::initialize() {
         }
     }
 
-    if (houseCount == 0 && this->md->tacticalAI.strategicNumber(0xB4) == 1) {
+    if (houseCount == 0 && this->md->tacticalAI.strategicNumber(SNAutoBuilding) == 1) {
         item = this->buildList.next;
         int buildIndex = 0;
         int housingCapacity = 0;
@@ -206,7 +206,7 @@ void TribeBuildAIModule::initialize() {
                     housingCapacity += 4;
                 }
             }
-            if (housingCapacity > this->md->tacticalAI.strategicNumber(0x98) + 50) {
+            if (housingCapacity > this->md->tacticalAI.strategicNumber(SNHouseOverage) + 50) {
                 break;
             }
 
@@ -215,8 +215,8 @@ void TribeBuildAIModule::initialize() {
         }
     }
 
-    int totalPercentage = this->md->tacticalAI.strategicNumber(0xA0);
-    int requiredPop = this->md->tacticalAI.strategicNumber(0x9B) + 4;
+    int totalPercentage = this->md->tacticalAI.strategicNumber(SNMaxBuildPlanGathererPercentage);
+    int requiredPop = this->md->tacticalAI.strategicNumber(SNBuildPlanDivisions) + 4;
     if (totalPercentage != 0) {
         item = this->buildList.next;
         ResourceItem resourceCount(4);
@@ -268,9 +268,9 @@ void TribeBuildAIModule::skipNextBuildListItem() {
 
     while (item != sentinel && item != 0) {
         if (item->built() == 0 && item->inProgress() == 0 && item->skip() != 1) {
-            if (item->typeID() != this->md->tacticalAI.strategicNumber(0xB1)
+            if (item->typeID() != this->md->tacticalAI.strategicNumber(SNUnskippableItemType)
                 || item->buildCategory() != BUILD_CATEGORY_BUILDING) {
-                item->setBuildAttempts(this->md->tacticalAI.strategicNumber(0x72));
+                item->setBuildAttempts(this->md->tacticalAI.strategicNumber(SNNumberBuildAttemptsBeforeSkip));
                 item->setSkip(1);
                 item->incrementSkipCycles();
                 if (item->skipCycles() == this->md->tacticalAI.strategicNumber(SNNumberMaxSkipCycles)) {
@@ -294,7 +294,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
 
-    if (this->md->tacticalAI.strategicNumber(0x73) < 0) {
+    if (this->md->tacticalAI.strategicNumber(SNMaxSkipsPerAttempt) < 0) {
         return 0;
     }
 
@@ -327,7 +327,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
             ++count;
 
             int canBuild = 1;
-            int order = this->md->tacticalAI.strategicNumber(0xA1);
+            int order = this->md->tacticalAI.strategicNumber(SNRequiredFirstBuilding);
             if (order == 1 && numGranaries == 0 && numStoragePits == 0) {
                 canBuild = 0;
             }
@@ -415,7 +415,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
                 item->setSkip(0);
                 if (item->buildCategory() == BUILD_CATEGORY_BUILDING
                     && (item->typeID() == MASTER_OBJECT_STORAGE_PIT1 || item->typeID() == MASTER_OBJECT_GRANARY)) {
-                    item->setBuildAttempts(this->md->tacticalAI.strategicNumber(0x72) - 1);
+                    item->setBuildAttempts(this->md->tacticalAI.strategicNumber(SNNumberBuildAttemptsBeforeSkip) - 1);
                 }
             }
 
@@ -443,21 +443,23 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
 
             item->incrementBuildAttempts();
             int buildAttempts = item->buildAttempts();
-            if (buildAttempts > this->md->tacticalAI.strategicNumber(0x72) && item->skip() == 0
-                && !item->permanentSkip()) {
+            if (buildAttempts > this->md->tacticalAI.strategicNumber(SNNumberBuildAttemptsBeforeSkip)
+                && item->skip() == 0 && !item->permanentSkip()) {
                 if (category == BUILD_CATEGORY_RESEARCH && item->buildCategory() == BUILD_CATEGORY_BLOCKING_RESEARCH) {
                     item->setBuildAttempts(0);
                     return 0;
                 }
 
-                if (item->typeID() != this->md->tacticalAI.strategicNumber(0xB1)
+                if (item->typeID() != this->md->tacticalAI.strategicNumber(SNUnskippableItemType)
                     || item->buildCategory() != BUILD_CATEGORY_BUILDING) {
                     item->setSkip(1);
                     if (item->buildCategory() == BUILD_CATEGORY_BUILDING
                         && (item->typeID() == MASTER_OBJECT_STORAGE_PIT1 || item->typeID() == MASTER_OBJECT_GRANARY)) {
-                        item->setBuildAttempts(this->md->tacticalAI.strategicNumber(0x72) * 6);
+                        item->setBuildAttempts(
+                            this->md->tacticalAI.strategicNumber(SNNumberBuildAttemptsBeforeSkip) * 6
+                        );
                     } else {
-                        item->setBuildAttempts(this->md->tacticalAI.strategicNumber(0x72));
+                        item->setBuildAttempts(this->md->tacticalAI.strategicNumber(SNNumberBuildAttemptsBeforeSkip));
                     }
                     item = item->next;
                     continue;
@@ -511,7 +513,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
         }
 
         item = item->next;
-    } while (realCount <= this->md->tacticalAI.strategicNumber(0x73));
+    } while (realCount <= this->md->tacticalAI.strategicNumber(SNMaxSkipsPerAttempt));
 
     return 0;
 }

@@ -69,6 +69,8 @@
 
 // Strategic-number indices into the AI `sn` arrays, also read through RGE_Player::strategicNumber.
 // The names are the original comments from the shipped data2/*.per personality files.
+// Names marked "1997" come from the comments in the 1997 alpha/beta .per and .vc files. Their
+// numbering agrees with every shipped name in this range (124-133, 135, 143, 146, 175, 176).
 // Unnamed indices stay numeric.
 #define SNPercentCivilianExplorers         0
 #define SNPercentCivilianBuilders          1
@@ -161,6 +163,25 @@
 #define SNAttackSeparationTimeRandomness   102
 #define SNAttackIntelligence               103
 #define SNInitialAttackDelay               104
+#define SNSaveScenarioInformation          105 // 1997
+#define SNSpecialAttackType1               106 // 1997
+#define SNSpecialAttackType2               107 // 1997
+#define SNSpecialAttackType3               108 // 1997
+#define SNSpecialAttackInfluence1          109 // 1997
+#define SNSpecialAttackInfluence2          110 // 1997
+#define SNSpecialAttackInfluence3          111 // 1997
+#define SNMinimumWaterBodySizeForDock      112 // 1997
+#define SNSkipAges                         113 // 1997
+#define SNNumberBuildAttemptsBeforeSkip    114 // 1997
+#define SNMaxSkipsPerAttempt               115 // 1997
+#define SNTrainingRebuilds                 116 // 1997
+#define SNFoodGathererPercentage           117 // 1997
+#define SNGoldGathererPercentage           118 // 1997
+#define SNStoneGathererPercentage          119 // 1997
+#define SNWoodGathererPercentage           120 // 1997
+#define SNDefendImportantGroupLeaders      121 // 1997
+#define SNTargetEvaluationContinent        122 // 1997
+#define SNTargetEvaluationSiegeWeapon      123 // 1997
 #define SNTributeAmount                    124
 #define SNTributeChatFrequency             125
 #define SNTributeChatRandomness            126
@@ -171,11 +192,37 @@
 #define SNGroupLeaderDefenseDistance       131
 #define SNTributePersistence               132
 #define SNTributeRevokeOnAttack            133
+#define SNInitialAttackDelayType           134 // 1997
 #define SNBlotExplorationMap               135
+#define SNBlotSize                         136 // 1997
+#define SNTownWallPattern                  137 // 1997
+#define SNInitialFood                      138 // 1997
+#define SNInitialGold                      139 // 1997
+#define SNInitialStone                     140 // 1997
+#define SNInitialWood                      141 // 1997
+#define SNIntelligentGathering             142 // 1997
 #define SNTaskUngroupedSoldiers            143
+#define SNTargetEvaluationBoat             144 // 1997
+#define SNNumberEnemyObjectsRequired       145 // 1997
 #define SNNumberMaxSkipCycles              146
+#define SNMostNeededResourceLookAhead      147 // 1997
+#define SNRetaskGatherAmount               148 // 1997
+#define SNMaxRetaskGatherAmount            149 // 1997
+#define SNMaxStoragePits                   150 // 1997
+#define SNMaxGranaries                     151 // 1997
+#define SNHouseOverage                     152 // 1997
+#define SNBuildPlanDivisions               155 // 1997
+#define SNBuildPlanFoodGathererPercentage  156 // 1997
+#define SNBuildPlanGoldGathererPercentage  157 // 1997
+#define SNBuildPlanStoneGathererPercentage 158 // 1997
+#define SNBuildPlanWoodGathererPercentage  159 // 1997
+#define SNMaxBuildPlanGathererPercentage   160 // 1997
+#define SNRequiredFirstBuilding            161 // 1997
+#define SNUsePlayAttacking                 162 // 1997
 #define SNSpecificBuildItemToBuild         175
 #define SNSpecificBuildItemTime            176
+#define SNUnskippableItemType              177 // 1997
+#define SNAutoBuilding                     180 // 1997
 #define SNPercentageExploreExterminators   198
 #define SNAutoBuildFarms                   206
 #define SNEasiestReactionPercentage        218

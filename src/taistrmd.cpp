@@ -378,18 +378,28 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
                 SNMaximumGAIAAttackResponse, this->sn[SNMaximumGAIAAttackResponse]
             );
             p->playerAI->tacticalAI.setStrategicNumber(0xe1, this->sn[0xe1]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x75, this->sn[0x75]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x76, this->sn[0x76]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x77, this->sn[0x77]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x78, this->sn[0x78]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x9c, this->sn[0x9c]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x9f, this->sn[0x9f]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x9e, this->sn[0x9e]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x9d, this->sn[0x9d]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xa0, this->sn[0xa0]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x8e, this->sn[0x8e]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x94, this->sn[0x94]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x95, this->sn[0x95]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNFoodGathererPercentage, this->sn[SNFoodGathererPercentage]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNGoldGathererPercentage, this->sn[SNGoldGathererPercentage]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNStoneGathererPercentage, this->sn[SNStoneGathererPercentage]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNWoodGathererPercentage, this->sn[SNWoodGathererPercentage]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNBuildPlanFoodGathererPercentage, this->sn[SNBuildPlanFoodGathererPercentage]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNBuildPlanWoodGathererPercentage, this->sn[SNBuildPlanWoodGathererPercentage]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNBuildPlanStoneGathererPercentage, this->sn[SNBuildPlanStoneGathererPercentage]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNBuildPlanGoldGathererPercentage, this->sn[SNBuildPlanGoldGathererPercentage]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMaxBuildPlanGathererPercentage, this->sn[SNMaxBuildPlanGathererPercentage]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNIntelligentGathering, this->sn[SNIntelligentGathering]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNRetaskGatherAmount, this->sn[SNRetaskGatherAmount]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMaxRetaskGatherAmount, this->sn[SNMaxRetaskGatherAmount]);
             p->playerAI->tacticalAI.setStrategicNumber(0xcb, this->sn[0xcb]);
             p->playerAI->tacticalAI.setStrategicNumber(0xa3, this->sn[0xa3]);
             p->playerAI->tacticalAI.setStrategicNumber(0xa4, this->sn[0xa4]);
@@ -397,7 +407,7 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(0xa5, this->sn[0xa5]);
             p->playerAI->tacticalAI.setStrategicNumber(0xa7, this->sn[0xa7]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb3, this->sn[0xb3]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xb4, this->sn[0xb4]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNAutoBuilding, this->sn[SNAutoBuilding]);
             p->playerAI->tacticalAI.setStrategicNumber(0xcd, this->sn[0xcd]);
             p->playerAI->tacticalAI.setStrategicNumber(0xcf, this->sn[0xcf]);
             p->playerAI->tacticalAI.setStrategicNumber(SNAutoBuildFarms, this->sn[SNAutoBuildFarms]);
@@ -438,12 +448,14 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(
                 SNAttackGroupSizeRandomness, this->sn[SNAttackGroupSizeRandomness]
             );
-            p->playerAI->tacticalAI.setStrategicNumber(0x79, this->sn[0x79]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNDefendImportantGroupLeaders, this->sn[SNDefendImportantGroupLeaders]
+            );
             p->playerAI->tacticalAI.setStrategicNumber(
                 SNGroupLeaderDefenseDistance, this->sn[SNGroupLeaderDefenseDistance]
             );
             p->playerAI->tacticalAI.setStrategicNumber(SNTaskUngroupedSoldiers, this->sn[SNTaskUngroupedSoldiers]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xa2, this->sn[0xa2]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNUsePlayAttacking, this->sn[SNUsePlayAttacking]);
             break;
         case 0xc:
             p->playerAI->tacticalAI.setStrategicNumber(SNTotalNumberExplorers, this->sn[SNTotalNumberExplorers]);
@@ -483,7 +495,9 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(
                 SNPercentExplorationRequired, this->sn[SNPercentExplorationRequired]
             );
-            p->playerAI->tacticalAI.setStrategicNumber(0x91, this->sn[0x91]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNNumberEnemyObjectsRequired, this->sn[SNNumberEnemyObjectsRequired]
+            );
             break;
         case 0x18:
             p->playerAI->tacticalAI.setStrategicNumber(SNZeroPriorityDistance, this->sn[SNZeroPriorityDistance]);
@@ -529,7 +543,7 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(SNAttackCoordination, this->sn[SNAttackCoordination]);
             p->playerAI->tacticalAI.setStrategicNumber(SNAttackIntelligence, this->sn[SNAttackIntelligence]);
             p->playerAI->tacticalAI.setStrategicNumber(SNInitialAttackDelay, this->sn[SNInitialAttackDelay]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x86, this->sn[0x86]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNInitialAttackDelayType, this->sn[SNInitialAttackDelayType]);
             break;
         case 0x1e:
             p->playerAI->tacticalAI.setStrategicNumber(
@@ -541,7 +555,7 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
                 SNRetreatAfterTargetDestroyed, this->sn[SNRetreatAfterTargetDestroyed]
             );
             p->playerAI->tacticalAI.setStrategicNumber(SNBlotExplorationMap, this->sn[SNBlotExplorationMap]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x88, this->sn[0x88]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNBlotSize, this->sn[SNBlotSize]);
             p->playerAI->tacticalAI.setStrategicNumber(200, this->sn[200]);
             break;
         case 0x20:
@@ -631,42 +645,46 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
                 SNTargetEvaluationAttackAttempts, this->sn[SNTargetEvaluationAttackAttempts]
             );
             p->playerAI->tacticalAI.setStrategicNumber(SNTargetEvaluationRange, this->sn[SNTargetEvaluationRange]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x6a, this->sn[0x6a]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x6b, this->sn[0x6b]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x6c, this->sn[0x6c]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x6d, this->sn[0x6d]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x6e, this->sn[0x6e]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x6f, this->sn[0x6f]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x7a, this->sn[0x7a]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x7b, this->sn[0x7b]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x90, this->sn[0x90]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSpecialAttackType1, this->sn[SNSpecialAttackType1]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSpecialAttackType2, this->sn[SNSpecialAttackType2]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSpecialAttackType3, this->sn[SNSpecialAttackType3]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSpecialAttackInfluence1, this->sn[SNSpecialAttackInfluence1]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSpecialAttackInfluence2, this->sn[SNSpecialAttackInfluence2]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSpecialAttackInfluence3, this->sn[SNSpecialAttackInfluence3]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNTargetEvaluationContinent, this->sn[SNTargetEvaluationContinent]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNTargetEvaluationSiegeWeapon, this->sn[SNTargetEvaluationSiegeWeapon]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNTargetEvaluationBoat, this->sn[SNTargetEvaluationBoat]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb8, this->sn[0xb8]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb9, this->sn[0xb9]);
             break;
         case 0x29:
             p->playerAI->tacticalAI.setStrategicNumber(SNNumberWallGates, this->sn[SNNumberWallGates]);
             p->playerAI->tacticalAI.setStrategicNumber(SNSizeWallGates, this->sn[SNSizeWallGates]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x89, this->sn[0x89]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTownWallPattern, this->sn[SNTownWallPattern]);
             break;
         case 0x2a:
             p->playerAI->tacticalAI.setStrategicNumber(SNStoragePitMaxDistance, this->sn[SNStoragePitMaxDistance]);
             p->playerAI->tacticalAI.setStrategicNumber(SNGranaryMaxDistance, this->sn[SNGranaryMaxDistance]);
             p->playerAI->tacticalAI.setStrategicNumber(0xca, this->sn[0xca]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x96, this->sn[0x96]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x97, this->sn[0x97]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x98, this->sn[0x98]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xa1, this->sn[0xa1]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMaxStoragePits, this->sn[SNMaxStoragePits]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNMaxGranaries, this->sn[SNMaxGranaries]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNHouseOverage, this->sn[SNHouseOverage]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNRequiredFirstBuilding, this->sn[SNRequiredFirstBuilding]);
             p->playerAI->tacticalAI.setStrategicNumber(0xa8, this->sn[0xa8]);
             break;
         case 0x2b:
             p->playerAI->tacticalAI.setStrategicNumber(SNTacticalUpdateFrequency, this->sn[SNTacticalUpdateFrequency]);
             p->playerAI->tacticalAI.setStrategicNumber(SNBuildFrequency, this->sn[SNBuildFrequency]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x9b, this->sn[0x9b]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNBuildPlanDivisions, this->sn[SNBuildPlanDivisions]);
             p->playerAI->tacticalAI.setStrategicNumber(
                 SNSpecificBuildItemToBuild, this->sn[SNSpecificBuildItemToBuild]
             );
             p->playerAI->tacticalAI.setStrategicNumber(SNSpecificBuildItemTime, this->sn[SNSpecificBuildItemTime]);
-            p->playerAI->tacticalAI.setStrategicNumber(0xb1, this->sn[0xb1]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNUnskippableItemType, this->sn[SNUnskippableItemType]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb5, this->sn[0xb5]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb6, this->sn[0xb6]);
             p->playerAI->tacticalAI.setStrategicNumber(0xb7, this->sn[0xb7]);
@@ -696,18 +714,24 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(SNScalingFrequency, this->sn[SNScalingFrequency]);
             break;
         case 0x2d:
-            p->playerAI->tacticalAI.setStrategicNumber(0x69, this->sn[0x69]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSaveScenarioInformation, this->sn[SNSaveScenarioInformation]);
             break;
         case 0x2e:
-            p->playerAI->tacticalAI.setStrategicNumber(0x70, this->sn[0x70]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMinimumWaterBodySizeForDock, this->sn[SNMinimumWaterBodySizeForDock]
+            );
             break;
         case 0x2f:
-            p->playerAI->tacticalAI.setStrategicNumber(0x71, this->sn[0x71]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x72, this->sn[0x72]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x73, this->sn[0x73]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x74, this->sn[0x74]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNSkipAges, this->sn[SNSkipAges]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNNumberBuildAttemptsBeforeSkip, this->sn[SNNumberBuildAttemptsBeforeSkip]
+            );
+            p->playerAI->tacticalAI.setStrategicNumber(SNMaxSkipsPerAttempt, this->sn[SNMaxSkipsPerAttempt]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNTrainingRebuilds, this->sn[SNTrainingRebuilds]);
             p->playerAI->tacticalAI.setStrategicNumber(SNNumberMaxSkipCycles, this->sn[SNNumberMaxSkipCycles]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x93, this->sn[0x93]);
+            p->playerAI->tacticalAI.setStrategicNumber(
+                SNMostNeededResourceLookAhead, this->sn[SNMostNeededResourceLookAhead]
+            );
             break;
         case 0x30:
             p->playerAI->tacticalAI.setStrategicNumber(SNTributeAmount, this->sn[SNTributeAmount]);
@@ -723,10 +747,10 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleN
             p->playerAI->tacticalAI.setStrategicNumber(0xc9, this->sn[0xc9]);
             break;
         case 0x31:
-            p->playerAI->tacticalAI.setStrategicNumber(0x8a, this->sn[0x8a]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x8b, this->sn[0x8b]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x8c, this->sn[0x8c]);
-            p->playerAI->tacticalAI.setStrategicNumber(0x8d, this->sn[0x8d]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNInitialFood, this->sn[SNInitialFood]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNInitialGold, this->sn[SNInitialGold]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNInitialStone, this->sn[SNInitialStone]);
+            p->playerAI->tacticalAI.setStrategicNumber(SNInitialWood, this->sn[SNInitialWood]);
             break;
         default:
             return 0;

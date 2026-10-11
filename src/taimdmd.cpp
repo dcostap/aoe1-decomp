@@ -184,16 +184,16 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
             this->tributeAmount = 0;
         }
 
-        int value = tactical->strategicNumber(0x8A);
+        int value = tactical->strategicNumber(SNInitialFood);
         if (value != 0)
             this->player->command_add_attribute(0, (float) value);
-        value = tactical->strategicNumber(0x8B);
+        value = tactical->strategicNumber(SNInitialGold);
         if (value != 0)
             this->player->command_add_attribute(3, (float) value);
-        value = tactical->strategicNumber(0x8C);
+        value = tactical->strategicNumber(SNInitialStone);
         if (value != 0)
             this->player->command_add_attribute(2, (float) value);
-        value = tactical->strategicNumber(0x8D);
+        value = tactical->strategicNumber(SNInitialWood);
         if (value != 0)
             this->player->command_add_attribute(1, (float) value);
     }

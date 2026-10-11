@@ -1424,12 +1424,17 @@ char* TRIBE_Player::aiStatus(int sNum) {
         return this->aiStatusInformationValue3;
     }
     if (sNum == 4) {
+        // Wood and Gold show the swapped build-plan numbers; see TribeTacticalAIModule's gatherer distribution.
         sprintf(
             this->aiStatusInformationValue4, "Pers (Spec/BL): Food=(%d/%d), Wood=(%d/%d), Gold=(%d/%d), Stone=(%d/%d).",
-            this->playerAI->tacticalAI.strategicNumber(0x75), this->playerAI->tacticalAI.strategicNumber(0x9C),
-            this->playerAI->tacticalAI.strategicNumber(0x78), this->playerAI->tacticalAI.strategicNumber(0x9D),
-            this->playerAI->tacticalAI.strategicNumber(0x76), this->playerAI->tacticalAI.strategicNumber(0x9F),
-            this->playerAI->tacticalAI.strategicNumber(0x77), this->playerAI->tacticalAI.strategicNumber(0x9E)
+            this->playerAI->tacticalAI.strategicNumber(SNFoodGathererPercentage),
+            this->playerAI->tacticalAI.strategicNumber(SNBuildPlanFoodGathererPercentage),
+            this->playerAI->tacticalAI.strategicNumber(SNWoodGathererPercentage),
+            this->playerAI->tacticalAI.strategicNumber(SNBuildPlanGoldGathererPercentage),
+            this->playerAI->tacticalAI.strategicNumber(SNGoldGathererPercentage),
+            this->playerAI->tacticalAI.strategicNumber(SNBuildPlanWoodGathererPercentage),
+            this->playerAI->tacticalAI.strategicNumber(SNStoneGathererPercentage),
+            this->playerAI->tacticalAI.strategicNumber(SNBuildPlanStoneGathererPercentage)
         );
         return this->aiStatusInformationValue4;
     }
