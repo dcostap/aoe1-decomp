@@ -265,29 +265,27 @@ int ConstructionAIModule::loadConstructionPlan(
         return 0;
     }
 
-    if (fgets(temp + 4, 0x100, fp) != 0) {
-        do {
-            sscanf(temp + 4, " %c%c", &commentTemp1, &commentTemp2);
-            if (commentTemp1 != '/' || commentTemp2 != '/') {
-                sscanf(temp + 4, "%f %f %f %f %f %f %d %s ", &x, &y, &z, &xSize, &ySize, &zSize, &id, name);
-                x = this->xReferencePointValue + x;
-                y = this->yReferencePointValue + y;
-                z = this->zReferencePointValue + z;
-                if (this->lot(x, y) == 0) {
-                    ConstructionItem* item;
-                    ConstructionItem* prev;
-                    item = new ConstructionItem(x, y, z, xSize, ySize, zSize, id, name);
-                    item->next = &this->constructionLots;
-                    prev = this->constructionLots.prev;
-                    item->prev = prev;
-                    prev->next = item;
-                    this->constructionLots.prev = item;
-                    this->numberConstructionLotsValue++;
-                }
+    while (fgets(temp + 4, 0x100, fp) != 0) {
+        sscanf(temp + 4, " %c%c", &commentTemp1, &commentTemp2);
+        if (commentTemp1 != '/' || commentTemp2 != '/') {
+            sscanf(temp + 4, "%f %f %f %f %f %f %d %s ", &x, &y, &z, &xSize, &ySize, &zSize, &id, name);
+            x = this->xReferencePointValue + x;
+            y = this->yReferencePointValue + y;
+            z = this->zReferencePointValue + z;
+            if (this->lot(x, y) == 0) {
+                ConstructionItem* item;
+                ConstructionItem* prev;
+                item = new ConstructionItem(x, y, z, xSize, ySize, zSize, id, name);
+                item->next = &this->constructionLots;
+                prev = this->constructionLots.prev;
+                item->prev = prev;
+                prev->next = item;
+                this->constructionLots.prev = item;
+                this->numberConstructionLotsValue++;
             }
-        } while (fgets(temp + 4, 0x100, fp) != 0);
-        plan = saved_plan;
+        }
     }
+    plan = saved_plan;
 
     fclose(fp);
     if (strstr(plan, ".tmp") != 0) {
@@ -424,21 +422,19 @@ int ConstructionAIModule::unplaceStructure(float x, float y, int decBA) {
 
 void ConstructionAIModule::decrementBuildAttempts(float x, float y, int n) {
     ConstructionItem* item = this->lot(x, y);
-    if (item != 0 && n > 0) {
-        do {
+    if (item != 0) {
+        for (; n > 0; n--) {
             item->decrementBuildAttempts();
-            n = n - 1;
-        } while (n != 0);
+        }
     }
 }
 
 void ConstructionAIModule::incrementBuildAttempts(float x, float y, int n) {
     ConstructionItem* item = this->lot(x, y);
-    if (item != 0 && n > 0) {
-        do {
+    if (item != 0) {
+        for (; n > 0; n--) {
             item->incrementBuildAttempts();
-            n = n - 1;
-        } while (n != 0);
+        }
     }
 }
 
