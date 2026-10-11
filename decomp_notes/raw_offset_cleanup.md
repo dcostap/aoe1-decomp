@@ -114,3 +114,9 @@ indexed `for` loops over the named members. All are byte-identical.
 `RGE_Sprite::get_lowest_draw_level` (004C0C50) keeps its raw
 `(char*) draw_list + 4` cursor. Indexed and typed-cursor forms move the
 count register and change the pointer setup (50–53 bytes).
+- `EmotionalAIModule` load constructor and `save`: `stateValue[i]`.
+- `TRIBE_Screen_Game::disable_unused_buttons`: `button_panel[i]`. Also removed
+  an empty "Managed pass" session comment above it.
+
+`RGE_Command::do_command_move` keeps its pointer walk. The unit list follows the
+order header in the command packet, so that cursor reflects the wire format.

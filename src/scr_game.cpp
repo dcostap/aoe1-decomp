@@ -3072,20 +3072,16 @@ void TRIBE_Screen_Game::setup_buttons() {
     this->disable_unused_buttons();
 }
 
-// Managed pass 2026-08-17 notes:
 void TRIBE_Screen_Game::disable_unused_buttons(void) {
-    TRIBE_Panel_Button** button = this->button_panel;
-    int button_count = 12;
-    do {
-        if ((*button)->in_use == 0) {
-            (*button)->set_active(0);
-            (*button)->set_id(0, 0, -1);
-            (*button)->set_help_info(-1, -1);
+    for (int i = 0; i < 12; i++) {
+        if (this->button_panel[i]->in_use == 0) {
+            this->button_panel[i]->set_active(0);
+            this->button_panel[i]->set_id(0, 0, -1);
+            this->button_panel[i]->set_help_info(-1, -1);
         } else {
-            (*button)->set_active(1);
+            this->button_panel[i]->set_active(1);
         }
-        ++button;
-    } while (--button_count != 0);
+    }
 }
 
 char* TRIBE_Screen_Game::calc_text_msg(char* msg_str, Item_Avail* item, long button_action_id, long message_string_id) {

@@ -17,13 +17,9 @@ EmotionalAIModule::EmotionalAIModule(void* pW, int playerID) : AIModule("Emotion
 }
 
 EmotionalAIModule::EmotionalAIModule(int playerID, int infile) : AIModule("Emotional AI", 0x3EC, playerID, 0), md(0) {
-    int* ptr = stateValue;
-    int count = 6;
-    do {
-        rge_read(infile, ptr, 4);
-        ptr++;
-        count--;
-    } while (count != 0);
+    for (int i = 0; i < 6; i++) {
+        rge_read(infile, &this->stateValue[i], 4);
+    }
 
     strcpy(stateNameValue[0], "Aggressive");
     strcpy(stateNameValue[1], "Compassionate");
@@ -41,14 +37,9 @@ void EmotionalAIModule::setMainDecisionAI(MainDecisionAIModule* m) {
 }
 
 int EmotionalAIModule::save(int outfile) {
-    int* value = this->stateValue;
-    int count = 6;
-
-    do {
-        rge_write(outfile, value, 4);
-        value = value + 1;
-        count = count - 1;
-    } while (count != 0);
+    for (int i = 0; i < 6; i++) {
+        rge_write(outfile, &this->stateValue[i], 4);
+    }
     return 1;
 }
 
