@@ -3,14 +3,13 @@
 
 #include <new.h>
 
-template <class T> class ManagedArray {
+template <class Type> class ManagedArray {
   public:
-    typedef int(__cdecl* CompareFunction)(T left, T right);
+    typedef int(__cdecl* CompareFunction)(Type left, Type right);
 
-    ManagedArray(int desired_number = 0) :
-        value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(desired_number) {
-        if (desired_number > 0)
-            this->value = new T[desired_number];
+    ManagedArray(int initialSize = 0) : value(0), numberValue(0), desiredNumberValue(0), maximumSizeValue(initialSize) {
+        if (initialSize > 0)
+            this->value = new Type[initialSize];
     }
 
     ~ManagedArray() {
@@ -23,17 +22,17 @@ template <class T> class ManagedArray {
         this->maximumSizeValue = 0;
     }
 
-    T& operator[](int index) {
+    Type& operator[](int v) {
         //! @bug This read never checks numberValue.
         //! Past the count it returns uninitialized memory from resize().
         //! Callers use that stale value as a game-object id. Preserve this read.
-        if (index > this->maximumSizeValue - 1)
-            this->resize(index + 1);
-        return this->value[index];
+        if (v > this->maximumSizeValue - 1)
+            this->resize(v + 1);
+        return this->value[v];
     }
 
-    int enlarge(int amount) {
-        this->desiredNumberValue += amount;
+    int enlarge(int s) {
+        this->desiredNumberValue += s;
         return this->desiredNumberValue;
     }
 
@@ -44,20 +43,20 @@ template <class T> class ManagedArray {
         return this->desiredNumberValue;
     }
 
-    int contains(const T& item);
+    int contains(const Type& r);
 
-    int position(T& item) {
+    int position(Type& r) {
         int i;
         for (i = 0; i < this->maximumSizeValue; i++) {
-            if (this->value[i] == item)
+            if (this->value[i] == r)
                 return i;
         }
         return -1;
     }
 
-    int add(T item);
+    int add(Type r);
 
-    int remove(T item) {
+    int remove(Type item) {
         int i = 0;
         int maximum = this->maximumSizeValue;
 
@@ -103,14 +102,14 @@ template <class T> class ManagedArray {
         return this->maximumSizeValue;
     }
 
-    void sort(CompareFunction compare) {
+    void sort(CompareFunction cF) {
         int i;
         int j;
-        T temporary;
+        Type temporary;
 
         for (i = 0; i < this->numberValue; i++) {
             for (j = i + 1; j < this->numberValue; j++) {
-                if (compare(this->value[i], this->value[j]) > 0) {
+                if (cF(this->value[i], this->value[j]) > 0) {
                     temporary = this->value[i];
                     this->value[i] = this->value[j];
                     this->value[j] = temporary;
@@ -123,7 +122,7 @@ template <class T> class ManagedArray {
     // PDB marks resize protected. Reconstructed callers still require public
     // access, so keep the body here while the source-access boundary is open.
     int resize(int new_size) {
-        T* new_value = new T[new_size];
+        Type* new_value = new Type[new_size];
         if (new_value == 0)
             return 0;
 
@@ -139,40 +138,40 @@ template <class T> class ManagedArray {
     }
 
   public:
-    T* value;
+    Type* value;
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
 };
 
-template <class T> int ManagedArray<T>::contains(const T& item) {
+template <class Type> int ManagedArray<Type>::contains(const Type& r) {
     int i;
-    T wanted;
-    T current;
+    Type wanted;
+    Type current;
 
     for (i = 0; i < this->numberValue; i++) {
         if (i >= this->maximumSizeValue)
             return 0;
         current = this->value[i];
-        wanted = item;
+        wanted = r;
         if (current == wanted)
             return 1;
     }
     return 0;
 }
 
-template <class T> int ManagedArray<T>::add(T val) {
+template <class Type> int ManagedArray<Type>::add(Type r) {
     int i;
 
     for (i = 0; i < this->numberValue; i++) {
         if (i >= this->maximumSizeValue)
             break;
-        if (this->value[i] == val)
+        if (this->value[i] == r)
             return 0;
     }
     if (this->numberValue > this->maximumSizeValue - 1) {
         int newSize = this->numberValue + 1;
-        T* newValue = (T*) ::operator new(newSize * sizeof(T));
+        Type* newValue = (Type*) ::operator new(newSize * sizeof(Type));
         if (newValue != 0) {
             int j;
             for (j = 0; j < this->maximumSizeValue; j++) {
@@ -185,7 +184,7 @@ template <class T> int ManagedArray<T>::add(T val) {
             this->maximumSizeValue = newSize;
         }
     }
-    this->value[this->numberValue] = val;
+    this->value[this->numberValue] = r;
     this->numberValue++;
     return 1;
 }

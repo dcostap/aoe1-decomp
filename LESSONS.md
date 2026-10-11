@@ -261,6 +261,9 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - A new constants-only header can also change output. Fixed-value macros in an existing natural header can preserve it.
 - Even an empty newly included header changed `taiinfmd` and `tplayer`. A comment or `#define` line at that position did not.
   Evidence: [strategic-number names](decomp_notes/strategic_numbers.md).
+- A typedef naming an already-used template specialization (`typedef ManagedArray<int> ManagedIntArray;`) in a shared
+  header changed `view` and `vw_main` and broke six exact claims. Renaming template and parameter names did not.
+  Evidence: [ZTRIBE.NCB names](decomp_notes/ztribe_ncb.md).
 - Check complete non-debug object sections and relocations, not only exact-function claims, when naming shared values.
   Evidence: [object lifecycle state cleanup](decomp_notes/object_lifecycle_states.md).
 - Audit every header consumer. Unchanged target bytes do not prove unchanged call order or field reads elsewhere.
