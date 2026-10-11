@@ -911,41 +911,15 @@ RGE_Active_Sprite* RGE_Sprite::make_active_sprite() {
 }
 
 int RGE_Sprite::check_for_shadows() {
-    short count;
-    int limit;
-    RGE_Picture_List* list;
-    RGE_Sprite** sprite_ptr;
-    int i;
-
-    count = this->draw_list_num;
-    if (count <= 0)
-        goto fallback;
-    list = this->draw_list;
-    if (list == 0)
-        goto fallback;
-    limit = count;
-    i = 0;
-    if (limit <= 0)
-        goto ret0;
-    sprite_ptr = &list->sprite;
-
-    while (1) {
-        if ((*sprite_ptr)->draw_level == 0)
-            goto ret1;
-        i = i + 1;
-        sprite_ptr = (RGE_Sprite**) ((char*) sprite_ptr + 0x10);
-        if (i < count)
-            continue;
-        return 0;
+    if (this->draw_list_num > 0 && this->draw_list != 0) {
+        for (int i = 0; i < this->draw_list_num; i++) {
+            if (this->draw_list[i].sprite->draw_level == 0)
+                return 1;
+        }
+    } else if (this->draw_level == 0) {
+        return 1;
     }
-
-fallback:
-    if (this->draw_level == 0)
-        goto ret1;
-ret0:
     return 0;
-ret1:
-    return 1;
 }
 
 void RGE_Sprite::update(unsigned long curr_time) {

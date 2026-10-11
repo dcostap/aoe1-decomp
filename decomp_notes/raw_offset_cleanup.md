@@ -82,3 +82,11 @@ Indexing it costs 18 bytes and the exact match.
   `palVersion` and `palNumEntries` and passes `palPalEntry`.
 
 Both objects are byte-identical.
+
+## `RGE_Sprite::check_for_shadows` (004C1030)
+
+The goto version walked `&draw_list->sprite` with a 0x10 byte stride. The
+original's control flow fits a simple `if (list) { for ... return 1; } else if
+(draw_level == 0) return 1; return 0;`. That form is byte-identical.
+Writing separate `return 0`/`return 1` tails costs 24 bytes: VC5 turns
+`if (x == 0) return 1; return 0;` into `sete`, which the original does not have.
