@@ -41,4 +41,4 @@ has the whole story: roles, docs, tools, and every function note and review.
 ---
 
 This repository contains no game code or assets; you need your own copy of the game.
-Not affiliated with Microsoft or Ensemble Studios. MIT licensed, see [LICENSE](LICENSE).
+Not affiliated with Microsoft or Ensemble Studios. Released under CC0 1.0 Universal, see [LICENSE](LICENSE).
