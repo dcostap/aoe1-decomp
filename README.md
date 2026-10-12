@@ -12,7 +12,7 @@ compiler and checked against the original executable.
 | `nonmatching` | 56 | not done yet |
 | **total** | **5,426** | |
 
-The full game builds and links into a working `empiresx.exe`.
+The whole game compiles and links into a complete `empiresx.exe`.
 
 ## You need
 
