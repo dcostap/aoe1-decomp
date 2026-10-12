@@ -1,18 +1,18 @@
 # Age of Empires: Rise of Rome decompilation
 
-C++ source for the 17 July 1998 beta of *Rise of Rome* (`empiresx.exe`),
+C++ source for the 17 July 1998 beta of *Age of Empires: The Rise of Rome* (`empiresx.exe`),
 recovered function by function. It is compiled with the original Visual C++ 5.0
-compiler and checked against the original executable.
+compiler and checked against the original executable. This is a build (that you can find around the web) which dates back a few months before the actual release of the DLC. I haven't analyzed nor found any obvious differences between this beta and the final release.
 
 | Status | Functions | Meaning |
 | --- | ---: | --- |
 | `matching` | 5,013 | byte-identical to the original |
 | `accepted_drift` | 140 | same behavior, small compiler-output differences |
 | `accepted_logic` | 217 | same behavior, proved by review; code differs more |
-| `nonmatching` | 56 | not done yet |
+| `nonmatching` | 56 | not analyzed yet - but these would probably fit right in accepted_logic |
 | **total** | **5,426** | |
 
-The whole game compiles and links into a complete `empiresx.exe`.
+It all compiles and links into a complete `empiresx.exe`.
 
 ## You need
 
@@ -42,10 +42,5 @@ python tools\check_function.py --va 00448A80   :: compare one function
 
 ## How it was made
 
-Mostly by AI agents, working under a review process. [`workflow/`](workflow/README.md)
-has the whole story: roles, docs, tools, and every function note and review.
+Via a massive orchestration of AI agents, working under a review process. See [`workflow/`](workflow/README.md) for details.
 
----
-
-This repository contains no game code or assets; you need your own copy of the game.
-Not affiliated with Microsoft or Ensemble Studios. Released under CC0 1.0 Universal, see [LICENSE](LICENSE).
