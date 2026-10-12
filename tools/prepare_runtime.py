@@ -1,4 +1,4 @@
-"""Copy a complete installed beta into a separate runtime directory."""
+"""Copy a complete game install into a separate runtime directory."""
 from __future__ import annotations
 
 import argparse
@@ -147,9 +147,9 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harn
         raise ValueError("Output already exists. Use a new directory.")
     if output.is_relative_to(source) or source.is_relative_to(output):
         raise ValueError("Source and output must not contain each other.")
-    original = source / "empiresx.exe"
-    if digest(original) != ORIGINAL_SHA256:
-        raise ValueError("Installed expansion EXE does not match the repository beta.")
+    # The selected EXE replaces the installed one, so a retail install works as is.
+    installed = source / "empiresx.exe"
+    installed_hash = digest(installed) if installed.is_file() else None
     if not exe.is_file():
         raise ValueError("Selected EXE does not exist.")
     for name in ("data", "data2", "avi", "sound", "EMPIRES.EXE", "language.dll", "languagex.dll"):
@@ -212,7 +212,7 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harn
     )
     (output / "Launch.cmd").write_bytes(launcher.encode("ascii"))
     report = {
-        "source_directory": str(source), "source_exe_sha256": ORIGINAL_SHA256,
+        "source_directory": str(source), "source_exe_sha256": installed_hash,
         "selected_exe": str(exe), "selected_exe_sha256": exe_hash,
         "output_directory": str(output), "compat_layer": COMPAT_LAYER,
         "copied_files_before_exe_replacement": sorted(files, key=lambda row: row["path"]),
@@ -233,7 +233,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--source", type=Path, default=DEFAULT_SOURCE,
-        help=f"Complete local beta runtime (default: {DEFAULT_SOURCE})",
+        help=f"Complete local game install (default: {DEFAULT_SOURCE})",
     )
     parser.add_argument("--exe", required=True, type=Path, help="Original or rebuilt expansion EXE to test")
     parser.add_argument("--output", required=True, type=Path, help="New directory under build/runtime")

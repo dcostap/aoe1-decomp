@@ -3,10 +3,14 @@
   "name": "empiresx",
   "original": "orig/empiresx.exe",
   "original_sha256": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
-  "compression_binary": "config/compression_binary.json",
-  "drawing_binary": "config/drawing_binary.json",
-  "assembly_sources": ["src/Drawarea_asm.asm"],
+  "assembly_sources": ["src/Asm_draw.asm", "src/Drawarea_asm.asm", "src/Inf32.asm"],
+  "resource_script": "src/empiresx.rc",
+  "icons": [
+    {"file": "empiresx.ico", "group": "APPICON", "source": "runtime/EMPIRES.EXE",
+     "sha256": "28502cd07ead552683dcb4b5b0a9e5119d282b29f355778d8c49327d51ba4efc"}
+  ],
   "additional_sources": {
+    "src/Deflate.c": "default",
     "src/game_globals.cpp": "default"
   },
   "link_flags": [

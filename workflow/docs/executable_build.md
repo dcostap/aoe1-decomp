@@ -3,8 +3,8 @@
 This build uses the pinned VC5 compiler and linker.
 It compiles the complete current source tree, then attempts a normal link.
 It does not copy original game-function bodies or force unresolved symbols into an EXE.
-The user approved two binary dependencies: the external compression library and the connected drawing assembly engine.
-These dependencies are preserved code, not recovered source.
+It takes no code, data, or resources from `orig/empiresx.exe`. The build records
+that file's hash when it is present, but does not need it.
 
 ## Runtime setup
 
@@ -13,7 +13,8 @@ Use `game.cmd build`, then `game.cmd rebuilt` or `game.cmd original`.
 The older complete-copy commands below remain available as a control.
 
 Use the complete local runtime under `runtime/`.
-It contains the full release files with the beta `empiresx.exe` in place.
+It contains a complete retail install. Its own `empiresx.exe` can be the retail
+or the beta one: the runtime copy always replaces it with the selected EXE.
 The folder is local and ignored by Git, except for `runtime/README.md`.
 Do not assemble a runtime from selected base-game and expansion files.
 Keep the repository original executable unchanged.
@@ -81,11 +82,13 @@ The function registry supplies existing source recipes.
 These recipes do not change function matching statuses.
 The build rejects a source file without a recipe.
 
-The original EXE supplies three resources: an icon, its group, and version data.
-The build preserves resource payloads, identifiers, and languages.
-It checks the original EXE hash before resource extraction.
-`tools/pe_resources.py` writes ordinary Win32 `.res` input.
-A test links these resources into a resource-only DLL and checks the complete resource round trip.
+The executable has three resources: an icon, its group, and version data.
+`src/empiresx.rc` declares them, and VC5 `RC.EXE` compiles it.
+The icon is a game asset, so the repository does not contain it.
+The build extracts it from the retail `EMPIRES.EXE` in `runtime/`, which has the same icon bytes as the beta.
+`config/executable.json` pins the hash of the extracted `.ico` file.
+A test links the compiled script into a resource-only DLL.
+It checks that payloads, identifiers, and languages equal the original EXE's resources.
 No original game instruction enters that DLL.
 
 The original PE supplies the image base, Windows subsystem, stack reserve, and imported DLL list.
@@ -95,24 +98,37 @@ VC5 debug packing currently fails with `LNK1000`; embedded CodeView also fails w
 The builder requests a PDB only when the configuration requests `/DEBUG`.
 Existing matching compiler profiles do not supply full source-level debug information.
 
-## Preserved compression dependency
+## Compression library
 
-`config/compression_binary.json` identifies the original `Inf32.obj` and `Deflate.obj` contributions.
-`tools/compression_binary.py` extracts only their reviewed code and data ranges.
-It builds a normal x86 COFF object with six exports and 565 absolute relocations.
-VC5 LINK combines that object with the compiled game sources.
-No original virtual address needs to remain fixed.
+The game links the `compress.lib` compressor and decoder from source:
 
-The extractor checks the original EXE hash, each payload hash, address operands, and the final object hash.
-Its original-address round trip restores every preserved byte.
-This is not a general route for embedding unrecovered game functions.
-The build report records the binary dependency separately from compiled sources.
+- `src/Deflate.c` is the compressor (`Deflate.obj`), compiled with the default VC5 profile.
+- `src/Inf32.asm` is the hand-written decoder (`Inf32.obj`), assembled with the pinned MASM.
 
-Run the independent runtime checks:
+The library predates the game. The 1997 PTRIBE build in the leaked builds has
+instruction-identical Deflate code, and its map file supplies the function names.
+That code came from an older compiler than VC5, so `Deflate.c` cannot match
+byte for byte. It is proved by behavior instead.
+`Inf32.asm` assembles to the original bytes and relocation targets.
+
+`tools/probe_compression_library.py` checks both:
+
+- It compares the assembled `Inf32` code and data with the original executable.
+- It links the original Deflate object next to `src/Deflate.c` and runs
+  `tests/fixtures/compression_library/deflate_diff.c`. Every case must produce the same
+  output bytes, write-callback calls, return codes, and final state buffer.
+  The full run covers more than 10,000 synthetic cases plus the decompressed `empires.dat`.
+- It compresses and decodes test data with the source-built objects at two link
+  bases, and checks the results with zlib and the game's `empires.dat`.
+
+The original object comes from `config/compression_binary.json` through
+`tools/compression_binary.py`. It is the test oracle only; the build never links it.
+
+Run the checks:
 
 ```text
-python tools/probe_compression_binary.py --help
-python tools/probe_compression_binary.py
+python tools/probe_compression_library.py --help
+python tools/probe_compression_library.py
 python tools/probe_masm.py --help
 python tools/probe_masm.py
 ```
@@ -123,20 +139,26 @@ It does not replace the VC5 C/C++ compiler or linker.
 
 ## Drawing engine and recovered assembly
 
-`config/drawing_binary.json` scopes the preserved drawing engine and its 4,223 absolute relocations.
-The build uses one relocatable object for its code, dispatch tables, and mutable state.
-`src/Asm_draw.asm` remains incomplete recovered source and does not enter the production link.
-`src/Drawarea_asm.asm` remains an active source for three drawing memory methods.
+`src/Asm_draw.asm` is the hand-written drawing engine: its code, dispatch tables,
+and mutable state. It assembles to the original `THIS_COD` and `THIS_DAT` bytes,
+and every one of its 4,223 address fields points at the original target.
+Labels of the form `L56xxxx` keep original addresses of branch targets that
+have no recovered name yet.
+`src/Drawarea_asm.asm` is the source for three drawing memory methods.
 
-Test the production drawing dependency with `python tools/probe_drawing_binary.py --help`, then run that tool without arguments.
+`config/drawing_binary.json` describes the original object. It is the test oracle
+only; the build never links it.
+
+`tools/probe_drawing_engine.py` assembles `src/Asm_draw.asm`, compares both sections
+and all relocation targets with the original executable, and runs the setup,
+HLine, and sprite fixtures against the assembled object at two image bases.
 
 `assembly_sources` in `config/executable.json` lists the standalone MASM sources.
 `tools/build_assembly.py` verifies the assembler hash and uses the compiler admission gate.
 The build reports assembly results separately from C/C++ compilation.
 It requires every assembly input to produce an object successfully.
 
-The drawing sources do not use the compression binary exception.
-They restore instructions through assembly source and shared operation macros.
+The drawing sources restore instructions through assembly source and shared operation macros.
 
 Run the address, instruction, data, and native checks:
 

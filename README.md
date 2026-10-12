@@ -20,8 +20,15 @@ The whole game compiles and links into a complete `empiresx.exe`.
 - Visual C++ 5.0. Set `VC5_DIR` if it is not in `C:\Program Files (x86)\DevStudio`.
 - MASM `ml.exe` 14.36 from Visual Studio 2022 (see `config/assembly_toolchain.json`)
 - `DPLAYX.LIB` and `DXGUID.LIB` from Visual C++ 6.0 in `third_party/directplay/lib/x86/`
-- The beta `empiresx.exe` and `age1_x1.pdb` in `orig/` ([details](orig/README.md))
-- A retail Age of Empires + Rise of Rome install in `runtime/` ([details](runtime/README.md))
+- A retail Age of Empires + Rise of Rome install in `runtime/` ([details](runtime/README.md)).
+  The build takes the program icon from it, and the game runs on its data.
+
+That is enough to build and play. The build uses no files from the beta: every
+part of the executable is compiled or assembled from this repository.
+
+Only for comparing with the original and for decompilation work: the beta `empiresx.exe`
+and `age1_x1.pdb` in `orig/` ([details](orig/README.md)). `game.cmd original`, the tests
+that compare against the original, and the research tools need them.
 
 ## Build and play
 

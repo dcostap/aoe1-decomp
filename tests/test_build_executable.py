@@ -97,6 +97,40 @@ def test_resource_roundtrip_with_pinned_linker():
     assert linked_res.read_bytes() == source_res.read_bytes()
 
 
+def test_resource_script_matches_original_resources():
+    import json
+    import subprocess
+    import uuid
+    from common import load_toolchain, repo_path, tool_env
+    from pe_resources import compile_resources, extract_icon, extract_resources
+
+    toolchain = load_toolchain()
+    linker = repo_path(toolchain["compiler"]["link"])
+    rc = repo_path(toolchain["compiler"]["rc"])
+    if not linker.is_file() or not rc.is_file():
+        pytest.skip("Pinned VC5 linker or resource compiler is not installed")
+    config = json.loads(repo_path("config/executable.json").read_text())
+    icon_sources = [repo_path(icon["source"]) for icon in config["icons"]]
+    if not repo_path("orig/empiresx.exe").is_file() or not all(p.is_file() for p in icon_sources):
+        pytest.skip("needs orig/empiresx.exe and the retail install in runtime/")
+    tmp_path = repo_path("build/tests/resource_script") / uuid.uuid4().hex
+    assets = tmp_path / "assets"
+    for icon in config["icons"]:
+        extract_icon(repo_path(icon["source"]), icon["group"], assets / icon["file"], icon["sha256"])
+    resource = tmp_path / "empiresx.res"
+    row = compile_resources(rc, repo_path(config["resource_script"]), assets, resource, tool_env(toolchain))
+    assert row["compiled"], row["stdout"] + row["stderr"]
+    dll = tmp_path / "resources.dll"
+    result = subprocess.run([str(linker), "/NOLOGO", "/DLL", "/NOENTRY", "/MACHINE:IX86",
+                             f"/OUT:{dll}", str(resource)], capture_output=True, text=True,
+                            cwd=tmp_path, env=tool_env(toolchain))
+    assert result.returncode == 0, result.stdout + result.stderr
+    original_res = tmp_path / "original.res"
+    linked_res = tmp_path / "linked.res"
+    assert extract_resources(dll, linked_res) == extract_resources(repo_path("orig/empiresx.exe"), original_res)
+    assert linked_res.read_bytes() == original_res.read_bytes()
+
+
 def test_obstruction_tables_compile_as_writable_data():
     import hashlib
     import json

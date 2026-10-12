@@ -5,6 +5,7 @@ import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
+import re
 from pathlib import Path
 import struct
 import subprocess
@@ -60,6 +61,11 @@ def main():
     addresses = {name: item['va'] for name, item in objects.items()}
     addresses.update(manifest.get('labels', {}))
     addresses.update(external)
+    # Unnamed labels and state words keep their original address in the name.
+    for symbol in obj.symbols:
+        match = re.fullmatch(r'(?:L|state_)([0-9A-F]{6})', symbol.name)
+        if match:
+            addresses.setdefault(symbol.name, int(match.group(1), 16))
 
     def normalize(symbol, size, va):
         section = obj.section_by_index(symbol.section_number)
@@ -92,11 +98,8 @@ def main():
         assert actual == expected, name
     for name, function in bodies.items():
         symbol = symbols[name]
-        section = obj.section_by_index(symbol.section_number)
-        ends = [s.value for s in obj.symbols if s.section_number == symbol.section_number and
-                s.name in objects and s.value > symbol.value]
-        end = min(ends) if ends else len(section.data)
-        actual = normalize(symbol, end-symbol.value, function['va'])
+        # The complete-section check in tests/test_drawing_engine.py covers boundaries.
+        actual = normalize(symbol, function['size'], function['va'])
         expected = image[function['va']-base:function['va']-base+function['size']]
         equal = actual == expected
         rows.append(dict(symbol=name, original_va=function['va'], expected_size=len(expected),

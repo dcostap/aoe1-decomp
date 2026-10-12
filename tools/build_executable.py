@@ -12,9 +12,7 @@ from pathlib import Path
 from common import REPO_ROOT, load_build_modules, load_toolchain, repo_path, tool_env
 from build_cache import build_input_manifest
 from function_compare import compile_source
-from pe_resources import extract_resources
-from compression_binary import build_compression_object
-from preserved_binary import build_preserved_object
+from pe_resources import compile_resources, extract_icon
 from build_assembly import assemble_source
 from linked_inputs import digest, registry_digest
 
@@ -80,9 +78,9 @@ def main() -> int:
     report['registry_sha256'] = registry_digest()
     toolchain = load_toolchain()
     report["toolchain"] = toolchain
-    report["original_sha256"] = hashlib.sha256(repo_path(config["original"]).read_bytes()).hexdigest()
-    if report["original_sha256"] != config["original_sha256"]:
-        raise ValueError("Original EXE hash differs from the pinned build input.")
+    # The original EXE is the comparison oracle, not a build input.
+    original = repo_path(config["original"])
+    report["original_sha256"] = hashlib.sha256(original.read_bytes()).hexdigest() if original.is_file() else None
     objects = []
     for index, entry in enumerate(plan, 1):
         source = repo_path(entry["source"])
@@ -110,18 +108,6 @@ def main() -> int:
         if row["compiled"]:
             objects.append(obj)
 
-    if config.get("compression_binary"):
-        obj = output / "preserved_compression.obj"
-        report["compression_binary"] = build_compression_object(
-            repo_path(config["original"]), repo_path(config["compression_binary"]), obj)
-        objects.append(obj)
-
-    if config.get("drawing_binary"):
-        obj = output / "preserved_drawing.obj"
-        report["drawing_binary"] = build_preserved_object(
-            repo_path(config["original"]), repo_path(config["drawing_binary"]), obj)
-        objects.append(obj)
-
     exe = output / (config["name"] + ".exe")
     response = output / "link.rsp"
     arguments = config["link_flags"] + [f'/OUT:"{exe}"', f'/MAP:"{output / "empiresx.map"}"']
@@ -139,9 +125,15 @@ def main() -> int:
         report["import_libraries"].append(dict(command=command, returncode=result.returncode,
                                               stdout=result.stdout, stderr=result.stderr))
         arguments.append(f'"{library}"')
-    resource = output / "original.res"
-    report["resources"] = extract_resources(repo_path(config["original"]), resource)
-    arguments.append(f'"{resource}"')
+    assets = output / "assets"
+    icons = [extract_icon(repo_path(icon["source"]), icon["group"], assets / icon["file"], icon["sha256"])
+             for icon in config["icons"]]
+    script = repo_path(config["resource_script"])
+    resource = output / (script.stem + ".res")
+    report["resources"] = dict(compile_resources(
+        repo_path(toolchain["compiler"]["rc"]), script, assets, resource, tool_env(toolchain)), icons=icons)
+    if report["resources"]["compiled"]:
+        arguments.append(f'"{resource}"')
     response.write_text("\n".join(arguments) + "\n", encoding="ascii")
     # Even with compiler failures, collect a diagnostic link report. Never call
     # such an image a complete build.
@@ -154,6 +146,7 @@ def main() -> int:
     report["linked"] = (result.returncode == 0 and exe.is_file()
                         and all(row["compiled"] for row in report["sources"])
                         and all(row["compiled"] for row in report["assembly_sources"])
+                        and report["resources"]["compiled"]
                         and all(row["returncode"] == 0 for row in report["import_libraries"]))
     report["summary"] = {
         "source_count": len(plan),

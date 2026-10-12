@@ -32,8 +32,8 @@ def test_drawing_scope_and_active_owner():
     assert manifest['pdb_module']=='00C9 .\\Asm_draw.obj'
     assert [(s['original_va'],s['size']) for s in manifest['sections']]==[(0x563000,0xABE1),(0x88C000,0x90)]
     assert len(manifest['exports'])==9
-    assert config['drawing_binary']=='config/drawing_binary.json'
-    assert 'src/Asm_draw.asm' not in config['assembly_sources']
+    assert 'drawing_binary' not in config
+    assert 'src/Asm_draw.asm' in config['assembly_sources']
     assert 'src/Drawarea_asm.asm' in config['assembly_sources']
     pdb=ORIGINAL.parent/'age1_x1.pdb'
     assert hashlib.sha256(pdb.read_bytes()).hexdigest()==manifest['pdb_sha256']

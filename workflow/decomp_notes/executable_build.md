@@ -1,5 +1,23 @@
 # Executable integration evidence
 
+## Source-only build checkpoint (2026-10-12)
+
+The build no longer takes anything from `orig/empiresx.exe`:
+
+- resources come from `src/empiresx.rc`, with the icon extracted from the retail `runtime/EMPIRES.EXE`;
+- the compression library comes from `src/Deflate.c` and `src/Inf32.asm`;
+- the drawing engine comes from `src/Asm_draw.asm`.
+
+`build/executable/no_orig/20261012T182933456377Z` was built with `orig/empiresx.exe`
+and `orig/age1_x1.pdb` moved aside. It compiled all 227 sources and 3 assembly sources and linked with no
+unresolved symbols. The menu capture cases `main-buttons`, `death-match-settings`, and
+`main-credits` pass on a rebuilt EXE from the same sources.
+`game.cmd test-parity` passes on that rebuilt EXE
+(`build/runtime/parity-20261012T183809950156Z-4c6a172f34e1/report.json`).
+With the retail `empiresx.exe` in `runtime/`, `main-buttons` and `settings-map-size` also pass;
+the runtime copy replaces that file with the rebuilt EXE.
+
+
 ## Commit validation checkpoint
 
 Fresh build `20260906T204658496476Z` compiles all 226 C/C++ sources and the active assembly source.
@@ -85,7 +103,7 @@ The latest link still fails. No runnable reconstructed EXE exists.
 The original EXE remains unchanged.
 Its SHA-256 is `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
 
-The build extracts original resources and uses normal VC5 linking.
+The build compiles `src/empiresx.rc` and uses normal VC5 linking.
 It does not use forced linking, dummy functions, or unproved symbol aliases.
 It includes `game_globals.cpp` and `tech.cpp` through explicit integration profiles.
 These profiles prove compilation, not original module recipes or function exactness.

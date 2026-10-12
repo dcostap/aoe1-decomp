@@ -34,17 +34,21 @@ reviewed and listed in `config/padding_only_functions.txt`.
 
 ## Source-recovery standard
 
-### Approved binary dependencies
+### No original bytes in the build
 
-Two original binary pieces are allowed in the executable build:
+The executable build takes no code, data, or resources from `orig/`. Every
+linked object comes from a source file in this repository. The icon is the
+only asset, and the build extracts it from the user's retail install.
 
-- the external compression library, scoped by `config/compression_binary.json`; and
-- the connected drawing assembly engine, scoped by `config/drawing_binary.json`.
+Three libraries are recovered differently from ordinary game functions:
 
-Build them as hash-checked, relocatable COFF objects.
-This does not extend to ordinary game functions or other assembly regions.
-Do not link duplicate drawing exports or split the engine's shared mutable state.
-Binary preservation is not source recovery or proof of gameplay correctness.
+- `src/Deflate.c` is proved by behavior: a differential test against the
+  original object, which VC5 cannot reproduce byte for byte;
+- `src/Inf32.asm` and `src/Asm_draw.asm` are hand-written assembly that must
+  assemble to the original bytes and relocation targets.
+
+`config/compression_binary.json` and `config/drawing_binary.json` describe the
+original objects. They are test oracles only. Never link them into the game.
 
 Decompiler output describes effects. It is not a source template. Do not keep
 raw cursor arithmetic, fake helpers, fake volatility, manual vtables, redundant

@@ -42,7 +42,11 @@
   },
   "labels": {
     "hline_return": 5687706,
-    "hline_next_span": 5687546
+    "hline_next_span": 5687546,
+    "plain_copy_table": 5677824,
+    "solid_fill_table": 5678848,
+    "pattern_fill_table": 5679360,
+    "length_index": 5681920
   },
   "codelets": {
     "draw_done": {"va": 5648384, "size": 6},

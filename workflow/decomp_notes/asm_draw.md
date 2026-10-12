@@ -2,16 +2,25 @@
 
 ## Current integration
 
-The user approved preserving the connected drawing engine as a binary dependency.
-`config/drawing_binary.json` scopes its code, tables, shared state, nine exports, and 4,223 absolute relocations.
-The executable build uses this dependency instead of `src/Asm_draw.asm`.
-It still assembles `src/Drawarea_asm.asm` for the three drawing memory methods.
-VC5 still compiles C/C++ and links the executable.
+`src/Asm_draw.asm` is the complete source of the drawing engine and enters the
+production link. It holds all of `THIS_COD` (`00563000..0056DBE0`): code,
+the four dispatch pointer tables (`plain_copy_table`, `solid_fill_table`,
+`pattern_fill_table`, and the table at `0056B400`), and the `length_index`
+byte lookup. It also holds the 0x90 bytes of `THIS_DAT` state.
+The assembled object equals the original sections byte for byte after its
+4,223 address fields resolve, and each field targets the original address.
+`tests/test_drawing_engine.py` checks this.
 
-`src/Asm_draw.asm` remains available as incomplete recovered source.
-It contains six entrypoints and 114 blocks, including copy and pattern-fill blocks.
-Its probes remain available. It does not provide a second production owner.
-See `executable_build_evidence/drawing_binary/README.md` for the preserved engine's evidence.
+The original assembler filled code alignment with `2E 8B C0`, then `8B C0` or
+`90`. MASM 14 fills differently, so the source states each of the 58 fills with
+the `CODE_FILL` macro and the `ALIGN` it reproduces.
+
+Branch targets without a recovered name use `L` plus their original address.
+Names come from `config/asm_draw.json`. Naming the rest is open work.
+
+`src/Drawarea_asm.asm` still supplies the three drawing memory methods.
+`config/drawing_binary.json` describes the original object and is now only a test oracle.
+See `executable_build_evidence/drawing_binary/README.md` for the earlier preserved-object evidence.
 
 ## Address and instruction evidence
 
@@ -23,7 +32,7 @@ All nine entrypoint bodies have equal instruction bytes after resolving COFF add
 The original checkpoint checked 38 solid-fill code blocks.
 Later probes check all 114 recovered blocks with equal resolved instruction bytes.
 Private initializers and all 128 solid-fill dispatch pointers agree with the original.
-These checks do not claim recovery of the complete original assembly module.
+The full-section check in `tests/test_drawing_engine.py` now covers the whole module.
 
 | Entrypoint | Original VA | Instruction bytes |
 |---|---|---:|
@@ -75,26 +84,16 @@ The HLine fixture checks lengths through 256, all destination alignments, revers
 Both fixtures compare complete buffers, including bytes outside the requested pixels.
 These tests do not establish game startup or gameplay correctness.
 
-## Deferred sprite source recovery
+## Sprite source
 
-The preserved drawing component now resolves `ASMDraw_Sprite` at `0056C9A0`.
-Complete assembly source recovery remains deferred.
+`ASMDraw_Sprite` at `0056C9A0` and its command handlers are now in the source.
 The inventory's 524-byte entry is not its complete implementation.
-Branches reach the return path at `0056D2F4` and the flipped path at `0056D300`.
-Further command handlers and dispatch tables belong to this closure.
-
-The original `THIS_COD` section spans `00563000..0056DBE0`.
-Its last command helpers extend beyond the current region boundary at `0056DBBA`.
-Inspect those targets before defining sprite boundaries.
-Do not stop recovery at the narrow inventory entry.
+The sprite fixture covers 3,600 alignment, clipping, and flip cases per base;
+it does not test every sprite opcode.
 
 At `0056C9DA`, top clipping sets the stored destination y to zero.
 Do not replace that value with `min_line` without further evidence.
 `0088C038` stores HLine's length and Sprite's row index.
-Reuse its existing storage owner during sprite recovery.
-
-The entry contains alignment instructions before `0056CAA0`.
-Recover their assembly alignment rule rather than adding an instruction payload.
 
 ## Retained evidence
 

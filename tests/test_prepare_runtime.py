@@ -25,7 +25,6 @@ def inputs(tmp_path, monkeypatch):
         (source / name / "asset.bin").write_bytes(name.encode())
     for name in ("empiresx.exe", "EMPIRES.EXE", "language.dll", "languagex.dll"):
         (source / name).write_bytes(name.encode())
-    monkeypatch.setattr(prepare_runtime, "ORIGINAL_SHA256", prepare_runtime.digest(source / "empiresx.exe"))
     exe = tmp_path / "rebuilt.exe"
     exe.write_bytes(b"rebuilt")
     return source, exe, tmp_path / "build/runtime/game"
@@ -76,12 +75,13 @@ def test_reject_output_outside_runtime(inputs):
         prepare_runtime.prepare(source, exe, source)
 
 
-def test_reject_wrong_installed_exe(inputs):
+def test_retail_installed_exe_is_replaced(inputs):
     source, exe, output = inputs
-    (source / "empiresx.exe").write_bytes(b"different")
-    with pytest.raises(ValueError, match="does not match"):
-        prepare_runtime.prepare(source, exe, output)
-    assert not output.exists()
+    (source / "empiresx.exe").write_bytes(b"retail")
+    report = prepare_runtime.prepare(source, exe, output)
+    assert report["source_exe_sha256"] == hashlib.sha256(b"retail").hexdigest()
+    assert (output / "empiresx.exe").read_bytes() == b"rebuilt"
+    assert (source / "empiresx.exe").read_bytes() == b"retail"
 
 
 def test_default_source_is_root_runtime():

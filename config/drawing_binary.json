@@ -1,5 +1,5 @@
 {
-  "approval": "User-approved preservation of the original drawing assembly engine only.",
+  "approval": "Test oracle for src/Asm_draw.asm; not linked into the game.",
   "original_sha256": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
   "object_sha256": "7a52e6c81d5f39cb73d6ea5b3c07e63814cf8d3506d8ed2fd5cb5228b9b43ad6",
   "pdb_sha256": "3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40",

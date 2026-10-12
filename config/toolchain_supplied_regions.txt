@@ -24,7 +24,7 @@
 0055918F-00559347  hidden CRT signal helper island: _signal plus local switch/cleanup glue before raise
 005594D0-00559516  CRT signal/exception action-table lookup helper used by _signal and raise
 00559EBA-0055A0C1  hidden CRT compare wrapper ___crtCompareStringW with W/A fallback and conversion glue
-005479A0-0054B17F  external compression/decompression library block: deflate/Inf32 state-machine helpers and local dispatch/codelet exits with no PDB source
+005479A0-0054B17F  external compress.lib block (Deflate.obj, Inf32.obj) with no PDB source; recovered as src/Deflate.c and src/Inf32.asm, checked by tools/probe_compression_library.py
 0054B1D0-0056204F  VC5 runtime/CRT/standard-library block: C++ EH runtime, CRT/string/stdio/math/io helpers, iostream/type_info, and compiler-generated EH thunks/cleanup funclets
 00460FC0-00460FC7  compiler-generated vcall thunk with no PDB source in pathing neighborhood
 0046B050-0046B059  compiler-generated EH cleanup funclet with no PDB source in pathsys.cpp neighborhood

@@ -1,8 +1,10 @@
-"""Preserve original PE resources as a Win32 .res input for the linker."""
+"""Compile the resource script and read PE resources for comparison."""
 
 from __future__ import annotations
 
+import hashlib
 import struct
+import subprocess
 from pathlib import Path
 
 import pefile
@@ -51,3 +53,49 @@ def extract_resources(original: Path, destination: Path) -> list[dict]:
                     records.append(dict(type=kind, name=name, language=language, size=len(data)))
     destination.write_bytes(payload)
     return records
+
+
+RT_ICON = 3
+RT_GROUP_ICON = 14
+
+
+def extract_icon(executable: Path, group_name: str, destination: Path, expected_sha256: str) -> dict:
+    """Write one group icon from an installed game EXE as an .ico file."""
+    with pefile.PE(str(executable)) as pe:
+        entries = {}
+        root = getattr(pe, "DIRECTORY_ENTRY_RESOURCE", None)
+        for type_entry in root.entries if root is not None else ():
+            for name_entry in type_entry.directory.entries:
+                name = str(name_entry.name) if name_entry.name is not None else name_entry.id
+                leaf = name_entry.directory.entries[0].data.struct
+                entries[type_entry.id, name] = pe.get_data(leaf.OffsetToData, leaf.Size)
+    group = entries.get((RT_GROUP_ICON, group_name))
+    if group is None:
+        raise ValueError(f"{executable} has no {group_name} icon group.")
+    count = struct.unpack_from("<HHH", group)[2]
+    images = []
+    for index in range(count):
+        fields = struct.unpack_from("<BBBBHHIH", group, 6 + 14 * index)
+        images.append((fields[:7], entries[RT_ICON, fields[7]]))
+    payload = bytearray(struct.pack("<HHH", 0, 1, count))
+    offset = 6 + 16 * count
+    for fields, data in images:
+        payload.extend(struct.pack("<BBBBHHII", *fields, offset))
+        offset += len(data)
+    for _, data in images:
+        payload.extend(data)
+    digest = hashlib.sha256(payload).hexdigest()
+    if digest != expected_sha256:
+        raise ValueError(f"{group_name} icon from {executable} differs from the pinned icon.")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(payload)
+    return dict(source=str(executable), icon=str(destination), sha256=digest)
+
+
+def compile_resources(rc: Path, script: Path, include_dir: Path, destination: Path,
+                      env: dict[str, str]) -> dict:
+    command = [str(rc), "/r", "/i", str(include_dir), "/fo", str(destination), str(script)]
+    result = subprocess.run(command, cwd=script.parent, capture_output=True, text=True, env=env)
+    return dict(script=str(script), command=command, returncode=result.returncode,
+                stdout=result.stdout, stderr=result.stderr,
+                compiled=result.returncode == 0 and destination.is_file())

@@ -28,7 +28,7 @@
     }
   ],
   "original_address_roundtrip": true,
-  "status": "preserved binary dependency; source not recovered",
+  "status": "test oracle for src/Deflate.c and src/Inf32.asm; not linked into the game",
   "sections": [
     {
       "name": ".text",
