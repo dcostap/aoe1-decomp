@@ -188,7 +188,7 @@ RGE_Visible_Map::RGE_Visible_Map(RGE_Map* in_map, RGE_Player* in_player) {
     this->input_csum = 0;
     this->PlayerVisibleMaskValue = mask;
     this->PlayerVisibleMaskInvertValue = ~this->PlayerVisibleMaskValue;
-    this->PlayerExploredMaskValue = *(volatile unsigned long*) &this->PlayerVisibleMaskValue << 0x10;
+    this->PlayerExploredMaskValue = *(volatile unsigned long*) &this->PlayerVisibleMaskValue << RGE_VIS_EXPLORED_SHIFT;
     this->PlayerExploredMaskInvertValue = ~this->PlayerExploredMaskValue;
 }
 
@@ -230,7 +230,7 @@ RGE_Visible_Map::RGE_Visible_Map(int infile, RGE_Game_World* theWorld) {
     this->input_csum = 0;
     this->PlayerVisibleMaskValue = 1 << (unsigned char) player_id;
     this->PlayerVisibleMaskInvertValue = ~this->PlayerVisibleMaskValue;
-    this->PlayerExploredMaskValue = this->PlayerVisibleMaskValue << 0x10;
+    this->PlayerExploredMaskValue = this->PlayerVisibleMaskValue << RGE_VIS_EXPLORED_SHIFT;
     this->PlayerExploredMaskInvertValue = ~this->PlayerExploredMaskValue;
 }
 
@@ -270,7 +270,7 @@ unsigned char RGE_Visible_Map::get_visible(int map_col, int map_row) const {
 }
 
 void RGE_Visible_Map::set_all(unsigned char vis_flag) {
-    log_map_call(this->world->world_time, (int) this->player->id, 5, 0, (unsigned int) vis_flag, 0, 0, 0, 0);
+    log_map_call(this->world->world_time, (int) this->player->id, VC_LOG_SET_ALL, 0, (unsigned int) vis_flag, 0, 0, 0, 0);
 
     int y = 0;
     if (0 < this->heightValue) {
@@ -335,7 +335,7 @@ void RGE_Visible_Map::set_all(unsigned char vis_flag) {
 }
 
 void RGE_Visible_Map::explore_all(void) {
-    log_map_call(this->world->world_time, (int) this->player->id, 6, 0, 0, 0, 0, 0, 0);
+    log_map_call(this->world->world_time, (int) this->player->id, VC_LOG_EXPLORE_ALL, 0, 0, 0, 0, 0, 0);
 
     int y = 0;
     if (0 < this->heightValue) {
@@ -386,8 +386,8 @@ void RGE_Visible_Map::recomputeExplored(void) {
 }
 
 LOSTBL* RGE_Visible_Map::get_los_table(int radius, int Square) {
-    if (radius > 0x10) {
-        radius = 0x10;
+    if (radius > RGE_LOS_MAX_RADIUS) {
+        radius = RGE_LOS_MAX_RADIUS;
     }
     if (radius < 0) {
         radius = 0;
@@ -401,7 +401,7 @@ LOSTBL* RGE_Visible_Map::get_los_table(int radius, int Square) {
 int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square, int UpdateMap, int id) {
     int Revealed = 0;
 
-    log_map_call(this->world->world_time, (int) this->player->id, 1, id, tx, ty, radius, Square, Map_Update_Suppresion);
+    log_map_call(this->world->world_time, (int) this->player->id, VC_LOG_EXPLORE, id, tx, ty, radius, Square, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion != 0) {
         return 0;
@@ -409,7 +409,7 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square, int
 
     int csum = this->input_csum;
     csum = _rotl(csum, 3);
-    csum ^= 0x01010101;
+    csum ^= RGE_VIS_CSUM_EXPLORE;
     csum = _rotl(csum, 2);
     csum ^= (int) this->player->id;
     csum = _rotl(csum, 3);
@@ -427,8 +427,8 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square, int
         curVisPlayer = 0;
     }
 
-    if (radius > 0x10) {
-        radius = 0x10;
+    if (radius > RGE_LOS_MAX_RADIUS) {
+        radius = RGE_LOS_MAX_RADIUS;
     }
 
     LOSTBL* Tbl;
@@ -440,7 +440,7 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square, int
 
     RGE_Tile* tile = 0;
     int y = Tbl->y;
-    while (y != 999) {
+    while (y != RGE_LOS_END_Y) {
         y += ty;
         if ((y >= 0) && (y < this->heightValue)) {
             int x1 = Tbl->x1 + tx;
@@ -509,7 +509,7 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, 
     unsigned char value;
 
     tile = 0;
-    log_map_call(this->world->world_time, (int) this->player->id, 3, id, tx, ty, radius, Square, Map_Update_Suppresion);
+    log_map_call(this->world->world_time, (int) this->player->id, VC_LOG_UNEXPLORE, id, tx, ty, radius, Square, Map_Update_Suppresion);
     if (Map_Update_Suppresion != 0) {
         return;
     }
@@ -517,7 +517,7 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, 
     csum = this->input_csum;
     plNum = (int) this->player->id;
     csum = _rotl(csum, 3);
-    csum ^= 0x20202020;
+    csum ^= RGE_VIS_CSUM_UNEXPLORE;
     csum = _rotl(csum, 2);
     csum ^= plNum;
     csum = _rotl(csum, 3);
@@ -529,8 +529,8 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, 
     csum += Square;
     this->input_csum = csum;
 
-    if (radius > 0x10) {
-        radius = 0x10;
+    if (radius > RGE_LOS_MAX_RADIUS) {
+        radius = RGE_LOS_MAX_RADIUS;
     }
 
     if (Square != 0) {
@@ -540,7 +540,7 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, 
     }
 
     off_y = Tbl->y;
-    while (off_y != 999) {
+    while (off_y != RGE_LOS_END_Y) {
         y2 = ty + off_y;
         if ((y2 >= 0) && (y2 < this->heightValue)) {
             x1 = tx + Tbl->x1;
@@ -592,7 +592,7 @@ int RGE_Visible_Map::explore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int 
     RGE_Tile* tile;
 
     Revealed = 0;
-    log_map_call(this->world->world_time, (int) this->player->id, 2, id, tx1, ty1, tx2, ty2, Map_Update_Suppresion);
+    log_map_call(this->world->world_time, (int) this->player->id, VC_LOG_EXPLORE_SQ, id, tx1, ty1, tx2, ty2, Map_Update_Suppresion);
     if (Map_Update_Suppresion != 0) {
         return 0;
     }
@@ -603,7 +603,7 @@ int RGE_Visible_Map::explore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int 
 
     csum = this->input_csum;
     csum = _rotl(csum, 3);
-    csum ^= 0x34343434;
+    csum ^= RGE_VIS_CSUM_EXPLORE_SQ;
     csum = _rotl(csum, 2);
     csum ^= tx1;
     csum = _rotl(csum, 4);
@@ -679,7 +679,7 @@ void RGE_Visible_Map::unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2, i
     int csum;
     RGE_Tile* tile = 0;
 
-    log_map_call(this->world->world_time, (int) this->player->id, 4, id, tx1, ty1, tx2, ty2, Map_Update_Suppresion);
+    log_map_call(this->world->world_time, (int) this->player->id, VC_LOG_UNEXPLORE_SQ, id, tx1, ty1, tx2, ty2, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion != 0) {
         return;
@@ -687,7 +687,7 @@ void RGE_Visible_Map::unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2, i
 
     csum = this->input_csum;
     csum = _rotl(csum, 3);
-    csum ^= 0x56565656;
+    csum ^= RGE_VIS_CSUM_UNEXPLORE_SQ;
     csum = _rotl(csum, 2);
     csum ^= tx1;
     csum = _rotl(csum, 4);
@@ -897,12 +897,12 @@ unsigned long RGE_Visible_Map::checksumUnifiedVisible(void) {
 
 void __cdecl log_map_call(int wt, int plyr, int action, int id, int x1, int y1, int x2, int y2, int sup) {
     int idx = VCALL_LOG_HEAD + 1;
-    if (idx >= 0x400) {
+    if (idx >= VC_LOG_ENTRIES) {
         idx = 0;
         VCALL_LOG_TAIL = 1;
     } else if (VCALL_LOG_TAIL >= 0) {
         VCALL_LOG_TAIL = idx + 1;
-        if (VCALL_LOG_TAIL >= 0x400) {
+        if (VCALL_LOG_TAIL >= VC_LOG_ENTRIES) {
             VCALL_LOG_TAIL = 0;
         }
     }
@@ -937,22 +937,22 @@ void __cdecl dump_vismap_log() {
         int action = VCALL_LOG[idx].action;
 
         switch (action) {
-            case 1:
+            case VC_LOG_EXPLORE:
                 fprintf(f, "EXPLORE     ");
                 break;
-            case 2:
+            case VC_LOG_EXPLORE_SQ:
                 fprintf(f, "EXPLORE SQ  ");
                 break;
-            case 3:
+            case VC_LOG_UNEXPLORE:
                 fprintf(f, "UNEXPLORE   ");
                 break;
-            case 4:
+            case VC_LOG_UNEXPLORE_SQ:
                 fprintf(f, "UNEXPLORE SQ");
                 break;
-            case 5:
+            case VC_LOG_SET_ALL:
                 fprintf(f, "SET ALL     ");
                 break;
-            case 6:
+            case VC_LOG_EXPLORE_ALL:
                 fprintf(f, "EXPLORE ALL ");
                 break;
             default:
@@ -971,7 +971,7 @@ void __cdecl dump_vismap_log() {
         }
 
         idx++;
-        if (idx >= 0x400) {
+        if (idx >= VC_LOG_ENTRIES) {
             idx = 0;
         }
     } while (!done);

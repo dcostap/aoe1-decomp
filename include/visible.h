@@ -24,6 +24,31 @@ struct LOSTBL {
 #define RGE_TILE_FOGGED 0x80
 #define RGE_TILE_VISIBLE 0x0F
 
+// Bit position of a player's "explored" flag in each unified-map cell: the low 16 bits hold
+// the per-player "visible" flags and the high 16 bits the matching "explored" flags.
+#define RGE_VIS_EXPLORED_SHIFT 0x10
+
+// Farthest radius covered by the line-of-sight tables (NormalLOS/SquareLOS have 17 entries).
+#define RGE_LOS_MAX_RADIUS 0x10
+// LOSTBL::y of the terminator row that ends every line-of-sight table.
+#define RGE_LOS_END_Y 999
+
+// VC_LOG::action codes recorded by log_map_call for each visibility call.
+#define VC_LOG_EXPLORE 1
+#define VC_LOG_EXPLORE_SQ 2
+#define VC_LOG_UNEXPLORE 3
+#define VC_LOG_UNEXPLORE_SQ 4
+#define VC_LOG_SET_ALL 5
+#define VC_LOG_EXPLORE_ALL 6
+// Number of entries in the VCALL_LOG ring buffer.
+#define VC_LOG_ENTRIES 0x400
+
+// Seeds that tag each call type when it is folded into RGE_Visible_Map::input_csum.
+#define RGE_VIS_CSUM_EXPLORE 0x01010101
+#define RGE_VIS_CSUM_UNEXPLORE 0x20202020
+#define RGE_VIS_CSUM_EXPLORE_SQ 0x34343434
+#define RGE_VIS_CSUM_UNEXPLORE_SQ 0x56565656
+
 class RGE_Visible_Map {
   public:
     unsigned char** map_offsets;
@@ -39,6 +64,9 @@ class RGE_Visible_Map {
     unsigned long PlayerVisibleMaskInvertValue;
     unsigned long PlayerExploredMaskValue;
     unsigned long PlayerExploredMaskInvertValue;
+    // Rolling hash of the arguments of every explore/unexplore call made on this map; see
+    // checksum_visible_inputs. Nothing in the game calls that reader, so it appears to be a
+    // leftover debugging aid for tracking visibility divergence between machines.
     unsigned long input_csum;
 
     RGE_Visible_Map(RGE_Map* in_map, RGE_Player* in_player);
