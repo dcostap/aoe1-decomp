@@ -15,6 +15,9 @@ from coff import load_coff_object
 
 MANIFEST = ROOT/'config/drawing_binary.json'
 ORIGINAL = ROOT/'orig/empiresx.exe'
+pytestmark = pytest.mark.skipif(
+    not ORIGINAL.is_file() or not (ROOT / 'orig/age1_x1.pdb').is_file(),
+    reason='needs orig/empiresx.exe and orig/age1_x1.pdb')
 
 
 def output_dir():

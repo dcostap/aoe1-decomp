@@ -80,6 +80,8 @@ def test_resource_roundtrip_with_pinned_linker():
     linker = repo_path(toolchain["compiler"]["link"])
     if not linker.is_file():
         pytest.skip("Pinned VC5 linker is not installed")
+    if not repo_path("orig/empiresx.exe").is_file():
+        pytest.skip("needs orig/empiresx.exe")
     tmp_path = repo_path("build/tests/resource_roundtrip") / uuid.uuid4().hex
     tmp_path.mkdir(parents=True)
     original = repo_path("orig/empiresx.exe")
@@ -107,6 +109,8 @@ def test_obstruction_tables_compile_as_writable_data():
     toolchain = load_toolchain()
     if not repo_path(toolchain["compiler"]["cl"]).is_file():
         pytest.skip("Pinned VC5 compiler is not installed")
+    if not repo_path("orig/empiresx.exe").is_file():
+        pytest.skip("needs orig/empiresx.exe")
     output = repo_path("build/tests/obstruction_storage") / uuid.uuid4().hex / "game_globals.obj"
     output.parent.mkdir(parents=True)
     source = repo_path("src/game_globals.cpp")
