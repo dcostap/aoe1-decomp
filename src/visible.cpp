@@ -398,6 +398,8 @@ LOSTBL* RGE_Visible_Map::get_los_table(int radius, int Square) {
     return NormalLOS[radius];
 }
 
+// Marks every tile within the line-of-sight shape around (tx, ty) as seen by this player and returns
+// how many were newly explored. Each call adds one viewer to a tile's count in map_offsets.
 int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square, int UpdateMap, int id) {
     int Revealed = 0;
 
@@ -407,6 +409,9 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square, int
         return 0;
     }
 
+    // Fold the call's arguments into input_csum: each step rotates the running hash and XORs in the
+    // next input, starting from a seed that identifies the call type. The player id is mixed in here
+    // (and in unexplore_terrain), but not in the _sq variants, which take no radius or shape.
     int csum = this->input_csum;
     csum = _rotl(csum, 3);
     csum ^= RGE_VIS_CSUM_EXPLORE;
@@ -495,6 +500,7 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square, int
     return Revealed;
 }
 
+// Reverses explore_terrain for the same shape: removes one viewer from each tile's count. Tiles stay explored.
 void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, int UpdateMap, int id) {
     int plNum;
     int csum;
@@ -514,6 +520,7 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, 
         return;
     }
 
+    // Same input hash as explore_terrain, seeded with the unexplore tag.
     csum = this->input_csum;
     plNum = (int) this->player->id;
     csum = _rotl(csum, 3);
@@ -561,7 +568,7 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, 
             while (x1 <= x2) {
                 value = *visible;
                 --value;
-                if (value == 0xff) { // viewer count underflowed
+                if (value == 0xff) { // 0 - 1 wrapped; stay explored but unseen
                     value = 0;
                 }
                 if (value == 0) {
@@ -582,6 +589,7 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, 
     }
 }
 
+// Rectangle version of explore_terrain; the corners are clipped to the map.
 int RGE_Visible_Map::explore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int UpdateMap, int id) {
     int Revealed;
     int isCurPlayer;
@@ -601,6 +609,7 @@ int RGE_Visible_Map::explore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int 
     curVisPlayer = 0;
     tile = 0;
 
+    // Same input hash, seeded with the explore_sq tag and mixing the rectangle corners.
     csum = this->input_csum;
     csum = _rotl(csum, 3);
     csum ^= RGE_VIS_CSUM_EXPLORE_SQ;
@@ -675,6 +684,7 @@ int RGE_Visible_Map::explore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int 
     return Revealed;
 }
 
+// Rectangle version of unexplore_terrain.
 void RGE_Visible_Map::unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int UpdateMap, int id) {
     int csum;
     RGE_Tile* tile = 0;
@@ -685,6 +695,7 @@ void RGE_Visible_Map::unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2, i
         return;
     }
 
+    // Same input hash, seeded with the unexplore_sq tag.
     csum = this->input_csum;
     csum = _rotl(csum, 3);
     csum ^= RGE_VIS_CSUM_UNEXPLORE_SQ;
@@ -729,7 +740,7 @@ void RGE_Visible_Map::unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2, i
             do {
                 unsigned char value = *visible;
                 --value;
-                if (value == 0xff) { // viewer count underflowed
+                if (value == 0xff) { // 0 - 1 wrapped; stay explored but unseen
                     value = 0;
                 }
                 if (value == 0) {
@@ -748,6 +759,7 @@ void RGE_Visible_Map::unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2, i
     }
 }
 
+// Returns the input hash accumulated since the last call and restarts it. Nothing in the game calls this.
 unsigned long RGE_Visible_Map::checksum_visible_inputs() {
     unsigned long value = this->input_csum;
     this->input_csum = 0;
@@ -845,6 +857,7 @@ void RGE_Unified_Visible_Map::suppress_updates(int mode) {
     Map_Update_Suppresion = mode;
 }
 
+// Multiplayer sync checksum (com_sync): XOR of this player's per-tile visibility bytes.
 long RGE_Visible_Map::checksumVisible(void) {
     unsigned int value = 0;
     int y = 0;
@@ -865,6 +878,7 @@ long RGE_Visible_Map::checksumVisible(void) {
     return value;
 }
 
+// Multiplayer sync checksum (com_sync): XOR of every shared unified-map cell, which holds all players' flags.
 unsigned long RGE_Visible_Map::checksumUnifiedVisible(void) {
     unsigned long value;
 
