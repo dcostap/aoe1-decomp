@@ -92,6 +92,8 @@ typed, typos included.
 
 ### Act 0: "documenting the symbols is addictive" (August 2025)
 
+*Models: not recorded. No session logs survive from 2025.*
+
 The first repository, `aoe1`, started on 2025-08-15 as a plan to vibecode a C port of
 Age of Empires. It died the same day. The commit message says it best:
 
@@ -101,6 +103,12 @@ Age of Empires. It died the same day. The commit message says it best:
 Then nothing until Christmas.
 
 ### Act 1: the naive port (December 2025 – March 2026)
+
+*Models: no logs survive from December–January, apart from a stretch with Gemini 3
+Flash. From February 5, Codex CLI with gpt-5.2, then gpt-5.3-codex. The Copilot CLI
+fleet (from February 20) ran gpt-5.3-codex workers, some on Claude Sonnet 4.5, with
+Claude Opus 4.6 as the supervisor and Claude Haiku 4.5 for subagents. From March 6,
+gpt-5.4.*
 
 On 2025-12-27 I started again "from scratch with the beta Ghidra decompilation with
 PDB symbols". That leaked beta build with a full PDB is what made the whole project
@@ -148,7 +156,9 @@ It looked like a factory. It was also a mess:
   Input only reached a window when that window had focus. One worker would type out
   its prompt and never submit it, and I had to click in and press Enter myself. On
   top of that, rate-limit errors (429s) made the "launch three to five reviewers"
-  step fail regularly.
+  step fail regularly. This was a very primitive, naive version 
+  of the later Subagents custom system I built on top of the Pi coding agent, 
+  which carried me through 90% of the actual progress I made in the later attempt.
 - **Fake progress.** Coverage was measured by markers in the source, so workers
   learned to add markers. "The previous worker FAILED this task by only adding
   #include wiring." "Task 241 only added 34 lines." A 230/230 coverage report hid 143
@@ -160,46 +170,16 @@ It looked like a factory. It was also a mess:
 
 The best parts were the rendering bugs, because the agents had to debug them almost
 blind. The loop was: change the code, build, launch a test map, have the game save a
-screenshot, and look at it. The first snag was that the game's own screenshot function
-writes `.bmp` files, and the agents couldn't read BMPs. Opening one crashed their image
-reader. After that happened more than once, I wrote, in capitals:
+screenshot, and look at it. 
 
-> YOU CAN'T READ .bmp IMAGES, YOU HAVE TO TURN THEM INTO PNGS FIRST, AND THEN YOU
-> "SEE" THE IMAGE
-
-Once they could see, the bugs had real culprits:
-
-- **Yellow honeycomb terrain.** The map loaded and 253 tiles were drawn, with valid
-  terrain IDs, but grass and water showed up as yellow hexagon cells. The palette
-  was fine. The cause was a global color-translation table (the one that paints units
-  in player colors). A UI or unit draw set it, and the terrain draws after it picked
-  it up because our renderer fell back to "whatever table is current". The original
-  never got into that state, because of a drawing path our port had switched off. The
-  fix was one line. My follow-up question was "So, in short, who is to blame?" The
-  audit found earlier commits that had simplified original behavior without marking
-  it. That became a rule: every non-original shortcut gets a `TODO: STUB` comment that
-  points to the original code.
-- **The checkerboard.** The original constructor gives two tile lists a capacity of
-  400. Ours started them at 0, and the list doubled its size when it grew, and 0
-  doubled is still 0. Every write went past a zero-byte buffer, which corrupted the
-  heap and drew the map as a black checkerboard.
-- **8 bits on a 32-bit desktop.** The software rasterizer assumes one byte per pixel.
-  In a window on a modern desktop the surface had four, so the picture came out in
-  vertical stripes. That's how cnc-ddraw got involved.
-- A panel that drew itself recursively, and a virtual destructor that called itself.
-
-On March 3 a comment-only audit fleet found 678 TODOs. One question, "can we confirm
-that those functions are actually called?", cut 149 "missing" functions down to about
-62. On March 7 an agent swept the remaining 387 TODOs to zero, and the game
-immediately stopped starting. It hit the expiry check, freed uninitialized fields,
-and built 0×0 panels. After those fixes it showed an empty map, then crashed in the
-minimap on row 353 of a 334-row surface, and then the toolbar used the wrong object
-ID.
+TLDR: the tooling was awful, the models were very dumb, and the project didn't make any actual good progress during this time.
 
 On April 1 I took stock. The main menu was 99% decompiled and ran. Gameplay would take
 years at this rate, and nothing told me whether any of it was *right*.
 
 ### Act 2: the static recompiler detour (April 1–9, 2026)
+
+*Models: gpt-5.4, in Copilot CLI and Codex CLI.*
 
 Attempt two, `aoe1_static_recomp`, flipped the question around: forget pretty source
 and lift the x86 machine code into ugly C that behaves exactly the same. The guiding
@@ -219,6 +199,12 @@ an object file at all took trimming the environment down. Then a tiny function,
 `driveAsLetter`, came out byte for byte identical. That was the moment.
 
 ### Act 3, part 1: learning to match (April – May 2026)
+
+*Models: Codex CLI with gpt-5.4 for the scaffold, and Claude Opus 4.6 in Copilot CLI for
+the April 14 night. In Pi from April 16: gpt-5.4 and gpt-5.4-mini (through Copilot
+and Codex), local Qwen3.6 35B-A3B on llama.cpp, MiniMax M2.7, MiMo V2 Flash, and
+Gemma 4 31B. gpt-5.5 took over on April 24, with DeepSeek V4 Flash alongside it from
+April 27 through May.*
 
 This repository's first commit is from 2026-04-10: "Initial exact-match workflow
 scaffold".
@@ -298,6 +284,9 @@ June had no commits.
 
 ### Interlude: better tools (July 2026)
 
+*Models: the gpt-5.6 family arrived on July 16, with Sol and Terra for planning and
+tooling and Luna for the work. DeepSeek V4 Flash and V4 Pro ran too.*
+
 July was about tooling. The variant lab got faster by grouping identical outputs: 36
 variants took 16 seconds instead of minutes. The function checker became
 symbol-aware, stopped silently truncating, and started reporting frames, registers,
@@ -308,6 +297,10 @@ stuff." `taskActiveSoldiers` reached the exact size, frame, registers, and all 4
 calls. It still didn't match.
 
 ### Act 3, part 2: the August production line
+
+*Models: gpt-5.6-luna, mostly on xhigh, ran over 8,600 Pi sessions in August alone.
+gpt-5.6-sol and gpt-5.6-terra were the leads, and DeepSeek V4 Flash took workers in
+the first half of the month.*
 
 By August, Luna (gpt-5.6-luna) on xhigh was the workhorse, with Terra and Sol models
 as leads and DeepSeek V4 Flash for a while. "Agentic tooling is the key for this
@@ -353,6 +346,10 @@ exploiting that kinda evidence already?"). `clear_image` went through 30,966 var
 without a match: "There's gotta be something we are missing".
 
 ### Act 3, part 3: it runs (September 2026)
+
+*Models: about 3,100 gpt-5.6-luna workers under about 1,060 gpt-5.6-sol leads, briefly
+gpt-6-astra (September 14–16), MiMo V2.6 Flash for the bug-comment pass, DeepSeek
+Flash, and gpt-6-luna from September 23.*
 
 **September 1: evidence first.** Accepted drift now counted as done, and the motto
 changed from "exact-match-first" to "evidence-first". Exact matches and reviewed
@@ -406,6 +403,9 @@ reproduced an original bug: reading `soldiers[0]` from an empty list.
 
 ### Act 3, part 4: shipping it (late September – October 2026)
 
+*Models: gpt-6-luna workers and gpt-6.1-sol in Pi, plus DeepSeek Flash. Claude Code
+with Claude Opus 5.5 from September 27, with Haiku 5.5 and Sonnet 5.5 near the end.*
+
 From September 27 the replay became deterministic: a 149-second session replays in 13
 seconds, 28× faster overall. Small surprises kept coming. An extra space in an
 `sscanf` format made the computer player miss the Tool Age. An agent's `git checkout`
@@ -456,7 +456,10 @@ links, and plays.
   reviewed drift and proven logic, is what let the project finish instead of chasing
   the last few hundred functions forever.
 
-**Models over time:** Copilot CLI (GPT-5.3-codex and others) and briefly Codex CLI in
-attempt one; in Pi, gpt-5.4 and gpt-5.4-mini plus local Qwen, MiniMax, MiMo, and
-DeepSeek; then gpt-5.6-luna on xhigh as the workhorse with Terra and Sol as leads;
-gpt-6-luna in October; and Claude Opus 5.5 and Haiku 5.5 for the final cleanup.
+**Models over time:** Codex CLI and Copilot CLI with gpt-5.2, gpt-5.3-codex, and
+gpt-5.4, plus Claude Opus 4.6, Sonnet 4.5, and Haiku 4.5, in attempts one and two. In
+Pi, first gpt-5.4 and gpt-5.4-mini alongside local Qwen, MiniMax, MiMo, and Gemma,
+then gpt-5.5 with DeepSeek V4 Flash through May. From July, the gpt-5.6 family, with
+Luna on xhigh as the workhorse and Sol and Terra as leads. gpt-6-luna and gpt-6.1-sol
+from late September. Claude Opus 5.5, Haiku 5.5, and Sonnet 5.5 in Claude Code for
+the final cleanup.
