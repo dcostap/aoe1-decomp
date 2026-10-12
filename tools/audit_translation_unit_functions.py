@@ -155,9 +155,9 @@ def classify(
             category = "grouped_match_policy_review"
             action = "repair_policy_then_review_promotion"
             reason = "Grouped code is exact, but source-policy findings block promotion."
-        elif status.get("source_bucket") == "new_verified_logic":
-            category = "new_verified_logic_observed"
-            action = "hold_new_verified_logic"
+        elif status.get("source_bucket") == "accepted_logic":
+            category = "accepted_logic_observed"
+            action = "hold_accepted_logic"
             reason = "Completed behavior recovery does not require a byte-status change."
         else:
             category = "grouped_match_needs_review"
@@ -176,7 +176,7 @@ def classify(
             category = "matching_elsewhere_mismatch"
             action = "review_context_ownership"
             reason = "The owner is exact in another group but differs in this included context."
-        elif (new_diff == 0 or status.get("source_bucket") == "new_verified_logic") and owner_status != "match":
+        elif (new_diff == 0 or status.get("source_bucket") == "accepted_logic") and owner_status != "match":
             category = "ownership_problem"
             action = "investigate_ownership"
             reason = "The owning symbol is not proved."
@@ -184,9 +184,9 @@ def classify(
             category = "relocation_problem"
             action = "repair_relocation_targets"
             reason = "One or more direct relocation targets differ from the original."
-        elif status.get("source_bucket") == "new_verified_logic":
-            category = "new_verified_logic_observed"
-            action = "hold_new_verified_logic"
+        elif status.get("source_bucket") == "accepted_logic":
+            category = "accepted_logic_observed"
+            action = "hold_accepted_logic"
             reason = "Completed behavior recovery does not require the original byte layout or body size."
         elif boundary_errors:
             category = "boundary_problem"
@@ -635,7 +635,7 @@ def build_queue(
             row for row in group_rows if row["recommended_action"] == "hold_accepted_drift"
         ]
         logic_holds = [
-            row for row in group_rows if row["recommended_action"] == "hold_new_verified_logic"
+            row for row in group_rows if row["recommended_action"] == "hold_accepted_logic"
         ]
         context_reviews = [
             row for row in group_rows if row["recommended_action"] == "review_context_ownership"
@@ -662,7 +662,7 @@ def build_queue(
                 "structural_repairs": structural,
                 "codegen_repairs": codegen,
                 "accepted_drift_holds": accepted_holds,
-                "new_verified_logic_holds": logic_holds,
+                "accepted_logic_holds": logic_holds,
                 "context_ownership_reviews": context_reviews,
                 "comparison_errors": errors,
                 "noncanonical_contexts": duplicate_contexts,
@@ -711,7 +711,7 @@ def queue_text(queue: dict[str, object]) -> str:
                 f"  structural: {len(packet['structural_repairs'])}",
                 f"  codegen: {len(packet['codegen_repairs'])}",
                 f"  accepted drift holds: {len(packet['accepted_drift_holds'])}",
-                f"  behavior recovery holds: {len(packet['new_verified_logic_holds'])}",
+                f"  behavior recovery holds: {len(packet['accepted_logic_holds'])}",
                 f"  context reviews: {len(packet['context_ownership_reviews'])}",
                 f"  comparison errors: {len(packet['comparison_errors'])}",
                 f"  noncanonical contexts: {len(packet['noncanonical_contexts'])}",
@@ -958,7 +958,7 @@ def main() -> int:
     print(f"Wrote {text_path}")
     print(f"Wrote {queue_json_path}")
     print(f"Wrote {queue_text_path}")
-    # Expected scratch differences are reports, not failed exact claims.
+    # Expected nonmatching differences are reports, not failed exact claims.
     # A claimed matching owner must not pass through a compile-only exit gate.
     failed_claims = [row for row in rows
                      if row.get('matching_in_group') and row.get('grouped_result') != 'MATCH']

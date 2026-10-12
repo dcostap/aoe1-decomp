@@ -18,7 +18,7 @@ FLAGS_DIR = CONFIG_DIR / "flags"
 INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
-FUNCTION_DECOMP_NOTES_DIR = REPO_ROOT / "decomp_notes" / "functions"
+FUNCTION_DECOMP_NOTES_DIR = REPO_ROOT / "workflow" / "decomp_notes" / "functions"
 TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH = CONFIG_DIR / "toolchain_supplied_functions.txt"
 TOOLCHAIN_SUPPLIED_REGIONS_PATH = CONFIG_DIR / "toolchain_supplied_regions.txt"
 ASM_SPECIAL_FUNCTIONS_PATH = CONFIG_DIR / "asm_special_functions.txt"
@@ -38,8 +38,26 @@ def load_json(path: Path) -> dict:
         return json.load(handle)
 
 
+DEFAULT_VC5_DIR = r"C:\Program Files (x86)\DevStudio"
+
+
+def vc5_dir() -> str:
+    """Visual C++ 5.0 install root (the folder holding VC and SharedIDE)."""
+    return os.environ.get("VC5_DIR") or DEFAULT_VC5_DIR
+
+
+def expand_vc5_dir(value):
+    if isinstance(value, str):
+        return value.replace("$VC5_DIR", vc5_dir())
+    if isinstance(value, list):
+        return [expand_vc5_dir(item) for item in value]
+    if isinstance(value, dict):
+        return {key: expand_vc5_dir(item) for key, item in value.items()}
+    return value
+
+
 def load_toolchain() -> dict:
-    return load_json(CONFIG_DIR / "toolchain.json")
+    return expand_vc5_dir(load_json(CONFIG_DIR / "toolchain.json"))
 
 
 def load_binaries() -> dict:
@@ -306,7 +324,7 @@ def function_decomp_note_relative_path(va: str) -> Path:
     va_text = str(va).upper()
     if len(va_text) != 8 or any(character not in "0123456789ABCDEF" for character in va_text):
         raise ValueError(f"Invalid function VA: {va!r}")
-    return Path("decomp_notes") / "functions" / va_text[:4] / f"{va_text}.md"
+    return Path("workflow") / "decomp_notes" / "functions" / va_text[:4] / f"{va_text}.md"
 
 
 def module_decomp_note_relative_path(module_name: str) -> Path:
@@ -314,7 +332,7 @@ def module_decomp_note_relative_path(module_name: str) -> Path:
     name = str(module_name).strip()
     if not name or Path(name).name != name:
         raise ValueError(f"Invalid source-module name: {module_name!r}")
-    return Path("decomp_notes") / f"{name}.md"
+    return Path("workflow") / "decomp_notes" / f"{name}.md"
 
 
 def parse_hex(value: str | None) -> int | None:
@@ -350,9 +368,8 @@ def function_slug(record: dict[str, str]) -> str:
 _FUNCTION_STATUSES = {
     "matching",
     "accepted_drift",
-    "verified_logic",
-    "new_verified_logic",
-    "scratch",
+    "accepted_logic",
+    "nonmatching",
     "unresolved",
 }
 

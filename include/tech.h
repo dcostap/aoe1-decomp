@@ -3,7 +3,7 @@
 
 // Technology IDs, the index into TRIBE_Tech::tech_tree and the research IDs in AI build lists. Each name is
 // the name that the pinned XPack/data2/empires.dat gives that record, spelled as a macro. Records with an
-// empty name have no macro. See decomp_notes/technology_ids.md.
+// empty name have no macro. See workflow/decomp_notes/technology_ids.md.
 #define TECH_DOCK                          0
 #define TECH_LIGHT_TRANSPORT               1
 #define TECH_CATAPULT_TOWER                2

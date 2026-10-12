@@ -6,7 +6,7 @@
     "flags": "default"
   },
   "functions": {
-    "00531750": {"status": "scratch", "symbol": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z"},
+    "00531750": {"status": "nonmatching", "symbol": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z"},
     "00531AF0": {"status": "matching", "symbol": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z"},
     "00531B20": {"status": "matching", "symbol": "??1RGE_Victory_Conditions@@QAE@XZ"},
     "00531B70": {"status": "matching", "symbol": "?save@RGE_Victory_Conditions@@UAEXH@Z"},
@@ -20,7 +20,7 @@
     "00532220": {"status": "matching", "symbol": "?handle_create_in_area@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "005323B0": {"status": "matching", "symbol": "?handle_destroy@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "005323D0": {"status": "matching", "symbol": "?handle_destroy_multiple@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
-    "005324A0": {"status": "scratch", "symbol": "?handle_destroy_all@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
+    "005324A0": {"status": "nonmatching", "symbol": "?handle_destroy_all@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "00532570": {"status": "matching", "symbol": "?handle_destroy_player@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "005325A0": {"status": "matching", "symbol": "?handle_bring_area@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "00532610": {"status": "matching", "symbol": "?handle_bring_object@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},

@@ -82,7 +82,7 @@ def test_resource_roundtrip_with_pinned_linker():
         pytest.skip("Pinned VC5 linker is not installed")
     tmp_path = repo_path("build/tests/resource_roundtrip") / uuid.uuid4().hex
     tmp_path.mkdir(parents=True)
-    original = repo_path("orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe")
+    original = repo_path("orig/empiresx.exe")
     source_res = tmp_path / "original.res"
     linked_res = tmp_path / "roundtrip.res"
     dll = tmp_path / "resources.dll"

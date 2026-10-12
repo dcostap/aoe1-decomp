@@ -1,0 +1,9 @@
+{
+  "base": "111b67e52b2d2812a4c39d3cb9c8095aee3bcde1",
+  "patch": "workflow\decomp_notes\\candidates\\0046\\0046B6E0_complete_path_radius_review.patch",
+  "patch_sha256": "d04633e27f8aa268fba289dde398204957a6b5feb17ee539bb0562df522b86d0",
+  "files": {
+    "src/pathsys.cpp": "c310e97152e4235e4320c020f4ab233db0ce813a956e09ac0b7f04f4aadde525"
+  },
+  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
+}

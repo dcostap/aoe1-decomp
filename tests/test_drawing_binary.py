@@ -14,7 +14,7 @@ from preserved_binary import build_preserved_object
 from coff import load_coff_object
 
 MANIFEST = ROOT/'config/drawing_binary.json'
-ORIGINAL = ROOT/'orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe'
+ORIGINAL = ROOT/'orig/empiresx.exe'
 
 
 def output_dir():

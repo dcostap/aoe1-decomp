@@ -54,7 +54,7 @@ def main():
     assert len(relocs) == 1 and relocs[0].reloc_type == 6
     assert relocs[0].symbol_name == '_probe_color'
     struct.pack_into('<I', code, relocs[0].offset - symbol.value, 0x88C040)
-    original_path = ROOT / 'orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe'
+    original_path = ROOT / 'orig/empiresx.exe'
     original = original_path.read_bytes()
     assert hashlib.sha256(original).hexdigest() == '88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90'
     pe = pefile.PE(data=original)

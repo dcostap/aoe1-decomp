@@ -7,7 +7,7 @@
   },
   "functions": {
     "0046E4B0": {"status": "matching", "symbol": "??0RGE_Player@@QAE@HPAVRGE_Game_World@@E@Z"},
-    "0046E770": {"status": "new_verified_logic", "symbol": "??0RGE_Player@@QAE@PAVRGE_Game_World@@PAVRGE_Master_Player@@EPADEE@Z", "behavior_review": "logic_matching/0046E770/review-coord-05-0046E770-20260913T040700Z/attempt-01"},
+    "0046E770": {"status": "accepted_logic", "symbol": "??0RGE_Player@@QAE@PAVRGE_Game_World@@PAVRGE_Master_Player@@EPADEE@Z", "behavior_review": "logic_matching/0046E770/review-coord-05-0046E770-20260913T040700Z/attempt-01"},
     "0046EB00": {"status": "matching", "symbol": "??1RGE_Player@@UAE@XZ"},
     "0046ECE0": {"status": "matching", "symbol": "?set_game_status@RGE_Player@@UAEXE@Z"},
     "0046ED50": {"status": "matching", "symbol": "?do_resign@RGE_Player@@UAEXH@Z"},
@@ -45,7 +45,7 @@
     "0046FF00": {"status": "matching", "symbol": "?load_info@RGE_Player@@QAEXH@Z"},
     "0046FF40": {"status": "matching", "symbol": "?get_checksum@RGE_Player@@QAEJXZ"},
     "0046FF60": {"status": "matching", "symbol": "?get_checksums@RGE_Player@@QAEEAAJ00@Z"},
-    "0046FF90": {"status": "scratch", "symbol": "?create_checksum@RGE_Player@@QAEJXZ", "behavior_review": "logic_matching/0046FF90/review-coord-05-0046FF90-20260913T035000Z/attempt-01"},
+    "0046FF90": {"status": "nonmatching", "symbol": "?create_checksum@RGE_Player@@QAEJXZ", "behavior_review": "logic_matching/0046FF90/review-coord-05-0046FF90-20260913T035000Z/attempt-01"},
     "004700B0": {"status": "matching", "symbol": "?new_attribute_num@RGE_Player@@QAEXFM@Z"},
     "004700D0": {"status": "matching", "symbol": "?add_attribute_num@RGE_Player@@UAEXFME@Z"},
     "00470100": {"status": "matching", "symbol": "?make_available@RGE_Player@@QAEXFE@Z"},

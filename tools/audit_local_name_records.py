@@ -22,7 +22,7 @@ from pdb_scoped_symbols import (
     PROCEDURE_RE, RECORD_RE, REGISTER_RE, type_evidence,
 )
 
-PINNED = REPO_ROOT / "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack"
+PINNED = REPO_ROOT / "orig"
 SECTION_RE = re.compile(r"^\*{5} SECTION #([0-9A-F]+)$")
 
 

@@ -1,0 +1,127 @@
+# Experiment 40495926dbf4d40ac56891f43dabae3c16398c6bb79140e759df9b85503e4597
+# Base d849af4815c3f7f77404ca0335606e406fdf543a
+diff --git a/config/functions/src/Dib.cpp.json b/config/functions/src/Dib.cpp.json
+index 894e08e6a..9b3af9e44 100644
+--- a/config/functions/src/Dib.cpp.json
++++ b/config/functions/src/Dib.cpp.json
+@@ -19,7 +19,7 @@
+     "00439BE0": {"status": "matching", "symbol": "?DibWriteClipped@@YAHPAUtagBITMAPINFOHEADER@@PADJJJJ@Z"},
+     "00439CC0": {"status": "matching", "symbol": "?DibWriteFile@@YAHPAUtagBITMAPINFOHEADER@@PAD@Z"},
+     "00439D80": {"status": "matching", "symbol": "?DibCreatePalette@@YAPAXPAUtagBITMAPINFOHEADER@@@Z"},
+-    "00439E50": {"status": "scratch", "symbol": "?DibReadBitmapInfo@@YAPAUtagBITMAPINFOHEADER@@H@Z"},
++    "00439E50": {"status": "matching", "symbol": "?DibReadBitmapInfo@@YAPAUtagBITMAPINFOHEADER@@H@Z"},
+     "0043A070": {"status": "matching", "symbol": "?DibFromBitmap@@YAPAUtagBITMAPINFOHEADER@@PAXKI0I@Z"},
+     "0043A330": {"status": "matching", "symbol": "?DibSetUsage@@YAHPAUtagBITMAPINFOHEADER@@PAXI@Z"},
+     "0043A420": {"status": "matching", "symbol": "?DibDraw@@YAHPAXHHHHPAUtagBITMAPINFOHEADER@@HHHHJI@Z"},
+@@ -27,8 +27,8 @@
+     "0043A500": {"status": "matching", "symbol": "?DibCreate@@YAPAUtagBITMAPINFOHEADER@@HHH@Z"},
+     "0043A660": {"status": "scratch", "symbol": "?DibMapToPalette@@YAXPAUtagBITMAPINFOHEADER@@PAXHH@Z"},
+     "0043AA60": {"status": "accepted_drift", "symbol": "?xlatClut8@@YAXPAEK0@Z"},
+-    "0043AA90": {"status": "accepted_drift", "symbol": "?xlatClut4@@YAXPAEI0@Z"},
+-    "0043AAD0": {"status": "accepted_drift", "symbol": "?xlatRle8@@YAXPAEH0@Z"},
++    "0043AA90": {"status": "accepted_drift", "symbol": "?xlatClut4@@YAXPAEK0@Z"},
++    "0043AAD0": {"status": "accepted_drift", "symbol": "?xlatRle8@@YAXPAEK0@Z"},
+     "0043AB40": {"status": "matching", "symbol": "?xlatRle4@@YAXPAEK0@Z"},
+     "0043AB50": {"status": "matching", "symbol": "_memmove"},
+     "0043AB80": {"status": "matching", "symbol": "?CreateIdentityPalette@@YAXPAX@Z"},
+diff --git a/config/reviewed_reference_identities.json b/config/reviewed_reference_identities.json
+index 5eba566c5..a1f82f9c9 100644
+--- a/config/reviewed_reference_identities.json
++++ b/config/reviewed_reference_identities.json
+@@ -1,6 +1,6 @@
+ {
+   "schema": 1,
+-  "evidence": "workflow/decomp_notes/crt_reference_identity_review.md",
++  "evidence": "workflow/decomp_notes/target_evidence_pass.md",
+   "inputs": {
+     "orig/age1_x1.pdb": "3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40",
+     "orig/empiresx.exe": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
+@@ -21,6 +21,25 @@
+     "0054E9D0": {"symbol": "_strchr", "aliases": []},
+     "0054E9D6": {"symbol": "___from_strstr_to_strchr", "aliases": []},
+     "0054EB70": {"symbol": "__stricmp", "aliases": ["_stricmp"]},
+-    "0055BD00": {"symbol": "__itoa", "aliases": ["_itoa"]}
++    "0055BD00": {"symbol": "__itoa", "aliases": ["_itoa"]},
++    "00444850": {"symbol": "?PtrClear@TDrawArea@@QAEXPAUtagRECT@@H@Z", "aliases": []},
++    "0047EE90": {"symbol": "?RESFILE_open_new_resource_file@@YAXPAD00H@Z", "aliases": []},
++    "0056C680": {"symbol": "_ASMSet_Shadowing", "aliases": []},
++    "0056C6C0": {"symbol": "_ASMSet_ShadowingEx", "aliases": []},
++    "0056C720": {"symbol": "_ASMSet_Surface_Info", "aliases": []},
++    "0056C760": {"symbol": "_ASMSet_Color_Xform", "aliases": []},
++    "0056C780": {"symbol": "_ASMGet_Color_Xform", "aliases": []},
++    "0056C7A0": {"symbol": "_ASMSet_Xlate_Table", "aliases": []},
++    "0056C7C0": {"symbol": "_ASMGet_Xlate_Table", "aliases": []},
++    "0056C7E0": {"symbol": "_ASMDraw_HLine", "aliases": []},
++    "0056C9A0": {"symbol": "_ASMDraw_Sprite", "aliases": []},
++    "0045E970": {"symbol": "?doTrivialMove@RGE_Moving_Object@@QAEHMM@Z", "aliases": []},
++    "0046B6E0": {"symbol": "?findTilePath@PathingSystem@@QAEHHHHHPAVRGE_Moving_Object@@MHHPAMHHHHHH@Z", "aliases": []},
++    "00445580": {"symbol": "?OverlayMemCopy@TDrawArea@@QAEXAAUtagRECT@@0HHHH@Z", "aliases": []},
++    "00445250": {"symbol": "?PtrSpanCopy@TDrawArea@@QAEXPAV1@JJPAUtagRECT@@PAPAE@Z", "aliases": []},
++    "00526170": {"symbol": "?load_game@TRIBE_Game@@QAEHPAD@Z", "aliases": []},
++    "005573B0": {"symbol": "_memmove", "aliases": []},
++    "0043AA90": {"symbol": "?xlatClut4@@YAXPAEK0@Z", "aliases": []},
++    "0043AAD0": {"symbol": "?xlatRle8@@YAXPAEK0@Z", "aliases": []}
+   }
+ }
+diff --git a/include/dib.h b/include/dib.h
+index ed8b543af..c96d80790 100644
+--- a/include/dib.h
++++ b/include/dib.h
+@@ -56,8 +56,6 @@ void __cdecl CreateIdentityPalette(void*);
+ void* __cdecl CopyPalette(void*);
+ void __cdecl DibFree(BITMAPINFOHEADER*);
+ 
+-void __cdecl xlatClut4(unsigned char*, unsigned int, unsigned char*);
+-void __cdecl xlatRle8(unsigned char*, int, unsigned char*);
+ void __cdecl DibMapToPalette(BITMAPINFOHEADER*, void*, int, int);
+ 
+ extern "C" void* __cdecl memmove(void*, const void*, unsigned int);
+diff --git a/src/Dib.cpp b/src/Dib.cpp
+index 6d3df739d..42905f34a 100644
+--- a/src/Dib.cpp
++++ b/src/Dib.cpp
+@@ -1257,7 +1257,7 @@ static void __cdecl xlatClut8(unsigned char* pb, unsigned long dwSize,
+     } while (dwSize != 0);
+ }
+ 
+-void __cdecl xlatClut4(unsigned char *buf, unsigned int count,
++static void __cdecl xlatClut4(unsigned char *buf, unsigned long count,
+     unsigned char *clut)
+ {
+     while (count) {
+@@ -1269,7 +1269,7 @@ void __cdecl xlatClut4(unsigned char *buf, unsigned int count,
+     }
+ }
+ 
+-void __cdecl xlatRle8(unsigned char* data, int unused, unsigned char* xlat)
++static void __cdecl xlatRle8(unsigned char* data, unsigned long unused, unsigned char* xlat)
+ {
+     unsigned char* p = data;
+     while (1) {
+diff --git a/tools/diff_function.py b/tools/diff_function.py
+index 761371d8a..1e811f621 100644
+--- a/tools/diff_function.py
++++ b/tools/diff_function.py
+@@ -680,8 +680,8 @@ def _workflow_guidance(
+     if known_wrong_transfers:
+         return [
+             "Workflow stage: CONTROL TARGET INTEGRITY",
+-            f"Why: instruction structure is aligned, but {known_wrong_transfers} direct control transfer(s) name the wrong external symbol.",
+-            "Next: fix the member/helper declaration or symbol binding; do not reshape the surrounding control flow.",
++            f"Why: {known_wrong_transfers} direct transfer(s) disagree at the same instruction offset. Shifted code can cause this diagnostic.",
++            "Next: compare call context and control flow. Repair a declaration or target only when that evidence proves it wrong.",
+         ]
+     if size_delta or call_difference is not None:
+         lines.append("Workflow stage: STRUCTURAL RECONSTRUCTION")
+diff --git a/tools/function_diagnostics.py b/tools/function_diagnostics.py
+index 3a3959be1..d34de49a6 100644
+--- a/tools/function_diagnostics.py
++++ b/tools/function_diagnostics.py
+@@ -1193,6 +1193,7 @@ def compatible_relocation_masks(
+                 destination.append(
+                     {
+                         "offset": rebuilt_instruction.offset,
++                        "comparison_basis": "same_instruction_offset",
+                         "kind": (
+                             "call"
+                             if rebuilt_instruction.flow_control == FlowControl.CALL

@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "evidence": "decomp_notes/remaining_matching_claims.md",
+  "evidence": "workflow/decomp_notes/remaining_matching_claims.md",
   "inputs": {
     "orig/age1_x1.pdb": "3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40",
-    "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
-    "C:/Program Files (x86)/DevStudio/VC/lib/OLDNAMES.LIB": "56190b253c7c5f127569cd1dc037e27600f42e4952f558e7ab1966cbb98cb1d6"
+    "orig/empiresx.exe": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
+    "$VC5_DIR/VC/lib/OLDNAMES.LIB": "56190b253c7c5f127569cd1dc037e27600f42e4952f558e7ab1966cbb98cb1d6"
   },
   "targets": {
     "0045D6C0": {"symbol": "?findPath@RGE_Moving_Object@@QAE?AW4PathResult@1@XZ", "aliases": []},

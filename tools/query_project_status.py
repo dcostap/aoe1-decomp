@@ -42,8 +42,8 @@ def parse_args() -> argparse.Namespace:
             "\n"
             "Examples:\n"
             "  python tools/query_project_status.py --va 0047A3A0 --paths --notes\n"
-            "  python tools/query_project_status.py --scratch --normal --smallest --limit LIMIT\n"
-            "  python tools/query_project_status.py --scratch --normal --work-history --notes --limit LIMIT\n"
+            "  python tools/query_project_status.py --nonmatching --normal --smallest --limit LIMIT\n"
+            "  python tools/query_project_status.py --nonmatching --normal --work-history --notes --limit LIMIT\n"
             "  python tools/query_project_status.py --logic-review-in-progress --paths\n"
             "  python tools/query_project_status.py --summary --normal\n"
         ),
@@ -54,17 +54,16 @@ def parse_args() -> argparse.Namespace:
 
     source = parser.add_mutually_exclusive_group()
     source.add_argument("--unclaimed", action="store_true", help="Only unclaimed functions")
-    source.add_argument("--scratch", action="store_true", help="Only scratch functions")
+    source.add_argument("--nonmatching", action="store_true", help="Only nonmatching functions")
     source.add_argument("--matching", action="store_true", help="Only matching functions")
     source.add_argument("--accepted-drift", action="store_true", help="Only accepted-drift functions")
-    source.add_argument("--verified-logic", action="store_true", help="Only verified-logic functions")
-    source.add_argument("--new-verified-logic", action="store_true", help="Only functions completed through behavior recovery")
+    source.add_argument("--accepted-logic", action="store_true", help="Only functions completed through behavior recovery")
     source.add_argument("--unresolved", action="store_true", help="Only source-owned functions without a proved build route")
     source.add_argument("--conflict", action="store_true", help="Only conflict functions")
     source.add_argument("--source-bucket", choices=SOURCE_BUCKETS, help="Only this source bucket")
 
     remaining = parser.add_mutually_exclusive_group()
-    remaining.add_argument("--remaining", action="store_true", help="Only remaining work (scratch/unresolved/unclaimed/conflict)")
+    remaining.add_argument("--remaining", action="store_true", help="Only remaining work (nonmatching/unresolved/unclaimed/conflict)")
     remaining.add_argument("--done", action="store_true", help="Only non-remaining functions")
 
     logic_review = parser.add_mutually_exclusive_group()
@@ -72,7 +71,7 @@ def parse_args() -> argparse.Namespace:
     logic_review.add_argument(
         "--logic-review-in-progress",
         action="store_true",
-        help="Only scratch functions that have entered logic review",
+        help="Only nonmatching functions that have entered logic review",
     )
 
     blockers = parser.add_mutually_exclusive_group()
@@ -163,16 +162,14 @@ def source_bucket_from_args(args: argparse.Namespace) -> str | None:
         return args.source_bucket
     if args.unclaimed:
         return "unclaimed"
-    if args.scratch:
-        return "scratch"
+    if args.nonmatching:
+        return "nonmatching"
     if args.matching:
         return "matching"
     if args.accepted_drift:
         return "accepted_drift"
-    if args.verified_logic:
-        return "verified_logic"
-    if args.new_verified_logic:
-        return "new_verified_logic"
+    if args.accepted_logic:
+        return "accepted_logic"
     if args.unresolved:
         return "unresolved"
     if args.conflict:
@@ -319,9 +316,8 @@ def print_summary(rows: list[dict[str, str]]) -> None:
         "source: "
         f"matching={counts['matching']} "
         f"accepted_drift={counts['accepted_drift']} "
-        f"verified_logic={counts['verified_logic']} "
-        f"new_verified_logic={counts['new_verified_logic']} "
-        f"scratch={counts['scratch']} "
+        f"accepted_logic={counts['accepted_logic']} "
+        f"nonmatching={counts['nonmatching']} "
         f"unresolved={counts['unresolved']} "
         f"unclaimed={counts['unclaimed']} "
         f"conflict={counts['conflict']}"
@@ -349,7 +345,7 @@ def print_summary(rows: list[dict[str, str]]) -> None:
     )
     logic_reviews = sum(row.get("has_logic_review") == "yes" for row in rows)
     logic_reviews_in_progress = sum(
-        row.get("has_logic_review") == "yes" and row.get("source_bucket") == "scratch"
+        row.get("has_logic_review") == "yes" and row.get("source_bucket") == "nonmatching"
         for row in rows
     )
     print(f"logic_reviews: total={logic_reviews} in_progress={logic_reviews_in_progress}")
@@ -484,7 +480,7 @@ def main() -> None:
         rows = [
             row
             for row in rows
-            if row.get("has_logic_review") == "yes" and row.get("source_bucket") == "scratch"
+            if row.get("has_logic_review") == "yes" and row.get("source_bucket") == "nonmatching"
         ]
     if args.max_lifetime_probes is not None:
         rows = [

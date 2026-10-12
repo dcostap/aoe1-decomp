@@ -1,0 +1,180 @@
+# `scr_game.cpp` source-module recovery
+
+## Current hackathon result: 2026-10-03
+
+`0049BDB0` has simpler pause and cost-check inputs. Commit: `7c553c4d5`.
+Output remains 225 bytes with 29 differences. Message-panel fault order remains unproved; keep scratch.
+The fresh 96-owner audit proves all 88 matching claims. The target note records the rejected drift proposal.
+
+- PDB source: `C:\\msdev\\work\\age1_x1\\scr_game.cpp`.
+- The module has 96 normal owners in PDB order, from lines 201 to 5941.
+- The owner range contains 36,932 normal bytes.
+- The compiler-facing owner is `src/scr_game.cpp`.
+- Shared declarations are in `include/scr_game.h`.
+
+The module now uses one source file. It no longer uses the old wrapper,
+fragment `.cpp` includes, context macros, or fallback class declarations.
+
+The source keeps the reviewed owner bodies and direct field names. It keeps
+binary-supported packed palette storage and narrow ABI forms where the source
+bodies prove them. The module uses `config/flags/gx.rsp`.
+
+The migration is structural. Exact owners can regress when the compiler sees
+one natural source file instead of the old prefix wrapper. The final grouped
+check records the post-migration result. Recheck exact owners after later
+source recovery changes.
+
+The focused grouped audit compiled all 96 owners. It kept 49 exact owners.
+It kept 41 registered exact owners and found eight exact owners that remain
+unregistered. It reported these 47 regressions:
+
+- `00493D60`, `00495AE0`, `00496550`, `00496700`, `00496800`, `004970A0`.
+- `00497440`, `00498A10`, `00498A50`, `004992E0`, `004993B0`, `00499680`.
+- `004996C0`, `0049A8A0`, `0049AB60`, `0049ADA0`, `0049B080`, `0049B910`.
+- `0049BAF0`, `0049BCA0`, `0049BDB0`, `0049BEA0`, `0049BF50`, `0049C010`.
+- `0049C0B0`, `0049C1B0`, `0049C230`, `0049C280`, `0049C300`, `0049C650`.
+- `0049C770`, `0049C800`, `0049C920`, `0049C970`, `0049CA10`, `0049CA80`.
+- `0049CAF0`, `0049CB90`, `0049CC20`, `0049CCB0`, `0049CE40`, `0049CEC0`.
+- `0049D090`, `0049D100`, `0049D1B0`, `0049D370`, `0049D440`.
+
+The full result is in `build/audit_scr_game_registered/report.txt` during this
+build. It shows relocation errors for `00493D60`, `00496800`, and `004996C0`.
+It shows boundary errors for `00498A50`, `00499680`, `0049ADA0`, `0049BAF0`,
+`0049C300`, `0049C800`, `0049CA80`, `0049CB90`, `0049CC20`, `0049CCB0`,
+`0049CE40`, `0049CEC0`, `0049D090`, and `0049D440`.
+
+`0049D440 any_selected_have_action` was previously registered exact. Its
+merged result differs by 60 bytes and crosses two boundary bytes. The direct
+entry and module status now record it as scratch.
+
+## Provider composition
+
+`include/scr_game.h` now uses the `Pnl_scr`, `pnl_btn`, `tpnl_btn`,
+`diam_map`, and `tvw_dmap` providers. It no longer defines Panel, button,
+or Diamond Map classes.
+
+The PDB size check confirms `sizeof(TRIBE_Screen_Game) == 0x7C4`.
+The screen keeps all 96 normal `scr_game.cpp` bodies.
+
+Earlier focused checks matched `004954A0`, `004959A0`, `00497210`,
+and `0049D530`. The canonical audit below supersedes this older summary.
+
+## Canonical-provider audit
+
+The first 2026-08-28 canonical audit compiled all 96 module bodies. It matched 59.
+It found 29 mismatches and eight comparison errors.
+
+The audit source is `build/candidate_tus/scr_game_canonical_audit.json`.
+The report is `build/candidate_tus/scr_game_canonical_audit/report.txt`.
+
+The following former matching rows are now scratch:
+
+- `00497330`, `00498A10`, `004992E0`, `0049AB60`, `0049B560`.
+- `0049BAF0`, `0049BD20`, `0049BD70`, `0049BDB0`, `0049BEA0`.
+- `0049BF50`, `0049C010`, `0049C230`, `0049C540`, `0049C650`.
+- `0049C800`, `0049C890`, `0049CAF0`, `0049CCB0`, `0049CEA0`.
+- `0049CEC0`, `0049CFF0`, `0049D090`, `0049D100`, `0049D1B0`, `0049D200`.
+
+The provider changes removed copied foreign layouts and raw source forms.
+They did not establish new exact claims.
+
+The local symbol map resolved all eight name ambiguities. The final provider
+audit compiled all 96 bodies, matched 65, and had no comparison errors.
+
+`004982E0`, `0049AB60`, `0049B560`, `0049BD20`, `0049BD70`, `0049C540`,
+and `0049CEA0` matched as observations. `0049BEA0` mismatched by one byte.
+All eight rows remain nonexact.
+
+## Source cleanup audit
+
+The source cleanup removed opaque globals, raw palette writes, C-style casts,
+and cursor loops. It kept the existing exact rows except `0049A8A0`.
+
+The `scr_game_source_cleanup_audit` observed `0049A8A0` as a 76-byte mismatch.
+It also found one direct-target mismatch. Its status is now `scratch`.
+
+## PDB field layout
+
+The direct PDB field list replaces synthetic gaps and aliases with named
+message panels, `port_info`, three palette tables, and the cheat input string.
+Natural alignment preserves `sizeof(TRIBE_Screen_Game) == 0x7C4`.
+
+The layout audit compiled all 96 bodies, matched 66, and found no comparison
+errors. No current `matching` row regressed.
+
+## Policy cleanup
+
+The policy cleanup removed stack overlays, synthetic carriers, raw globals, and
+cursor forms. It compiled all 96 bodies and matched 65.
+
+`0049B000` changed by 112 bytes. Its status is now `scratch`. Its exact owner
+registration was removed.
+
+## Interface correction
+
+The PDB class surface keeps all `TRIBE_Screen_Game` fields protected. Its three
+panel getters are public inline methods. `PortInfo::player_id` and `money` are
+`short` fields at offsets 0 and 12.
+
+The palette colors now initialize `anim_pal_table` directly. The constructor
+uses the string-ID `TButtonPanel::set_text(short, long)` overload.
+
+The natural control-flow cleanup replaces all decompiler gotos in the source.
+It covers `handle_game_update`, `key_down_action`, `action`, `setup_buttons`,
+`handle_terrain_sound`, and `command_tab_selected`.
+The broad `handle_game_update` and `action` results remain scratch.
+`0049B910 handle_terrain_sound` is scratch because its prior accepted-drift
+review covered the old goto-shaped source. The translation-unit registration
+still contains exact owners only.
+
+## Rebased integration proof
+
+The fresh grouped proof is `build/candidate_tus/scr_game_integration_proof`.
+It compiled all 96 owners. It found 64 matches and no comparison errors.
+
+The 20 unregistered `matching` rows all report `MATCH` and `0.0000%`. Their
+owner symbols, boundaries, and relocations also match. They remain unregistered
+until a registration review selects them. The screen group still registers its
+30 reviewed exact owners only.
+
+## Accepted-drift recheck
+
+The fresh grouped audit is `build/audit_accepted_drift_final2/report.txt`. It uses
+the current canonical screen and communications declarations. `00495AE0
+handle_size` is scratch: the grouped check reports 774 differing bytes after
+the module context is included. `0049ADA0 reset_clocks` is scratch with 561
+differing bytes and a different frame and block structure. `0049C0B0
+command_comm_info` is scratch with 124 differing bytes and two missing virtual
+calls. `0049A8F0 calc_text_msg` is also scratch. The fresh grouped audit did not
+emit its expected decorated symbol, so it cannot remain an exact owner.
+
+`00496550 handle_paint` remains accepted drift. Its fresh standalone check has
+34 differing bytes, the original 425-byte boundary, 13 aligned calls, matching
+control-flow counts, and 93.28% exact-block coverage. The difference is a
+localized scheduling and register-order change.
+
+## 2026-08-31 exact reconciliation
+
+The final shared ABI repairs make `004992E0 object_changed` and
+`0049BEA0 command_cancel` exact. Standalone checks report `MATCH`, `0.0000%`,
+correct owners, boundaries, relocations, direct targets, and aligned calls.
+
+## 2026-09-28 accepted-drift re-review
+
+The review used the local original `XPack/empiresx.exe`, SHA-256
+`88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
+See the four target notes under `workflow/decomp_notes/functions/0049/` for instruction
+addresses, behavior traces, state IDs, run events, and byte reports.
+
+The final single-job module audit compiled all 96 owners. Its report is
+`build/drift-016-scr_game/final-module-audit/report.txt`.
+It observed `00496550` at 34 changed bytes, `0049B910` at 13,
+`0049BDB0` at 29, and `0049C0B0` at 4. All four owners match.
+Each has zero relocation and boundary errors. The audit held the existing
+drift claims. It did not approve behavior or change registry status.
+
+No source change was retained. Direct-global spelling probes worsened
+`0049BDB0` and `0049C0B0`, so both functions returned to baseline source.
+The review did not run the game, a linked-image dependency audit, or audio and
+panel runtime checks. `0049BDB0` retains an open invalid-receiver/stack-fault
+ordering question.

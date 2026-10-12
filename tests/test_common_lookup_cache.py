@@ -37,7 +37,7 @@ class CommonLookupCacheTests(unittest.TestCase):
                 "name": "demo",
                 "source": "src/demo.cpp",
                 "functions": {
-                    "00001000": {"status": "scratch"},
+                    "00001000": {"status": "nonmatching"},
                     "00002000": {"status": "matching"},
                 },
             }
@@ -45,7 +45,7 @@ class CommonLookupCacheTests(unittest.TestCase):
         common.function_entries_by_va.cache_clear()
 
         with patch.object(common, "load_function_modules", return_value=modules) as load:
-            self.assertEqual(common.function_entry_for_va(0x1000)["status"], "scratch")
+            self.assertEqual(common.function_entry_for_va(0x1000)["status"], "nonmatching")
             self.assertEqual(common.function_entry_for_va("00002000")["status"], "matching")
 
         load.assert_called_once_with()

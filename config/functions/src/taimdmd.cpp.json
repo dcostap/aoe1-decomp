@@ -10,7 +10,7 @@
     "004E4B80": {"status": "matching", "symbol": "??0TribeMainDecisionAIModule@@QAE@HPADPAVTRIBE_Player@@H@Z"},
     "004E4EC0": {"status": "matching", "symbol": "??1TribeMainDecisionAIModule@@UAE@XZ"},
     "004E4FA0": {"status": "matching", "symbol": "?setLogHistory@TribeMainDecisionAIModule@@UAEXH@Z"},
-    "004E5050": {"status": "new_verified_logic", "symbol": "?update@TribeMainDecisionAIModule@@UAEHH@Z", "behavior_review": "logic_matching/004E5050/review-coord-16-004E5050-round-02-20260912/attempt-01"},
+    "004E5050": {"status": "accepted_logic", "symbol": "?update@TribeMainDecisionAIModule@@UAEHH@Z", "behavior_review": "logic_matching/004E5050/review-coord-16-004E5050-round-02-20260912/attempt-01"},
     "004E5DB0": {"status": "matching", "symbol": "?save@TribeMainDecisionAIModule@@UAEHH@Z"},
     "004E5F30": {"status": "matching", "symbol": "?kick@TribeMainDecisionAIModule@@QAEXH@Z"},
     "004E5FA0": {"status": "matching", "symbol": "?addObject@TribeMainDecisionAIModule@@UAEHPAVRGE_Static_Object@@@Z"},

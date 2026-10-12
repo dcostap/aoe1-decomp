@@ -18,6 +18,6 @@
     "0050DE50": {"status": "matching", "symbol": "?add_create@RGE_Timeline@@QAEPAURGE_Time_Entry@@MFEMMM@Z"},
     "0050DEF0": {"status": "matching", "symbol": "?add_move@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@MMM@Z"},
     "0050DF40": {"status": "matching", "symbol": "?add_delete@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@@Z"},
-    "0050DFD0": {"status": "new_verified_logic", "symbol": "?sub@RGE_Timeline@@QAEXPAURGE_Time_Entry@@@Z", "behavior_review": "logic_matching/0050DFD0/review-02/attempt-01"}
+    "0050DFD0": {"status": "accepted_logic", "symbol": "?sub@RGE_Timeline@@QAEXPAURGE_Time_Entry@@@Z", "behavior_review": "logic_matching/0050DFD0/review-02/attempt-01"}
   }
 }

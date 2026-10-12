@@ -94,7 +94,7 @@ class CandidateTranslationUnitTests(unittest.TestCase):
             "observed": {
                 "00401020": {
                     "source": "src/00401020_demo.cpp",
-                    "status": "scratch",
+                    "status": "nonmatching",
                 }
             },
             "generated": {"00401030": "??_GDemo@@UAEPAXI@Z"},
@@ -106,7 +106,7 @@ class CandidateTranslationUnitTests(unittest.TestCase):
             result = load_proposal(path)
 
         self.assertEqual(result["owners"]["00401010"], "src/00401010_demo.cpp")
-        self.assertEqual(result["observed"]["00401020"]["status"], "scratch")
+        self.assertEqual(result["observed"]["00401020"]["status"], "nonmatching")
         self.assertEqual(result["generated"]["00401030"], "??_GDemo@@UAEPAXI@Z")
 
     def test_load_proposal_rejects_va_in_two_sections(self) -> None:

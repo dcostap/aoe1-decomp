@@ -8,7 +8,7 @@
   "functions": {
     "0043FC70": {"status": "matching", "symbol": "??0TMessageDialog@@QAE@PAD@Z"},
     "0043FCD0": {"status": "matching", "symbol": "??1TMessageDialog@@UAE@XZ"},
-    "0043FD50": {"status": "new_verified_logic", "symbol": "?setup@TMessageDialog@@QAEJPAVTPanel@@PADJJJE1JJ@Z", "behavior_review": "logic_matching/0043FD50/review-01/attempt-01"},
+    "0043FD50": {"status": "accepted_logic", "symbol": "?setup@TMessageDialog@@QAEJPAVTPanel@@PADJJJE1JJ@Z", "behavior_review": "logic_matching/0043FD50/review-01/attempt-01"},
     "0043FFF0": {"status": "matching", "symbol": "?setup@TMessageDialog@@QAEJPAVTPanel@@PADJJJEHJJ@Z"},
     "00440070": {"status": "matching", "symbol": "?action@TMessageDialog@@UAEJPAVTPanel@@JKK@Z"},
     "00440100": {"status": "matching", "symbol": "?key_down_action@TMessageDialog@@UAEJJFHHH@Z"},

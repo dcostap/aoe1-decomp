@@ -1,9 +1,0 @@
-{
-  "base": "fd84d86f52e47aaff3ad55e4d74fd07dde4b9d48",
-  "patch": "decomp_notes\\candidates\\004D\\004DC750_complete_info_score_review.patch",
-  "patch_sha256": "a67a44ba770db39cea8eef759ef6866a292348150b44c2cdafdb8fe1a2aebdcc",
-  "files": {
-    "src/taiinfmd.cpp": "a01ea9f5cc5d1c5cd04f91e90a8a38d6ffb9cfe22ca12d7d6b585d4f68833c63"
-  },
-  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
-}

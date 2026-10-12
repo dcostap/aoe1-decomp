@@ -3,7 +3,7 @@ import json
 from common import REPO_ROOT
 from audit_global_initializers import read_storage
 
-STRING_EVIDENCE = REPO_ROOT / 'decomp_notes/executable_build_evidence/string_definitions.json'
+STRING_EVIDENCE = REPO_ROOT / 'workflow/decomp_notes/executable_build_evidence/string_definitions.json'
 
 
 def load_reviewed_storage(original):

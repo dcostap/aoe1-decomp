@@ -1,0 +1,16 @@
+{
+  "base": "767991a0b6ca728d3f009431454ad822926d4945",
+  "patch": "workflow\decomp_notes\\candidates\\004E\\004EA280_complete_original_parameter_names.patch",
+  "patch_sha256": "37c01272a937049c58551c43489a09c3ff173ecb42c9689ed5dfa53b90042c1f",
+  "files": {
+    "include/utmarray.h": "2ef337f7be6d2d8a9dbb739b590650ca09060c12fa4125ec50bf0adaf078770a",
+    "src/Command.cpp": "10a36011e3c1749b04e573034468458879afa3da2f9f1dd27a4cc2eaff4afbf0",
+    "src/aiuaimod.cpp": "a312ec7f7fd8acbaa134b6cfd6034cf11def953803b41ab11a1fe36fa0757038",
+    "src/pathsys.cpp": "63bc4d0d4b170991f7ded400333f3716f4205fdc00c9ac36394bd55f391cf709",
+    "src/taiinfmd.cpp": "e4f8e24936fb42d1e70fe66064cc01e9ac8f75959a66278bc4e3f67061cd26ed",
+    "src/taistrmd.cpp": "82575fa5eafaa9d516ffa9e44a17737cb892662dd9cd5b9f4c82563aa820b259",
+    "src/taitacmd.cpp": "d6339bddf714f470d749e7452c87433be84cf7983fc375817d74a5f6d2568599",
+    "src/taiuaimd.cpp": "c933ef591d48aa5e023968e3b0099bbbfcbf46c6aa920504fac883eb8b190f41"
+  },
+  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
+}

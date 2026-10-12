@@ -19,10 +19,10 @@
     "004BD9A0": {"status": "matching", "symbol": "??1TSpan_List_Manager@@QAE@XZ"},
     "004BDA00": {"status": "matching", "symbol": "?SetSpanRegions@TSpan_List_Manager@@QAEXHHHH@Z"},
     "004BDA70": {"status": "matching", "symbol": "?ResetAll@TSpan_List_Manager@@QAEXXZ"},
-    "004BDB00": {"status": "new_verified_logic", "symbol": "?AddSpan@TSpan_List_Manager@@QAEXHHH@Z", "behavior_review": "logic_matching/004BDB00/review-20260913T043318Z-coord07/attempt-01"},
-    "004BDEA0": {"status": "scratch", "symbol": "?AddShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"},
+    "004BDB00": {"status": "accepted_logic", "symbol": "?AddSpan@TSpan_List_Manager@@QAEXHHH@Z", "behavior_review": "logic_matching/004BDB00/review-20260913T043318Z-coord07/attempt-01"},
+    "004BDEA0": {"status": "nonmatching", "symbol": "?AddShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"},
     "004BDFA0": {"status": "matching", "symbol": "?AddShape_Align@TSpan_List_Manager@@QAEXPAEPAUShape_Info@@HHH@Z"},
-    "004BE090": {"status": "new_verified_logic", "symbol": "?AddLine_Align@TSpan_List_Manager@@QAEXHHHH@Z", "behavior_review": "logic_matching/004BE090/review-01/attempt-01"},
+    "004BE090": {"status": "accepted_logic", "symbol": "?AddLine_Align@TSpan_List_Manager@@QAEXHHHH@Z", "behavior_review": "logic_matching/004BE090/review-01/attempt-01"},
     "004BE1F0": {"status": "matching", "symbol": "?AddMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z"},
     "004BE240": {"status": "matching", "symbol": "?SubtractMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z"},
     "004BE290": {"status": "matching", "symbol": "?DeleteSpan@TSpan_List_Manager@@QAEXHHH@Z"},
@@ -33,7 +33,7 @@
     "004BE750": {"status": "matching", "symbol": "?ScrollSpansHorizontally@TSpan_List_Manager@@QAEXHH@Z"},
     "004BE850": {"status": "matching", "symbol": "?ScrollSpansVertically@TSpan_List_Manager@@QAEXHH@Z"},
     "004BE9E0": {"status": "matching", "symbol": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z"},
-    "004BEAD0": {"status": "scratch", "symbol": "?DecodeLine@TSpan_List_Manager@@QAEHPAEHEH@Z"},
-    "004BEB10": {"status": "scratch", "symbol": "?take_snapshot@TSpan_List_Manager@@QAEXPADAAHPAVTDrawArea@@HPAPAV1@PAHH@Z"}
+    "004BEAD0": {"status": "nonmatching", "symbol": "?DecodeLine@TSpan_List_Manager@@QAEHPAEHEH@Z"},
+    "004BEB10": {"status": "nonmatching", "symbol": "?take_snapshot@TSpan_List_Manager@@QAEXPADAAHPAVTDrawArea@@HPAPAV1@PAHH@Z"}
   }
 }

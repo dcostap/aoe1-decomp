@@ -5,7 +5,7 @@
 // Keep the short object_group field and existing integer parameter types.
 // The names are cleanup labels taken from the empires.dat members of each group, not developer names.
 // Group 11 (missiles, rubble, corpses, smoke) and the memberless groups 0x11, 0x1F, 0x21, and 0x26 stay
-// numeric. See decomp_notes/object_groups.md.
+// numeric. See workflow/decomp_notes/object_groups.md.
 #define OBJECT_GROUP_ARCHER          0
 #define OBJECT_GROUP_ARTIFACT        1
 #define OBJECT_GROUP_TRADE_BOAT      2
@@ -44,7 +44,7 @@
 // Master-object IDs, the index into RGE_Player::master_objects. Each name is the internal name that
 // the pinned XPack/data2/empires.dat gives that ID, spelled as a macro. 158, 159, and 163 use the
 // civilization spelling, not the Gaia list's "_Gaia" suffix. IDs with no record in that file have no
-// name. See decomp_notes/master_object_ids.md.
+// name. See workflow/decomp_notes/master_object_ids.md.
 #define MASTER_OBJECT_ACADEMY                  0
 #define MASTER_OBJECT_ALLIGATOR                1
 #define MASTER_OBJECT_SOLDIER_ARCHER1          4

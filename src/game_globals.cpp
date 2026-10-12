@@ -660,7 +660,7 @@ unsigned char die_die_die = 0;
 int useComputerPlayers = 1;
 
 // Original string storage. All current references have exact function evidence.
-// See decomp_notes/executable_build_evidence/string_definitions.json.
+// See workflow/decomp_notes/executable_build_evidence/string_definitions.json.
 char s_0[] = "0";
 char s_percent_d[] = "%d";
 char s_space[] = " ";

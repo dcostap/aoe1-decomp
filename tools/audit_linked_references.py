@@ -20,7 +20,7 @@ from audit_global_initializers import read_storage
 from common import load_functions
 
 ROOT = Path(__file__).resolve().parents[1]
-ORIGINAL = ROOT / 'orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe'
+ORIGINAL = ROOT / 'orig/empiresx.exe'
 
 
 def read_map(path):

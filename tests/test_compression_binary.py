@@ -16,7 +16,7 @@ from coff import load_coff_object
 from compression_binary import build_compression_object
 
 MANIFEST = ROOT / 'config/compression_binary.json'
-ORIGINAL = ROOT / 'orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe'
+ORIGINAL = ROOT / 'orig/empiresx.exe'
 
 
 def output_dir():

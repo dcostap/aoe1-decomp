@@ -1,0 +1,73 @@
+Exact candidate for 004F8C40 updateNeededResources.
+
+Target result: MATCH, 0.0000%, 478 bytes.
+Closure conflict: This source regressed exact 004FB710 taskResearch by four bytes on main commit 98b53bb1d.
+The compiled owner remains src/taitacmd.cpp. This file is evidence only.
+
+Apply with:
+  git apply workflow/decomp_notes/candidates/004F/004F8C40_exact_candidate.patch
+
+diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index 6fd76f59d..48275ddb9 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -6639,8 +6639,6 @@ void TribeTacticalAIModule::updateNeededResources()
+     int tempResourceDifference[4];
+     int i;
+     int* diffPtr;
+-    int* tempNeededPtr;
+-    int* tempDifferencePtr;
+     int bestResource;
+     int bestDifference;
+     int offset;
+@@ -6648,31 +6646,20 @@ void TribeTacticalAIModule::updateNeededResources()
+     this->md->buildAI.mostNeededResource(this->neededResources, this->sn[0x93]);
+ 
+     i = 0;
+-    tempResourceDifference[0] = -1;
+-    tempNeededResource[0] = -1;
+-    assignedResource[0] = 0;
+-    tempResourceDifference[1] = -1;
+-    tempNeededResource[1] = -1;
+-    assignedResource[1] = 0;
+-    tempResourceDifference[2] = -1;
+-    tempNeededResource[2] = -1;
+-    assignedResource[2] = 0;
+     diffPtr = this->resourceDifferenceValue;
+-    tempResourceDifference[3] = -1;
+-    tempNeededResource[3] = -1;
+-    assignedResource[3] = 0;
++    for (int init = 0; init < 4; init++) {
++        assignedResource[init] = 0;
++        tempNeededResource[init] = -1;
++        tempResourceDifference[init] = -1;
++    }
+ 
+     do {
+-        int resource = this->md->resourceAI.resource(i);
+-        int needed = this->neededResources.value(i);
++        *diffPtr = this->md->resourceAI.resource(i) - this->neededResources.value(i);
+         i++;
+-        *diffPtr = resource - needed;
+         diffPtr++;
+     } while (i < 4);
+ 
+     offset = 0;
+-    tempNeededPtr = tempNeededResource;
+-    tempDifferencePtr = tempResourceDifference;
+     do {
+         bestResource = -1;
+         bestDifference = 0x7fffffff;
+@@ -6720,10 +6707,8 @@ next_resource:
+         }
+ 
+         assignedResource[bestResource] = 1;
+-        *tempNeededPtr = bestResource;
+-        *tempDifferencePtr = bestDifference;
+-        tempNeededPtr++;
+-        tempDifferencePtr++;
++        *(int*)((char*)tempNeededResource + offset) = bestResource;
++        *(int*)((char*)tempResourceDifference + offset) = bestDifference;
+         offset += 4;
+     } while (offset < 0x10);
+ 

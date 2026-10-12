@@ -1,0 +1,10 @@
+{
+  "base": "b3dfb97c03ab40b60cc46c4340d051624e290863",
+  "patch": "workflow\decomp_notes\\candidates\\004F\\004F4760_complete_play_fill_review_checkpoint.patch",
+  "patch_sha256": "170e6a4b565d3828c8dece1a1ed681743661cac42e7012179ef258c2f9fdd9ce",
+  "files": {
+    "src/stat_obj.cpp": "85c4311ca47b7a12723c271bb7ed2b6880d64e606af49c9865120e486c595200",
+    "src/taitacmd.cpp": "4862725432aa82ddabe8ebef02d35ec0ee60066de23b17b42b42f88f24ab0e65"
+  },
+  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
+}

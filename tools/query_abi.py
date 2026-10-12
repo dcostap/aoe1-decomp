@@ -43,7 +43,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--include-nonexact",
         action="store_true",
-        help="Include accepted_drift, verified_logic, new_verified_logic, and scratch source references after exact evidence.",
+        help="Include accepted_drift, accepted_logic, and nonmatching source references after exact evidence.",
     )
     parser.add_argument("--limit", type=int, default=0, help="Maximum source evidence rows (default 0, unlimited).")
     parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
@@ -141,7 +141,7 @@ def _function_source_text(va: str) -> str:
     if record is None:
         return ""
     slug = function_slug(record)
-    for bucket in ("matching", "accepted_drift", "verified_logic", "new_verified_logic", "scratch"):
+    for bucket in ("matching", "accepted_drift", "accepted_logic", "nonmatching"):
         for suffix in (".c", ".cpp"):
             path = REPO_ROOT / "src" / bucket / f"{slug}{suffix}"
             if path.exists():
@@ -224,7 +224,7 @@ def class_matches(
 
 def _source_paths(include_nonexact: bool) -> list[tuple[str, Path]]:
     result: dict[Path, str] = {}
-    precedence = ("matching", "accepted_drift", "verified_logic", "new_verified_logic", "scratch", "unresolved")
+    precedence = ("matching", "accepted_drift", "accepted_logic", "nonmatching", "unresolved")
     for module in load_function_modules():
         functions = module.get("functions")
         if not isinstance(functions, dict):

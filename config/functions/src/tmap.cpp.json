@@ -14,8 +14,8 @@
     "0050F7F0": {"status": "matching", "symbol": "?map_generate@TRIBE_Map@@QAEXPAURGE_Player_Info@@@Z"},
     "0050F800": {"status": "matching", "symbol": "?data_load_random_map@TRIBE_Map@@UAEXH@Z"},
     "0050F860": {"status": "matching", "symbol": "?load_random_map@TRIBE_Map@@UAEXPAD000@Z"},
-    "0050F8D0": {"status": "new_verified_logic", "symbol": "?check_tile_for_forest_change@TRIBE_Map@@QAEXFFPAVRGE_Game_World@@@Z", "behavior_review": "logic_matching/0050F8D0/review-01/attempt-01"},
-    "0050FA90": {"status": "new_verified_logic", "symbol": "?change_terrain@TRIBE_Map@@QAEXFFEPAVRGE_Game_World@@@Z", "behavior_review": "logic_matching/0050FA90/review-01/attempt-01"},
+    "0050F8D0": {"status": "accepted_logic", "symbol": "?check_tile_for_forest_change@TRIBE_Map@@QAEXFFPAVRGE_Game_World@@@Z", "behavior_review": "logic_matching/0050F8D0/review-01/attempt-01"},
+    "0050FA90": {"status": "accepted_logic", "symbol": "?change_terrain@TRIBE_Map@@QAEXFFEPAVRGE_Game_World@@@Z", "behavior_review": "logic_matching/0050FA90/review-01/attempt-01"},
     "0050FC40": {"status": "matching", "symbol": "?do_terrain_brush@TRIBE_Map@@UAEEJJJE@Z"},
     "0050FD40": {"status": "matching", "symbol": "?do_terrain_brush_stroke@TRIBE_Map@@UAEEJJJJJE@Z"},
     "0050FDD0": {"status": "matching", "symbol": "?do_elevation_brush_stroke@TRIBE_Map@@UAEEJJJJJE@Z"},
@@ -34,6 +34,6 @@
     "00510CB0": {"status": "matching", "symbol": "?clean_borders@TRIBE_Map@@QAEXJJJJE@Z"},
     "00511000": {"status": "matching", "symbol": "?do_terrain_brush_check@TRIBE_Map@@QAEEJJ@Z"},
     "005110E0": {"status": "matching", "symbol": "?tribe_clean_elevation@TRIBE_Map@@QAEXJJJJ@Z"},
-    "005111A0": {"status": "new_verified_logic", "symbol": "?tribe_clean_terrain@TRIBE_Map@@QAEXJJJJEE@Z", "behavior_review": ["logic_matching/005111A0/coord-11-review-20260913T093000Z/attempt-01", "logic_matching/005111A0/coord-11-dual-review-02-20260913T100000Z/attempt-01"]}
+    "005111A0": {"status": "accepted_logic", "symbol": "?tribe_clean_terrain@TRIBE_Map@@QAEXJJJJEE@Z", "behavior_review": ["logic_matching/005111A0/coord-11-review-20260913T093000Z/attempt-01", "logic_matching/005111A0/coord-11-dual-review-02-20260913T100000Z/attempt-01"]}
   }
 }

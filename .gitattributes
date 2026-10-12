@@ -1,10 +1,10 @@
 * text=auto eol=lf
 *.bat text eol=crlf
 *.cmd text eol=crlf
-decomp_notes/experiments/objects/** -text -diff
-decomp_notes/experiments/states/** -text
-decomp_notes/experiments/events/** -text
-decomp_notes/candidates/**/*.patch -whitespace
+workflow/decomp_notes/experiments/objects/** -text -diff
+workflow/decomp_notes/experiments/states/** -text
+workflow/decomp_notes/experiments/events/** -text
+workflow/decomp_notes/candidates/**/*.patch -whitespace
 logic_matching/** -text
 logic_matching/**/*.patch -whitespace
 logic_matching/**/*.zip -diff

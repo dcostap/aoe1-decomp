@@ -12,7 +12,7 @@ from audit_translation_unit_functions import (  # noqa: E402
 )
 
 
-def status(bucket: str = "scratch") -> dict[str, str]:
+def status(bucket: str = "nonmatching") -> dict[str, str]:
     return {
         "source_bucket": bucket,
         "diff_result": "MISMATCH",
@@ -52,36 +52,36 @@ def test_accepted_drift_mismatch_stays_closed() -> None:
     assert action == "hold_accepted_drift"
 
 
-def test_new_verified_logic_does_not_enter_byte_matching_work() -> None:
+def test_accepted_logic_does_not_enter_byte_matching_work() -> None:
     for result in ("MATCH", "MISMATCH"):
         category, action, _ = classify(
-            status("new_verified_logic"), comparison(result), False, False, []
+            status("accepted_logic"), comparison(result), False, False, []
         )
-        assert category == "new_verified_logic_observed"
-        assert action == "hold_new_verified_logic"
+        assert category == "accepted_logic_observed"
+        assert action == "hold_accepted_logic"
 
 
-def test_new_verified_logic_still_reports_proved_structural_errors() -> None:
+def test_accepted_logic_still_reports_proved_structural_errors() -> None:
     for compared, expected in (
         (comparison(relocations=1), "repair_relocation_targets"),
         (comparison(owner="unverified"), "investigate_ownership"),
         (comparison("NOT_EMITTED"), "repair_missing_symbol"),
     ):
-        _, action, _ = classify(status("new_verified_logic"), compared, False, False, [])
+        _, action, _ = classify(status("accepted_logic"), compared, False, False, [])
         assert action == expected
 
 
-def test_new_verified_logic_holds_unproved_relocation_candidates() -> None:
+def test_accepted_logic_holds_unproved_relocation_candidates() -> None:
     compared = comparison()
     compared["relocation_target_unknowns"] = 1
-    category, action, _ = classify(status("new_verified_logic"), compared, False, False, [])
-    assert category == "new_verified_logic_observed"
-    assert action == "hold_new_verified_logic"
+    category, action, _ = classify(status("accepted_logic"), compared, False, False, [])
+    assert category == "accepted_logic_observed"
+    assert action == "hold_accepted_logic"
 
 
-def test_new_verified_logic_does_not_require_original_body_size() -> None:
-    _, action, _ = classify(status("new_verified_logic"), comparison(boundaries=1), False, False, [])
-    assert action == "hold_new_verified_logic"
+def test_accepted_logic_does_not_require_original_body_size() -> None:
+    _, action, _ = classify(status("accepted_logic"), comparison(boundaries=1), False, False, [])
+    assert action == "hold_accepted_logic"
 
 
 def test_zero_byte_owner_failure_becomes_ownership_task() -> None:
@@ -145,7 +145,7 @@ def test_queue_assigns_overlapping_va_to_largest_exact_context() -> None:
         "va": "00401000",
         "name": "target",
         "source_path": "src/00401000_target.cpp",
-        "source_bucket": "scratch",
+        "source_bucket": "nonmatching",
         "matching_groups": [],
         "grouped_result": "MATCH",
         "grouped_diff_bytes": 0,
@@ -190,7 +190,7 @@ def test_queue_retains_exact_policy_review() -> None:
             "va": "00401000",
             "name": "target",
             "source_path": "src/00401000_target.cpp",
-            "source_bucket": "scratch",
+            "source_bucket": "nonmatching",
             "matching_groups": [],
             "grouped_result": "MATCH",
             "grouped_diff_bytes": 0,

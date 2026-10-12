@@ -19,9 +19,9 @@ from extract_obj_function import (  # noqa: E402
 
 
 class ExtractObjFunctionTests(unittest.TestCase):
-    def test_scratch_entry_uses_configured_symbol(self) -> None:
+    def test_nonmatching_entry_uses_configured_symbol(self) -> None:
         entry = {
-            "status": "scratch",
+            "status": "nonmatching",
             "symbol": "?create@Thing@@QAEHPAPAD@Z",
         }
 

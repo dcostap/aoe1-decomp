@@ -1,65 +1,76 @@
-# Repository-wide agent contract
+# Agent contract
 
-Pi runs shell commands through Bash. Use forward slashes in Bash command paths.
-Unquoted Windows backslashes can become escapes.
+This file holds the rules every agent follows in this repository.
+Role-specific procedures live in `workflow/`.
 
-This file contains universal rules. Keep role-specific procedures in workflow documents.
+On Windows, use forward slashes in Bash command paths. Unquoted backslashes can become escapes.
+
 ## Understand your role
 
-The assigning prompt or assigned task(s) define your role and instructions. If not sure, ask the user or the agent that spawned you.
+The assigning prompt or task defines your role. If you are not sure, ask the user or the agent that spawned you.
 
-There are extra reusable documents that contain specific instructions. Read the documents if clearly related to your role. They are in `agent_roles`.
+Reusable role documents live in `workflow/agent_roles/`. Read the ones that clearly match your role.
+Workflow guides live in `workflow/docs/`. For source-cleanup work, read
+`workflow/docs/source_cleanup.md`, `workflow/docs/source_comments.md`, and `workflow/docs/resource_ids.md`.
 
-For source-cleanup assignments, read `docs/source_cleanup.md`, `docs/source_comments.md`, and `docs/resource_ids.md`.
-Use that workflow rather than the default matching-worker procedure.
-
-## Universal correctness rules
+## Correctness rules
 
 - The project is function-first and evidence-first.
-- The original executable is the behavior oracle.
-- PDB, Ghidra, generated inventories, and comments are reference evidence.
-- Use the repo-local original files under
-  `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`.
-- Use the pinned VC5 host toolchain from `config\toolchain.json`.
-- Baseline compiler flags come from `config\flags\default.rsp`. Use the configured
+- The original executable, `orig/empiresx.exe`, is the behavior oracle.
+- The PDB, Ghidra output, generated inventories, and comments are reference evidence, not oracles.
+- Use the VC5 toolchain from `config/toolchain.json`. `$VC5_DIR` in it comes from the
+  `VC5_DIR` environment variable, defaulting to `C:\Program Files (x86)\DevStudio`.
+- Baseline compiler flags come from `config/flags/default.rsp`. Use the configured
   target or translation-unit response file when one exists.
 - Exactness requires positional byte equality.
-- Exactness also requires the original boundary, provable owning symbol, and known direct call or tail-jump symbol identity.
+- Exactness also requires the original boundary, a provable owning symbol, and known direct call or tail-jump symbol identity.
 
 Inline assembly is forbidden for real functions unless explicitly allowed.
 This includes `__asm`, `_asm`, naked functions, and handwritten wrappers.
 
 Padding-only pseudo-functions may use byte filler when the complete body has no
 behavior, memory effect, call, or real control flow. Padding status must be
-reviewed and listed in `config\padding_only_functions.txt`.
+reviewed and listed in `config/padding_only_functions.txt`.
 
 ## Source-recovery standard
 
 ### Approved binary dependencies
 
-The user permits two original binary dependencies for executable integration:
+Two original binary pieces are allowed in the executable build:
 
 - the external compression library, scoped by `config/compression_binary.json`; and
 - the connected drawing assembly engine, scoped by `config/drawing_binary.json`.
 
-Build these dependencies as hash-checked, relocatable COFF objects.
-This permission does not extend to ordinary game functions or other assembly regions.
-Retain recovered drawing assembly and its probes for future source recovery.
+Build them as hash-checked, relocatable COFF objects.
+This does not extend to ordinary game functions or other assembly regions.
 Do not link duplicate drawing exports or split the engine's shared mutable state.
-Binary preservation is not complete source recovery or proof of gameplay correctness.
+Binary preservation is not source recovery or proof of gameplay correctness.
 
-Decompiler output describes effects. It is not a source template. Do not retain
+Decompiler output describes effects. It is not a source template. Do not keep
 raw cursor arithmetic, fake helpers, fake volatility, manual vtables, redundant
 aliases, or forced scheduling without binary evidence.
 
-An unusual source form can remain only when one condition applies:
+An unusual source form can stay only when one of these applies:
 
 - period source or exact donors support it;
-- it produces an exact result without violating policy; or
+- it produces an exact result without breaking these rules; or
 - binary evidence proves behavior that a simpler form loses.
 
 Preserve original bugs, narrow widths, overlap, aliasing, evaluation order, and
 fault order when the executable proves them.
+
+## Function status
+
+Each normal function has one status in `config/functions/`:
+
+- `matching`: byte-identical to the original;
+- `accepted_drift`: same behavior, small reviewed compiler-output differences;
+- `accepted_logic`: same behavior proved by review, code differs more;
+- `nonmatching`: work in progress;
+- `unresolved`: source exists, but no single compiler recipe can be proved.
+
+Exact matching and accepted drift have equal value. Choose by source and behavior
+evidence, not by a preference for zero byte differences.
 
 ## Corpus and source ownership
 
@@ -73,17 +84,16 @@ The corpus buckets are:
 - `asm_special`: named handwritten assembly;
 - `asm_region`: assembly, codelet, or data-dispatch neighborhoods.
 
-Repository source roles are:
+Repository roles:
 
-- `inventory\`: generated reference material; do not edit it;
-- `include\`: reviewed shared declarations and layouts;
-- `src\game_globals.cpp`: reviewed shared global definitions;
-- natural `src\*.c` and `src\*.cpp` modules: compiler-facing handwritten owners;
-- `config\functions\`: source, status, build recipe, and symbol registry;
-- `decomp_notes\`: durable function and module notes;
-- `logic_reviews\`: versioned semantic-review ledgers for the older workflows;
-- `logic_matching\`: generated behavior-recovery payloads and reviewer commit records;
-- `LESSONS.md`: reusable VC5 matching knowledge.
+- `inventory/`: generated reference material (local only); do not edit it;
+- `include/`: reviewed shared declarations and layouts;
+- `src/game_globals.cpp`: reviewed shared global definitions;
+- natural `src/*.c` and `src/*.cpp` modules: compiler-facing handwritten owners;
+- `config/functions/`: source, status, build recipe, and symbol registry;
+- `workflow/decomp_notes/`: durable function and module notes;
+- `workflow/logic_reviews/`: semantic-review ledgers from the older workflows;
+- `workflow/vc5_lessons.md`: reusable VC5 matching knowledge.
 
 The source tree uses final, original-like modules:
 
@@ -92,21 +102,15 @@ The source tree uses final, original-like modules:
 - one registry file under `config/functions/` owns each natural source file;
 - wrapper files, function fragments, and context-selection macros are forbidden.
 
-`unresolved` means source exists, but one compiler recipe cannot be proved.
-Header-owned functions and PDB modules without procedure records can use it.
-
 Every normal function must appear once in the function registry.
 A buildable function must have one symbol and one module flag profile.
 
 A VA has one compiler-facing source owner. Never keep duplicate owners across
 modules or headers. Edit only that natural owner.
 
-Exact matching and accepted drift have equal value. Choose by source and behavior
-evidence, not by a preference for zero byte differences.
-
 ## Repo conduct
 
-Keep compiler outputs and experiments under `build\`. Do not write generated
+Keep compiler outputs and experiments under `build/`. Do not write generated
 artifacts into tracked source directories.
 
 Do not change existing line endings without a functional reason.
@@ -114,14 +118,10 @@ Do not change existing line endings without a functional reason.
 Markdown files define policy and workflow, not command syntax. Before you use a
 repository tool, run its `--help`. Treat that output as the command reference.
 
-Use the harness `everything_search` tool for recursive path discovery. Use `rg`
-for file content searches. Do not recursively enumerate the repository with
-`find` when Everything can answer the query.
-
 ## Testing
 
-Read [the testing guide](docs/testing.md) before planning validation or reporting project test results.
-It defines the separate checks, build selection, reports, and coverage limits. There is no universal test command.
+Read `workflow/docs/testing.md` before planning validation or reporting project test results.
+There is no universal test command. `python -m pytest -q tests` checks the tools only.
 Report which stages ran. Keep failures, skips, unknowns, and untested areas visible.
 
 ## Evidence and communication
@@ -129,11 +129,11 @@ Report which stages ran. Keep failures, skips, unknowns, and untested areas visi
 Separate facts from hypotheses. State the source of each important conclusion.
 Do not call generated metadata a behavior oracle.
 
-Record durable target conclusions in the target source, assigned ledger, or behavior-recovery commit record.
+Record durable conclusions in the target source, the function note, or the review ledger.
 Do not rely on ignored session files as the only record.
 
-Add a reusable lesson only after a non-obvious pattern is supported by exact or
-strong repeated evidence. Keep function-specific history out of `LESSONS.md`.
+Add a lesson to `workflow/vc5_lessons.md` only after a non-obvious pattern is supported
+by exact or strong repeated evidence. Keep function-specific history out of it.
 
 When work stops, report the result, changed files, validation, open questions,
 and useful possible approaches. A documented unresolved result is valid.

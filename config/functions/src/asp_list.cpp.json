@@ -14,7 +14,7 @@
     "0041A860": {"status": "matching", "symbol": "?delete_list@RGE_Active_Sprite_List@@QAEXXZ"},
     "0041A8B0": {"status": "matching", "symbol": "?copy_sprite_list@RGE_Active_Sprite_List@@QAEPAURGE_Active_Sprite_Node@@XZ"},
     "0041A8F0": {"status": "matching", "symbol": "?use_sprite_list@RGE_Active_Sprite_List@@QAEXPAURGE_Active_Sprite_Node@@@Z"},
-    "0041A910": {"status": "new_verified_logic", "symbol": "?add_sprite@RGE_Active_Sprite_List@@QAEXPAVRGE_Sprite@@EJJ@Z", "behavior_review": "logic_matching/0041A910/coord-sa6be4b4e8-review-20260913T130000Z/attempt-01"},
+    "0041A910": {"status": "accepted_logic", "symbol": "?add_sprite@RGE_Active_Sprite_List@@QAEXPAVRGE_Sprite@@EJJ@Z", "behavior_review": "logic_matching/0041A910/coord-sa6be4b4e8-review-20260913T130000Z/attempt-01"},
     "0041A9B0": {"status": "matching", "symbol": "?remove_sprite@RGE_Active_Sprite_List@@QAEXPAVRGE_Sprite@@@Z"},
     "0041AA20": {"status": "matching", "symbol": "?update@RGE_Active_Sprite_List@@UAEXMM@Z"},
     "0041AA50": {"status": "matching", "symbol": "?draw@RGE_Active_Sprite_List@@UAEXFFFFFPAVRGE_Color_Table@@PAVTDrawArea@@@Z"},

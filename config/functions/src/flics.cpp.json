@@ -17,7 +17,7 @@
     "00449E80": {"status": "matching", "symbol": "?reset@RGE_Flic_Player@@QAEXXZ"},
     "00449E90": {"status": "matching", "symbol": "?draw@RGE_Flic_Player@@QAEEPAVTDrawArea@@JJ@Z"},
     "0044A090": {"status": "matching", "symbol": "?literal@RGE_Flic_Player@@AAEXXZ"},
-    "0044A100": {"status": "new_verified_logic", "symbol": "?delta_flc@RGE_Flic_Player@@AAEXXZ", "behavior_review": "logic_matching/0044A100/review-01/attempt-01"},
+    "0044A100": {"status": "accepted_logic", "symbol": "?delta_flc@RGE_Flic_Player@@AAEXXZ", "behavior_review": "logic_matching/0044A100/review-01/attempt-01"},
     "0044A2A0": {"status": "matching", "symbol": "?delta_fli@RGE_Flic_Player@@AAEXXZ"},
     "0044A390": {"status": "matching", "symbol": "?black@RGE_Flic_Player@@AAEXXZ"},
     "0044A3E0": {"status": "matching", "symbol": "?byte_run@RGE_Flic_Player@@AAEXXZ"}

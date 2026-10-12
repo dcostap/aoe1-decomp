@@ -6,7 +6,7 @@ from functools import lru_cache
 import hashlib
 import json
 
-from common import CONFIG_DIR, REPO_ROOT, load_pdb_function_source_map
+from common import CONFIG_DIR, REPO_ROOT, expand_vc5_dir, load_pdb_function_source_map
 from original_fpo import load_original_owner_symbols
 
 
@@ -35,7 +35,7 @@ def original_identities() -> dict[int, dict]:
     if path.exists():
         reviewed = json.loads(path.read_text())
         for name, expected_hash in reviewed['inputs'].items():
-            if hashlib.sha256((REPO_ROOT / name).read_bytes()).hexdigest() != expected_hash:
+            if hashlib.sha256((REPO_ROOT / expand_vc5_dir(name)).read_bytes()).hexdigest() != expected_hash:
                 raise ValueError(f'Reviewed identity input changed: {name}')
         for address, row in reviewed['targets'].items():
             va = int(address, 16)
@@ -81,6 +81,6 @@ def validation_fingerprint() -> str:
              'config/original_owner_symbol_overrides.txt', 'config/original_symbol_overrides.txt',
              'config/parent_owned_fragments.txt', 'config/binaries.json',
              'config/reviewed_reference_identities.json']
-    rows = [(name, hashlib.sha256((REPO_ROOT / name).read_bytes()).hexdigest()
+    rows = [(name, hashlib.sha256((REPO_ROOT / expand_vc5_dir(name)).read_bytes()).hexdigest()
              if (REPO_ROOT / name).is_file() else None) for name in names]
     return hashlib.sha256(json.dumps(rows).encode()).hexdigest()

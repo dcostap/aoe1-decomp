@@ -26,7 +26,7 @@
 
 # Release/tech.obj contribution 0050B840-0050D456. Original S_PUB32 records
 # independently name every entry despite missing procedure streams.
-# See decomp_notes/tech_public_identity_review.md for mapping and evidence limits.
+# See workflow/decomp_notes/tech_public_identity_review.md for mapping and evidence limits.
 0050B840 ??0TRIBE_Tech@@QAE@HPAVTRIBE_World@@@Z global
 0050BB84 ??0TRIBE_Tech@@QAE@PAD@Z global
 0050BF28 ??1TRIBE_Tech@@QAE@XZ global

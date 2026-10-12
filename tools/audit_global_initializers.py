@@ -13,7 +13,7 @@ import pefile
 from linked_inputs import verify_build
 
 ROOT = Path(__file__).resolve().parents[1]
-ORIGINAL = ROOT / 'orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe'
+ORIGINAL = ROOT / 'orig/empiresx.exe'
 PRIMITIVES = {'T_RCHAR': 1, 'T_CHAR': 1, 'T_UCHAR': 1, 'T_SHORT': 2,
               'T_USHORT': 2, 'T_LONG': 4, 'T_ULONG': 4, 'T_INT4': 4,
               'T_UINT4': 4, 'T_REAL32': 4, 'T_REAL64': 8, 'T_QUAD': 8,

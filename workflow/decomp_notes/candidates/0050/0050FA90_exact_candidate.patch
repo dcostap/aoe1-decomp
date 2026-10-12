@@ -1,0 +1,43 @@
+Exact candidate for 0050FA90 change_terrain.
+
+Follow-up validation by wrap-alpha-257 at main commit
+fe8aea3317bc563e88a23d5d691465de94543f56:
+the target still returns MATCH, 0.0000%, 427 bytes. A fresh one-job tmap
+audit at build/worker_wrap_alpha_257_terrain_candidate/report.txt keeps the
+candidate closure rejected because 00510110 make_new_cliff differs by three
+bytes. The clean source audit at build/worker_wrap_alpha_257/report.txt keeps
+00510110 exact and restores 0050FA90 to its one-byte boundary mismatch.
+
+Target result: MATCH, 0.0000%, 427 bytes.
+Closure result: Rejected. The full tmap closure regressed exact owner
+00510110 make_new_cliff from MATCH to a 3-byte mismatch. The candidate shrinks
+0050FA90 from the natural 428-byte body to 427 bytes. That shifts the successor
+owner in the grouped object and breaks its original positional boundary.
+
+Tested main commit: f539bd5a9ded6bc760a9479f80e3da6890b60545.
+Target check: python tools/target_session.py check --va 0050FA90 --owner
+wrap-alpha-066 --kind variant ... -> MATCH, 0.0000%, 427 bytes.
+Candidate closure: python tools/audit_translation_unit_functions.py --group
+tmap --jobs 1 --output-dir build/worker_wrap_alpha_066 -> target MATCH;
+00510110 MISMATCH, 3 bytes. Natural baseline closure is in
+build/worker_wrap_alpha_066_baseline/report.txt.
+
+The candidate reads the proven four-byte x argument home, then narrows it to
+short for the typed tile index. This matches the original dword load, but the
+stack overlay is not canonical source. Keep this patch as evidence only.
+
+Apply with:
+  git apply workflow/decomp_notes/candidates/0050/0050FA90_exact_candidate.patch
+
+diff --git a/src/tmap.cpp b/src/tmap.cpp
+--- a/src/tmap.cpp
++++ b/src/tmap.cpp
+@@ -188,6 +188,7 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
+     short row_end;
+     short col;
+ 
+-    tile = this->map_row_offset[y] + x;
++    int x_word = *(int*)(void*)&x;
++    tile = this->map_row_offset[y] + (short)x_word;
+     old_border = tile->terrain_type;
+     tile->terrain_type = terrain;

@@ -25,7 +25,7 @@ class QueryAbiTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "config").mkdir(parents=True)
-            (root / "src" / "scratch").mkdir(parents=True)
+            (root / "src" / "nonmatching").mkdir(parents=True)
             (root / "config" / "shared_abi_evidence.json").write_text(
                 '{"version":1,"globals":[{'
                 '"name":"known_global","storage_va":"00123456",'
@@ -35,7 +35,7 @@ class QueryAbiTests(unittest.TestCase):
                 '}]}',
                 encoding="utf-8",
             )
-            (root / "src" / "scratch" / "00001000_demo.cpp").write_text(
+            (root / "src" / "nonmatching" / "00001000_demo.cpp").write_text(
                 "void demo() { if (known_global) return; }\n", encoding="utf-8"
             )
             record = {
@@ -81,7 +81,7 @@ class QueryAbiTests(unittest.TestCase):
             (source / "work.cpp").write_text("void helper(short);\n", encoding="utf-8")
             modules = [
                 {"source": "src/exact.cpp", "functions": {"00001000": {"status": "matching"}}},
-                {"source": "src/work.cpp", "functions": {"00002000": {"status": "scratch"}}},
+                {"source": "src/work.cpp", "functions": {"00002000": {"status": "nonmatching"}}},
             ]
             with (
                 patch.object(query_abi, "REPO_ROOT", root),
@@ -90,7 +90,7 @@ class QueryAbiTests(unittest.TestCase):
                 exact = query_abi.source_evidence("helper")
                 all_rows = query_abi.source_evidence("helper", include_nonexact=True)
             self.assertEqual([row["bucket"] for row in exact], ["matching"] * 5)
-            self.assertEqual({row["bucket"] for row in all_rows}, {"matching", "scratch"})
+            self.assertEqual({row["bucket"] for row in all_rows}, {"matching", "nonmatching"})
 
     def test_symbol_class_lookup_can_find_method_without_dumping_unrelated_methods(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -119,7 +119,7 @@ class QueryAbiTests(unittest.TestCase):
         rows = [
             {"kind": "declaration_candidate", "text": "void f(int);", "bucket": "matching", "path": "a", "line": 1},
             {"kind": "declaration_candidate", "text": "void  f(int);", "bucket": "matching", "path": "b", "line": 2},
-            {"kind": "declaration_candidate", "text": "int f(short);", "bucket": "scratch", "path": "c", "line": 3},
+            {"kind": "declaration_candidate", "text": "int f(short);", "bucket": "nonmatching", "path": "c", "line": 3},
             {"kind": "call_or_multiline_signature", "text": "f(1);", "bucket": "matching", "path": "d", "line": 4},
         ]
         candidates = query_abi.declaration_candidates(rows, "f")

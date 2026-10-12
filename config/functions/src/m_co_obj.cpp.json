@@ -11,7 +11,7 @@
     "0044FF30": {"status": "matching", "symbol": "??0RGE_Master_Combat_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
     "0044FFB0": {"status": "matching", "symbol": "?setup@RGE_Master_Combat_Object@@IAEHPAV1@@Z"},
     "00450170": {"status": "matching", "symbol": "?setup@RGE_Master_Combat_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
-    "00450450": {"status": "scratch", "symbol": "?setup@RGE_Master_Combat_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "00450450": {"status": "nonmatching", "symbol": "?setup@RGE_Master_Combat_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
     "00450680": {"status": "matching", "symbol": "??1RGE_Master_Combat_Object@@UAE@XZ"},
     "004506D0": {"status": "matching", "symbol": "?make_new_obj@RGE_Master_Combat_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z"},
     "004507A0": {"status": "matching", "symbol": "?make_new_master@RGE_Master_Combat_Object@@UAEPAVRGE_Master_Static_Object@@XZ"},

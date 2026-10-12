@@ -19,7 +19,7 @@ from prepare_runtime import DEFAULT_SOURCE, ORIGINAL_SHA256, digest, prepare
 
 ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "build/game"
-ORIGINAL = ROOT / "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe"
+ORIGINAL = ROOT / "orig/empiresx.exe"
 DEFAULT_ARGUMENTS = ["NOSTARTUP", "GAMECD"]
 SERIAL_HARNESS_ERROR = (
     "Parallel harness workers are disabled for now because parallel runs showed "

@@ -26,7 +26,7 @@ from function_compare import compile_source, compare_object_function
 
 
 _INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"]+)"(?:\s*//.*)?\s*$')
-_SOURCE_BANKS = {"matching", "accepted_drift", "verified_logic", "new_verified_logic", "scratch"}
+_SOURCE_BANKS = {"matching", "accepted_drift", "accepted_logic", "nonmatching"}
 _INLINE_ASM = re.compile(r"\b(?:__asm|_asm)\b")
 _FAKE_VIRTUAL_SLOT = re.compile(
     r"\bvirtual\b[^;{]*(?:\bvf[0-9A-Fa-f]{2,}\b|\bvpad[0-9A-Fa-f]{2,}\b)"
@@ -142,7 +142,7 @@ def parse_args() -> argparse.Namespace:
             "    \"module\": \"PDB_file.cpp\", \"source\": \"src/module.cpp\",\n"
             "    \"flags\": \"config/flags/module.rsp\",\n"
             "    \"owners\": {\"00401000\": \"src/module.cpp\"},\n"
-            "    \"observed\": {\"00401100\": {\"source\": \"src/module.cpp\", \"status\": \"scratch\"}},\n"
+            "    \"observed\": {\"00401100\": {\"source\": \"src/module.cpp\", \"status\": \"nonmatching\"}},\n"
             "    \"generated\": {\"00401200\": \"??_EClass@@UAEPAXI@Z\"},\n"
             "    \"symbols\": {\"00401000\": \"?name@Class@@QAEXXZ\"}\n"
             "  }"

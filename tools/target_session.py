@@ -1359,7 +1359,7 @@ def format_brief(
     status_lines = format_session(record, session, metrics).split("\n\nUseful commands:", 1)[0]
     lines = [status_lines]
     from experiment_history import Store
-    branches = [state["name"] for _, state in Store(REPO_ROOT / "decomp_notes/experiments").records("states")
+    branches = [state["name"] for _, state in Store(REPO_ROOT / "workflow/decomp_notes/experiments").records("states")
                 if state["va"] == str(record["va"]).upper()]
     if branches:
         lines.extend([
@@ -1426,7 +1426,7 @@ def format_brief(
     lines.extend(
         [
             "",
-            "Read the function notes when present. Search LESSONS.md only for narrow blocker terms.",
+            "Read the function notes when present. Search workflow/vc5_lessons.md only for narrow blocker terms.",
             "Load detailed history when it answers a specific open question.",
         ]
     )

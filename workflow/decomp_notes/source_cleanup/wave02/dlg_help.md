@@ -1,0 +1,298 @@
+# Source-cleanup report: `src/dlg_help.cpp`
+
+## Delivery
+
+- Module: `src/dlg_help.cpp`
+- Header read-only: `include/dlg_help.h`
+- Header owner: owner 10
+- Shared resource header owner: root (`include/resource_ids.h`)
+- Branch: `cleanup/staging-20260915-86`
+- Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
+- Worker-local shared resource import: `08038221ea7047376f742814ca1185dbf31268e8`
+- Root approval commit: `8c56055b7feee1526f296bd306036a4c34f38041`
+- Earlier source commit: `7333ff58036a73e1d7fac31869df3bed37d9604b`
+- Earlier report commit: `9e873050d6241e2e75bf9dde6f99f52943eb3d3c`
+- Source correction commit: `1c75a1dd6757a05fc717fd9dfe44860656a02905`
+- Final report commit: the commit that adds this report; copy its full hash from Git.
+- Changed files:
+  - `src/dlg_help.cpp`
+  - `workflow/decomp_notes/source_cleanup/wave02/dlg_help.md`
+- `include/dlg_help.h` was not changed.
+- `include/resource_ids.h` was not changed.
+
+The source cleanup changes names and formatting. The final repair restores the
+three numeric resource expressions after a targeted compiler check. It does not
+change types, storage, control flow, calls, or source order. The
+`setup_help` local `x` keeps its baseline spelling from the prior repair. The
+targeted experiments below show that this spelling does not control relocation
+order.
+
+## Scope and evidence
+
+I read the repository contract and these complete guides:
+
+- `workflow/docs/source_cleanup.md`
+- `workflow/docs/source_comments.md`
+- `workflow/docs/resource_ids.md`
+- `workflow/docs/source_cleanup_owners.md`
+- `workflow/docs/testing.md`
+- `workflow/decomp_notes/source_cleanup/wave02_assignments.md`
+
+I read the assigned source, header, manifest, and existing module note. I used
+these absolute main-root evidence paths:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/config/functions/src/dlg_help.cpp.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043E840_THelpDialog.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043E8E0_THelpDialog.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043E950_THelpDialog.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043E9E0_setup_help.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043ED40_action.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043EE10_handle_mouse_down.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/empiresx.exe`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/`
+
+The registry selects six handwritten procedures in source and address order.
+The PDB module is `.\\Release\\dlg_help.obj`, with source
+`C:\\msdev\\work\\age1_x1\\dlg_help.cpp`.
+
+The original PE SHA-256 is
+`88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
+The preserved baseline directory was inspected but not changed.
+
+## Original-name recovery coverage
+
+Coverage is complete for all six registered procedures. I checked each PDB
+parameter, local, function-static, and register record.
+
+| VA | Procedure | PDB parameters | PDB locals and registers | Source result |
+| --- | --- | --- | --- | --- |
+| `0043E840` | `THelpDialog::THelpDialog` | `parentPanel`, `in_parent_panel`, `help_string_id`, `in_help_page_id`, `x`, `y` | No locals or statics; register `this` in `ecx` | Restored all six parameter names. Kept local `text`, which has no PDB record. |
+| `0043E8E0` | `THelpDialog::THelpDialog` | `parentPanel`, `in_parent_panel`, `in_help_string`, `in_help_page_id`, `x`, `y` | No locals or statics; register `this` in `ecx` | Restored all six parameter names. |
+| `0043E950` | `THelpDialog::~THelpDialog` | None | No locals or statics; register `this` in `ecx` | No rename was supported. |
+| `0043E9E0` | `THelpDialog::setup_help` | `parentPanel`, `in_parent_panel`, `help_string`, `in_help_page_id`, `mouse_x`, `mouse_y` | `rge_text_font` at `-0xc`; `tabList` at `-0x8`; `dialog_x` at `+0xc`; `panel_height` at `+0x8`; register `this` in `ecx` | Restored all six parameters and `panel_height`. Kept baseline local `x` from the prior repair. Both geometry locals use reused positive stack homes. The experiments show that `x` is not the relocation cause. |
+| `0043ED40` | `THelpDialog::action` | `fromPanel`, `actionIn`, `a1`, `a2` | No locals or statics; register `this` in `ecx` | Restored all four parameter names. Kept local `help_page_id` and `help_topic`; neither has a PDB record. |
+| `0043EE10` | `THelpDialog::handle_mouse_down` | `mouse_button_in`, `x`, `y`, `ctrl_key`, `shift_key` | No locals or statics; register `this` in `ecx` | Restored all five parameter names. `x` and `y` already matched. |
+
+The PDB also lists compiler-generated scalar deleting destructor `0043E8C0`,
+`THelpDialog::\`scalar deleting destructor'`. It has stack `__flags` and
+register `this` in `ecx`. It has no handwritten source owner and was not edited.
+
+### Name details
+
+- Recovered original constructor names are `parentPanel`, `in_parent_panel`,
+  `help_string_id`, `in_help_page_id`, `x`, and `y`.
+- The second constructor also recovers `in_help_string`.
+- Recovered `setup_help` names are `parentPanel`, `in_parent_panel`,
+  `help_string`, `in_help_page_id`, `mouse_x`, `mouse_y`, `rge_text_font`,
+  `tabList`, `dialog_x`, and `panel_height`.
+- Recovered `action` names are `fromPanel`, `actionIn`, `a1`, and `a2`.
+- Recovered `handle_mouse_down` names are `mouse_button_in`, `x`, `y`,
+  `ctrl_key`, and `shift_key`.
+- Existing names without PDB records remain unchanged. These include `text`,
+  `line_height`, `y`, `button`, `tab_count`, `help_page_id`, and `help_topic`.
+- The PDB records `dialog_x`, but the source uses the baseline spelling `x`.
+  This spelling remains from the prior repair. The experiments below show that
+  the spelling is not the relocation cause.
+- The `setup_help` temporary named `help_topic` has no PDB record. The former
+  local name `help_string` conflicted with the recovered `help_string` parameter.
+  `help_topic` is a new descriptive cleanup name. It adds no declaration.
+- No reused stack slot received a forced extra declaration. No parameter type,
+  local type, scope, storage duration, or initialization point changed.
+- No public function, class, member, global, ABI symbol, or layout changed.
+
+### Reused stack-home evidence
+
+The raw PDB BPREL offsets do not equal the entry-relative assembly stack slots.
+Do not treat them as simple home equality.
+
+The PDB names `panel_height` at raw offset `+0x8` and `dialog_x` at raw offset
+`+0xc`. In the original instructions, the panel-height value is stored at
+`0043EAD1` in `[esp+20h]`. The x value is stored at `0043EB50` and `0043EB58`
+in `[esp+24h]`.
+
+These assembly homes are reused after the prologue and later stack pushes. The
+`panel_height` mapping remains supported because the value computed from
+`line_height * rge_text_font->font_hgt + 0x37` is stored at `0043EAD1` and is
+passed as the panel height. The `dialog_x` mapping remains supported because
+the x candidates, clamp, and final `set_fixed_position` argument use the value
+stored at `0043EB50` and `0043EB58`.
+
+The source retains `panel_height` as a declaration mapping. It uses baseline
+spelling `x` for the PDB `dialog_x` record. The targeted experiments show that
+the `x` spelling does not change the relocation order. This does not claim that
+either raw PDB offset equals its entry-relative assembly home.
+
+## Linked call-order repair
+
+The baseline source is commit
+`6d46835cdc6e31ba879a2e6e31415327a7c7e341`. It uses the expression
+`parent->width() + parent->xPosition()` and the local spelling `x`. The
+preserved baseline object is
+`build/source-cleanup-20260915/preparation/baseline-build/dlg_help.obj` with
+SHA-256 `73d1ab63f87e0269c85495604b7f49d5f37238db94370c012032e6e4d7d64b5e`.
+It binds relative relocation offset `246` to `width` and offset `255` to
+`xPosition`.
+
+Each experiment used the pinned VC5 compiler from `config/toolchain.json`,
+`config/flags/gx.rsp`, current repository headers, `tool_env`, and
+`compiler_admission`. Each source and object stayed in its own directory under
+`build/setup-help-cause/`. The table records the source variant, object hash,
+and the two relocation target identities. `width,xPosition` is the baseline
+order. `xPosition,width` is the failing reciprocal order.
+
+| Source variant | Source path | Object SHA-256 | `246`,`255` targets | Conclusion |
+| --- | --- | --- | --- | --- |
+| Baseline exact source | `build/setup-help-cause/baseline/src/dlg_help.cpp` | `04d935b70f141a24f7c6e52fd3287c47e508a4a24b249d02c08f7421e3ddcc7e` | `width`,`xPosition` | Control. Function bytes match the preserved baseline across the 849-byte span. |
+| Baseline plus resource header | `build/setup-help-cause/include-only/src/dlg_help.cpp` | `76d9f67af06bc50bfcf5305b8ae2a0d042c690b4efea6eb25c31a1d2a7191a53` | `xPosition`,`width` | The header include alone triggers the swap. |
+| Plus constructor cleanup | `build/setup-help-cause/02-constructors/src/dlg_help.cpp` | `49bd551183f5d1f5012d253a4bc200150b50449bb69b2a5c8f18217862abc4a2` | `xPosition`,`width` | No further change. |
+| Plus destructor formatting | `build/setup-help-cause/03-destructor/src/dlg_help.cpp` | `728647227a0375e03d04998c733471d66301201f6ea2cf73986c363d439035a0` | `xPosition`,`width` | No further change. |
+| Plus setup cleanup with baseline `x` | `build/setup-help-cause/04-setup-params/src/dlg_help.cpp` | `1db3e128189e9fe8c37e8c71606219ccf53b30785ad5a4250b1aeb1508d69ab3` | `xPosition`,`width` | Setup names and formatting do not trigger the swap. |
+| Plus resource ID uses and `help_topic` | `build/setup-help-cause/05-resource-ids/src/dlg_help.cpp` | `73aca664cc7e5ad54a7e43557dcf61ab7abee19c13168e5ede97d6b6a1c2e538` | `xPosition`,`width` | The swap already exists before these changes. |
+| Plus action cleanup | `build/setup-help-cause/06-action/src/dlg_help.cpp` | `1a0d6804f1515963139da58dbc57bab313f8dc1289de100e44b84bc84149714a` | `xPosition`,`width` | No further change. |
+| Plus mouse-handler cleanup | `build/setup-help-cause/07-handle/src/dlg_help.cpp` | `b8c86490edb358adf6cf4aee96d23de0d9d75eaafbbb95f33df6738a001a93d3` | `xPosition`,`width` | No further change. |
+| Full cleanup with prior x repair | `build/setup-help-cause/08-full-cleanup-x/src/dlg_help.cpp` | `05a0311cfbfc4222d6811145754fd4c93d8d5b1baad688e4938c87292899edd7` | `xPosition`,`width` | `x` does not repair the swap. This retracts the prior causation claim. |
+| Full cleanup, `dialog_x`, no resource header | `build/setup-help-cause/09-full-cleanup-dialog-x-no-include/src/dlg_help.cpp` | `d4b40fe87cd59b14dced2106a9e6b31a66213912e72e37c2eadf9cd072d432bd` | `width`,`xPosition` | Removing the header restores the order even with `dialog_x`. |
+| Full cleanup, `x`, numeric IDs, no resource header | `build/setup-help-cause/10-full-cleanup-x-no-include/src/dlg_help.cpp` | `63b56211881d8c9135d3eea97735b571c9db0b94800d39fad8c3b8bc15de50b0` | `width`,`xPosition` | Verified minimal repair source form. |
+| Full cleanup, `x`, local ID macros, no resource header | `build/setup-help-cause/11-full-cleanup-x-local-macros/src/dlg_help.cpp` | `6479a5d0db453aeef14ec9e56e37070cf37f6fdd2041334f593babfcc0b9cfd1` | `width`,`xPosition` | Also restores the order, but duplicates shared macro declarations. Not selected. |
+| Selected repair source copy | `build/setup-help-cause/12-selected-repair/src/dlg_help.cpp` | `10dea241aadf6190856c31d0f703858911b659d36f6f6990ac040f266c15d817` | `width`,`xPosition` | Fresh compile of the final source form. Its 849-byte function span matches the preserved baseline. |
+
+The exact trigger is the source-level include of `resource_ids.h`. The
+include-only experiment adds no source statement or macro use and changes only
+the relocation target order. Local macro definitions without the header do not
+change that order. The prior `dialog_x` explanation was not isolated and is
+retracted.
+
+The selected repair removes the resource-header include and restores the three
+numeric resource ID expressions. It keeps their approved values and provenance
+in this report. It also keeps the prior `x` spelling because that change is
+already committed, but the experiments show it is not required for the repair.
+The selected source form matches the baseline relocation identities and keeps
+all calls, types, homes, control flow, and expression order unchanged.
+
+## Resource and constant evidence
+
+The source retains the numeric resource IDs in the three button calls. Targeted
+VC5 experiments showed that including `../include/resource_ids.h` changes the
+linked getter relocation order in `setup_help`. The approved resource mapping
+and provenance remain recorded below.
+
+The worker-local shared resource import `08038221ea7047376f742814ca1185dbf31268e8`
+contains `STRING_ID_BUTTON_MORE_HELP` for `0x243D`. Root approved this mapping in
+commit `8c56055b7feee1526f296bd306036a4c34f38041`. The source keeps the
+numeric value for the optional More Help button. `STRING_ID_BUTTON_MORE_HELP` remains
+a reviewed cleanup name, not an original macro.
+
+The approved mapping names `0x0FA1` as the OK caption. The source calls
+`create_button` with this ID at original `0043ECCC` and the two branch paths
+before it. The caption role is proved by that call and the resource lookup.
+
+The resource extractor was run after `python tools/inspect_pe_strings.py --help`.
+Its outputs are:
+
+- `build/resource-strings/dlg-help-runtime-language.json`
+- `build/resource-strings/dlg-help-runtime-languagex.json`
+- `build/resource-strings/dlg-help-original-xpack-languagex.json`
+
+All checked resources use `RT_STRING` and language `0x0409` (`1033`).
+
+| File | SHA-256 | `0x0FA1` | `0x243D` |
+| --- | --- | --- | --- |
+| `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5` | `OK` | `More Help` |
+| `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` | Missing | Missing |
+| `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | Missing | Missing |
+
+`TPanel::get_string` calls the global `rge_base_game` string lookup. The
+`TRIBE_Game` override checks `StringTableX` first and then the base table.
+The checked runtime expansion therefore falls back to the base runtime DLL.
+The checked original XPack expansion also lacks both entries.
+
+The original setup call at `0043EC88` passes `0x243D` as the caption ID for the
+optional single-player More Help button. The caption role is proved by the
+call site, the branch, and the exact base resource text. The source keeps the
+same numeric value.
+
+### Applied shared resource mapping
+
+The worker-local import `08038221ea7047376f742814ca1185dbf31268e8` contains this
+mapping. Root approved it in commit
+`8c56055b7feee1526f296bd306036a4c34f38041`:
+
+| Numeric ID | Proposed cleanup name | Resource type | Language | Exact text and files | Lookup path | Purpose |
+| --- | --- | --- | --- | --- | --- | --- |
+| `0x243D` (`9277`) | `STRING_ID_BUTTON_MORE_HELP` | `RT_STRING` | `0x0409` (`1033`) | `runtime/language.dll`: `More Help`; `runtime/languagex.dll`: missing; original XPack `languagex.dll`: missing | `TPanel::get_string` -> virtual `TRIBE_Game::get_string`; expansion table first, base table fallback | Caption passed to `create_button` for the optional More Help button in `THelpDialog::setup_help` |
+
+The name is a new cleanup name. It is not a recovered original macro. The source
+does not use the macro because its shared header changes VC5 relocation order.
+
+The source retains `0x101` in `WinHelpA`. Pinned `WINUSER.H` identifies it as
+`HELP_KEY` with value `0x0101L`. No replacement was made because this pass did
+not need to change the existing API literal or its expression type.
+
+## Comments and formatting
+
+No new source comment was needed. The existing EH-framed constructor comment
+remains. It records the module's existing context evidence.
+
+Function opening braces now use 1TBS. The source keeps all statements, calls,
+casts, literals, declarations, scopes, and evaluation order unchanged.
+
+## Output and code-generation concerns
+
+- Identifier changes can alter debug names and line records.
+- The 1TBS formatting changes can alter line records.
+- The three numeric resource IDs keep their original values and add no storage.
+- The resource header is not included because it changes VC5 relocation order.
+- The PDB positive offsets and assembly stack homes differ. The report records
+  both forms. No forced stack layout or compiler steering was added.
+- The existing module note records `setup_help` as nonexact in prior checks.
+  This cleanup does not claim to repair that mismatch.
+- No structural rewrite, helper, bug fix, layout change, or assembly was added.
+
+## Header requests
+
+The owner of `include/dlg_help.h` should review these parameter-name-only edits:
+
+```cpp
+THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel, long help_string_id,
+            long in_help_page_id, long x, long y);
+THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel, char* in_help_string,
+            long in_help_page_id, long x, long y);
+virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y,
+                               int ctrl_key, int shift_key);
+void setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
+                char* help_string, long in_help_page_id, long mouse_x, long mouse_y);
+```
+
+These edits change no type, order, calling convention, symbol, or layout.
+
+## Validation
+
+Evidence checks performed:
+
+- Read the complete assigned source and header.
+- Read the registry and all six assigned function packets.
+- Read every assigned procedure in `scoped_symbols.json`.
+- Read the original resource evidence and extracted the requested IDs.
+- Inspected the original PE path and preserved baseline directory.
+- Reviewed the complete source diff.
+- Compiled only the listed `dlg_help.cpp` variants with the pinned VC5
+  compiler. Each compile used a new experiment directory.
+- Compared each COFF object at `0043E9E0` and relative offsets `246` and `255`.
+- Compared the baseline and selected repair function bytes across 849 bytes.
+
+No broad build, matching, audit, automated test, menu suite, gameplay suite, or
+game was run. No linked validation was run. The selected source form is
+verified only by the targeted COFF relocation check recorded above.
+
+## Commits
+
+- Base: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
+- Worker-local shared resource import: `08038221ea7047376f742814ca1185dbf31268e8`
+- Root approval: `8c56055b7feee1526f296bd306036a4c34f38041`
+- Earlier source cleanup: `7333ff58036a73e1d7fac31869df3bed37d9604b`
+- Earlier report: `9e873050d6241e2e75bf9dde6f99f52943eb3d3c`
+- Source correction: `1c75a1dd6757a05fc717fd9dfe44860656a02905`
+- Prior x-only repair: `4cf7d67790b4b4393b38aab8ca4b693cc7b19405`
+- Final repair and report: the commit that adds this repair; copy its full hash from Git.

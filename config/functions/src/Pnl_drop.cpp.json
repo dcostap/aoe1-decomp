@@ -21,7 +21,7 @@
     "00474630": {"status": "matching", "symbol": "?set_draw_val_rect@TDropDownPanel@@QAEXH@Z"},
     "00474670": {"status": "matching", "symbol": "?set_bevel_info@TDropDownPanel@@QAEXHHHHHHH@Z"},
     "00474820": {"status": "matching", "symbol": "?set_buttons@TDropDownPanel@@QAEXPAVTShape@@HHHHH@Z"},
-    "00474880": {"status": "new_verified_logic", "symbol": "?set_mode@TDropDownPanel@@QAEXW4DropdownMode@1@@Z", "behavior_review": ["logic_matching/00474880/coord-15-00474880-review-02A/attempt-02A", "logic_matching/00474880/coord-15-00474880-review-02B/attempt-02B"]},
+    "00474880": {"status": "accepted_logic", "symbol": "?set_mode@TDropDownPanel@@QAEXW4DropdownMode@1@@Z", "behavior_review": ["logic_matching/00474880/coord-15-00474880-review-02A/attempt-02A", "logic_matching/00474880/coord-15-00474880-review-02B/attempt-02B"]},
     "00475110": {"status": "matching", "symbol": "?numberLines@TDropDownPanel@@QAEHXZ"},
     "00475130": {"status": "matching", "symbol": "?currentLineNumber@TDropDownPanel@@QAEHXZ"},
     "00475150": {"status": "matching", "symbol": "?setCurrentLineNumber@TDropDownPanel@@QAEXH@Z"},

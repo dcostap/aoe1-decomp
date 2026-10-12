@@ -11,9 +11,9 @@
     "004D3B00": {"status": "matching", "symbol": "??1TribeBuildAIModule@@UAE@XZ"},
     "004D3B10": {"status": "matching", "symbol": "?setMainDecisionAI@TribeBuildAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
     "004D3B20": {"status": "matching", "symbol": "?loadBuildList@TribeBuildAIModule@@UAEHPADPAVRGE_Player@@@Z"},
-    "004D3D60": {"status": "new_verified_logic", "symbol": "?initialize@TribeBuildAIModule@@QAEXXZ", "behavior_review": "logic_matching/004D3D60/coord-03-20260913T033102Z/attempt-01"},
+    "004D3D60": {"status": "accepted_logic", "symbol": "?initialize@TribeBuildAIModule@@QAEXXZ", "behavior_review": "logic_matching/004D3D60/coord-03-20260913T033102Z/attempt-01"},
     "004D4460": {"status": "matching", "symbol": "?skipNextBuildListItem@TribeBuildAIModule@@QAEXXZ"},
-    "004D4540": {"status": "new_verified_logic", "symbol": "?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z", "behavior_review": "logic_matching/004D4540/coord-17-review-02-A/attempt-01"},
+    "004D4540": {"status": "accepted_logic", "symbol": "?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z", "behavior_review": "logic_matching/004D4540/coord-17-review-02-A/attempt-01"},
     "004D4DB0": {"status": "matching", "symbol": "?nextBuildListItemCategory@TribeBuildAIModule@@QAEHXZ"},
     "004D4E10": {"status": "matching", "symbol": "?blockingResource@TribeBuildAIModule@@QAEHXZ"},
     "004D4F80": {"status": "matching", "symbol": "?mostNeededResource@TribeBuildAIModule@@QAEHAAVResourceItem@@H@Z"},
@@ -31,7 +31,7 @@
     "004D5B80": {"status": "matching", "symbol": "?insertGathererPercentage@TribeBuildAIModule@@QAEHHHH@Z"},
     "004D5BB0": {"status": "matching", "symbol": "?numberBuiltOrInProgressItemsOfType@TribeBuildAIModule@@UAEHHH@Z"},
     "004D5C20": {"status": "matching", "symbol": "?allBuilt@TribeBuildAIModule@@QAEHHH@Z"},
-    "004D5CA0": {"status": "new_verified_logic", "symbol": "?readyToResearch@TribeBuildAIModule@@QAEHHH@Z", "behavior_review": "logic_matching/004D5CA0/coord-03-20260913T032455Z/attempt-01"},
+    "004D5CA0": {"status": "accepted_logic", "symbol": "?readyToResearch@TribeBuildAIModule@@QAEHHH@Z", "behavior_review": "logic_matching/004D5CA0/coord-03-20260913T032455Z/attempt-01"},
     "004D5D40": {"status": "matching", "symbol": "?unskipBuildList@TribeBuildAIModule@@QAEXHH@Z"},
     "004D5DE0": {"status": "matching", "symbol": "?buildItem@TribeBuildAIModule@@QAEPAVBuildItem@@HHH@Z"}
   }

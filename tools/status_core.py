@@ -32,9 +32,8 @@ COMMENT_TOKEN_RE = re.compile(
 SOURCE_BUCKETS = [
     "matching",
     "accepted_drift",
-    "verified_logic",
-    "new_verified_logic",
-    "scratch",
+    "accepted_logic",
+    "nonmatching",
     "unresolved",
     "unclaimed",
     "conflict",
@@ -300,7 +299,7 @@ def enrich_status_rows(
 
         if include_source_notes:
             notes = default_header_notes()
-            if row.get("source_bucket") in {"verified_logic", "new_verified_logic"} and row.get("has_logic_review") != "yes":
+            if row.get("source_bucket") in {"accepted_logic"} and row.get("has_logic_review") != "yes":
                 missing_ledger = f"{row['source_bucket']} source has no valid review record"
                 notes["BLOCKER"] = (
                     f"{notes['BLOCKER']} | {missing_ledger}" if notes["BLOCKER"] else missing_ledger
@@ -391,7 +390,7 @@ def build_status_rows(
     When ``va`` is supplied, only that record is classified. Corpus-wide rank
     fields stay empty because targeted agent queries do not need global ranks.
     """
-    logic_reviews_dir = REPO_ROOT / "logic_reviews"
+    logic_reviews_dir = REPO_ROOT / "workflow" / "logic_reviews"
     logic_review_ledgers = logic_review_files(logic_reviews_dir)
 
     va_norm = va.upper() if va else None
@@ -454,7 +453,7 @@ def build_status_rows(
         is_remaining = (
             "yes"
             if corpus_bucket == "normal"
-            and source_bucket in {"scratch", "unresolved", "unclaimed", "conflict"}
+            and source_bucket in {"nonmatching", "unresolved", "unclaimed", "conflict"}
             else "no"
         )
         if is_remaining == "yes":
@@ -486,7 +485,7 @@ def build_status_rows(
             for path in present_paths
         )
         logic_review_path = logic_review_ledgers.get(str(record["va"]).upper())
-        if source_bucket == "new_verified_logic":
+        if source_bucket == "accepted_logic":
             logic_review_path = behavior_review_path(module_entry, record_va)
 
         parent_fragment = parent_owned_fragments.get(int(record["va"], 16))

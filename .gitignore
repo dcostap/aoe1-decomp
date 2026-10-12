@@ -1,10 +1,11 @@
 build/
-orig/
+/orig/*
+!/orig/README.md
 runtime/*
 !runtime/README.md
+.pi/
 __pycache__/
 .pytest_cache/
-.pi/
 /scratch/
 *.pyc
 *.pyo
@@ -18,21 +19,13 @@ __pycache__/
 nul
 vc50.idb
 
-# Keep the repository-local function status Pi extension under version control.
-!.pi/
-.pi/*
-!.pi/extensions/
-.pi/extensions/*
-!.pi/extensions/function-status-widget/
-!.pi/extensions/function-status-widget/**
-
 # Personal gameplay recordings, traces, and saves used by the harness; never committed.
 /local/
 
-# Original game files and material derived from them stay local; see docs.
+# Original game files and material derived from them stay local.
 /inventory/
-/decomp_notes/experiments/
-/decomp_notes/executable_build_evidence/
+/workflow/decomp_notes/experiments/
+/workflow/decomp_notes/executable_build_evidence/
 /third_party/directplay/lib/
 /project_full_status.csv
 *.mp3

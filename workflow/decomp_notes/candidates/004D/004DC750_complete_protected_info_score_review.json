@@ -1,0 +1,9 @@
+{
+  "base": "b0a597fe362fe770b578186af9eae60bec9825f1",
+  "patch": "workflow\decomp_notes\\candidates\\004D\\004DC750_complete_protected_info_score_review.patch",
+  "patch_sha256": "f9e389ceefa6a5b53e48d6e43719e129a6ff4a46f7a9e3688b913a7614ccc855",
+  "files": {
+    "src/taiinfmd.cpp": "1019779ee0dcca8c27d369cc92b95c6cf41552709f2cd7db6049decdcd13baa0"
+  },
+  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
+}

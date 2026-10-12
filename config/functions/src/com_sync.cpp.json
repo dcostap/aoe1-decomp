@@ -17,6 +17,6 @@
     "00433AA0": {"status": "matching", "symbol": "?SetStopOnFail@RGE_Communications_Synchronize@@QAEXH@Z"},
     "00433AB0": {"status": "matching", "symbol": "?SetDialogOnFail@RGE_Communications_Synchronize@@QAEXH@Z"},
     "00433AC0": {"status": "matching", "symbol": "?SendChatMsgsAtChecksum@RGE_Communications_Synchronize@@QAEXH@Z"},
-    "00433AD0": {"status": "new_verified_logic", "symbol": "?IsPlayerOutOfSync@RGE_Communications_Synchronize@@QAEHIK@Z", "behavior_review": "logic_matching/00433AD0/review-01/attempt-01"}
+    "00433AD0": {"status": "accepted_logic", "symbol": "?IsPlayerOutOfSync@RGE_Communications_Synchronize@@QAEHIK@Z", "behavior_review": "logic_matching/00433AD0/review-01/attempt-01"}
   }
 }

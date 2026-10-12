@@ -1,5 +1,5 @@
 {
-  "original_exe": "orig\\_original_empiresx_from_beta_that_was_decompiled.exe",
+  "original_exe": "orig\\empiresx.exe",
   "original_pdb": "orig\\age1_x1.pdb",
   "ghidra_layout": "orig\\ghidra_layout_alpha.json",
   "ghidra_listing": "orig\\aoe1_ghidra_assembly_listing.txt",

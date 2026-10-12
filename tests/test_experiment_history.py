@@ -119,14 +119,14 @@ class ExperimentHistoryTests(unittest.TestCase):
         raw = subprocess.check_output(["git", "hash-object", "--stdin"], input=data, cwd=root)
         for directory in ("objects/ab", "states", "events"):
             filtered = subprocess.check_output([
-                "git", "hash-object", "--path=decomp_notes/experiments/" + directory + "/sample.json", "--stdin"
+                "git", "hash-object", "--path=workflow/decomp_notes/experiments/" + directory + "/sample.json", "--stdin"
             ], input=data, cwd=root)
             self.assertEqual(raw, filtered)
 
     def test_successful_audit_exit_does_not_hide_exact_regression(self):
         report = {"groups": [{"rows": [
             {"va": "004BAAF0", "source_bucket": "matching", "grouped_result": "MISMATCH"},
-            {"va": "004B98E0", "source_bucket": "scratch", "grouped_result": "MATCH"},
+            {"va": "004B98E0", "source_bucket": "nonmatching", "grouped_result": "MATCH"},
         ]}]}
         key = self.store.blob(json.dumps(report).encode())
         event = {"kind": "run", "summary": {"closure_exit_code": 0},

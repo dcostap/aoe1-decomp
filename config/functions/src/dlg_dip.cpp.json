@@ -6,9 +6,9 @@
     "flags": "gx"
   },
   "functions": {
-    "0043C930": {"status": "new_verified_logic", "symbol": "??0TribeDiplomacyDialog@@QAE@PAVTScreenPanel@@@Z", "behavior_review": ["logic_matching/0043C930/coord-19-d71fc8e65-0043C930-r02-a/attempt-01", "logic_matching/0043C930/coord-19-d71fc8e65-0043C930-r02-b/attempt-01"]},
+    "0043C930": {"status": "accepted_logic", "symbol": "??0TribeDiplomacyDialog@@QAE@PAVTScreenPanel@@@Z", "behavior_review": ["logic_matching/0043C930/coord-19-d71fc8e65-0043C930-r02-a/attempt-01", "logic_matching/0043C930/coord-19-d71fc8e65-0043C930-r02-b/attempt-01"]},
     "0043D6E0": {"status": "matching", "symbol": "??1TribeDiplomacyDialog@@UAE@XZ"},
-    "0043D8A0": {"status": "new_verified_logic", "symbol": "?action@TribeDiplomacyDialog@@MAEJPAVTPanel@@JKK@Z", "behavior_review": ["logic_matching/0043D8A0/coord-15-0043D8A0-review-02A/attempt-02A", "logic_matching/0043D8A0/coord-15-0043D8A0-review-02B/attempt-02B"]},
+    "0043D8A0": {"status": "accepted_logic", "symbol": "?action@TribeDiplomacyDialog@@MAEJPAVTPanel@@JKK@Z", "behavior_review": ["logic_matching/0043D8A0/coord-15-0043D8A0-review-02A/attempt-02A", "logic_matching/0043D8A0/coord-15-0043D8A0-review-02B/attempt-02B"]},
     "0043E530": {"status": "matching", "symbol": "?check_gold@TribeDiplomacyDialog@@IAEHXZ"},
     "0043E5C0": {"status": "matching", "symbol": "?check_wood@TribeDiplomacyDialog@@IAEHXZ"},
     "0043E650": {"status": "matching", "symbol": "?check_food@TribeDiplomacyDialog@@IAEHXZ"},

@@ -1,0 +1,78 @@
+Rejected exact candidate for 0043AB50 `memmove`.
+
+Target result: MATCH, 0.0000%, 42/42 bytes. The private standalone build
+emits 19/19 instructions, zero calls, zero relocations, and no boundary escape.
+The owner is the local C-linkage `_memmove` symbol. This result is evidence only;
+it is not a grouped-TU exact claim.
+
+PDB ABI: `Release/Dib.obj` records `S_LPROC32` at section offset `00039B50`,
+size `0x2A`, type `0x2294`. The procedure has a `void` return, `d` and `s`
+parameters of type `unsigned char*` (`T_32PUCHAR`), and `len` of type `long`
+(`T_LONG`). The candidate uses this file-local source surface and the
+PDB-shaped separate `int count` local.
+
+Grouped blocker: the exact PDB source fails in grouped `src/Dib.cpp` with VC5
+C2733. The Win32 header chain declares C-linkage CRT `memmove` first as
+`void* memmove(void*, const void*, unsigned int)`. Removing the duplicate
+`include/dib.h` declaration does not remove the header-chain declaration.
+No header masking, inline assembly, or linker workaround is part of this
+candidate.
+
+Closure result: rejected for retention. The source diff changes the natural
+`src/Dib.cpp` owner and removes the shared CRT declaration. It requires a
+reviewed period-header or translation-unit ownership repair before use. Do not
+apply it to the current grouped source or keep it as a duplicate owner.
+
+Tested main commit:
+`a826edade04c8c88d3440900a967be0f980941bd` (`Guard object panel idle checks`).
+
+Apply with:
+  git apply workflow/decomp_notes/candidates/0043/0043AB50_exact_candidate.patch
+
+diff --git a/include/dib.h b/include/dib.h
+--- a/include/dib.h
++++ b/include/dib.h
+@@ -48,6 +48,4 @@ void __cdecl xlatClut4(unsigned char*, unsigned int, unsigned char*);
+ void __cdecl xlatRle8(unsigned char*, int, unsigned char*);
+ void __cdecl DibMapToPalette(BITMAPINFOHEADER*, void*, int, int);
+ 
+-extern "C" void* __cdecl memmove(void*, const void*, unsigned int);
+-
+ #endif
+diff --git a/src/Dib.cpp b/src/Dib.cpp
+--- a/src/Dib.cpp
++++ b/src/Dib.cpp
+@@ -1320,23 +1320,20 @@ static void __cdecl xlatRle4(unsigned char*, unsigned long, unsigned char*) {}
+ 
+-extern "C" void* __cdecl memmove(void* dst_arg, const void* src_arg,
+-    unsigned int n)
++extern "C" static void __cdecl memmove(unsigned char* d, unsigned char* s,
++    long len)
+ {
+-    unsigned char* dst = (unsigned char*)dst_arg;
+-    unsigned char* src = (unsigned char*)src_arg;
+     int count;
+ 
+-    dst = dst + n - 1;
+-    count = n;
+-    src = src + n - 1;
+-    n = n - 1;
++    d = d + len - 1;
++    count = len;
++    s = s + len - 1;
++    len = len - 1;
+     if (count != 0) {
+-        count = n + 1;
++        count = len + 1;
+         do {
+-            *dst = *src;
+-            dst = dst - 1;
+-            src = src - 1;
++            *d = *s;
++            d = d - 1;
++            s = s - 1;
+             count = count - 1;
+         } while (count != 0);
+     }
+-    return dst_arg;
+ }

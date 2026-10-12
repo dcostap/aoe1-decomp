@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_STORE = ROOT / "decomp_notes" / "experiments"
+DEFAULT_STORE = ROOT / "workflow" / "decomp_notes" / "experiments"
 
 
 def digest(data: bytes) -> str:
@@ -341,7 +341,7 @@ class Store:
             summary["input_error"] = str(error)
             return self.event(selector, "run", "Inputs changed during the check; result is not authoritative", artifacts, summary=summary)
         if summary["result"] == "MATCH":
-            candidate = ROOT / "decomp_notes/candidates" / state["va"][:4] / (
+            candidate = ROOT / "workflow/decomp_notes/candidates" / state["va"][:4] / (
                 state["va"] + "_experiment_" + state_id[:12] + "_exact_candidate.patch")
             if not candidate.exists():
                 self.export_patch(selector, workspace, candidate)

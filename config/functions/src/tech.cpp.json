@@ -66,7 +66,7 @@
       "symbol": "?research@TRIBE_Player_Tech@@QAEEFM@Z"
     },
     "0050C730": {
-      "status": "scratch",
+      "status": "nonmatching",
       "symbol": "?tech_cost@TRIBE_Player_Tech@@QAEXFAAF00000@Z"
     },
     "0050CA9E": {
@@ -82,7 +82,7 @@
       "symbol": "?cancel_research@TRIBE_Player_Tech@@QAEEFE@Z"
     },
     "0050CE68": {
-      "status": "scratch",
+      "status": "nonmatching",
       "symbol": "?check_for_new_tech@TRIBE_Player_Tech@@QAEEXZ"
     },
     "0050D07A": {

@@ -1,0 +1,91 @@
+Exact candidate for 004F87B0 `unit`.
+
+Target result under this candidate: MATCH, 0.0000%, 1071/1071 bytes,
+348/348 instructions, 35/35 ordered calls, no frame, correct owner,
+boundary, relocations, and direct targets.
+
+Source basis: the original packet proves five inline ManagedArray growth
+blocks and one direct `ManagedArray<int>::resize` call. The candidate moves
+the proven allocation/copy/delete growth body into `operator[]` and leaves
+`resize` as the direct declaration for the original 004147A0 owner.
+
+Joint closure repair: commit the natural `004FB550 taskTrain` reference
+lifetime repair with this patch. Moving the existing
+`unitsTaskedThisUpdate` reference to function entry restores its four
+stack-home bytes. `004FB550` then remains MATCH, 0.0000%, 448/448 bytes.
+
+Closure result: `audit_translation_unit_functions.py --affected-by
+include/utmarray.h --jobs 1` compiled all 90 affected groups and 2764 normal
+functions. It reported 2461 matching results and five regressions against
+matching owners: `00435110 duplicate_check_command_order` (6 differing
+bytes), `0045A500 update` (310), `0046B680 decrementObstruction` (72 plus one
+boundary escape), `004C6DA0 changeInfluenceMap` (119), and `00532610
+handle_bring_object` (6). The complete report is
+`build/worker_wrap_alpha_231/affected_period_surface_full/report.txt`.
+
+The shared candidate is not promoted because these exact-owner regressions
+and the missing durable 004147A0 implementation need joint ABI and semantic
+repair. `python tools/validate_utmarray.py` reports missing signature
+`?resize@?$ManagedArray@H@@IAEHH@Z`.
+
+Tested main commit: 2f4ccfd7d89e64c77d1c04035965bcd95b99461e.
+The patch below applies after the taskTrain lifetime repair.
+
+Apply with:
+  git apply workflow/decomp_notes/candidates/004F/004F87B0_exact_candidate.patch
+
+diff --git a/include/utmarray.h b/include/utmarray.h
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -33,8 +33,21 @@ public:
+ 
+     T& operator[](int index)
+     {
+-        if (index > this->maximumSizeValue - 1)
+-            this->resize(index + 1);
++        if (index > this->maximumSizeValue - 1) {
++            int new_size = index + 1;
++            T* new_data = (T*)operator_new(new_size * sizeof(T));
++            if (new_data != 0) {
++                int i;
++                for (i = 0;
++                     i < this->maximumSizeValue && i < new_size;
++                     i++) {
++                    new_data[i] = this->value[i];
++                }
++                operator_delete(this->value);
++                this->value = new_data;
++                this->maximumSizeValue = new_size;
++            }
++        }
+         return this->value[index];
+     }
+ 
+@@ -136,26 +149,7 @@ public:
+     }
+ 
+ public:
+-    // PDB marks resize protected. Reconstructed callers still require public
+-    // access, so keep the body here while the source-access boundary is open.
+-    int resize(int new_size)
+-    {
+-        T* new_value = new T[new_size];
+-        if (new_value == 0)
+-            return 0;
+-
+-        int i;
+-        for (i = 0;
+-             i < this->maximumSizeValue && i < new_size;
+-             i++) {
+-            new_value[i] = this->value[i];
+-        }
+-
+-        delete[] this->value;
+-        this->value = new_value;
+-        this->maximumSizeValue = new_size;
+-        return 1;
+-    }
++    int resize(int new_size);
+ 
+ public:
+     T* value;

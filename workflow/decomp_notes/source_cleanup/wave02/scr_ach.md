@@ -1,0 +1,287 @@
+# `scr_ach.cpp` source cleanup
+
+## Delivery
+
+- Module: `src/scr_ach.cpp`
+- Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
+- Final source commit: `cd4f978da5d1e358cc4882dbfb4922574e41686d`
+- Changed files:
+  - `src/scr_ach.cpp`
+  - `workflow/decomp_notes/source_cleanup/wave02/scr_ach.md`
+- Paired header: `include/scr_ach.h`
+- Header owner: slot 11
+
+This cleanup changes names, formatting, resource macro uses, and comments.
+It does not change types, storage, calls, control flow, or resource values.
+
+## Scope and source evidence
+
+The source owns eight functions in PDB module `.\\Release\\scr_ach.obj`.
+The procedure-scoped PDB is:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`
+- SHA256: `adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff0335`
+
+The original executable is:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/empiresx.exe`
+- SHA256: `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`
+
+The function packets are the behavior evidence. They are under
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/`:
+
+| VA | PDB size | Function | Packet |
+| --- | ---: | --- | --- |
+| `0048D530` | 3256 | `TribeAchievementsScreen::TribeAchievementsScreen` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048D530_TribeAchievementsScreen.txt` |
+| `0048E210` | 493 | `TribeAchievementsScreen::~TribeAchievementsScreen` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048E210_~TribeAchievementsScreen.txt` |
+| `0048E400` | 3236 | `TribeAchievementsScreen::set_mode` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048E400_set_mode.txt` |
+| `0048F0B0` | 215 | `TribeAchievementsScreen::draw` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F0B0_draw.txt` |
+| `0048F190` | 226 | `TribeAchievementsScreen::handle_mouse_down` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F190_handle_mouse_down.txt` |
+| `0048F280` | 638 | `TribeAchievementsScreen::action` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F280_action.txt` |
+| `0048F500` | 33 | `TribeAchievementsScreen::handle_idle` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F500_handle_idle.txt` |
+| `0048F530` | 146 | `TribeAchievementsScreen::wnd_proc` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F530_wnd_proc.txt` |
+
+The scalar deleting destructor at `0048E1F0` is compiler-generated.
+It has no source body in this module and remains outside the cleanup set.
+
+Every listed procedure has `this` in `ecx`.
+No function static appears in these PDB records.
+
+## Original-name recovery
+
+The PDB names below map to the current declarations and uses.
+The source now uses the recovered spellings.
+
+| Function | Recovered parameters | Recovered locals | Change |
+| --- | --- | --- | --- |
+| Constructor `0048D530` | `titleText`, `end_flag` | `tabList`, `info_file`, `str`, `temptxt`, `color` | Named the unused first parameter, renamed `end_game`, and renamed `tab_list`. |
+| Destructor `0048E210` | none | none | No name change. |
+| `set_mode` `0048E400` | `new_mode` | `player_num`, `temptxt` | Renamed `mode`. |
+| `draw` `0048F0B0` | none | none | No name change. |
+| `handle_mouse_down` `0048F190` | `mouse_button_in`, `x`, `y`, `ctrl_key`, `shift_key` | none | Restored all five PDB parameter names. |
+| `action` `0048F280` | `fromPanel`, `actionIn`, `a1`, `a2` | none | Restored all four PDB parameter names. |
+| `handle_idle` `0048F500` | none | none | No name change. |
+| `wnd_proc` `0048F530` | `hwnd`, `msg`, `wParam`, `lParam` | none | Restored all four PDB parameter names. |
+
+The constructor PDB records `tabList` as `TPanel*[32 bytes]` at `-0x1c8`.
+The source declaration remains `TPanel* tabList[8]`.
+
+The `set_mode` PDB records both `txt[30]` and `temptxt[50]` at `-0x34`.
+The source has one `char temptxt[50]` declaration at that storage.
+The source does not add a second array because the records overlap.
+This is an unresolved declaration mapping, not a safe rename.
+
+The PDB does not establish the source names `message`, `player_name`,
+`panel_name`, `column`, or the local `mode` in `wnd_proc`.
+Those readable names remain unchanged.
+
+No new source names were inferred.
+All changed source names above are PDB names.
+
+## Resource lookup evidence
+
+The source calls `create_text`, `set_text`, and `create_button` with string IDs.
+`TRIBE_Game::get_string` first calls `LoadStringA(StringTableX, ...)`.
+It then falls back to `RGE_Base_Game::get_string` and `StringTable`.
+The base lookup clears the buffer when `LoadStringA` fails.
+
+The checked base-language file is the staged runtime input:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`
+- SHA256: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`
+- Resource type: `RT_STRING`
+- Language: `0x0409` (English, language ID `1033`)
+
+The checked override files are:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`
+  - SHA256: `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`
+  - SHA256: `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`
+
+Both `languagex.dll` files have no entries for the IDs below.
+The base runtime file supplies every listed text payload.
+The root reviewer extraction directory is:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`
+
+The reviewer evidence confirms that the string payloads come from the runtime
+base `language.dll`. Both checked expansion DLLs miss these payloads.
+The pinned original set at
+`C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/`
+has no base `language.dll` file.
+The exact extraction directory is
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/`.
+The extraction files are:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/language.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/languagex.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/languagex-orig.json`
+
+Root approved the resource names and definitions in commit
+`027da42cb19a66cd9d07a7c357ab223034f26cdd`.
+Integration imported only `include/resource_ids.h` in commit `bdb8bc1af`.
+The exact approved header snapshot is:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-91/include/resource_ids.h`
+
+This worker substituted the approved macros in `src/scr_ach.cpp`.
+This worker did not define or edit any header macro.
+
+| ID | Base payload | Call-site purpose | Approved shared macro |
+| --- | --- | --- | --- |
+| `0x03EA` | `X` | Close-button glyph in `create_button` | Existing `STRING_ID_BUTTON_CLOSE` |
+| `0x0C1D` | `Are you sure you want to quit this game?` | Close prompt in `wnd_proc` | `STRING_ID_CONFIRM_QUIT_GAME` |
+| `0x0FA3` | `Yes` | Yes marker in per-player result fields | `STRING_ID_BUTTON_YES` |
+| `0x269C` | `Close` | Close and back-to-summary buttons | `STRING_ID_ACHIEVEMENTS_CLOSE` |
+| `0x269E` | `Achievements` | Screen title | `STRING_ID_ACHIEVEMENTS_TITLE` |
+| `0x269F` | `Restart` | Restart button | `STRING_ID_ACHIEVEMENTS_RESTART` |
+| `0x26AC` | `Military` | Military heading and summary | `STRING_ID_ACHIEVEMENTS_MILITARY` |
+| `0x26AD` | `Economy` | Economy heading and summary | `STRING_ID_ACHIEVEMENTS_ECONOMY` |
+| `0x26AE` | `Religion` | Religion heading and summary | `STRING_ID_ACHIEVEMENTS_RELIGION` |
+| `0x26AF` | `Technology` | Technology heading and summary | `STRING_ID_ACHIEVEMENTS_TECHNOLOGY` |
+| `0x26B1` | `Total Score` | Summary-mode total score | `STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_SUMMARY` |
+| `0x26B2` | `Aftermath` | Aftermath button and summary | `STRING_ID_ACHIEVEMENTS_AFTERMATH` |
+| `0x26B5` | `Total Score` | Category-mode total score | `STRING_ID_ACHIEVEMENTS_TOTAL_SCORE_CATEGORY` |
+| `0x26B6` | `Kills` | Military statistic | `STRING_ID_ACHIEVEMENTS_KILLS` |
+| `0x26B7` | `Razings` | Military statistic | `STRING_ID_ACHIEVEMENTS_RAZINGS` |
+| `0x26B8` | `Kills - Losses` | Military statistic | `STRING_ID_ACHIEVEMENTS_KILLS_LOSSES` |
+| `0x26B9` | `Losses` | Military statistic | `STRING_ID_ACHIEVEMENTS_LOSSES` |
+| `0x26BA` | `Largest Army` | Military statistic | `STRING_ID_ACHIEVEMENTS_LARGEST_ARMY` |
+| `0x26BE` | `Gold Collected` | Economy statistic | `STRING_ID_ACHIEVEMENTS_GOLD_COLLECTED` |
+| `0x26BF` | `Villager High` | Economy statistic | `STRING_ID_ACHIEVEMENTS_VILLAGER_HIGH` |
+| `0x26C0` | `Villager Bonus` | Economy statistic | `STRING_ID_ACHIEVEMENTS_VILLAGER_BONUS` |
+| `0x26C1` | `Exploration` | Economy statistic | `STRING_ID_ACHIEVEMENTS_EXPLORATION` |
+| `0x26C2` | `Most Explored` | Economy statistic | `STRING_ID_ACHIEVEMENTS_MOST_EXPLORED` |
+| `0x26C3` | `Tribute Given` | Economy statistic | `STRING_ID_ACHIEVEMENTS_TRIBUTE_GIVEN` |
+| `0x26C6` | `Conversions` | Religion statistic | `STRING_ID_ACHIEVEMENTS_CONVERSIONS` |
+| `0x26C7` | `Most Conversions` | Religion statistic | `STRING_ID_ACHIEVEMENTS_MOST_CONVERSIONS` |
+| `0x26C8` | `Ruins` | Religion statistic | `STRING_ID_ACHIEVEMENTS_RUINS` |
+| `0x26C9` | `Artifacts` | Religion statistic | `STRING_ID_ACHIEVEMENTS_ARTIFACTS` |
+| `0x26CA` | `Temples` | Religion statistic | `STRING_ID_ACHIEVEMENTS_TEMPLES` |
+| `0x26CE` | `Technologies` | Technology statistic | `STRING_ID_ACHIEVEMENTS_TECHNOLOGIES` |
+| `0x26CF` | `Bronze Age First` | Technology statistic | `STRING_ID_ACHIEVEMENTS_BRONZE_AGE_FIRST` |
+| `0x26D0` | `Iron Age First` | Technology statistic | `STRING_ID_ACHIEVEMENTS_IRON_AGE_FIRST` |
+| `0x26D1` | `Most Technologies` | Technology statistic | `STRING_ID_ACHIEVEMENTS_MOST_TECHNOLOGIES` |
+| `0x26D6` | `Survival` | Summary statistic | `STRING_ID_ACHIEVEMENTS_SURVIVAL` |
+| `0x26D7` | `Wonder` | Summary statistic | `STRING_ID_ACHIEVEMENTS_WONDER` |
+| `0x26D8` | `Timeline` | Timeline button and summary | `STRING_ID_ACHIEVEMENTS_TIMELINE` |
+| `0x26D9` | `Summary` | Summary heading | `STRING_ID_ACHIEVEMENTS_SUMMARY` |
+| `0x26DA` | `Back` | Back button | `STRING_ID_ACHIEVEMENTS_BACK` |
+| `0x26DB` | `Click a column for more details.` | Instruction text | `STRING_ID_ACHIEVEMENTS_COLUMN_INSTRUCTION` |
+| `0x26DC` | `All Artifacts/Ruins.` | Religion statistic | `STRING_ID_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS` |
+
+The payload list proves text and call-site roles.
+It does not prove original developer macro names.
+Every name in this table is a cleanup name.
+`STRING_ID_BUTTON_CLOSE` was already present as a reviewed cleanup name.
+The other names were approved and defined by the root owner.
+
+The source uses approved `STRING_ID_BUTTON_CLOSE` for `0x03EA`.
+The macro expands to `0x03EA`.
+Its name is a reviewed cleanup name, not a recovered original macro name.
+
+The source also passes these IDs to `TScreenPanel::setup`:
+
+| ID | Evidence | Approved shared macro |
+| --- | --- | --- |
+| `0xC389` | `scr7` layout when `game_status == 1` | `BINARY_RESOURCE_ID_ACHIEVEMENTS_END_WIN_LAYOUT` |
+| `0xC38A` | `scr8` layout when `game_status != 1` | `BINARY_RESOURCE_ID_ACHIEVEMENTS_END_OTHER_LAYOUT` |
+| `0xC38D` | `scr10` layout when `end_flag == 0` | `BINARY_RESOURCE_ID_ACHIEVEMENTS_IN_GAME_LAYOUT` |
+
+`TEasy_Panel::setup` passes these IDs to `RESFILE_load(0x62696E61, ...)`.
+The source keeps the values, arguments, binary type, and load order unchanged.
+The worker uses the approved binary names without adding definitions.
+The reviewer evidence confirms that the runtime base
+`C:/Projects/my_decomps/aoe1_attempt3/runtime/data/Interfac.drs` supplies
+these layouts. The checked expansion files
+`C:/Projects/my_decomps/aoe1_attempt3/runtime/data2/Interfac.drs` and
+`C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/data2/Interfac.drs`
+miss these IDs.
+
+## Comments and presentation
+
+Function definitions now use one true brace style.
+Short handler signatures and calls stay on one line.
+Longer calls keep aligned continuation indentation.
+
+The source comment now states that mode 3 reads victory IDs 16 and 15.
+The packet call order supports this statement.
+The comment also records that mode 6 appears before mode 5 in the original handler.
+
+Three incomplete signature fragments were removed before `handle_mouse_down`,
+`action`, and `wnd_proc`.
+Their full declarations and PDB records provide the same type facts.
+They did not explain behavior.
+
+## Code-generation and ABI limits
+
+The edits do not change function names, classes, members, types, widths, or storage.
+They do not change source order, expressions, calls, branches, or resource values.
+Each macro expands to the same unsuffixed integer literal value.
+
+Parameter and local names affect debug information, not executable instructions.
+Brace and comment edits can change debug line records.
+The new include adds only preprocessor definitions used by this source.
+No compiler output was produced during this cleanup.
+
+The `txt` and `temptxt` overlap remains unresolved.
+No layout, lifetime, buffer size, or declaration scope was changed to resolve it.
+
+## Shared-file requests
+
+1. **`include/scr_ach.h` — owner slot 11.**
+   The header already has the recovered PDB spellings:
+   `titleText`, `end_flag`, `new_mode`, `mouse_button_in`, `x`, `y`,
+   `ctrl_key`, `shift_key`, `fromPanel`, `actionIn`, `a1`, `a2`, `hwnd`,
+   `msg`, `wParam`, and `lParam`.
+   No further header edit is required.
+
+2. **`include/resource_ids.h` — resource-ID owner.**
+   The prior request is resolved by root approval and definitions in
+   `027da42cb19a66cd9d07a7c357ab223034f26cdd`.
+   Integration imported the header in `bdb8bc1af`.
+   Do not add a second name for the existing `STRING_ID_BUTTON_CLOSE` mapping.
+   The two `Total Score` IDs have distinct call-site roles and need distinct names.
+
+3. **Binary `RESFILE` IDs.**
+   Resolved by root approval and source use of
+   `BINARY_RESOURCE_ID_ACHIEVEMENTS_END_WIN_LAYOUT`,
+   `BINARY_RESOURCE_ID_ACHIEVEMENTS_END_OTHER_LAYOUT`, and
+   `BINARY_RESOURCE_ID_ACHIEVEMENTS_IN_GAME_LAYOUT`.
+   Keep these names separate from the base-language `STRING_ID_*` group.
+   The binary type remains `0x62696E61`.
+
+## Correction history
+
+- Owner review found a split constructor brace after the initializer.
+  The constructor now follows one true brace style.
+- Owner review required absolute main-root evidence paths.
+  The PDB, packets, executable, DLLs, and extraction files now use them.
+- Root review required compact short handler signatures and calls.
+  The source now keeps short calls on one line and aligns remaining continuations.
+- Root approval and definition provenance is `027da42cb19a66cd9d07a7c357ab223034f26cdd`.
+  Header import provenance is `bdb8bc1af`.
+- This worker substituted the approved string and binary resource macros.
+  No header was edited in this correction.
+- Owner review confirmed that `include/scr_ach.h` already has all recovered
+  parameter names. No further header edit is required.
+- Owner review resolved the binary `BINARY_RESOURCE_ID_*` request.
+  Root-approved names are used and remain separate from `STRING_ID_*`.
+- Root reviewer evidence comes from
+  `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`.
+  It confirms runtime-base string and `Interfac.drs` provenance.
+- The pinned original set has no base language file.
+  Checked expansion DLLs and `Interfac.drs` files miss these requested IDs.
+- Resource payloads, hashes, and conclusions did not change.
+
+## Validation
+
+The permitted source and Git review checks ran.
+The latest correction pass included `git diff --check` and a full diff review.
+
+Compilation was not run.
+Matching was not run.
+Audits were not run.
+Tests were not run.
+No byte-equality or semantic approval claim is made.

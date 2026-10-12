@@ -1,29 +1,18 @@
-# Local game runtime
+# Game runtime
 
-This folder is the local runtime source for build and startup tests.
+Copy a complete retail install here, so the game has its data to run with:
 
-It must contain the complete Rise of Rome installation files. The file
-`empiresx.exe` must be the 1998-07-17 beta executable.
+- Age of Empires 1.0b (`EMPIRES.EXE`, `language.dll`, `data/`, `sound/`, `avi/`)
+- Rise of Rome 1.0 (`languagex.dll`, `data2/`, and the rest of the expansion files)
 
-Required beta EXE SHA256:
+Then copy the beta `empiresx.exe` from `orig/` over the retail one. Its SHA-256 must be
+`88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
 
-```text
-88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90
-```
+The beta's own data files are not enough to run the game: they lack the base game
+and some AI files the beta expects.
 
-The other files provide the complete release installation. Do not replace
-`EMPIRES.EXE`, `data/`, `data2/`, `avi/`, `sound/`, or the language files.
+`game.cmd` never runs the game from here. It copies this folder into `build/runtime/`
+first and leaves this folder unchanged. The harness uses only the saved games pinned in
+`config/harness/savegames.json`, not the `savegame/` folder here.
 
-`tools/prepare_runtime.py` uses this folder by default. It copies the files to
-`build/runtime/` before it starts a test. It does not change this folder.
-
-Harness runs do not copy this folder's `savegame` directory.
-They use only the repository saves pinned by `config/harness/savegames.json`.
-Normal `game.cmd original` and `game.cmd rebuilt` launches still copy local saves.
-See [save fixtures](../config/harness/savegames/README.md) for setup and replay limits.
-
-The game files are ignored by Git. Keep this README tracked. Do not modify the
-original files under `orig/` or the user's installed game.
-
-Keep `runtime` included in sparse checkouts.
-Before changing sparse rules, preserve a verified copy of these ignored files.
+Everything in this folder except this README is ignored by Git.

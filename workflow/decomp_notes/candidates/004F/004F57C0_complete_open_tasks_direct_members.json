@@ -1,0 +1,9 @@
+{
+  "base": "a1a6d970f7ea742cbc2a9a72dcf9df56bd026bc6",
+  "patch": "workflow\decomp_notes\\candidates\\004F\\004F57C0_complete_open_tasks_direct_members.patch",
+  "patch_sha256": "fa6ec1f0f3345aef05fbdd4a5c396fb2e9ca23e4515f5767c81da70b2b9e72ec",
+  "files": {
+    "src/taitacmd.cpp": "280b11621357ec3d62b4e46b9a02e6a924d7c2db31c45f4b92b14ca095dc7310"
+  },
+  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
+}

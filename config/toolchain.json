@@ -2,25 +2,25 @@
   "toolchain_name": "vc5-host",
   "status": "calibrated",
   "compiler": {
-    "cl": "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\CL.EXE",
-    "link": "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\LINK.EXE",
-    "nmake": "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\NMAKE.EXE",
-    "rc": "C:\\Program Files (x86)\\DevStudio\\SharedIDE\\bin\\RC.EXE",
+    "cl": "$VC5_DIR\\VC\\Bin\\CL.EXE",
+    "link": "$VC5_DIR\\VC\\Bin\\LINK.EXE",
+    "nmake": "$VC5_DIR\\VC\\Bin\\NMAKE.EXE",
+    "rc": "$VC5_DIR\\SharedIDE\\bin\\RC.EXE",
     "default_rsp": "config\\flags\\default.rsp"
   },
   "environment": {
     "path_prepend": [
-      "C:\\Program Files (x86)\\DevStudio\\VC\\Bin",
-      "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\WINNT",
-      "C:\\Program Files (x86)\\DevStudio\\SharedIDE\\bin"
+      "$VC5_DIR\\VC\\Bin",
+      "$VC5_DIR\\VC\\Bin\\WINNT",
+      "$VC5_DIR\\SharedIDE\\bin"
     ],
     "include": [
-      "C:\\Program Files (x86)\\DevStudio\\VC\\Include",
-      "C:\\Program Files (x86)\\DevStudio\\VC\\MFC\\Include"
+      "$VC5_DIR\\VC\\Include",
+      "$VC5_DIR\\VC\\MFC\\Include"
     ],
     "lib": [
-      "C:\\Program Files (x86)\\DevStudio\\VC\\Lib",
-      "C:\\Program Files (x86)\\DevStudio\\VC\\MFC\\Lib"
+      "$VC5_DIR\\VC\\Lib",
+      "$VC5_DIR\\VC\\MFC\\Lib"
     ]
   },
   "expected_versions": {

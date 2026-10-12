@@ -12,10 +12,10 @@
     "0051B140": {"status": "matching", "symbol": "?set_object@TRIBE_Panel_Object@@QAEXPAVRGE_Static_Object@@@Z"},
     "0051B160": {"status": "matching", "symbol": "?set_mode@TRIBE_Panel_Object@@QAEXE@Z"},
     "0051B180": {"status": "matching", "symbol": "?get_mode@TRIBE_Panel_Object@@QAEEXZ"},
-    "0051B190": {"status": "new_verified_logic", "symbol": "?draw@TRIBE_Panel_Object@@UAEXXZ", "behavior_review": "logic_matching/0051B190/current-review-20260914-r03/review-03-a"},
-    "0051BF90": {"status": "new_verified_logic", "symbol": "?draw_score@TRIBE_Panel_Object@@IAEXXZ", "behavior_review": "logic_matching/0051BF90/review-01/attempt-01"},
+    "0051B190": {"status": "accepted_logic", "symbol": "?draw@TRIBE_Panel_Object@@UAEXXZ", "behavior_review": "logic_matching/0051B190/current-review-20260914-r03/review-03-a"},
+    "0051BF90": {"status": "accepted_logic", "symbol": "?draw_score@TRIBE_Panel_Object@@IAEXXZ", "behavior_review": "logic_matching/0051BF90/review-01/attempt-01"},
     "0051C220": {"status": "matching", "symbol": "?draw_item@TRIBE_Panel_Object@@MAEXHHW4ValueType@1@HH@Z"},
-    "0051C3F0": {"status": "new_verified_logic", "symbol": "?handle_idle@TRIBE_Panel_Object@@UAEJXZ", "behavior_review": "logic_matching/0051C3F0/coord-10-0051C3F0-review-03/attempt-01"},
+    "0051C3F0": {"status": "accepted_logic", "symbol": "?handle_idle@TRIBE_Panel_Object@@UAEJXZ", "behavior_review": "logic_matching/0051C3F0/coord-10-0051C3F0-review-03/attempt-01"},
     "0051CA10": {"status": "matching", "symbol": "?save_object_info@TRIBE_Panel_Object@@IAEXXZ"},
     "0051CC80": {"status": "matching", "symbol": "?mouse_left_down_action@TRIBE_Panel_Object@@UAEJJJHH@Z"},
     "0051CC90": {"status": "matching", "symbol": "?mouse_left_up_action@TRIBE_Panel_Object@@UAEJJJHH@Z"}

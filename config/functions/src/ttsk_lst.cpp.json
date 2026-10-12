@@ -6,7 +6,7 @@
     "flags": "default"
   },
   "functions": {
-    "0052C3F0": {"status": "new_verified_logic", "symbol": "?get_target_task@TRIBE_Task_List@@UAEPAVRGE_Task@@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MMM@Z", "behavior_review": "logic_matching/0052C3F0/coord-11-review-20260913T055000Z/attempt-01"},
+    "0052C3F0": {"status": "accepted_logic", "symbol": "?get_target_task@TRIBE_Task_List@@UAEPAVRGE_Task@@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MMM@Z", "behavior_review": "logic_matching/0052C3F0/coord-11-review-20260913T055000Z/attempt-01"},
     "0052C8D0": {"status": "matching", "symbol": "?is_attack_task@TRIBE_Task_List@@UAEHPAVRGE_Task@@@Z"}
   }
 }

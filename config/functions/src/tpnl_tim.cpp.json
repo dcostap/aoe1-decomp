@@ -16,6 +16,6 @@
     "0051DC90": {"status": "matching", "symbol": "?draw@TRIBE_Panel_Time@@UAEXXZ"},
     "0051E0E0": {"status": "matching", "symbol": "?get_true_render_rect@TRIBE_Panel_Time@@UAEXAAUtagRECT@@@Z"},
     "0051E150": {"status": "matching", "symbol": "?handle_idle@TRIBE_Panel_Time@@UAEJXZ"},
-    "0051E2B0": {"status": "new_verified_logic", "symbol": "?render_to_image_buffer@TRIBE_Panel_Time@@IAEHXZ", "behavior_review": "logic_matching/0051E2B0/review-01/attempt-01"}
+    "0051E2B0": {"status": "accepted_logic", "symbol": "?render_to_image_buffer@TRIBE_Panel_Time@@IAEHXZ", "behavior_review": "logic_matching/0051E2B0/review-01/attempt-01"}
   }
 }

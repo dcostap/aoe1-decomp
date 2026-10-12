@@ -40,7 +40,7 @@ required clock-call counters. The strict checker rejected those runs.
 Three fresh runs passed all pair checks with the required counters. These runs
 show observed repeatability for this case, not general save compatibility.
 After source repairs, three fresh rebuilt runs matched those originals in all 15 pair checks.
-See [the check record](../../../decomp_notes/saved_game_fixture_20260916.md).
+See [the check record](../../../workflow/decomp_notes/saved_game_fixture_20260916.md).
 The two new cases were recorded from the original game using
 `late_game_match_2.gmx` and `new_game_15mins_in.gmx`.
 They are not suite cases and are not parity-qualified.
@@ -68,4 +68,4 @@ Replay the printed recording path with `game.cmd replay-original PATH --controll
 For the preserved case, use `game.cmd replay-original config/harness/human-late-game-match.json --controlled`.
 Use three original runs before comparing the rebuilt game.
 Controlled timing and pinned inputs do not alone prove equal game behavior.
-See [human recording and replay](../../../docs/human_replay.md) for the checks and limits.
+See [human recording and replay](../../../workflow/docs/human_replay.md) for the checks and limits.
