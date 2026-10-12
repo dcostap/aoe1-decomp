@@ -268,7 +268,7 @@ int TRIBE_Main_View::command_place_object(long x, long y, int reset_mode) {
                         this->player, pick_info.x, pick_info.y, 0, 1, master_obj->elevation_flag, 0, 1, 1, 1
                     )
                     == 0) {
-                    if (reset_mode != 0 || object_id == 0x6D) {
+                    if (reset_mode != 0 || object_id == MASTER_OBJECT_TOWN_CENTER1) {
                         rge_base_game->set_game_mode(0, 0);
                     }
                     if (static_cast<TRIBE_Player*>(this->player)

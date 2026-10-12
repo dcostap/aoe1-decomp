@@ -3746,7 +3746,8 @@ void TRIBE_Player::analyize_selected_objects() {
                 }
 
                 int object_id = (*p)->master_obj->id;
-                if (object_id == 0x4F || object_id == 0xC7 || object_id == 0x45 || object_id == 0x116) {
+                if (object_id == MASTER_OBJECT_WATCH_TOWER || object_id == MASTER_OBJECT_SENTRY_TOWER
+                    || object_id == MASTER_OBJECT_GUARD_TOWER || object_id == MASTER_OBJECT_GUARD_TOWER2) {
                     this->sel_object_properties |= 1;
                 }
             }
