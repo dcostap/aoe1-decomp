@@ -15,8 +15,6 @@ __pycache__/
 *.ilk
 *.map
 *.log
-!orig/
-!orig/**
 nul
 vc50.idb
 
@@ -30,3 +28,11 @@ vc50.idb
 
 # Personal gameplay recordings, traces, and saves used by the harness; never committed.
 /local/
+
+# Original game files and material derived from them stay local; see docs.
+/inventory/
+/decomp_notes/experiments/
+/decomp_notes/executable_build_evidence/
+/third_party/directplay/lib/
+/project_full_status.csv
+*.mp3
