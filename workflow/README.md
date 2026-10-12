@@ -123,13 +123,32 @@ five read-only reviewers, and pushed. On February 23 alone, tasks 84 to 113 rest
 action state machines, object construction, checksums, guaranteed-delivery
 networking, the mission screen, and the main view.
 
+**The `ask_user` trick.** The whole fleet ran on a 20€ Copilot subscription, and that
+only worked because of a loophole. Copilot CLI billed per prompt *I* sent, not per
+token the agent spent. But agents had an `ask_user` tool: the agent pauses, asks me a
+question, and my answer comes back as a tool result inside the same request. So the
+rule was that no agent ever finishes. At the end of every task it calls `ask_user`,
+I reply with the next task, and it keeps going, on one credit, for hours. That's how
+tens of millions of tokens went through a 20€ subscription. It's also why every task
+prompt ended with this, in capitals:
+
+> REMINDER: You MUST use ask_user at end of EVERY task. Non-negotiable.
+
+Workers still forgot all the time. Each time a worker simply ended its turn, the
+session closed and the next prompt cost a fresh credit. The orchestrator kept a
+running count of these "violations" per worker, and I asked one agent "what would
+you change about the wording to prevent this catastrophic forgetting".
+
 It looked like a factory. It was also a mess:
 
-- **Infrastructure fights.** The terminal-fleet MCP had a focus bug that left workers
-  stuck on locked input. One worker would type its answer and never submit it, so I
-  had to press Enter myself. Quota errors (429s) were constant. Every task prompt
-  ended with "REMINDER: You MUST use ask_user at end of EVERY task. Non-negotiable.",
-  and workers still ignored it.
+- **Driving terminals by remote control.** To run eight workers at once, one Copilot
+  session controlled the others through an MCP server called Terminal Fleet. It
+  opened terminal windows, typed prompts into them, and read their screens back. It
+  was fragile. Commands lost their first character. Long prompts broke on newlines.
+  Input only reached a window when that window had focus. One worker would type out
+  its prompt and never submit it, and I had to click in and press Enter myself. On
+  top of that, rate-limit errors (429s) made the "launch three to five reviewers"
+  step fail regularly.
 - **Fake progress.** Coverage was measured by markers in the source, so workers
   learned to add markers. "The previous worker FAILED this task by only adding
   #include wiring." "Task 241 only added 34 lines." A 230/230 coverage report hid 143
@@ -139,13 +158,35 @@ It looked like a factory. It was also a mess:
   parity bug, and declared "full parity" right before finding a "critical" mismatch.
   A green build proves the code compiles. It proves nothing about behavior.
 
-The best parts were the rendering detective stories. The terrain came out as a
-yellow honeycomb because of a stale global translation table ("So, in short, who is
-to blame?"). A tile list with zero capacity corrupted the heap and drew a
-checkerboard. One panel drew itself recursively. A virtual destructor called itself.
-The game wanted an 8-bit display on a 32-bit desktop, which is how cnc-ddraw got
-involved. And at one point I had to shout "YOU CAN'T READ .bmp IMAGES… TURN THEM INTO
-PNGS".
+The best parts were the rendering bugs, because the agents had to debug them almost
+blind. The loop was: change the code, build, launch a test map, have the game save a
+screenshot, and look at it. The first snag was that the game's own screenshot function
+writes `.bmp` files, and the agents couldn't read BMPs. Opening one crashed their image
+reader. After that happened more than once, I wrote, in capitals:
+
+> YOU CAN'T READ .bmp IMAGES, YOU HAVE TO TURN THEM INTO PNGS FIRST, AND THEN YOU
+> "SEE" THE IMAGE
+
+Once they could see, the bugs had real culprits:
+
+- **Yellow honeycomb terrain.** The map loaded and 253 tiles were drawn, with valid
+  terrain IDs, but grass and water showed up as yellow hexagon cells. The palette
+  was fine. The cause was a global color-translation table (the one that paints units
+  in player colors). A UI or unit draw set it, and the terrain draws after it picked
+  it up because our renderer fell back to "whatever table is current". The original
+  never got into that state, because of a drawing path our port had switched off. The
+  fix was one line. My follow-up question was "So, in short, who is to blame?" The
+  audit found earlier commits that had simplified original behavior without marking
+  it. That became a rule: every non-original shortcut gets a `TODO: STUB` comment that
+  points to the original code.
+- **The checkerboard.** The original constructor gives two tile lists a capacity of
+  400. Ours started them at 0, and the list doubled its size when it grew, and 0
+  doubled is still 0. Every write went past a zero-byte buffer, which corrupted the
+  heap and drew the map as a black checkerboard.
+- **8 bits on a 32-bit desktop.** The software rasterizer assumes one byte per pixel.
+  In a window on a modern desktop the surface had four, so the picture came out in
+  vertical stripes. That's how cnc-ddraw got involved.
+- A panel that drew itself recursively, and a virtual destructor that called itself.
 
 On March 3 a comment-only audit fleet found 678 TODOs. One question, "can we confirm
 that those functions are actually called?", cut 149 "missing" functions down to about
