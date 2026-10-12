@@ -83,7 +83,7 @@ The core tools that build and compare functions are in the root [`tools/`](../to
 These files are kept as they were written. Older ones use earlier status names:
 `new_verified_logic` is now `accepted_logic`, and `scratch` is now `nonmatching`.
 
-## The long version: how it actually went
+## The long version: how it actually went down
 
 This is the story behind the ~9,000 commits. I rebuilt it from the git history of
 three attempts, the old Copilot CLI sessions, about 14,000 Pi sessions (almost all of
