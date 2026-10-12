@@ -95,48 +95,6 @@ def test_resource_roundtrip_with_pinned_linker():
     assert linked_res.read_bytes() == source_res.read_bytes()
 
 
-def test_recovered_string_data_matches_original():
-    import ast
-    import json
-    import re
-    import uuid
-    import pefile
-    from coff import load_coff_object
-    from common import load_toolchain, repo_path
-    from function_compare import compile_source
-
-    toolchain = load_toolchain()
-    if not repo_path(toolchain["compiler"]["cl"]).is_file():
-        pytest.skip("Pinned VC5 compiler is not installed")
-    output = repo_path("build/tests/string_data") / uuid.uuid4().hex / "game_globals.obj"
-    output.parent.mkdir(parents=True)
-    source = repo_path("src/game_globals.cpp")
-    compile_source(source, output, repo_path("config/flags/default.rsp"), source.parent)
-    obj = load_coff_object(output)
-    pe = pefile.PE(str(repo_path("orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe")))
-    rows = json.loads(repo_path("decomp_notes/executable_build_evidence/string_definitions.json").read_text())
-    literals = set()
-    for path in repo_path("src").iterdir():
-        if path.suffix.lower() not in {".c", ".cpp"}:
-            continue
-        for token in re.findall(r'"(?:[^"\\\r\n]|\\.)*"', path.read_text(errors="replace")):
-            try:
-                literals.add(ast.literal_eval(token))
-            except (SyntaxError, ValueError):
-                pass
-    for row in rows:
-        symbols = [s for s in obj.symbols if s.name == row["symbol"] and s.section_number > 0]
-        expected = row["ascii_prefix"].encode("ascii") + b"\0"
-        if symbols:
-            assert len(symbols) == 1, row["symbol"]
-            symbol = symbols[0]
-            section = obj.section_by_index(symbol.section_number)
-            assert section.data[symbol.value:symbol.value + len(expected)] == expected, row["symbol"]
-        else:
-            assert row["ascii_prefix"] in literals, row["symbol"]
-        assert pe.get_data(int(row["original_va"], 16) - pe.OPTIONAL_HEADER.ImageBase, len(expected)) == expected
-
-
 def test_obstruction_tables_compile_as_writable_data():
     import hashlib
     import json

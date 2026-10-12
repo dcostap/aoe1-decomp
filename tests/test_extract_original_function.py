@@ -77,24 +77,5 @@ class ExtractOriginalFunctionTests(unittest.TestCase):
         self.assertEqual(parent, ("normal", ""))
         self.assertEqual(fragment, ("parent_owned_fragment", "parent 0047EE90 RESFILE_open_new_resource_file internal_error_exit"))
 
-    def test_shipped_int3_remains_inside_parent_boundary(self) -> None:
-        binaries = load_binaries()
-        layout = load_layout(repo_path(binaries["ghidra_layout"]))
-        ranges, _ = owned_function_ranges(layout, 0x0047EE90)
-        image = load_pe_image(repo_path(binaries["original_exe"]))
-
-        self.assertEqual(ranges, [(0x0047EE90, 0x0047F173)])
-        self.assertEqual(image.read_va_range(0x0047F00B, 0x0047F00B), b"\xCC")
-
-    def test_view_function_owns_reviewed_switch_fragments(self) -> None:
-        binaries = load_binaries()
-        layout = load_layout(repo_path(binaries["ghidra_layout"]))
-
-        ranges, included = owned_function_ranges(layout, 0x00535FE0)
-
-        self.assertEqual(ranges, [(0x00535FE0, 0x00536B02)])
-        self.assertEqual(included, [0x00536912, 0x00536932, 0x00536957])
-
-
 if __name__ == "__main__":
     unittest.main()

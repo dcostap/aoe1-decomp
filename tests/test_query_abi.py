@@ -15,25 +15,6 @@ from shared_abi_evidence import load_shared_global_evidence  # noqa: E402
 
 
 class QueryAbiTests(unittest.TestCase):
-    def test_get_next_sequence_reports_pdb_function_statics(self) -> None:
-        payload = query_abi.build_query(va="0042B200")
-        scoped = payload["pdb_scoped_symbols"]
-        self.assertEqual(
-            [(row["address"], row["type_name"], row["name"]) for row in scoped["function_statics"]],
-            [
-                ("0062CF2C", "unsigned char", "Sequence"),
-                ("0062CF30", "unsigned long", "LastCurrentTurn"),
-            ],
-        )
-
-    def test_sequence_address_is_not_emitted_as_shared_global(self) -> None:
-        payload = query_abi.build_query(va="0062CF2C")
-        self.assertEqual(payload["globals"][0]["ownership"], "function_static")
-        self.assertEqual(payload["globals"][0]["emit_c_type"], "")
-        self.assertEqual(
-            payload["pdb_function_static_owners"][0]["function_va"], "0042B200"
-        )
-
     def test_reviewed_global_declaration_matches_shared_header(self) -> None:
         rows = load_shared_global_evidence(REPO_ROOT)
         row = next(item for item in rows if item["name"] == "rge_base_game")

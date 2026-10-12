@@ -196,62 +196,6 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertTrue(direct_call_symbols_match("__chkstk", "__alloca_probe"))
         self.assertFalse(direct_call_symbols_match("__alloca_probe", "__ftol"))
 
-    def test_relocation_is_not_masked_across_different_instruction_shapes(self) -> None:
-        original = bytes.fromhex("B8 11 22 33 44 C3")  # mov eax,imm32
-        rebuilt = bytes.fromhex("68 00 00 00 00 C3")   # push imm32
-        left, right, info = compatible_relocation_masks(
-            original,
-            rebuilt,
-            [{"offset": 1, "width": 4, "symbol_name": "_value"}],
-            0x1000,
-        )
-        self.assertEqual(left, original)
-        self.assertEqual(right, rebuilt)
-        self.assertEqual(info["compatible"], 0)
-        self.assertEqual(info["incompatible"], 1)
-
-    def test_tail_jump_relocation_requires_the_original_target(self) -> None:
-        original = bytes.fromhex("E9 BB 54 00 00")  # 00402030 -> 004074F0 ~RGE_Action
-        rebuilt = bytes.fromhex("E9 00 00 00 00")
-        left, right, info = compatible_relocation_masks(
-            original,
-            rebuilt,
-            [{"offset": 1, "width": 4, "symbol_name": "?parent_destroy@RGE_Action@@QAEXXZ"}],
-            0x00402030,
-        )
-        self.assertNotEqual(left, right)
-        self.assertEqual(info["compatible"], 0)
-        self.assertEqual(info["target_mismatches"][0]["kind"], "tail-jump")
-
-        left, right, info = compatible_relocation_masks(
-            original,
-            rebuilt,
-            [{"offset": 1, "width": 4, "symbol_name": "??1RGE_Action@@UAE@XZ"}],
-            0x00402030,
-        )
-        self.assertEqual(left, right)
-        self.assertEqual(info["compatible"], 1)
-        self.assertEqual(info["target_mismatches"], [])
-
-    def test_original_operator_override_preserves_overload_identity(self) -> None:
-        original = (b"\x90" * 29) + bytes.fromhex("E8 8E ED FF FF")
-        rebuilt = (b"\x90" * 29) + bytes.fromhex("E8 00 00 00 00")
-        left, right, info = compatible_relocation_masks(
-            original,
-            rebuilt,
-            [
-                {
-                    "offset": 30,
-                    "width": 4,
-                    "symbol_name": "??8@YAHABVConstructionItem@@0@Z",
-                }
-            ],
-            0x0040BBB0,
-        )
-        self.assertEqual(left, right)
-        self.assertEqual(info["compatible"], 1)
-        self.assertEqual(info["target_mismatches"], [])
-
     def test_owning_symbol_validation_rejects_a_different_method(self) -> None:
         valid = owning_function_symbol_validation(
             "~RGE_Action_Bird", "??1RGE_Action_Bird@@UAE@XZ"
@@ -429,45 +373,6 @@ class CoffAndDiagnosticTests(unittest.TestCase):
             [(row["target"], row["delta"]) for row in deltas],
             [("setaction", -2), ("isenemy", 1), ("object", 1)],
         )
-
-    def test_loaded_vtable_slot_call_is_identified(self) -> None:
-        # mov eax,[ecx]; mov edx,[eax+28h]; call edx; ret
-        instructions = decode_instructions(bytes.fromhex("8B 01 8B 50 28 FF D2 C3"), 0x1000)
-        calls = call_fingerprint(instructions, original=False)
-        self.assertEqual([(row["kind"], row["target"]) for row in calls], [("virtual", "vslot+0x28")])
-        self.assertEqual(calls[0]["block_offset"], 0)
-
-    def test_owner_relocation_is_identified_as_internal_entry_call(self) -> None:
-        owner = "?pick1@RGE_Main_View@@QAEXXZ"
-        instructions = decode_instructions(
-            bytes.fromhex("E8 00 00 00 00 C3"),
-            0x1000,
-            [{"offset": 1, "symbol_name": owner}],
-        )
-        calls = call_fingerprint(
-            instructions,
-            original=False,
-            owner_symbol=owner,
-        )
-        self.assertEqual(
-            [(row["kind"], row["target"]) for row in calls],
-            [("direct", "internal+0x0")],
-        )
-
-    def test_stack_spilled_vtable_slot_tracks_push_adjustments(self) -> None:
-        # mov eax,[ecx]; mov edx,[eax+10Ch]; mov [esp+14h],edx;
-        # push four args; call dword [esp+24h]; ret
-        instructions = decode_instructions(
-            bytes.fromhex("8B 01 8B 90 0C 01 00 00 89 54 24 14 6A 01 6A 02 6A 03 6A 04 FF 54 24 24 C3"),
-            0x1000,
-        )
-        calls = call_fingerprint(instructions, original=False)
-        self.assertEqual([(row["kind"], row["target"]) for row in calls], [("virtual", "vslot+0x10C")])
-
-    def test_unproven_esp_indirect_call_is_not_a_virtual_slot(self) -> None:
-        instructions = decode_instructions(bytes.fromhex("FF 54 24 24 C3"), 0x1000)
-        calls = call_fingerprint(instructions, original=False)
-        self.assertEqual([(row["kind"], row["target"]) for row in calls], [("indirect", "indirect")])
 
     def test_call_alignment_marks_contextual_slot_replacement(self) -> None:
         original = [

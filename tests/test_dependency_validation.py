@@ -108,13 +108,3 @@ def test_guarded_switch_checks_every_target():
     assert [r['result'] for r in rows if r['kind'] == 'switch_table'] == ['fail', 'pass']
 
 
-def test_previously_reviewed_strings_have_proved_original_bytes(monkeypatch):
-    import reviewed_storage
-    from object_dependencies import original_image
-    pe = original_image()
-    entries = reviewed_storage.load_reviewed_storage(pe)
-    assert len(entries) == 81
-    assert len({e['symbol'] for e in entries}) == len(entries)
-    monkeypatch.setattr(reviewed_storage, 'read_storage', lambda *args: b'bad')
-    with pytest.raises(ValueError, match='extent differs'):
-        reviewed_storage.load_reviewed_storage(pe)

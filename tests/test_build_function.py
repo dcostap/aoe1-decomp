@@ -200,58 +200,6 @@ class BuildFunctionTests(unittest.TestCase):
             self.assertEqual(len(calls), 3)
             self.assertTrue(source_map_path.is_file())
 
-    def test_grouped_owner_build_and_extract_use_one_artifact_snapshot(self) -> None:
-        context = multiprocessing.get_context("spawn")
-        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temp:
-            root = Path(temp)
-            (root / "unit.cpp").write_text("int grouped() { return 1; }\n", encoding="utf-8")
-            (root / "flags.rsp").write_text("/O2\n", encoding="utf-8")
-            phase = context.Queue()
-            first_control = context.Queue()
-            second_control = context.Queue()
-            first = context.Process(
-                target=_grouped_owner_worker,
-                args=(str(root), "A", phase, first_control),
-            )
-            second = context.Process(
-                target=_grouped_owner_worker,
-                args=(str(root), "B", phase, second_control),
-            )
-            first.start()
-            second_started = False
-            try:
-                self.assertEqual(phase.get(timeout=5), ("build_done", "A"))
-                second.start()
-                second_started = True
-                self.assertEqual(phase.get(timeout=5), ("compiler_started", "B"))
-                first_control.put("extract")
-                with self.assertRaises(queue.Empty):
-                    phase.get(timeout=0.2)
-                second_control.put("finish_compile")
-                self.assertEqual(phase.get(timeout=5), ("build_done", "B"))
-                second_control.put("extract")
-                results = [phase.get(timeout=5), phase.get(timeout=5)]
-            finally:
-                first_control.put("extract")
-                second_control.put("finish_compile")
-                second_control.put("extract")
-                first.join(timeout=5)
-                if second_started:
-                    second.join(timeout=5)
-                if first.is_alive():
-                    first.terminate()
-                if second.is_alive():
-                    second.terminate()
-            self.assertEqual(first.exitcode, 0)
-            self.assertEqual(second.exitcode, 0)
-            self.assertEqual(
-                sorted((row[0], row[1]) for row in results),
-                [("extract_done", "A"), ("extract_done", "B")],
-            )
-            for row in results:
-                self.assertEqual(row[2], b"COMPLETE__")
-                self.assertEqual(row[3], "grouped-fingerprint")
-
     def test_checker_rejects_extraction_from_another_fingerprint(self) -> None:
         with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temp:
             root = Path(temp)

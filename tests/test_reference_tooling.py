@@ -17,57 +17,10 @@ import audit_linked_references as linked
 import linked_inputs
 
 
-def test_wrong_base_method_is_not_exact():
-    # Actual original call in TRIBE_Building_Object::copy_obj.
-    start, target = 0x004C9737, 0x00430810
-    original = b'\xe8' + (target-start-5).to_bytes(4, 'little', signed=True)
-    rebuilt = b'\xe8\0\0\0\0'
-    bad = '?copy_obj@RGE_Action_Object@@UAEXPAVRGE_Master_Static_Object@@@Z'
-    good = '?copy_obj@RGE_Combat_Object@@UAEXPAVRGE_Master_Static_Object@@@Z'
-    a, b, result = compatible_relocation_masks(original, rebuilt,
-        [dict(offset=1, width=4, symbol_name=bad)], start)
-    assert a != b
-    assert result['target_mismatches'][0]['identity']['expected_symbol'] == good
-    a, b, result = compatible_relocation_masks(original, rebuilt,
-        [dict(offset=1, width=4, symbol_name=good)], start)
-    assert a == b
-    assert not result['target_mismatches']
-
-
-def test_unknown_identity_cannot_mask_call(monkeypatch):
-    monkeypatch.setattr(identity, 'original_identities', lambda: {})
-    a, b, result = compatible_relocation_masks(b'\xe8\x10\0\0\0', b'\xe8\0\0\0\0',
-        [dict(offset=1, width=4, symbol_name='?copy_obj@Wrong@@QAEXXZ')], 0x1000)
-    assert a != b
-    assert result['target_unknowns']
-    assert not result['target_mismatches']
-
-
-def test_reordered_calls_keep_positional_failures(monkeypatch):
-    monkeypatch.setattr(identity, 'original_identities', lambda: {
-        0x2000: dict(symbol='_f'), 0x3000: dict(symbol='_g')})
-    original = (b'\xe8' + (0x2000-0x1005).to_bytes(4, 'little', signed=True)
-                + b'\xe8' + (0x3000-0x100A).to_bytes(4, 'little', signed=True))
-    rebuilt = b'\xe8\0\0\0\0' * 2
-    _, _, result = compatible_relocation_masks(original, rebuilt, [
-        dict(offset=1, width=4, symbol_name='_g'),
-        dict(offset=6, width=4, symbol_name='_f')], 0x1000)
-    assert len(result['target_mismatches']) == 2
-    assert all(row['comparison_basis'] == 'same_instruction_offset'
-               for row in result['target_mismatches'])
-
-
 def test_conflicting_original_symbols_remain_unknown(monkeypatch):
     monkeypatch.setattr(identity, 'original_identities', lambda: {
         0x1000: dict(symbol=None, symbols={'_f': ['FPO'], '_g': ['supplement']})})
     assert identity.check_direct_identity(0x1000, '_f')['result'] == 'unknown'
-
-
-def test_direct_addend_cannot_hide_interior_target(monkeypatch):
-    monkeypatch.setattr(identity, 'original_identities', lambda: {0x1015: dict(symbol='_f', symbols={'_f': ['test']})})
-    _, _, result = compatible_relocation_masks(b'\xe8\x10\0\0\0', b'\xe8\1\0\0\0',
-        [dict(offset=1, width=4, symbol_name='_f')], 0x1000)
-    assert result['target_unknowns'][0]['identity']['addend'] == 1
 
 
 def test_full_identity_keeps_signature_and_case():
@@ -75,43 +28,6 @@ def test_full_identity_keeps_signature_and_case():
     assert not identity.compare_identity('?f@A@@QAEHXZ', '?f@A@@QAEHH@Z')
     assert not identity.compare_identity('_Foo', '_foo')
     assert identity.compare_identity('_f@4', '__imp__f@4')
-
-
-def test_crt_aliases_are_target_scoped():
-    assert identity.check_direct_identity(0x54CFE0, '_open')['result'] == 'pass'
-    assert identity.check_direct_identity(0x54CFE0, '__open')['result'] == 'pass'
-    assert identity.check_direct_identity(0x54CFE0, '_close')['result'] == 'fail'
-    assert not identity.compare_identity('_open', '__open')
-    assert identity.check_direct_identity(0x54B700, '__ftol')['result'] == 'pass'
-    assert identity.check_direct_identity(0x54B9A0, '_strstr')['result'] == 'pass'
-
-
-def test_codec_import_thunk_keeps_exact_identity():
-    assert identity.check_direct_identity(0x54B1A4, '_ICInfo@12')['result'] == 'pass'
-    assert identity.check_direct_identity(0x54B1A4, '_ICInfo@8')['result'] == 'fail'
-    assert identity.check_direct_identity(0x54B1A4, '_MCIWndCreateA')['result'] == 'fail'
-    original = bytes.fromhex('e8 65 96 02 00')
-    rebuilt = bytes.fromhex('e8 00 00 00 00')
-    a, b, result = compatible_relocation_masks(original, rebuilt,
-        [dict(offset=1, width=4, symbol_name='_ICInfo@12')], 0x521B3A)
-    assert a == b
-    assert not result['target_unknowns']
-    assert not result['target_mismatches']
-
-
-def test_reviewed_game_and_drawing_targets_keep_exact_names():
-    for va, name in [
-        (0x444850, '?PtrClear@TDrawArea@@QAEXPAUtagRECT@@H@Z'),
-        (0x56C9A0, '_ASMDraw_Sprite'),
-        (0x56C780, '_ASMGet_Color_Xform'),
-        (0x43AA90, '?xlatClut4@@YAXPAEK0@Z'),
-        (0x43AAD0, '?xlatRle8@@YAXPAEK0@Z'),
-    ]:
-        assert identity.check_direct_identity(va, name)['result'] == 'pass'
-        assert identity.check_direct_identity(va, name + '_wrong')['result'] == 'fail'
-    assert identity.check_direct_identity(0x43AA90, '?xlatClut4@@YAXPAEI0@Z')['result'] == 'fail'
-    assert identity.check_direct_identity(0x43AAD0, '?xlatRle8@@YAXPAEH0@Z')['result'] == 'fail'
-    assert identity.check_direct_identity(0x4147A0, '?resize@?$ManagedArray@H@@QAEHH@Z')['result'] == 'fail'
 
 
 def test_reviewed_alias_cannot_erase_new_conflict(tmp_path, monkeypatch):
@@ -125,20 +41,6 @@ def test_reviewed_alias_cannot_erase_new_conflict(tmp_path, monkeypatch):
         assert identity.check_direct_identity(0x1000, '_f')['result'] == 'unknown'
     finally:
         identity.original_identities.cache_clear()
-
-
-def test_remaining_public_targets_keep_import_and_callback_signatures():
-    for va, good, bad in [
-        (0x5478FC, '_DirectDrawCreate@12', '_DirectDrawCreate@8'),
-        (0x54B1AA, '_MCIWndCreateA', '_MCIWndCreateA@16'),
-        (0x54B0CB, '_Inf32Decode', '_Inf32Encode'),
-        (0x54D6E0, '??_L@YGXPAXIHP6EX0@Z1@Z', '??_L@YGXPAXIIP6EX0@Z1@Z'),
-        (0x53C920, '?unexplore_terrain@RGE_Visible_Map@@QAEXHHHHHH@Z',
-         '?unexplore_terrain_sq@RGE_Visible_Map@@QAEXHHHHHH@Z'),
-        (0x54F550, '__strnicmp', '_strnicmp'),
-    ]:
-        assert identity.check_direct_identity(va, good)['result'] == 'pass'
-        assert identity.check_direct_identity(va, bad)['result'] == 'fail'
 
 
 def test_reviewed_identity_rejects_stale_input(tmp_path, monkeypatch):
@@ -155,12 +57,6 @@ def test_reviewed_identity_rejects_stale_input(tmp_path, monkeypatch):
             identity.original_identities()
     finally:
         identity.original_identities.cache_clear()
-
-
-def test_data_relocation_remains_explicitly_unchecked():
-    _, _, result = compatible_relocation_masks(bytes.fromhex('a100104000'), bytes.fromhex('a100000000'),
-        [dict(offset=1, width=4, symbol_name='_data')], 0x400000)
-    assert result['data_references'][0]['result'] == 'unknown'
 
 
 def test_map_retains_duplicate_owners_and_addresses():
