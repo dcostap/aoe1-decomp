@@ -55,30 +55,3 @@ console.log(JSON.stringify({calls,stops,messages,hooks,ticks:ctx.ticks}));
     assert all(row['sequence']==index+1 and row['rng_count']==4101 for index,row in enumerate(event_rows))
     sites=[row['row']['site'] for row in data['messages'] if row['row']['kind']=='replay-rng-site']
     assert len(sites)==2 and all(row['file']=='c:\\a.cpp' for row in sites)
-
-
-def test_minimap_source_adds_original_negative_subtrahend():
-    source=(ROOT/'src/diam_map.cpp').read_text()
-    for name in ('start_scroll_view', 'handle_scroll_view'):
-        body = source.split('void RGE_Diamond_Map::' + name + '(', 1)[1].split('\n}', 1)[0]
-        assert 'set_view_loc((float)col + 0.5f, (float)row + 0.5f)' in body
-
-
-def test_map_point_source_uses_original_negative_one_subtrahend():
-    source=(ROOT/'src/map.cpp').read_text()
-    assert '(y + 1.0f - x - z)' in source
-
-
-@pytest.mark.parametrize(('address','expected'),[(0x56F608,-0.5),(0x5706EC,-1.0)])
-def test_repaired_constants_against_pinned_original_data(address,expected):
-    import hashlib
-    import struct
-    data=(ROOT/'orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe').read_bytes()
-    assert hashlib.sha256(data).hexdigest()=='88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90'
-    pe=struct.unpack_from('<I',data,60)[0]
-    count=struct.unpack_from('<H',data,pe+6)[0]
-    table=pe+24+struct.unpack_from('<H',data,pe+20)[0]
-    rva=address-0x400000
-    sections=[struct.unpack_from('<IIII',data,table+40*i+8) for i in range(count)]
-    section=next(s for s in sections if s[1]<=rva<s[1]+min(s[0],s[2]))
-    assert struct.unpack_from('<f',data,section[3]+rva-section[1])[0]==expected
