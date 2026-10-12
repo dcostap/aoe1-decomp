@@ -2,7 +2,11 @@
 
 C++ source for the 17 July 1998 beta of *Age of Empires: The Rise of Rome* (`empiresx.exe`),
 recovered function by function. It is compiled with the original Visual C++ 5.0
-compiler and checked against the original executable. This is a build (that you can find around the web) which dates back a few months before the actual release of the DLC. I haven't analyzed nor found any obvious differences between this beta and the final release.
+compiler and checked against the original executable. This is a build (that you can find around the web) which dates back a few months before the actual release of the DLC. 
+
+I haven't analyzed nor found any obvious differences between this beta and the final release. There's probably mostly value tweaks and differences related to the new Civs and technologies they added in the DLC, but I haven't looked at that yet in detail.
+
+The newly compiled .exe plays exactly the same as the original, according to the various recording tests I performed ([with my game recording and replaying harness](workflow/README.md#The-replay-harness:-proving-it-plays-the-same)), where I recorded my exact inputs as  I played a few matches and let the game play itself in a few synthetic chaotic scenarios (massive battles with every units there is in the game, etc). There's probably still small behavioral differences that are only noticeable if you reach certain niche code paths, so comparing against more varied gameplay recordings will be necessary - as long as I don't  manage to match the remaining functions - but for 99.9% of normal gameplay, it seems to just work the exact same.
 
 | Status | Functions | % of functions | Bytes | % of bytes | Meaning |
 | --- | ---: | ---: | ---: | ---: | --- |

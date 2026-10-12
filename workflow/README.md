@@ -2,10 +2,7 @@
 
 The decompilation was done mostly by AI coding agents, run through the
 [Pi](https://github.com/badlogic/pi-mono) coding agent, between April and October 2026
-(about 9,000 commits). This folder holds what they worked from: the rules, the role
-prompts, the guides, and every note and review they left behind.
-
-Nothing here is needed to build the game.
+(about 9,000 commits). This folder has most of the stuff related to that whole mess: the rules, the role prompts, the guides, and every note and review they left behind.
 
 For the whole story, from the first failed port to the final link, see
 [The long version](#the-long-version-how-it-actually-went) at the end of this file.
@@ -84,6 +81,8 @@ These files are kept as they were written. Older ones use earlier status names:
 `new_verified_logic` is now `accepted_logic`, and `scratch` is now `nonmatching`.
 
 ## The long version: how it actually went down
+
+NOTE: this is ugly AI slop analysis I added just for fun. I will rewrite this myself sometime in the near future.
 
 This is the story behind the ~9,000 commits. I rebuilt it from the git history of
 three attempts, the old Copilot CLI sessions, about 14,000 Pi sessions (almost all of
@@ -382,35 +381,32 @@ drift acceptances. On September 13 came the "exact lottery": many blind workers 
 the same function, and the first exact match wins (`Path::operator==` fell to
 variant 06).
 
-**The runtime harness (September 14–15).** "THIS IS MY HAPPY IDEA!": run the rebuilt
-game and the original side by side and compare them. The first version captured my
-whole desktop ("u literally capturing my desktop"). It got to 41/41 UI cases. Replays
-found a villager speed of 1.1 instead of 1.3 (culture versus `tribe_effect`) and then
-matched 3.61 million RNG records. A PE-aware diff found wrong constants and switch
-tables in functions marked "matching". I had assumed the faults "should be in
-non-matching functions, naturally, right?" They weren't.
+**The harness (September 14).** "THIS IS MY HAPPY IDEA!" That day I started the replay
+harness, which runs the rebuilt game and the original side by side on the same inputs.
+It became the most important tool of the project and has
+[its own section below](#the-replay-harness-proving-it-plays-the-same). In the same
+days, a PE-aware diff of the linked executable found wrong constants and switch tables
+in functions marked "matching". I had assumed the faults "should be in non-matching
+functions, naturally, right?" They weren't.
 
 September 15 was a 1,179-commit cleanup day: Sol owners each running up to 8 Luna
 workers (80 agents), RAM limits, and 27 GiB of leftover `input.zip` blobs. "dont just
 wait nonsensically…". A few days later: "only the ones i pasted? come on bro, there
-must be hundreds", then "fuck. run the others one by one". A max-speed replay attempt
-was dropped ("wot, that seems too patchy").
+must be hundreds", then "fuck. run the others one by one".
 
 **September 22.** MiMo agents added comments describing known original bugs, using the
-RockNROR community fixes. The build folder had grown to 419 GB. An exact replay of a
-real human game (9,649 inputs, 981,899 RNG records) matched the original. It even
-reproduced an original bug: reading `soldiers[0]` from an empty list.
+RockNROR community fixes. The build folder had grown to 419 GB. And the first real
+human game replayed exactly on both executables.
 
 ### Act 3, part 4: shipping it (late September – October 2026)
 
 *Models: gpt-6-luna workers and gpt-6.1-sol in Pi, plus DeepSeek Flash. Claude Code
 with Claude Opus 5.5 from September 27, with Haiku 5.5 and Sonnet 5.5 near the end.*
 
-From September 27 the replay became deterministic: a 149-second session replays in 13
-seconds, 28× faster overall. Small surprises kept coming. An extra space in an
-`sscanf` format made the computer player miss the Tool Age. An agent's `git checkout`
-erased four lines of my uncommitted work. A drift re-review produced 25 new exact
-matches, kept 136 as drift, and sent 67 back to nonmatching.
+From September 27 the replay became fully deterministic and fast, and long recorded
+games started catching bugs no other check could (see the harness section below). An
+agent's `git checkout` erased four lines of my uncommitted work. A drift re-review
+produced 25 new exact matches, kept 136 as drift, and sent 67 back to nonmatching.
 
 On October 3 a 20-worker gpt-6-luna hackathon moved the count from 5,010 to 5,013.
 What remained was the hard core. On October 4 we found that adding an enum or even an
@@ -433,6 +429,95 @@ The last stretch, October 10–12, was with Claude Code (Opus 5.5 and Haiku 5.5)
 **Where it ended:** 5,426 functions. 5,013 match byte for byte, 140 are accepted
 drift, 217 are accepted logic, and 56 are still nonmatching. The whole game compiles,
 links, and plays.
+
+### The replay harness: proving it plays the same
+
+Byte matching proves single functions. It doesn't prove the game. A function can
+match and still be fed a wrong constant by its caller, and the 217 accepted-logic
+functions were only proven by review. I wanted something stronger: record a real
+match on the original, play the same inputs into the rebuilt game, and check that
+*everything* comes out identical. That became the harness, built from September 14
+on, and it's the reason I can say the rebuilt game plays like the original.
+
+**Step 1: menus.** The harness injects Frida hooks into both executables. It reads the
+game's own drawing surface at the moment the game paints, instead of taking
+screenshots. The first version did take screenshots, of my whole desktop ("u literally
+capturing my desktop"). Each game runs on a hidden private Windows desktop with its
+own registry copy and its network blocked, so many tests can run without taking over
+my screen. 41 menu cases cover clicks, dropdowns, drags, scrollbars, and text
+editing, and each compares pixels, palettes, control state, and RNG. They found real
+bugs: help dialogs filled the whole screen because a check tested the wrong field, and
+a list's switch table swapped Page Down and End.
+
+**Step 2: gameplay.** Start the same random map in both games and compare game state
+and *every* random number call (where it was called from and what it returned). The
+very first run differed: the rebuilt map had 5,968 objects, the original 5,763. A
+land-placement scan started at the wrong pointer. Next came a building-placement
+search radius that was too small.
+
+**Step 3: a real human game.** I played a short match on the original and recorded
+324 inputs. Replayed into the rebuilt game, it showed camera offsets, minimap and
+health-bar offsets, and an enemy villager walking at speed 1.1 instead of 1.3,
+because `new_game` passed the player's `culture` where the original passed
+`tribe_effect`.
+
+**The original isn't deterministic.** This was the hard part. Two runs of the
+*original* on the same inputs didn't agree. Windows timers and paint messages arrive
+at slightly different moments, which changes when the simulation steps and in which
+order random numbers are drawn. Even a diagnostic hook could shift the timing. The
+first fix was to suppress uncontrolled timer and paint messages and to run tests one at
+a time, because parallel runs drifted. On September 21 I tried to replay at maximum
+CPU speed ("we literally have the full code, we can make this work"), but taking out
+`Sleep()` made the virtual clock run ahead of the inputs, and each patch needed
+another ("wot, that seems too patchy").
+
+**The fix: record the whole boundary.** The breakthrough on September 22 was to stop
+recording only keys and clicks. The recorder now captures everything the game asks
+the outside world: every clock read, every Windows message poll, the RNG seeds, and the
+update boundaries. Replay feeds those answers back exactly. The first real human game
+then matched on both executables: 9,649 inputs, 1,472 world updates, an identical save
+file, and 981,899 random number records. It also reproduced an original bug.
+`setupSoldierGroups` reads `soldiers[0]` from an empty list, which picks up heap
+garbage, so the harness zero-fills allocations on both sides. The source keeps the
+bug.
+
+**Fast and parallel (September 27 onward).** With wall-clock time out of the
+picture, replay moved into native Frida code and ran as fast as the CPU allowed. An
+81-second session with about a million random calls matched, and six copies running
+at once matched too. A 149-second session replays in 13 seconds, and a 12-game stress
+run reached about 28× real time in total. Every world update fingerprints every
+object (ID, type, owner, HP, position, state). That's 41 million object visits in one
+session and about 14% of the replay time, and I kept it.
+
+**What long games caught.** These bugs passed every function-level check:
+
+- An 18-minute game (139,482 inputs, 4.15 million random calls) diverged at update
+  5,409. A `sscanf` format had an extra leading space, so it skipped blank lines. The
+  computer player's build list got a duplicate Barracks, and many minutes later it
+  missed the Tool Age.
+- At update 858, the priest AI read the wrong indices from a visible-unit list. The
+  function comparison masked relocations, which hid the wrong indices.
+- An 8-player, 250×250 chaos battle had to be made a true free-for-all, because the AI
+  otherwise allied against me. Its 58,910 updates and 3.3 million random calls found
+  that an AI history save used `player_turn` instead of the original's
+  `controllingComputerPlayer`. That function had been wrongly approved as accepted
+  drift.
+- During the drift re-review, an agent removed a `break` in victory scoring. The
+  traces caught it.
+
+The harness had bugs of its own: the mouse wheel and `GetKeyboardState` were missing
+at first. Dragging the game window enters a Windows modal move loop (seven updates and
+about 7,700 clock reads inside one message) that replay can't reproduce, so the
+recorder now blocks window drags.
+
+Today `game.cmd test-parity` runs the recorded games against both executables and
+passes only on exact equality of inputs, clocks, game state, the full RNG streams, and
+raw frames. It proves parity under the harness's controlled conditions, such as the
+fixed clock and zero-filled memory. It doesn't prove that every piece of hidden state
+in a normal run is identical. The details are in
+[docs/runtime_harness.md](docs/runtime_harness.md),
+[docs/behavior_replay.md](docs/behavior_replay.md), and
+[docs/human_replay.md](docs/human_replay.md).
 
 ### What I learned
 
