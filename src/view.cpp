@@ -581,14 +581,14 @@ void RGE_View::set_player(RGE_Player* player_in) {
 }
 
 void RGE_View::set_selection_area(long sel_col1_in, long sel_row1_in, long sel_col2_in, long sel_row2_in) {
-    if (this->map && rge_base_game->game_mode != 0x15) {
+    if (this->map && rge_base_game->game_mode != TRIBE_GAME_MODE_PLACE_CONNECTED) {
         this->map->request_redraw(this->sel_col1, this->sel_row1, this->sel_col2, this->sel_row2, 0);
     }
     this->sel_col1 = sel_col1_in;
     this->sel_row1 = sel_row1_in;
     this->sel_col2 = sel_col2_in;
     this->sel_row2 = sel_row2_in;
-    if (this->map && rge_base_game->game_mode != 0x15) {
+    if (this->map && rge_base_game->game_mode != TRIBE_GAME_MODE_PLACE_CONNECTED) {
         this->map->request_redraw(sel_col1_in, sel_row1_in, sel_col2_in, sel_row2_in, 0x10);
     }
     this->set_redraw(TPanel::RedrawNormal);
@@ -1044,7 +1044,8 @@ void RGE_View::draw() {
     }
 
     int game_mode = rge_base_game->game_mode;
-    if ((game_mode >= 9 && game_mode <= 10) || game_mode == 0x13) {
+    if ((game_mode >= TRIBE_GAME_MODE_PAINT_TERRAIN && game_mode <= TRIBE_GAME_MODE_PAINT_ELEVATION)
+        || game_mode == TRIBE_GAME_MODE_PAINT_CLIFFS) {
         this->draw_paint_brush();
     }
 
@@ -1225,7 +1226,8 @@ void RGE_View::draw_object_outline() {
         else
             frame_color = 0x97;
 
-        if (rge_base_game->game_mode == 8 && rge_base_game->sub_game_mode == 1 && this->movable_object != 0) {
+        if (rge_base_game->game_mode == TRIBE_GAME_MODE_UNIT_PLACE && rge_base_game->sub_game_mode == 1
+            && this->movable_object != 0) {
             RGE_Static_Object* movable = this->movable_object;
             master->draw(
                 this->render_area, scr_x, scr_y, movable->owner->color_table, movable->facet, 0, draw_flag, frame_color
@@ -1258,7 +1260,7 @@ void RGE_View::draw_paint_brush() {
         return;
 
     short brushSize;
-    if (rge_base_game->game_mode == 0x13) {
+    if (rge_base_game->game_mode == TRIBE_GAME_MODE_PAINT_CLIFFS) {
         int t1 = (int) (pick_info.x * (1.0f / 3.0f));
         int v1 = -t1 * 3;
         pick_info.x = 1.0f - (float) v1;
@@ -2255,11 +2257,12 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
 
     {
         int game_mode = rge_base_game->game_mode;
-        if (game_mode == 1 || (game_mode > 6 && game_mode < 9)) {
+        if (game_mode == RGE_GAME_MODE_PLACE_OBJECT
+            || (game_mode > TRIBE_GAME_MODE_BUILD_MENU && game_mode < TRIBE_GAME_MODE_PAINT_TERRAIN)) {
             this->draw_object_outline();
         }
     }
-    if (rge_base_game->game_mode == 0x15) {
+    if (rge_base_game->game_mode == TRIBE_GAME_MODE_PLACE_CONNECTED) {
         this->draw_multi_object_outline();
     }
 
@@ -4090,7 +4093,7 @@ int RGE_View::do_paint(long old_x, long old_y, long new_x, long new_y, int up_do
     //! The cached terrain buffer then keeps stale pixels for tiles the redraw marks miss.
     //! Hidden (unloaded) terrain ids hit early returns and show only after a forced rebuild.
     switch (mode) {
-        case 9:
+        case TRIBE_GAME_MODE_PAINT_TERRAIN:
             if (up_down != 0) {
                 short terrain_id = rge_base_game->terrain_id;
                 if (terrain_id != -1) {
@@ -4100,7 +4103,7 @@ int RGE_View::do_paint(long old_x, long old_y, long new_x, long new_y, int up_do
                 }
             }
             break;
-        case 10:
+        case TRIBE_GAME_MODE_PAINT_ELEVATION:
             if (up_down != 0) {
                 short elevation_height = rge_base_game->elevation_height;
                 if (elevation_height != -1) {
@@ -4110,7 +4113,7 @@ int RGE_View::do_paint(long old_x, long old_y, long new_x, long new_y, int up_do
                 }
             }
             break;
-        case 0x13:
+        case TRIBE_GAME_MODE_PAINT_CLIFFS:
             if (rge_base_game->sub_game_mode == 1) {
                 this->map->do_cliff_brush_stroke(
                     this->real_old_map_col, this->real_old_map_row, new_col, new_row, 0, 1

@@ -160,7 +160,7 @@ int RGE_Main_View::handle_keys() {
         vert_scroll = 0;
         info = rge_base_game->prog_info;
 
-        if (rge_base_game->game_mode == 0x12 && this->player != 0 && this->player->selected_obj != 0) {
+        if (rge_base_game->game_mode == RGE_GAME_MODE_MOVE && this->player != 0 && this->player->selected_obj != 0) {
             RGE_Static_Object* obj = this->player->selected_obj;
             if (pbKeyState[VK_UP] > 1) {
                 obj->teleport(
@@ -277,11 +277,11 @@ long RGE_Main_View::mouse_move_action(long x, long y, int ctrl_key, int shift_ke
     if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
         || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
         mode = game->game_mode;
-        if (mode == 1)
+        if (mode == RGE_GAME_MODE_PLACE_OBJECT)
             goto call_redraw;
-        if (mode <= 6)
+        if (mode <= TRIBE_GAME_MODE_BUILD_MENU)
             goto ret_one;
-        if (mode > 8)
+        if (mode > TRIBE_GAME_MODE_UNIT_PLACE)
             goto ret_one;
     call_redraw:
         this->set_redraw(TPanel::RedrawNormal);
@@ -309,7 +309,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
             color_log(0x4C, 0xBA, 1);
 
             switch (mode) {
-                case 18:
+                case RGE_GAME_MODE_MOVE:
                     if (this->pick1(0x29, 0, x, y, &pick_info, this->player->selected_obj, 1) == 0x34) {
                         this->player->unselect_object();
                         this->player->select_one_object(pick_info.object, 1);
@@ -327,7 +327,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
                     }
                     break;
 
-                case 1:
+                case RGE_GAME_MODE_PLACE_OBJECT:
                     if (this->pick1(0x28, 0, x, y, &pick_info, 0, 1) == 0x33) {
                         this->fixup_pick_info(&pick_info);
                         int object_id = rge_base_game->master_obj_id;
@@ -345,31 +345,31 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
                     }
                     break;
 
-                case 9:
-                case 10:
-                case 19:
+                case TRIBE_GAME_MODE_PAINT_TERRAIN:
+                case TRIBE_GAME_MODE_PAINT_ELEVATION:
+                case TRIBE_GAME_MODE_PAINT_CLIFFS:
                     if (this->player->selected_obj != 0) {
                         this->player->unselect_object();
                         this->set_redraw(TPanel::RedrawNormal);
                     }
-                    if (mode == 19)
-                        rge_base_game->set_game_mode(19, 0);
+                    if (mode == TRIBE_GAME_MODE_PAINT_CLIFFS)
+                        rge_base_game->set_game_mode(TRIBE_GAME_MODE_PAINT_CLIFFS, 0);
                     this->start_scroll_view(9, x, y, ctrl_key, shift_key);
                     break;
 
-                case 2:
-                case 3:
-                case 17:
+                case RGE_GAME_MODE_TERRAIN:
+                case RGE_GAME_MODE_ELEVATION:
+                case TRIBE_GAME_MODE_SELECT_AREA:
                     if (this->player->selected_obj != 0) {
                         this->player->unselect_object();
                         this->set_redraw(TPanel::RedrawNormal);
                     }
-                    // These modes share the scroll command used by mode 21.
-                case 21:
+                    // These modes share the scroll command used by TRIBE_GAME_MODE_PLACE_CONNECTED.
+                case TRIBE_GAME_MODE_PLACE_CONNECTED:
                     this->start_scroll_view(3, x, y, ctrl_key, shift_key);
                     break;
 
-                case 15:
+                case TRIBE_GAME_MODE_UNIT_MOVE:
                     if (this->pick1(0x29, 0, x, y, &pick_info, this->player->selected_obj, 1) == 0x34) {
                         if (pick_info.object->master_obj->object_group != OBJECT_GROUP_CLIFF) {
                             unsigned char draw_level;
@@ -389,7 +389,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
                             pick_info.object->object_state = RGE_OBJECT_STATE_PENDING_REMOVAL;
                             if (draw_level == 0)
                                 this->set_redraw(TPanel::RedrawImmediate);
-                            rge_base_game->set_game_mode(8, 1);
+                            rge_base_game->set_game_mode(TRIBE_GAME_MODE_UNIT_PLACE, 1);
                             if (this->movable_object->sprite != 0) {
                                 this->movable_object->get_frame(frame.min_x, frame.min_y, frame.max_x, frame.max_y);
                                 point.x = pick_info.scr_x - frame.min_x;
@@ -432,14 +432,14 @@ long RGE_Main_View::mouse_left_move_action(long x, long y, int ctrl_key, int shi
         }
 
         switch (rge_base_game->game_mode) {
-            case 0:
+            case RGE_GAME_MODE_NORMAL:
                 this->release_mouse();
                 this->start_scroll_view(2, this->mouse_down_x, this->mouse_down_y, ctrl_key, shift_key);
                 this->handle_scroll_view(x, y);
                 return 1;
-            case 1:
-            case 7:
-            case 8:
+            case RGE_GAME_MODE_PLACE_OBJECT:
+            case TRIBE_GAME_MODE_PLACE_BUILDING:
+            case TRIBE_GAME_MODE_UNIT_PLACE:
                 this->set_redraw(TPanel::RedrawNormal);
                 break;
         }
@@ -461,19 +461,19 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
     if (this->scroll_action != 0) {
         this->end_scroll_view();
 
-        if (rge_base_game->game_mode == 0x15) {
+        if (rge_base_game->game_mode == TRIBE_GAME_MODE_PLACE_CONNECTED) {
             int placement_mode = (ctrl_key == 0 && shift_key == 0) ? 1 : 0;
             this->command_place_multi_object(
                 this->sel_col1, this->sel_row1, this->sel_col2, this->sel_row2, placement_mode
             );
         }
 
-        if (rge_base_game->game_mode == 8) {
+        if (rge_base_game->game_mode == TRIBE_GAME_MODE_UNIT_PLACE) {
             this->command_place_object(x, y, 1);
             if (rge_base_game->sub_game_mode == 1) {
                 this->movable_object->object_state = RGE_OBJECT_STATE_ACTIVE;
                 this->movable_object = 0;
-                rge_base_game->set_game_mode(0x0F, 0);
+                rge_base_game->set_game_mode(TRIBE_GAME_MODE_UNIT_MOVE, 0);
                 if (this->save_player != 0) {
                     rge_base_game->set_player(this->save_player->id);
                     this->save_player = 0;
@@ -493,7 +493,8 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
 
     mode = rge_base_game->game_mode;
 
-    if ((ctrl_key != 0 || shift_key != 0) && mode != 7 && mode != 0x15) {
+    if ((ctrl_key != 0 || shift_key != 0) && mode != TRIBE_GAME_MODE_PLACE_BUILDING
+        && mode != TRIBE_GAME_MODE_PLACE_CONNECTED) {
         if (this->pick1(0x29, 2, x, y, &pick_info, 0, 0) == 0x34) {
             RGE_Static_Object* object = pick_info.object;
             if ((object->selected & 1) != 0) {
@@ -520,10 +521,10 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
     }
 
     switch (mode) {
-        case 0:
-        case 6: {
-            if (mode == 6)
-                rge_base_game->set_game_mode(0, 0);
+        case RGE_GAME_MODE_NORMAL:
+        case TRIBE_GAME_MODE_BUILD_MENU: {
+            if (mode == TRIBE_GAME_MODE_BUILD_MENU)
+                rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
 
             if (rge_base_game->prog_info->interface_style == 2) {
                 RGE_Static_Object* exclude = 0;
@@ -646,24 +647,24 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
             break;
         }
 
-        case 4:
+        case RGE_GAME_MODE_COMMAND_MOVE:
             this->command_make_move(x, y);
             break;
 
-        case 5:
+        case RGE_GAME_MODE_COMMAND_WORK:
             this->command_make_work(x, y);
             break;
 
-        case 7:
+        case TRIBE_GAME_MODE_PLACE_BUILDING:
             this->command_place_object(x, y, (ctrl_key == 0 && shift_key == 0) ? 1 : 0);
             break;
 
-        case 8:
+        case TRIBE_GAME_MODE_UNIT_PLACE:
             this->command_place_object(x, y, 1);
             if (rge_base_game->sub_game_mode == 1) {
                 this->movable_object->object_state = RGE_OBJECT_STATE_ACTIVE;
                 this->movable_object = 0;
-                rge_base_game->set_game_mode(0x0F, 0);
+                rge_base_game->set_game_mode(TRIBE_GAME_MODE_UNIT_MOVE, 0);
                 if (this->save_player != 0) {
                     rge_base_game->set_player(this->save_player->id);
                     this->save_player = 0;
@@ -671,7 +672,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
             }
             break;
 
-        case 0x0E: {
+        case RGE_GAME_MODE_DELETE: {
             RGE_Static_Object* exclude = this->player->selected_obj;
             if (this->pick1(0x29, 0, x, y, &pick_info, exclude, 1) == 0x34) {
                 RGE_Static_Object* object = pick_info.object;
@@ -695,18 +696,18 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
             break;
         }
 
-        case 0x10:
+        case TRIBE_GAME_MODE_SELECT_OBJECT:
             if (this->pick1(0x29, 1, x, y, &pick_info, this->player->selected_obj, 1) == 0x34) {
                 if (this->curr_child != 0) {
                     this->curr_child->action(this, 0x10, reinterpret_cast<unsigned long>(pick_info.object), 0);
                     this->player->select_one_object(pick_info.object, 1);
                     this->set_redraw(TPanel::RedrawNormal);
                 }
-                rge_base_game->set_game_mode(0, 0);
+                rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
             }
             break;
 
-        case 0x14:
+        case TRIBE_GAME_MODE_UNIT_ROTATE:
             if (this->pick1(0x29, 2, x, y, &pick_info, this->player->selected_obj, 1) == 0x34)
                 pick_info.object->rotate(1);
             break;
@@ -722,14 +723,14 @@ long RGE_Main_View::mouse_right_down_action(long x, long y, int ctrl_key, int sh
         if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
             || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
             color_log(0x4C, 0x24, 1);
-            if (rge_base_game->game_mode != 0x13) {
+            if (rge_base_game->game_mode != TRIBE_GAME_MODE_PAINT_CLIFFS) {
                 this->capture_mouse();
             } else {
                 if (this->player->selected_obj) {
                     this->player->unselect_object();
                     this->set_redraw(TPanel::RedrawNormal);
                 }
-                rge_base_game->set_game_mode(0x13, 1);
+                rge_base_game->set_game_mode(TRIBE_GAME_MODE_PAINT_CLIFFS, 1);
                 this->start_scroll_view(9, x, y, ctrl_key, shift_key);
             }
             color_log(0x4C, 0x5F, 1);
@@ -782,7 +783,7 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int shif
         } else {
             this->release_mouse();
 
-            if (rge_base_game->game_mode == 0x14) {
+            if (rge_base_game->game_mode == TRIBE_GAME_MODE_UNIT_ROTATE) {
                 if (this->pick1(0x29, 2, x, y, &pick_info, this->player->selected_obj, 1) == 0x34)
                     pick_info.object->rotate(-1);
             } else {
@@ -798,7 +799,7 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int shif
                 if (rge_base_game->prog_info->interface_style == 2) {
                     if (rge_base_game->prog_mode != RGE_PROGRAM_MODE_GAME_OVER
                         && rge_base_game->prog_mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR) {
-                        if (rge_base_game->game_mode == 0) {
+                        if (rge_base_game->game_mode == RGE_GAME_MODE_NORMAL) {
                             if (shift_key == 0) {
                                 this->command_make_do(x, y, 1, -1);
                             } else {
@@ -821,16 +822,16 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int shif
                                 }
                             }
                         } else {
-                            if (rge_base_game->game_mode == 0x15) {
+                            if (rge_base_game->game_mode == TRIBE_GAME_MODE_PLACE_CONNECTED) {
                                 this->set_selection_area(-1, -1, -1, -1);
                                 this->set_redraw(TPanel::RedrawNormal);
                             }
-                            rge_base_game->set_game_mode(0, 0);
+                            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                         }
                     }
                 } else if (rge_base_game->prog_mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR) {
-                    if (rge_base_game->game_mode != 0) {
-                        rge_base_game->set_game_mode(0, 0);
+                    if (rge_base_game->game_mode != RGE_GAME_MODE_NORMAL) {
+                        rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                     } else {
                         this->player->unselect_object();
                         this->set_redraw(TPanel::RedrawNormal);
@@ -922,16 +923,16 @@ int RGE_Main_View::command_place_object(long x, long y, int reset_mode) {
                     rge_base_game->get_player(), pick_info.x, pick_info.y, 0, 1, master_obj->elevation_flag, 0, 1, 1, 1
                 );
                 if (check == 0) {
-                    if (rge_base_game->game_mode == 1) {
+                    if (rge_base_game->game_mode == RGE_GAME_MODE_PLACE_OBJECT) {
                         if (rge_base_game->get_player()->command_place_object(
                                 (short) object_id, pick_info.x, pick_info.y, 0.0f
                             )
                             != 0) {
                             if (reset_mode != 0)
-                                rge_base_game->set_game_mode(0, 0);
+                                rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                             return 1;
                         }
-                    } else if (rge_base_game->game_mode == 8) {
+                    } else if (rge_base_game->game_mode == TRIBE_GAME_MODE_UNIT_PLACE) {
                         if (rge_base_game->sub_game_mode == 1) {
                             object = this->movable_object;
                             object->teleport(pick_info.x, pick_info.y, 0.0f);
@@ -1275,7 +1276,7 @@ int RGE_Main_View::command_make_move(long x, long y) {
                 result = this->player->command_make_move(pick_info.object, pick_info.x, pick_info.y);
                 this->set_redraw(TPanel::RedrawNormal);
             }
-            rge_base_game->set_game_mode(0, 0);
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
             return result;
         }
     }
@@ -1300,7 +1301,7 @@ int RGE_Main_View::command_make_work(long x, long y) {
                     this->display_object_selection(target->id, 0x5DC, 2, 2);
                 this->reset_overlay_sprites();
                 this->set_redraw(TPanel::RedrawNormal);
-                rge_base_game->set_game_mode(0, 0);
+                rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                 return result;
             }
 
@@ -1315,13 +1316,13 @@ int RGE_Main_View::command_make_work(long x, long y) {
                     );
                 }
                 this->set_redraw(TPanel::RedrawNormal);
-                rge_base_game->set_game_mode(0, 0);
+                rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                 return result;
             }
 
             this->reset_overlay_sprites();
             this->set_redraw(TPanel::RedrawNormal);
-            rge_base_game->set_game_mode(0, 0);
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
         }
     }
     return 0;

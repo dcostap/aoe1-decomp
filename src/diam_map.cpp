@@ -337,7 +337,7 @@ void RGE_Diamond_Map::draw() {
         }
 
         this->copy_image();
-        if (rge_base_game->game_mode != 0x15)
+        if (rge_base_game->game_mode != TRIBE_GAME_MODE_PLACE_CONNECTED)
             this->draw_selected_area();
         this->draw_objects();
 

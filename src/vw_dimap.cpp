@@ -82,17 +82,17 @@ long RGE_Diamond_Map_View::mouse_left_up_action(long x, long y, int ctrl_key, in
 
         if (this->pick_tile(x, y, &col, &row, &tile)) {
             switch (rge_base_game->game_mode) {
-                case 0:
+                case RGE_GAME_MODE_NORMAL:
                     if (rge_base_game->prog_info->interface_style != 2) {
                         if (this->command_make_do(x, y)) {
                             return 1;
                         }
                     }
                     break;
-                case 4:
+                case RGE_GAME_MODE_COMMAND_MOVE:
                     this->command_make_move(x, y);
                     return 1;
-                case 5:
+                case RGE_GAME_MODE_COMMAND_WORK:
                     this->command_make_work(x, y);
                     return 1;
             }
@@ -164,7 +164,7 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int ctrl_key, i
     }
 
     if (rge_base_game->prog_info->interface_style == 2) {
-        if (rge_base_game->game_mode != 0 || rge_base_game->prog_mode == ProgModeGameOver) {
+        if (rge_base_game->game_mode != RGE_GAME_MODE_NORMAL || rge_base_game->prog_mode == ProgModeGameOver) {
             return 0;
         }
         if (shift_key == 0) {
@@ -184,8 +184,8 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int ctrl_key, i
     if (rge_base_game->prog_mode == ProgModeScenarioEditor) {
         return 0;
     }
-    if (rge_base_game->game_mode != 0) {
-        rge_base_game->set_game_mode(0, 0);
+    if (rge_base_game->game_mode != RGE_GAME_MODE_NORMAL) {
+        rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
         return 0;
     }
     this->player->unselect_object();
@@ -233,7 +233,7 @@ int RGE_Diamond_Map_View::command_make_move(long x, long y) {
         float world_x = (float) col + 0.5f;
         result = this->player->command_make_move(0, world_x, world_y) & 0xff;
     }
-    rge_base_game->set_game_mode(0, 0);
+    rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
     return result;
 }
 
@@ -252,6 +252,6 @@ int RGE_Diamond_Map_View::command_make_work(long x, long y) {
         float world_x = (float) col + 0.5f;
         result = this->player->command_make_work(0, world_x, world_y) & 0xff;
     }
-    rge_base_game->set_game_mode(0, 0);
+    rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
     return result;
 }

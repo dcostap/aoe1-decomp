@@ -13,6 +13,35 @@
 #define RGE_PROGRAM_MODE_GAME_TEMP_PAUSED 6
 #define RGE_PROGRAM_MODE_SCENARIO_EDITOR  7
 
+// Game-mode IDs stored in RGE_Base_Game::game_mode (the current mouse/command mode; sub_game_mode refines it).
+// They are cleanup names, not recovered original names. The meanings come from the tool-box and scenario-editor
+// panels that set each mode and the main-view handlers that act on it. Stored and passed as int.
+#define RGE_GAME_MODE_NORMAL                    0x00
+#define RGE_GAME_MODE_PLACE_OBJECT              0x01 // Tool box "object" mode: click places master_obj_id.
+#define RGE_GAME_MODE_TERRAIN                   0x02 // Tool box "terrain" mode: terrain_id applied to an area.
+#define RGE_GAME_MODE_ELEVATION                 0x03 // Tool box "elevation" mode: area raised or lowered.
+#define RGE_GAME_MODE_COMMAND_MOVE              0x04 // Next click is a move order (command_make_move).
+#define RGE_GAME_MODE_COMMAND_WORK              0x05 // Next click is a work order (command_make_work).
+#define TRIBE_GAME_MODE_BUILD_MENU              0x06 // With sub_game_mode 1 the build palette is open.
+#define TRIBE_GAME_MODE_PLACE_BUILDING          0x07 // In-game placement of the building picked from the palette.
+#define TRIBE_GAME_MODE_UNIT_PLACE              0x08 // Scenario editor unit "Place"; sub_game_mode 1 is a drag drop.
+#define TRIBE_GAME_MODE_PAINT_TERRAIN           0x09 // Scenario editor terrain brush.
+#define TRIBE_GAME_MODE_PAINT_ELEVATION         0x0A // Scenario editor elevation brush.
+#define RGE_GAME_MODE_DELETE                    0x0E // Pick an object to delete.
+#define TRIBE_GAME_MODE_UNIT_MOVE               0x0F // Scenario editor unit "Move".
+#define TRIBE_GAME_MODE_SELECT_OBJECT           0x10 // Victory-condition object picker.
+#define TRIBE_GAME_MODE_SELECT_AREA             0x11 // Victory-condition area picker.
+#define RGE_GAME_MODE_MOVE                      0x12 // Tool box "move" mode: select and drag objects.
+#define TRIBE_GAME_MODE_PAINT_CLIFFS            0x13 // Scenario editor cliff brush.
+#define TRIBE_GAME_MODE_UNIT_ROTATE             0x14 // Scenario editor unit "Rotate".
+#define TRIBE_GAME_MODE_PLACE_CONNECTED         0x15 // Drag-placement of buildings with building_connect_flag.
+#define TRIBE_GAME_MODE_COMMAND_ATTACK_GROUND   0x64
+#define TRIBE_GAME_MODE_COMMAND_CONVERT         0x65
+#define TRIBE_GAME_MODE_COMMAND_HEAL            0x66
+#define TRIBE_GAME_MODE_COMMAND_ATTACK          0x67
+#define TRIBE_GAME_MODE_COMMAND_REPAIR          0x68
+#define TRIBE_GAME_MODE_COMMAND_UNLOAD          0x69
+
 #define RGE_PATH_FINDING_DEFAULT 0
 #define RGE_PATH_FINDING_MEDIUM  1
 #define RGE_PATH_FINDING_HIGH    2

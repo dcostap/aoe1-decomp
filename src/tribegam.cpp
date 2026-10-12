@@ -3106,7 +3106,7 @@ int TRIBE_Game::create_game_screen() {
     TRIBE_Screen_Game* screen;
 
     this->disable_input();
-    this->set_game_mode(0, 0);
+    this->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
 
     screen = new TRIBE_Screen_Game;
     this->game_screen = screen;
@@ -3282,8 +3282,8 @@ int TRIBE_Game::processCheatCode(int playerID, char* text) {
             //! GAIA has no single-player check; it changes the local controlled player to 0.
             //! The December 1999 patch readme lists GAIA among the cheats removed from multiplayer.
             this->get_player()->unselect_object();
-            if (this->game_mode == 6 && this->sub_game_mode == 1)
-                this->set_game_mode(0, 0);
+            if (this->game_mode == TRIBE_GAME_MODE_BUILD_MENU && this->sub_game_mode == 1)
+                this->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
             this->set_player(0);
             return 1;
         } else if (strcmp(encstr, "w>Amw>w>Am%%%^dW#L w>#LS?S?hx") == 0) {

@@ -957,7 +957,7 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode new_mode
                             this->player_num = 1;
                             this->set_player(1, 0, 0);
                         }
-                        rge_base_game->set_game_mode(0, 0);
+                        rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                         this->set_unit(-1);
                     }
                 }
@@ -1165,9 +1165,9 @@ void TRIBE_Screen_Sed::set_paint_object_mode() {
     }
 
     if (enabled) {
-        game->set_game_mode(0x15, 0);
+        game->set_game_mode(TRIBE_GAME_MODE_PLACE_CONNECTED, 0);
     } else {
-        game->set_game_mode(8, game->sub_game_mode);
+        game->set_game_mode(TRIBE_GAME_MODE_UNIT_PLACE, game->sub_game_mode);
     }
 }
 
@@ -1358,9 +1358,9 @@ void TRIBE_Screen_Sed::set_paint_type(PaintType new_val, int activate_panels) {
                 this->paint_terrain_label->set_active(active);
                 if (active != 0) {
                     this->set_terrain(static_cast<short>(this->paint_terrain_list->currentLineNumber()));
-                    rge_base_game->set_game_mode(9, 0);
+                    rge_base_game->set_game_mode(TRIBE_GAME_MODE_PAINT_TERRAIN, 0);
                 } else {
-                    rge_base_game->set_game_mode(0, 0);
+                    rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                 }
                 break;
             case 2:
@@ -1368,9 +1368,9 @@ void TRIBE_Screen_Sed::set_paint_type(PaintType new_val, int activate_panels) {
                 this->paint_terrain_label->set_active(active);
                 if (active != 0) {
                     this->set_elevation(static_cast<short>(this->paint_elevation_list->currentLineNumber()));
-                    rge_base_game->set_game_mode(10, 0);
+                    rge_base_game->set_game_mode(TRIBE_GAME_MODE_PAINT_ELEVATION, 0);
                 } else {
-                    rge_base_game->set_game_mode(0, 0);
+                    rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                 }
                 break;
             case 3:
@@ -1384,9 +1384,9 @@ void TRIBE_Screen_Sed::set_paint_type(PaintType new_val, int activate_panels) {
                 }
                 if (active != 0) {
                     this->set_elevation(static_cast<short>(this->paint_elevation_list->currentLineNumber()));
-                    rge_base_game->set_game_mode(0x13, 0);
+                    rge_base_game->set_game_mode(TRIBE_GAME_MODE_PAINT_CLIFFS, 0);
                 } else {
-                    rge_base_game->set_game_mode(0, 0);
+                    rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                 }
                 break;
         }
@@ -1911,11 +1911,11 @@ long TRIBE_Screen_Sed::action(
             if (destination_object != 0) {
                 rge_base_game->get_player()->select_one_object(destination_object, 0);
             }
-            rge_base_game->set_game_mode(0, 0);
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
             return 1;
         }
-        if (action_in == 0x11 && rge_base_game->game_mode == 0x11) {
-            rge_base_game->set_game_mode(0, 0);
+        if (action_in == 0x11 && rge_base_game->game_mode == TRIBE_GAME_MODE_SELECT_AREA) {
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
         }
     }
 
@@ -2008,7 +2008,7 @@ long TRIBE_Screen_Sed::action(
                 if (from_panel != this->victory_amount_input) {
                     line = this->victory_drop_down->get_line();
                     if (from_panel == this->victory_drop_down) {
-                        rge_base_game->set_game_mode(0, 0);
+                        rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                         this->DestinationObject = 0;
                         this->SelectedObject = 0;
                         rge_base_game->get_player()->unselect_object();
@@ -2020,7 +2020,7 @@ long TRIBE_Screen_Sed::action(
                     // both object-selection arms use redraw mode 0x10.
                     if (from_panel == this->victory_button_set_object) {
                         this->SelectRegionFlag = SelectObject;
-                        rge_base_game->set_game_mode(0x10, 0);
+                        rge_base_game->set_game_mode(TRIBE_GAME_MODE_SELECT_OBJECT, 0);
                         rge_base_game->get_player()->unselect_object();
                         RGE_Static_Object* destination_object = this->DestinationObject;
                         if (destination_object != 0) {
@@ -2035,12 +2035,12 @@ long TRIBE_Screen_Sed::action(
                             if (selected_object != 0) {
                                 rge_base_game->get_player()->select_one_object(selected_object, 0);
                             }
-                            rge_base_game->set_game_mode(0x11, 0);
+                            rge_base_game->set_game_mode(TRIBE_GAME_MODE_SELECT_AREA, 0);
                             return 1;
                         }
                         if (from_panel == this->victory_button_set_destination && line == 1) {
                             this->SelectRegionFlag = SelectDestinationObject;
-                            rge_base_game->set_game_mode(0x10, 0);
+                            rge_base_game->set_game_mode(TRIBE_GAME_MODE_SELECT_OBJECT, 0);
                             rge_base_game->get_player()->unselect_object();
                             RGE_Static_Object* selected_object = this->SelectedObject;
                             if (selected_object != 0) {
@@ -2322,7 +2322,8 @@ long TRIBE_Screen_Sed::action(
                 if (from_panel == this->unit_list) {
                     i = this->unit_list->currentLineNumber();
                     this->set_unit(static_cast<short>(i));
-                    if (rge_base_game->game_mode != 8 && rge_base_game->game_mode != 0x15)
+                    if (rge_base_game->game_mode != TRIBE_GAME_MODE_UNIT_PLACE
+                        && rge_base_game->game_mode != TRIBE_GAME_MODE_PLACE_CONNECTED)
                         this->unit_mode_select[0]->set_radio_button();
                     if (rge_base_game->master_obj_id == -1 || rge_base_game->get_player() == 0) {
                         this->object_panel->set_master_info(0, 0);
@@ -2342,11 +2343,11 @@ long TRIBE_Screen_Sed::action(
                         this->set_paint_object_mode();
                     else if (from_panel == this->unit_mode_select[1]) {
                         rge_base_game->get_player()->unselect_object();
-                        rge_base_game->set_game_mode(0xE, 0);
+                        rge_base_game->set_game_mode(RGE_GAME_MODE_DELETE, 0);
                     } else if (from_panel == this->unit_mode_select[2])
-                        rge_base_game->set_game_mode(0xF, 0);
+                        rge_base_game->set_game_mode(TRIBE_GAME_MODE_UNIT_MOVE, 0);
                     else if (from_panel == this->unit_mode_select[3])
-                        rge_base_game->set_game_mode(0x14, 0);
+                        rge_base_game->set_game_mode(TRIBE_GAME_MODE_UNIT_ROTATE, 0);
                 }
             }
             break;

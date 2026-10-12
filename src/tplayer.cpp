@@ -480,7 +480,7 @@ void TRIBE_Player::scenario_load(int infile, long* player_id_hash, float version
         static_cast<TRIBE_Effects*>(static_cast<TRIBE_World*>(this->world)->effects)->do_tech_effect(0xD2, this);
     }
 
-    if (rge_base_game->game_mode != 7) {
+    if (rge_base_game->game_mode != TRIBE_GAME_MODE_PLACE_BUILDING) {
         static_cast<T_Scenario*>(static_cast<TRIBE_World*>(this->world)->scenario)->set_player_tech(this);
     }
     this->tech_tree->check_for_new_tech();

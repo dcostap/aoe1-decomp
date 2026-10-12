@@ -543,7 +543,7 @@ void RGE_Static_Object::normal_draw(TDrawArea* render_area, short x, short y) {
 
 void RGE_Static_Object::draw_front_frame(TDrawArea* render_area, short x, short y) {
     int game_mode = rge_base_game->game_mode;
-    if (game_mode == 1) {
+    if (game_mode == RGE_GAME_MODE_PLACE_OBJECT) {
         this->draw_frame_3d_cube_front(render_area, x, y);
         return;
     }
@@ -565,7 +565,7 @@ void RGE_Static_Object::draw_front_frame(TDrawArea* render_area, short x, short 
 }
 
 void RGE_Static_Object::draw_back_frame(TDrawArea* render_area, short x, short y) {
-    if (rge_base_game->game_mode == 1) {
+    if (rge_base_game->game_mode == RGE_GAME_MODE_PLACE_OBJECT) {
         this->draw_frame_3d_cube_back(render_area, x, y);
         return;
     }
@@ -587,7 +587,7 @@ void RGE_Static_Object::draw_back_frame(TDrawArea* render_area, short x, short y
 
 void RGE_Static_Object::capture_frame(TDrawArea* render_area, short x, short y) {
     if (SDI_Capture_Info) {
-        if (rge_base_game->game_mode == 1) {
+        if (rge_base_game->game_mode == RGE_GAME_MODE_PLACE_OBJECT) {
             this->capture_frame_3d_cube(render_area, x, y);
             return;
         }

@@ -169,7 +169,7 @@ long RGE_Panel_Tool_Box::action(
 ) {
     if (from_panel != 0) {
         if ((from_panel == this->game_mode_button) && (action_in == 1)) {
-            rge_base_game->set_game_mode(0, 0);
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
             return 1;
         }
 
@@ -189,15 +189,15 @@ long RGE_Panel_Tool_Box::action(
             return 1;
         } else {
             if ((from_panel == this->move_mode_button) && (action_in == 1)) {
-                rge_base_game->set_game_mode(0x12, 0);
+                rge_base_game->set_game_mode(RGE_GAME_MODE_MOVE, 0);
                 return 1;
             }
             if ((from_panel == this->delete_mode_button) && (action_in == 1)) {
-                rge_base_game->set_game_mode(0x0E, 0);
+                rge_base_game->set_game_mode(RGE_GAME_MODE_DELETE, 0);
                 return 1;
             }
             if ((from_panel == this->elevation_mode_button) && (action_in == 1)) {
-                rge_base_game->set_game_mode(3, 0);
+                rge_base_game->set_game_mode(RGE_GAME_MODE_ELEVATION, 0);
                 return 1;
             }
             if ((from_panel == this->command_button) && (action_in == 1)) {
@@ -217,7 +217,7 @@ long RGE_Panel_Tool_Box::action(
                     if (action_in == 1) {
                         rge_base_game->master_obj_id = static_cast<RGE_Dialog_List*>(this->dialog)->get_list_id();
                         rge_base_game->delete_dialog(&this->dialog);
-                        rge_base_game->set_game_mode(1, 0);
+                        rge_base_game->set_game_mode(RGE_GAME_MODE_PLACE_OBJECT, 0);
                         rge_base_game->get_player()->unselect_object();
                         return 1;
                     }
@@ -230,7 +230,7 @@ long RGE_Panel_Tool_Box::action(
                     if (action_in == 1) {
                         rge_base_game->terrain_id = static_cast<RGE_Dialog_List*>(this->dialog)->get_list_id();
                         rge_base_game->delete_dialog(&this->dialog);
-                        rge_base_game->set_game_mode(2, 0);
+                        rge_base_game->set_game_mode(RGE_GAME_MODE_TERRAIN, 0);
                         return 1;
                     }
                     if (action_in == 2) {
@@ -259,7 +259,7 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key, int
 
         switch (key) {
             case VK_DELETE: {
-                if (rge_base_game->game_mode != 0x12) {
+                if (rge_base_game->game_mode != RGE_GAME_MODE_MOVE) {
                     return 0;
                 }
                 RGE_Player* player = rge_base_game->get_player();
@@ -283,7 +283,7 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key, int
             }
 
             case VK_PRIOR:
-                if (rge_base_game->game_mode != 3) {
+                if (rge_base_game->game_mode != RGE_GAME_MODE_ELEVATION) {
                     return 0;
                 }
 
@@ -293,7 +293,7 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key, int
                 break;
 
             case VK_NEXT:
-                if (rge_base_game->game_mode != 3) {
+                if (rge_base_game->game_mode != RGE_GAME_MODE_ELEVATION) {
                     return 0;
                 }
 
@@ -320,27 +320,27 @@ void RGE_Panel_Tool_Box::game_mode_changed(int old_mode, int new_mode) {
     TButtonPanel* button;
 
     switch (old_mode) {
-        case 1:
-        case 0x12:
+        case RGE_GAME_MODE_PLACE_OBJECT:
+        case RGE_GAME_MODE_MOVE:
             rge_base_game->get_player()->unselect_object();
             break;
-        case 2:
-        case 3:
+        case RGE_GAME_MODE_TERRAIN:
+        case RGE_GAME_MODE_ELEVATION:
             this->view->set_selection_area(-1, -1, -1, -1);
             break;
     }
 
     switch (new_mode) {
-        case 1:
+        case RGE_GAME_MODE_PLACE_OBJECT:
             this->object_mode_button->set_radio_button();
             return;
-        case 0x12:
+        case RGE_GAME_MODE_MOVE:
             this->move_mode_button->set_radio_button();
             return;
-        case 0xE:
+        case RGE_GAME_MODE_DELETE:
             this->delete_mode_button->set_radio_button();
             return;
-        case 2:
+        case RGE_GAME_MODE_TERRAIN:
             button = this->terrain_mode_button;
             break;
         case 3:

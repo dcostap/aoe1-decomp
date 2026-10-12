@@ -255,7 +255,7 @@ int TRIBE_Main_View::command_place_object(long x, long y, int reset_mode) {
     RGE_Pick_Info pick_info;
 
     if (allow_user_commands != 0) {
-        if (rge_base_game->game_mode != 7) {
+        if (rge_base_game->game_mode != TRIBE_GAME_MODE_PLACE_BUILDING) {
             return RGE_Main_View::command_place_object(x, y, 1);
         }
 
@@ -269,7 +269,7 @@ int TRIBE_Main_View::command_place_object(long x, long y, int reset_mode) {
                     )
                     == 0) {
                     if (reset_mode != 0 || object_id == MASTER_OBJECT_TOWN_CENTER1) {
-                        rge_base_game->set_game_mode(0, 0);
+                        rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
                     }
                     if (static_cast<TRIBE_Player*>(this->player)
                             ->command_make_building(object_id, pick_info.x, pick_info.y)
@@ -352,7 +352,7 @@ int TRIBE_Main_View::command_place_multi_object(long x1, long y1, long x2, long 
         }
 
         if (reset_mode != 0)
-            rge_base_game->set_game_mode(0, 0);
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
     }
 
     this->set_selection_area(-1, -1, -1, -1);
@@ -412,7 +412,7 @@ long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shi
         goto default_action;
 
     switch (rge_base_game->game_mode) {
-        case 100:
+        case TRIBE_GAME_MODE_COMMAND_ATTACK_GROUND:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -430,7 +430,7 @@ long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shi
             }
             goto error_b;
 
-        case 102:
+        case TRIBE_GAME_MODE_COMMAND_HEAL:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -440,7 +440,7 @@ long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shi
             goto done_a;
 
         done_a:
-            rge_base_game->set_game_mode(0, 0);
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
         return_one:
             return 1;
 
@@ -451,7 +451,7 @@ long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shi
         default_action:
             return RGE_Main_View::mouse_left_up_action(x, y, ctrl_key, shift_key);
 
-        case 101:
+        case TRIBE_GAME_MODE_COMMAND_CONVERT:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -462,10 +462,10 @@ long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shi
         error_b:
             rge_base_game->play_sound(3);
         done_b:
-            rge_base_game->set_game_mode(0, 0);
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
             return 1;
 
-        case 103:
+        case TRIBE_GAME_MODE_COMMAND_ATTACK:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -473,7 +473,7 @@ long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shi
                 goto done_a;
             goto error_a;
 
-        case 104: {
+        case TRIBE_GAME_MODE_COMMAND_REPAIR: {
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -487,7 +487,7 @@ long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shi
             goto error_a;
         }
 
-        case 105:
+        case TRIBE_GAME_MODE_COMMAND_UNLOAD:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -526,7 +526,7 @@ long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int sh
         goto default_action;
 
     switch (rge_base_game->game_mode) {
-        case 100:
+        case TRIBE_GAME_MODE_COMMAND_ATTACK_GROUND:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -544,7 +544,7 @@ long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int sh
             }
             goto error_b;
 
-        case 102:
+        case TRIBE_GAME_MODE_COMMAND_HEAL:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -555,7 +555,7 @@ long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int sh
         error_a:
             rge_base_game->play_sound(3);
         done_a:
-            rge_base_game->set_game_mode(0, 0);
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
         invalid_action:
             return 1;
 
@@ -563,7 +563,7 @@ long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int sh
         default_action:
             return RGE_Main_View::mouse_right_up_action(x, y, ctrl_key, shift_key);
 
-        case 101:
+        case TRIBE_GAME_MODE_COMMAND_CONVERT:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -574,10 +574,10 @@ long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int sh
         error_b:
             rge_base_game->play_sound(3);
         done_b:
-            rge_base_game->set_game_mode(0, 0);
+            rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
             return 1;
 
-        case 103:
+        case TRIBE_GAME_MODE_COMMAND_ATTACK:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -585,7 +585,7 @@ long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int sh
                 goto done_a;
             goto error_a;
 
-        case 104:
+        case TRIBE_GAME_MODE_COMMAND_REPAIR:
             this->release_mouse();
             if (this->mouse_action != 1 && this->mouse_action != 2)
                 goto invalid_action;
@@ -600,7 +600,7 @@ long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int sh
             }
             goto error_a;
 
-        case 105:
+        case TRIBE_GAME_MODE_COMMAND_UNLOAD:
             this->release_mouse();
             if (this->mouse_action != 1) {
                 if (this->mouse_action != 2)
