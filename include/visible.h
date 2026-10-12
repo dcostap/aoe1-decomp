@@ -11,6 +11,19 @@ struct LOSTBL {
     int x2;
 };
 
+// Per-player visible_map cell values (RGE_Visible_Map::map_offsets).
+// 0xFF is unexplored, 0 is explored but not currently seen, and 1..MAX is the number of
+// viewers currently seeing the tile (incremented/decremented as units gain and lose sight).
+#define RGE_VIS_UNEXPLORED 0xFF
+#define RGE_VIS_EXPLORED 0x00
+#define RGE_VIS_FIRST_VIEWER 0x01
+#define RGE_VIS_MAX_VIEWERS 0xF9
+
+// Tile display state returned by RGE_Visible_Map::get_visible and stored in RGE_Tile::draw_as.
+#define RGE_TILE_BLACK 0x00
+#define RGE_TILE_FOGGED 0x80
+#define RGE_TILE_VISIBLE 0x0F
+
 class RGE_Visible_Map {
   public:
     unsigned char** map_offsets;

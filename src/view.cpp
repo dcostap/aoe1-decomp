@@ -1360,7 +1360,7 @@ unsigned char RGE_View::pick_multi(unsigned char select_level, long x1, long y1,
                         if (!this->map->map_visible_flag && !this->pick_through_fog(obj)) {
                             int vy = (int) obj->world_y;
                             int vx = (int) obj->world_x;
-                            if (this->player->visible->get_visible(vx, vy) != 0x0f)
+                            if (this->player->visible->get_visible(vx, vy) != RGE_TILE_VISIBLE)
                                 goto next;
                         }
                         int score = this->pick_weight(obj, pp->confidence);
@@ -1626,12 +1626,12 @@ long RGE_View::view_function(
                             if (visible == 0 || this->map->map_visible_flag != 0) {
                                 visibility = visible->get_visible(map_col, map_row);
                                 if (visibility == 0) {
-                                    visibility = 0x80;
+                                    visibility = RGE_TILE_FOGGED;
                                 }
                             } else {
                                 visibility = visible->get_visible(map_col, map_row);
                                 if (this->function_mode == 0x1e || this->function_mode == 0x1f) {
-                                    visibility = 0x0f;
+                                    visibility = RGE_TILE_VISIBLE;
                                 }
                             }
                         } else {
@@ -1645,7 +1645,7 @@ long RGE_View::view_function(
                             }
                         }
 
-                        if (visibility != 0x0f && visibility != 0x80) {
+                        if (visibility != RGE_TILE_VISIBLE && visibility != RGE_TILE_FOGGED) {
                             visibility = 0;
                         }
 
@@ -1712,11 +1712,11 @@ long RGE_View::view_function(
                                     }
                                 }
 
-                                if ((visibility == 0x0f || visibility == 0x80)
+                                if ((visibility == RGE_TILE_VISIBLE || visibility == RGE_TILE_FOGGED)
                                     && (this->function_mode == 0x1e || this->function_mode == 0x1f
                                         || this->function_mode == 0x20 || this->function_mode == 0x15)) {
                                     unsigned char fog_flag =
-                                        (visibility == 0x0f || (visibility == 0x80 && this->map->fog_flag == 0)) ? 0
+                                        (visibility == RGE_TILE_VISIBLE || (visibility == RGE_TILE_FOGGED && this->map->fog_flag == 0)) ? 0
                                                                                                                  : 1;
 
                                     if (this->function_mode == 0x1e) {
@@ -1748,7 +1748,7 @@ long RGE_View::view_function(
                                     }
 
                                     if (this->function_mode == 0x20) {
-                                        if (this->map->fog_flag != 0 && visibility == 0x80) {
+                                        if (this->map->fog_flag != 0 && visibility == RGE_TILE_FOGGED) {
                                             fog_next_shape = 1;
                                         }
                                         tile->objects.shadow_draw(
@@ -1756,7 +1756,7 @@ long RGE_View::view_function(
                                         );
                                         fog_next_shape = 0;
                                     } else if (this->function_mode == 0x15) {
-                                        if (this->map->fog_flag != 0 && visibility == 0x80) {
+                                        if (this->map->fog_flag != 0 && visibility == RGE_TILE_FOGGED) {
                                             fog_next_shape = 1;
                                         }
                                         tile->objects.normal_draw(
@@ -1766,11 +1766,11 @@ long RGE_View::view_function(
                                     }
                                 }
                             } else {
-                                if ((visibility == 0x0f || visibility == 0x80)
+                                if ((visibility == RGE_TILE_VISIBLE || visibility == RGE_TILE_FOGGED)
                                     && (this->function_mode == 0x29 || this->function_mode == 0x2a
                                         || this->function_mode == 0x2b || this->function_mode == 0x2c)) {
                                     unsigned char fog_flag =
-                                        (visibility == 0x0f || (visibility == 0x80 && this->map->fog_flag == 0)) ? 0
+                                        (visibility == RGE_TILE_VISIBLE || (visibility == RGE_TILE_FOGGED && this->map->fog_flag == 0)) ? 0
                                                                                                                  : 1;
                                     RGE_Static_Object* object = this->hit_object(
                                         tile, screen_x, start_screen_y, map_col, map_row, mouse_pos, start_mouse_pos,
@@ -1964,10 +1964,10 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                             unsigned char MapVis;
 
                             if ((unified_map_offsets[map_row][map_col] & TileVisibleMask) != 0) {
-                                MapVis = 0x0f;
+                                MapVis = RGE_TILE_VISIBLE;
                             } else if ((unified_map_offsets[map_row][map_col] & TileFoggedMask) != 0
                                        || Full_Visibility != 0) {
-                                MapVis = this->map->fog_flag != 0 ? 0x80 : 0x0f;
+                                MapVis = this->map->fog_flag != 0 ? RGE_TILE_FOGGED : RGE_TILE_VISIBLE;
                             } else {
                                 MapVis = 0;
                                 tile->last_drawn_as = 0;
@@ -1986,7 +1986,7 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                                 }
 
                                 if (this->render_terrain_mode != 0 && tile->last_drawn_as == MapVis) {
-                                    if (MapVis == 0x0f) {
+                                    if (MapVis == RGE_TILE_VISIBLE) {
                                         if (this->map->fog_flag == 0) {
                                             black_tile_mask_num = 0;
                                         } else {
@@ -1999,7 +1999,7 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                                         }
                                     }
 
-                                    if (MapVis == 0x0f || MapVis == 0x80) {
+                                    if (MapVis == RGE_TILE_VISIBLE || MapVis == RGE_TILE_FOGGED) {
                                         if (Full_Visibility == 0) {
                                             tile_mask_num = this->get_tile_mask_num(
                                                 map_col, map_row, Map_Width, Map_Height, TileFoggedMask
@@ -2052,7 +2052,7 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                                     tile_mask_num = 0;
                                 }
                                 if (black_tile_mask_num == -1) {
-                                    if (MapVis == 0x0f) {
+                                    if (MapVis == RGE_TILE_VISIBLE) {
                                         black_tile_mask_num = this->get_tile_mask_num(
                                             map_col, map_row, Map_Width, Map_Height, TileVisibleMask
                                         );
@@ -2074,7 +2074,7 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                                 fog_draw_data = edge_table[black_tile_mask_num].fog_draw;
                                 black_draw_data = black_table[tile_mask_num].black_UNdraw;
 
-                                if (MapVis == 0x80) {
+                                if (MapVis == RGE_TILE_FOGGED) {
                                     fog_draw_data = edge_table[0].normal_draw;
                                     fog_draw = 1;
                                     draw_normal = 0;
@@ -2203,12 +2203,12 @@ long RGE_View::view_function_terrain(unsigned char function_mode_in, tagRECT sav
                                 if (MapVis == 0) {
                                     this->futur_objs->SetCaptureLevel(0, 5);
                                 }
-                                if (MapVis != 0x0f) {
+                                if (MapVis != RGE_TILE_VISIBLE) {
                                     fog_next_shape = 1;
                                 }
                                 tile->objects.draw(
                                     this->save_area1, draw_x, (short) (draw_y + tile->height * this->tile_half_hgt),
-                                    MapVis == 0x80
+                                    MapVis == RGE_TILE_FOGGED
                                 );
                                 this->futur_objs->SetCaptureLevel(0, 0x28);
                                 fog_next_shape = 0;
@@ -3026,7 +3026,7 @@ void RGE_View::draw_terrain_shape(
 
     int one = 1;
     int zero = 0;
-    if (this->map->fog_flag != 0 && visible == 0x80) {
+    if (this->map->fog_flag != 0 && visible == RGE_TILE_FOGGED) {
         fog_next_shape = one;
     }
 

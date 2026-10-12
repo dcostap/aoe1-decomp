@@ -563,7 +563,7 @@ int TribeInformationAIModule::update(int timeLimit) {
                     while (node != 0) {
                         RGE_Static_Object* obj = (RGE_Static_Object*) node->node;
 
-                        if (visibleStatus == 0x80) {
+                        if (visibleStatus == RGE_TILE_FOGGED) {
                             if (((RGE_Master_Static_Object*) obj->master_obj)->fog_flag == 0) {
                                 node = node->next;
                                 continue;
@@ -785,7 +785,7 @@ int TribeInformationAIModule::closestUnexploredTile(int uID, float cX, float cY,
                     char path_value = (char) this->pathMap.lookupValue(x, y);
                     unsigned char visibility = vMap->get_visible(x, y);
 
-                    if (visibility != 0x0f && (civilianObj == 0 || path_value == -1)
+                    if (visibility != RGE_TILE_VISIBLE && (civilianObj == 0 || path_value == -1)
                         && (civilianObj != 0 || path_value == -1 || path_value == 2)
                         && obj->passableTile((float) x, (float) y, 1) != 0 && obj->lookupZone(x, y) == initialZone) {
                         XYZPoint cPoint;
@@ -2619,7 +2619,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
                     if (dy < 0) {
                         dy = -dy;
                     }
-                    if ((dx > 5 || dy > 5) && this->md->player->visible->get_visible(object_x, object_y) != 0x0F) {
+                    if ((dx > 5 || dy > 5) && this->md->player->visible->get_visible(object_x, object_y) != RGE_TILE_VISIBLE) {
                         goto next_object;
                     }
 
@@ -2869,7 +2869,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                         if (dy < 0)
                             dy = -dy;
 
-                        if ((dx <= 5 && dy <= 5) || this->md->player->visible->get_visible(targetX, targetY) == 0x0f) {
+                        if ((dx <= 5 && dy <= 5) || this->md->player->visible->get_visible(targetX, targetY) == RGE_TILE_VISIBLE) {
                             if (commanderIsPriest == 0
                                 || commanderObj->unitAI()->canConvert(this->importantObjectMemory[i].id) != 0) {
                                 float damageIPS = this->damageInflictedPerSecond(group, oTDObject);
@@ -3080,7 +3080,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int ownerID, int*
                         dy = -dy;
                     }
 
-                    if ((dx <= 5 && dy <= 5) || this->md->player->visible->get_visible(targetX, targetY) == 0x0f) {
+                    if ((dx <= 5 && dy <= 5) || this->md->player->visible->get_visible(targetX, targetY) == RGE_TILE_VISIBLE) {
                         if (!commanderIsPriest || commanderObj->unitAI()->canConvert(memory->id)) {
                             float damageIPS = this->damageInflictedPerSecond(soldiers, numberSoldiers, target);
                             float timeKillRatio = target->hp / damageIPS;
@@ -3948,7 +3948,7 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(
                                 dy = -dy;
                             if ((dx > 5 || dy > 5)
                                 && this->md->player->visible->get_visible((int) obj->world_x, (int) obj->world_y)
-                                       != 0x0F)
+                                       != RGE_TILE_VISIBLE)
                                 goto skip_visible;
                             group = this->importantObjectMemory[i].group;
                             if (group != OBJECT_GROUP_BUILDING && group != OBJECT_GROUP_WALL)

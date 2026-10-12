@@ -591,7 +591,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
                         if (object->master_obj->select_level >= 2
                             && (this->map->map_visible_flag != 0
                                 || this->player->visible->get_visible((int) object->world_x, (int) object->world_y)
-                                       == 0x0F)) {
+                                       == RGE_TILE_VISIBLE)) {
                             this->player->unselect_object();
                             this->player->select_object(object);
                             this->set_redraw(TPanel::RedrawNormal);
@@ -608,7 +608,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
                         if (object->master_obj->select_level >= 2
                             && (this->map->map_visible_flag != 0
                                 || this->player->visible->get_visible((int) object->world_x, (int) object->world_y)
-                                       == 0x0F)) {
+                                       == RGE_TILE_VISIBLE)) {
                             this->player->unselect_object();
                             this->player->select_object(object);
                             this->set_redraw(TPanel::RedrawNormal);
@@ -1054,7 +1054,7 @@ unsigned char RGE_Main_View::pick1(
                 continue;
 
             if (pick_dopples == 0 && this->map->map_visible_flag == 0 && this->pick_through_fog(object) == 0
-                && this->player->visible->get_visible((int) object->world_x, (int) object->world_y) != 0x0F)
+                && this->player->visible->get_visible((int) object->world_x, (int) object->world_y) != RGE_TILE_VISIBLE)
                 continue;
 
             int weight = this->pick_weight(object, info->confidence);
@@ -1080,7 +1080,7 @@ unsigned char RGE_Main_View::pick1(
                 continue;
 
             if (pick_dopples == 0 && this->map->map_visible_flag == 0 && this->pick_through_fog(object) == 0
-                && this->player->visible->get_visible((int) object->world_x, (int) object->world_y) != 0x0F)
+                && this->player->visible->get_visible((int) object->world_x, (int) object->world_y) != RGE_TILE_VISIBLE)
                 continue;
 
             if (object == last_picked_object) {

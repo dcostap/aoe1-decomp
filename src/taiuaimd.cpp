@@ -1955,7 +1955,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
         case 0x1fc: {
             RGE_Static_Object* obj = this->objectValue->owner->world->object(this->currentTargetValue);
             if (obj != 0) {
-                if (this->objectValue->owner->visible->get_visible((int) obj->world_x, (int) obj->world_y) == 0x0f)
+                if (this->objectValue->owner->visible->get_visible((int) obj->world_x, (int) obj->world_y) == RGE_TILE_VISIBLE)
                     return 2;
             }
             this->removeCurrentTarget();

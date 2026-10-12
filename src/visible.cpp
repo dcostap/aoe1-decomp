@@ -182,7 +182,7 @@ RGE_Visible_Map::RGE_Visible_Map(RGE_Map* in_map, RGE_Player* in_player) {
                 row = row + 1;
             } while (row < this->heightValue);
         }
-        memset(this->visible_map, 0xff, this->heightValue * this->widthValue);
+        memset(this->visible_map, RGE_VIS_UNEXPLORED, this->heightValue * this->widthValue);
     }
     unsigned long mask = 1 << (unsigned char) in_player->id;
     this->input_csum = 0;
@@ -263,9 +263,9 @@ unsigned char RGE_Visible_Map::get_visible(int map_col, int map_row) const {
     unsigned long cell = unified_map_offsets[map_row][map_col];
     RGE_Player* p = this->player;
     if ((cell & p->mutualVisibleMask) != 0)
-        return 0x0F;
+        return RGE_TILE_VISIBLE;
     if ((cell & p->mutualExploredMask) != 0)
-        return 0x80;
+        return RGE_TILE_FOGGED;
     return 0;
 }
 
@@ -286,9 +286,9 @@ void RGE_Visible_Map::set_all(unsigned char vis_flag) {
         } while (y < this->heightValue);
     }
 
-    if ((vis_flag == 0xff) || (vis_flag == 0)) {
+    if ((vis_flag == RGE_VIS_UNEXPLORED) || (vis_flag == RGE_VIS_EXPLORED)) {
         unsigned long mask = this->PlayerVisibleMaskInvertValue;
-        if (vis_flag == 0xff) {
+        if (vis_flag == RGE_VIS_UNEXPLORED) {
             mask = mask & this->PlayerExploredMaskInvertValue;
         }
 
@@ -327,7 +327,7 @@ void RGE_Visible_Map::set_all(unsigned char vis_flag) {
         }
     }
 
-    if (vis_flag == 0xff) {
+    if (vis_flag == RGE_VIS_UNEXPLORED) {
         this->numberTilesExploredValue = 0;
     } else {
         this->numberTilesExploredValue = this->numberTotalTilesValue;
@@ -343,8 +343,8 @@ void RGE_Visible_Map::explore_all(void) {
             int x = 0;
             if (0 < this->widthValue) {
                 do {
-                    if (this->map_offsets[y][x] == 0xFF) {
-                        this->map_offsets[y][x] = 0;
+                    if (this->map_offsets[y][x] == RGE_VIS_UNEXPLORED) {
+                        this->map_offsets[y][x] = RGE_VIS_EXPLORED;
                         this->numberTilesExploredValue++;
                         unified_map_offsets[y][x] |= this->PlayerExploredMaskValue;
                         this->player->tile_list.add_node(x, y);
@@ -374,7 +374,7 @@ void RGE_Visible_Map::recomputeExplored(void) {
             if (this->widthValue > 0) {
                 unsigned char** row_ptr = this->map_offsets + y;
                 do {
-                    if (row_ptr[0][x] != 0xFF) {
+                    if (row_ptr[0][x] != RGE_VIS_UNEXPLORED) {
                         this->numberTilesExploredValue = this->numberTilesExploredValue + 1;
                     }
                     x = x + 1;
@@ -469,16 +469,16 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square, int
                         curVisPlayer->diam_tile_list.add_node(x1, y);
                     }
                     *u |= this->PlayerExploredMaskValue;
-                    value = 1;
+                    value = RGE_VIS_FIRST_VIEWER;
                 }
-                if (value == 1) {
+                if (value == RGE_VIS_FIRST_VIEWER) {
                     if (UpdateMap != 0) {
-                        tile->draw_as = 0x0f;
+                        tile->draw_as = RGE_TILE_VISIBLE;
                     }
                     *u |= this->PlayerVisibleMaskValue;
                 }
-                if (value == 0xfa) {
-                    value = 0xf9;
+                if (value == RGE_VIS_MAX_VIEWERS + 1) {
+                    value = RGE_VIS_MAX_VIEWERS;
                 }
                 *visible = value;
                 ++visible;
@@ -561,12 +561,12 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, 
             while (x1 <= x2) {
                 value = *visible;
                 --value;
-                if (value == 0xff) {
+                if (value == 0xff) { // viewer count underflowed
                     value = 0;
                 }
                 if (value == 0) {
                     if (UpdateMap != 0) {
-                        tile->draw_as = 0x80;
+                        tile->draw_as = RGE_TILE_FOGGED;
                     }
                     *u &= this->PlayerVisibleMaskInvertValue;
                 }
@@ -654,17 +654,17 @@ int RGE_Visible_Map::explore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int 
                 if (isCurPlayer != 0) {
                     curVisPlayer->diam_tile_list.add_node(x, ty1);
                 }
-                value = 1;
+                value = RGE_VIS_FIRST_VIEWER;
                 *u |= this->PlayerExploredMaskValue;
             }
-            if (value == 1) {
+            if (value == RGE_VIS_FIRST_VIEWER) {
                 if (UpdateMap != 0) {
-                    tile->draw_as = 0x0F;
+                    tile->draw_as = RGE_TILE_VISIBLE;
                 }
                 *u |= this->PlayerVisibleMaskValue;
             }
             if (value == 0xFA) {
-                value = 0xF9;
+                value = RGE_VIS_MAX_VIEWERS;
             }
             *p = value;
             ++p;
@@ -729,12 +729,12 @@ void RGE_Visible_Map::unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2, i
             do {
                 unsigned char value = *visible;
                 --value;
-                if (value == 0xff) {
+                if (value == 0xff) { // viewer count underflowed
                     value = 0;
                 }
                 if (value == 0) {
                     if (UpdateMap != 0) {
-                        tile->draw_as = 0x80;
+                        tile->draw_as = RGE_TILE_FOGGED;
                     }
                     *explored &= this->PlayerVisibleMaskInvertValue;
                 }
