@@ -16,10 +16,6 @@ The newly compiled .exe plays exactly the same as the original, according to the
 | `nonmatching` | 56 | 1.03% | 35.97 KB | 2.84% | not deeply analyzed yet - but these would probably fit right in accepted_logic |
 | **total** | **5,426** | **100.00%** | **1,265.78 KB** | **100.00%** | |
 
-Byte totals use original function sizes from `inventory/all_functions.csv`. 1 KB = 1,000 bytes. Percentages can differ from 100% due to rounding.
-
-It all compiles and links into a complete `empiresx.exe`.
-
 ## You need
 
 - Windows and Python 3.12: `pip install pefile iced-x86 capstone pytest`
