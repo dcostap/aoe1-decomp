@@ -6,6 +6,9 @@
 #define RGE_RESOURCE_WOOD   1
 #define RGE_RESOURCE_STONE  2
 #define RGE_RESOURCE_GOLD   3
+// Held-attribute type of a priest: faith, refilled by PLAYER_ATTRIBUTE_FAITH_RECHARGE_RATE and capped at 100.
+// A conversion needs 100 held and resets it to 0 on success.
+#define RGE_RESOURCE_FAITH  0x22
 
 // Diplomatic stances stored in RGE_Player::relations. isAlly, isNeutral, and isEnemy test these values.
 #define RGE_RELATION_ALLY    0

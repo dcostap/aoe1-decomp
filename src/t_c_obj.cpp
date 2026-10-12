@@ -91,7 +91,7 @@ int TRIBE_Combat_Object::setup(TRIBE_Master_Combat_Object* tobj, RGE_Player* obj
 
     if (this->master_obj->object_group == OBJECT_GROUP_PRIEST) {
         this->attribute_amount_held = 100.0f;
-        this->attribute_type_held = 0x22;
+        this->attribute_type_held = RGE_RESOURCE_FAITH;
     }
 
     return 1;
@@ -154,7 +154,7 @@ unsigned char TRIBE_Combat_Object::update() {
         if (this->attribute_amount_held >= 100.0f) {
             this->attribute_amount_held = 100.0f;
         }
-        this->attribute_type_held = 0x22;
+        this->attribute_type_held = RGE_RESOURCE_FAITH;
     }
     return RGE_Combat_Object::update();
 }

@@ -800,7 +800,7 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
     }
 
     if (tribe_flag != 0) {
-        (*item_list)[list_n].id = 0x6d;
+        (*item_list)[list_n].id = MASTER_OBJECT_TOWN_CENTER1;
         (*item_list)[list_n].pict = this->master_objects[MASTER_OBJECT_TOWN_CENTER1]->button_pict;
         (*item_list)[list_n].name = this->master_objects[MASTER_OBJECT_TOWN_CENTER1]->name;
         this->obj_cost(0x6d, 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
@@ -1328,7 +1328,7 @@ void TRIBE_Player::researchCost(int id, int unused1, ResourceItem* ri, int unuse
 int TRIBE_Player::objectAvailable(int id) {
     RGE_Master_Static_Object** objects = this->master_objects;
     RGE_Master_Static_Object* object = objects[id];
-    if ((object != 0 && object->available) || id == 0x6D)
+    if ((object != 0 && object->available) || id == MASTER_OBJECT_TOWN_CENTER1)
         return 1;
     return 0;
 }

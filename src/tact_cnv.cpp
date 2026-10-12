@@ -76,11 +76,11 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
                 this->set_state(0x0d);
             }
             target_id = this->target_obj->master_obj->id;
-            if (target_id == 0x6d) {
+            if (target_id == MASTER_OBJECT_TOWN_CENTER1) {
                 rge_base_game->notification(GAME_NOTIFY_CONVERSION_TOWN_CENTER, (int) this->obj->owner->id, 0, 0, 0);
                 return;
             }
-            if (target_id == 0x114) {
+            if (target_id == MASTER_OBJECT_WONDER) {
                 rge_base_game->notification(GAME_NOTIFY_CONVERSION_WONDER, (int) this->obj->owner->id, 0, 0, 0);
                 return;
             }
@@ -189,7 +189,7 @@ void TRIBE_Action_Convert::set_state(uchar new_state) {
                 this->task->work_sound->play(1);
             if (this->target_obj != 0 && this->target_obj->owner->id > 0) {
                 this->target_obj->owner->make_new_object(
-                    0x70, this->obj->world_x, this->obj->world_y, this->obj->world_z, 0
+                    MASTER_OBJECT_FLARE, this->obj->world_x, this->obj->world_y, this->obj->world_z, 0
                 );
             }
             this->timer = this->task->work_val2;
@@ -238,7 +238,7 @@ uchar TRIBE_Action_Convert::update() {
 
     if (this->target_obj != 0 && this->obj->owner->isAlly(this->target_obj->owner->id) == 1) {
         if (this->state == 7 || this->state == 6 || this->state == 4) {
-            this->obj->set_attribute(0x22, 0);
+            this->obj->set_attribute(RGE_RESOURCE_FAITH, 0);
         }
         this->set_state(1);
         this->obj->notify(
@@ -309,7 +309,7 @@ uchar TRIBE_Action_Convert::update() {
             if (this->timer <= 0.0f) {
                 if (this->target_obj != 0 && this->target_obj->owner->id > 0) {
                     this->target_obj->owner->make_new_object(
-                        0x70, this->obj->world_x, this->obj->world_y, this->obj->world_z, 0
+                        MASTER_OBJECT_FLARE, this->obj->world_x, this->obj->world_y, this->obj->world_z, 0
                     );
                 }
                 int r = debug_rand("C:\\msdev\\work\\age1_x1\\tact_cnv.cpp", 471);
@@ -326,7 +326,7 @@ uchar TRIBE_Action_Convert::update() {
                         || type == OBJECT_GROUP_TRANSPORT_BOAT || type == OBJECT_GROUP_WAR_BOAT
                         || type == OBJECT_GROUP_PRIEST) {
                         chance = chance + chance;
-                    } else if (type == 0x23 || type == 0x17) {
+                    } else if (type == OBJECT_GROUP_CHARIOT || type == OBJECT_GROUP_CHARIOT_ARCHER) {
                         chance = chance * g_conversion_special_group_factor;
                     }
                 }
@@ -338,7 +338,7 @@ uchar TRIBE_Action_Convert::update() {
                     );
                     this->target_obj->change_ownership(this->obj->owner);
                     this->obj->owner->add_attribute_num(PLAYER_ATTRIBUTE_CONVERSIONS, 1.0f, 0);
-                    this->obj->set_attribute(0x22, 0);
+                    this->obj->set_attribute(RGE_RESOURCE_FAITH, 0);
                     this->set_state(3);
                 }
                 this->set_state(4);
@@ -396,6 +396,6 @@ void TRIBE_Action_Convert::martyrdom() {
     rge_base_game->notification(GAME_NOTIFY_CONVERSION_SUCCEEDED, source_id, target_id, 0, 0);
     this->target_obj->change_ownership(this->obj->owner);
     this->obj->owner->add_attribute_num(PLAYER_ATTRIBUTE_CONVERSIONS, 1.0f, 0);
-    this->obj->set_attribute(0x22, 0);
+    this->obj->set_attribute(RGE_RESOURCE_FAITH, 0);
     this->set_state(3);
 }
