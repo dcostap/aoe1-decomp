@@ -33,7 +33,7 @@ RGE_Master_Action_Object::RGE_Master_Action_Object(
 
 int RGE_Master_Action_Object::setup(RGE_Master_Action_Object* other_object) {
     RGE_Master_Moving_Object::setup(other_object);
-    master_type = 0x28;
+    master_type = RGE_MASTER_TYPE_ACTION;
     default_task = other_object->default_task;
     search_radius = other_object->search_radius;
     work_rate = other_object->work_rate;
@@ -54,7 +54,7 @@ int RGE_Master_Action_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     RGE_Sound* selected_sound;
 
     RGE_Master_Moving_Object::setup(infile, sprites, sounds);
-    master_type = 0x28;
+    master_type = RGE_MASTER_TYPE_ACTION;
 
     rge_read(infile, &default_task, 2);
     rge_read(infile, &search_radius, 4);
@@ -101,7 +101,7 @@ int RGE_Master_Action_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     int task_count;
 
     RGE_Master_Moving_Object::setup(infile, sprites, sounds, in_id);
-    master_type = 0x28;
+    master_type = RGE_MASTER_TYPE_ACTION;
 
     fscanf(
         infile, "%f %f %hd %hd %hd %hd %hd %hd", &search_radius, &work_rate, &drop_site, &backup_drop_site,

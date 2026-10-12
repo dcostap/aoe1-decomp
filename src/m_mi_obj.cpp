@@ -31,7 +31,7 @@ RGE_Master_Missile_Object::RGE_Master_Missile_Object(
 
 int RGE_Master_Missile_Object::setup(RGE_Master_Missile_Object* other_object) {
     RGE_Master_Combat_Object::setup(other_object);
-    master_type = 0x3C;
+    master_type = RGE_MASTER_TYPE_MISSILE;
     missile_type = other_object->missile_type;
     targetting_type = other_object->targetting_type;
     missile_hit_info = other_object->missile_hit_info;
@@ -43,7 +43,7 @@ int RGE_Master_Missile_Object::setup(RGE_Master_Missile_Object* other_object) {
 
 int RGE_Master_Missile_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     RGE_Master_Combat_Object::setup(infile, sprites, sounds);
-    master_type = 0x3C;
+    master_type = RGE_MASTER_TYPE_MISSILE;
 
     rge_read(infile, &missile_type, 1);
     rge_read(infile, &targetting_type, 1);
@@ -63,7 +63,7 @@ int RGE_Master_Missile_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sou
 
     RGE_Master_Combat_Object::setup(infile, sprites, sounds, in_id);
     recyclable = 1;
-    master_type = 0x3C;
+    master_type = RGE_MASTER_TYPE_MISSILE;
 
     fscanf(
         infile, "%hd %hd %hd %hd %hd %f", &temp_missile_type, &temp_targetting_type, &temp_missile_hit_info,

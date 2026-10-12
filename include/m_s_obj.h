@@ -1,6 +1,19 @@
 #ifndef AOE1_M_S_OBJ_H
 #define AOE1_M_S_OBJ_H
 
+// RGE_Master_Static_Object::master_type values, set by each master-object class constructor.
+// Numeric macros preserve VC5 output; the values order the class hierarchy (see move_obj/tplayer range checks).
+#define RGE_MASTER_TYPE_STATIC 0x0A
+#define RGE_MASTER_TYPE_ANIMATED 0x14
+#define RGE_MASTER_TYPE_DOPPLEGANGER 0x19
+#define RGE_MASTER_TYPE_MOVING 0x1E
+#define RGE_MASTER_TYPE_ACTION 0x28
+#define RGE_MASTER_TYPE_COMBAT 0x32
+#define RGE_MASTER_TYPE_MISSILE 0x3C
+#define TRIBE_MASTER_TYPE_COMBAT 0x46
+#define TRIBE_MASTER_TYPE_BUILDING 0x50
+#define TRIBE_MASTER_TYPE_TREE 0x5A
+
 // Master-object groups, not master-object IDs or tactical-group types.
 // Keep the short object_group field and existing integer parameter types.
 // The names are cleanup labels taken from the empires.dat members of each group, not developer names.

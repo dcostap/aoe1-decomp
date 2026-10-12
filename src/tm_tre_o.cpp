@@ -5,7 +5,7 @@ TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object(TRIBE_Master_Tree_Object* oth
     RGE_Master_Static_Object(other_object, 0) {
     if (do_setup != 0) {
         setup(other_object);
-        master_type = 0x5A;
+        master_type = TRIBE_MASTER_TYPE_TREE;
     }
 }
 
@@ -13,7 +13,7 @@ TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object(int infile, RGE_Sprite** spri
     RGE_Master_Static_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
         setup(infile, sprites, sounds);
-        master_type = 0x5A;
+        master_type = TRIBE_MASTER_TYPE_TREE;
     }
 }
 
@@ -22,7 +22,7 @@ TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object(
 ) : RGE_Master_Static_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup != 0) {
         setup(infile, sprites, sounds, in_id);
-        master_type = 0x5A;
+        master_type = TRIBE_MASTER_TYPE_TREE;
     }
 }
 

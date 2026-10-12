@@ -1158,7 +1158,7 @@ void TRIBE_Screen_Sed::set_paint_object_mode() {
         int pn = this->player_num;
         RGE_Master_Static_Object* obj = this->world->players[pn]->master_objects[mo_id];
 
-        if (obj != 0 && obj->master_type == 0x50
+        if (obj != 0 && obj->master_type == TRIBE_MASTER_TYPE_BUILDING
             && static_cast<TRIBE_Master_Building_Object*>(obj)->building_connect_flag != 0) {
             enabled = 1;
         }

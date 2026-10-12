@@ -1688,7 +1688,8 @@ unsigned char RGE_Player::get_selected_objects_to_command(
                     if (object_group == -1 || master->object_group == (unsigned char) object_group) {
                         if (object_id == -1 || master->id == (unsigned char) object_id) {
                             if (unit_level == -1 || master->unit_level == (unsigned char) unit_level) {
-                                if (master->master_type >= 0x28 && master->master_type != 0x5A) {
+                                if (master->master_type >= RGE_MASTER_TYPE_ACTION
+                                    && master->master_type != TRIBE_MASTER_TYPE_TREE) {
                                     locals.list[count] = object;
                                     ++count;
                                 }

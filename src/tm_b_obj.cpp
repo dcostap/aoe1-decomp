@@ -38,7 +38,7 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(
 
 int TRIBE_Master_Building_Object::setup(TRIBE_Master_Building_Object* other_object) {
     TRIBE_Master_Combat_Object::setup(other_object);
-    this->master_type = 0x50;
+    this->master_type = TRIBE_MASTER_TYPE_BUILDING;
     this->construction_sprite = other_object->construction_sprite;
     this->building_connect_flag = other_object->building_connect_flag;
     this->building_facet = other_object->building_facet;
@@ -58,7 +58,7 @@ int TRIBE_Master_Building_Object::setup(int infile, RGE_Sprite** sprites, RGE_So
     RGE_Sound* selected_sound;
 
     TRIBE_Master_Combat_Object::setup(infile, sprites, sounds);
-    this->master_type = 0x50;
+    this->master_type = TRIBE_MASTER_TYPE_BUILDING;
 
     rge_read(infile, &sprite_id, 2);
     rge_read(infile, &this->building_connect_flag, 1);
@@ -95,7 +95,7 @@ int TRIBE_Master_Building_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_
     RGE_Sound* selected_sound;
 
     TRIBE_Master_Combat_Object::setup(infile, sprites, sounds, in_id);
-    this->master_type = 0x50;
+    this->master_type = TRIBE_MASTER_TYPE_BUILDING;
 
     fscanf(
         infile, "%hd %hd %hd %hd %hd %hd %hd %hd %hd", &sprite_id, &connect_flag, &this->building_facet,

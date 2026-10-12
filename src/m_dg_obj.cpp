@@ -29,20 +29,20 @@ RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object(
 
 int RGE_Master_Doppleganger_Object::setup(RGE_Master_Doppleganger_Object* other_object) {
     RGE_Master_Animated_Object::setup(other_object);
-    this->master_type = 0x19;
+    this->master_type = RGE_MASTER_TYPE_DOPPLEGANGER;
     this->fog_flag = 3;
     return 1;
 }
 
 int RGE_Master_Doppleganger_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     RGE_Master_Animated_Object::setup(infile, sprites, sounds);
-    this->master_type = 0x19;
+    this->master_type = RGE_MASTER_TYPE_DOPPLEGANGER;
     return 1;
 }
 
 int RGE_Master_Doppleganger_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     RGE_Master_Animated_Object::setup(infile, sprites, sounds, in_id);
-    this->master_type = 0x19;
+    this->master_type = RGE_MASTER_TYPE_DOPPLEGANGER;
     this->recyclable = 1;
     return 1;
 }

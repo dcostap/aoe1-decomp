@@ -39,7 +39,7 @@ RGE_Master_Combat_Object::RGE_Master_Combat_Object(
 // m_co_obj.cpp lines 53-99.
 int RGE_Master_Combat_Object::setup(RGE_Master_Combat_Object* other_object) {
     RGE_Master_Action_Object::setup(other_object);
-    master_type = 0x32;
+    master_type = RGE_MASTER_TYPE_COMBAT;
 
     fight_sprite = other_object->fight_sprite;
     base_armor = other_object->base_armor;
@@ -86,7 +86,7 @@ int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     int count;
 
     RGE_Master_Action_Object::setup(infile, sprites, sounds);
-    master_type = 0x32;
+    master_type = RGE_MASTER_TYPE_COMBAT;
 
     rge_read(infile, &base_armor, 1);
     rge_read(infile, &weapon_num, 2);
@@ -178,7 +178,7 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     RGE_Sprite* selected_sprite;
 
     RGE_Master_Action_Object::setup(input, sprites, sounds, in_id);
-    master_type = 0x32;
+    master_type = RGE_MASTER_TYPE_COMBAT;
 
     // These outputs reuse the original parameter homes.
     fscanf(

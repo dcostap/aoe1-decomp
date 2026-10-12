@@ -31,7 +31,7 @@ RGE_Master_Moving_Object::RGE_Master_Moving_Object(
 
 int RGE_Master_Moving_Object::setup(RGE_Master_Moving_Object* other_object) {
     RGE_Master_Animated_Object::setup(other_object);
-    master_type = 0x1E;
+    master_type = RGE_MASTER_TYPE_MOVING;
 
     move_sprite = other_object->move_sprite;
     run_sprite = other_object->run_sprite;
@@ -53,7 +53,7 @@ int RGE_Master_Moving_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     RGE_Sprite* selected_move;
     RGE_Sprite* selected_run;
 
-    master_type = 0x1E;
+    master_type = RGE_MASTER_TYPE_MOVING;
 
     rge_read(infile, &move_sprite_id, 2);
     rge_read(infile, &run_sprite_id, 2);
@@ -92,7 +92,7 @@ int RGE_Master_Moving_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     RGE_Sprite* selected_move;
     RGE_Sprite* selected_run;
 
-    master_type = 0x1E;
+    master_type = RGE_MASTER_TYPE_MOVING;
 
     fscanf(
         infile, "%hd %hd %f %hd %hd %hd %f %hd", &move_sprite_id, &run_sprite_id, &turn_speed, &temp_size_class,

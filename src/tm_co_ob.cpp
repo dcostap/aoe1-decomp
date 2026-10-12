@@ -32,7 +32,7 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
 
 int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* other_object) {
     RGE_Master_Combat_Object::setup(other_object);
-    master_type = 0x46;
+    master_type = TRIBE_MASTER_TYPE_COMBAT;
 
     int i;
     for (i = 0; i < 3; i++) {
@@ -52,7 +52,7 @@ int TRIBE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Soun
     int left;
 
     RGE_Master_Combat_Object::setup(infile, sprites, sounds);
-    master_type = 0x46;
+    master_type = TRIBE_MASTER_TYPE_COMBAT;
 
     Attribute_Cost* cost = build_inventory;
     int remaining = 3;
@@ -105,7 +105,7 @@ int TRIBE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_So
     int left;
 
     RGE_Master_Combat_Object::setup(infile, sprites, sounds, in_id);
-    master_type = 0x46;
+    master_type = TRIBE_MASTER_TYPE_COMBAT;
 
     Attribute_Cost* cost = build_inventory;
     int remaining = 3;

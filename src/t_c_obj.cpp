@@ -60,8 +60,9 @@ TRIBE_Combat_Object::~TRIBE_Combat_Object() {
     const short group = master->object_group;
     if (group == OBJECT_GROUP_CIVILIAN || group == OBJECT_GROUP_FISHING_BOAT || group == OBJECT_GROUP_TRADE_BOAT) {
         this->owner->attributes[PLAYER_ATTRIBUTE_CIVILIAN_POPULATION] -= g_combat_one_float;
-    } else if ((group != OBJECT_GROUP_PRIEST && master->master_type == 'F') || master->id == MASTER_OBJECT_WATCH_TOWER
-               || master->id == MASTER_OBJECT_GUARD_TOWER || master->id == MASTER_OBJECT_SENTRY_TOWER) {
+    } else if ((group != OBJECT_GROUP_PRIEST && master->master_type == TRIBE_MASTER_TYPE_COMBAT)
+               || master->id == MASTER_OBJECT_WATCH_TOWER || master->id == MASTER_OBJECT_GUARD_TOWER
+               || master->id == MASTER_OBJECT_SENTRY_TOWER) {
         this->owner->attributes[PLAYER_ATTRIBUTE_MILITARY_POPULATION] -= g_combat_one_float;
     }
 }
@@ -81,7 +82,8 @@ int TRIBE_Combat_Object::setup(TRIBE_Master_Combat_Object* tobj, RGE_Player* obj
         || this->master_obj->object_group == OBJECT_GROUP_FISHING_BOAT
         || this->master_obj->object_group == OBJECT_GROUP_TRADE_BOAT) {
         this->owner->attributes[PLAYER_ATTRIBUTE_CIVILIAN_POPULATION] -= g_combat_negative_one;
-    } else if ((this->master_obj->object_group != OBJECT_GROUP_PRIEST && this->master_obj->master_type == 'F')
+    } else if ((this->master_obj->object_group != OBJECT_GROUP_PRIEST
+                && this->master_obj->master_type == TRIBE_MASTER_TYPE_COMBAT)
                || this->master_obj->id == MASTER_OBJECT_WATCH_TOWER || this->master_obj->id == MASTER_OBJECT_GUARD_TOWER
                || this->master_obj->id == MASTER_OBJECT_SENTRY_TOWER) {
         this->owner->attributes[PLAYER_ATTRIBUTE_MILITARY_POPULATION] -= g_combat_negative_one;
@@ -103,10 +105,10 @@ int TRIBE_Combat_Object::setup(int infile, RGE_Game_World* gworld) {
     if (this->own_master != 0) {
         unsigned char master_type;
         rge_read(infile, &master_type, 1);
-        if (master_type == 'F') {
+        if (master_type == TRIBE_MASTER_TYPE_COMBAT) {
             this->master_obj =
                 new TRIBE_Master_Combat_Object(infile, this->owner->world->sprites, this->owner->world->sounds, 1);
-        } else if (master_type == 'P') {
+        } else if (master_type == TRIBE_MASTER_TYPE_BUILDING) {
             this->master_obj =
                 new TRIBE_Master_Building_Object(infile, this->owner->world->sprites, this->owner->world->sounds, 1);
         }
@@ -1052,7 +1054,7 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* obj) {
                 task = *task_list;
                 if (task->action_type == TRIBE_ACTION_TYPE_REPAIR) {
                     RGE_Master_Static_Object* target_master = obj->master_obj;
-                    if (target_master->master_type == 'P') {
+                    if (target_master->master_type == TRIBE_MASTER_TYPE_BUILDING) {
                         if (task->object_group == -1 || task->object_group == 0) {
                             break;
                         }

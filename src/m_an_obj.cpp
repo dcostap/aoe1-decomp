@@ -29,21 +29,21 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object(
 
 int RGE_Master_Animated_Object::setup(RGE_Master_Animated_Object* other_object) {
     RGE_Master_Static_Object::setup(other_object);
-    master_type = 0x14;
+    master_type = RGE_MASTER_TYPE_ANIMATED;
     speed = other_object->speed;
     return 1;
 }
 
 int RGE_Master_Animated_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     RGE_Master_Static_Object::setup(infile, sprites, sounds);
-    master_type = 0x14;
+    master_type = RGE_MASTER_TYPE_ANIMATED;
     rge_read(infile, &speed, 4);
     return 1;
 }
 
 int RGE_Master_Animated_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     RGE_Master_Static_Object::setup(infile, sprites, sounds, in_id);
-    master_type = 0x14;
+    master_type = RGE_MASTER_TYPE_ANIMATED;
     fscanf(infile, "%f", &speed);
     return 1;
 }

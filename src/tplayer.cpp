@@ -305,13 +305,14 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(
         } else {
             RGE_Master_Static_Object* master = obj->master_obj;
             unsigned char group = master->master_type;
-            if (group > 0x1E && group < 0x5A) {
+            if (group > RGE_MASTER_TYPE_MOVING && group < TRIBE_MASTER_TYPE_TREE) {
                 obj->new_angle(new_angle);
             } else {
                 obj->facet = static_cast<unsigned char>(static_cast<int>(new_angle));
             }
         }
-        if (this->master_objects[master_id]->master_type == 0x50 && state == RGE_OBJECT_STATE_ACTIVE) {
+        if (this->master_objects[master_id]->master_type == TRIBE_MASTER_TYPE_BUILDING
+            && state == RGE_OBJECT_STATE_ACTIVE) {
             static_cast<TRIBE_Building_Object*>(obj)->build(10000.0f);
         }
     }
@@ -562,7 +563,7 @@ void TRIBE_Player::obj_cost(
 
     unsigned char can = this->check_obj_cost(obj_id, 0, 1.0f, 0);
     RGE_Master_Static_Object* master = this->master_objects[obj_id];
-    if (master == 0 || master->master_type < 0x46)
+    if (master == 0 || master->master_type < TRIBE_MASTER_TYPE_COMBAT)
         return;
     if (name != 0)
         *name = master->name;
@@ -664,7 +665,7 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, 
     if (object != 0) {
         if (build_all_the_way != 0) {
             static_cast<TRIBE_World*>(this->world)->check_destructables(this->id, static_cast<short>(obj_id), x, y, 0);
-            if (object->master_obj->master_type == 'P')
+            if (object->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING)
                 static_cast<TRIBE_Building_Object*>(object)->build(10000.0f);
         }
         if (rge_base_game->prog_mode == ProgModeScenarioEditor
@@ -743,7 +744,7 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
         int n = this->master_object_num;
         do {
             RGE_Master_Static_Object* m = *pp;
-            if (m != 0 && m->master_type >= 0x46 && m->available != 0
+            if (m != 0 && m->master_type >= TRIBE_MASTER_TYPE_COMBAT && m->available != 0
                 && static_cast<TRIBE_Master_Combat_Object*>(m)->id_of_building_obj == obj_cat)
                 count++;
             pp++;
@@ -778,7 +779,7 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
     short index = 0;
     short list_n = 0;
     while (index < this->master_object_num) {
-        if (this->master_objects[index] != 0 && this->master_objects[index]->master_type >= 0x46
+        if (this->master_objects[index] != 0 && this->master_objects[index]->master_type >= TRIBE_MASTER_TYPE_COMBAT
             && this->master_objects[index]->available != 0
             && static_cast<TRIBE_Master_Combat_Object*>(this->master_objects[index])->id_of_building_obj == obj_cat) {
             (*item_list)[list_n].id = index;
@@ -907,7 +908,7 @@ unsigned char TRIBE_Player::command_make_wall(short obj_id, long x1, long y1, lo
 
 unsigned char TRIBE_Player::command_building_make_tech(short tech_id) {
     RGE_Static_Object* object = this->selected_obj;
-    if (object && object->master_obj->master_type == 'P') {
+    if (object && object->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING) {
         TRIBE_Command* command = static_cast<TRIBE_Command*>(this->world->commands);
         command->command_research(object, tech_id);
         return 1;
@@ -921,7 +922,8 @@ unsigned char TRIBE_Player::command_building_cancel() {
     selected_obj = this->selected_obj;
     if (selected_obj != 0) {
         if (selected_obj->owner == this) {
-            if (selected_obj->master_obj->master_type == 'P' || selected_obj->master_obj->master_type == 'F') {
+            if (selected_obj->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING
+                || selected_obj->master_obj->master_type == TRIBE_MASTER_TYPE_COMBAT) {
                 if (selected_obj->master_obj->object_group != OBJECT_GROUP_ARTIFACT) {
                     static_cast<TRIBE_Command*>(this->world->commands)->command_cancel_build(selected_obj);
                     return 1;
@@ -938,7 +940,7 @@ unsigned char TRIBE_Player::command_delete_object(RGE_Static_Object* obj) {
 
     if ((obj != 0) && (obj->owner == this)) {
         type = obj->master_obj->master_type;
-        if ((type == 'P') || (type == 'F')) {
+        if ((type == TRIBE_MASTER_TYPE_BUILDING) || (type == TRIBE_MASTER_TYPE_COMBAT)) {
             static_cast<TRIBE_Command*>(this->world->commands)->command_cancel_build(obj);
             return 1;
         }
@@ -992,7 +994,7 @@ unsigned char TRIBE_Player::command_give_attribute(int to_player_id, int attr_id
 
 unsigned char TRIBE_Player::command_building_make_obj(short obj_id) {
     RGE_Static_Object* object = this->selected_obj;
-    if (object && object->master_obj->master_type == 'P') {
+    if (object && object->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING) {
         TRIBE_Command* command = static_cast<TRIBE_Command*>(this->world->commands);
         command->command_make(object, obj_id);
         return 1;
@@ -1003,7 +1005,8 @@ unsigned char TRIBE_Player::command_building_make_obj(short obj_id) {
 unsigned char TRIBE_Player::command_make_repair(RGE_Static_Object* obj) {
     short list_num;
     RGE_Static_Object** list;
-    if (!(((obj->owner == this || this->isAlly(obj->owner->id)) && obj->master_obj->master_type == 'P'
+    if (!(((obj->owner == this || this->isAlly(obj->owner->id))
+           && obj->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING
            && static_cast<float>(obj->master_obj->hp) > obj->hp && obj->object_state < RGE_OBJECT_STATE_DYING)
           || ((obj->owner == this || (this->isAlly(obj->owner->id) && obj->owner->isAlly(this->id)))
               && (obj->master_obj->object_group == OBJECT_GROUP_TRADE_BOAT
@@ -1049,7 +1052,7 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed
     }
     RGE_Master_Static_Object* object = this->master_objects[obj_id];
     TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
-    if (object == 0 || object->master_type < 0x46) {
+    if (object == 0 || object->master_type < TRIBE_MASTER_TYPE_COMBAT) {
         if (attribute_needed != 0)
             *attribute_needed = static_cast<short>(-1);
         return 0;
@@ -1110,7 +1113,7 @@ unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float modifier, int ignor
 void TRIBE_Player::reimburse_obj_cost(short obj_id) {
     RGE_Master_Static_Object* object = this->master_objects[obj_id];
     TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
-    if (object->master_type < 0x46)
+    if (object->master_type < TRIBE_MASTER_TYPE_COMBAT)
         return;
     Attribute_Cost* cost = combat->build_inventory;
     int i;

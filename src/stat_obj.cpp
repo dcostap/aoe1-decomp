@@ -138,7 +138,7 @@ void RGE_Static_Object::recycle_in_to_game(
 
     this->hp = (float) (int) tobj->hp;
     this->sleep_flag = (this->hp > 0.0f);
-    this->dopple_flag = (tobj->master_type == 0x19);
+    this->dopple_flag = (tobj->master_type == RGE_MASTER_TYPE_DOPPLEGANGER);
 
     this->facet = 0;
     this->world_x = -999.0f;
@@ -243,7 +243,7 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* tobj, RGE_Player* obj_own
 
     this->hp = (float) (int) this->master_obj->hp;
     this->sleep_flag = (this->hp > 0.0f);
-    this->dopple_flag = (this->master_obj->master_type == 0x19);
+    this->dopple_flag = (this->master_obj->master_type == RGE_MASTER_TYPE_DOPPLEGANGER);
 
     this->facet = 0;
     this->world_x = -999.0f;

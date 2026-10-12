@@ -58,7 +58,8 @@ RGE_Task* TRIBE_Task_List::get_target_task(
     }
 
     if (target_obj != 0) {
-        if (obj != 0 && target_obj->owner == obj->owner && target_obj->master_obj->master_type == 0x50
+        if (obj != 0 && target_obj->owner == obj->owner
+            && target_obj->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING
             && target_obj->object_state == RGE_OBJECT_STATE_UNBUILT) {
             for (int index = 0; index < list_num; index++) {
                 RGE_Task* task = list[index];
@@ -81,7 +82,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(
 
         if (obj != 0 && (target_obj->owner == obj->owner || obj->owner->isAlly(target_obj->owner->id))) {
             RGE_Master_Static_Object* master_obj = target_obj->master_obj;
-            if (master_obj->master_type == 0x50 && target_obj->hp < (float) master_obj->hp
+            if (master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING && target_obj->hp < (float) master_obj->hp
                 && target_obj->object_state < RGE_OBJECT_STATE_DYING && master_obj->id != MASTER_OBJECT_FARM) {
                 for (int index = 0; index < list_num; index++) {
                     RGE_Task* task = list[index];

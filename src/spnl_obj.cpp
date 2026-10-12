@@ -318,7 +318,7 @@ long TRIBE_Scenario_Editor_Panel_Object::get_pierce_armor() {
     RGE_Master_Static_Object* master = master_game_obj;
     if (master == 0)
         return 0;
-    if (master->master_type != 'F')
+    if (master->master_type != TRIBE_MASTER_TYPE_COMBAT)
         return 0;
 
     RGE_Master_Combat_Object* combat = static_cast<RGE_Master_Combat_Object*>(master);

@@ -1595,13 +1595,13 @@ byte RGE_Game_World::save_scenario(char* filename) {
             count = 0;
             RGE_Object_Node* o = this->players[index]->objects->list;
             while (o) {
-                if (o->node->master_obj->master_type != 0x19)
+                if (o->node->master_obj->master_type != RGE_MASTER_TYPE_DOPPLEGANGER)
                     ++count;
                 o = o->next;
             }
             o = this->players[index]->sleeping_objects->list;
             while (o) {
-                if (o->node->master_obj->master_type != 0x19)
+                if (o->node->master_obj->master_type != RGE_MASTER_TYPE_DOPPLEGANGER)
                     ++count;
                 o = o->next;
             }
@@ -1609,14 +1609,15 @@ byte RGE_Game_World::save_scenario(char* filename) {
 
             o = this->players[index]->objects->list;
             while (o) {
-                if (o->node->master_obj->master_type != 0x19) {
+                if (o->node->master_obj->master_type != RGE_MASTER_TYPE_DOPPLEGANGER) {
                     rge_write(fd, &o->node->world_x, 4);
                     rge_write(fd, &o->node->world_y, 4);
                     rge_write(fd, &o->node->world_z, 4);
                     rge_write(fd, &o->node->id, 4);
                     rge_write(fd, &o->node->master_obj->id, 2);
                     rge_write(fd, &o->node->object_state, 1);
-                    if (o->node->master_obj->master_type > 0x1e && o->node->master_obj->master_type < 0x5a) {
+                    if (o->node->master_obj->master_type > RGE_MASTER_TYPE_MOVING
+                        && o->node->master_obj->master_type < TRIBE_MASTER_TYPE_TREE) {
                         obj_angle = static_cast<RGE_Moving_Object*>(o->node)->angle;
                     } else {
                         obj_angle = (float) o->node->facet;
@@ -1628,14 +1629,15 @@ byte RGE_Game_World::save_scenario(char* filename) {
 
             o = this->players[index]->sleeping_objects->list;
             while (o) {
-                if (o->node->master_obj->master_type != 0x19) {
+                if (o->node->master_obj->master_type != RGE_MASTER_TYPE_DOPPLEGANGER) {
                     rge_write(fd, &o->node->world_x, 4);
                     rge_write(fd, &o->node->world_y, 4);
                     rge_write(fd, &o->node->world_z, 4);
                     rge_write(fd, &o->node->id, 4);
                     rge_write(fd, &o->node->master_obj->id, 2);
                     rge_write(fd, &o->node->object_state, 1);
-                    if (o->node->master_obj->master_type > 0x1e && o->node->master_obj->master_type < 0x5a) {
+                    if (o->node->master_obj->master_type > RGE_MASTER_TYPE_MOVING
+                        && o->node->master_obj->master_type < TRIBE_MASTER_TYPE_TREE) {
                         obj_angle = static_cast<RGE_Moving_Object*>(o->node)->angle;
                     } else {
                         obj_angle = (float) o->node->facet;
@@ -3110,25 +3112,25 @@ int RGE_Game_World::initializePathingSystem(void) {
 
 unsigned char RGE_Game_World::recycle_object_out_of_game(unsigned char object_type, RGE_Static_Object* obj) {
     switch (object_type) {
-        case 0x0A:
+        case RGE_MASTER_TYPE_STATIC:
             reusable_static_objects->add_node(obj);
             return 1;
-        case 0x14:
+        case RGE_MASTER_TYPE_ANIMATED:
             reusable_animated_objects->add_node(obj);
             return 1;
-        case 0x1E:
+        case RGE_MASTER_TYPE_MOVING:
             reusable_moving_objects->add_node(obj);
             return 1;
-        case 0x28:
+        case RGE_MASTER_TYPE_ACTION:
             reusable_action_objects->add_node(obj);
             return 1;
-        case 0x32:
+        case RGE_MASTER_TYPE_COMBAT:
             reusable_combat_objects->add_node(obj);
             return 1;
-        case 0x3C:
+        case RGE_MASTER_TYPE_MISSILE:
             reusable_missile_objects->add_node(obj);
             return 1;
-        case 0x19:
+        case RGE_MASTER_TYPE_DOPPLEGANGER:
             reusable_doppleganger_objects->add_node(obj);
             return 1;
         default:
@@ -3142,7 +3144,7 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char objec
     RGE_Object_Node* nod;
 
     switch (object_type) {
-        case 0x0A:
+        case RGE_MASTER_TYPE_STATIC:
             lst = this->reusable_static_objects;
             nod = lst->list;
             if (nod) {
@@ -3152,7 +3154,7 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char objec
             }
             break;
 
-        case 0x14:
+        case RGE_MASTER_TYPE_ANIMATED:
             lst = this->reusable_animated_objects;
             nod = lst->list;
             if (nod) {
@@ -3162,7 +3164,7 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char objec
             }
             break;
 
-        case 0x1E:
+        case RGE_MASTER_TYPE_MOVING:
             lst = this->reusable_moving_objects;
             nod = lst->list;
             if (nod) {
@@ -3172,7 +3174,7 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char objec
             }
             break;
 
-        case 0x28:
+        case RGE_MASTER_TYPE_ACTION:
             lst = this->reusable_action_objects;
             nod = lst->list;
             if (nod) {
@@ -3182,7 +3184,7 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char objec
             }
             break;
 
-        case 0x32:
+        case RGE_MASTER_TYPE_COMBAT:
             lst = this->reusable_combat_objects;
             nod = lst->list;
             if (nod) {
@@ -3192,7 +3194,7 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char objec
             }
             break;
 
-        case 0x3C:
+        case RGE_MASTER_TYPE_MISSILE:
             lst = this->reusable_missile_objects;
             nod = lst->list;
             if (nod) {
@@ -3202,7 +3204,7 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char objec
             }
             break;
 
-        case 0x19:
+        case RGE_MASTER_TYPE_DOPPLEGANGER:
             lst = this->reusable_doppleganger_objects;
             nod = lst->list;
             if (nod) {

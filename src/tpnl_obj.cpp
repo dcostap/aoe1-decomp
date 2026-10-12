@@ -436,7 +436,7 @@ void TRIBE_Panel_Object::draw() {
 
     if (level == 2 || level == 8) {
         bldg_obj = this->game_obj;
-        if (this->game_obj->master_obj->master_type == 'P') {
+        if (this->game_obj->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING) {
             bldg_obj->work_status(work_type, work_target, progress, work_name, 100);
 
             if (work_type != 0x67 && work_type != 0x66 && bldg_obj->production_queue_status(work_target, temp) != 0) {
@@ -796,7 +796,8 @@ long TRIBE_Panel_Object::handle_idle() {
             }
         }
 
-        if (changed == 0 && object->master_obj->master_type >= 0x46 && object->master_obj->master_type != 0x5A) {
+        if (changed == 0 && object->master_obj->master_type >= TRIBE_MASTER_TYPE_COMBAT
+            && object->master_obj->master_type != TRIBE_MASTER_TYPE_TREE) {
             short cur_val;
             short orig_val;
             float cur_fval;
@@ -834,7 +835,7 @@ long TRIBE_Panel_Object::handle_idle() {
         }
 
         if (changed == 0 || do_buttons == 0) {
-            if (this->game_obj->master_obj->master_type == 'P') {
+            if (this->game_obj->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING) {
                 TRIBE_Building_Object* bldg_obj = this->game_obj;
 
                 if (bldg_obj->object_state != this->save_object_state) {
@@ -939,7 +940,8 @@ void TRIBE_Panel_Object::save_object_info() {
     this->save_los = object->master_obj->los;
     this->save_owner = object->owner;
 
-    if (object->master_obj->master_type >= 0x46 && object->master_obj->master_type != 0x5A) {
+    if (object->master_obj->master_type >= TRIBE_MASTER_TYPE_COMBAT
+        && object->master_obj->master_type != TRIBE_MASTER_TYPE_TREE) {
         this->save_have_action = object->have_action();
         this->game_obj->get_armor(this->save_armor, orig_val);
         this->game_obj->get_armor(this->save_pierce_armor, orig_val);
@@ -949,7 +951,7 @@ void TRIBE_Panel_Object::save_object_info() {
     }
 
     TRIBE_Building_Object* building = static_cast<TRIBE_Building_Object*>(this->game_obj);
-    if (building->master_obj->master_type == 'P') {
+    if (building->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING) {
         this->save_object_state = building->object_state;
         int construction_progress = building->get_construction_progress();
         this->save_build_pts = (float) construction_progress;

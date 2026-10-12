@@ -311,7 +311,7 @@ void RGE_Moving_Object::new_sprite(RGE_Sprite* nsprite) {
 
 RGE_Static_Object* RGE_Moving_Object::spawn_death_obj(void) {
     RGE_Static_Object* obj = RGE_Static_Object::spawn_death_obj();
-    if (obj != 0 && obj->master_obj->master_type >= 0x1E) {
+    if (obj != 0 && obj->master_obj->master_type >= RGE_MASTER_TYPE_MOVING) {
         obj->new_angle(this->angle);
     }
     return obj;

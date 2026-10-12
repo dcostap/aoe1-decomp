@@ -2515,7 +2515,8 @@ int TRIBE_Game::load_game(char* fileName) {
                     );
 
                     object = list->node;
-                    if (object->master_obj->master_type > 0x1D && object->master_obj->master_type != 0x5A) {
+                    if (object->master_obj->master_type > RGE_MASTER_TYPE_MOVING - 1
+                        && object->master_obj->master_type != TRIBE_MASTER_TYPE_TREE) {
                         RGE_Moving_Object* moving_object = static_cast<RGE_Moving_Object*>(object);
                         Path* path = &moving_object->pathValue;
                         if (path->numberOfWaypoints() > 0) {
@@ -2550,7 +2551,8 @@ int TRIBE_Game::load_game(char* fileName) {
                     }
 
                     object = list->node;
-                    if (object->master_obj->master_type > 0x27 && object->master_obj->master_type != 0x5A) {
+                    if (object->master_obj->master_type > RGE_MASTER_TYPE_ACTION - 1
+                        && object->master_obj->master_type != TRIBE_MASTER_TYPE_TREE) {
                         RGE_Action_Node* act_node = static_cast<RGE_Action_Object*>(object)->actions->list;
                         while (act_node != 0) {
                             RGE_Action* action = act_node->action;
@@ -2627,7 +2629,8 @@ int TRIBE_Game::load_game(char* fileName) {
                     }
 
                     object = list->node;
-                    if (object->master_obj->master_type > 0x1D && object->master_obj->master_type != 0x5A) {
+                    if (object->master_obj->master_type > RGE_MASTER_TYPE_MOVING - 1
+                        && object->master_obj->master_type != TRIBE_MASTER_TYPE_TREE) {
                         RGE_Moving_Object* moving_object = static_cast<RGE_Moving_Object*>(object);
                         Path* path = &moving_object->pathValue;
                         if (path->numberOfWaypoints() > 0) {
@@ -2662,7 +2665,8 @@ int TRIBE_Game::load_game(char* fileName) {
                     }
 
                     object = list->node;
-                    if (object->master_obj->master_type > 0x27 && object->master_obj->master_type != 0x5A) {
+                    if (object->master_obj->master_type > RGE_MASTER_TYPE_ACTION - 1
+                        && object->master_obj->master_type != TRIBE_MASTER_TYPE_TREE) {
                         RGE_Action_Node* act_node = static_cast<RGE_Action_Object*>(object)->actions->list;
                         while (act_node != 0) {
                             RGE_Action* action = act_node->action;

@@ -45,7 +45,7 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(
 }
 
 int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* other_object) {
-    master_type = 0x0A;
+    master_type = RGE_MASTER_TYPE_STATIC;
     recyclable = other_object->recyclable;
     string_id = other_object->string_id;
     string_id2 = other_object->string_id2;
@@ -151,7 +151,7 @@ int RGE_Master_Static_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     RGE_Sound* sound_value;
     RGE_Sprite* sprite_value;
 
-    this->master_type = 10;
+    this->master_type = RGE_MASTER_TYPE_STATIC;
     rge_read(file_handle, &name_size, 2);
     rge_read(file_handle, &this->id, 2);
     rge_read(file_handle, &this->string_id, 2);
@@ -344,7 +344,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     unsigned char temp_damage_percent_bytes[2];
     char temp_name[120];
 
-    this->master_type = 10;
+    this->master_type = RGE_MASTER_TYPE_STATIC;
     this->id = in_id;
 
     fscanf(

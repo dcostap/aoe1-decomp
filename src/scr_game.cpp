@@ -2778,7 +2778,7 @@ void TRIBE_Screen_Game::setup_buttons() {
                     final_type = TRIBE_UI_COMMAND_UNSELECT;
                     set_final_button = 1;
                     continue_setup = 0;
-                } else if ((level == 2) && (this->game_obj->master_obj->master_type == 'P')) {
+                } else if ((level == 2) && (this->game_obj->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING)) {
                     TRIBE_Building_Object* building = static_cast<TRIBE_Building_Object*>(this->game_obj);
                     short work_type;
                     short work_target;
@@ -4533,7 +4533,7 @@ int TRIBE_Screen_Game::any_selected_have_action() {
         RGE_Action_Object* object = static_cast<RGE_Action_Object*>(player->sel_list[slot]);
         if (object != 0) {
             unsigned char type = object->master_obj->master_type;
-            if (type >= 0x28 && type <= 0x50 && object->have_action() != 0) {
+            if (type >= RGE_MASTER_TYPE_ACTION && type <= TRIBE_MASTER_TYPE_BUILDING && object->have_action() != 0) {
                 return 1;
             }
             ++index;

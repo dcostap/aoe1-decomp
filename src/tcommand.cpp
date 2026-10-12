@@ -96,7 +96,7 @@ void TRIBE_Command::do_command_tribe_create(RGE_Command_Create* order) {
         this->world->players[order->player_id], order->location_x, order->location_y, order->location_z
     );
 
-    if (obj->master_obj->master_type == 0x50) {
+    if (obj->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING) {
         static_cast<TRIBE_Building_Object*>(obj)->build(10000.0f);
     }
 }
