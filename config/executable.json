@@ -16,7 +16,7 @@
   "link_flags": [
     "/NOLOGO", "/MACHINE:IX86", "/SUBSYSTEM:WINDOWS,4.0",
     "/BASE:0x400000", "/STACK:1048576", "/INCREMENTAL:NO",
-    "/OPT:REF"
+    "/OPT:NOREF"
   ],
   "libraries": [
     "kernel32.lib", "user32.lib", "gdi32.lib", "advapi32.lib",
@@ -29,6 +29,7 @@
     "This is the source-integration build, not a claim of original link order.",
     "Additional source profiles do not establish function matching recipes.",
     "The original PE proves the subsystem, image base, stack reserve, and imported DLLs.",
-    "uuid.lib supplies GUID data, not an imported DLL."
+    "uuid.lib supplies GUID data, not an imported DLL.",
+    "/OPT:NOREF keeps unreferenced functions and data. The original kept them: it was linked with /DEBUG (its MISC, FPO and NB10 records follow the last section), which makes VC5 default to NOREF. /OPT:REF dropped 1,068 compiled matching functions and about 132 KB."
   ]
 }
