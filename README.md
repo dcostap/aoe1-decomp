@@ -1,5 +1,7 @@
 # Age of Empires: Rise of Rome decompilation
 
+![A priest converts empiresx.exe into its source code](.github/wololo.gif)
+
 C++ source for the 17 July 1998 beta of *Age of Empires: The Rise of Rome* (`empiresx.exe`),
 recovered function by function. It is compiled with the original Visual C++ 5.0
 compiler and checked against the original executable. This is a build (that you can find around the web) which dates back a few months before the actual release of the DLC. 
