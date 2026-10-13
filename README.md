@@ -1,4 +1,4 @@
-# Age of Empires: Rise of Rome decompilation
+# Age of Empires: The Rise of Rome decompilation
 
 ![A priest converts empiresx.exe into its source code](.github/wololo.gif)
 
