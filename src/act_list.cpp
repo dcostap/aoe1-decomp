@@ -43,7 +43,7 @@ void RGE_Action_List::load(int infile) {
         }
 
         action = this->create_action(infile, action_type);
-        node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
+        node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
         node->action = action;
         node->next = 0;
         if (tail != 0) {
@@ -137,16 +137,16 @@ RGE_Action* RGE_Action_List::create_task_action(
             if (target_obj != 0) {
                 attack_action = new RGE_Action_Attack(
                     this->obj, target_obj, task->move_sprite, task->work_sprite, 0, task->work_range,
-                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
-                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
-                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame
+                    ((RGE_Master_Combat_Object*)this->obj->master_obj)->minimum_weapon_range,
+                    ((RGE_Master_Combat_Object*)this->obj->master_obj)->missile_id,
+                    ((RGE_Master_Combat_Object*)this->obj->master_obj)->fire_missile_at_frame
                 );
             } else {
                 attack_action = new RGE_Action_Attack(
                     this->obj, target_x, target_y, target_z, task->move_sprite, task->work_sprite, 0, task->work_range,
-                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
-                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
-                    static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame
+                    ((RGE_Master_Combat_Object*)this->obj->master_obj)->minimum_weapon_range,
+                    ((RGE_Master_Combat_Object*)this->obj->master_obj)->missile_id,
+                    ((RGE_Master_Combat_Object*)this->obj->master_obj)->fire_missile_at_frame
                 );
             }
             if (attack_action == 0) {
@@ -240,7 +240,7 @@ void RGE_Action_List::add_action(RGE_Action* action) {
         return;
     }
 
-    node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
+    node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
     node->action = action;
     node->next = this->list;
     this->list = node;
@@ -258,7 +258,7 @@ void RGE_Action_List::add_action_at_end(RGE_Action* action) {
         return;
     }
 
-    node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
+    node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
     node->next = 0;
     node->action = action;
 
@@ -292,7 +292,7 @@ void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
         return;
     }
 
-    node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
+    node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
     node->action = action;
 
     if (this->list != 0 && this->list->action->type() == action->type()) {

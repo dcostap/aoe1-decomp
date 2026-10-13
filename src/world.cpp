@@ -1618,7 +1618,7 @@ byte RGE_Game_World::save_scenario(char* filename) {
                     rge_write(fd, &o->node->object_state, 1);
                     if (o->node->master_obj->master_type > RGE_MASTER_TYPE_MOVING
                         && o->node->master_obj->master_type < TRIBE_MASTER_TYPE_TREE) {
-                        obj_angle = static_cast<RGE_Moving_Object*>(o->node)->angle;
+                        obj_angle = ((RGE_Moving_Object*)o->node)->angle;
                     } else {
                         obj_angle = (float) o->node->facet;
                     }
@@ -1638,7 +1638,7 @@ byte RGE_Game_World::save_scenario(char* filename) {
                     rge_write(fd, &o->node->object_state, 1);
                     if (o->node->master_obj->master_type > RGE_MASTER_TYPE_MOVING
                         && o->node->master_obj->master_type < TRIBE_MASTER_TYPE_TREE) {
-                        obj_angle = static_cast<RGE_Moving_Object*>(o->node)->angle;
+                        obj_angle = ((RGE_Moving_Object*)o->node)->angle;
                     } else {
                         obj_angle = (float) o->node->facet;
                     }

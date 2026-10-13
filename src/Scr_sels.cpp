@@ -255,7 +255,7 @@ void TribeSelectScenarioScreen::fillScenarios() {
         return;
     do {
         long id = this->scenarioList->get_id(i);
-        TRIBE_Scenario_Header* hdr = static_cast<TRIBE_Scenario_Header*>(scenario_info_file->get_scenario_info(id));
+        TRIBE_Scenario_Header* hdr = (TRIBE_Scenario_Header*)scenario_info_file->get_scenario_info(id);
         if (hdr != 0) {
             this->scenarioMission[i] = (char*) calloc(4096, sizeof(char));
             if (this->scenarioMission[i] != 0 && hdr->description != 0) {
@@ -305,7 +305,7 @@ void TribeSelectScenarioScreen::getSettings() {
 void TribeSelectScenarioScreen::sendSettings(void) {
     rge_base_game->setScenarioGame(1);
     rge_base_game->setScenarioName(this->scenarioList->get_text());
-    static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(0);
+    ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
 }
 
 void TribeSelectScenarioScreen::activatePanels() {

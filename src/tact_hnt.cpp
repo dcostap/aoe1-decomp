@@ -163,9 +163,9 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
             RGE_Action_Attack* action = new RGE_Action_Attack(
                 this->obj, this->target_obj, this->get_move_sprite(), this->task->work_sprite, 0,
                 this->task->work_range,
-                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
-                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
-                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame
+                ((RGE_Master_Combat_Object*)this->obj->master_obj)->minimum_weapon_range,
+                ((RGE_Master_Combat_Object*)this->obj->master_obj)->missile_id,
+                ((RGE_Master_Combat_Object*)this->obj->master_obj)->fire_missile_at_frame
             );
             if (action == 0) {
                 this->set_state(0x0D);
@@ -197,10 +197,10 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
         case 8:
             if (this->obj->attribute_amount_held > g_hunt_empty_amount) {
                 if (this->target_obj2 == 0) {
-                    if (static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site != -1) {
+                    if (((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site != -1) {
                         this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
-                            static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site,
-                            static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->backup_drop_site,
+                            ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
+                            ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
                             this->obj->world_x, this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE,
                             (RGE_Static_Object*) this->obj
                         ));
@@ -535,7 +535,7 @@ int TRIBE_Action_Hunt::stop(void) {
 
 int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0 && obj_in->owner == this->obj->owner) {
-        RGE_Master_Action_Object* master = static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
+        RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->obj->master_obj;
         short id = obj_in->master_obj->id;
         if ((id == master->drop_site || id == master->backup_drop_site)
             && this->obj->attribute_amount_held > g_hunt_empty_amount) {
@@ -562,7 +562,7 @@ int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, floa
 int TRIBE_Action_Hunt::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in->owner == this->obj->owner) {
-            RGE_Master_Action_Object* master = static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
+            RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->obj->master_obj;
             short obj_id = obj_in->master_obj->id;
             if ((obj_id == master->drop_site || obj_id == master->backup_drop_site)
                 && this->obj->attribute_amount_held > g_hunt_empty_amount) {

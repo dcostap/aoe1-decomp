@@ -23,7 +23,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen() : TScreenPanel("Game Settings
     TDrawArea* draw_area;
 
     this->init_vars();
-    this->chat_scr = static_cast<TribeMPSetupScreen*>(panel_system.panel("MP Setup Screen"));
+    this->chat_scr = (TribeMPSetupScreen*)panel_system.panel("MP Setup Screen");
 
     multiplayer = rge_base_game->multiplayerGame();
     setup_file = "scr3";
@@ -608,7 +608,7 @@ void TribeGameSettingsScreen::fillScenarios() {
             i = 0;
             if (this->scenarioCount > 0) {
                 do {
-                    TRIBE_Scenario_Header* entry = static_cast<TRIBE_Scenario_Header*>(
+                    TRIBE_Scenario_Header* entry = (TRIBE_Scenario_Header*)(
                         scenario_info_file->get_scenario_info(this->scenarioList->get_id(i))
                     );
                     if (entry != 0) {
@@ -638,13 +638,13 @@ void TribeGameSettingsScreen::fillScenarios() {
     this->scenarioList->sorted = 0;
 
     if (rge_base_game->multiplayerGame()
-        || (rge_base_game->randomGame() && static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0)) {
+        || (rge_base_game->randomGame() && ((TRIBE_Game*)rge_base_game)->deathMatch() == 0)) {
         this->scenarioList->insert_line(0, this->get_string(STRING_ID_RANDOM_MAP), "2 - 8", -2);
         this->scenario_line_offset--;
     }
 
     if (rge_base_game->multiplayerGame()
-        || (rge_base_game->randomGame() && static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() != 0)) {
+        || (rge_base_game->randomGame() && ((TRIBE_Game*)rge_base_game)->deathMatch() != 0)) {
         this->scenarioList->insert_line(1, this->get_string(STRING_ID_DEATH_MATCH), "2 - 8", -1);
         this->scenario_line_offset--;
     }
@@ -688,7 +688,7 @@ void TribeGameSettingsScreen::getSettings() {
 
     this->last_scenario_line = 0;
     if (this->state == 1) {
-        if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() != 0) {
+        if (((TRIBE_Game*)rge_base_game)->deathMatch() != 0) {
             this->scenarioList->scroll_cur_line(1, 1, 1);
         } else {
             this->scenarioList->scroll_cur_line(1, 0, 1);
@@ -703,23 +703,23 @@ void TribeGameSettingsScreen::getSettings() {
         }
     }
 
-    this->mapSizeDrop->set_line(this->mapSizeDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->mapSize()));
-    this->mapTypeDrop->set_line(this->mapTypeDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->mapType()));
+    this->mapSizeDrop->set_line(this->mapSizeDrop->get_line(((TRIBE_Game*)rge_base_game)->mapSize()));
+    this->mapTypeDrop->set_line(this->mapTypeDrop->get_line(((TRIBE_Game*)rge_base_game)->mapType()));
     this->victoryTypeDrop->set_line(
-        this->victoryTypeDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->victoryType())
+        this->victoryTypeDrop->get_line(((TRIBE_Game*)rge_base_game)->victoryType())
     );
 
     if (this->optionButton[3] != 0) {
         this->optionButton[3]->set_state(rge_base_game->allowCheatCodes());
     }
     this->optionButton[1]->set_state(rge_base_game->fullVisibility());
-    this->optionButton[0]->set_state(static_cast<TRIBE_Game*>(rge_base_game)->randomizePositions() == 0);
-    this->optionButton[2]->set_state(static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree());
+    this->optionButton[0]->set_state(((TRIBE_Game*)rge_base_game)->randomizePositions() == 0);
+    this->optionButton[2]->set_state(((TRIBE_Game*)rge_base_game)->fullTechTree());
 
     this->resourcesDrop->set_line(
-        this->resourcesDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel())
+        this->resourcesDrop->get_line(((TRIBE_Game*)rge_base_game)->resourceLevel())
     );
-    this->ageDrop->set_line(this->ageDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->startingAge()));
+    this->ageDrop->set_line(this->ageDrop->get_line(((TRIBE_Game*)rge_base_game)->startingAge()));
     this->difficultyDrop->set_line(this->difficultyDrop->get_line(rge_base_game->difficulty()));
 
     if (rge_base_game->multiplayerGame() != 0) {
@@ -730,14 +730,14 @@ void TribeGameSettingsScreen::getSettings() {
 
     if (rge_base_game->multiplayerGame() != 0) {
         this->limitDrop->set_line(
-            this->limitDrop->get_line((unsigned int) static_cast<TRIBE_Game*>(rge_base_game)->popLimit())
+            this->limitDrop->get_line((unsigned int) ((TRIBE_Game*)rge_base_game)->popLimit())
         );
     }
 
-    if (static_cast<TRIBE_Game*>(rge_base_game)->victoryType() == TRIBE_Game::VictoryTime) {
-        this->timeDrop->set_line(this->timeDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()));
-    } else if (static_cast<TRIBE_Game*>(rge_base_game)->victoryType() == TRIBE_Game::VictoryScore) {
-        this->scoreDrop->set_line(this->scoreDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()));
+    if (((TRIBE_Game*)rge_base_game)->victoryType() == TRIBE_Game::VictoryTime) {
+        this->timeDrop->set_line(this->timeDrop->get_line(((TRIBE_Game*)rge_base_game)->victoryAmount()));
+    } else if (((TRIBE_Game*)rge_base_game)->victoryType() == TRIBE_Game::VictoryScore) {
+        this->scoreDrop->set_line(this->scoreDrop->get_line(((TRIBE_Game*)rge_base_game)->victoryAmount()));
     }
 }
 
@@ -750,40 +750,40 @@ void TribeGameSettingsScreen::sendSettings() {
         rge_base_game->setScenarioName("");
     }
 
-    static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(this->scenarioList->get_id() == -1);
+    ((TRIBE_Game*)rge_base_game)->setDeathMatch(this->scenarioList->get_id() == -1);
 
     switch (this->victoryTypeDrop->get_id()) {
         case TRIBE_Game::VictoryTime:
-            static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(TRIBE_Game::VictoryTime, this->timeDrop->get_id());
+            ((TRIBE_Game*)rge_base_game)->setVictoryType(TRIBE_Game::VictoryTime, this->timeDrop->get_id());
             break;
         case TRIBE_Game::VictoryScore:
-            static_cast<TRIBE_Game*>(rge_base_game)
+            ((TRIBE_Game*)rge_base_game)
                 ->setVictoryType(TRIBE_Game::VictoryScore, this->scoreDrop->get_id());
             break;
         default:
-            static_cast<TRIBE_Game*>(rge_base_game)
-                ->setVictoryType(static_cast<TRIBE_Game::VictoryType>(this->victoryTypeDrop->get_id()), 1);
+            ((TRIBE_Game*)rge_base_game)
+                ->setVictoryType((TRIBE_Game::VictoryType)this->victoryTypeDrop->get_id(), 1);
             break;
     }
 
     if (rge_base_game->randomGame()) {
-        static_cast<TRIBE_Game*>(rge_base_game)
-            ->setMapSize(static_cast<TRIBE_Game::MapSize>(this->mapSizeDrop->get_id()));
-        static_cast<TRIBE_Game*>(rge_base_game)
-            ->setMapType(static_cast<TRIBE_Game::MapType>(this->mapTypeDrop->get_id()));
+        ((TRIBE_Game*)rge_base_game)
+            ->setMapSize((TRIBE_Game::MapSize)this->mapSizeDrop->get_id());
+        ((TRIBE_Game*)rge_base_game)
+            ->setMapType((TRIBE_Game::MapType)this->mapTypeDrop->get_id());
     }
     if (this->optionButton[3] != 0) {
         rge_base_game->setAllowCheatCodes(this->optionButton[3]->get_state());
     }
     rge_base_game->setFullVisibility(this->optionButton[1]->get_state());
-    static_cast<TRIBE_Game*>(rge_base_game)->setRandomizePositions(this->optionButton[0]->get_state() == 0);
-    static_cast<TRIBE_Game*>(rge_base_game)->setFullTechTree(this->optionButton[2]->get_state());
+    ((TRIBE_Game*)rge_base_game)->setRandomizePositions(this->optionButton[0]->get_state() == 0);
+    ((TRIBE_Game*)rge_base_game)->setFullTechTree(this->optionButton[2]->get_state());
 
     if (this->scenarioList->get_id() == -1) {
-        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(TRIBE_Game::DefaultResources);
+        ((TRIBE_Game*)rge_base_game)->setResourceLevel(TRIBE_Game::DefaultResources);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)
-            ->setResourceLevel(static_cast<TRIBE_Game::ResourceLevel>(this->resourcesDrop->get_id()));
+        ((TRIBE_Game*)rge_base_game)
+            ->setResourceLevel((TRIBE_Game::ResourceLevel)this->resourcesDrop->get_id());
     }
 
     if (rge_base_game->multiplayerGame()) {
@@ -792,9 +792,9 @@ void TribeGameSettingsScreen::sendSettings() {
         rge_base_game->setPathFinding(this->pathingDrop->get_id());
     }
     if (rge_base_game->multiplayerGame()) {
-        static_cast<TRIBE_Game*>(rge_base_game)->setPopLimit(this->limitDrop->get_id());
+        ((TRIBE_Game*)rge_base_game)->setPopLimit(this->limitDrop->get_id());
     }
-    static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(static_cast<TRIBE_Game::Age>(this->ageDrop->get_id()));
+    ((TRIBE_Game*)rge_base_game)->setStartingAge((TRIBE_Game::Age)this->ageDrop->get_id());
     rge_base_game->setDifficulty(this->difficultyDrop->get_id());
     if (rge_base_game->singlePlayerGame()) {
         rge_base_game->set_single_player_difficulty(this->difficultyDrop->get_id());

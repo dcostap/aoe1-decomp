@@ -209,7 +209,7 @@ void TRIBE_Combat_Object::die_die_die() {
     if (this->object_state == RGE_OBJECT_STATE_ACTIVE && this->owner->attributes[PLAYER_ATTRIBUTE_MARTYRDOM] >= 1.0f) {
         RGE_Action* action = this->actions->get_action();
         if (action != 0 && action->type() == TRIBE_ACTION_TYPE_CONVERT) {
-            static_cast<TRIBE_Action_Convert*>(action)->martyrdom();
+            ((TRIBE_Action_Convert*)action)->martyrdom();
         }
     }
     RGE_Static_Object::die_die_die();
@@ -248,7 +248,7 @@ void TRIBE_Combat_Object::change_ownership(RGE_Player* new_owner) {
     if (this->id >= 0) {
         for (int i = 0; i < 9; ++i) {
             if (this->VUR_Ptrs[i] != 0) {
-                this->VUR_Ptrs[i]->player = static_cast<unsigned char>(new_owner->id);
+                this->VUR_Ptrs[i]->player = (unsigned char)new_owner->id;
             }
         }
     }
@@ -293,7 +293,7 @@ void TRIBE_Combat_Object::change_ownership(RGE_Player* new_owner) {
 }
 
 float TRIBE_Combat_Object::calc_attack_modifier(RGE_Static_Object* target) {
-    RGE_Master_Combat_Object* master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     if (master->missile_id >= 0) {
         if (this->higher_than_target(target) != 0) {
             return 1.5f;
@@ -305,7 +305,7 @@ float TRIBE_Combat_Object::calc_attack_modifier(RGE_Static_Object* target) {
 }
 
 unsigned char TRIBE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Object* attacker) {
-    RGE_Master_Combat_Object* master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     if (master->missile_id >= 0 && target != 0 && target->owner->id > 0) {
         target->owner->make_new_object(MASTER_OBJECT_FLARE, this->world_x, this->world_y, this->world_z, 0);
     }
@@ -329,16 +329,16 @@ unsigned char TRIBE_Combat_Object::do_attack(
     //! @bug The blast branch tests blast radius == 0, but blast level is the correct criterion.
     //! A unit with blast level > 0 and radius 0 never splashes in melee, missile, or ground hits.
     //! The devs used radius because the dat ships wrong blast levels, then the test spread everywhere.
-    if (static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_range > 0.0f
-        && static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_range < 0.99f) {
+    if (((RGE_Master_Combat_Object*)this->master_obj)->area_effect_range > 0.0f
+        && ((RGE_Master_Combat_Object*)this->master_obj)->weapon_range < 0.99f) {
         this->area_attack(x, y, z, attacker, target);
         this->notify(this->id, this->id, 0x200, UNIT_AI_ACTION_ATTACK, target->id, 0);
         const int chance = debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp", 529) * 100 / 0x7FFF;
-        if (chance <= static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
+        if (chance <= ((RGE_Master_Combat_Object*)this->master_obj)->base_hit_chance) {
             const float attack_modifier = this->calc_attack_modifier(target);
             target->damage(
-                static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_num,
-                static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon, attack_modifier, this->owner, attacker
+                ((RGE_Master_Combat_Object*)this->master_obj)->weapon_num,
+                ((RGE_Master_Combat_Object*)this->master_obj)->weapon, attack_modifier, this->owner, attacker
             );
         }
         return 1;
@@ -348,25 +348,25 @@ unsigned char TRIBE_Combat_Object::do_attack(
 }
 
 void TRIBE_Combat_Object::get_armor(short& cur_armor_in, short& orig_armor_in) {
-    cur_armor_in = static_cast<RGE_Master_Combat_Object*>(master_obj)->base_armor;
-    for (int i = 0; i < static_cast<RGE_Master_Combat_Object*>(master_obj)->armor_num; ++i) {
-        if (static_cast<RGE_Master_Combat_Object*>(master_obj)->armor[i].type == 4
-            && static_cast<RGE_Master_Combat_Object*>(master_obj)->armor[i].value > cur_armor_in) {
-            cur_armor_in = static_cast<RGE_Master_Combat_Object*>(master_obj)->armor[i].value;
+    cur_armor_in = ((RGE_Master_Combat_Object*)master_obj)->base_armor;
+    for (int i = 0; i < ((RGE_Master_Combat_Object*)master_obj)->armor_num; ++i) {
+        if (((RGE_Master_Combat_Object*)master_obj)->armor[i].type == 4
+            && ((RGE_Master_Combat_Object*)master_obj)->armor[i].value > cur_armor_in) {
+            cur_armor_in = ((RGE_Master_Combat_Object*)master_obj)->armor[i].value;
         }
     }
-    orig_armor_in = static_cast<RGE_Master_Combat_Object*>(master_obj)->orig_armor;
+    orig_armor_in = ((RGE_Master_Combat_Object*)master_obj)->orig_armor;
 }
 
 void TRIBE_Combat_Object::get_pierce_armor(short& cur_armor_in, short& orig_armor_in) {
     cur_armor_in = 0;
-    for (int i = 0; i < static_cast<RGE_Master_Combat_Object*>(this->master_obj)->armor_num; ++i) {
-        RGE_Master_Combat_Object* master = static_cast<RGE_Master_Combat_Object*>(this->master_obj);
+    for (int i = 0; i < ((RGE_Master_Combat_Object*)this->master_obj)->armor_num; ++i) {
+        RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
         if (master->armor[i].type == 3 && master->armor[i].value > cur_armor_in) {
             cur_armor_in = master->armor[i].value;
         }
     }
-    orig_armor_in = static_cast<TRIBE_Master_Combat_Object*>(this->master_obj)->orig_pierce_armor;
+    orig_armor_in = ((TRIBE_Master_Combat_Object*)this->master_obj)->orig_pierce_armor;
 }
 
 void TRIBE_Combat_Object::reposition_artifact() {
@@ -383,13 +383,13 @@ void TRIBE_Combat_Object::reposition_artifact() {
     char placement;
     RGE_Static_Object* parent = this->inside_obj;
     if (parent != 0) {
-        y2 = static_cast<int>(parent->world_x);
-        x2 = static_cast<int>(parent->world_y);
+        y2 = (int)parent->world_x;
+        x2 = (int)parent->world_y;
         y1 = parent->world_x;
         x_pos = parent->world_y;
     } else {
-        y2 = static_cast<int>(this->world_x);
-        x2 = static_cast<int>(this->world_y);
+        y2 = (int)this->world_x;
+        x2 = (int)this->world_y;
         y1 = this->world_x;
         x_pos = this->world_y;
     }
@@ -403,10 +403,10 @@ void TRIBE_Combat_Object::reposition_artifact() {
     do {
         int i = y2;
         for (; i <= x1; ++i) {
-            terrain = map->get_terrain(static_cast<short>(i), static_cast<short>(x2));
+            terrain = map->get_terrain((short)i, (short)x2);
             if (terrain != 1 && terrain != 2) {
-                y1 = static_cast<float>(i) - g_combat_tile_center_adjustment;
-                x_pos = static_cast<float>(x2) - g_combat_tile_center_adjustment;
+                y1 = (float)i - g_combat_tile_center_adjustment;
+                x_pos = (float)x2 - g_combat_tile_center_adjustment;
                 placement = this->master_obj->check_placement(this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
                 if (placement == 0) {
                     x = 1;
@@ -414,10 +414,10 @@ void TRIBE_Combat_Object::reposition_artifact() {
                 }
             }
 
-            terrain = map->get_terrain(static_cast<short>(i), static_cast<short>(found_pos));
+            terrain = map->get_terrain((short)i, (short)found_pos);
             if (terrain != 1 && terrain != 2) {
-                y1 = static_cast<float>(i) - g_combat_tile_center_adjustment;
-                x_pos = static_cast<float>(found_pos) - g_combat_tile_center_adjustment;
+                y1 = (float)i - g_combat_tile_center_adjustment;
+                x_pos = (float)found_pos - g_combat_tile_center_adjustment;
                 placement = this->master_obj->check_placement(this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
                 if (placement == 0) {
                     x = 1;
@@ -433,10 +433,10 @@ void TRIBE_Combat_Object::reposition_artifact() {
         int j = x2 + 1;
         for (; j <= found_pos - 1; ++j) {
 
-            terrain = map->get_terrain(static_cast<short>(y2), static_cast<short>(j));
+            terrain = map->get_terrain((short)y2, (short)j);
             if (terrain != 1 && terrain != 2) {
-                y1 = static_cast<float>(y2) - g_combat_tile_center_adjustment;
-                x_pos = static_cast<float>(j) - g_combat_tile_center_adjustment;
+                y1 = (float)y2 - g_combat_tile_center_adjustment;
+                x_pos = (float)j - g_combat_tile_center_adjustment;
                 placement = this->master_obj->check_placement(this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
                 if (placement == 0) {
                     x = 1;
@@ -444,12 +444,12 @@ void TRIBE_Combat_Object::reposition_artifact() {
                 }
             }
 
-            terrain = map->get_terrain(static_cast<short>(x1), static_cast<short>(j));
+            terrain = map->get_terrain((short)x1, (short)j);
             if (terrain == 1 || terrain == 2) {
                 continue;
             }
-            y1 = static_cast<float>(x1) - g_combat_tile_center_adjustment;
-            x_pos = static_cast<float>(j) - g_combat_tile_center_adjustment;
+            y1 = (float)x1 - g_combat_tile_center_adjustment;
+            x_pos = (float)j - g_combat_tile_center_adjustment;
             placement = this->master_obj->check_placement(this->owner, y1, x_pos, 0, 0, 1, 1, 0, 1, 1);
             if (placement == 0) {
                 x = 1;
@@ -835,9 +835,9 @@ int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* target) {
 
     int NumSteps;
     if (fabs(Dy) > fabs(Dx)) {
-        NumSteps = abs(static_cast<int>(Dy)) * 2;
+        NumSteps = abs((int)Dy) * 2;
     } else {
-        NumSteps = abs(static_cast<int>(Dx)) * 2;
+        NumSteps = abs((int)Dx) * 2;
     }
 
     float XStep = Dx / NumSteps;
@@ -879,8 +879,8 @@ int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* target) {
     while (NumSteps > 0) {
         XTile += XStep;
         YTile += YStep;
-        int XTileInt = static_cast<int>(XTile);
-        int YTileInt = static_cast<int>(YTile);
+        int XTileInt = (int)XTile;
+        int YTileInt = (int)YTile;
         if (XTileInt != PriorX || YTileInt != PriorY) {
             PriorX = XTileInt;
             PriorY = YTileInt;
@@ -914,7 +914,7 @@ unsigned char TRIBE_Combat_Object::area_attack(
 ) {
     float attack_modifier;
     RGE_Map* map = this->owner->world->map;
-    float r2 = static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_range;
+    float r2 = ((RGE_Master_Combat_Object*)this->master_obj)->area_effect_range;
     short max_x = (short) map->map_width;
     short max_y = (short) map->map_height;
     float radius_squared = r2 * r2;
@@ -949,7 +949,7 @@ unsigned char TRIBE_Combat_Object::area_attack(
         for (short col = x1; col < x0; col++) {
             RGE_Object_Node* link = map->map_row_offset[row][col].objects.list;
             while (link != 0) {
-                RGE_Combat_Object* object = static_cast<RGE_Combat_Object*>(link->node);
+                RGE_Combat_Object* object = (RGE_Combat_Object*)link->node;
                 if (object != ignore_object) {
                     const short master_id = this->master_obj->id;
                     if (!(((master_id == MASTER_OBJECT_SOLDIER_ELEPHANT || master_id == MASTER_OBJECT_SOLDIER_CHARIOT1
@@ -958,7 +958,7 @@ unsigned char TRIBE_Combat_Object::area_attack(
                            && object->owner == this->owner)
                           || object == this)
                         && object->master_obj->area_effect_object_level
-                               >= static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_level) {
+                               >= ((RGE_Master_Combat_Object*)this->master_obj)->area_effect_level) {
                         float dx = object->world_x - x;
                         float dy = object->world_y - y;
                         if (dx < g_combat_zero_float)
@@ -978,11 +978,11 @@ unsigned char TRIBE_Combat_Object::area_attack(
                         if (radius_squared > dx * dx + dy * dy) {
                             int chance = debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp", 1619) * 100 / 0x7fff;
                             if ((short) chance
-                                <= static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
+                                <= ((RGE_Master_Combat_Object*)this->master_obj)->base_hit_chance) {
                                 attack_modifier = this->calc_attack_modifier(object);
                                 object->damage(
-                                    static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_num,
-                                    static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon, attack_modifier,
+                                    ((RGE_Master_Combat_Object*)this->master_obj)->weapon_num,
+                                    ((RGE_Master_Combat_Object*)this->master_obj)->weapon, attack_modifier,
                                     this->owner, attacker
                                 );
                                 if (object->hp < g_combat_one_float) {
@@ -1000,7 +1000,7 @@ unsigned char TRIBE_Combat_Object::area_attack(
 }
 
 unsigned char TRIBE_Combat_Object::heal(float healing) {
-    TRIBE_Master_Combat_Object* master = static_cast<TRIBE_Master_Combat_Object*>(this->master_obj);
+    TRIBE_Master_Combat_Object* master = (TRIBE_Master_Combat_Object*)this->master_obj;
     const short type = master->object_group;
     if (type != OBJECT_GROUP_TRADE_BOAT && type != OBJECT_GROUP_TRANSPORT_BOAT && type != OBJECT_GROUP_FISHING_BOAT
         && type != OBJECT_GROUP_WAR_BOAT) {
@@ -1012,16 +1012,16 @@ unsigned char TRIBE_Combat_Object::heal(float healing) {
         healing = master->hp - this->hp;
     }
 
-    TRIBE_Player* player = static_cast<TRIBE_Player*>(this->owner);
-    if (player->pay_obj_cost(master->id, healing / static_cast<float>(master->hp * 2), 1)) {
+    TRIBE_Player* player = (TRIBE_Player*)this->owner;
+    if (player->pay_obj_cost(master->id, healing / (float)(master->hp * 2), 1)) {
         return RGE_Static_Object::heal(healing);
     }
     return 2;
 }
 
 int TRIBE_Combat_Object::canRepair() {
-    const float maximum = static_cast<float>(this->master_obj->hp);
-    return static_cast<TRIBE_Player*>(this->owner)
+    const float maximum = (float)this->master_obj->hp;
+    return ((TRIBE_Player*)this->owner)
                ->check_obj_cost(this->master_obj->id, 0, (maximum - this->hp) / maximum, 0)
            != 0;
 }
@@ -1039,14 +1039,14 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* obj) {
     int order;
     int current_action;
 
-    if (static_cast<RGE_Action_Object*>(obj) != this) {
+    if ((RGE_Action_Object*)obj != this) {
         if (this->master_obj->id != MASTER_OBJECT_REPAIR_MAN) {
             this->transform(this->owner->master_objects[MASTER_OBJECT_REPAIR_MAN]);
         }
 
-        repair_list = static_cast<RGE_Master_Action_Object*>(this->master_obj)->tasks;
+        repair_list = ((RGE_Master_Action_Object*)this->master_obj)->tasks;
         skip = 0;
-        task_count = static_cast<int>(repair_list->list_num);
+        task_count = (int)repair_list->list_num;
         if (task_count > 0) {
             task_list = repair_list->list;
             task = 0;

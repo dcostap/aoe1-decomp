@@ -217,7 +217,7 @@ long TRIBE_Mission_Screen::action(TPanel* fromPanel, long actionIn, unsigned lon
                     rge_base_game->set_paused(0, 0);
                 }
             } else {
-                static_cast<TRIBE_Game*>(rge_base_game)->create_game_screen();
+                ((TRIBE_Game*)rge_base_game)->create_game_screen();
             }
 
             panel_system.destroyPanel("Mission Dialog");

@@ -33,7 +33,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(
     }
 
     if (sprite_in == 0) {
-        RGE_Master_Action_Object* master = static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
+        RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->obj->master_obj;
         if (master->move_sprite == 0) {
             sprite = master->sprite;
         } else {
@@ -63,7 +63,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(
     }
 
     if (sprite_in == 0) {
-        RGE_Master_Action_Object* master = static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
+        RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->obj->master_obj;
         if (master->move_sprite == 0) {
             sprite = master->sprite;
         } else {

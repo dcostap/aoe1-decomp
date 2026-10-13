@@ -58,9 +58,9 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
     font = rge_base_game->get_font(RGE_FONT_STANDARD);
     text->setup(
         render_area, background, pnl_wid * 20 / 640, pnl_hgt * 70 / 480, pnl_wid * 600 / 640, pnl_hgt * 340 / 480,
-        font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, static_cast<char*>(0)
+        font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, (char*)0
     );
-    text->set_text(textText, static_cast<short>(textLineCount));
+    text->set_text(textText, (short)textLineCount);
     text->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
     text->scroll(6, 0, 1);
 

@@ -418,7 +418,7 @@ RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y, TRIBE_Cliff_Info in
         if (new_cliff != 0)
             new_cliff->facet = (unsigned char) facet;
 
-        static_cast<TRIBE_World*>(this->game_world)->check_destructables(0, (short) id, world_x, world_y, 1);
+        ((TRIBE_World*)this->game_world)->check_destructables(0, (short) id, world_x, world_y, 1);
     } else {
         new_cliff = 0;
     }

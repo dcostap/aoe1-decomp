@@ -311,8 +311,8 @@ void TRIBE_Campaign_Editor_Screen::make_campaign() {
             addstring(&text, campaign_filename, ".cpx");
             count = this->campaign_scenarios->numberLines();
             if (count > 0) {
-                scenarios_text = static_cast<char**>(calloc(count, 4));
-                scenarios_filenames = static_cast<char**>(calloc(count, 4));
+                scenarios_text = (char**)calloc(count, 4);
+                scenarios_filenames = (char**)calloc(count, 4);
                 for (i = 0; i < count; ++i) {
                     getstring(&scenarios_text[i], this->campaign_scenarios->get_text(i));
                     getstring(&scenarios_filenames[i], this->campaign_scenarios->get_text(i));

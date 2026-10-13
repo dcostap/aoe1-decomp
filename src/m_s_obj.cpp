@@ -114,7 +114,7 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* other_object) {
     {
         damage_sprite_num = other_object->damage_sprite_num;
         if (damage_sprite_num > 0) {
-            damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(calloc(damage_sprite_num, 8));
+            damage_sprites = (RGE_Damage_Sprite_Info*)calloc(damage_sprite_num, 8);
             short i = 0;
             if (damage_sprite_num > 0) {
                 do {
@@ -232,7 +232,7 @@ int RGE_Master_Static_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
 
     rge_read(file_handle, &this->damage_sprite_num, 1);
     if (this->damage_sprite_num > 0) {
-        this->damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(calloc(this->damage_sprite_num, 8));
+        this->damage_sprites = (RGE_Damage_Sprite_Info*)calloc(this->damage_sprite_num, 8);
         short i = 0;
         if (this->damage_sprite_num > 0) {
             do {
@@ -259,7 +259,7 @@ int RGE_Master_Static_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
     rge_read(file_handle, &this->convert_terrain_flag, 1);
 
     if (name_size > 0) {
-        this->name = static_cast<char*>(calloc(name_size, 1));
+        this->name = (char*)calloc(name_size, 1);
         rge_read(file_handle, this->name, name_size);
     } else {
         this->name = 0;
@@ -373,7 +373,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     int attribute_count = 3;
     do {
         fscanf(infile, "%hd %f %hd", attribute_type, attribute_amount, &temp_selected_sound);
-        *attribute_flag = static_cast<unsigned char>(temp_selected_sound);
+        *attribute_flag = (unsigned char)temp_selected_sound;
         ++attribute_type;
         ++attribute_amount;
         ++attribute_flag;
@@ -381,11 +381,11 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     } while (attribute_count != 0);
 
     fscanf(infile, "%hd", temp_name);
-    this->damage_sprite_num = static_cast<unsigned char>(temp_name[0]);
+    this->damage_sprite_num = (unsigned char)temp_name[0];
     if (this->damage_sprite_num == 0) {
         this->damage_sprites = 0;
     } else {
-        this->damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(calloc(this->damage_sprite_num, 8));
+        this->damage_sprites = (RGE_Damage_Sprite_Info*)calloc(this->damage_sprite_num, 8);
 
         short index = 0;
         if (this->damage_sprite_num != 0) {
@@ -400,9 +400,9 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
                 }
                 this->damage_sprites[index].sprite = damage_sprite;
                 this->damage_sprites[index].damage_percent = temp_damage_percent_bytes[0];
-                this->damage_sprites[index].flag = static_cast<unsigned char>(temp_death_sound);
+                this->damage_sprites[index].flag = (unsigned char)temp_death_sound;
                 ++index;
-            } while (index < static_cast<short>(static_cast<unsigned short>(this->damage_sprite_num)));
+            } while (index < (short)((unsigned short)this->damage_sprite_num));
         }
     }
 
@@ -441,28 +441,28 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     }
 
     this->elevation_flag = temp_elevation_flag_bytes[0];
-    this->sort_number = static_cast<unsigned char>(temp_available);
-    this->movement_type = static_cast<unsigned char>(temp_created_sound);
-    this->fog_flag = static_cast<unsigned char>(temp_sort_number);
-    this->select_level = static_cast<unsigned char>(temp_map_draw_level);
-    this->obj_max = static_cast<unsigned char>(temp_movement_type);
-    this->can_be_built_on = static_cast<unsigned char>(temp_damage_percent);
-    this->available = static_cast<unsigned char>(temp_attribute_flag);
-    this->area_effect_object_level = static_cast<unsigned char>(temp_damage_sprite);
-    this->terrain = static_cast<short>(static_cast<unsigned char>(temp_undead_flag));
-    this->combat_level = static_cast<unsigned char>(temp_select_level);
-    this->map_draw_level = static_cast<unsigned char>(temp_command_level);
-    this->attack_reaction = static_cast<unsigned char>(temp_convert_terrain_flag);
-    this->unit_level = static_cast<unsigned char>(temp_terrain);
-    this->undead_flag = static_cast<unsigned char>(temp_hide_in_scenario_editor);
-    this->track_as_resource = static_cast<unsigned char>(temp_create_doppleganger_on_death);
-    this->hide_in_scenario_editor = static_cast<unsigned char>(temp_attack_reaction);
-    this->convert_terrain_flag = static_cast<unsigned char>(temp_map_color);
-    this->draw_flag = static_cast<unsigned char>(temp_draw_color);
-    this->map_color = static_cast<unsigned char>(temp_track_as_resource);
-    this->create_doppleganger_on_death = static_cast<unsigned char>(temp_resource_group);
-    this->resource_group = static_cast<unsigned char>(temp_draw_flag);
-    this->draw_color = static_cast<unsigned char>(temp_elevation_flag);
+    this->sort_number = (unsigned char)temp_available;
+    this->movement_type = (unsigned char)temp_created_sound;
+    this->fog_flag = (unsigned char)temp_sort_number;
+    this->select_level = (unsigned char)temp_map_draw_level;
+    this->obj_max = (unsigned char)temp_movement_type;
+    this->can_be_built_on = (unsigned char)temp_damage_percent;
+    this->available = (unsigned char)temp_attribute_flag;
+    this->area_effect_object_level = (unsigned char)temp_damage_sprite;
+    this->terrain = (short)((unsigned char)temp_undead_flag);
+    this->combat_level = (unsigned char)temp_select_level;
+    this->map_draw_level = (unsigned char)temp_command_level;
+    this->attack_reaction = (unsigned char)temp_convert_terrain_flag;
+    this->unit_level = (unsigned char)temp_terrain;
+    this->undead_flag = (unsigned char)temp_hide_in_scenario_editor;
+    this->track_as_resource = (unsigned char)temp_create_doppleganger_on_death;
+    this->hide_in_scenario_editor = (unsigned char)temp_attack_reaction;
+    this->convert_terrain_flag = (unsigned char)temp_map_color;
+    this->draw_flag = (unsigned char)temp_draw_color;
+    this->map_color = (unsigned char)temp_track_as_resource;
+    this->create_doppleganger_on_death = (unsigned char)temp_resource_group;
+    this->resource_group = (unsigned char)temp_draw_flag;
+    this->draw_color = (unsigned char)temp_elevation_flag;
 
     if (this->outline_radius_x == g_static_object_zero_float || this->outline_radius_x != this->outline_radius_x) {
         this->outline_radius_x = this->radius_x;
@@ -481,7 +481,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
         this->recyclable = 1;
     }
 
-    if (static_cast<short>(strlen(temp_name + 4)) > 0) {
+    if ((short)strlen(temp_name + 4) > 0) {
         this->name = 0;
         getstring(&this->name, temp_name + 4);
     }
@@ -621,7 +621,7 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* source) {
     source->hide_in_scenario_editor = 1;
 
     if (damage_sprite_num > 0) {
-        damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(calloc(damage_sprite_num, 8));
+        damage_sprites = (RGE_Damage_Sprite_Info*)calloc(damage_sprite_num, 8);
         int i = 0;
         if (damage_sprite_num > 0) {
             do {

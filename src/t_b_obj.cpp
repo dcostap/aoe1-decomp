@@ -22,7 +22,7 @@
 int debug_rand(char*, int);
 
 static TRIBE_Game* tribe_game() {
-    return static_cast<TRIBE_Game*>(rge_base_game);
+    return (TRIBE_Game*)rge_base_game;
 }
 
 static void adjust_pop_waiting(RGE_Player* player, int delta) {
@@ -50,7 +50,7 @@ TRIBE_Building_Object::TRIBE_Building_Object(
         setup(tobj, obj_owner, x, y, z);
     }
 
-    TRIBE_Master_Building_Object* master_object = static_cast<TRIBE_Master_Building_Object*>(this->master_obj);
+    TRIBE_Master_Building_Object* master_object = (TRIBE_Master_Building_Object*)this->master_obj;
     if (master_object->id == MASTER_OBJECT_WONDER) {
         set_task(master_object->default_task);
     }
@@ -115,7 +115,7 @@ TRIBE_Building_Object::~TRIBE_Building_Object() {
         if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
             production_queue_need_attr = -1;
             int id = owner->id;
-            TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
+            TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
             long* value = &game->queue_is_waiting_on_pop_counter[id];
             long old = *value;
             long result = old - 1;
@@ -149,18 +149,18 @@ int TRIBE_Building_Object::setup(TRIBE_Master_Building_Object* tobj, RGE_Player*
     type = 0x50;
     set_object_state(RGE_OBJECT_STATE_UNBUILT);
 
-    if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required > 0) {
-        new_sprite(static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_sprite);
+    if (((TRIBE_Master_Building_Object*)master_obj)->build_pts_required > 0) {
+        new_sprite(((TRIBE_Master_Building_Object*)master_obj)->construction_sprite);
     }
 
     build_pts = 0;
     hp = 1.0f;
-    facet = (unsigned char) static_cast<TRIBE_Master_Building_Object*>(master_obj)->building_facet;
+    facet = (unsigned char) ((TRIBE_Master_Building_Object*)master_obj)->building_facet;
     culture = obj_owner->culture;
 
-    static_cast<TRIBE_World*>(owner->world)
+    ((TRIBE_World*)owner->world)
         ->check_destructables(
-            owner->id, static_cast<TRIBE_Master_Building_Object*>(master_obj)->id, world_x, world_y, 0
+            owner->id, ((TRIBE_Master_Building_Object*)master_obj)->id, world_x, world_y, 0
         );
     production_queue_actions = create_action_list();
     return 1;
@@ -179,7 +179,7 @@ int TRIBE_Building_Object::setup(int infile, RGE_Game_World* gworld) {
         rge_read(infile, &production_queue_size, 2);
         if (production_queue_size > 0) {
             production_queue =
-                static_cast<Production_Queue_Record*>(calloc(production_queue_size, sizeof(Production_Queue_Record)));
+                (Production_Queue_Record*)calloc(production_queue_size, sizeof(Production_Queue_Record));
             for (short i = 0; i < production_queue_size; ++i) {
                 rge_read(infile, &production_queue[i].master_id, 2);
                 rge_read(infile, &production_queue[i].unit_count, 2);
@@ -220,14 +220,14 @@ void TRIBE_Building_Object::destroy_obj() {
 }
 
 unsigned char TRIBE_Building_Object::heal(float healing) {
-    TRIBE_Master_Building_Object* master = static_cast<TRIBE_Master_Building_Object*>(master_obj);
+    TRIBE_Master_Building_Object* master = (TRIBE_Master_Building_Object*)master_obj;
     float max_hp = (float) (int) master->hp;
     healing = healing * (float) (int) master->hp / (float) (int) master->build_pts_required;
     if (healing + hp > max_hp) {
         healing = max_hp - hp;
     }
 
-    if (static_cast<TRIBE_Player*>(owner)->pay_obj_cost(master->id, healing / (float) ((int) master->hp * 2), 0) != 0) {
+    if (((TRIBE_Player*)owner)->pay_obj_cost(master->id, healing / (float) ((int) master->hp * 2), 0) != 0) {
         return TRIBE_Combat_Object::heal(healing);
     }
     return 2;
@@ -237,13 +237,13 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
     unsigned char dopple_removed;
 
     if (new_object_state == RGE_OBJECT_STATE_ACTIVE) {
-        build_pts = (float) (int) static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required;
+        build_pts = (float) (int) ((TRIBE_Master_Building_Object*)master_obj)->build_pts_required;
 
         int random_value = debug_rand("C:\\msdev\\work\\age1_x1\\t_b_obj.cpp", 299);
         int old_random = debug_random_on;
         debug_random_on = 0;
 
-        RGE_Sound* sound = static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_sound;
+        RGE_Sound* sound = ((TRIBE_Master_Building_Object*)master_obj)->construction_sound;
         if (sound != 0 && owner->id == owner->world->curr_player) {
             sound->play(1);
         }
@@ -254,60 +254,60 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
         built = 1;
         give_building_attribute_to_owner();
 
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_and_go_away != 0) {
+        if (((TRIBE_Master_Building_Object*)master_obj)->build_and_go_away != 0) {
             die_die_die();
         } else {
             unexplore_terrain(owner, 1, -1);
             explore_terrain(owner, 0, -1);
-            new_sprite(static_cast<TRIBE_Master_Building_Object*>(master_obj)->sprite);
-            facet = (unsigned char) static_cast<TRIBE_Master_Building_Object*>(master_obj)->building_facet;
-            if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->building_connect_flag != 0) {
+            new_sprite(((TRIBE_Master_Building_Object*)master_obj)->sprite);
+            facet = (unsigned char) ((TRIBE_Master_Building_Object*)master_obj)->building_facet;
+            if (((TRIBE_Master_Building_Object*)master_obj)->building_connect_flag != 0) {
                 connect();
             }
         }
 
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj > -1) {
-            owner->master_objects[static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj]
+        if (((TRIBE_Master_Building_Object*)master_obj)->on_build_make_obj > -1) {
+            owner->master_objects[((TRIBE_Master_Building_Object*)master_obj)->on_build_make_obj]
                 ->make_new_obj(owner, world_x, world_y, world_z);
         }
 
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile > -1) {
+        if (((TRIBE_Master_Building_Object*)master_obj)->on_build_make_tile > -1) {
             short x1 =
-                (short) (world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x);
+                (short) (world_x - ((TRIBE_Master_Building_Object*)master_obj)->construction_radius_x);
             short y1 =
-                (short) (world_y - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y);
-            short x2 = (short) (world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x
+                (short) (world_y - ((TRIBE_Master_Building_Object*)master_obj)->construction_radius_y);
+            short x2 = (short) (world_x + ((TRIBE_Master_Building_Object*)master_obj)->construction_radius_x
                                 - g_build_tile_coordinate_epsilon);
-            short y2 = (short) (world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y
+            short y2 = (short) (world_y + ((TRIBE_Master_Building_Object*)master_obj)->construction_radius_y
                                 - g_build_tile_coordinate_epsilon);
             owner->world->map->set_terrain(
                 owner->world->players[0], owner->world, x1, y1, x2, y2,
-                (unsigned char) static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile, 1, 0
+                (unsigned char) ((TRIBE_Master_Building_Object*)master_obj)->on_build_make_tile, 1, 0
             );
             owner->world->map->request_redraw(
-                (short) (world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x) - 1,
-                (short) (world_y - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y) - 1,
-                (short) (world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x
+                (short) (world_x - ((TRIBE_Master_Building_Object*)master_obj)->construction_radius_x) - 1,
+                (short) (world_y - ((TRIBE_Master_Building_Object*)master_obj)->construction_radius_y) - 1,
+                (short) (world_x + ((TRIBE_Master_Building_Object*)master_obj)->construction_radius_x
                          - g_build_tile_coordinate_epsilon)
                     + 1,
-                (short) (world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y
+                (short) (world_y + ((TRIBE_Master_Building_Object*)master_obj)->construction_radius_y
                          - g_build_tile_coordinate_epsilon)
                     + 1,
                 0
             );
         }
 
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech > -1) {
-            static_cast<TRIBE_Player*>(owner)->tech_tree->do_tech(
-                static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech
+        if (((TRIBE_Master_Building_Object*)master_obj)->on_build_make_tech > -1) {
+            ((TRIBE_Player*)owner)->tech_tree->do_tech(
+                ((TRIBE_Master_Building_Object*)master_obj)->on_build_make_tech
             );
         }
 
         rge_base_game->notification(
-            GAME_NOTIFY_BUILDING_COMPLETED, owner->id, static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
+            GAME_NOTIFY_BUILDING_COMPLETED, owner->id, ((TRIBE_Master_Building_Object*)master_obj)->id,
             (long) world_x, (long) world_y
         );
-        static_cast<TRIBE_Player*>(owner)->registerBuild(this, unique_build_id);
+        ((TRIBE_Player*)owner)->registerBuild(this, unique_build_id);
     }
 
     if (new_object_state == RGE_OBJECT_STATE_DYING && object_state == RGE_OBJECT_STATE_ACTIVE) {
@@ -323,17 +323,17 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
 
     if (dopple_removed != 0) {
         RGE_Static_Object* object = owner->objects->find_by_master_id(
-            static_cast<TRIBE_Master_Building_Object*>(master_obj)->id, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0
+            ((TRIBE_Master_Building_Object*)master_obj)->id, -1.0f, -1.0f, 1, RGE_OBJECT_STATE_ACTIVE, 0
         );
         if (object == 0) {
-            if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech > -1) {
-                static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(
-                    static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech
+            if (((TRIBE_Master_Building_Object*)master_obj)->on_build_make_tech > -1) {
+                ((TRIBE_Player*)owner)->tech_tree->undo_tech(
+                    ((TRIBE_Master_Building_Object*)master_obj)->on_build_make_tech
                 );
             }
-            static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(TECH_A01_B01_F01_I01_TOOL_AGE);
-            static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(TECH_D01_H01_J01_BRONZE_AGE);
-            static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(TECH_B3_C1_D1_IRON_AGE);
+            ((TRIBE_Player*)owner)->tech_tree->undo_tech(TECH_A01_B01_F01_I01_TOOL_AGE);
+            ((TRIBE_Player*)owner)->tech_tree->undo_tech(TECH_D01_H01_J01_BRONZE_AGE);
+            ((TRIBE_Player*)owner)->tech_tree->undo_tech(TECH_B3_C1_D1_IRON_AGE);
         }
     }
 }
@@ -346,7 +346,7 @@ void TRIBE_Building_Object::rehook() {
 unsigned char TRIBE_Building_Object::update() {
     if (object_state == RGE_OBJECT_STATE_UNBUILT) {
         short max_value = sprite->facet_num;
-        TRIBE_Master_Building_Object* master = static_cast<TRIBE_Master_Building_Object*>(master_obj);
+        TRIBE_Master_Building_Object* master = (TRIBE_Master_Building_Object*)master_obj;
         unsigned char result =
             (unsigned char) ((long) (((float) (int) max_value * build_pts) / (float) (int) master->build_pts_required));
 
@@ -421,7 +421,7 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* new_owner) {
         if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
             production_queue_need_attr = -1;
             int id = owner->id;
-            long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
+            long* value = &((TRIBE_Game*)rge_base_game)->queue_is_waiting_on_pop_counter[id];
             *value = *value - 1;
         }
         production_queue_count = 1;
@@ -436,13 +436,13 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* new_owner) {
     }
 
     if (object_state == RGE_OBJECT_STATE_ACTIVE) {
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj > -1) {
-            owner->master_objects[static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj]
+        if (((TRIBE_Master_Building_Object*)master_obj)->on_build_make_obj > -1) {
+            owner->master_objects[((TRIBE_Master_Building_Object*)master_obj)->on_build_make_obj]
                 ->make_new_obj(owner, world_x, world_y, world_z);
         }
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech > -1) {
-            static_cast<TRIBE_Player*>(owner)->tech_tree->do_tech(
-                static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech
+        if (((TRIBE_Master_Building_Object*)master_obj)->on_build_make_tech > -1) {
+            ((TRIBE_Player*)owner)->tech_tree->do_tech(
+                ((TRIBE_Master_Building_Object*)master_obj)->on_build_make_tech
             );
         }
     }
@@ -468,7 +468,7 @@ void TRIBE_Building_Object::modify(float amount, unsigned char flag) {
 void TRIBE_Building_Object::transform(TRIBE_Master_Building_Object* obj) {
     TRIBE_Combat_Object::transform(obj);
     object_state = RGE_OBJECT_STATE_UNBUILT;
-    TRIBE_Master_Combat_Object* combat_master = static_cast<TRIBE_Master_Combat_Object*>(master_obj);
+    TRIBE_Master_Combat_Object* combat_master = (TRIBE_Master_Combat_Object*)master_obj;
     if (combat_master->build_pts_required > 0) {
         new_sprite(obj->construction_sprite);
     }
@@ -484,8 +484,8 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** checks) {
     long counter = 0;
 
     if (y > 0) {
-        checks[0] = static_cast<TRIBE_Building_Object*>(map->map_row_offset[y - 1][x].objects.find_by_master_id(
-            static_cast<TRIBE_Master_Building_Object*>(master_obj)->id, -1.0f, -1.0f, 0, 0, 0
+        checks[0] = (TRIBE_Building_Object*)(map->map_row_offset[y - 1][x].objects.find_by_master_id(
+            ((TRIBE_Master_Building_Object*)master_obj)->id, -1.0f, -1.0f, 0, 0, 0
         ));
         if (checks[0] != 0) {
             if (checks[0]->owner == owner) {
@@ -499,8 +499,8 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** checks) {
     }
 
     if (x > 0) {
-        checks[1] = static_cast<TRIBE_Building_Object*>(map->map_row_offset[y][x - 1].objects.find_by_master_id(
-            static_cast<TRIBE_Master_Building_Object*>(master_obj)->id, -1.0f, -1.0f, 0, 0, 0
+        checks[1] = (TRIBE_Building_Object*)(map->map_row_offset[y][x - 1].objects.find_by_master_id(
+            ((TRIBE_Master_Building_Object*)master_obj)->id, -1.0f, -1.0f, 0, 0, 0
         ));
         if (checks[1] != 0) {
             if (checks[1]->owner == owner) {
@@ -514,8 +514,8 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** checks) {
     }
 
     if (x < w) {
-        checks[2] = static_cast<TRIBE_Building_Object*>(map->map_row_offset[y][x + 1].objects.find_by_master_id(
-            static_cast<TRIBE_Master_Building_Object*>(master_obj)->id, -1.0f, -1.0f, 0, 0, 0
+        checks[2] = (TRIBE_Building_Object*)(map->map_row_offset[y][x + 1].objects.find_by_master_id(
+            ((TRIBE_Master_Building_Object*)master_obj)->id, -1.0f, -1.0f, 0, 0, 0
         ));
         if (checks[2] != 0) {
             if (checks[2]->owner == owner) {
@@ -529,8 +529,8 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** checks) {
     }
 
     if (y < h) {
-        checks[3] = static_cast<TRIBE_Building_Object*>(map->map_row_offset[y + 1][x].objects.find_by_master_id(
-            static_cast<TRIBE_Master_Building_Object*>(master_obj)->id, -1.0f, -1.0f, 0, 0, 0
+        checks[3] = (TRIBE_Building_Object*)(map->map_row_offset[y + 1][x].objects.find_by_master_id(
+            ((TRIBE_Master_Building_Object*)master_obj)->id, -1.0f, -1.0f, 0, 0, 0
         ));
         if (checks[3] != 0) {
             if (checks[3]->owner == owner) {
@@ -596,7 +596,7 @@ void TRIBE_Building_Object::connect2() {
 
 void TRIBE_Building_Object::lay_down_impassable_terrain() {
     RGE_Map* map = owner->world->map;
-    TRIBE_Master_Building_Object* object_master = static_cast<TRIBE_Master_Building_Object*>(master_obj);
+    TRIBE_Master_Building_Object* object_master = (TRIBE_Master_Building_Object*)master_obj;
     if (object_master->on_build_make_tile > -1) {
         return;
     }
@@ -636,7 +636,7 @@ void TRIBE_Building_Object::lay_down_impassable_terrain() {
 
 void TRIBE_Building_Object::lay_down_passable_terrain() {
     RGE_Map* map = owner->world->map;
-    TRIBE_Master_Building_Object* object_master = static_cast<TRIBE_Master_Building_Object*>(master_obj);
+    TRIBE_Master_Building_Object* object_master = (TRIBE_Master_Building_Object*)master_obj;
     if (object_master->on_build_make_tile > -1) {
         return;
     }
@@ -691,8 +691,8 @@ void TRIBE_Building_Object::cancel_build() {
     if (object_state >= RGE_OBJECT_STATE_ACTIVE || hp <= g_building_zero_hp) {
         percent = 0.0f;
     } else {
-        percent = ((float) (int) static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required - build_pts)
-                  / (float) (int) static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required
+        percent = ((float) (int) ((TRIBE_Master_Building_Object*)master_obj)->build_pts_required - build_pts)
+                  / (float) (int) ((TRIBE_Master_Building_Object*)master_obj)->build_pts_required
                   * g_build_cancel_refund_factor;
     }
     if (percent > g_building_one_threshold) {
@@ -700,11 +700,11 @@ void TRIBE_Building_Object::cancel_build() {
     }
 
     for (int i = 0; i < 3; ++i) {
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_inventory[i].type >= 0
-            && static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_inventory[i].flag != 0) {
+        if (((TRIBE_Master_Building_Object*)master_obj)->build_inventory[i].type >= 0
+            && ((TRIBE_Master_Building_Object*)master_obj)->build_inventory[i].flag != 0) {
             owner->add_attribute_num(
-                static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_inventory[i].type,
-                (float) (int) static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_inventory[i].amount
+                ((TRIBE_Master_Building_Object*)master_obj)->build_inventory[i].type,
+                (float) (int) ((TRIBE_Master_Building_Object*)master_obj)->build_inventory[i].amount
                     * percent,
                 0
             );
@@ -715,7 +715,7 @@ void TRIBE_Building_Object::cancel_build() {
 
 unsigned char TRIBE_Building_Object::build(float build_amount) {
     if (object_state == RGE_OBJECT_STATE_UNBUILT) {
-        TRIBE_Master_Building_Object* object_master = static_cast<TRIBE_Master_Building_Object*>(master_obj);
+        TRIBE_Master_Building_Object* object_master = (TRIBE_Master_Building_Object*)master_obj;
         if (build_amount + build_pts > (float) (int) object_master->build_pts_required) {
             build_amount = (float) (int) object_master->build_pts_required - build_pts;
         }
@@ -745,10 +745,10 @@ int TRIBE_Building_Object::work_status(
 
     switch (work_type) {
         case TRIBE_ACTION_TYPE_MAKE_OBJECT:
-            static_cast<TRIBE_Action_Make_Obj*>(action)->get_info(work_target, progress, name, name_size);
+            ((TRIBE_Action_Make_Obj*)action)->get_info(work_target, progress, name, name_size);
             return 1;
         case TRIBE_ACTION_TYPE_MAKE_TECH:
-            static_cast<TRIBE_Action_Make_Tech*>(action)->get_info(work_target, progress, name, name_size);
+            ((TRIBE_Action_Make_Tech*)action)->get_info(work_target, progress, name, name_size);
             return 1;
         default:
             break;
@@ -764,7 +764,7 @@ short TRIBE_Building_Object::get_construction_progress() {
     if (object_state != RGE_OBJECT_STATE_UNBUILT) {
         return 100;
     }
-    TRIBE_Master_Building_Object* master = static_cast<TRIBE_Master_Building_Object*>(master_obj);
+    TRIBE_Master_Building_Object* master = (TRIBE_Master_Building_Object*)master_obj;
     short required = master->build_pts_required;
     if (required == 0) {
         return 100;
@@ -773,12 +773,12 @@ short TRIBE_Building_Object::get_construction_progress() {
 }
 
 void TRIBE_Building_Object::copy_obj(RGE_Master_Static_Object* source) {
-    TRIBE_Master_Building_Object* source_master = static_cast<TRIBE_Master_Building_Object*>(source);
-    if (sprite == static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_sprite) {
+    TRIBE_Master_Building_Object* source_master = (TRIBE_Master_Building_Object*)source;
+    if (sprite == ((TRIBE_Master_Building_Object*)master_obj)->construction_sprite) {
         new_sprite(source_master->construction_sprite);
     }
     RGE_Combat_Object::copy_obj(source);
-    if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->building_connect_flag != 0) {
+    if (((TRIBE_Master_Building_Object*)master_obj)->building_connect_flag != 0) {
         connect();
     }
 }
@@ -826,13 +826,13 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short unit_
             queue_count = production_queue_count;
         }
 
-        if (static_cast<TRIBE_Player*>(owner)->check_obj_cost(original_master_id, &master_id, 1.0f, 1) == 0) {
+        if (((TRIBE_Player*)owner)->check_obj_cost(original_master_id, &master_id, 1.0f, 1) == 0) {
             rge_base_game->notification(GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, master_id, 0, 0);
             return;
         }
 
         if (production_queue_count == production_queue_size) {
-            Production_Queue_Record* new_queue = static_cast<Production_Queue_Record*>(
+            Production_Queue_Record* new_queue = (Production_Queue_Record*)(
                 calloc(production_queue_size + 10, sizeof(Production_Queue_Record))
             );
             if (new_queue == 0)
@@ -850,11 +850,11 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short unit_
 
         production_queue[production_queue_count].unit_count = 0;
         for (int i = 0; i < unit_count; ++i) {
-            if (static_cast<TRIBE_Player*>(owner)->check_obj_cost(original_master_id, &master_id, 1.0f, 1) == 0) {
+            if (((TRIBE_Player*)owner)->check_obj_cost(original_master_id, &master_id, 1.0f, 1) == 0) {
                 rge_base_game->notification(GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, master_id, 0, 0);
                 break;
             }
-            static_cast<TRIBE_Player*>(owner)->pay_obj_cost(original_master_id, 1.0f, 1);
+            ((TRIBE_Player*)owner)->pay_obj_cost(original_master_id, 1.0f, 1);
             production_queue[production_queue_count].unit_count++;
         }
         production_queue[production_queue_count].master_id = original_master_id;
@@ -863,11 +863,11 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id, short unit_
         rge_base_game->notification(GAME_NOTIFY_PRODUCTION_QUEUE_CHANGED, owner->id, 0, 0, 0);
     } else {
         for (int i = 0; i < unit_count; ++i) {
-            if (static_cast<TRIBE_Player*>(owner)->check_obj_cost(original_master_id, &master_id, 1.0f, 1) == 0) {
+            if (((TRIBE_Player*)owner)->check_obj_cost(original_master_id, &master_id, 1.0f, 1) == 0) {
                 rge_base_game->notification(GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, master_id, 0, 0);
                 break;
             }
-            static_cast<TRIBE_Player*>(owner)->pay_obj_cost(original_master_id, 1.0f, 1);
+            ((TRIBE_Player*)owner)->pay_obj_cost(original_master_id, 1.0f, 1);
             production_queue[production_queue_count - 1].unit_count++;
             queue_changed = 1;
         }
@@ -895,7 +895,7 @@ void TRIBE_Building_Object::remove_from_production_queue(short master_id, short 
 
                 if (remove_count > 0) {
                     do {
-                        static_cast<TRIBE_Player*>(owner)->reimburse_obj_cost(master_id);
+                        ((TRIBE_Player*)owner)->reimburse_obj_cost(master_id);
                         remove_count--;
                     } while (remove_count != 0);
                 }
@@ -919,7 +919,7 @@ void TRIBE_Building_Object::remove_from_production_queue(short master_id, short 
                             if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
                                 int id = owner->id;
                                 long* value =
-                                    &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
+                                    &((TRIBE_Game*)rge_base_game)->queue_is_waiting_on_pop_counter[id];
                                 long old = *value;
                                 long result = old - 1;
                                 *value = result;
@@ -960,7 +960,7 @@ void TRIBE_Building_Object::empty_production_queue() {
     if (production_queue_need_attr != -1) {
         if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
             int id = owner->id;
-            long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
+            long* value = &((TRIBE_Game*)rge_base_game)->queue_is_waiting_on_pop_counter[id];
             long old = *value;
             long result = old - 1;
             *value = result;
@@ -985,7 +985,7 @@ void TRIBE_Building_Object::update_production_queue() {
         if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
             production_queue_need_attr = -1;
             int id = owner->id;
-            long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
+            long* value = &((TRIBE_Game*)rge_base_game)->queue_is_waiting_on_pop_counter[id];
             long old = *value;
             long result = old - 1;
             *value = result;
@@ -1005,14 +1005,14 @@ void TRIBE_Building_Object::update_production_queue() {
                 rge_base_game->notification(
                     GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, PLAYER_ATTRIBUTE_POPULATION_LIMIT, 0, 0
                 );
-                static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[owner->id]++;
+                ((TRIBE_Game*)rge_base_game)->queue_is_waiting_on_pop_counter[owner->id]++;
                 return;
             }
 
             if (attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM] > g_building_zero_hp) {
                 if (production_queue_need_attr == PLAYER_ATTRIBUTE_POPULATION_HEADROOM) {
                     int id = owner->id;
-                    long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
+                    long* value = &((TRIBE_Game*)rge_base_game)->queue_is_waiting_on_pop_counter[id];
                     long old = *value;
                     long result = old - 1;
                     *value = result;
@@ -1031,7 +1031,7 @@ void TRIBE_Building_Object::update_production_queue() {
                     GAME_NOTIFY_ATTRIBUTE_NEEDED, owner->id, PLAYER_ATTRIBUTE_POPULATION_HEADROOM, 0, 0
                 );
                 int id = owner->id;
-                long* value = &static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[id];
+                long* value = &((TRIBE_Game*)rge_base_game)->queue_is_waiting_on_pop_counter[id];
                 long old = *value;
                 long result = old + 1;
                 *value = result;
@@ -1056,7 +1056,7 @@ int TRIBE_Building_Object::production_queue_status(short& master_id, short& prog
     master_id = -1;
     progress = 0;
 
-    TRIBE_Action_Make_Obj* action = static_cast<TRIBE_Action_Make_Obj*>(production_queue_actions->get_action());
+    TRIBE_Action_Make_Obj* action = (TRIBE_Action_Make_Obj*)production_queue_actions->get_action();
     if (action != 0 && action->action_type == TRIBE_ACTION_TYPE_MAKE_OBJECT) {
         action->get_info(master_id, progress, 0, 0);
         return 1;

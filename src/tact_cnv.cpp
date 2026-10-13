@@ -94,7 +94,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
         if (object_group == OBJECT_GROUP_BUILDING) {
             this->requiredRange = 1.0f;
         } else {
-            this->requiredRange = static_cast<RGE_Master_Combat_Object*>(object->master_obj)->weapon_range;
+            this->requiredRange = ((RGE_Master_Combat_Object*)object->master_obj)->weapon_range;
         }
         if (object_group == OBJECT_GROUP_FLAG) {
             this->set_state(0x0d);
@@ -143,8 +143,8 @@ void TRIBE_Action_Convert::set_state(uchar new_state) {
     switch (new_state) {
         case 3:
             this->obj->notify(
-                static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_REQUEST_TASK,
-                static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L
+                (int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK,
+                (long)UNIT_AI_ACTION_CONVERT, 0L, 0L
             );
             goto master_sprite;
 
@@ -242,8 +242,8 @@ uchar TRIBE_Action_Convert::update() {
         }
         this->set_state(1);
         this->obj->notify(
-            static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_TARGET_INVALID,
-            static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L
+            (int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID,
+            (long)UNIT_AI_ACTION_CONVERT, 0L, 0L
         );
         return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
@@ -301,9 +301,9 @@ uchar TRIBE_Action_Convert::update() {
                 return RGE_ACTION_UPDATE_CONTINUE;
             }
             this->target_obj->notify(
-                static_cast<int>(this->obj->id), static_cast<int>(this->target_obj->id), UNIT_AI_NOTIFY_ATTACKED,
-                static_cast<long>(this->obj->id), static_cast<long>(this->target_obj->hp),
-                static_cast<long>(this->target_obj->master_obj->hp)
+                (int)this->obj->id, (int)this->target_obj->id, UNIT_AI_NOTIFY_ATTACKED,
+                (long)this->obj->id, (long)this->target_obj->hp,
+                (long)this->target_obj->master_obj->hp
             );
             this->timer = this->timer - this->obj->owner->world->world_time_delta_seconds;
             if (this->timer <= 0.0f) {
@@ -332,7 +332,7 @@ uchar TRIBE_Action_Convert::update() {
                 }
                 // Direct field ownership preserves the original x87 order.
                 if (chance <= this->task->work_val1
-                                  * static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate) {
+                                  * ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate) {
                     rge_base_game->notification(
                         GAME_NOTIFY_CONVERSION_SUCCEEDED, this->obj->owner->id, this->target_obj->owner->id, 0, 0
                     );
@@ -352,8 +352,8 @@ uchar TRIBE_Action_Convert::update() {
 
         case 13:
             this->obj->notify(
-                static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), UNIT_AI_NOTIFY_ACTION_FAILED,
-                static_cast<long>(UNIT_AI_ACTION_CONVERT), 0L, 0L
+                (int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED,
+                (long)UNIT_AI_ACTION_CONVERT, 0L, 0L
             );
             this->set_state(2);
             return RGE_ACTION_UPDATE_FAILED;

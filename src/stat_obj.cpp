@@ -473,7 +473,7 @@ void RGE_Static_Object::draw(TDrawArea* render_area, short x, short y, RGE_Color
     SDI_Object_ID = this->id;
 
     if (this->type == 0x19) {
-        RGE_Doppleganger_Object* dopple = static_cast<RGE_Doppleganger_Object*>(this);
+        RGE_Doppleganger_Object* dopple = (RGE_Doppleganger_Object*)this;
 
         if ((dopple->CantSeeBits & (1 << this->owner->world->curr_player)) != 0) {
             SDI_Object_ID = -1;
@@ -1889,7 +1889,7 @@ void RGE_Static_Object::remove_visible_resource() {
                     if (this->master_obj->create_doppleganger_on_death == 1 && (ExploredVal & 1) == 0
                         && player_index > 0) {
                         player = this->owner->world->players[player_index];
-                        static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
+                        ((RGE_Master_Doppleganger_Object*)player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
                             ->make_new_obj(player, this->world_x, this->world_y, this->world_z, this);
                     }
                 }
@@ -1917,7 +1917,7 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
             do {
                 if ((explored & 1) == 1 && (ExploredVal & 1) == 0 && i > 0) {
                     RGE_Player* player = this->owner->world->players[i];
-                    static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
+                    ((RGE_Master_Doppleganger_Object*)player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
                         ->make_new_obj(player, this->world_x, this->world_y, this->world_z, this);
                 }
                 i++;
@@ -2570,7 +2570,7 @@ RGE_Check_List::~RGE_Check_List() {
 }
 
 void RGE_Check_List::add_node(RGE_Static_Object* obj, float dx, float dy, unsigned char flag1) {
-    RGE_Check_Node* node = static_cast<RGE_Check_Node*>(calloc(1, sizeof(RGE_Check_Node)));
+    RGE_Check_Node* node = (RGE_Check_Node*)calloc(1, sizeof(RGE_Check_Node));
     node->next = this->list;
     node->node = obj;
     node->dx = dx;

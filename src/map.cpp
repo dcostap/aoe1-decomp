@@ -2243,7 +2243,7 @@ void RGE_Map::set_terrain(
             do {
                 short col = mapcol1;
                 if (col <= mapcol2) {
-                    unsigned char* tile_data = reinterpret_cast<unsigned char*>(this->map_row_offset[maprow] + col) + 5;
+                    unsigned char* tile_data = (unsigned char*)(this->map_row_offset[maprow] + col) + 5;
                     do {
                         if (0 < this->terrain_types[terrain_id].tiles[tile_data[-1]].count) {
                             unsigned char old_terrain = *tile_data;

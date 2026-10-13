@@ -214,7 +214,7 @@ int RGE_Communications_Queue::AddItem(
     MsgQueue* slot = this->Queue + i;
     this->HighQueueDepth = high_depth;
 
-    char* message = static_cast<char*>(operator new(nBytes + 1));
+    char* message = (char*)(operator new(nBytes + 1));
     slot->msgptr = message;
 
     if (message != 0) {

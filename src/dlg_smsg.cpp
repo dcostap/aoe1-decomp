@@ -207,7 +207,7 @@ long TribeSendMessageDialog::action(TPanel* fromPanel, long actionIn, unsigned l
     if (fromPanel != 0) {
         if (fromPanel == this->chatInput) {
             if (actionIn == 0) {
-                TRIBE_Screen_Game* screen = static_cast<TRIBE_Screen_Game*>(this->parent_panel);
+                TRIBE_Screen_Game* screen = (TRIBE_Screen_Game*)this->parent_panel;
 
                 if (this->chatInput->currentLine() == 0 || *this->chatInput->currentLine() == 0)
                     save_msg[0] = 0;
@@ -239,7 +239,7 @@ long TribeSendMessageDialog::action(TPanel* fromPanel, long actionIn, unsigned l
                 }
 
                 this->checkButtons();
-                TRIBE_Screen_Game* screen = static_cast<TRIBE_Screen_Game*>(this->parent_panel);
+                TRIBE_Screen_Game* screen = (TRIBE_Screen_Game*)this->parent_panel;
 
                 if (this->chatInput->currentLine() == 0 || *this->chatInput->currentLine() == 0)
                     save_msg[0] = 0;
@@ -415,7 +415,7 @@ long TribeSendQuickMessageDialog::action(TPanel* fromPanel, long actionIn, unsig
         if (actionIn == 0) {
             char* line = this->chatInput->currentLine();
             if (line != 0 && *this->chatInput->currentLine() != 0) {
-                TRIBE_Screen_Game* screen = static_cast<TRIBE_Screen_Game*>(this->parent_panel);
+                TRIBE_Screen_Game* screen = (TRIBE_Screen_Game*)this->parent_panel;
                 strcpy(save_msg, this->chatInput->currentLine());
 
                 panel_system.setCurrentPanel("Game Screen", 0);

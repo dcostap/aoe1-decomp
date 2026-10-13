@@ -1659,7 +1659,7 @@ int TribeInformationAIModule::addImportantObject(RGE_Static_Object* oObj, int ad
                         RGE_Player* other = world->players[i];
                         if (other->computerPlayer() != 0 && this->md->player->isAlly(i) != 0
                             && other->isAlly(this->md->player->id) != 0) {
-                            static_cast<TRIBE_Player*>(other)->playerAI->informationAI.addImportantObject(oObj, 1);
+                            ((TRIBE_Player*)other)->playerAI->informationAI.addImportantObject(oObj, 1);
                         }
                     }
                 }
@@ -5694,7 +5694,7 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int playerID) {
                         RGE_Static_Object* obj = this->md->object(this->importantObjectMemory[i].id);
                         if (obj != 0) {
                             if (obj->object_state <= RGE_OBJECT_STATE_ACTIVE) {
-                                RGE_Action_Object* actionObject = static_cast<RGE_Action_Object*>(obj);
+                                RGE_Action_Object* actionObject = (RGE_Action_Object*)obj;
                                 if (actionObject->actions->have_action()) {
                                     RGE_Action* action = actionObject->actions->get_action();
                                     if (action->type() == TRIBE_ACTION_TYPE_WONDER) {

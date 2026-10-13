@@ -699,7 +699,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
         case TRIBE_GAME_MODE_SELECT_OBJECT:
             if (this->pick1(0x29, 1, x, y, &pick_info, this->player->selected_obj, 1) == 0x34) {
                 if (this->curr_child != 0) {
-                    this->curr_child->action(this, 0x10, reinterpret_cast<unsigned long>(pick_info.object), 0);
+                    this->curr_child->action(this, 0x10, (unsigned long)pick_info.object, 0);
                     this->player->select_one_object(pick_info.object, 1);
                     this->set_redraw(TPanel::RedrawNormal);
                 }
@@ -1180,7 +1180,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
     if (selected_count > 0) {
         do {
             target_count = 0;
-            master_obj = static_cast<RGE_Master_Action_Object*>(selected_objects[j]->master_obj);
+            master_obj = (RGE_Master_Action_Object*)selected_objects[j]->master_obj;
             if (picked_count > 0) {
                 info = Picked_Objects;
                 do {
@@ -1189,7 +1189,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                         RGE_Static_Object* object = this->world->objectsValue[picked];
                         if (object != 0 && object->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
                             RGE_Task* action = master_obj->tasks->get_target_task(
-                                static_cast<RGE_Action_Object*>(selected_objects[j]), object, 0, 0, 0
+                                (RGE_Action_Object*)selected_objects[j], object, 0, 0, 0
                             );
                             if (action != 0) {
                                 if (action_type != -1 && action->action_type != action_type)
@@ -1205,12 +1205,12 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                                 int k = 0;
                                 while (k < this->player->master_object_num) {
                                     RGE_Master_Action_Object* object2 =
-                                        static_cast<RGE_Master_Action_Object*>(this->player->master_objects[k]);
+                                        (RGE_Master_Action_Object*)this->player->master_objects[k];
                                     if (object2 != 0 && object2->object_group == master_obj->object_group
                                         && object2->master_type == master_obj->master_type
                                         && object2->task_by_group == master_obj->task_by_group) {
                                         RGE_Task* action2 = object2->tasks->get_target_task(
-                                            static_cast<RGE_Action_Object*>(selected_objects[j]), object, 0, 0, 0
+                                            (RGE_Action_Object*)selected_objects[j], object, 0, 0, 0
                                         );
                                         if (action2 != 0) {
                                             if (action_type != -1 && action2->action_type != action_type)

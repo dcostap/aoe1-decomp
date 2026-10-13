@@ -95,13 +95,13 @@ skip_realloc:
 }
 
 void TRIBE_Panel_Pop::startup() {
-    this->world = static_cast<TRIBE_World*>(rge_base_game->world);
-    TRIBE_Player* p = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+    this->world = (TRIBE_World*)rge_base_game->world;
+    TRIBE_Player* p = (TRIBE_Player*)rge_base_game->get_player();
     this->player = p;
 
-    this->pop = static_cast<int>(p->attributes[PLAYER_ATTRIBUTE_POPULATION]);
-    this->max_pop = this->pop + static_cast<int>(p->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM]);
-    int limit = static_cast<int>(p->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]);
+    this->pop = (int)p->attributes[PLAYER_ATTRIBUTE_POPULATION];
+    this->max_pop = this->pop + (int)p->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM];
+    int limit = (int)p->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT];
     if (this->max_pop > limit) {
         this->max_pop = limit;
     }
@@ -130,12 +130,12 @@ void TRIBE_Panel_Pop::draw() {
     this->display_changed_count++;
     this->draw_setup(0);
 
-    TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+    TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     this->player = player;
     changed_mode = 0;
 
     if (this->mode == 0) {
-        if (static_cast<TRIBE_Game*>(rge_base_game)->queue_is_waiting_on_pop_counter[player->id] > 0) {
+        if (((TRIBE_Game*)rge_base_game)->queue_is_waiting_on_pop_counter[player->id] > 0) {
             this->mode = 1;
             this->timer = 0.0f;
             changed_mode = 1;
@@ -153,9 +153,9 @@ void TRIBE_Panel_Pop::draw() {
     }
 
     {
-        int pop = static_cast<int>(player->attributes[PLAYER_ATTRIBUTE_POPULATION]);
-        int max_pop = pop + static_cast<int>(player->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM]);
-        int max_available = static_cast<int>(player->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT]);
+        int pop = (int)player->attributes[PLAYER_ATTRIBUTE_POPULATION];
+        int max_pop = pop + (int)player->attributes[PLAYER_ATTRIBUTE_POPULATION_HEADROOM];
+        int max_available = (int)player->attributes[PLAYER_ATTRIBUTE_POPULATION_LIMIT];
         if (max_pop > max_available)
             max_pop = max_available;
 

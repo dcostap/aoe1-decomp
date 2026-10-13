@@ -3638,7 +3638,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
                     assist = this->group(cur->assistGroupID(), -1, -1, -1);
                     if (assist != 0) {
                         RGE_Action_Object* transportObj;
-                        transportObj = static_cast<RGE_Action_Object*>(this->md->object(assist->commander()));
+                        transportObj = (RGE_Action_Object*)this->md->object(assist->commander());
                         if (transportObj != 0 && transportObj->unitAI() != 0
                             && transportObj->owner->id == this->md->player->id) {
                             int i;
@@ -9641,13 +9641,13 @@ void TribeTacticalAIModule::checkForCoopTributeDemand() {
 
     if (this->sn[0xBA] == -1)
         return;
-    world = static_cast<TRIBE_World*>(this->md->player->world);
+    world = (TRIBE_World*)this->md->player->world;
     cur = world->world_time;
     if ((int) (cur - this->lastCoopTributeDemandTime) / 1000 < this->sn[0xBA])
         return;
     this->lastCoopTributeDemandTime = cur;
 
-    world = static_cast<TRIBE_World*>(this->md->player->world);
+    world = (TRIBE_World*)this->md->player->world;
     if (world->controllingComputerPlayer == 0xff) {
         i = 1;
         count = 0;
@@ -9731,7 +9731,7 @@ void TribeTacticalAIModule::checkForCoopTributeGift() {
         return;
     this->lastCoopTributeGiftTime = now;
 
-    TRIBE_World* world = static_cast<TRIBE_World*>(this->md->player->world);
+    TRIBE_World* world = (TRIBE_World*)this->md->player->world;
     if (world->controllingComputerPlayer == 0xff) {
         int i = 1;
         int num_computer = 0;
@@ -9832,7 +9832,7 @@ void TribeTacticalAIModule::checkForCoopAttack(int playerToAttack, int x, int y)
         return;
     this->lastCoopAttackDemandTime = now;
 
-    TRIBE_World* world = static_cast<TRIBE_World*>(this->md->player->world);
+    TRIBE_World* world = (TRIBE_World*)this->md->player->world;
     if (world->controllingComputerPlayer == 0xff) {
         int num_computer = 0;
         int i = 1;

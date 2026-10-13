@@ -81,7 +81,7 @@ void TRIBE_Screen_Info::close_screen() {
     }
 
     if (strcmp(panel_name, "Logo2Screen") == 0) {
-        if (static_cast<TRIBE_Game*>(rge_base_game)->start_menu() == 0) {
+        if (((TRIBE_Game*)rge_base_game)->start_menu() == 0) {
             rge_base_game->close();
         }
         return;

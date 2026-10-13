@@ -87,7 +87,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             TShape* shape;
             if (master_game_obj->unit_level == 2) {
                 shape = bldg_pics[master_culture_id];
-                button_pict += static_cast<TRIBE_Master_Building_Object*>(master_game_obj)->building_facet;
+                button_pict += ((TRIBE_Master_Building_Object*)master_game_obj)->building_facet;
             } else {
                 shape = unit_pics;
             }
@@ -152,7 +152,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
         unsigned char unit_level = master->unit_level;
 
         if (unit_level == 3) {
-            short amount = static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon;
+            short amount = ((RGE_Master_Combat_Object*)master)->orig_weapon;
             draw_item(0, 7, ValueTypeBonus, amount, amount);
             item_index = 1;
         } else {
@@ -204,17 +204,17 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
 
                 if (unit_level == 2) {
                     draw_item(
-                        0, 7, ValueTypeBonus, static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon,
-                        static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon
+                        0, 7, ValueTypeBonus, ((RGE_Master_Combat_Object*)master)->orig_weapon,
+                        ((RGE_Master_Combat_Object*)master)->orig_weapon
                     );
                     draw_item(
-                        1, 8, ValueTypeBonus, static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_armor,
-                        static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_armor
+                        1, 8, ValueTypeBonus, ((RGE_Master_Combat_Object*)master_game_obj)->orig_armor,
+                        ((RGE_Master_Combat_Object*)master_game_obj)->orig_armor
                     );
                     draw_item(
                         2, 6, ValueTypeBonus,
-                        static_cast<int>(static_cast<RGE_Master_Combat_Object*>(master_game_obj)->weapon_range),
-                        static_cast<int>(static_cast<RGE_Master_Combat_Object*>(master_game_obj)->weapon_range)
+                        (int)(((RGE_Master_Combat_Object*)master_game_obj)->weapon_range),
+                        (int)(((RGE_Master_Combat_Object*)master_game_obj)->weapon_range)
                     );
                     draw_finish();
                     return;
@@ -224,13 +224,13 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             }
 
             if (master->unit_level == 3 || master->unit_level == 4) {
-                short amount = static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon;
+                short amount = ((RGE_Master_Combat_Object*)master)->orig_weapon;
                 draw_item(0, 7, ValueTypeBonus, amount, amount);
                 item_index = 1;
             }
         }
 
-        RGE_Master_Combat_Object* combat = static_cast<RGE_Master_Combat_Object*>(master_game_obj);
+        RGE_Master_Combat_Object* combat = (RGE_Master_Combat_Object*)master_game_obj;
         short armor_value = combat->orig_armor;
         if (master_game_obj->unit_level == 4 || master_game_obj->unit_level == 6) {
             draw_item(item_index, 8, ValueTypeBonus, armor_value, armor_value);
@@ -246,7 +246,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
 
         if (master_game_obj->unit_level == 4 || master_game_obj->unit_level == 6) {
             short speed_value =
-                static_cast<short>(static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_weapon_range);
+                (short)(((RGE_Master_Combat_Object*)master_game_obj)->orig_weapon_range);
             draw_item(item_index, 6, ValueTypeBonus, speed_value, pierce_value);
         }
     }
@@ -321,7 +321,7 @@ long TRIBE_Scenario_Editor_Panel_Object::get_pierce_armor() {
     if (master->master_type != TRIBE_MASTER_TYPE_COMBAT)
         return 0;
 
-    RGE_Master_Combat_Object* combat = static_cast<RGE_Master_Combat_Object*>(master);
+    RGE_Master_Combat_Object* combat = (RGE_Master_Combat_Object*)master;
     int armor_count = combat->armor_num;
     long result = 0;
     if (armor_count > 0) {

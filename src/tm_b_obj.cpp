@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(TRIBE_Master_Building_Object* other_object, int do_setup) :
-    TRIBE_Master_Combat_Object(static_cast<TRIBE_Master_Combat_Object*>(other_object), 0) {
+    TRIBE_Master_Combat_Object((TRIBE_Master_Combat_Object*)other_object, 0) {
     if (do_setup != 0) {
         setup(other_object);
     }
@@ -103,8 +103,8 @@ int TRIBE_Master_Building_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_
         &this->on_build_make_tech, &sound_id
     );
 
-    this->building_connect_flag = static_cast<unsigned char>(connect_flag);
-    this->build_and_go_away = static_cast<unsigned char>(build_and_go_away);
+    this->building_connect_flag = (unsigned char)connect_flag;
+    this->build_and_go_away = (unsigned char)build_and_go_away;
 
     if (sprite_id > -1) {
         selected_sprite = sprites[sprite_id];
@@ -129,7 +129,7 @@ void TRIBE_Master_Building_Object::copy_obj(RGE_Master_Static_Object* source) {
     TRIBE_Master_Combat_Object::copy_obj(source);
 
     // This virtual copy path receives a building-master source.
-    TRIBE_Master_Building_Object* building_source = static_cast<TRIBE_Master_Building_Object*>(source);
+    TRIBE_Master_Building_Object* building_source = (TRIBE_Master_Building_Object*)source;
     this->construction_sprite = building_source->construction_sprite;
     this->construction_sound = building_source->construction_sound;
     this->building_connect_flag = building_source->building_connect_flag;
@@ -146,7 +146,7 @@ void TRIBE_Master_Building_Object::modify(float amount, unsigned char flag) {
         TRIBE_Master_Combat_Object::modify(amount, flag);
         return;
     }
-    this->building_facet = static_cast<short>(amount);
+    this->building_facet = (short)amount;
 }
 
 void TRIBE_Master_Building_Object::modify_delta(float amount, unsigned char flag) {
@@ -154,7 +154,7 @@ void TRIBE_Master_Building_Object::modify_delta(float amount, unsigned char flag
         TRIBE_Master_Combat_Object::modify_delta(amount, flag);
         return;
     }
-    this->building_facet += static_cast<short>(amount);
+    this->building_facet += (short)amount;
 }
 
 void TRIBE_Master_Building_Object::modify_percent(float amount, unsigned char flag) {

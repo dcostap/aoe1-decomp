@@ -20,7 +20,7 @@ BuildItem::BuildItem(
 }
 
 BuildItem::BuildItem(BuildItem* bi) :
-    BaseItem(static_cast<BaseItem*>(bi)), next(0), prev(0), buildCategoryValue(bi->buildCategoryValue),
+    BaseItem((BaseItem*)bi), next(0), prev(0), buildCategoryValue(bi->buildCategoryValue),
     numberValue(bi->numberValue), priorityValue(bi->priorityValue), progressValue(bi->progressValue),
     builtValue(bi->progressValue), buildAttemptsValue(bi->buildAttemptsValue), buildFromValue(bi->buildFromValue),
     terrainSetValue(bi->terrainSetValue), placeOnElevationValue(bi->placeOnElevationValue), numberBuildsValue(0),
@@ -30,7 +30,7 @@ BuildItem::BuildItem(BuildItem* bi) :
 }
 
 BuildItem::BuildItem(const BuildItem& bi) :
-    BaseItem(static_cast<const BaseItem&>(bi)), next(0), prev(0), buildCategoryValue(bi.buildCategoryValue),
+    BaseItem((const BaseItem&)bi), next(0), prev(0), buildCategoryValue(bi.buildCategoryValue),
     numberValue(bi.numberValue), priorityValue(bi.priorityValue), progressValue(bi.progressValue),
     builtValue(bi.progressValue), buildAttemptsValue(bi.buildAttemptsValue), buildFromValue(bi.buildFromValue),
     terrainSetValue(bi.terrainSetValue), placeOnElevationValue(bi.placeOnElevationValue), numberBuildsValue(0),

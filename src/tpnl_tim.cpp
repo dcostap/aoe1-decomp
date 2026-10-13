@@ -94,7 +94,7 @@ skip_recreate:
 }
 
 void TRIBE_Panel_Time::startup() {
-    this->world = static_cast<TRIBE_World*>(rge_base_game->world);
+    this->world = (TRIBE_World*)rge_base_game->world;
     this->start_real_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 146);
 }
 
@@ -111,7 +111,7 @@ void TRIBE_Panel_Time::set_clock_type(int clock_type_in, int player_id_in) {
     this->clock_type = clock_type_in;
 
     if (player_id_in > 0) {
-        this->player = static_cast<TRIBE_Player*>(this->world->players[player_id_in]);
+        this->player = (TRIBE_Player*)this->world->players[player_id_in];
     } else {
         this->player = 0;
     }

@@ -161,7 +161,7 @@ long TRIBE_Screen_Main_Menu::key_down_action(long key, short count, int alt_key,
         switch (key) {
             case 'L': {
                 if (rge_base_game->gameDeveloperMode() != 0) {
-                    if (static_cast<TRIBE_Game*>(rge_base_game)->load_db_files() == 0) {
+                    if (((TRIBE_Game*)rge_base_game)->load_db_files() == 0) {
                         TEasy_Panel::popupOKDialog(STRING_ID_ERROR_LOAD_GAME_DATA, 0, TEASY_POPUP_WIDTH, 100);
                     }
                 }

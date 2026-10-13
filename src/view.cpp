@@ -2725,7 +2725,7 @@ void RGE_View::Update_Render_Pointers() {
 
     for (int i = 0; i < count; i++) {
         RenderOffsets[i] =
-            static_cast<unsigned char*>(render_area->DisplayOffsets[i + render_rect.top]) + render_rect.left;
+            (unsigned char*)render_area->DisplayOffsets[i + render_rect.top] + render_rect.left;
     }
 }
 

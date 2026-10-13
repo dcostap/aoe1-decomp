@@ -91,7 +91,7 @@ int TCommunications_Sessions::Refresh() {
     dpDesc.guidApplication = gAppGUID;
     dpDesc.dwSize = sizeof(dpDesc);
 
-    return glpSERV->EnumSessions(&dpDesc, 0, reinterpret_cast<LPDPENUMSESSIONSCALLBACK2>(EnumSessionCallback), this, 1);
+    return glpSERV->EnumSessions(&dpDesc, 0, (LPDPENUMSESSIONSCALLBACK2)EnumSessionCallback, this, 1);
 }
 
 int __stdcall EnumSessionCallback(
@@ -101,7 +101,7 @@ int __stdcall EnumSessionCallback(
         return 0;
     }
 
-    static_cast<TCommunications_Sessions*>(lpContext)->AddSession(
+    ((TCommunications_Sessions*)lpContext)->AddSession(
         lpDPSessionDesc->guidInstance, lpDPSessionDesc->guidApplication, lpDPSessionDesc->dwMaxPlayers,
         lpDPSessionDesc->dwCurrentPlayers, lpDPSessionDesc->lpszSessionNameA, lpDPSessionDesc->lpszPasswordA,
         lpDPSessionDesc->dwUser1, lpDPSessionDesc->dwUser2, lpDPSessionDesc->dwUser3, lpDPSessionDesc->dwUser4

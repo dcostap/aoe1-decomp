@@ -297,7 +297,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
     //! Each neutral computer allies with all computers and declares each human enemy.
     if (this->decidedInitialDiplomacy == 0 && this->player->world->world_time > 10000) {
         this->decidedInitialDiplomacy = 1;
-        TRIBE_World* world = static_cast<TRIBE_World*>(this->player->world);
+        TRIBE_World* world = (TRIBE_World*)this->player->world;
         int numberComputerPlayers = 0;
         int numberHumanPlayers = 0;
         int numberNeutralCPs = 0;
@@ -340,7 +340,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                 numberSwayable = 0;
             if (numberSwayable > numberNeutralCPs)
                 numberSwayable = numberNeutralCPs;
-            if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1)
+            if (((TRIBE_Game*)rge_base_game)->deathMatch() == 1)
                 numberSwayable = 0;
 
             if (numberSwayable <= numberNeutralCPs && numberNeutralCPs > 0) {
@@ -673,18 +673,18 @@ int TribeMainDecisionAIModule::processAICommand(int caller, int mType, int p1, i
                     this->diplomacyAI.setRelation(p1, 0);
                     if (rge_base_game->difficulty() == RGE_DIFFICULTY_EASIEST) {
                         if (this->player->world->players[p1]->computerPlayer() == 0) {
-                            static_cast<TRIBE_Command*>(this->player->world->commands)
+                            ((TRIBE_Command*)this->player->world->commands)
                                 ->command_allied_victory(this->player->id, 1);
                             this->diplomacyAI.setChangeable(p1, 0);
                             return 1;
                         } else {
-                            static_cast<TRIBE_Command*>(this->player->world->commands)
+                            ((TRIBE_Command*)this->player->world->commands)
                                 ->command_allied_victory(this->player->id, 0);
                             this->diplomacyAI.setChangeable(p1, 0);
                             return 1;
                         }
                     } else {
-                        static_cast<TRIBE_Command*>(this->player->world->commands)
+                        ((TRIBE_Command*)this->player->world->commands)
                             ->command_allied_victory(this->player->id, 1);
                         this->diplomacyAI.setChangeable(p1, 0);
                         return 1;

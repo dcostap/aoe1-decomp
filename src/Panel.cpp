@@ -1254,11 +1254,11 @@ long TPanel::handle_paint() {
 
     if (this->need_redraw != 0) {
         for (PanelNode* node = this->first_child_node; node != 0; node = node->next_node) {
-            node->panel->set_redraw(static_cast<TPanel::RedrawMode>(this->need_redraw));
+            node->panel->set_redraw((TPanel::RedrawMode)this->need_redraw);
         }
 
         if (this->parent_panel != 0 && this->parent_panel->overlapping_children != 0) {
-            this->parent_panel->set_overlapped_redraw(this, this, static_cast<TPanel::RedrawMode>(this->need_redraw));
+            this->parent_panel->set_overlapped_redraw(this, this, (TPanel::RedrawMode)this->need_redraw);
         }
         this->draw();
         this->need_redraw = 0;

@@ -55,7 +55,7 @@ Time_Line_Panel::~Time_Line_Panel() {
     }
 
     for (int i = 0; i < 3; i++) {
-        this->delete_panel(reinterpret_cast<TPanel**>(&this->legend_entry_text[i]));
+        this->delete_panel((TPanel**)&this->legend_entry_text[i]);
     }
 }
 
@@ -125,7 +125,7 @@ long Time_Line_Panel::setup(
     this->set_background(back_pic_in);
     this->set_special_events(special_event_pic_in);
 
-    unsigned char pal_idx = static_cast<unsigned char>(GetNearestPaletteIndex(this->render_area->DrawSystem->Pal, 0));
+    unsigned char pal_idx = (unsigned char)GetNearestPaletteIndex(this->render_area->DrawSystem->Pal, 0);
     this->set_back_color(1, pal_idx);
 
     return 1;
@@ -159,9 +159,9 @@ int Time_Line_Panel::set_background(char* file_name) {
     }
 
     this->background_pic = new TShape(file_name, -1);
-    this->background_pic->shape_minmax(x_max, x_min, y_max, y_min, static_cast<long>(0));
-    this->background_pic_wid = static_cast<short>(y_max - x_max + 1);
-    this->background_pic_hgt = static_cast<short>(y_min - x_min + 1);
+    this->background_pic->shape_minmax(x_max, x_min, y_max, y_min, (long)0);
+    this->background_pic_wid = (short)(y_max - x_max + 1);
+    this->background_pic_hgt = (short)(y_min - x_min + 1);
     return 1;
 }
 
@@ -196,9 +196,9 @@ int Time_Line_Panel::set_background(char* file_name, long resource_id) {
     }
 
     if (this->background_pic != 0) {
-        this->background_pic->shape_minmax(x_max, x_min, y_max, y_min, static_cast<long>(0));
-        this->background_pic_wid = static_cast<short>(y_max - x_max + 1);
-        this->background_pic_hgt = static_cast<short>(y_min - x_min + 1);
+        this->background_pic->shape_minmax(x_max, x_min, y_max, y_min, (long)0);
+        this->background_pic_wid = (short)(y_max - x_max + 1);
+        this->background_pic_hgt = (short)(y_min - x_min + 1);
         return 1;
     }
     return 0;
@@ -218,8 +218,8 @@ int Time_Line_Panel::set_special_events(char* file_name) {
     if (file_name && *file_name) {
         this->special_events_pic = new TShape(file_name, -1);
         this->special_events_pic->shape_minmax(y_max, loc, x_min, y_min, 0);
-        this->special_events_pic_wid = static_cast<short>(x_min - y_max + 1);
-        this->special_events_pic_hgt = static_cast<short>(y_min - loc + 1);
+        this->special_events_pic_wid = (short)(x_min - y_max + 1);
+        this->special_events_pic_hgt = (short)(y_min - loc + 1);
         return 1;
     }
     return 0;
@@ -256,9 +256,9 @@ int Time_Line_Panel::set_special_events(char* file_name, long resource_id) {
     }
 
     if (this->special_events_pic != 0) {
-        this->special_events_pic->shape_minmax(x_max, x_min, y_max, y_min, static_cast<long>(0));
-        this->special_events_pic_wid = static_cast<short>(y_max - x_max + 1);
-        this->special_events_pic_hgt = static_cast<short>(y_min - x_min + 1);
+        this->special_events_pic->shape_minmax(x_max, x_min, y_max, y_min, (long)0);
+        this->special_events_pic_wid = (short)(y_max - x_max + 1);
+        this->special_events_pic_hgt = (short)(y_min - x_min + 1);
         return 1;
     }
     return 0;
@@ -341,16 +341,16 @@ void Time_Line_Panel::init_timeline() {
     int i = 0;
     this->num_history_entries = 0;
     RGE_Game_World* world = rge_base_game->world;
-    int count = static_cast<int>(world->player_num) - 1;
+    int count = (int)world->player_num - 1;
     if (count > 0) {
         do {
-            int n = static_cast<TRIBE_Player*>(world->players[i + 1])->history->get_history_entry_num();
+            int n = ((TRIBE_Player*)world->players[i + 1])->history->get_history_entry_num();
             if (this->num_history_entries < n) {
                 this->num_history_entries = n;
             }
             i++;
             world = rge_base_game->world;
-        } while (i < static_cast<int>(world->player_num) - 1);
+        } while (i < (int)world->player_num - 1);
     }
 
     int usable_X = -49 + this->width();
@@ -360,19 +360,19 @@ void Time_Line_Panel::init_timeline() {
     }
 
     this->time_slice_drop_rate = 0.0f;
-    this->bar_thickness = static_cast<float>(usable_X) / static_cast<float>(this->num_history_entries);
+    this->bar_thickness = (float)usable_X / (float)this->num_history_entries;
 
     if (this->bar_thickness < 1.0f) {
         this->bar_thickness = 1.0f;
         this->num_entries_page = usable_X;
         this->drop_flag = 1;
         this->total_slices_to_drop = this->num_history_entries - usable_X;
-        this->time_slice_drop_rate = static_cast<float>(usable_X) / static_cast<float>(this->total_slices_to_drop);
+        this->time_slice_drop_rate = (float)usable_X / (float)this->total_slices_to_drop;
     } else {
         this->num_entries_page = this->num_history_entries;
     }
 
-    this->X_axis_length = static_cast<long>(static_cast<float>(this->num_entries_page) * this->bar_thickness) + 4;
+    this->X_axis_length = (long)((float)this->num_entries_page * this->bar_thickness) + 4;
     this->Y_axis_length = this->height() - this->axis_font_hgt * 4 - 26;
     this->X_start_line_pos = this->xPosition() + 27;
     int y = this->yPosition() + this->axis_font_hgt * 2 + 15;
@@ -385,14 +385,14 @@ void Time_Line_Panel::init_timeline() {
     if (this->num_entries_page < 12) {
         this->pop_reading_rate = 1;
     } else {
-        this->pop_reading_rate = static_cast<long>(static_cast<float>(this->num_entries_page - 1) * (1.0f / 12.0f));
+        this->pop_reading_rate = (long)((float)(this->num_entries_page - 1) * (1.0f / 12.0f));
     }
 }
 
 void Time_Line_Panel::add_pop_total_special_event(
     long sample_time_slice, long sample_pop_total, long sample_x_line_pos, int time_flag
 ) {
-    Special_Events* se = static_cast<Special_Events*>(calloc(1, 176));
+    Special_Events* se = (Special_Events*)calloc(1, 176);
 
     se->time_slice = sample_time_slice;
     se->X_line_pos = sample_x_line_pos;
@@ -428,7 +428,7 @@ void Time_Line_Panel::record_special_event(
         return;
     }
 
-    Special_Events* special_event = static_cast<Special_Events*>(calloc(1, 176));
+    Special_Events* special_event = (Special_Events*)calloc(1, 176);
     special_event->X_line_pos = x_line_pos;
     special_event->Y_line_pos = y_line_pos;
     special_event->intermediate_y_line_segment = intermediate_y_line_segment;
@@ -561,7 +561,7 @@ int Time_Line_Panel::calculate_icon_location(Special_Events* event_ptr, short ic
 
         case 6: {
             long right = this->X_start_line_pos + this->X_line_max_width;
-            long text_length = static_cast<long>(strlen(event_ptr->text1));
+            long text_length = (long)strlen(event_ptr->text1);
             if (event_ptr->X_line_pos + text_length * this->body_font_wid > right) {
                 event_ptr->text_length1 = (right - event_ptr->X_line_pos) / this->body_font_wid;
             } else {
@@ -583,7 +583,7 @@ int Time_Line_Panel::calculate_icon_location(Special_Events* event_ptr, short ic
 
         case 8: {
             long right = this->X_start_line_pos + this->X_line_max_width;
-            long text_length = static_cast<long>(strlen(event_ptr->text1));
+            long text_length = (long)strlen(event_ptr->text1);
             if (event_ptr->X_line_pos + text_length * this->body_font_wid > right) {
                 event_ptr->text_length1 = (right - event_ptr->X_line_pos) / this->body_font_wid;
             } else {
@@ -634,7 +634,7 @@ void Time_Line_Panel::draw_axis() {
     char temp_str[100];
     uchar white_color;
 
-    white_color = static_cast<uchar>(GetNearestPaletteIndex(this->render_area->DrawSystem->Pal, 0xFFFFFF));
+    white_color = (uchar)GetNearestPaletteIndex(this->render_area->DrawSystem->Pal, 0xFFFFFF);
 
     if (this->render_area->Lock(s_tpnl_tml_draw_axis, 1) != 0) {
         this->render_area->FillRect(
@@ -817,25 +817,25 @@ void Time_Line_Panel::draw_background() {
             pic_rows = 1;
         } else {
             pic_rows = this->pnl_wid / this->background_pic_wid;
-            if (static_cast<short>(pic_rows) * this->background_pic_wid < this->pnl_wid) {
+            if ((short)pic_rows * this->background_pic_wid < this->pnl_wid) {
                 pic_rows++;
             }
         }
 
         if (this->background_pic_hgt >= this->pnl_hgt) {
             tile_rows = this->pnl_hgt / this->background_pic_hgt;
-            if (static_cast<short>(tile_rows) * this->background_pic_hgt < this->pnl_hgt) {
+            if ((short)tile_rows * this->background_pic_hgt < this->pnl_hgt) {
                 tile_rows++;
             }
         }
 
-        if (static_cast<short>(tile_rows) > 0) {
+        if ((short)tile_rows > 0) {
             int row = 0;
-            tile_rows = static_cast<short>(tile_rows);
+            tile_rows = (short)tile_rows;
             do {
-                if (static_cast<short>(pic_rows) > 0) {
+                if ((short)pic_rows > 0) {
                     int col = 0;
-                    int count = static_cast<short>(pic_rows);
+                    int count = (short)pic_rows;
                     do {
                         this->background_pic->shape_draw(
                             this->render_area, col * this->background_pic_wid + this->pnl_x,
@@ -896,8 +896,8 @@ void Time_Line_Panel::draw_civilization_names() {
             TRIBE_Player* player;
             if (rge_base_game->world->player_num - 1 > 0) {
                 do {
-                    player = static_cast<TRIBE_Player*>(rge_base_game->world->players[player_index + 1]);
-                    pop_total += static_cast<float>(player->history->get_history_entry(0, 0) & 0xff);
+                    player = (TRIBE_Player*)rge_base_game->world->players[player_index + 1];
+                    pop_total += (float)(player->history->get_history_entry(0, 0) & 0xff);
                     player_index++;
                 } while (player_index < rge_base_game->world->player_num - 1);
             }
@@ -907,16 +907,16 @@ void Time_Line_Panel::draw_civilization_names() {
                 if (rge_base_game->world->player_num - 1 > 0) {
                     y_line_segment_length = 0;
                     do {
-                        player = static_cast<TRIBE_Player*>(rge_base_game->world->players[y_line_segment_length + 1]);
-                        int seg = static_cast<int>(
-                            (static_cast<float>(player->history->get_history_entry(0, 0) & 0xff) / pop_total)
-                            * static_cast<float>(this->Y_line_max_length)
+                        player = (TRIBE_Player*)rge_base_game->world->players[y_line_segment_length + 1];
+                        int seg = (int)(
+                            ((float)(player->history->get_history_entry(0, 0) & 0xff) / pop_total)
+                            * (float)this->Y_line_max_length
                         );
-                        player = static_cast<TRIBE_Player*>(rge_base_game->world->players[y_line_segment_length + 1]);
+                        player = (TRIBE_Player*)rge_base_game->world->players[y_line_segment_length + 1];
                         rge_base_game->get_string2(
                             RGE_STRING_TYPE_CIVILIZATION, player->master_player_id, 0, civ_str, 100
                         );
-                        player = static_cast<TRIBE_Player*>(rge_base_game->world->players[y_line_segment_length + 1]);
+                        player = (TRIBE_Player*)rge_base_game->world->players[y_line_segment_length + 1];
                         strcpy(name_str, player->name);
                         sprintf(temp_str, "%s - %s", name_str, civ_str);
                         TextOutA(
@@ -962,28 +962,28 @@ void Time_Line_Panel::draw_timeline() {
                 RGE_Game_World* world = rge_base_game->world;
                 int player_index = 0;
 
-                if (static_cast<int>(world->player_num) - 1 > 0) {
+                if ((int)world->player_num - 1 > 0) {
                     do {
-                        TRIBE_Player* player = static_cast<TRIBE_Player*>(world->players[player_index + 1]);
-                        float population = static_cast<float>(player->history->get_history_entry(0, time_slice));
+                        TRIBE_Player* player = (TRIBE_Player*)world->players[player_index + 1];
+                        float population = (float)player->history->get_history_entry(0, time_slice);
                         unsigned char event;
-                        player = static_cast<TRIBE_Player*>(rge_base_game->world->players[player_index + 1]);
+                        player = (TRIBE_Player*)rge_base_game->world->players[player_index + 1];
                         if (player->history->get_history_event(time_slice, event) != 0) {
                             special_event = 1;
                         }
                         pop_total += population;
                         player_index++;
                         world = rge_base_game->world;
-                    } while (player_index < static_cast<int>(world->player_num) - 1);
+                    } while (player_index < (int)world->player_num - 1);
                 }
 
                 if (pop_total == 0.0f) {
                     return;
                 }
 
-                long base_drop_rate = static_cast<long>(this->time_slice_drop_rate);
+                long base_drop_rate = (long)this->time_slice_drop_rate;
                 long drop_limit =
-                    static_cast<long>(static_cast<float>(dropped_slice_counter) * this->time_slice_drop_rate);
+                    (long)((float)dropped_slice_counter * this->time_slice_drop_rate);
                 drop_limit += (1 - dropped_slice_counter) * base_drop_rate;
                 drop_limit -= time_slice_counter;
 
@@ -1005,14 +1005,14 @@ void Time_Line_Panel::draw_timeline() {
                         next_pop_total = 0.0f;
                         world = rge_base_game->world;
                         player_index = 0;
-                        if (static_cast<int>(world->player_num) - 1 > 0) {
+                        if ((int)world->player_num - 1 > 0) {
                             do {
-                                TRIBE_Player* player = static_cast<TRIBE_Player*>(world->players[player_index + 1]);
+                                TRIBE_Player* player = (TRIBE_Player*)world->players[player_index + 1];
                                 next_pop_total +=
-                                    static_cast<float>(player->history->get_history_entry(0, time_slice + 1));
+                                    (float)player->history->get_history_entry(0, time_slice + 1);
                                 player_index++;
                                 world = rge_base_game->world;
-                            } while (player_index < static_cast<int>(world->player_num) - 1);
+                            } while (player_index < (int)world->player_num - 1);
                         }
                         if (next_pop_total == 0.0f) {
                             return;
@@ -1021,7 +1021,7 @@ void Time_Line_Panel::draw_timeline() {
 
                     if (pop_label_counter == this->pop_reading_rate - 1 || time_slice == 0) {
                         this->add_pop_total_special_event(
-                            time_slice, static_cast<long>(pop_total), this->X_line_pos, 1
+                            time_slice, (long)pop_total, this->X_line_pos, 1
                         );
                         pop_label_counter = 0;
                     } else {
@@ -1030,8 +1030,8 @@ void Time_Line_Panel::draw_timeline() {
 
                     long next_time_slice = time_slice + 1;
                     long time_slice_thickness =
-                        static_cast<long>(static_cast<float>(next_time_slice) * this->bar_thickness);
-                    long base_thickness = static_cast<long>(this->bar_thickness);
+                        (long)((float)next_time_slice * this->bar_thickness);
+                    long base_thickness = (long)this->bar_thickness;
                     long regular_position = base_thickness * next_time_slice;
 
                     if (regular_position < time_slice_thickness - time_slice_thickness_error) {
@@ -1053,9 +1053,9 @@ void Time_Line_Panel::draw_timeline() {
                             world = rge_base_game->world;
                             player_index = 0;
 
-                            if (static_cast<int>(world->player_num) - 1 > 0) {
+                            if ((int)world->player_num - 1 > 0) {
                                 do {
-                                    TRIBE_Player* player = static_cast<TRIBE_Player*>(world->players[player_index + 1]);
+                                    TRIBE_Player* player = (TRIBE_Player*)world->players[player_index + 1];
                                     unsigned long color;
                                     switch (player->color_table->id) {
                                         case 0:
@@ -1087,16 +1087,16 @@ void Time_Line_Panel::draw_timeline() {
                                             break;
                                     }
 
-                                    unsigned char player_color = static_cast<unsigned char>(
+                                    unsigned char player_color = (unsigned char)(
                                         GetNearestPaletteIndex(this->render_area->DrawSystem->Pal, color)
                                     );
 
                                     player =
-                                        static_cast<TRIBE_Player*>(rge_base_game->world->players[player_index + 1]);
+                                        (TRIBE_Player*)rge_base_game->world->players[player_index + 1];
                                     unsigned char population = player->history->get_history_entry(0, time_slice);
-                                    float player_population = static_cast<float>(population);
-                                    long segment = static_cast<long>(
-                                        player_population / pop_total * static_cast<float>(this->Y_line_max_length)
+                                    float player_population = (float)population;
+                                    long segment = (long)(
+                                        player_population / pop_total * (float)this->Y_line_max_length
                                     );
 
                                     if (player_population >= 1.0f && segment < 1) {
@@ -1108,38 +1108,38 @@ void Time_Line_Panel::draw_timeline() {
                                         if (time_slice == this->num_entries_page - 1) {
                                             next_population = player_population;
                                         } else {
-                                            player = static_cast<TRIBE_Player*>(
+                                            player = (TRIBE_Player*)(
                                                 rge_base_game->world->players[player_index + 1]
                                             );
-                                            next_population = static_cast<float>(
+                                            next_population = (float)(
                                                 player->history->get_history_entry(0, next_time_slice)
                                             );
                                         }
 
-                                        long next_segment = static_cast<long>(
+                                        long next_segment = (long)(
                                             next_population / next_pop_total
-                                            * static_cast<float>(this->Y_line_max_length)
+                                            * (float)this->Y_line_max_length
                                         );
                                         long segment_change = next_segment - segment;
                                         float interpolated_segment =
-                                            static_cast<float>(segment)
-                                            + static_cast<float>(segment_change)
-                                                  * (static_cast<float>(interpolation_counter) / this->bar_thickness);
-                                        segment = static_cast<long>(interpolated_segment);
+                                            (float)segment
+                                            + (float)segment_change
+                                                  * ((float)interpolation_counter / this->bar_thickness);
+                                        segment = (long)interpolated_segment;
 
                                         if (player_population >= 1.0f && segment < 1) {
                                             segment = 1;
                                         }
 
                                         segment_remainder =
-                                            (segment_remainder + interpolated_segment) - static_cast<float>(segment);
+                                            (segment_remainder + interpolated_segment) - (float)segment;
                                         if (segment_remainder > 1.0) {
                                             segment_remainder -= 1.0f;
                                             segment++;
                                         }
                                     }
 
-                                    if (player_index == static_cast<int>(rge_base_game->world->player_num) - 2) {
+                                    if (player_index == (int)rge_base_game->world->player_num - 2) {
                                         if (segment + y_line_total > this->Y_line_max_length) {
                                             segment = this->Y_line_max_length - y_line_total;
                                         }
@@ -1154,9 +1154,9 @@ void Time_Line_Panel::draw_timeline() {
 
                                     if (intermediate_x_pos == 0) {
                                         player =
-                                            static_cast<TRIBE_Player*>(rge_base_game->world->players[player_index + 1]);
+                                            (TRIBE_Player*)rge_base_game->world->players[player_index + 1];
                                         this->record_special_event(
-                                            static_cast<unsigned char>(player_index + 1), player->history, player_color,
+                                            (unsigned char)(player_index + 1), player->history, player_color,
                                             time_slice, this->X_line_pos, this->Y_line_pos, segment
                                         );
                                     }
@@ -1165,7 +1165,7 @@ void Time_Line_Panel::draw_timeline() {
                                     y_line_total += segment;
                                     player_index++;
                                     world = rge_base_game->world;
-                                } while (player_index < static_cast<int>(world->player_num) - 1);
+                                } while (player_index < (int)world->player_num - 1);
                             }
 
                             intermediate_x_pos++;
@@ -1190,7 +1190,7 @@ void Time_Line_Panel::draw_icon(Special_Events* event_ptr, short icon_number, uc
     long q_top;
     unsigned int(__stdcall * getNearest)(void*, unsigned long) = GetNearestPaletteIndex;
     getNearest(this->render_area->DrawSystem->Pal, 0xffffff);
-    temp_str[0] = static_cast<char>(getNearest(this->render_area->DrawSystem->Pal, 0));
+    temp_str[0] = (char)getNearest(this->render_area->DrawSystem->Pal, 0);
 
     switch (event_ptr->event) {
         case 0:
@@ -1241,25 +1241,25 @@ void Time_Line_Panel::draw_icon(Special_Events* event_ptr, short icon_number, uc
         case 0:
             this->render_area->DrawVertLine(
                 event_ptr->X_line_pos, event_ptr->Y_line_pos, event_ptr->intermediate_y_line_segment,
-                static_cast<uchar>(temp_str[0])
+                (uchar)temp_str[0]
             );
             return;
         case 1:
             this->render_area->DrawVertLine(
                 event_ptr->X_line_pos, event_ptr->Y_line_pos, event_ptr->intermediate_y_line_segment,
-                static_cast<uchar>(temp_str[0])
+                (uchar)temp_str[0]
             );
             return;
         case 2:
             this->render_area->DrawVertLine(
                 event_ptr->X_line_pos, event_ptr->Y_line_pos, event_ptr->intermediate_y_line_segment,
-                static_cast<uchar>(temp_str[0])
+                (uchar)temp_str[0]
             );
             return;
         default:
             if (ok) {
                 this->special_events_pic->shape_draw(
-                    this->render_area, event_ptr->start_x, event_ptr->start_y, static_cast<int>(icon_number), 0, 0
+                    this->render_area, event_ptr->start_x, event_ptr->start_y, (int)icon_number, 0, 0
                 );
             }
             return;

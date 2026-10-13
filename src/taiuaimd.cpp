@@ -90,7 +90,7 @@ int TribeHuntedAnimalUnitAIModule::processIdle(int doSearch) {
     int targetID;
     RGE_Static_Object* target;
     float evasiveMoveDistance, xDiff, yDiff, distanceDiff, nx, ny;
-    targetID = closestObject(0xFFFFFFFF, 0xFFFFFFFF, static_cast<unsigned int>(RGE_OBJECT_STATE_ANY), 0xFFFFFFFF, 0);
+    targetID = closestObject(0xFFFFFFFF, 0xFFFFFFFF, (unsigned int)RGE_OBJECT_STATE_ANY, 0xFFFFFFFF, 0);
 
     if (targetID != -1) {
         target = objectValue->owner->world->object(targetID);

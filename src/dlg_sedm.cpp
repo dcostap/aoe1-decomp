@@ -133,7 +133,7 @@ long TRIBE_Dialog_Sed_Menu::action(
             panel_system.destroyPanel("Scenario Menu Dialog");
             char* scenario = sed->scenario_save_defaulted();
             if (scenario != 0) {
-                static_cast<TRIBE_Game*>(rge_base_game)->test_scenario(scenario);
+                ((TRIBE_Game*)rge_base_game)->test_scenario(scenario);
             } else {
                 panel_system.destroyPanel("Scenario Menu Dialog");
             }
@@ -156,7 +156,7 @@ long TRIBE_Dialog_Sed_Menu::action(
             }
             if (action_in == 0 || action_in == 1) {
                 panel_system.destroyPanel("Scenario Menu Dialog");
-                static_cast<TRIBE_Game*>(rge_base_game)->start_scenario_editor(0, 0);
+                ((TRIBE_Game*)rge_base_game)->start_scenario_editor(0, 0);
             }
             if (action_in == 2) {
                 panel_system.destroyPanel("Scenario Menu Dialog");

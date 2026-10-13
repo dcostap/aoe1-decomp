@@ -50,10 +50,10 @@ void TRIBE_Screen_Sed::SaveDisabledItemsInScenario() {
         int state = this->options_disable_button[i]->get_state();
         if (state != 0) {
             int player_idx = (int) (short) this->player_num - 1;
-            static_cast<T_Scenario*>(this->world->scenario)->SetDisabledTechnology(player_idx, i, 0);
+            ((T_Scenario*)this->world->scenario)->SetDisabledTechnology(player_idx, i, 0);
         } else {
             int player_idx = (int) (short) this->player_num - 1;
-            static_cast<T_Scenario*>(this->world->scenario)->SetDisabledTechnology(player_idx, i, 1);
+            ((T_Scenario*)this->world->scenario)->SetDisabledTechnology(player_idx, i, 1);
         }
     }
 
@@ -67,7 +67,7 @@ void TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(void) {
     int disabled;
 
     for (i = 0, button = this->options_disable_button; i < 16; i++, button++) {
-        disabled = static_cast<T_Scenario*>(this->world->scenario)->GetDisabledTechnology(this->player_num - 1, i);
+        disabled = ((T_Scenario*)this->world->scenario)->GetDisabledTechnology(this->player_num - 1, i);
         if (disabled != 0) {
             (*button)->set_state(0);
         } else {
@@ -84,50 +84,50 @@ void TRIBE_Screen_Sed::save_info_in_scenario() {
 void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario() {
     switch (this->mp_victory_type) {
         case 1:
-            static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(0);
+            ((T_Scenario*)this->world->scenario)->SetMPVictory(0);
             break;
         case 2:
-            static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(1);
+            ((T_Scenario*)this->world->scenario)->SetMPVictory(1);
             break;
         case 3:
-            static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(2);
+            ((T_Scenario*)this->world->scenario)->SetMPVictory(2);
             break;
         case 4:
-            static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(3);
+            ((T_Scenario*)this->world->scenario)->SetMPVictory(3);
             break;
         default:
-            static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(4);
+            ((T_Scenario*)this->world->scenario)->SetMPVictory(4);
             break;
     }
 
-    static_cast<T_Scenario*>(this->world->scenario)->SetVictoryScore(this->victory_score->get_id());
-    static_cast<T_Scenario*>(this->world->scenario)->SetVictoryTime(this->victory_time->get_id());
+    ((T_Scenario*)this->world->scenario)->SetVictoryScore(this->victory_score->get_id());
+    ((T_Scenario*)this->world->scenario)->SetVictoryTime(this->victory_time->get_id());
 
     if (this->victory_cond_type[0]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(0);
+        ((T_Scenario*)this->world->scenario)->SetMPVictory(0);
     } else if (this->victory_cond_type[1]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(1);
+        ((T_Scenario*)this->world->scenario)->SetMPVictory(1);
     } else if (this->victory_cond_type[2]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(2);
+        ((T_Scenario*)this->world->scenario)->SetMPVictory(2);
     } else if (this->victory_cond_type[3]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(3);
+        ((T_Scenario*)this->world->scenario)->SetMPVictory(3);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(4);
+        ((T_Scenario*)this->world->scenario)->SetMPVictory(4);
     }
 
-    static_cast<T_Scenario*>(this->world->scenario)->SetVictoryScore(this->victory_score->get_id());
-    static_cast<T_Scenario*>(this->world->scenario)->SetVictoryTime(this->victory_time->get_id());
+    ((T_Scenario*)this->world->scenario)->SetVictoryScore(this->victory_score->get_id());
+    ((T_Scenario*)this->world->scenario)->SetVictoryTime(this->victory_time->get_id());
 
     if (this->victory_and_or[1]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_victory_all_flag(1);
+        ((T_Scenario*)this->world->scenario)->Set_victory_all_flag(1);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_victory_all_flag(0);
+        ((T_Scenario*)this->world->scenario)->Set_victory_all_flag(0);
     }
 
     if (!this->victory_cond_on[0]->get_state() && this->victory_cond_type[4]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(0);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Conquest(0);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(1);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Conquest(1);
     }
 
     int value = atoi(this->victory_condition_explore->currentLine());
@@ -136,37 +136,37 @@ void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario() {
             value = 1;
         if (value > 100)
             value = 100;
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Exploration(value);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Exploration(value);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Exploration(0);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Exploration(0);
     }
 
     value = atoi(this->victory_condition_ruins->currentLine());
     if (this->victory_cond_on[2]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Ruins(value);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Ruins(value);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Ruins(0);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Ruins(0);
     }
 
     value = atoi(this->victory_condition_artifacts->currentLine());
     if (this->victory_cond_on[3]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Artifacts(value);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Artifacts(value);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Artifacts(0);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Artifacts(0);
     }
 
     value = atoi(this->victory_condition_discoveries->currentLine());
     if (this->victory_cond_on[4]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Discoveries(value);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Discoveries(value);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Discoveries(0);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Discoveries(0);
     }
 
     value = atoi(this->victory_condition_gold->currentLine());
     if (this->victory_cond_on[5]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Gold(value);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Gold(value);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Gold(0);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Gold(0);
     }
 }
 
@@ -176,15 +176,15 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which) {
     int ObjectNumber;
 
     if (this->victory_and_or[1]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_victory_all_flag(1);
+        ((T_Scenario*)this->world->scenario)->Set_victory_all_flag(1);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_victory_all_flag(0);
+        ((T_Scenario*)this->world->scenario)->Set_victory_all_flag(0);
     }
 
     if (!this->victory_cond_on[0]->get_state() && this->victory_cond_type[4]->get_state()) {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(0);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Conquest(0);
     } else {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(1);
+        ((T_Scenario*)this->world->scenario)->Set_Multi_Conquest(1);
     }
 
     if (which < 0) {
@@ -202,7 +202,7 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which) {
     this->px2 = (float) x2;
     this->py2 = (float) y2;
 
-    static_cast<T_Scenario*>(this->world->scenario)->ClearSPVictoryCondition(which);
+    ((T_Scenario*)this->world->scenario)->ClearSPVictoryCondition(which);
 
     switch (VictoryType) {
         case 0:
@@ -211,115 +211,115 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which) {
             if (this->SelectedObject == 0 || this->DestinationObject == 0) {
                 return;
             }
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 3);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(which, this->SelectedObject);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPDestObjectID(which, this->DestinationObject);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 3);
+            ((T_Scenario*)this->world->scenario)->SetSPObject(which, this->SelectedObject);
+            ((T_Scenario*)this->world->scenario)->SetSPDestObjectID(which, this->DestinationObject);
             return;
         case 2:
             if (this->SelectedObject == 0) {
                 return;
             }
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 3);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(which, this->SelectedObject);
-            static_cast<T_Scenario*>(this->world->scenario)
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 3);
+            ((T_Scenario*)this->world->scenario)->SetSPObject(which, this->SelectedObject);
+            ((T_Scenario*)this->world->scenario)
                 ->SetSPRectangle(which, this->px1, this->py1, this->px2, this->py2);
             return;
         case 3:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 2);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(which, ObjectNumber);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 2);
+            ((T_Scenario*)this->world->scenario)->SetSPObjectType(which, ObjectNumber);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
             return;
         case 4:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 2);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(which, ObjectNumber);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
-            static_cast<T_Scenario*>(this->world->scenario)
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 2);
+            ((T_Scenario*)this->world->scenario)->SetSPObjectType(which, ObjectNumber);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)
                 ->SetSPRectangle(which, this->px1, this->py1, this->px2, this->py2);
             return;
         case 5:
             if (player < 1 || player > 8 || amount == 0) {
                 return;
             }
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 1);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPPlayerID(which, player);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(which, ObjectNumber);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 1);
+            ((T_Scenario*)this->world->scenario)->SetSPPlayerID(which, player);
+            ((T_Scenario*)this->world->scenario)->SetSPObjectType(which, ObjectNumber);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
             return;
         case 6:
             if (this->SelectedObject == 0) {
                 return;
             }
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 1);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(which, this->SelectedObject);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 1);
+            ((T_Scenario*)this->world->scenario)->SetSPObject(which, this->SelectedObject);
             return;
         case 7:
             if (player < 1 || player > 8) {
                 return;
             }
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 1);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPPlayerID(which, player);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(which, ObjectNumber);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAllFlag(which, 1);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 1);
+            ((T_Scenario*)this->world->scenario)->SetSPPlayerID(which, player);
+            ((T_Scenario*)this->world->scenario)->SetSPObjectType(which, ObjectNumber);
+            ((T_Scenario*)this->world->scenario)->SetSPAllFlag(which, 1);
             return;
         case 8:
             if (player < 1 || player > 8) {
                 return;
             }
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 1);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPPlayerID(which, player);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 1);
+            ((T_Scenario*)this->world->scenario)->SetSPPlayerID(which, player);
             return;
         case 9:
             if (this->SelectedObject == 0) {
                 return;
             }
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 5);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(which, this->SelectedObject);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 5);
+            ((T_Scenario*)this->world->scenario)->SetSPObject(which, this->SelectedObject);
             return;
         case 10:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 0);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 4);
+            ((T_Scenario*)this->world->scenario)->SetSPAttribType(which, 0);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
             return;
         case 11:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 3);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 4);
+            ((T_Scenario*)this->world->scenario)->SetSPAttribType(which, 3);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
             return;
         case 12:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 1);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 4);
+            ((T_Scenario*)this->world->scenario)->SetSPAttribType(which, 1);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
             return;
         case 13:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 2);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 4);
+            ((T_Scenario*)this->world->scenario)->SetSPAttribType(which, 2);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
             return;
         case 14:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 4);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 4);
+            ((T_Scenario*)this->world->scenario)->SetSPAttribType(which, 4);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
             return;
         case 15:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 5);
-            static_cast<T_Scenario*>(this->world->scenario)
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 4);
+            ((T_Scenario*)this->world->scenario)->SetSPAttribType(which, 5);
+            ((T_Scenario*)this->world->scenario)
                 ->SetSPAmount(which, this->victory_ages_list->get_line() + 1);
             return;
         case 16:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 6);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 4);
+            ((T_Scenario*)this->world->scenario)->SetSPAttribType(which, 6);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
             return;
         case 17:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 6);
-            static_cast<T_Scenario*>(this->world->scenario)
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 6);
+            ((T_Scenario*)this->world->scenario)
                 ->SetSPAttribType(which, this->victory_attribute_list->get_id());
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+            ((T_Scenario*)this->world->scenario)->SetSPAmount(which, amount);
             return;
         case 18:
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 7);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, this->victory_tech_list->get_id());
+            ((T_Scenario*)this->world->scenario)->SetSPVictoryType(which, 7);
+            ((T_Scenario*)this->world->scenario)->SetSPAttribType(which, this->victory_tech_list->get_id());
             return;
         default:
             return;
@@ -337,7 +337,7 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int which) {
     long x1, y1, x2, y2;
     RGE_Static_Object* obj;
 
-    int all_players = static_cast<T_Scenario*>(this->world->scenario)->Get_victory_all_flag();
+    int all_players = ((T_Scenario*)this->world->scenario)->Get_victory_all_flag();
     if (all_players != 0) {
         this->victory_and_or[0]->set_state(0);
         this->victory_and_or[1]->set_state(1);
@@ -350,24 +350,24 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int which) {
         return;
     this->SelectedObject = 0;
     this->DestinationObject = 0;
-    static_cast<T_Scenario*>(this->world->scenario)->rehook();
-    static_cast<T_Scenario*>(this->world->scenario)->SetSPWhich((int) this->player_num - 1);
-    Amount = static_cast<T_Scenario*>(this->world->scenario)->GetSPAmount(which);
+    ((T_Scenario*)this->world->scenario)->rehook();
+    ((T_Scenario*)this->world->scenario)->SetSPWhich((int) this->player_num - 1);
+    Amount = ((T_Scenario*)this->world->scenario)->GetSPAmount(which);
     itoa(Amount, str, 10);
     this->victory_amount_input->set_text(str);
     this->victory_enemy_player_list->set_line(
-        static_cast<T_Scenario*>(this->world->scenario)->GetSPPlayerID(which) - 1
+        ((T_Scenario*)this->world->scenario)->GetSPPlayerID(which) - 1
     );
     this->victory_object_list->setCurrentLineNumber(
-        this->victory_object_list->get_line(static_cast<T_Scenario*>(this->world->scenario)->GetSPObjectType(which))
+        this->victory_object_list->get_line(((T_Scenario*)this->world->scenario)->GetSPObjectType(which))
     );
-    obj = static_cast<T_Scenario*>(this->world->scenario)->GetSPObject(which);
-    destobj = static_cast<T_Scenario*>(this->world->scenario)->GetSPDestObjectID(which);
+    obj = ((T_Scenario*)this->world->scenario)->GetSPObject(which);
+    destobj = ((T_Scenario*)this->world->scenario)->GetSPDestObjectID(which);
     this->SelectedObject = obj;
     this->DestinationObject = destobj;
-    VictoryType = static_cast<T_Scenario*>(this->world->scenario)->GetSPVictoryType(which);
-    int AttributeType = static_cast<T_Scenario*>(this->world->scenario)->GetSPAttribType(which);
-    static_cast<T_Scenario*>(this->world->scenario)
+    VictoryType = ((T_Scenario*)this->world->scenario)->GetSPVictoryType(which);
+    int AttributeType = ((T_Scenario*)this->world->scenario)->GetSPAttribType(which);
+    ((T_Scenario*)this->world->scenario)
         ->GetSPRectangle(which, &this->px1, &this->py1, &this->px2, &this->py2);
     x1 = (long) this->px1;
     y1 = (long) this->py1;
@@ -398,7 +398,7 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int which) {
                 case 5:
                     this->victory_drop_down->setCurrentLineNumber(15);
                     this->victory_ages_list->setCurrentLineNumber(
-                        static_cast<T_Scenario*>(this->world->scenario)->GetSPAmount(which) - 1
+                        ((T_Scenario*)this->world->scenario)->GetSPAmount(which) - 1
                     );
                     return;
                 case 6:
@@ -427,13 +427,13 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int which) {
                 this->victory_drop_down->setCurrentLineNumber(5);
             else if (obj != 0)
                 this->victory_drop_down->setCurrentLineNumber(6);
-            else if (static_cast<T_Scenario*>(this->world->scenario)->GetSPAllFlag(which))
+            else if (((T_Scenario*)this->world->scenario)->GetSPAllFlag(which))
                 this->victory_drop_down->setCurrentLineNumber(7);
             else
                 this->victory_drop_down->setCurrentLineNumber(8);
             break;
         case 2:
-            static_cast<T_Scenario*>(this->world->scenario)
+            ((T_Scenario*)this->world->scenario)
                 ->GetSPRectangle(which, &this->px1, &this->py1, &this->px2, &this->py2);
             if (this->px2 > 0.0)
                 this->victory_drop_down->setCurrentLineNumber(4);
@@ -458,7 +458,7 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int which) {
 
 void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
     char str[20];
-    int value = static_cast<T_Scenario*>(this->world->scenario)->GetMPVictory();
+    int value = ((T_Scenario*)this->world->scenario)->GetMPVictory();
 
     switch (value) {
         case 0:
@@ -478,33 +478,33 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
             break;
     }
 
-    value = static_cast<T_Scenario*>(this->world->scenario)->GetVictoryScore();
+    value = ((T_Scenario*)this->world->scenario)->GetVictoryScore();
     if (value != 0) {
         this->victory_score->set_line(this->victory_score->get_line(value));
     } else {
         this->victory_score->set_line(this->victory_score->get_line(900));
     }
 
-    value = static_cast<T_Scenario*>(this->world->scenario)->GetVictoryTime();
+    value = ((T_Scenario*)this->world->scenario)->GetVictoryTime();
     if (value != 0) {
         this->victory_time->set_line(this->victory_time->get_line(value));
     } else {
         this->victory_time->set_line(this->victory_time->get_line(9000));
     }
 
-    if (static_cast<T_Scenario*>(this->world->scenario)->Get_victory_all_flag() != 0) {
+    if (((T_Scenario*)this->world->scenario)->Get_victory_all_flag() != 0) {
         this->victory_and_or[1]->set_radio_button();
     } else {
         this->victory_and_or[0]->set_radio_button();
     }
 
-    if (static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Conquest() != 0) {
+    if (((T_Scenario*)this->world->scenario)->Get_Multi_Conquest() != 0) {
         this->victory_cond_on[0]->set_state(1);
     } else {
         this->victory_cond_on[0]->set_state(0);
     }
 
-    value = static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Exploration();
+    value = ((T_Scenario*)this->world->scenario)->Get_Multi_Exploration();
     if (value != 0) {
         this->victory_cond_on[1]->set_state(1);
         itoa(value, str, 10);
@@ -514,7 +514,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_explore->set_text(s_empty_string);
     }
 
-    value = static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Ruins();
+    value = ((T_Scenario*)this->world->scenario)->Get_Multi_Ruins();
     if (value != 0) {
         this->victory_cond_on[2]->set_state(1);
         itoa(value, str, 10);
@@ -524,7 +524,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_ruins->set_text(s_empty_string);
     }
 
-    value = static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Artifacts();
+    value = ((T_Scenario*)this->world->scenario)->Get_Multi_Artifacts();
     if (value != 0) {
         this->victory_cond_on[3]->set_state(1);
         itoa(value, str, 10);
@@ -534,7 +534,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_artifacts->set_text(s_empty_string);
     }
 
-    value = static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Discoveries();
+    value = ((T_Scenario*)this->world->scenario)->Get_Multi_Discoveries();
     if (value != 0) {
         this->victory_cond_on[4]->set_state(1);
         itoa(value, str, 10);
@@ -544,7 +544,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_discoveries->set_text(s_empty_string);
     }
 
-    value = static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Gold();
+    value = ((T_Scenario*)this->world->scenario)->Get_Multi_Gold();
     if (value != 0) {
         this->victory_cond_on[5]->set_state(1);
         itoa(value, str, 10);
@@ -554,7 +554,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_gold->set_text(s_empty_string);
     }
 
-    static_cast<T_Scenario*>(this->world->scenario)->Save_victory_conditions_into_players(1);
+    ((T_Scenario*)this->world->scenario)->Save_victory_conditions_into_players(1);
 }
 
 void TRIBE_Screen_Sed::save_diplomacy_in_scenario(int which) {
@@ -564,22 +564,22 @@ void TRIBE_Screen_Sed::save_diplomacy_in_scenario(int which) {
     for (int i = 0; i < 8; i++) {
         int state = Diplomacy_friend_box[i][0]->get_state();
         if (state == 1) {
-            static_cast<T_Scenario*>(world->scenario)->Set_player_attitude(which, i, 0);
+            ((T_Scenario*)world->scenario)->Set_player_attitude(which, i, 0);
         } else {
             state = Diplomacy_friend_box[i][1]->get_state();
             if (state == 1) {
-                static_cast<T_Scenario*>(world->scenario)->Set_player_attitude(which, i, 1);
+                ((T_Scenario*)world->scenario)->Set_player_attitude(which, i, 1);
             } else {
                 state = Diplomacy_friend_box[i][2]->get_state();
                 if (state == 1) {
-                    static_cast<T_Scenario*>(world->scenario)->Set_player_attitude(which, i, 3);
+                    ((T_Scenario*)world->scenario)->Set_player_attitude(which, i, 3);
                 }
             }
         }
     }
 
     int allied_victory = Diplomacy_AlliedVictory[which]->get_state();
-    static_cast<T_Scenario*>(world->scenario)->SetPlayerAlliedVictory(which, allied_victory);
+    ((T_Scenario*)world->scenario)->SetPlayerAlliedVictory(which, allied_victory);
 }
 
 // TRIBE_Screen_Sed::load_diplomacy_from_scenario
@@ -590,7 +590,7 @@ void TRIBE_Screen_Sed::load_diplomacy_from_scenario(int which) {
     if (which >= 0) {
         int i = 0;
         do {
-            int attitude = static_cast<T_Scenario*>(this->world->scenario)->Get_player_attitude(which, i);
+            int attitude = ((T_Scenario*)this->world->scenario)->Get_player_attitude(which, i);
             if (attitude == 0)
                 this->Diplomacy_friend_box[i][0]->set_radio_button();
             if (attitude == 1)
@@ -601,7 +601,7 @@ void TRIBE_Screen_Sed::load_diplomacy_from_scenario(int which) {
             i++;
         } while (i < 8);
         this->Diplomacy_AlliedVictory[which]->set_state(
-            static_cast<T_Scenario*>(this->world->scenario)->GetPlayerAlliedVictory(which)
+            ((T_Scenario*)this->world->scenario)->GetPlayerAlliedVictory(which)
         );
     }
 }
@@ -1606,28 +1606,28 @@ void TRIBE_Screen_Sed::position_panels() {
     for (int mode_row = 0; mode_row < 5; ++mode_row) {
         TButtonPanel* previous = mode_row == 0 ? 0 : this->scenario_mode_button[mode_row - 1];
         this->scenario_mode_button[mode_row]->set_positioning(
-            static_cast<TPanel::PositionMode>(7), 2, 2, 2, 2, 50, 109, 22, 22, previous, 0, 0, 0
+            (TPanel::PositionMode)7, 2, 2, 2, 2, 50, 109, 22, 22, previous, 0, 0, 0
         );
     }
     for (int mode_col = 5; mode_col < 10; ++mode_col) {
         TButtonPanel* previous = mode_col == 5 ? 0 : this->scenario_mode_button[mode_col - 1];
         this->scenario_mode_button[mode_col]->set_positioning(
-            static_cast<TPanel::PositionMode>(7), 2, 2, 2, 2, 50, 109, 22, 22, previous,
+            (TPanel::PositionMode)7, 2, 2, 2, 2, 50, 109, 22, 22, previous,
             this->scenario_mode_button[mode_col - 5], 0, 0
         );
     }
 
-    this->menu_button->set_positioning(static_cast<TPanel::PositionMode>(9), 2, 5, 3, 3, 58, 58, 20, 40, 0, 0, 0, 0);
-    this->help_button->set_positioning(static_cast<TPanel::PositionMode>(10), 5, 5, 5, 5, 20, 30, 20, 30, 0, 0, 0, 0);
-    this->map_view->set_positioning(static_cast<TPanel::PositionMode>(10), 0, 0, 0, 0, 230, 230, 135, 135, 0, 0, 0, 0);
+    this->menu_button->set_positioning((TPanel::PositionMode)9, 2, 5, 3, 3, 58, 58, 20, 40, 0, 0, 0, 0);
+    this->help_button->set_positioning((TPanel::PositionMode)10, 5, 5, 5, 5, 20, 30, 20, 30, 0, 0, 0, 0);
+    this->map_view->set_positioning((TPanel::PositionMode)10, 0, 0, 0, 0, 230, 230, 135, 135, 0, 0, 0, 0);
     this->bottom_panel->set_positioning(
-        static_cast<TPanel::PositionMode>(8), 2, 2, 2, 2, 0, 0, 137, 137, 0, 0, this->map_view, 0
+        (TPanel::PositionMode)8, 2, 2, 2, 2, 0, 0, 137, 137, 0, 0, this->map_view, 0
     );
     this->unit_list->set_positioning(
-        static_cast<TPanel::PositionMode>(7), 0, 6, 0, 4, 124, 200, 0, 0, 0, this->menu_button, 0, this->bottom_panel
+        (TPanel::PositionMode)7, 0, 6, 0, 4, 124, 200, 0, 0, 0, this->menu_button, 0, this->bottom_panel
     );
     this->object_panel->set_positioning(
-        static_cast<TPanel::PositionMode>(8), 4, 4, 4, 4, 150, 150, 108, 108, 0, 0, 0, 0
+        (TPanel::PositionMode)8, 4, 4, 4, 4, 150, 150, 108, 108, 0, 0, 0, 0
     );
 
     TScrollBarPanel* unit_panel = (TScrollBarPanel*) this->unit_list;
@@ -1635,20 +1635,20 @@ void TRIBE_Screen_Sed::position_panels() {
     int number_draw_lines = ((TTextPanel*) unit_panel)->numberDrawLines();
     if (number_lines > number_draw_lines) {
         this->unit_list->set_positioning(
-            static_cast<TPanel::PositionMode>(7), 0, 6, 0, 4, 104, 220, 0, 0, 0, this->menu_button, 0,
+            (TPanel::PositionMode)7, 0, 6, 0, 4, 104, 220, 0, 0, 0, this->menu_button, 0,
             this->bottom_panel
         );
         this->unit_scrollbar->set_positioning(
-            static_cast<TPanel::PositionMode>(7), 1, 1, 0, 2, 18, 18, 0, 0, this->unit_list, this->menu_button, 0,
+            (TPanel::PositionMode)7, 1, 1, 0, 2, 18, 18, 0, 0, this->unit_list, this->menu_button, 0,
             this->bottom_panel
         );
         unit_panel = this->unit_scrollbar;
     }
     this->main_view->set_positioning(
-        static_cast<TPanel::PositionMode>(7), 0, 6, 0, 4, 0, 0, 0, 0, unit_panel, this->menu_button, 0,
+        (TPanel::PositionMode)7, 0, 6, 0, 4, 0, 0, 0, 0, unit_panel, this->menu_button, 0,
         this->bottom_panel
     );
-    this->message_panel->set_positioning(static_cast<TPanel::PositionMode>(8), 4, 4, 4, 4, 0, 0, 24, 24, 0, 0, 0, 0);
+    this->message_panel->set_positioning((TPanel::PositionMode)8, 4, 4, 4, 4, 0, 0, 24, 24, 0, 0, 0, 0);
 
     this->map_type_label->set_fixed_position(4, 4, 120, 22);
     this->map_type_button[0]->set_fixed_position(4, 22, 22, 22);
@@ -1804,7 +1804,7 @@ void TRIBE_Screen_Sed::position_panels() {
         ++message_label;
     } while (message_y < 133);
 
-    this->message_input->set_positioning(static_cast<TPanel::PositionMode>(7), 175, 4, 40, 4, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->message_input->set_positioning((TPanel::PositionMode)7, 175, 4, 40, 4, 0, 0, 0, 0, 0, 0, 0, 0);
 
     int cinematic_y = 22;
     TDropDownPanel** cinematic_input = this->cinematic_input;
@@ -1879,7 +1879,7 @@ void TRIBE_Screen_Sed::activate_victory_panel(int activate) {
     TButtonPanel** pp = this->victory_button;
     do {
         (*pp)->set_active(activate);
-        int state = ((static_cast<T_Scenario*>(this->world->scenario)->GetSPVictoryType(i) ? -1 : 0) & 2)
+        int state = ((((T_Scenario*)this->world->scenario)->GetSPVictoryType(i) ? -1 : 0) & 2)
                     + (this->CurrentVictory == i);
         if (activate) {
             (*pp)->set_state(state);
@@ -1950,7 +1950,7 @@ void TRIBE_Screen_Sed::SavePlayerActiveStatus() {
     int i = 0;
 
     for (; i < this->world->player_num - 1; ++i) {
-        static_cast<T_Scenario*>(this->world->scenario)->Set_player_Active(i, i < active_players);
+        ((T_Scenario*)this->world->scenario)->Set_player_Active(i, i < active_players);
     }
 
     this->victory_player_list->empty_list();

@@ -63,6 +63,10 @@ An unusual source form can stay only when one of these applies:
 Preserve original bugs, narrow widths, overlap, aliasing, evaluation order, and
 fault order when the executable proves them.
 
+Write casts in C style, `(T)expr`, as period source did. Do not introduce
+`static_cast`, `reinterpret_cast`, or `const_cast`. Where both forms are valid,
+VC5 emits identical code for them.
+
 ## Function status
 
 Each normal function has one status in `config/functions/`:

@@ -602,7 +602,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
             world = this->world;
             for (int player = one; player < (int) world->player_num; ++player) {
                 TRIBE_Victory_Conditions* conditions =
-                    static_cast<TRIBE_Victory_Conditions*>(world->players[player]->victory_conditions);
+                    (TRIBE_Victory_Conditions*)world->players[player]->victory_conditions;
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -626,7 +626,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
             world = this->world;
             for (int player = one; player < (int) world->player_num; ++player) {
                 TRIBE_Victory_Conditions* conditions =
-                    static_cast<TRIBE_Victory_Conditions*>(world->players[player]->victory_conditions);
+                    (TRIBE_Victory_Conditions*)world->players[player]->victory_conditions;
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -656,7 +656,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
     SaveAttributes = 0x72;
     do {
         TRIBE_Victory_Conditions* conditions =
-            static_cast<TRIBE_Victory_Conditions*>(this->world->players[j + 1]->victory_conditions);
+            (TRIBE_Victory_Conditions*)this->world->players[j + 1]->victory_conditions;
         int i = 0;
         do {
             SP_Victory_Info* condition = &this->sp_victory[j][i];
@@ -760,7 +760,7 @@ void T_Scenario::WriteDisabledTechnologiesToMainSystem() {
     // The shipped loop reads the low byte of each typed field.
     int* disabled = &this->DisabledTechnology[0][1];
     do {
-        TRIBE_Player* player = static_cast<TRIBE_Player*>(world->players[player_index]);
+        TRIBE_Player* player = (TRIBE_Player*)world->players[player_index];
 
         if (this->ScenarioOptions[0] != 0) {
             world->effects->do_effect(100, player);

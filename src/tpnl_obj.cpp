@@ -34,7 +34,7 @@ __declspec(dllimport) int __stdcall DrawTextA(HDC, LPCSTR, int, LPRECT, UINT);
 }
 
 static short building_facet(const RGE_Master_Static_Object* master) {
-    return static_cast<const TRIBE_Master_Building_Object*>(master)->building_facet;
+    return ((const TRIBE_Master_Building_Object*)master)->building_facet;
 }
 
 TRIBE_Panel_Object::TRIBE_Panel_Object(
@@ -126,7 +126,7 @@ void TRIBE_Panel_Object::set_player(TRIBE_Player* player_in) {
 }
 
 void TRIBE_Panel_Object::set_object(RGE_Static_Object* game_obj_in) {
-    this->game_obj = static_cast<TRIBE_Building_Object*>(game_obj_in);
+    this->game_obj = (TRIBE_Building_Object*)game_obj_in;
     save_object_info();
     this->set_redraw(TPanel::RedrawNormal);
 }
@@ -182,7 +182,7 @@ void TRIBE_Panel_Object::draw() {
             TShape* picture;
             if (this->game_obj->master_obj->unit_level == 2) {
                 unsigned char culture = this->game_obj->culture;
-                shape += static_cast<TRIBE_Master_Building_Object*>(this->game_obj->master_obj)->building_facet;
+                shape += ((TRIBE_Master_Building_Object*)this->game_obj->master_obj)->building_facet;
                 picture = this->bldg_pics[culture];
             } else {
                 picture = this->unit_pics;
@@ -248,7 +248,7 @@ void TRIBE_Panel_Object::draw() {
         if (str[0] == 0)
             strcpy(str, this->game_obj->master_obj->name);
 
-        if (static_cast<TRIBE_Game*>(rge_base_game)->show_object_id != 0)
+        if (((TRIBE_Game*)rge_base_game)->show_object_id != 0)
             sprintf(name, "%d-%s", this->game_obj->id, str);
         else
             sprintf(name, "%s", str);
@@ -764,7 +764,7 @@ long TRIBE_Panel_Object::handle_idle() {
 
     int changed = 0;
     int do_buttons = 0;
-    RGE_Action_Object* object = static_cast<RGE_Action_Object*>(this->game_obj);
+    RGE_Action_Object* object = (RGE_Action_Object*)this->game_obj;
 
     if (object != 0) {
         if (object->owner != this->save_owner) {
@@ -922,7 +922,7 @@ void TRIBE_Panel_Object::save_object_info() {
         return;
     }
 
-    RGE_Action_Object* object = static_cast<RGE_Action_Object*>(this->game_obj);
+    RGE_Action_Object* object = (RGE_Action_Object*)this->game_obj;
     if (object == 0)
         return;
 
@@ -950,7 +950,7 @@ void TRIBE_Panel_Object::save_object_info() {
         this->game_obj->get_speed_of_attack(this->save_speed_of_attack, orig_fval);
     }
 
-    TRIBE_Building_Object* building = static_cast<TRIBE_Building_Object*>(this->game_obj);
+    TRIBE_Building_Object* building = (TRIBE_Building_Object*)this->game_obj;
     if (building->master_obj->master_type == TRIBE_MASTER_TYPE_BUILDING) {
         this->save_object_state = building->object_state;
         int construction_progress = building->get_construction_progress();

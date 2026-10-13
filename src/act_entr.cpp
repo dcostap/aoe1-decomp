@@ -43,7 +43,7 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in,
     }
 
     if (target_obj_in->actionState() == 11) {
-        RGE_Action_Object* target_action = static_cast<RGE_Action_Object*>(target_obj_in);
+        RGE_Action_Object* target_action = (RGE_Action_Object*)target_obj_in;
         action = target_action->actions->get_action();
         if (action->target2ID == 0) {
             goto line_path;
@@ -51,7 +51,7 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in,
     }
 
     if (target_obj_in->actionState() == 11) {
-        RGE_Action_Object* target_action = static_cast<RGE_Action_Object*>(target_obj_in);
+        RGE_Action_Object* target_action = (RGE_Action_Object*)target_obj_in;
         action = target_action->actions->get_action();
         this->target_x = action->targetX();
         action = target_action->actions->get_action();
@@ -208,7 +208,7 @@ unsigned char RGE_Action_Enter::update() {
                         );
                     }
                 } else if (this->target_obj->actionState() == 11) {
-                    RGE_Action_Object* target_action = static_cast<RGE_Action_Object*>(this->target_obj);
+                    RGE_Action_Object* target_action = (RGE_Action_Object*)this->target_obj;
                     RGE_Action* action = target_action->actions->get_action();
                     this->target_x = action->targetX();
                     action = target_action->actions->get_action();

@@ -27,10 +27,10 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
     this->deleteButton = 0;
 
     tabList[0] = panel_system.currentPanel();
-    strcpy(info_file, static_cast<TEasy_Panel*>(tabList[0])->get_info_file());
+    strcpy(info_file, ((TEasy_Panel*)tabList[0])->get_info_file());
 
     TDrawArea* draw_area = rge_base_game->draw_area;
-    if (this->setup(draw_area, info_file, static_cast<TEasy_Panel*>(tabList[0])->get_info_id(), 1) == 0) {
+    if (this->setup(draw_area, info_file, ((TEasy_Panel*)tabList[0])->get_info_id(), 1) == 0) {
         this->error_code = 1;
         return;
     }
@@ -96,7 +96,7 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
         this->deleteButton->set_disabled(1);
     }
 
-    long line = this->list->get_line(static_cast<TRIBE_Game*>(rge_base_game)->get_save_game_name());
+    long line = this->list->get_line(((TRIBE_Game*)rge_base_game)->get_save_game_name());
     if (line != -1) {
         this->list->scroll_cur_line(1, (short) line, 1);
     }
@@ -224,7 +224,7 @@ long TribeLoadSavedGameScreen::action(TPanel* fromPanel, long actionIn, unsigned
                 } else {
                     sprintf(fileName, "%s.gmx", fileNameNoExt);
                 }
-                loaded = static_cast<TRIBE_Game*>(rge_base_game)->load_game(fileName);
+                loaded = ((TRIBE_Game*)rge_base_game)->load_game(fileName);
                 if (loaded == 0) {
                     this->popupOKDialog(STRING_ID_ERROR_CANNOT_LOAD_SAVED_GAME, 0, TEASY_POPUP_WIDTH, 100);
                     return 1;

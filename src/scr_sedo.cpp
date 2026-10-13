@@ -28,11 +28,11 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel("Scenario Editor O
     deleteButton = 0;
 
     tabList[0] = panel_system.currentPanel();
-    strcpy(info_file, static_cast<TEasy_Panel*>(tabList[0])->get_info_file());
+    strcpy(info_file, ((TEasy_Panel*)tabList[0])->get_info_file());
 
     TDrawArea* draw_area = rge_base_game->draw_area;
 
-    if (!setup(draw_area, info_file, static_cast<TEasy_Panel*>(tabList[0])->get_info_id(), 1)) {
+    if (!setup(draw_area, info_file, ((TEasy_Panel*)tabList[0])->get_info_id(), 1)) {
         error_code = 1;
         return;
     }
@@ -194,7 +194,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
 
                     if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                         sprintf(fileName, "%s.scn", list->currentLine());
-                        static_cast<TRIBE_Game*>(rge_base_game)->start_scenario_editor(fileName, 0);
+                        ((TRIBE_Game*)rge_base_game)->start_scenario_editor(fileName, 0);
                         return 1;
                     } else {
                         prog_info = rge_base_game->prog_info;
@@ -203,7 +203,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
                         sprintf(fileName, "%s%s.scx", scenario_dir, line);
                         if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                             sprintf(fileName, "%s.scx", list->currentLine());
-                            static_cast<TRIBE_Game*>(rge_base_game)->start_scenario_editor(fileName, 0);
+                            ((TRIBE_Game*)rge_base_game)->start_scenario_editor(fileName, 0);
                             return 1;
                         } else {
                             popupOKDialog(STRING_ID_ERROR_CANNOT_LOAD_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);

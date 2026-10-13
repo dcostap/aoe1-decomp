@@ -487,7 +487,7 @@ long TribeConfigDialog::action(TPanel* fromPanel, long actionIn, unsigned long a
                             comm->SendChatMsgAll(msg);
                         }
 
-                        static_cast<TRIBE_Command*>(rge_base_game->world->commands)->command_game_speed(new_speed);
+                        ((TRIBE_Command*)rge_base_game->world->commands)->command_game_speed(new_speed);
                         if (rge_base_game->singlePlayerGame() != 0)
                             rge_base_game->set_game_speed(new_speed);
                     }

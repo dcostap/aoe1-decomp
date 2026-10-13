@@ -193,7 +193,7 @@ RGE_Task* RGE_Master_Action_Object::getTaskByTaskID(int t) const {
 void RGE_Master_Action_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Moving_Object::copy_obj(source);
 
-    RGE_Master_Action_Object* action_source = static_cast<RGE_Master_Action_Object*>(source);
+    RGE_Master_Action_Object* action_source = (RGE_Master_Action_Object*)source;
     default_task = action_source->default_task;
     search_radius = action_source->search_radius;
     work_rate = action_source->work_rate;

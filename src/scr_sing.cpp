@@ -86,8 +86,8 @@ long TribeSPMenuScreen::action(TPanel* fromPanel, long actionIn, unsigned long a
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(0);
-            static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(0);
-            static_cast<TRIBE_Game*>(rge_base_game)->setQuickStartGame(0);
+            ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
+            ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
             rge_base_game->disable_input();
             new TribeMPSetupScreen;
             panel_system.setCurrentPanel("MP Setup Screen", 0);
@@ -99,8 +99,8 @@ long TribeSPMenuScreen::action(TPanel* fromPanel, long actionIn, unsigned long a
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(0);
-            static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(1);
-            static_cast<TRIBE_Game*>(rge_base_game)->setQuickStartGame(0);
+            ((TRIBE_Game*)rge_base_game)->setDeathMatch(1);
+            ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
             rge_base_game->disable_input();
             new TribeMPSetupScreen;
             panel_system.setCurrentPanel("MP Setup Screen", 0);
@@ -112,8 +112,8 @@ long TribeSPMenuScreen::action(TPanel* fromPanel, long actionIn, unsigned long a
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(1);
-            static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(0);
-            static_cast<TRIBE_Game*>(rge_base_game)->setQuickStartGame(0);
+            ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
+            ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
             rge_base_game->disable_input();
             new TribeSelectScenarioScreen;
             panel_system.setCurrentPanel("Select Scenario Screen", 0);

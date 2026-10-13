@@ -67,7 +67,7 @@ RGE_Action_Attack::RGE_Action_Attack(
     }
 
     if (move_sprite_in == 0) {
-        RGE_Master_Moving_Object* master = static_cast<RGE_Master_Moving_Object*>(this->obj->master_obj);
+        RGE_Master_Moving_Object* master = (RGE_Master_Moving_Object*)this->obj->master_obj;
         RGE_Sprite* sprite = master->run_sprite;
         if (sprite == 0) {
             sprite = master->move_sprite;
@@ -75,13 +75,13 @@ RGE_Action_Attack::RGE_Action_Attack(
         this->move_sprite = sprite;
     }
     if (fight_sprite_in == 0) {
-        this->fight_sprite = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fight_sprite;
+        this->fight_sprite = ((RGE_Master_Combat_Object*)this->obj->master_obj)->fight_sprite;
     }
     if (wait_sprite_in == 0) {
         this->wait_sprite = this->obj->master_obj->sprite;
     }
     if (range_in == 0.0f) {
-        this->range = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->weapon_range;
+        this->range = ((RGE_Master_Combat_Object*)this->obj->master_obj)->weapon_range;
         if (this->range == 0.0f) {
             this->range = 0.4f;
         }
@@ -108,7 +108,7 @@ RGE_Action_Attack::RGE_Action_Attack(
     this->indirect_fire_flag = 2;
 
     if (move_sprite_in == 0) {
-        RGE_Master_Moving_Object* master = static_cast<RGE_Master_Moving_Object*>(this->obj->master_obj);
+        RGE_Master_Moving_Object* master = (RGE_Master_Moving_Object*)this->obj->master_obj;
         RGE_Sprite* sprite = master->run_sprite;
         if (sprite == 0) {
             sprite = master->move_sprite;
@@ -116,13 +116,13 @@ RGE_Action_Attack::RGE_Action_Attack(
         this->move_sprite = sprite;
     }
     if (fight_sprite_in == 0) {
-        this->fight_sprite = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fight_sprite;
+        this->fight_sprite = ((RGE_Master_Combat_Object*)this->obj->master_obj)->fight_sprite;
     }
     if (wait_sprite_in == 0) {
         this->wait_sprite = this->obj->master_obj->sprite;
     }
     if (range_in == 0.0f) {
-        this->range = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->weapon_range;
+        this->range = ((RGE_Master_Combat_Object*)this->obj->master_obj)->weapon_range;
         if (this->range == 0.0f) {
             this->range = 0.4f;
         }
@@ -235,7 +235,7 @@ void RGE_Action_Attack::set_state(unsigned char new_state) {
             }
             int rangeStatus = -1;
             if (this->ready_to_attack(rangeStatus)) {
-                static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
+                ((RGE_Combat_Object*)this->obj)->reset_attack_timer();
                 this->set_state(7);
                 return;
             }
@@ -356,7 +356,7 @@ unsigned char RGE_Action_Attack::update() {
         case 6: {
             int rangeStatus = -1;
             if (this->ready_to_attack(rangeStatus)) {
-                static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
+                ((RGE_Combat_Object*)this->obj)->reset_attack_timer();
                 this->set_state(7);
             }
             break;
@@ -370,7 +370,7 @@ unsigned char RGE_Action_Attack::update() {
                         return RGE_ACTION_UPDATE_CONTINUE;
                     }
 
-                    static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
+                    ((RGE_Combat_Object*)this->obj)->reset_attack_timer();
                     this->set_state(6);
                     if (this->state == 13 || this->state == 4) {
                         return RGE_ACTION_UPDATE_CONTINUE;
@@ -395,7 +395,7 @@ unsigned char RGE_Action_Attack::update() {
             {
                 short attack_frame = this->fire_missile_at_frame;
                 if (attack_frame == 0) {
-                    attack_frame = static_cast<short>(this->obj->sprite->frame_num * 0.5f);
+                    attack_frame = (short)(this->obj->sprite->frame_num * 0.5f);
                 }
                 if (this->obj->sprite_list->frame_passed(this->obj->sprite, attack_frame)) {
                     this->do_attack();
@@ -547,7 +547,7 @@ ready:
 }
 
 void RGE_Action_Attack::do_attack() {
-    RGE_Combat_Object* object = static_cast<RGE_Combat_Object*>(this->obj);
+    RGE_Combat_Object* object = (RGE_Combat_Object*)this->obj;
 
     if (this->target_obj != 0) {
         object->attack(this->target_obj, object);
@@ -561,7 +561,7 @@ void RGE_Action_Attack::copy_obj_sprites(RGE_Master_Action_Object* source, RGE_T
     if (this->move_sprite != 0) {
         if ((task != 0) && (new_task != 0) && (this->move_sprite == task->move_sprite)) {
             this->move_sprite = new_task->move_sprite;
-        } else if (this->move_sprite == static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->move_sprite) {
+        } else if (this->move_sprite == ((RGE_Master_Action_Object*)this->obj->master_obj)->move_sprite) {
             this->move_sprite = source->move_sprite;
         }
     }
@@ -571,8 +571,8 @@ void RGE_Action_Attack::copy_obj_sprites(RGE_Master_Action_Object* source, RGE_T
             this->fight_sprite = new_task->work_sprite;
         } else if ((task != 0) && (new_task != 0) && (this->fight_sprite == task->work_sprite2)) {
             this->fight_sprite = new_task->work_sprite2;
-        } else if (this->fight_sprite == static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fight_sprite) {
-            this->fight_sprite = static_cast<RGE_Master_Combat_Object*>(source)->fight_sprite;
+        } else if (this->fight_sprite == ((RGE_Master_Combat_Object*)this->obj->master_obj)->fight_sprite) {
+            this->fight_sprite = ((RGE_Master_Combat_Object*)source)->fight_sprite;
         }
     }
 

@@ -102,7 +102,7 @@ TribeMPStartupScreen::TribeMPStartupScreen() : TScreenPanel("MP Startup Screen")
                                 dwType = 1;
                                 dwSize = 0xFF;
                                 int result = RegQueryValueExA(
-                                    ghUserKey, 0, 0, &dwType, static_cast<unsigned char*>(static_cast<void*>(Data)),
+                                    ghUserKey, 0, 0, &dwType, (unsigned char*)((void*)Data),
                                     &dwSize
                                 );
                                 if (ghUserKey != 0) {
@@ -193,12 +193,12 @@ long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned lon
                 rge_base_game->disable_input();
                 Regs->RegSetAscii(
                     1, "Default Age Of Empires Player Name",
-                    static_cast<unsigned char*>(static_cast<void*>(this->input->currentLine())),
+                    (unsigned char*)((void*)this->input->currentLine()),
                     strlen(this->input->currentLine()) + 1
                 );
                 Regs->RegSetAscii(
                     1, "Default Age Of Empires Multiplayer Service",
-                    static_cast<unsigned char*>(static_cast<void*>(this->list->get_text())),
+                    (unsigned char*)((void*)this->list->get_text()),
                     strlen(this->list->get_text()) + 1
                 );
                 comm->SetMyPlayerName(this->input->currentLine());

@@ -108,7 +108,7 @@ long TMessageDialog::setup(
             break;
     }
 
-    set_tab_order(reinterpret_cast<TPanel**>(button), static_cast<short>(button_num));
+    set_tab_order((TPanel**)button, (short)button_num);
     set_curr_child(button[0]);
     return 1;
 }

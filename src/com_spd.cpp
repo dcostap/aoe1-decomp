@@ -212,7 +212,7 @@ unsigned char RGE_Communications_Speed::GetHighLatencyCenti() {
     if (high_latency >= 0xFF) {
         high_latency = 0xFF;
     }
-    return static_cast<unsigned char>(high_latency);
+    return (unsigned char)high_latency;
 }
 
 unsigned long RGE_Communications_Speed::GetPlayerLatency(unsigned int PlayerNo) {
@@ -243,7 +243,7 @@ char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr() {
     granularity = this->GetRecommendedBufferGranularity();
     sprintf(
         buf, "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d", frames, granularity,
-        1000 / static_cast<int>(granularity), granularity * frames
+        1000 / (int)granularity, granularity * frames
     );
     return buf;
 }

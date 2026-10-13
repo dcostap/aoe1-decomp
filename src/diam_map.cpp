@@ -736,7 +736,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* game_obj, unsigned 
         return;
 
     if (game_obj->type == 0x19) {
-        RGE_Doppleganger_Object* doppleganger = static_cast<RGE_Doppleganger_Object*>(game_obj);
+        RGE_Doppleganger_Object* doppleganger = (RGE_Doppleganger_Object*)game_obj;
 
         if (visible == 0x0F)
             return;
