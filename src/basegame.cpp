@@ -2263,7 +2263,7 @@ RGE_Game_World* RGE_Base_Game::create_world() {
 }
 
 void RGE_Base_Game::close() {
-    PostMessageA(this->prog_window, WM_CLOSE, 0, 0);
+    SendMessageA(this->prog_window, WM_CLOSE, 0, 0);
 }
 
 int RGE_Base_Game::create_dialog(TPanel** dialog_ptr, TPanel* new_dialog) {
@@ -3315,7 +3315,7 @@ void RGE_Base_Game::calc_timing_text() {
         divisor = 1;
 
     sprintf(
-        this->timing_text, "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, draw=%lu, prog=%lu, ui=%lu, sfx=%lu, misc=%lu",
+        this->timing_text, "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, upd=%lu, snd=%lu, misc=%lu, oth=%lu, tot=%lu",
         this->fps, this->timings[2].last_time / divisor, this->timings[6].last_time / divisor,
         this->timings[7].last_time / divisor, this->timings[3].last_time / divisor, this->timings[1].last_time / divisor,
         this->timings[10].last_time / divisor, this->timings[13].last_time / divisor, this->timings[4].last_time / divisor,

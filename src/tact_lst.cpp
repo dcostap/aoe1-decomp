@@ -118,14 +118,6 @@ void TRIBE_Action_List::get_action_name(char* action_name) {
     }
 
     switch (this->list->action->action_type) {
-        case RGE_ACTION_TYPE_ENTER:
-            name = "Enter";
-            strcpy(action_name, name);
-            return;
-        case RGE_ACTION_TYPE_TRANSPORT:
-            name = "Transport";
-            strcpy(action_name, name);
-            return;
         case TRIBE_ACTION_TYPE_BUILD:
             name = "Build";
             strcpy(action_name, name);
@@ -146,10 +138,6 @@ void TRIBE_Action_List::get_action_name(char* action_name) {
             name = "Heal";
             strcpy(action_name, name);
             return;
-        case TRIBE_ACTION_TYPE_REPAIR:
-            name = "Repair";
-            strcpy(action_name, name);
-            return;
         case TRIBE_ACTION_TYPE_ARTIFACT:
             name = "Artifact";
             strcpy(action_name, name);
@@ -162,8 +150,20 @@ void TRIBE_Action_List::get_action_name(char* action_name) {
             name = "Hunt";
             strcpy(action_name, name);
             return;
+        case TRIBE_ACTION_TYPE_REPAIR:
+            name = "Repair";
+            strcpy(action_name, name);
+            return;
         case TRIBE_ACTION_TYPE_TRADE:
             name = "Trade";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_ENTER:
+            name = "Enter";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_TRANSPORT:
+            name = "Transport";
             strcpy(action_name, name);
             return;
         default:

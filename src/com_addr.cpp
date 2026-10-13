@@ -68,28 +68,28 @@ int RGE_Communications_Addresses::SetIPAliases(char* sz) {
     return AliasesAvailable;
 }
 
-// pIPAD[Num] is formed before the count check. The fallback is
-// the natural empty string literal used by the original source.
+// pIPAD[Num] is formed before the count check. The fallback is a
+// single space, as in the original.
 char* RGE_Communications_Addresses::GetAddress(unsigned int Num) {
     if (this->pIPAD + Num != 0 && Num <= this->AddressesAvailable) {
         return this->pIPAD[Num].DottedIPAddress;
     }
-    return "";
+    return " ";
 }
 
-// The count check, indexed record access, null test, and fallback
-// keep the shipped fault order.
+// The count check, indexed record access, null test, and single-space
+// fallback keep the shipped fault order.
 char* RGE_Communications_Addresses::GetAlias(unsigned int Num) {
     char* alias;
 
     // The alias count itself passes this test and selects the next record.
     // A >= correction would reject that shipped case and change malformed-input behavior.
     if (Num > this->AliasesAvailable) {
-        return "";
+        return " ";
     }
     alias = this->pIPAD[Num].Alias;
     if (alias == 0) {
-        return "";
+        return " ";
     }
     return alias;
 }

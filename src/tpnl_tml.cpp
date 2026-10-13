@@ -1182,6 +1182,11 @@ void Time_Line_Panel::draw_icon(Special_Events* event_ptr, short icon_number, uc
             else
                 event_ptr->text1[0] = 0;
             break;
+        case 4:
+        case 5:
+        case 7:
+            event_ptr->text1[0] = 0;
+            break;
         case 8:
             sprintf(temp_str + 4, "%ld/%1d", event_ptr->integer_value_1, event_ptr->integer_value_2);
             sprintf(event_ptr->text1, "%s", temp_str + 4);

@@ -98,7 +98,7 @@ uchar RGE_Random_Map_Module::generate() {
     }
 
     this->list = sorted;
-    L->Log("RGE_RANDOM_MAP_MODULE::map start", debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 138));
+    L->Log("RGE_RANDOM_MAP_MODULE::map startped with random: %d.", debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 138));
 
     current = this->list;
     if (current == 0)
@@ -108,7 +108,9 @@ uchar RGE_Random_Map_Module::generate() {
         if (current->module->generate() == 0)
             return 0;
 
-        L->Log("RGE_RANDOM_MAP_MODULE::module completed with ret:", debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 143));
+        L->Log(
+            "RGE_RANDOM_MAP_MODULE::module completed with random: %d.", debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 143)
+        );
         current = current->next;
     }
 

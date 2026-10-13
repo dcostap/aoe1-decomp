@@ -411,8 +411,12 @@ void RGE_Action_List::get_action_name(char* action_name) {
     }
 
     switch (this->list->action->action_type) {
-        case RGE_ACTION_TYPE_MOVE:
-            name = "MoveTo";
+        case RGE_ACTION_TYPE_ATTACK:
+            name = "Attack";
+            strcpy(action_name, name);
+            return;
+        case RGE_ACTION_TYPE_BIRD:
+            name = "Bird";
             strcpy(action_name, name);
             return;
         case RGE_ACTION_TYPE_EXPLORE:
@@ -427,12 +431,8 @@ void RGE_Action_List::get_action_name(char* action_name) {
             name = "Missile";
             strcpy(action_name, name);
             return;
-        case RGE_ACTION_TYPE_ATTACK:
-            name = "Attack";
-            strcpy(action_name, name);
-            return;
-        case RGE_ACTION_TYPE_BIRD:
-            name = "Bird";
+        case RGE_ACTION_TYPE_MOVE:
+            name = "MoveTo";
             strcpy(action_name, name);
             return;
         case RGE_ACTION_TYPE_RUN_AWAY:

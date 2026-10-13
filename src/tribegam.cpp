@@ -3447,19 +3447,19 @@ void TRIBE_Game::let_game_begin() {
     run_log(str, 0);
 
     sprintf(str, "    numplayers=%d", this->world->player_num - 1);
-    strcat(str, " players=");
+    strcat(str, ", players=");
     for (i = 1; i < this->world->player_num; ++i) {
         sprintf(int_str, "%d", this->playerColor(i - 1));
         strcat(str, int_str);
     }
 
-    strcat(str, " teams=");
+    strcat(str, ", teams=");
     for (i = 1; i < this->world->player_num; ++i) {
         sprintf(int_str, "%d", this->playerTeam(i - 1) - 1);
         strcat(str, int_str);
     }
 
-    strcat(str, " civs=");
+    strcat(str, ", civs=");
     for (i = 1; i < this->world->player_num; ++i) {
         sprintf(int_str, "%d ", this->civilization(i - 1));
         strcat(str, int_str);
@@ -3998,7 +3998,7 @@ int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
             case 0x17b0:
                 if (this->game_screen != 0) {
                     this->play_sound(2);
-                    this->game_screen->display_system_message("Out of sync detected by communications.");
+                    this->game_screen->display_system_message("Out of sync detected by comm...");
                 }
                 if (this->check_prog_argument("SKIPSYNCSAVE") == 0) {
                     if (out_of_sync == 0) {

@@ -659,8 +659,8 @@ void TCommunications_Handler::LogRXMsg(
 ) {
     if (this->RGE_Guaranteed_Delivery != 0) {
         L->Log(
-            "GTD: RX Ser#%d From P#%d T#%ld ToExecT#%d %d", Serialno, fromPlayer, this->current_turn, ExecuteOnTurn, Command,
-            Command, Sequence
+            "GTD: RX Ser#%d From P#%d T#%ld ToExecT#%d Cmd=%d '%c' Seq=%d", Serialno, fromPlayer, this->current_turn,
+            ExecuteOnTurn, Command, Command, Sequence
         );
     }
 }
@@ -816,7 +816,7 @@ void TCommunications_Handler::GetDPLAYMessages() {
         pno2 = 0;
     found_second_player:
         L->Log(
-            "COMM: RX P#%d ID(%ld) siz=%db   MSG=%d '%c'", pno2, dcoFromID, dwSize, (int) *buf, (int) *buf,
+            "COMM: RX P#%d ID(%ld) siz=%db   MSG=%d '%c'  timeGetTime=%d", pno2, dcoFromID, dwSize, (int) *buf, (int) *buf,
             debug_timeGetTime(com_hand_source_path, 1077)
         );
         this->RXPacketLength += dwSize;
@@ -1297,7 +1297,7 @@ void TCommunications_Handler::NotifyWindow(COMMMESSAGES msg) {
 
 void TCommunications_Handler::NotifyWindowParam(COMMMESSAGES msg, long lparam) {
     PostMessageA(this->HostHWND, WM_USER, msg, lparam);
-    L->Log("COMM: Send msg to window WM_USER  Msg=%d  Param=%d\n", msg, lparam);
+    L->Log("COMM: Send msg to window WM_USER  Msg=%d  Param=%d ", msg, lparam);
 }
 
 int TCommunications_Handler::EvaluatePlayerMessage(
@@ -1507,11 +1507,11 @@ long TCommunications_Handler::SendSharedData(int SendImmediately) {
     }
 
     if (local_player_dpid == 0) {
-        L->Log("No DCOID for Send Shared Data");
+        L->Log("NO DCOID-FAIL SEND PLRDAT");
         return 0x80004005;
     }
 
-    L->Log("Sending Shared Data");
+    L->Log("Sending options data");
 
     unsigned int packet_size = this->PlayerOptions.DataSizeToFollow + 0x1D0;
     this->PlayerOptions.LastSentTime = now;
@@ -1521,7 +1521,7 @@ long TCommunications_Handler::SendSharedData(int SendImmediately) {
     memcpy(pdata + sizeof(COMMPLAYEROPTIONS), this->OptionsData, this->PlayerOptions.DataSizeToFollow);
 
     long hr = direct_play_interface->SetPlayerData(local_player_dpid, pdata, packet_size, 2);
-    this->Err->ShowReturn(hr, "Send Shared Data");
+    this->Err->ShowReturn(hr, "Set Player Data");
     delete[] pdata;
 
     this->PlayerOptions.NeedsToBeSent = 0;
@@ -2085,14 +2085,14 @@ long TCommunications_Handler::SendChecksumMessage(
 
     long result = this->CommOut(0, 0x4D, &cs, 0x24, 0);
 
-    this->Err->ShowReturn(result, "Send Checksum");
+    this->Err->ShowReturn(result, "SendChecksum");
 
     return result;
 }
 
 typedef unsigned int uint;
 
-static char s_clear_past[] = "+++Clearing PAST OnHold Slot=%d  Serial#%d Len=%d  From=%d  To=%d  HumanSerial#%d";
+static char s_clear_past[] = "+++Clearing PAST OnHold Slot=%d  Serial#%d Len=%d  From=%d  To=%d  Expecting#%d";
 static char s_cached[] = "Cached Execute #%d  Slot#%d ";
 static char s_clearing[] = "Clearing OnHold Slot=%d  Len=%d  From=%d  To=%d";
 
@@ -2220,7 +2220,7 @@ int TCommunications_Handler::CountWaitingMessages() {
         RESENDER* entry = &this->Resend[slot];
         if (entry->Serial != 0) {
             L->Log(
-                "GTD: Ser #%d Slot=%d Cmd='%c' Len=%d not acknowledged", entry->Serial, slot,
+                "GTD: Ser #%d Slot=%d Cmd='%c' Len=%d not ackd yet by %d,%d,%d,%d,%d,%d,%d,%d", entry->Serial, slot,
                 (int) ((signed char) entry->ResendMsg[0]), entry->Length, entry->DestMap[1], entry->DestMap[2], entry->DestMap[3],
                 entry->DestMap[4], entry->DestMap[5], entry->DestMap[6], entry->DestMap[7], entry->DestMap[8]
             );
@@ -2710,7 +2710,7 @@ int TCommunications_Handler::TXResendRequest(unsigned int serial, unsigned int t
     int ok = dp->Send(local_player_dpid, to, 0, msg, sizeof(*msg));
     unsigned long elapsed2 = debug_timeGetTime(com_hand_source_path, 4024) - sendStart;
     if (elapsed2 > 50) {
-        L->Log("  TX RES REQ took %d", elapsed2);
+        L->Log("!!!GetNextSequence slow - %ld msec", elapsed2);
     }
     delete msg;
     if (ok == 0) {
@@ -2721,7 +2721,7 @@ int TCommunications_Handler::TXResendRequest(unsigned int serial, unsigned int t
 }
 
 unsigned char TCommunications_Handler::GetNextSequence(unsigned long value) {
-    static unsigned char Sequence = 1;
+    static unsigned char Sequence;
     static unsigned long LastCurrentTurn = 0;
 
     if (value != LastCurrentTurn) {
@@ -3391,7 +3391,7 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS lvl) {
     original_status = AnalyzeCommunicationsStatus();
 
     CommunicationsStatus = original_status;
-    L->Log("Unlink to level %d desired, currently at level %d", lvl, original_status);
+    L->Log("Unlink to level %d desired, currently at level=%d", lvl, original_status);
 
     if (lvl < 1) {
         lvl = INITIALIZED;
@@ -3411,7 +3411,7 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS lvl) {
     return AnalyzeCommunicationsStatus();
 
 unlink_failed:
-    sprintf(TBuff, "Unlink from level [ %d ] Failed.\n Stopping connections", original_status);
+    sprintf(TBuff, "Unlink from level [ %d ] Failed.\n Stopping ", original_status);
     L->Log(TBuff);
     return AnalyzeCommunicationsStatus();
 }
@@ -3526,7 +3526,7 @@ void TCommunications_Handler::RequestPauseGame(int SendChatInfo) {
         return;
     }
 
-    L->Log("  >TX_REQ_PAUSE");
+    L->Log("  >TX REQ PAUSE");
     this->CommOut(0, 0x57, 0, 0, 0);
 }
 
@@ -3589,7 +3589,7 @@ char* TCommunications_Handler::GetCommStateStr() {
 }
 
 char* TCommunications_Handler::GetReadyPlayerStr() {
-    strcpy(ready_player_buffer, "Ready=                         ");
+    strcpy(ready_player_buffer, "Ready=                        ");
 
     unsigned int i = 1;
     if (i <= this->MaxGamePlayers) {
@@ -3887,7 +3887,7 @@ void TCommunications_Handler::InitPlayerInformation(unsigned int PlayerNo, unsig
         InQ->FlushForPlayer(PlayerNo);
     }
 
-    L->Log("Player %d (%ld) is INITIALIZED as '%s' [%s]", PlayerNo, dpID, FrName, FoName);
+    L->Log("Player %d (%ld) is INITIALIZED as '%s' [%s].", PlayerNo, dpID, FrName, FoName);
 }
 
 int TCommunications_Handler::SetGameTitle(char* Game) {
@@ -3966,7 +3966,7 @@ int TCommunications_Handler::CreateMultiplayerGame(void) {
     chat->ClearChat();
 
     long result = this->CreateDirectPlayConversation();
-    this->Err->ShowReturn(result, "CreateDirectPlayConversation");
+    this->Err->ShowReturn(result, "DPCreateConv");
 
     DPSESSIONDESC2 dSess2;
     memset(&dSess2, 0, sizeof(dSess2));
@@ -3981,7 +3981,7 @@ int TCommunications_Handler::CreateMultiplayerGame(void) {
     this->DebugSessionInformation(&dSess2);
 
     result = direct_play_interface->Open(&dSess2, 2);
-    this->Err->ShowReturn(result, "DirectPlay Open Create");
+    this->Err->ShowReturn(result, "DP Open Create");
 
     if (result != 0) {
         if (result == (long) 0x887700AA) {
@@ -4041,7 +4041,7 @@ void TCommunications_Handler::PackPlayersDown() {
                         save = i;
                         L->Log("Moved %d->%d", src, save);
                         L->Log("Position %d *LOCKED*.   Plr=%s", save, this->GetPlayerName(save));
-                        this->InitPlayerInformation(src, 0, "", "");
+                        this->InitPlayerInformation(src, 0, " ", " ");
                         break;
                     }
                     ++src;
@@ -4488,7 +4488,7 @@ typedef long HRESULT;
 
 static char s_get_caps[] = "Get Caps";
 static char s_get_guaranteed_caps[] = "Get guaranteed Caps";
-static char s_header[] = "-----------Direct Play III Capabilities -----------";
+static char s_header[] = "-----------Direct Play III Capabilities ---------";
 static char s_max_buffer[] = "Max Buffer Size = %d";
 static char s_max_queue[] = "Max Queue Size  = %d";
 static char s_max_players[] = "Max Players     = %d";
@@ -4502,7 +4502,7 @@ static char s_session_host_msg[] = "This player is the Session Host.";
 static char s_not_session_host_msg[] = "Not the host.";
 static char s_keepalive[] = "Optimized keepalive detection.";
 static char s_not_keepalive[] = "Not optimized for keepalive.";
-static char s_guar_delivery[] = "Guaranteed delivery is Supported";
+static char s_guar_delivery[] = "Guaranteed delivery is Supported.";
 static char s_not_guar_service[] = "NOT Guaranteed Service!";
 
 HRESULT TCommunications_Handler::CommGetCaps() {
@@ -4738,7 +4738,7 @@ void TCommunications_Handler::DebugSessionInformation(DPSESSIONDESC2* dpsd) {
     L->Log("User 2              =%d", dpsd->dwUser2);
     L->Log("User 3              =%d", dpsd->dwUser3);
     L->Log("User 4              =%d", dpsd->dwUser4);
-    L->Log("--End Info--");
+    L->Log("--   end  --");
 }
 
 long TCommunications_Handler::EnableNewPlayers(IDirectPlay2* lpDP2, int bEnable) {

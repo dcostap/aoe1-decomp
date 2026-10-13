@@ -8,8 +8,8 @@ the code that sends the type.
 | Type | Macro | Sender | Handler |
 | --- | --- | --- | --- |
 | 1 | `NOT_CLOSE_ENOUGH_TO_LAND` | `TRIBE_Player::notify` 0x207 (transport) | "Not close enough to land to unload." |
-| 2 | `CANNOT_TRADE_WITH_ENEMY` | `notify` 0x206 (transport) | "You cannot trade with an enemy." |
-| 3 | `NOT_ENOUGH_UNLOAD_SPACE` | `notify` 0x20C with the trade action | "Not enough room to unload all." |
+| 2 | `NOT_ENOUGH_UNLOAD_SPACE` | `notify` 0x206 (transport) | "Not enough room to unload all." |
+| 3 | `CANNOT_TRADE_WITH_ENEMY` | `notify` 0x20C with the trade action | "You cannot trade with an enemy." |
 | 4 | `PLAYER_DISCONNECTED` | no literal sender | disconnect message |
 | 5 | `PLAYER_RESIGNED` | `RGE_Player::do_resign` | resign or disconnect message |
 | 6 | `PLAYER_DEFEATED` | `RGE_Player::set_game_status` | defeat message |
@@ -30,17 +30,20 @@ the code that sends the type.
 | 0x7D | `ATTRIBUTE_NEEDED` | `TRIBE_Building_Object` queue; `val2` is the missing attribute | attribute message |
 | 0x7E | `OBJECT_DEPLETED` | `RGE_Action_Make`, when the object runs out and dies | sound, location |
 
-## Original bug: swapped transport messages
+## Transport messages are not swapped
 
-The original dispatch in `TRIBE_Player::notify` (`005159D0`) uses a byte table at `00515B9C`.
-It sends notify 0x206 as type 2 and 0x20C as type 3:
+An earlier version of this note reported an original bug: a transport with units still aboard
+(0x206) showed "You cannot trade with an enemy", and a failed trade (0x20C) showed "Not enough room
+to unload all." That conclusion was wrong. It came from the rebuilt `TRIBE_Game::notification`
+(`00524D70`), whose type 2 and type 3 cases sat in the opposite source order. The code bytes still
+matched, but the switch table sent each type to the other block.
 
-- A transport sends 0x206 when units are still aboard after it unloads. The player sees "You
-  cannot trade with an enemy."
-- A failed trade sends 0x20C. The player sees "Not enough room to unload all."
-
-The handler strings come from `runtime/language.dll` IDs 0x0BC0 and 0x0BC3. The source keeps this
-behavior and has a `@bug` comment.
+The original table at `00525C20` sends type 2 to the block that shows attribute message 0x67 ("Not
+enough room to unload all.") and type 3 to the block that shows 0x69 ("You cannot trade with an
+enemy."). The dispatch in `TRIBE_Player::notify` (`005159D0`) sends 0x206 as type 2 and 0x20C as
+type 3, so each sender shows the matching message. The macros for types 2 and 3 were renamed to
+match, and the `@bug` comment was removed. The linked image diff now compares switch tables; see
+[linked data findings](linked_data_findings.md).
 
 ## Related cleanup
 

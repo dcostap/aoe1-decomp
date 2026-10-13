@@ -384,7 +384,7 @@ unsigned char RGE_Action_Object::update() {
 
         if (this->lastActionValue != action_value || this->lastActionStateValue != action_state_value) {
             fprintf(
-                actionFile, "t%d, %d,%d,%d,%d,%d\\n", this->owner->world->world_time, this->id, this->lastActionValue,
+                actionFile, "t%d, %d,%d,%d,%d,%d\n", this->owner->world->world_time, this->id, this->lastActionValue,
                 this->lastActionStateValue, action_value, action_state_value
             );
             this->lastActionValue = action_value;

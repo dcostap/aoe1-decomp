@@ -9,6 +9,8 @@
 static char s_tpnl_btn_draw[] = "tpnl_btn::draw";
 static char s_tpnl_btn_draw2[] = "tpnl_btn::draw2";
 static char s_tpnl_btn_draw3[] = "tpnl_btn::draw3";
+// The original releases the garrison-count DC under the inventory panel's name.
+static char s_tpnl_inv_draw2[] = "tpnl_inv::draw2";
 
 TRIBE_Panel_Button::TRIBE_Panel_Button(
     TDrawArea* render_area_in, TPanel* parent_panel_in, TDigital* sound_in, void* font_in, long font_wid_in, long font_hgt_in,
@@ -211,7 +213,7 @@ void TRIBE_Panel_Button::draw() {
             SetTextColor(render_area->DrawDc, 0xCCCCCC);
             TextOutA(render_area->DrawDc, pnl_x + 3 + (is_down != 0), pnl_y + 2 + (is_down != 0), msg, (int) strlen(msg));
             SelectClipRgn(render_area->DrawDc, 0);
-            render_area->ReleaseDc(s_tpnl_btn_draw2);
+            render_area->ReleaseDc(s_tpnl_inv_draw2);
         }
     }
 

@@ -142,7 +142,7 @@ int ResearchAIModule::loadTechnologyTree(char* lName) {
         if (fgets(temp, 0x100, fp) != 0) {
             tail = &this->techTree;
             do {
-                sscanf(temp, "%*c%d %s %*d %*d %d %d %d %d %*d %*d %*d %*d", rc, name, rc + 1, rc + 2, rc + 3, rc + 4);
+                sscanf(temp, "%*c%d %s %*d %*d %d %d %d %d %*d %*d %*d %*d %*d %*d", rc, name, rc + 1, rc + 2, rc + 3, rc + 4);
                 ResourceItem newRCost(4, rc + 1);
                 TechnologyItem* alloc = new TechnologyItem(rc[0], name, newRCost);
                 item = alloc;

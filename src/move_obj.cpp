@@ -607,7 +607,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
 
     if (actionFile != 0) {
         fprintf(
-            actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time, this->id,
+            actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)", this->owner->world->world_time, this->id,
             this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
         );
         this->pathValue.initToStart();
@@ -831,7 +831,7 @@ int RGE_Moving_Object::doMove() {
         this->pathingGroupMembers.zeroNumber();
         if (actionFile != 0) {
             fprintf(
-                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time, this->id,
+                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)", this->owner->world->world_time, this->id,
                 this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
             );
             this->pathValue.initToStart();
@@ -985,7 +985,7 @@ int RGE_Moving_Object::doMove() {
         this->pathingGroupMembers.zeroNumber();
         if (actionFile != 0) {
             fprintf(
-                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time, this->id,
+                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)", this->owner->world->world_time, this->id,
                 this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
             );
             this->pathValue.initToStart();
@@ -1229,7 +1229,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
 
         if (actionFile != 0) {
             fprintf(
-                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time, this->id,
+                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)", this->owner->world->world_time, this->id,
                 this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
             );
             Path* path = &this->pathValue;

@@ -669,9 +669,9 @@ void TRIBE_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, i
     char val_str[20];
 
     if (this->item_pic != 0 && pic_index != -1) {
-        if (this->render_area->Lock("tpnl_obj.cpp", 1) != 0) {
+        if (this->render_area->Lock("tpnl_obj::draw_item", 1) != 0) {
             this->item_pic->shape_draw(this->render_area, this->pnl_x + 54, this->pnl_y + row * 20 + 30, pic_index, 0, 0);
-            this->render_area->Unlock("tpnl_obj.cpp");
+            this->render_area->Unlock("tpnl_obj::draw_item");
         }
     }
 
@@ -697,7 +697,7 @@ void TRIBE_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, i
     }
 
     if (val_str[0] != 0) {
-        void* dc = this->render_area->GetDc("tpnl_obj.cpp");
+        void* dc = this->render_area->GetDc("tpnl_obj::draw_item");
         if (dc != 0) {
             SetBkMode(this->render_area->DrawDc, TRANSPARENT);
             SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
@@ -706,7 +706,7 @@ void TRIBE_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, i
             TextOutA(this->render_area->DrawDc, this->pnl_x + 88, this->pnl_y + row * 20 + 33, val_str, strlen(val_str));
 
             SelectObject(this->render_area->DrawDc, old_font);
-            this->render_area->ReleaseDc("tpnl_obj.cpp");
+            this->render_area->ReleaseDc("tpnl_obj::draw_item");
         }
     }
 }

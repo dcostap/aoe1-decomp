@@ -637,7 +637,7 @@ void TRIBE_Command::command_build(RGE_Static_Object** unit, short list_num, shor
             cmd->unit_player_id = (unsigned char) owner_id;
             cmd->obj_id = obj_id;
             cmd->unique_id = -1;
-            L->Log("      >SEND CMD BUILD (CNT=%d,CAT=%d)", obj_count, (int) obj_id);
+            L->Log("      >SEND CMD BUILD (CNT=%d,OBJ=%d)", obj_count, (int) obj_id);
             this->submit(cmd, size);
         }
     }
@@ -659,7 +659,7 @@ void TRIBE_Command::command_build(int playerID, int* unitID, int numUnits, int o
             cmd->location_y = yLoc;
             cmd->unique_id = uniqueID;
             cmd->unit_player_id = (unsigned char) playerID;
-            L->Log("      >SEND CMD BUILD2 (CNT=%d,CAT=%d)", numUnits, objectID);
+            L->Log("      >SEND CMD BUILD2 (CNT=%d,OBJ=%d)", numUnits, objectID);
             this->submit(cmd, size);
         }
     }
@@ -713,7 +713,7 @@ void TRIBE_Command::command_build_wall(
             cmd->x2 = (unsigned char) x2;
             cmd->unique_id = -1;
 
-            L->Log("      >SEND CMD WALL (CNT=%d,CAT=%d)", obj_count, (int) obj_id);
+            L->Log("      >SEND CMD BLD WALL (CNT=%d,OBJ=%d)", obj_count, (int) obj_id);
 
             this->submit(cmd, size);
         }
@@ -868,7 +868,7 @@ void TRIBE_Command::command_attack_ground(RGE_Static_Object** unit, short list_n
             cmd->location_x = x;
             cmd->location_y = y;
 
-            L->Log("      >SEND CMD ATTACK GROUND (CNT=%d)", obj_count);
+            L->Log("      >SEND CMD ATTACK GRND (CNT=%d)", obj_count);
 
             this->submit(cmd, size);
         }

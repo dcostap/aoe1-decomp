@@ -12,7 +12,7 @@
 
 static char s_rmm_tdbc_path[] = "C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp";
 static char s_land_log[] = "Random Map land initilization, rand: %d";
-static char s_terrain_log[] = "Random Map terrain initilization, rand: %d";
+static char s_terrain_log[] = "Random Map elevation initilization, rand: %d";
 static char s_object_log[] = "Random Map object initilization, rand: %d";
 static char s_shallows_log[] = "Random Map shallows initilization, rand: %d";
 

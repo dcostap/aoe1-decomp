@@ -157,7 +157,7 @@ void RGE_Communications_Queue::FlushForPlayer(unsigned int p) {
         MsgQueue* entry = &Queue[i];
         if (from == p && entry->Size > 0) {
             L->Log(
-                "Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d CtrlCmd=%d", i, entry->SeqNo, entry->ExecTurn, from,
+                "Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d Code=%d Ctrl=%d ", i, entry->SeqNo, entry->ExecTurn, from,
                 entry->Size, entry->ControlCommand, entry->Code
             );
 

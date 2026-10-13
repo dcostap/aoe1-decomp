@@ -76,7 +76,7 @@ void TRIBE_World::logStatus(FILE* out, int firstTime) {
     char tempString[256];
 
     if (out != 0 && firstTime == 1) {
-        fprintf(out, "\n\n\n****************************************\n");
+        fprintf(out, "\n\n\n*****************************************************\n");
 
         time(&clock);
         fprintf(out, "AI Log file for Game Started %s", asctime(localtime(&clock)));

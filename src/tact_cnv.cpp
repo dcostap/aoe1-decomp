@@ -168,9 +168,6 @@ void TRIBE_Action_Convert::set_state(uchar new_state) {
             return;
         }
 
-        case 5:
-            return;
-
         case 6:
             this->obj->new_sprite(this->task->move_sprite);
             return;
@@ -187,19 +184,19 @@ void TRIBE_Action_Convert::set_state(uchar new_state) {
             this->timer = this->task->work_val2;
             return;
 
+        case 5:
         case 8:
         case 9:
         case 10:
         case 12:
+            return;
+
         case 1:
         case 2:
         case 13:
         case 14:
         master_sprite:
             this->obj->new_sprite(this->obj->master_obj->sprite);
-            return;
-
-        default:
             return;
     }
 }

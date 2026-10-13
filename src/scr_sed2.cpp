@@ -501,7 +501,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_explore->set_text(str);
     } else {
         this->victory_cond_on[1]->set_state(0);
-        this->victory_condition_explore->set_text(s_empty_string);
+        this->victory_condition_explore->set_text("0");
     }
 
     value = ((T_Scenario*) this->world->scenario)->Get_Multi_Ruins();
@@ -511,7 +511,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_ruins->set_text(str);
     } else {
         this->victory_cond_on[2]->set_state(0);
-        this->victory_condition_ruins->set_text(s_empty_string);
+        this->victory_condition_ruins->set_text("0");
     }
 
     value = ((T_Scenario*) this->world->scenario)->Get_Multi_Artifacts();
@@ -521,7 +521,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_artifacts->set_text(str);
     } else {
         this->victory_cond_on[3]->set_state(0);
-        this->victory_condition_artifacts->set_text(s_empty_string);
+        this->victory_condition_artifacts->set_text("0");
     }
 
     value = ((T_Scenario*) this->world->scenario)->Get_Multi_Discoveries();
@@ -531,7 +531,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_discoveries->set_text(str);
     } else {
         this->victory_cond_on[4]->set_state(0);
-        this->victory_condition_discoveries->set_text(s_empty_string);
+        this->victory_condition_discoveries->set_text("0");
     }
 
     value = ((T_Scenario*) this->world->scenario)->Get_Multi_Gold();
@@ -541,7 +541,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
         this->victory_condition_gold->set_text(str);
     } else {
         this->victory_cond_on[5]->set_state(0);
-        this->victory_condition_gold->set_text(s_empty_string);
+        this->victory_condition_gold->set_text("0");
     }
 
     ((T_Scenario*) this->world->scenario)->Save_victory_conditions_into_players(1);

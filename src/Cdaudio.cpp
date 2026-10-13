@@ -162,7 +162,7 @@ unsigned long CCDAudio::DisplayErrorMsg(unsigned long dwError) {
 
     if (dwError != 0) {
         if (mciGetErrorStringA(dwError, szErrorMsg, sizeof(szErrorMsg)) == 0) {
-            strcpy(szErrorMsg, "Unknown Error");
+            strcpy(szErrorMsg, "Unknow Error");
         }
     }
     return dwError;

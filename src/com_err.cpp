@@ -14,7 +14,7 @@ RGE_Comm_Error::RGE_Comm_Error(void* Host) {
 
 void RGE_Comm_Error::NotifyWindowParam(COMMMESSAGES msg, long lparam) {
     PostMessageA(HostHWND, WM_USER, msg, lparam);
-    L->Log("COMM: Send msg to window WM_USER  Msg=%d  Param=%d\n", msg, lparam);
+    L->Log("COMM: Send msg to window WM_USER  Msg=%d  Param=%d ", msg, lparam);
 }
 
 RGE_Comm_Error::~RGE_Comm_Error() {
@@ -30,7 +30,7 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
         return;
     }
 
-    L->Log("+++COMM______DP CALL FAILED_(Code %u)_____ %s\n", hr, Text);
+    L->Log("+++COMM______DP CALL FAILED_(Code %u)_____ %s____", hr, Text);
     this->LastReportedError = hr;
 
     if (hr <= DPERR_UNSUPPORTED) {
@@ -202,7 +202,7 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
                 return;
             }
         } else {
-            L->Log("!!! Communications - Session is full");
+            L->Log("!!! Communications / Session is Unavailable");
             this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
             return;
         }
@@ -283,11 +283,11 @@ void RGE_Comm_Error::ShowReturn(long hr, char* Text) {
     } else if (hr <= DPERR_AUTHENTICATIONFAILED) {
         if (hr != DPERR_AUTHENTICATIONFAILED) {
             if (hr == DPERR_NOTLOBBIED) {
-                L->Log("!!! Security authentify failed.");
+                L->Log("!!! Not A Lobby Session");
                 return;
             }
         } else {
-            L->Log("!!! Not A Lobby Session");
+            L->Log("!!! Security authentify failed.");
             return;
         }
     } else if (hr <= DPERR_ENCRYPTIONFAILED) {

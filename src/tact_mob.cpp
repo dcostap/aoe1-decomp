@@ -39,7 +39,7 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj_in, short id
 TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {
     TRIBE_Player* player = (TRIBE_Player*) this->obj->owner;
     player->logMessage(
-        "WT: %ld: MkObjDestructor: obj_id=%d, obj->id=%d, unique_id=%d", player->world->world_time, (int) this->obj_id,
+        "WT=%ld, MkObjDestructor: obj_id=%d, obj->id=%d, uniqueID=%d.", player->world->world_time, (int) this->obj_id,
         (int) this->obj->id, this->unique_id
     );
 }
@@ -123,7 +123,8 @@ unsigned char TRIBE_Action_Make_Obj::update() {
                     );
                     ((TRIBE_Player*) this->obj->owner)
                         ->logMessage(
-                            "Canceling Train #2:  obj_id=%d, obj->id=%d", (int) this->obj_id, (int) this->obj->id, this->unique_id
+                            "Canceling Train #2:  obj_id=%d, obj->id=%d, uniqueID=%d.", (int) this->obj_id, (int) this->obj->id,
+                            this->unique_id
                         );
                     ((TRIBE_Player*) this->obj->owner)->cancelTrain(0, (int) this->obj_id, (int) this->obj->id, this->unique_id);
                     this->obj->notify(
@@ -224,7 +225,7 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** rObj) {
 int TRIBE_Action_Make_Obj::stop() {
     ((TRIBE_Player*) this->obj->owner)
         ->logMessage(
-            "Stopping Train #8:  obj_id=%d, obj->id=%d, unique_id=%d", (int) this->obj_id, (int) this->obj->id, this->unique_id
+            "Stopping Train #8:  obj_id=%d, obj->id=%d, uniqueID=%d.", (int) this->obj_id, (int) this->obj->id, this->unique_id
         );
 
     if (this->state != 1) {

@@ -318,7 +318,7 @@ long TRIBE_Panel_Time::handle_idle() {
 
     switch (this->clock_type) {
         case 0:
-            break;
+            return 0;
         case 1:
             this->game_time = (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 394) - this->start_real_time) / 1000;
             break;

@@ -228,8 +228,10 @@ extern float g_move_facet_angle;
 extern double g_move_angle_tolerance;
 extern float g_music_fade_volume_scale;
 extern float g_path_zero_length;
-extern float g_path_diagonal_scale;
+// VC5 multiplies by the later-declared global first. This order makes the PathingSystem
+// constructor read the scale where the original reads 00570E48 and the sign at 00570E4C.
 extern float g_path_diagonal_sign;
+extern float g_path_diagonal_scale;
 extern float g_path_diagonal_base;
 extern float g_path_min_action_range;
 extern float g_path_goal_tolerance_scale;

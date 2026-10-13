@@ -508,6 +508,8 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - VC5 can emit addition as `fsub` from a negative literal.
 - Read the literal bytes. The opcode alone does not establish the source operator.
 - A local MATCH does not validate linked literal values. Check original and rebuilt data bytes.
+- VC5 can reorder a chain of extern float multipliers by declaration order, not source order.
+- In one tested chain, the later-declared extern was multiplied first, whatever order the source used.
 - One function can intentionally mix float and double operations.
 - `test ah,1`, `test ah,40h`, and `test ah,41h` test different x87 conditions.
 - Infer the predicate from operand order and actual x87 stack state.

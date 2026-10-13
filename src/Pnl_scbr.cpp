@@ -205,16 +205,13 @@ long TScrollBarPanel::handle_idle() {
                 case 2:
                     this->scroll(ActionDown, 0);
                     return 0;
-                case 3:
+                case 4:
                     if (!this->is_inside_rect(this->item_x, this->item_y, &this->top_rect)) {
                         this->item_is_down = 0;
                         this->item_mode = 0;
                         this->set_redraw(TPanel::RedrawNormal);
                         return 0;
                     }
-                    this->scroll(ActionPrior, 0);
-                    return 0;
-                case 4:
                     this->scroll(ActionPrior, 0);
                     return 0;
                 case 5:
@@ -281,7 +278,7 @@ long TScrollBarPanel::mouse_left_down_action(long x, long y, int ctrl_key, int s
         this->item_x = x;
         this->item_y = y;
         this->item_mode = 1;
-        this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 389);
+        this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 389);
         this->set_redraw(TPanel::RedrawNormal);
     }
 

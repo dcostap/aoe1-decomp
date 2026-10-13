@@ -793,12 +793,12 @@ int TribeBuildAIModule::addResearch(int uType, int location, int uniqueID) {
 int TribeBuildAIModule::cancelResearch(int reason, int rType, int location, int uniqueID) {
     // md->player->world->world_time; see cancelTrainUnit.
     int val = *(int*) (*(int*) (*(int*) ((char*) this->md + 0xF0) + 0x3C) + 4);
-    this->logCommonHistory("Canceling research (WT=%ld) for item of type %d, %d", val, rType, location);
+    this->logCommonHistory("Canceling research (WT=%ld) for item of type %d at building w/ gameID=%d.", val, rType, location);
 
     BuildItem* item = (BuildItem*) this->specificBuildListItem(uniqueID);
 
     if (item) {
-        this->logCommonHistory("  Setting build item #%d in progress to FALSE", item->uniqueID());
+        this->logCommonHistory("  Setting build item #%d in progress to FALSE.", item->uniqueID());
         item->setInProgress(0);
     } else {
         this->logCommonHistory("  ERROR!  Invalid build item.");

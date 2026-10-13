@@ -75,7 +75,7 @@ AIModule::AIModule() :
 AIModule::AIModule(char* n, int i, int pN, void* pW) :
     idValue(n, i), playerNumberValue(pN), runningValue(0), pausedValue(0), logHistoryValue(0), logCommonHistoryValue(0),
     historyLogFile(0), intelligenceLevelValue(5), priorityValue(50), processFrameValue(0) {
-    strcpy(playerNameValue, "");
+    strcpy(playerNameValue, "Unknown");
 }
 
 struct _iobuf;

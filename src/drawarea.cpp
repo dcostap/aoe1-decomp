@@ -515,7 +515,7 @@ int TDrawSystem::CreateSurfaces() {
                 return 0;
         }
         if (this->PrimaryArea == 0) {
-            TDrawArea* area = new TDrawArea("Primary Area", 0);
+            TDrawArea* area = new TDrawArea("Primary Surface", 0);
             this->PrimaryArea = area;
             if (area == 0)
                 return 0;
@@ -530,7 +530,7 @@ int TDrawSystem::CreateSurfaces() {
         }
     }
     if (this->DrawArea == 0) {
-        TDrawArea* area2 = new TDrawArea("Draw Area", 0);
+        TDrawArea* area2 = new TDrawArea("Back Buffer", 0);
         this->DrawArea = area2;
         if (area2 == 0)
             return 0;

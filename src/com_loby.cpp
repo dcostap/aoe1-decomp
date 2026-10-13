@@ -231,7 +231,7 @@ long RGE_Lobby::SendZoneMessage(char* Data, unsigned long dwSize, _GUID guid) {
 
     unsigned long total = dwSize + 0x30;
 
-    L->Log("Sending %d bytes to the Zone (Total message size = %d)", dwSize, total);
+    L->Log("Sending %d bytes to the Zone (Total message size %d).", dwSize, total);
 
     char* message = new char[total];
     ZoneMessageHeader* header = (ZoneMessageHeader*) message;

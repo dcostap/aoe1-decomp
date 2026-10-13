@@ -196,10 +196,9 @@ enum RGE_Attribute_String_Id {
 
 // Event types passed to RGE_Base_Game::notification(). TRIBE_Game::notification handles them.
 // The names are cleanup labels from the message each case shows and the code that sends it.
-// Types 2 and 3 are named by the message shown, which the senders swap; see TRIBE_Player::notify.
 #define GAME_NOTIFY_NOT_CLOSE_ENOUGH_TO_LAND          1
-#define GAME_NOTIFY_CANNOT_TRADE_WITH_ENEMY           2
-#define GAME_NOTIFY_NOT_ENOUGH_UNLOAD_SPACE           3
+#define GAME_NOTIFY_NOT_ENOUGH_UNLOAD_SPACE           2
+#define GAME_NOTIFY_CANNOT_TRADE_WITH_ENEMY           3
 #define GAME_NOTIFY_PLAYER_DISCONNECTED               4
 #define GAME_NOTIFY_PLAYER_RESIGNED                   5
 #define GAME_NOTIFY_PLAYER_DEFEATED                   6

@@ -1330,7 +1330,7 @@ unsigned char RGE_Game_World::update() {
             if (lastStatusLogTime == 0) {
                 this->logStatus(statusFile, 1);
             } else {
-                fprintf(statusFile, "\nStatus Log at GameTime %02ld:%02ld:%02ld\n", hours, minutes, seconds);
+                fprintf(statusFile, "\nStatus Log at GameTime %02ld:%02ld:%02ld:\n", hours, minutes, seconds);
             }
             for (i = 1; i < this->player_num; ++i) {
                 if (this->players[i] != 0) {
@@ -1346,13 +1346,13 @@ unsigned char RGE_Game_World::update() {
     }
 
     if (this->game_state == 1 && logStatusOn == 1 && logStatusFile != 0) {
-        fprintf(logStatusFile, "\nGAME OVER!\n");
+        fprintf(logStatusFile, "GAME OVER!\n");
         for (i = 1; i < this->player_num; ++i) {
             if (this->players[i] != 0) {
                 if (this->players[i]->game_status == 1) {
-                    fprintf(logStatusFile, "\nPlayer %d Won!\n", i);
+                    fprintf(logStatusFile, "  Player #%d Won.\n", i);
                 } else {
-                    fprintf(logStatusFile, "\nPlayer %d Lost!\n", i);
+                    fprintf(logStatusFile, "  Player #%d Lost.\n", i);
                 }
             }
         }
@@ -3198,7 +3198,7 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char objec
     return result;
 }
 
-static const char s_update_visibilities[] = "updating player visibilities @ wt=%d\n";
+static const char s_update_visibilities[] = "updating player visibilites @ wt=%d\n";
 static const char s_player[] = "player %d\n";
 static const char s_masks[] = "  mutualExploredMask = %8.8x   mutualVisibleMask = %8.8x   "
                               "nonMutualVisibleMask = %8.8x\n";
@@ -3206,6 +3206,7 @@ static const char s_player_flags[] = "  allied_LOS_Enable = %d   allied_victory 
 static const char s_diplomacy[] = "  unitDiplomacy = [";
 static const char s_mutual_allies[] = "  mututalAlly = [";
 static const char s_removed_visible_bits[] = "  RemoveVisibleBits = [";
+static const char s_hex[] = "%8.8x";
 static const char s_decimal[] = "%d";
 static const char s_separator[] = ", ";
 static const char s_list_end[] = "]\n";
@@ -3295,7 +3296,7 @@ void RGE_Game_World::update_mutual_allies() {
         }
         fprintf(DVlogf, s_removed_visible_bits);
         for (j = 0; j < 9; j++) {
-            fprintf(DVlogf, s_decimal, players[i]->RemoveVisibleBits[j]);
+            fprintf(DVlogf, s_hex, players[i]->RemoveVisibleBits[j]);
             if (j < 8)
                 fprintf(DVlogf, s_separator);
             else

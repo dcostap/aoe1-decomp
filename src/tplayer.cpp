@@ -1762,18 +1762,15 @@ void TRIBE_Player::notify(int caller, int recipient, int mType, long p1, long p2
                 }
             }
             break;
-        //! @bug The transport-failure message types are swapped. A transport that still holds units after
-        //! unloading (0x206) shows "You cannot trade with an enemy", and a failed trade (0x20C) shows "Not
-        //! enough room to unload all." The original dispatch (005159D0) sends these same types.
         case 0x20C:
             if (p1 == UNIT_AI_ACTION_TRADE)
-                ((TRIBE_Game*) rge_base_game)->notification(GAME_NOTIFY_NOT_ENOUGH_UNLOAD_SPACE, this->id, 0, 0, 0);
+                ((TRIBE_Game*) rge_base_game)->notification(GAME_NOTIFY_CANNOT_TRADE_WITH_ENEMY, this->id, 0, 0, 0);
             break;
         case 0x207:
             ((TRIBE_Game*) rge_base_game)->notification(GAME_NOTIFY_NOT_CLOSE_ENOUGH_TO_LAND, this->id, 0, 0, 0);
             break;
         case 0x206:
-            ((TRIBE_Game*) rge_base_game)->notification(GAME_NOTIFY_CANNOT_TRADE_WITH_ENEMY, this->id, 0, 0, 0);
+            ((TRIBE_Game*) rge_base_game)->notification(GAME_NOTIFY_NOT_ENOUGH_UNLOAD_SPACE, this->id, 0, 0, 0);
             break;
     }
     int seed = debug_rand(tplayerSourceName, 2377);
@@ -3597,7 +3594,7 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime) {
             this->playerAI->buildAI.buildListLength()
         );
         fprintf(
-            out, "Civilians: Total=%d, Exp(%d/%d), Gat(%d/%d), Res(%d,%d,%d,%d).\n", this->playerAI->tacticalAI.numberCivilians(),
+            out, "Civilians: Total=%d, Exp(%d/%d), Gat(%d/%d).  NRes:%d%d%d%d.\n", this->playerAI->tacticalAI.numberCivilians(),
             this->playerAI->tacticalAI.numberCivilianExplorers(), this->playerAI->tacticalAI.desiredNumberCivilianExplorers(),
             this->playerAI->tacticalAI.numberGatherers(), this->playerAI->tacticalAI.desiredNumberGatherers(),
             this->playerAI->tacticalAI.neededResource(0), this->playerAI->tacticalAI.neededResource(1),

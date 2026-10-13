@@ -123,7 +123,7 @@ long TribeJoinScreen::handle_idle() {
             return TPanel::handle_idle();
         }
     }
-    unsigned long now = debug_timeGetTime("scr_cj.cpp", 170);
+    unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cj.cpp", 170);
     if (10000 < now - this->joinTime) {
         comm->UnlinkToLevel(SERVICE_AVAILABLE);
         this->waitingToStart = 0;

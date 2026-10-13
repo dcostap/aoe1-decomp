@@ -222,14 +222,14 @@ void BuildAIModule::displayBuildList() {
     while (item != sentinel && item != 0) {
         if (item->built() == 1) {
             this->logCommonHistory(
-                "BLT Type=%-4d %-20s gID=%-4d Cat=%d uID=%d InPrg=%d BlATmpt=%d Skip=%d NumBld=%d BldCap=%d From=%d PrSkp=%d SkpCyc=%d",
+                "BLT Type=%-4d %-20s gID=%-4d Cat=%d uID=%-3d inProg=%d bldAtt=%-2d skip=%d #blds=%d cap=%d bldFrom=%d permSkip=%d skipCy=%d.",
                 item->typeID(), item->name(), item->gameID(), item->buildCategory(), item->uniqueID(), item->inProgress(),
                 item->buildAttempts(), item->skip(), item->numberBuilds(), item->buildCap(), item->buildFrom(),
                 (unsigned int) item->permanentSkip(), item->skipCycles()
             );
         } else {
             this->logCommonHistory(
-                "    Type=%-4d %-20s gID=%-4d Cat=%d uID=%d InPrg=%d BlATmpt=%d Skip=%d NumBld=%d BldCap=%d From=%d PrSkp=%d SkpCyc=%d",
+                "    Type=%-4d %-20s gID=%-4d Cat=%d uID=%-3d inProg=%d bldAtt=%-2d skip=%d #blds=%d cap=%d bldFrom=%d permSkip=%d skipCy=%d.",
                 item->typeID(), item->name(), item->gameID(), item->buildCategory(), item->uniqueID(), item->inProgress(),
                 item->buildAttempts(), item->skip(), item->numberBuilds(), item->buildCap(), item->buildFrom(),
                 (unsigned int) item->permanentSkip(), item->skipCycles()

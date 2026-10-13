@@ -6535,12 +6535,12 @@ int TribeTacticalAIModule::taskAttacker(
 }
 
 int TribeTacticalAIModule::taskDefender(int defender, int targetID) {
-    this->logCommonHistory("ERROR: Unused taskDefender call 1: defender ID=%d group=%d\n", defender, targetID);
+    this->logCommonHistory("ERROR: Unused taskDefender call 1: defender=%d, target=%d.", defender, targetID);
     return 0;
 }
 
 int TribeTacticalAIModule::taskDefender(int defender, float x, float y) {
-    this->logCommonHistory("ERROR: Unused taskDefender call 2: defender ID=%d to (%f, %f)\n", defender, (double) x, (double) y);
+    this->logCommonHistory("ERROR: Unused taskDefender call 2: defender=%d, target=(%f, %f).", defender, (double) x, (double) y);
     return 0;
 }
 
@@ -8018,7 +8018,7 @@ void TribeTacticalAIModule::displayBoatGroups() {
                 group->desiredNumberUnits(), group->originalUnitNumber(), group->action(), group->inUse()
             );
             this->logCommonHistory(
-                "    Target=%d, CommanderID=%d, HP(%d/%d), AssistGroupID=%d.", group->target(), group->commander(),
+                "    Target=%d, CommanderID=%d, HP(%d/%d), AssistGroup=%d.", group->target(), group->commander(),
                 group->currentHitPoints(this->md), group->originalHitPoints(), group->assistGroupID()
             );
             this->logCommonHistory("    Location=(%f, %f).", group->location().x, group->location().y);

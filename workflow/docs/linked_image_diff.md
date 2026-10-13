@@ -48,11 +48,16 @@ inferred from byte patterns.
 
 - `function`: the target symbol has a unique registry VA, and the original field must address it;
 - `import`: the original and rebuilt import slots must name the same DLL function;
-- `internal_label`: a label inside the same function, such as a switch table, must keep its offset.
+- `internal_label`: a label inside the same function, such as a switch table, must keep its offset;
+- `switch_table`: a table that the function addresses past its registry size. Registry sizes end before jump and
+  selector tables, so the function audit does not compare them. The table runs from its label to the next object
+  symbol. Its plain bytes must be equal, and each relocated entry must address the same offset from the function
+  start in both images. A changed case order fails here even when every code byte matches.
 
 Other targets become pairs in `linked_pairs.csv`. A rebuilt item that pairs with several original addresses is a
 `conflict`. An original item that pairs with several rebuilt items is a `split`; the original kept one copy where the
-rebuild has two, or the reverse for `conflict`. Both describe layout, not necessarily behavior.
+rebuild has two, or the reverse for `conflict`. Both describe layout, not necessarily behavior. A conflict row lists the first exact function behind each original
+address in `original_sources`.
 
 Each paired data item is compared in `linked_items.csv`. The defining object gives the item extent: the next symbol
 in its section. A character string is compared through its terminator, a scalar global through the size its
@@ -121,3 +126,7 @@ The tested build is `build/noref-build/20261013T021925797320Z`, the first `/OPT:
 - Paired items: 2,122 equal, 85 different, 254 zero-fill, 2 tail-unproved, and 6 conflicts.
 
 The findings are recorded in [linked data findings](../decomp_notes/linked_data_findings.md).
+
+After the fixes, `build/fixdata-final/20261013T175927175018Z` passes all 270 switch tables and every reference
+check. Its paired items are 2,210 equal, 257 zero-fill, and 2 tail-unproved, with no different or conflicting
+items. 148 splits remain.

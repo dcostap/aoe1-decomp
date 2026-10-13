@@ -238,7 +238,7 @@ char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr() {
     frames = this->GetRecommendedBufferFrames();
     granularity = this->GetRecommendedBufferGranularity();
     sprintf(
-        buf, "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d", frames, granularity, 1000 / (int) granularity,
+        buf, "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d  My expect turn=%4dms", frames, granularity, 1000 / (int) granularity,
         granularity * frames
     );
     return buf;
@@ -257,7 +257,7 @@ char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int PlayerNo) {
     frames = this->CurrentBufferFrames;
     hi_lo_info = this->FrameTSLC->GetHiLoInfo(50);
     sprintf(
-        speedstr, "Buf=%3d / %3d * Gran=%3dms = turn %4dms  %s", this->TotalBufferFramesRemaining, frames, granularity,
+        speedstr, "Buf=%3d / %3d * Gran=%3dms = turn %4dms   %s", this->TotalBufferFramesRemaining, frames, granularity,
         frames * granularity, hi_lo_info
     );
     return speedstr;
