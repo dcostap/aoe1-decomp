@@ -13,7 +13,8 @@ For example:
 python tools/diff_linked_image.py --build build/executable/RUN --output build/linked-image-diff/RUN
 ```
 
-The tool checks the recorded EXE and map hashes and the current registry.
+The tool checks the recorded EXE, map, and object hashes, the source inputs, and the current registry.
+Rebuild after a source change before running it.
 It checks the original EXE against the pinned hash.
 
 Use `--structural-only` for a historical build with a different registry.
