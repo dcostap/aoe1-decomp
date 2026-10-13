@@ -105,3 +105,19 @@ unit, 216 included normal functions, and 170 registered owners. The migration
 caused the expected temporary source-group drift in the resize callers. The
 audit output is under
 `build/audits/workers/wave21-resize-taitacmd/taitacmd-final2/`.
+
+## Recovered log strings, 2026-10-13
+
+The module carried 94 empty `static char` placeholders from the 2026-04-30 scratch attempt at `004EB6F0`. Function
+matching masks string addresses, so their text never mattered to a match. The rebuilt game logged blank lines where
+the original logs text.
+
+For each function, the `push imm32` relocations to these statics were paired in order with the original function's
+`push imm32` operands that address a C string. The 71 referenced placeholders now hold the original text. Each name maps
+to one address, and the same pairing recovers `s_file` exactly. The other 23 (`s_log_67` to `s_log_89`) had no
+references and were removed. Two functions differ in push count only because they already use inline literals.
+Scripts and the mapping are under `build/logstrings/`.
+
+All 184 exact claims still match (`build/validation/logstrings/functions/report.json`). Removing the unused statics
+returned `004F7E80` to its pre-`tech.h` code. In `004F81A0` the same two-register swap moved from `+0x56` to `+0x1E2`.
+See both function notes.
