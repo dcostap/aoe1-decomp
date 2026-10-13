@@ -144,14 +144,47 @@ def pair_references(original_pe, rebuilt_pe, map_rows, object_paths, exact_funct
     forward = defaultdict(set)   # rebuilt address -> original addresses
     reverse = defaultdict(set)   # original address -> rebuilt addresses
     info = {}                    # rebuilt address -> symbol, kind, definition
+    sources = defaultdict(dict)  # rebuilt address -> original address -> first source
     evidence = Counter()
     checks = []                  # field checks with an independent expectation
-    queue, seen = [], set()
+    queue, seen, tables = [], set(), set()
+
+    def switch_table(obj_name, section, start, label, rebuilt_at, original_at, source):
+        """Compare a table that the function addresses past its registry size.
+
+        Entries that address labels of the same function must keep their offsets from the function start, so a
+        changed case order fails even when the code bytes match.
+        """
+        _, by_index, starts, _ = objects.get(obj_name)
+        later = [v for v in starts.get(section.index, []) if v > label]
+        end = later[0] if later else len(section.data)
+        rebuilt_table = rebuilt.read(rebuilt_at + label - start, end - label)
+        original_table = original.read(original_at + label - start, end - label)
+        row = dict(kind='switch_table', source=source, offset=label - start, symbol='', size=end - label,
+                   original_target=f'{original_at + label - start:08X}')
+        if rebuilt_table is None or original_table is None:
+            return dict(row, result='unknown')
+        entries = {r.offset - label for r in section.relocations
+                   if label <= r.offset < end and r.reloc_type == DIR32}
+        differing = []
+        for offset in range(0, end - label):
+            if any(e <= offset < e + 4 for e in entries):
+                continue
+            if rebuilt_table[offset] != original_table[offset]:
+                differing.append(offset)
+        for entry in sorted(entries):
+            r = int.from_bytes(rebuilt_table[entry:entry + 4], 'little') - rebuilt_at
+            o = int.from_bytes(original_table[entry:entry + 4], 'little') - original_at
+            if r != o:
+                differing.append(entry)
+        return dict(row, expected=rebuilt_table.hex(), actual=original_table.hex(),
+                    differing=sorted(differing)[:8], result='fail' if differing else 'pass')
 
     def record(rebuilt_address, original_address, symbol, definition, kind, source):
         forward[rebuilt_address].add(original_address)
         reverse[original_address].add(rebuilt_address)
         evidence[rebuilt_address] += 1
+        sources[rebuilt_address].setdefault(original_address, source)
         info.setdefault(rebuilt_address, dict(symbol=symbol, kind=kind, definition=definition, source=source))
         if kind == 'data' and definition and rebuilt_address not in seen:
             seen.add(rebuilt_address)
@@ -188,6 +221,10 @@ def pair_references(original_pe, rebuilt_pe, map_rows, object_paths, exact_funct
                 checks.append(dict(kind='internal_label', source=source, offset=reloc.offset - start,
                                    symbol=symbol.name, original_target=f'{ao:08X}', expected=f'{expected:08X}',
                                    result='pass' if ao == expected else 'fail'))
+                label = start + ar - rebuilt_at + (inline if reloc.reloc_type == DIR32 else 0)
+                if ao == expected and label >= start + size and (obj_name, section.index, label) not in tables:
+                    tables.add((obj_name, section.index, label))
+                    checks.append(switch_table(obj_name, section, start, label, rebuilt_at, original_at, source))
                 continue
             if symbol.name.startswith('__imp_'):
                 expected = rebuilt.imports.get(ar)
@@ -296,5 +333,7 @@ def pair_references(original_pe, rebuilt_pe, map_rows, object_paths, exact_funct
         pairs.append(dict(symbol=entry['symbol'], kind=entry['kind'], rebuilt=f'{ar:08X}',
                           original=' '.join(f'{o:08X}' for o in sorted(origins)), references=evidence[ar],
                           shared_with=' '.join(f'{s:08X}' for s in splits), result=result,
-                          first_source=entry['source']))
+                          first_source=entry['source'],
+                          original_sources='' if len(origins) == 1 else '; '.join(
+                              f'{o:08X} {s}' for o, s in sorted(sources[ar].items()))))
     return dict(seeds=dict(seeds), pairs=pairs, items=items, checks=checks)

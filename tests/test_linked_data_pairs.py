@@ -71,6 +71,32 @@ def test_function_differing_outside_relocations_is_not_a_seed(tmp_path):
     assert result['pairs'] == [] and result['items'] == []
 
 
+def switch_run(tmp_path, original_entries):
+    """A function of 9 bytes whose jump table lies after its registry size."""
+    body = b'\xff\x24\x85\0\0\0\0\xc3\xc3'
+    symbols = [(b'_f', 0, 1, 0x20, 2), (b'$Ltab', 9, 1, 0, 6), (b'$La', 7, 1, 0, 6), (b'$Lb', 8, 1, 0, 6)]
+    coff(tmp_path / 'a.obj', body + bytes(8), b'\0\0\0\0', [(3, 1, 6), (9, 2, 6), (13, 3, 6)], symbols)
+
+    def text(entries):
+        code = b'\xff\x24\x85' + (BASE + 0x1009).to_bytes(4, 'little') + b'\xc3\xc3'
+        return code + b''.join((BASE + 0x1000 + e).to_bytes(4, 'little') for e in entries)
+    rebuilt = pe(0x1000, text([7, 8]), 0x2000, b'\0\0\0\0')
+    original = pe(0x1000, text(original_entries), 0x2000, b'\0\0\0\0')
+    rows = [dict(symbol='_f', address=BASE + 0x1000, owner='a.obj')]
+    result = pair_references(original, rebuilt, rows, {'a.obj': tmp_path / 'a.obj'},
+                             [(BASE + 0x1000, '_f', 9)], {'_f': BASE + 0x1000})
+    return [(c['kind'], c['result']) for c in result['checks']]
+
+
+def test_switch_table_after_function_is_compared(tmp_path):
+    assert switch_run(tmp_path, [7, 8]) == [('internal_label', 'pass'), ('switch_table', 'pass')]
+
+
+def test_switch_table_with_swapped_cases_fails(tmp_path):
+    # The code bytes match, but the original sends each case to the other block.
+    assert switch_run(tmp_path, [8, 7]) == [('internal_label', 'pass'), ('switch_table', 'fail')]
+
+
 def test_value_extent_uses_names_and_strings_not_guesses():
     assert value_extent('__real@4@3fff8000000000000000', bytes(8), []) == (4, 'float constant name')
     assert value_extent('?g_scale@@3MA', bytes(8), []) == (4, 'scalar decoration')
