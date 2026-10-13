@@ -84,15 +84,11 @@ class TRIBE_Player : public RGE_Player {
     virtual void load_victory(int infile, long* player_id_hash,
                               unsigned char version_control); // vt[60]
     virtual void new_victory();                               // vt[61]
-    virtual unsigned char command_give_attribute(
-        int to_player_id, int attr_id, float attr_amount,
-        float attr_cost
-    ); // vt[62]
+    virtual unsigned char command_give_attribute(int to_player_id, int attr_id, float attr_amount,
+                                                 float attr_cost); // vt[62]
     virtual void buildObject(int bi, int oi, float x, float y,
-                             int ui); // vt[63]
-    virtual void cancelBuild(
-        int reason, int blockerID, int blockerType, float x, float y, int uniqueID, int builderID
-    ); // vt[64]
+                             int ui);                                                                                    // vt[63]
+    virtual void cancelBuild(int reason, int blockerID, int blockerType, float x, float y, int uniqueID, int builderID); // vt[64]
     virtual void registerBuild(RGE_Static_Object* obj,
                                int uniqueID);                 // vt[65]
     virtual void trainUnit(int uType, int bID, int uniqueID); // vt[66]
@@ -113,18 +109,15 @@ class TRIBE_Player : public RGE_Player {
     // sequence. Their declarations do not add vtable entries.
     TRIBE_Player(int infile, TRIBE_World* gworld, unsigned char this_id);
     TRIBE_Player(
-        TRIBE_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name,
-        unsigned char m_player_id, unsigned char computerPlayer, unsigned char flag, char* buildListName,
-        char* cityPlanName, char* ruleSetName
+        TRIBE_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name, unsigned char m_player_id,
+        unsigned char computerPlayer, unsigned char flag, char* buildListName, char* cityPlanName, char* ruleSetName
     );
 
     void load_master_object(int infile, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds);
-    void tech_cost(
-        short tech_id, short& inv_1, short& inv_amt_1, short& inv_2, short& inv_amt_2, short& inv_3, short& inv_amt_3
-    );
+    void tech_cost(short tech_id, short& inv_1, short& inv_amt_1, short& inv_2, short& inv_amt_2, short& inv_3, short& inv_amt_3);
     void obj_cost(
-        short obj_id, char** name, short& inv_1, short& inv_amt_1, short& inv_2, short& inv_amt_2, short& inv_3,
-        short& inv_amt_3, float modifier
+        short obj_id, char** name, short& inv_1, short& inv_amt_1, short& inv_2, short& inv_amt_2, short& inv_3, short& inv_amt_3,
+        float modifier
     );
     RGE_Static_Object* find_obj(short obj_id, RGE_Static_Object* after_obj);
     void interface_tech_avail(Item_Avail** list, short* list_num, short obj_cat);
@@ -199,8 +192,7 @@ class TRIBE_Gaia : public TRIBE_Player {
   public:
     TRIBE_Gaia(int infile, TRIBE_World* gworld, unsigned char this_id);
     TRIBE_Gaia(
-        TRIBE_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name,
-        unsigned char m_player_id
+        TRIBE_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name, unsigned char m_player_id
     );
 
     virtual void update();

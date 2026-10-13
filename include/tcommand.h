@@ -194,9 +194,7 @@ class TRIBE_Command : public RGE_Command {
     void do_command_queue(TRIBE_Command_Queue* order);
 
   public:
-    virtual void command_give_attribute(
-        int player_id, int to_player_id, int attr_id, float attr_amount, float attr_cost
-    );
+    virtual void command_give_attribute(int player_id, int to_player_id, int attr_id, float attr_amount, float attr_cost);
     void command_make(RGE_Static_Object* unit, short obj_id);
     void command_make(int playerID, int buildingID, int objID, int uniqueID);
     void command_research(RGE_Static_Object* unit, short tech_id);

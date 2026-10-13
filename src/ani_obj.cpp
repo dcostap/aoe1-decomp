@@ -20,9 +20,7 @@ RGE_Animated_Object::RGE_Animated_Object(int infile, RGE_Game_World* gworld, int
     }
 }
 
-void RGE_Animated_Object::recycle_in_to_game(
-    RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z
-) {
+void RGE_Animated_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z) {
     RGE_Static_Object::recycle_in_to_game(tobj, obj_owner, x, y, z);
     this->speed = 0.0f;
     RGE_Static_Object::set_sleep_flag(0);
@@ -82,9 +80,7 @@ void RGE_Animated_Object::transform(RGE_Master_Static_Object* obj) {
     RGE_Static_Object::transform(obj);
 }
 
-void RGE_Animated_Object::set_being_worked_on(
-    RGE_Action_Object* work_obj, short action_type, unsigned char attack_flag
-) {
+void RGE_Animated_Object::set_being_worked_on(RGE_Action_Object* work_obj, short action_type, unsigned char attack_flag) {
     RGE_Static_Object::set_being_worked_on(work_obj, action_type, attack_flag);
 }
 

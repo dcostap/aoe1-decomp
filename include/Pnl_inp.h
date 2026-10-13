@@ -36,10 +36,10 @@ class TInputPanel : public TTextPanel {
     short input_pos;
     unsigned char pad_1B6[2];
     long setup(
-        TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
-        void* font_in, long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in,
-        unsigned char back_color_in, int outline_in, unsigned char outline_color_in, unsigned char caret_color_in,
-        short max_len_in, TDigital* overLengthSoundIn, char* text_in, FormatType format_type_in
+        TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, void* font_in,
+        long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in, unsigned char back_color_in, int outline_in,
+        unsigned char outline_color_in, unsigned char caret_color_in, short max_len_in, TDigital* overLengthSoundIn,
+        char* text_in, FormatType format_type_in
     );
     virtual void set_focus(int have_focus_in);
     void set_format(FormatType format_type_in);

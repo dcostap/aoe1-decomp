@@ -9,22 +9,22 @@ BaseItem::BaseItem() :
 }
 
 BaseItem::BaseItem(int tid, int gid, int uid, char* n, float x, float y, float z, float xs, float ys, float zs) :
-    typeIDValue(tid), gameIDValue(gid), uniqueIDValue(uid), xValue(x), yValue(y), zValue(z), xSizeValue(xs),
-    ySizeValue(ys), zSizeValue(zs), skipValue(0) {
+    typeIDValue(tid), gameIDValue(gid), uniqueIDValue(uid), xValue(x), yValue(y), zValue(z), xSizeValue(xs), ySizeValue(ys),
+    zSizeValue(zs), skipValue(0) {
     strncpy(this->nameValue, n, 63);
 }
 
 BaseItem::BaseItem(BaseItem* bi) :
     typeIDValue(bi->typeIDValue), gameIDValue(bi->gameIDValue), uniqueIDValue(bi->uniqueIDValue), xValue(bi->xValue),
-    yValue(bi->yValue), zValue(bi->zValue), xSizeValue(bi->xSizeValue), ySizeValue(bi->ySizeValue),
-    zSizeValue(bi->zSizeValue), skipValue(bi->skipValue) {
+    yValue(bi->yValue), zValue(bi->zValue), xSizeValue(bi->xSizeValue), ySizeValue(bi->ySizeValue), zSizeValue(bi->zSizeValue),
+    skipValue(bi->skipValue) {
     strcpy(this->nameValue, bi->nameValue);
 }
 
 BaseItem::BaseItem(const BaseItem& bi) :
     typeIDValue(bi.typeIDValue), gameIDValue(bi.gameIDValue), uniqueIDValue(bi.uniqueIDValue), xValue(bi.xValue),
-    yValue(bi.yValue), zValue(bi.zValue), xSizeValue(bi.xSizeValue), ySizeValue(bi.ySizeValue),
-    zSizeValue(bi.zSizeValue), skipValue(bi.skipValue) {
+    yValue(bi.yValue), zValue(bi.zValue), xSizeValue(bi.xSizeValue), ySizeValue(bi.ySizeValue), zSizeValue(bi.zSizeValue),
+    skipValue(bi.skipValue) {
     strcpy(this->nameValue, bi.nameValue);
 }
 

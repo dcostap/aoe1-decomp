@@ -95,8 +95,8 @@ class PathingSystem {
     void decrementObstruction(int x, int y);
     int findTilePath(
         int startX, int startY, int goalX, int goalY, RGE_Moving_Object* unit, float actionRange, int cTargetID,
-        int copyPathWhenDone, float* pathLength, int checkPathingIterations, int checkTerrainFirstTime,
-        int checkCollisions, int stepSize, int unobstructiblePlayerID, int unobstructibleGroupID
+        int copyPathWhenDone, float* pathLength, int checkPathingIterations, int checkTerrainFirstTime, int checkCollisions,
+        int stepSize, int unobstructiblePlayerID, int unobstructibleGroupID
     );
     void incrementInitialPaths();
     void incrementContinuePaths();

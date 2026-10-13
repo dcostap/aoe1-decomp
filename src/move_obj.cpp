@@ -77,9 +77,7 @@ RGE_Moving_Object::~RGE_Moving_Object() {
     }
 }
 
-void RGE_Moving_Object::recycle_in_to_game(
-    RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z
-) {
+void RGE_Moving_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z) {
     {
         Path path(10);
         this->pathValue = path;
@@ -119,10 +117,10 @@ void RGE_Moving_Object::recycle_in_to_game(
     if (this->sprite != 0) {
         if ((this->sprite->flags & 2) != 0) {
             if (this->sprite->facet_num > 1) {
-                this->angle = (g_move_full_circle_double / (float) this->sprite->facet_num)
-                              * (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 197)
-                                          * this->sprite->facet_num)
-                                         / 0x7FFF);
+                this->angle =
+                    (g_move_full_circle_double / (float) this->sprite->facet_num)
+                    * (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 197) * this->sprite->facet_num)
+                               / 0x7FFF);
 
                 if (this->angle < g_move_zero_angle) {
                     this->angle = this->angle - g_move_negative_two_pi;
@@ -150,10 +148,10 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* tobj, RGE_Player* obj_own
     if (this->sprite != 0) {
         if ((this->sprite->flags & 2) != 0) {
             if (1 < this->sprite->facet_num) {
-                float random_angle = g_move_full_circle_double / (float) (int) this->sprite->facet_num
-                                     * (float) ((debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 222)
-                                                 * (int) this->sprite->facet_num)
-                                                / 0x7FFF);
+                float random_angle =
+                    g_move_full_circle_double / (float) (int) this->sprite->facet_num
+                    * (float) ((debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 222) * (int) this->sprite->facet_num)
+                               / 0x7FFF);
                 this->angle = random_angle;
 
                 if (this->angle < g_move_zero_angle) {
@@ -616,8 +614,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
         int i = 0;
         while (i < this->pathValue.numberOfWaypoints()) {
             fprintf(
-                actionFile, ", WP#%d(%6.2f, %6.2f)", i, this->pathValue.currentWaypoint()->x,
-                this->pathValue.currentWaypoint()->y
+                actionFile, ", WP#%d(%6.2f, %6.2f)", i, this->pathValue.currentWaypoint()->x, this->pathValue.currentWaypoint()->y
             );
             i++;
             this->pathValue.moveToNextWaypoint();
@@ -733,8 +730,7 @@ int RGE_Moving_Object::doMove() {
     }
 
     radiusDistance = (float) sqrt(
-        this->master_obj->radius_y * this->master_obj->radius_y
-        + this->master_obj->radius_x * this->master_obj->radius_x
+        this->master_obj->radius_y * this->master_obj->radius_y + this->master_obj->radius_x * this->master_obj->radius_x
     );
     waypointStatus = 1;
     Waypoint* waypoint = this->pathValue.currentWaypoint();
@@ -766,10 +762,8 @@ int RGE_Moving_Object::doMove() {
 
     newDY = 0.0f;
     if (this->numberUserDefinedWaypointsValue > 1 && distanceToGoal > g_move_waypoint_distance_threshold) {
-        unsigned char firstZone =
-            this->lookupZone((int) this->userDefinedWaypoints[0].x, (int) this->userDefinedWaypoints[0].y);
-        unsigned char secondZone =
-            this->lookupZone((int) this->userDefinedWaypoints[1].x, (int) this->userDefinedWaypoints[1].y);
+        unsigned char firstZone = this->lookupZone((int) this->userDefinedWaypoints[0].x, (int) this->userDefinedWaypoints[0].y);
+        unsigned char secondZone = this->lookupZone((int) this->userDefinedWaypoints[1].x, (int) this->userDefinedWaypoints[1].y);
         if (firstZone == secondZone) {
             newDY = 3.0f;
         }
@@ -792,8 +786,7 @@ int RGE_Moving_Object::doMove() {
             }
             dX = (float) this->userDefinedWaypoints->x - this->world_x;
             dY = (float) this->userDefinedWaypoints->y - this->world_y;
-            if (radiusDistance + this->actionRange - g_move_radius_distance_adjustment
-                < (float) sqrt(dY * dY + dX * dX)) {
+            if (radiusDistance + this->actionRange - g_move_radius_distance_adjustment < (float) sqrt(dY * dY + dX * dX)) {
                 reachedWaypoint = 1;
             }
         } while (reachedWaypoint == 0);
@@ -825,22 +818,21 @@ int RGE_Moving_Object::doMove() {
 
         if (this->numberUserDefinedWaypointsValue > 0) {
             found = pathSystem.findTilePath(
-                (int) this->startValue.x, (int) this->startValue.y, this->userDefinedWaypoints->x,
-                this->userDefinedWaypoints->y, this, this->actionRange, this->targetIDValue, 1, (float*) 0, 1, 1, 1, 1,
-                -1, -1
+                (int) this->startValue.x, (int) this->startValue.y, this->userDefinedWaypoints->x, this->userDefinedWaypoints->y,
+                this, this->actionRange, this->targetIDValue, 1, (float*) 0, 1, 1, 1, 1, -1, -1
             );
         } else {
             found = pathSystem.findTilePath(
-                (int) this->startValue.x, (int) this->startValue.y, (int) this->goalValue.x, (int) this->goalValue.y,
-                this, this->actionRange, this->targetIDValue, 1, (float*) 0, 1, 1, 1, 1, -1, -1
+                (int) this->startValue.x, (int) this->startValue.y, (int) this->goalValue.x, (int) this->goalValue.y, this,
+                this->actionRange, this->targetIDValue, 1, (float*) 0, 1, 1, 1, 1, -1, -1
             );
         }
 
         this->pathingGroupMembers.zeroNumber();
         if (actionFile != 0) {
             fprintf(
-                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time,
-                this->id, this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
+                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time, this->id,
+                this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
             );
             this->pathValue.initToStart();
             i = 0;
@@ -960,8 +952,7 @@ int RGE_Moving_Object::doMove() {
             }
             dX = (float) this->userDefinedWaypoints->x - this->world_x;
             dY = (float) this->userDefinedWaypoints->y - this->world_y;
-            if (radiusDistance + this->actionRange - g_move_radius_distance_adjustment
-                < (float) sqrt(dY * dY + dX * dX)) {
+            if (radiusDistance + this->actionRange - g_move_radius_distance_adjustment < (float) sqrt(dY * dY + dX * dX)) {
                 reachedWaypoint = 1;
             }
         } while (reachedWaypoint == 0);
@@ -981,22 +972,21 @@ int RGE_Moving_Object::doMove() {
 
         if (this->numberUserDefinedWaypointsValue > 0) {
             found = pathSystem.findTilePath(
-                (int) this->startValue.x, (int) this->startValue.y, this->userDefinedWaypoints->x,
-                this->userDefinedWaypoints->y, this, this->actionRange, this->targetIDValue, 1, (float*) 0, 1, 1, 1, 1,
-                -1, -1
+                (int) this->startValue.x, (int) this->startValue.y, this->userDefinedWaypoints->x, this->userDefinedWaypoints->y,
+                this, this->actionRange, this->targetIDValue, 1, (float*) 0, 1, 1, 1, 1, -1, -1
             );
         } else {
             found = pathSystem.findTilePath(
-                (int) this->startValue.x, (int) this->startValue.y, (int) this->goalValue.x, (int) this->goalValue.y,
-                this, this->actionRange, this->targetIDValue, 1, (float*) 0, 1, 1, 1, 1, -1, -1
+                (int) this->startValue.x, (int) this->startValue.y, (int) this->goalValue.x, (int) this->goalValue.y, this,
+                this->actionRange, this->targetIDValue, 1, (float*) 0, 1, 1, 1, 1, -1, -1
             );
         }
 
         this->pathingGroupMembers.zeroNumber();
         if (actionFile != 0) {
             fprintf(
-                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time,
-                this->id, this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
+                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time, this->id,
+                this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
             );
             this->pathValue.initToStart();
             i = 0;
@@ -1196,8 +1186,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
                         + (target->world_y - this->world_y) * (target->world_y - this->world_y)
                     )
                     < (float) sqrt(
-                          currentMaster->radius_x * currentMaster->radius_x
-                          + currentMaster->radius_y * currentMaster->radius_y
+                          currentMaster->radius_x * currentMaster->radius_x + currentMaster->radius_y * currentMaster->radius_y
                       ) + this->actionRange
                           - g_move_radius_distance_adjustment) {
                     return 5;
@@ -1233,15 +1222,15 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
             );
         } else {
             result = pathSystem.findTilePath(
-                (int) this->startValue.x, (int) this->startValue.y, (int) this->goalValue.x, (int) this->goalValue.y,
-                this, this->actionRange, this->targetIDValue, 1, 0, 1, 1, 1, 1, -1, -1
+                (int) this->startValue.x, (int) this->startValue.y, (int) this->goalValue.x, (int) this->goalValue.y, this,
+                this->actionRange, this->targetIDValue, 1, 0, 1, 1, 1, 1, -1, -1
             );
         }
 
         if (actionFile != 0) {
             fprintf(
-                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time,
-                this->id, this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
+                actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n", this->owner->world->world_time, this->id,
+                this->startValue.x, this->startValue.y, this->goalValue.x, this->goalValue.y
             );
             Path* path = &this->pathValue;
             path->initToStart();
@@ -1373,15 +1362,12 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
         float newDistance = (float) sqrt(dX * dX + dY * dY);
 
         if ((this->closestDistanceToWaypoint < newDistance && curDistance < g_move_waypoint_distance_threshold_close)
-            || (this->lastFacet2 == this->facet && this->lastFacet2 != this->lastFacet
-                && curDistance < g_move_half_float)) {
-            if (pathSystem.passable(this, this->pathValue.currentWaypoint()->x, this->pathValue.currentWaypoint()->y, 1)
-                == 0) {
+            || (this->lastFacet2 == this->facet && this->lastFacet2 != this->lastFacet && curDistance < g_move_half_float)) {
+            if (pathSystem.passable(this, this->pathValue.currentWaypoint()->x, this->pathValue.currentWaypoint()->y, 1) == 0) {
                 return 2;
             }
             this->teleport(
-                this->pathValue.currentWaypoint()->x, this->pathValue.currentWaypoint()->y,
-                this->pathValue.currentWaypoint()->z
+                this->pathValue.currentWaypoint()->x, this->pathValue.currentWaypoint()->y, this->pathValue.currentWaypoint()->z
             );
         } else {
             this->teleport(newX, newY, this->world_z + this->velocity_z);
@@ -1438,8 +1424,7 @@ int RGE_Moving_Object::canPath(
     if (p.x < map->map_width && p.y < map->map_height) {
         if (this->zoneMapIndex == -1) {
             this->owner->world->map->map_zones->get_zone_map(
-                this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size,
-                this->zoneMapIndex
+                this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size, this->zoneMapIndex
             );
         }
 
@@ -1464,8 +1449,8 @@ int RGE_Moving_Object::canPath(
             if (aiCheck != 0) {
                 aiPathSystem.incrementCanPaths();
                 return aiPathSystem.findTilePath(
-                    (int) this->world_x, (int) this->world_y, p.x, p.y, this, aRange, targetID, 0, pathDistance, 1, 1,
-                    1, 1, unobstructiblePlayerID, unobstructibleGroupID
+                    (int) this->world_x, (int) this->world_y, p.x, p.y, this, aRange, targetID, 0, pathDistance, 1, 1, 1, 1,
+                    unobstructiblePlayerID, unobstructibleGroupID
                 );
             }
 
@@ -1490,8 +1475,7 @@ int RGE_Moving_Object::canPath(
 
     if (this->zoneMapIndex == -1) {
         this->owner->world->map->map_zones->get_zone_map(
-            this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size,
-            this->zoneMapIndex
+            this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size, this->zoneMapIndex
         );
     }
 
@@ -1520,15 +1504,15 @@ int RGE_Moving_Object::canPath(
     if (aiCheck != 0) {
         aiPathSystem.incrementCanPaths();
         return aiPathSystem.findTilePath(
-            (int) this->world_x, (int) this->world_y, (int) target->world_x, (int) target->world_y, this, aRange,
-            targetID, 0, pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
+            (int) this->world_x, (int) this->world_y, (int) target->world_x, (int) target->world_y, this, aRange, targetID, 0,
+            pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
         );
     }
 
     pathSystem.incrementCanPaths();
     return pathSystem.findTilePath(
-        (int) this->world_x, (int) this->world_y, (int) target->world_x, (int) target->world_y, this, aRange, targetID,
-        0, pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
+        (int) this->world_x, (int) this->world_y, (int) target->world_x, (int) target->world_y, this, aRange, targetID, 0,
+        pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
     );
 }
 
@@ -1552,8 +1536,7 @@ int RGE_Moving_Object::canBidirectionPath(
 
     if (this->zoneMapIndex == -1) {
         this->owner->world->map->map_zones->get_zone_map(
-            this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size,
-            this->zoneMapIndex
+            this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size, this->zoneMapIndex
         );
     }
 
@@ -1580,8 +1563,8 @@ int RGE_Moving_Object::canBidirectionPath(
     if (aiCheck != 0) {
         aiPathSystem.incrementCanPaths();
         int result = aiPathSystem.findTilePath(
-            (int) this->world_x, (int) this->world_y, (int) source->world_x, (int) source->world_y, this, aRange,
-            targetID, 1, pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
+            (int) this->world_x, (int) this->world_y, (int) source->world_x, (int) source->world_y, this, aRange, targetID, 1,
+            pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
         );
         if (result == 0) {
             this->storePathInExceptionPath = (unsigned char) result;
@@ -1599,8 +1582,8 @@ int RGE_Moving_Object::canBidirectionPath(
 
     pathSystem.incrementCanPaths();
     int result = pathSystem.findTilePath(
-        (int) this->world_x, (int) this->world_y, (int) source->world_x, (int) source->world_y, this, aRange, targetID,
-        1, pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
+        (int) this->world_x, (int) this->world_y, (int) source->world_x, (int) source->world_y, this, aRange, targetID, 1,
+        pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
     );
     if (result == 0) {
         this->storePathInExceptionPath = (unsigned char) result;
@@ -1608,9 +1591,8 @@ int RGE_Moving_Object::canBidirectionPath(
     }
 
     result = pathSystem.findTilePath(
-        (int) this->exceptionPathValue.lastWaypoint()->x, (int) this->exceptionPathValue.lastWaypoint()->y,
-        (int) goal->world_x, (int) goal->world_y, this, aRange, targetID2, 0, pathDistance, 1, 1, 1, 1,
-        unobstructiblePlayerID, unobstructibleGroupID
+        (int) this->exceptionPathValue.lastWaypoint()->x, (int) this->exceptionPathValue.lastWaypoint()->y, (int) goal->world_x,
+        (int) goal->world_y, this, aRange, targetID2, 0, pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
     );
     this->storePathInExceptionPath = 0;
     return result;
@@ -1627,8 +1609,7 @@ int RGE_Moving_Object::canPathWithObstructions(
 
     if (this->zoneMapIndex == -1) {
         this->owner->world->map->map_zones->get_zone_map(
-            this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size,
-            this->zoneMapIndex
+            this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size, this->zoneMapIndex
         );
     }
 
@@ -1658,8 +1639,8 @@ int RGE_Moving_Object::canPathWithObstructions(
     if (aiCheck != 0) {
         aiPathSystem.incrementCanPaths();
         int result = aiPathSystem.findTilePath(
-            (int) this->world_x, (int) this->world_y, (int) target->world_x, (int) target->world_y, this, aRange,
-            targetID, 1, pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
+            (int) this->world_x, (int) this->world_y, (int) target->world_x, (int) target->world_y, this, aRange, targetID, 1,
+            pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
         );
         if (unobstructibleGroupID != -1) {
             aiPathSystem.copyUnobstructibles(obstructions);
@@ -1669,8 +1650,8 @@ int RGE_Moving_Object::canPathWithObstructions(
     } else {
         pathSystem.incrementCanPaths();
         int result = pathSystem.findTilePath(
-            (int) this->world_x, (int) this->world_y, (int) target->world_x, (int) target->world_y, this, aRange,
-            targetID, 1, pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
+            (int) this->world_x, (int) this->world_y, (int) target->world_x, (int) target->world_y, this, aRange, targetID, 1,
+            pathDistance, 1, 1, 1, 1, unobstructiblePlayerID, unobstructibleGroupID
         );
         if (unobstructibleGroupID != -1) {
             pathSystem.copyUnobstructibles(obstructions);
@@ -1817,8 +1798,7 @@ int RGE_Moving_Object::canLinePath(const XYPoint& s, const XYPoint& d, float ran
                 return 0;
             }
 
-            if ((float)
-                    sqrt(((float) d.x - xTile) * ((float) d.x - xTile) + ((float) d.y - yTile) * ((float) d.y - yTile))
+            if ((float) sqrt(((float) d.x - xTile) * ((float) d.x - xTile) + ((float) d.y - yTile) * ((float) d.y - yTile))
                 <= range) {
                 return 1;
             }
@@ -2022,9 +2002,7 @@ void RGE_Moving_Object::removeAllUserDefinedWaypoints(int stopObject) {
     this->numberUserDefinedWaypointsValue = 0;
     if (stopObject == 1 && this->unitAIValue != 0) {
         if (actionFile != 0) {
-            fprintf(
-                actionFile, "#%d call stopObject %s %d\n", this->id, "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xb59
-            );
+            fprintf(actionFile, "#%d call stopObject %s %d\n", this->id, "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xb59);
         }
         this->unitAIValue->stopObject(0);
     }
@@ -2054,8 +2032,7 @@ void RGE_Moving_Object::setFinalUserDefinedWaypoint() {
 Path* RGE_Moving_Object::findAvoidancePath(XYZPoint& goalPoint, float aRange, int targetID) {
     if (this->zoneMapIndex == -1) {
         this->owner->world->map->map_zones->get_zone_map(
-            this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size,
-            this->zoneMapIndex
+            this->owner->world->terrains[this->master_obj->terrain], this->owner->world->terrain_size, this->zoneMapIndex
         );
     }
 
@@ -2080,8 +2057,7 @@ Path* RGE_Moving_Object::findAvoidancePath(XYZPoint& goalPoint, float aRange, in
 
     this->storePathInExceptionPath = 1;
     aiPathSystem.findTilePath(
-        (int) this->world_x, (int) this->world_y, goalPoint.x, goalPoint.y, this, aRange, targetID, 1, 0, 0, 1, 1, 1,
-        -1, -1
+        (int) this->world_x, (int) this->world_y, goalPoint.x, goalPoint.y, this, aRange, targetID, 1, 0, 0, 1, 1, 1, -1, -1
     );
     this->storePathInExceptionPath = 0;
     aiPathSystem.initMisc(0);

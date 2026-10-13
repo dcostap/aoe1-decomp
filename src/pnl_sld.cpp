@@ -8,16 +8,15 @@ TVerticalSliderPanel::~TVerticalSliderPanel() {
 }
 
 long TVerticalSliderPanel::setup(
-    TDrawArea* renderAreaIn, TPanel* parentPanelIn, long xIn, long yIn, long widthIn, long heightIn,
-    char* backPictureIn, char* thumbPictureIn, long thumbHeightIn, long scaleIn, long one_step_in, long page_step_in,
-    int drawBoxIn, int spineWidthIn
+    TDrawArea* renderAreaIn, TPanel* parentPanelIn, long xIn, long yIn, long widthIn, long heightIn, char* backPictureIn,
+    char* thumbPictureIn, long thumbHeightIn, long scaleIn, long one_step_in, long page_step_in, int drawBoxIn, int spineWidthIn
 ) {
     drawBox = drawBoxIn;
     spineWidth = spineWidthIn;
 
     if (TScrollBarPanel::setup(
-            renderAreaIn, parentPanelIn, xIn, yIn, widthIn, heightIn, backPictureIn, 0, 0, thumbPictureIn, 0,
-            thumbHeightIn, 0, scaleIn, TScrollBarPanel::Vertical
+            renderAreaIn, parentPanelIn, xIn, yIn, widthIn, heightIn, backPictureIn, 0, 0, thumbPictureIn, 0, thumbHeightIn, 0,
+            scaleIn, TScrollBarPanel::Vertical
         )
         == 0) {
         return 0;
@@ -43,16 +42,15 @@ THorizontalSliderPanel::~THorizontalSliderPanel() {
 }
 
 long THorizontalSliderPanel::setup(
-    TDrawArea* renderAreaIn, TPanel* parentPanelIn, long xIn, long yIn, long widthIn, long heightIn,
-    char* backPictureIn, char* thumbPictureIn, long thumbWidthIn, long scaleIn, long one_step_in, long page_step_in,
-    int drawBoxIn, int spineWidthIn
+    TDrawArea* renderAreaIn, TPanel* parentPanelIn, long xIn, long yIn, long widthIn, long heightIn, char* backPictureIn,
+    char* thumbPictureIn, long thumbWidthIn, long scaleIn, long one_step_in, long page_step_in, int drawBoxIn, int spineWidthIn
 ) {
     drawBox = drawBoxIn;
     spineWidth = spineWidthIn;
 
     if (TScrollBarPanel::setup(
-            renderAreaIn, parentPanelIn, xIn, yIn, widthIn, heightIn, backPictureIn, 0, 0, thumbPictureIn, 0,
-            thumbWidthIn, 0, scaleIn, TScrollBarPanel::Horizontal
+            renderAreaIn, parentPanelIn, xIn, yIn, widthIn, heightIn, backPictureIn, 0, 0, thumbPictureIn, 0, thumbWidthIn, 0,
+            scaleIn, TScrollBarPanel::Horizontal
         )
         == 0) {
         return 0;

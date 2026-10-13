@@ -25,12 +25,10 @@ extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
 
 void __cdecl DibBlt(
     BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
-    BITMAPINFO256* SrcInfo, uchar* SrcBits, long SrcX, long SrcY, long SrcWid, long SrcHgt, int Clip, int Mirror,
-    int Flip
+    BITMAPINFO256* SrcInfo, uchar* SrcBits, long SrcX, long SrcY, long SrcWid, long SrcHgt, int Clip, int Mirror, int Flip
 ) {
     if (Clip != 0
-        && ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt, SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip)
-               == 0)
+        && ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt, SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip) == 0)
         return;
 
     long DestTotWid;
@@ -129,13 +127,13 @@ void __cdecl DibBlt(
 
 void __cdecl TransDibBlt(
     BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
-    BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY, long SrcWid, long SrcHgt,
-    int Clip, int Mirror, int Flip, int TransColor
+    BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY, long SrcWid, long SrcHgt, int Clip,
+    int Mirror, int Flip, int TransColor
 ) {
     if (TransInfo != 0 && TransInfo->AnyTrans == 0) {
         DibBlt(
-            DestInfo, DestBits, ClipRect, DestX, DestY, DestWid, DestHgt, SrcInfo, SrcBits, SrcX, SrcY, SrcWid, SrcHgt,
-            Clip, Mirror, Flip
+            DestInfo, DestBits, ClipRect, DestX, DestY, DestWid, DestHgt, SrcInfo, SrcBits, SrcX, SrcY, SrcWid, SrcHgt, Clip,
+            Mirror, Flip
         );
         return;
     }
@@ -144,8 +142,7 @@ void __cdecl TransDibBlt(
         TransColor = 0;
 
     if (Clip != 0
-        && ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt, SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip)
-               == 0)
+        && ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt, SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip) == 0)
         return;
 
     long xStep = (SrcWid << 8) / DestWid;
@@ -273,8 +270,8 @@ void __cdecl TransDibBlt(
 }
 
 int __cdecl ClipDibBlt(
-    BITMAPINFO256* DestInfo, RECT* ClipRect, LONG& DestX, LONG& DestY, LONG& DestWid, LONG& DestHgt, LONG& SrcX,
-    LONG& SrcY, LONG& SrcWid, LONG& SrcHgt, int Mirror, int Flip
+    BITMAPINFO256* DestInfo, RECT* ClipRect, LONG& DestX, LONG& DestY, LONG& DestWid, LONG& DestHgt, LONG& SrcX, LONG& SrcY,
+    LONG& SrcWid, LONG& SrcHgt, int Mirror, int Flip
 ) {
     LONG left;
     LONG top;
@@ -298,8 +295,7 @@ int __cdecl ClipDibBlt(
     ex--;
     ey--;
 
-    if (DestX <= ex && DestY <= ey && DestWid + DestX - 1 >= left && DestHgt + DestY - 1 >= top && DestWid >= 1
-        && DestHgt >= 1) {
+    if (DestX <= ex && DestY <= ey && DestWid + DestX - 1 >= left && DestHgt + DestY - 1 >= top && DestWid >= 1 && DestHgt >= 1) {
         LONG x_scale = (SrcWid << 8) / DestWid;
         LONG y_scale = (SrcHgt << 8) / DestHgt;
 
@@ -361,9 +357,9 @@ void __cdecl GetDibDim(BITMAPINFO256* Info, long& TotWid, long& TotHgt, long& Or
 }
 
 long __cdecl TileDibBlt(
-    BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
-    long BlockWid, long BlockHgt, BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY,
-    long SrcWid, long SrcHgt, int Trans, int Mirror, int Flip
+    BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt, long BlockWid,
+    long BlockHgt, BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY, long SrcWid, long SrcHgt,
+    int Trans, int Mirror, int Flip
 ) {
     long xScale = (SrcWid << 8) / BlockWid;
     long yScale = (SrcHgt << 8) / BlockHgt;
@@ -416,28 +412,28 @@ long __cdecl TileDibBlt(
                         if (DestTopHgt != 0) {
                             if (DestLtWid != 0) {
                                 TransDibBlt(
-                                    DestInfo, DestBits, ClipRect, x, DestY, DestLtWid, DestTopHgt, SrcInfo, SrcBits,
-                                    TransInfo, SrcX, SrcY, SrcRtWid, SrcBotHgt, 1, Mirror, Flip, 0
+                                    DestInfo, DestBits, ClipRect, x, DestY, DestLtWid, DestTopHgt, SrcInfo, SrcBits, TransInfo,
+                                    SrcX, SrcY, SrcRtWid, SrcBotHgt, 1, Mirror, Flip, 0
                                 );
                             }
                             if (DestRtWid != 0) {
                                 TransDibBlt(
-                                    DestInfo, DestBits, ClipRect, x + DestLtWid, DestY, DestRtWid, DestTopHgt, SrcInfo,
-                                    SrcBits, TransInfo, sxSkip, SrcY, SrcLtWid, SrcBotHgt, 1, Mirror, Flip, 0
+                                    DestInfo, DestBits, ClipRect, x + DestLtWid, DestY, DestRtWid, DestTopHgt, SrcInfo, SrcBits,
+                                    TransInfo, sxSkip, SrcY, SrcLtWid, SrcBotHgt, 1, Mirror, Flip, 0
                                 );
                             }
                         }
                         if (DestBotHgt != 0) {
                             if (DestLtWid != 0) {
                                 TransDibBlt(
-                                    DestInfo, DestBits, ClipRect, x, DestY1, DestLtWid, DestBotHgt, SrcInfo, SrcBits,
-                                    TransInfo, SrcX, sySkip, SrcRtWid, SrcTopHgt, 1, Mirror, Flip, 0
+                                    DestInfo, DestBits, ClipRect, x, DestY1, DestLtWid, DestBotHgt, SrcInfo, SrcBits, TransInfo,
+                                    SrcX, sySkip, SrcRtWid, SrcTopHgt, 1, Mirror, Flip, 0
                                 );
                             }
                             if (DestRtWid != 0) {
                                 TransDibBlt(
-                                    DestInfo, DestBits, ClipRect, x + DestLtWid, DestY1, DestRtWid, DestBotHgt, SrcInfo,
-                                    SrcBits, TransInfo, sxSkip, sySkip, SrcLtWid, SrcTopHgt, 1, Mirror, Flip, 0
+                                    DestInfo, DestBits, ClipRect, x + DestLtWid, DestY1, DestRtWid, DestBotHgt, SrcInfo, SrcBits,
+                                    TransInfo, sxSkip, sySkip, SrcLtWid, SrcTopHgt, 1, Mirror, Flip, 0
                                 );
                             }
                         }
@@ -459,28 +455,28 @@ long __cdecl TileDibBlt(
                     if (DestTopHgt != 0) {
                         if (DestLtWid != 0) {
                             DibBlt(
-                                DestInfo, DestBits, ClipRect, x, DestY, DestLtWid, DestTopHgt, SrcInfo, SrcBits, SrcX,
-                                SrcY, SrcRtWid, SrcBotHgt, 1, Mirror, Flip
+                                DestInfo, DestBits, ClipRect, x, DestY, DestLtWid, DestTopHgt, SrcInfo, SrcBits, SrcX, SrcY,
+                                SrcRtWid, SrcBotHgt, 1, Mirror, Flip
                             );
                         }
                         if (DestRtWid != 0) {
                             DibBlt(
-                                DestInfo, DestBits, ClipRect, x + DestLtWid, DestY, DestRtWid, DestTopHgt, SrcInfo,
-                                SrcBits, sxSkip, SrcY, SrcLtWid, SrcBotHgt, 1, Mirror, Flip
+                                DestInfo, DestBits, ClipRect, x + DestLtWid, DestY, DestRtWid, DestTopHgt, SrcInfo, SrcBits,
+                                sxSkip, SrcY, SrcLtWid, SrcBotHgt, 1, Mirror, Flip
                             );
                         }
                     }
                     if (DestBotHgt != 0) {
                         if (DestLtWid != 0) {
                             DibBlt(
-                                DestInfo, DestBits, ClipRect, x, DestY1, DestLtWid, DestBotHgt, SrcInfo, SrcBits, SrcX,
-                                sySkip, SrcRtWid, SrcTopHgt, 1, Mirror, Flip
+                                DestInfo, DestBits, ClipRect, x, DestY1, DestLtWid, DestBotHgt, SrcInfo, SrcBits, SrcX, sySkip,
+                                SrcRtWid, SrcTopHgt, 1, Mirror, Flip
                             );
                         }
                         if (DestRtWid != 0) {
                             DibBlt(
-                                DestInfo, DestBits, ClipRect, x + DestLtWid, DestY1, DestRtWid, DestBotHgt, SrcInfo,
-                                SrcBits, sxSkip, sySkip, SrcLtWid, SrcTopHgt, 1, Mirror, Flip
+                                DestInfo, DestBits, ClipRect, x + DestLtWid, DestY1, DestRtWid, DestBotHgt, SrcInfo, SrcBits,
+                                sxSkip, sySkip, SrcLtWid, SrcTopHgt, 1, Mirror, Flip
                             );
                         }
                     }
@@ -1087,10 +1083,10 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle, UINT biBits,
 
         lpbiNew->biClrUsed = DibFromBitmapNumColors(lpbiNew);
 
-        dwSizeImage = (lpbiNew->biSizeImage == 0)
-                          ? ((((DWORD) lpbiNew->biBitCount * (DWORD) lpbiNew->biWidth + 31) >> 3) & 0x1FFFFFFC)
-                                * lpbiNew->biHeight
-                          : lpbiNew->biSizeImage;
+        dwSizeImage =
+            (lpbiNew->biSizeImage == 0)
+                ? ((((DWORD) lpbiNew->biBitCount * (DWORD) lpbiNew->biWidth + 31) >> 3) & 0x1FFFFFFC) * lpbiNew->biHeight
+                : lpbiNew->biSizeImage;
         lpbiNew->biSizeImage = dwSizeImage;
 
         if (result == 0) {
@@ -1192,9 +1188,7 @@ BITMAPINFOHEADER* __cdecl DibCopy(BITMAPINFOHEADER* pdib) {
         return 0;
     }
 
-    copy = (tagBITMAPINFOHEADER*) GlobalLock(
-        GlobalAlloc(GMEM_MOVEABLE, pdib->biSize + pdib->biClrUsed * 4 + pdib->biSizeImage)
-    );
+    copy = (tagBITMAPINFOHEADER*) GlobalLock(GlobalAlloc(GMEM_MOVEABLE, pdib->biSize + pdib->biClrUsed * 4 + pdib->biSizeImage));
     if (copy != 0) {
         memcpy(copy, pdib, pdib->biSize + pdib->biClrUsed * 4 + pdib->biSizeImage);
     }
@@ -1211,9 +1205,7 @@ CreatePDIB __cdecl DibCreate(int bits, int dx, int dy) {
 
     dwSizeImage = dy * (DWORD) ((dx * bits / 8 + 3) & ~3);
 
-    lpbi = (CreatePDIB) GlobalLock(
-        GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof(BITMAPINFOHEADER) + dwSizeImage + 1024)
-    );
+    lpbi = (CreatePDIB) GlobalLock(GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof(BITMAPINFOHEADER) + dwSizeImage + 1024));
 
     if (lpbi == NULL)
         return NULL;

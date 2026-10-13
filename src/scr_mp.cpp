@@ -42,12 +42,10 @@ TribeMPStartupScreen::TribeMPStartupScreen() : TScreenPanel("MP Startup Screen")
     this->set_ideal_size(640, 480);
 
     if (this->create_text(
-            this, &this->title, STRING_ID_MULTIPLAYER_CONNECTION_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD,
-            1, 0, 0
+            this, &this->title, STRING_ID_MULTIPLAYER_CONNECTION_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
         )
         && this->create_text(
-            this, &this->inputTitle, STRING_ID_MULTIPLAYER_NAME_LABEL, 20, 75, 500, 20,
-            RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+            this, &this->inputTitle, STRING_ID_MULTIPLAYER_NAME_LABEL, 20, 75, 500, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
         )) {
         if (Regs->RegGetAscii(1, "Default Age Of Empires Player Name") != 0) {
             strcpy(str, Regs->RegGetAscii(1, "Default Age Of Empires Player Name"));
@@ -55,9 +53,7 @@ TribeMPStartupScreen::TribeMPStartupScreen() : TScreenPanel("MP Startup Screen")
             str[0] = 0;
         }
 
-        if (this->create_edit(
-                this, &this->input, str, 0x0F, TEditPanel::FormatText, 20, 100, 600, 23, RGE_FONT_STANDARD, 1, 0
-            )) {
+        if (this->create_edit(this, &this->input, str, 0x0F, TEditPanel::FormatText, 20, 100, 600, 23, RGE_FONT_STANDARD, 1, 0)) {
             this->input->set_help_info(STRING_ID_HELP_MULTIPLAYER_PLAYER_NAME, -1);
             if (this->create_text(
                     this, &this->connectionTitle, STRING_ID_MULTIPLAYER_CONNECTION_TYPE_LABEL, 20, 165, 600, 20,
@@ -65,17 +61,14 @@ TribeMPStartupScreen::TribeMPStartupScreen() : TScreenPanel("MP Startup Screen")
                 )
                 && this->create_list(this, &this->list, 20, 190, 600, 210, RGE_FONT_STANDARD)
                 && this->create_auto_scrollbar(&this->scrollbar, this->list, 20)) {
-                this->list->set_help_info(
-                    STRING_ID_HELP_MULTIPLAYER_CONNECTION_TYPE, STRING_ID_HELP_MP_CONNECTION_TYPE_MORE
-                );
+                this->list->set_help_info(STRING_ID_HELP_MULTIPLAYER_CONNECTION_TYPE, STRING_ID_HELP_MP_CONNECTION_TYPE_MORE);
                 ok_button = &this->okButton;
                 if (this->create_button(
                         this, ok_button, STRING_ID_BUTTON_OK, 0, 70, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
                     )) {
                     (*ok_button)->set_help_info(STRING_ID_HELP_OK, -1);
                     if (this->create_button(
-                            this, cancel_button, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30,
-                            RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+                            this, cancel_button, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
                         )) {
                         (*cancel_button)->set_help_info(STRING_ID_HELP_CANCEL, -1);
                         cancel = *cancel_button;
@@ -96,15 +89,11 @@ TribeMPStartupScreen::TribeMPStartupScreen() : TScreenPanel("MP Startup Screen")
                                 this->zone_exec[0] = 0;
                                 this->browser_exec[0] = 0;
                                 RegCreateKeyExA(
-                                    HKEY_CLASSES_ROOT, "http\\shell\\open\\command", 0, 0, 0, 0xF003F, 0, &ghUserKey,
-                                    &gdwDisp
+                                    HKEY_CLASSES_ROOT, "http\\shell\\open\\command", 0, 0, 0, 0xF003F, 0, &ghUserKey, &gdwDisp
                                 );
                                 dwType = 1;
                                 dwSize = 0xFF;
-                                int result = RegQueryValueExA(
-                                    ghUserKey, 0, 0, &dwType, (unsigned char*)((void*)Data),
-                                    &dwSize
-                                );
+                                int result = RegQueryValueExA(ghUserKey, 0, 0, &dwType, (unsigned char*) ((void*) Data), &dwSize);
                                 if (ghUserKey != 0) {
                                     RegCloseKey(ghUserKey);
                                     ghUserKey = 0;
@@ -192,13 +181,11 @@ long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned lon
             } else if (this->zone_exec[0] == 0 || this->list->get_id() != -1) {
                 rge_base_game->disable_input();
                 Regs->RegSetAscii(
-                    1, "Default Age Of Empires Player Name",
-                    (unsigned char*)((void*)this->input->currentLine()),
+                    1, "Default Age Of Empires Player Name", (unsigned char*) ((void*) this->input->currentLine()),
                     strlen(this->input->currentLine()) + 1
                 );
                 Regs->RegSetAscii(
-                    1, "Default Age Of Empires Multiplayer Service",
-                    (unsigned char*)((void*)this->list->get_text()),
+                    1, "Default Age Of Empires Multiplayer Service", (unsigned char*) ((void*) this->list->get_text()),
                     strlen(this->list->get_text()) + 1
                 );
                 comm->SetMyPlayerName(this->input->currentLine());

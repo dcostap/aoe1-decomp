@@ -60,9 +60,9 @@ class TScrollBarPanel : public TPanel {
     TScrollBarPanel();
     virtual ~TScrollBarPanel();
     long setup(
-        TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
-        char* back_pic_in, char* up_pic_in, char* down_pic_in, char* tab_pic_in, long arrowSizeIn, long tabSizeIn,
-        TPanel* list_panel_in, long list_len_in, Orientation orientation
+        TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, char* back_pic_in,
+        char* up_pic_in, char* down_pic_in, char* tab_pic_in, long arrowSizeIn, long tabSizeIn, TPanel* list_panel_in,
+        long list_len_in, Orientation orientation
     );
     virtual void set_rect(long x_in, long y_in, long wid_in, long hgt_in);
 

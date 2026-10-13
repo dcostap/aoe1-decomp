@@ -87,29 +87,20 @@ class RGE_Victory_Conditions {
     unsigned char add_capture(unsigned char v_group, RGE_Static_Object* obj, unsigned char alliance);
     unsigned char add_create(unsigned char v_group, long obj_type, long number, unsigned char alliance);
     unsigned char add_create(
-        unsigned char v_group, long obj_type, long number, float x0, float y0, float x1, float y1,
-        unsigned char alliance
+        unsigned char v_group, long obj_type, long number, float x0, float y0, float x1, float y1, unsigned char alliance
     );
     unsigned char add_destroy(unsigned char v_group, RGE_Static_Object* obj);
     unsigned char add_destroy(unsigned char v_group, long obj_type, long num, RGE_Player* player);
     unsigned char add_destroy(unsigned char v_group, long obj_type, RGE_Player* player);
     unsigned char add_destroy(unsigned char v_group, RGE_Player* player);
     unsigned char add_explore(unsigned char v_group, long count, unsigned char alliance);
-    unsigned char add_points_attribute_amount(
-        unsigned char group, unsigned char id, long attribute, long count, long points
-    );
-    unsigned char add_points_attribute_first(
-        unsigned char group, unsigned char id, long attribute, long count, long points
-    );
+    unsigned char add_points_attribute_amount(unsigned char group, unsigned char id, long attribute, long count, long points);
+    unsigned char add_points_attribute_first(unsigned char group, unsigned char id, long attribute, long count, long points);
     unsigned char add_points_high_attribute_amount(
         unsigned char group, unsigned char id, long attribute, long count, long points
     );
-    unsigned char add_points_high_attribute_once(
-        unsigned char group, unsigned char id, long attribute, long count, long points
-    );
-    unsigned char add_points_highest_attribute(
-        unsigned char group, unsigned char id, long attribute, long count, long points
-    );
+    unsigned char add_points_high_attribute_once(unsigned char group, unsigned char id, long attribute, long count, long points);
+    unsigned char add_points_highest_attribute(unsigned char group, unsigned char id, long attribute, long count, long points);
     unsigned char add_victory_points(unsigned char v_group, long count, unsigned char alliance);
 
     unsigned char condition_info(long condition, char** description, unsigned char& type);

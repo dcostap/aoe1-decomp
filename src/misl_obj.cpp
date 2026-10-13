@@ -20,8 +20,7 @@ RGE_Missile_Object::RGE_Missile_Object(
     this->type = 0x3C;
 }
 
-RGE_Missile_Object::RGE_Missile_Object(int infile, RGE_Game_World* gworld, int do_setup) :
-    RGE_Combat_Object(infile, gworld, 0) {
+RGE_Missile_Object::RGE_Missile_Object(int infile, RGE_Game_World* gworld, int do_setup) : RGE_Combat_Object(infile, gworld, 0) {
     if (do_setup != 0) {
         this->setup(infile, gworld);
     }
@@ -40,7 +39,7 @@ int RGE_Missile_Object::setup(int infile, RGE_Game_World* gworld) {
     if (save_game_version > 7.09f) {
         rge_read(infile, &this->max_range, 4);
     } else {
-        this->max_range = ((RGE_Master_Combat_Object*)this->master_obj)->weapon_range;
+        this->max_range = ((RGE_Master_Combat_Object*) this->master_obj)->weapon_range;
     }
     return 1;
 }
@@ -59,9 +58,8 @@ unsigned char RGE_Missile_Object::update() {
 }
 
 void RGE_Missile_Object::init_missile(RGE_Combat_Object* launcher, RGE_Static_Object* target, float in_range) {
-    RGE_Action_Missile* action = new RGE_Action_Missile(
-        (RGE_Action_Object*)this, launcher, target, target->world_x, target->world_y, target->world_z
-    );
+    RGE_Action_Missile* action =
+        new RGE_Action_Missile((RGE_Action_Object*) this, launcher, target, target->world_x, target->world_y, target->world_z);
     if (action != 0) {
         this->actions->add_action(action);
     }
@@ -69,7 +67,7 @@ void RGE_Missile_Object::init_missile(RGE_Combat_Object* launcher, RGE_Static_Ob
 }
 
 void RGE_Missile_Object::init_missile(RGE_Combat_Object* launcher, float x, float y, float z, float in_range) {
-    RGE_Action_Missile* action = new RGE_Action_Missile((RGE_Action_Object*)this, launcher, 0, x, y, z);
+    RGE_Action_Missile* action = new RGE_Action_Missile((RGE_Action_Object*) this, launcher, 0, x, y, z);
     if (action != 0) {
         this->actions->add_action(action);
     }
@@ -85,8 +83,8 @@ unsigned char RGE_Missile_Object::missile_move() {
     new_y = this->world_y + this->velocity_y;
     new_z = this->world_z + this->velocity_z;
 
-    if (new_x < g_missile_zero_float || new_x >= (float) this->owner->world->map->map_width
-        || new_y < g_missile_zero_float || new_y >= (float) this->owner->world->map->map_height) {
+    if (new_x < g_missile_zero_float || new_x >= (float) this->owner->world->map->map_width || new_y < g_missile_zero_float
+        || new_y >= (float) this->owner->world->map->map_height) {
         this->die_die_die();
     }
 

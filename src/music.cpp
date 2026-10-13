@@ -75,8 +75,7 @@ int TMusic_System::open_device() {
         case 1: {
             MCI_SEND_COMMAND_PROC mci = mciSendCommandA;
             open_info.lpstrDeviceType = MAKEINTRESOURCEA(MCI_DEVTYPE_CD_AUDIO);
-            if (mci(0, MCI_OPEN, MCI_OPEN_TYPE_ID | MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE | MCI_WAIT, (DWORD) &open_info)
-                == 0) {
+            if (mci(0, MCI_OPEN, MCI_OPEN_TYPE_ID | MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE | MCI_WAIT, (DWORD) &open_info) == 0) {
                 this->device_open = 1;
                 this->device_id = open_info.wDeviceID;
                 set_info.dwTimeFormat = MCI_FORMAT_TMSF;
@@ -102,9 +101,9 @@ int TMusic_System::open_device() {
         case 2: {
             FILE* scan_file;
             if (this->open_mixer() != 0) {
-                this->start_volume = (this->mixer_volume_value.dwValue * 10000)
-                                     / (unsigned int) (this->mixer_volume_control.Bounds.lMaximum
-                                                       - this->mixer_volume_control.Bounds.lMinimum);
+                this->start_volume =
+                    (this->mixer_volume_value.dwValue * 10000)
+                    / (unsigned int) (this->mixer_volume_control.Bounds.lMaximum - this->mixer_volume_control.Bounds.lMinimum);
                 this->start_volume += MUSIC_MIN_VOLUME;
                 this->volume = this->start_volume;
             }
@@ -207,9 +206,7 @@ int TMusic_System::open_mixer() {
                 this->mixer_line_controls.cbmxctrl = sizeof(this->mixer_volume_control);
                 this->mixer_line_controls.pamxctrl = &this->mixer_volume_control;
 
-                if (mixerGetLineControlsA(
-                        this->mixer_handle, &this->mixer_line_controls, MIXER_GETLINECONTROLSF_ONEBYTYPE
-                    )
+                if (mixerGetLineControlsA(this->mixer_handle, &this->mixer_line_controls, MIXER_GETLINECONTROLSF_ONEBYTYPE)
                     == 0) {
                     memset(&this->mixer_volume_details, 0, sizeof(this->mixer_volume_details));
                     memset(&this->mixer_volume_value, 0, sizeof(this->mixer_volume_value));
@@ -219,9 +216,7 @@ int TMusic_System::open_mixer() {
                     this->mixer_volume_details.cbDetails = sizeof(this->mixer_volume_value);
                     this->mixer_volume_details.paDetails = &this->mixer_volume_value;
 
-                    if (mixerGetControlDetailsA(
-                            this->mixer_handle, &this->mixer_volume_details, MIXER_GETCONTROLDETAILSF_VALUE
-                        )
+                    if (mixerGetControlDetailsA(this->mixer_handle, &this->mixer_volume_details, MIXER_GETCONTROLDETAILSF_VALUE)
                         == 0) {
                         this->mixer_open = 1;
                         return 1;
@@ -461,8 +456,7 @@ int TMusic_System::play(
                 mci = mciSendCommandA;
                 open_info.lpstrDeviceType = MAKEINTRESOURCEA(MCI_DEVTYPE_SEQUENCER);
                 open_info.lpstrElementName = track_name;
-                result =
-                    mci(0, MCI_OPEN, MCI_OPEN_TYPE_ID | MCI_OPEN_TYPE | MCI_OPEN_ELEMENT, (unsigned long) &open_info);
+                result = mci(0, MCI_OPEN, MCI_OPEN_TYPE_ID | MCI_OPEN_TYPE | MCI_OPEN_ELEMENT, (unsigned long) &open_info);
                 if (result) {
                     if (!mciGetErrorStringA(result, szErrorMsg, sizeof(szErrorMsg))) {
                         strcpy(szErrorMsg, MUSIC_ERROR);
@@ -766,8 +760,8 @@ void TMusic_System::after_end_track() {
 }
 
 int TMusic_System::get_play_info(
-    unsigned char* music_type_in, int* track_from_in, int* track_to_in, int* cur_track_in, char* music_file_in,
-    int* loop_in, unsigned long* pos_in
+    unsigned char* music_type_in, int* track_from_in, int* track_to_in, int* cur_track_in, char* music_file_in, int* loop_in,
+    unsigned long* pos_in
 ) {
     MCI_STATUS_PARMS status_info;
     *music_type_in = this->music_type;
@@ -796,16 +790,14 @@ int TMusic_System::get_play_info(
     switch (this->music_type) {
         case 2: {
             status_info.dwItem = MCI_STATUS_POSITION;
-            int result =
-                mciSendCommandA(this->device_id, MCI_STATUS, MCI_STATUS_ITEM | MCI_WAIT, (unsigned long) &status_info);
+            int result = mciSendCommandA(this->device_id, MCI_STATUS, MCI_STATUS_ITEM | MCI_WAIT, (unsigned long) &status_info);
             if (result == 0)
                 *pos_in = status_info.dwReturn;
             break;
         }
         case 1: {
             status_info.dwItem = MCI_STATUS_POSITION;
-            int result =
-                mciSendCommandA(this->device_id, MCI_STATUS, MCI_STATUS_ITEM | MCI_WAIT, (unsigned long) &status_info);
+            int result = mciSendCommandA(this->device_id, MCI_STATUS, MCI_STATUS_ITEM | MCI_WAIT, (unsigned long) &status_info);
             if (result == 0)
                 *pos_in = status_info.dwReturn;
             break;

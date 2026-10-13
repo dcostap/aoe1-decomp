@@ -9,8 +9,7 @@ TRIBE_Tree_Object::TRIBE_Tree_Object(
     }
 }
 
-TRIBE_Tree_Object::TRIBE_Tree_Object(int infile, RGE_Game_World* gworld, int do_setup) :
-    RGE_Static_Object(infile, gworld, 0) {
+TRIBE_Tree_Object::TRIBE_Tree_Object(int infile, RGE_Game_World* gworld, int do_setup) : RGE_Static_Object(infile, gworld, 0) {
     if (do_setup != 0) {
         setup(infile, gworld);
     }

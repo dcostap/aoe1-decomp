@@ -508,15 +508,14 @@ void TPanelSystem::set_restore(void) {
 }
 
 TPanel::TPanel(char* name) :
-    previous_panel(0), previous_modal_panel(0), pnl_x(0), pnl_y(0), pnl_wid(0), pnl_hgt(0), panel_name(0),
-    render_area(0), position_mode(0), need_redraw(TPanel::RedrawImmediate), curr_child(0), parent_panel(0),
-    left_panel(0), top_panel(0), right_panel(0), bottom_panel(0), node(0), first_child_node(0), last_child_node(0),
-    tab_prev_panel(0), tab_next_panel(0), mouse_captured(0), active(1), visible(0), tab_stop(0), have_focus(0),
-    overlapping_children(1), handle_mouse_input(1), just_drawn(0), clip_rgn(0), left_border(0), top_border(0),
-    right_border(0), bottom_border(0), min_wid(0), max_wid(0), min_hgt(0), max_hgt(0), mouse_hold_interval(250),
-    mouse_move_tolerance(0), mouse_down_x(0), mouse_down_y(0), mouse_down_ctrl(0), mouse_down_shift(0),
-    mouse_down_time(0), error_code(0), z_order(0), display_changed_count(0), mouse_action(0), mouse_down_button(0),
-    panel_type(0), color(0), fill_in_background(0), draw_rect2_flag(0) {
+    previous_panel(0), previous_modal_panel(0), pnl_x(0), pnl_y(0), pnl_wid(0), pnl_hgt(0), panel_name(0), render_area(0),
+    position_mode(0), need_redraw(TPanel::RedrawImmediate), curr_child(0), parent_panel(0), left_panel(0), top_panel(0),
+    right_panel(0), bottom_panel(0), node(0), first_child_node(0), last_child_node(0), tab_prev_panel(0), tab_next_panel(0),
+    mouse_captured(0), active(1), visible(0), tab_stop(0), have_focus(0), overlapping_children(1), handle_mouse_input(1),
+    just_drawn(0), clip_rgn(0), left_border(0), top_border(0), right_border(0), bottom_border(0), min_wid(0), max_wid(0),
+    min_hgt(0), max_hgt(0), mouse_hold_interval(250), mouse_move_tolerance(0), mouse_down_x(0), mouse_down_y(0),
+    mouse_down_ctrl(0), mouse_down_shift(0), mouse_down_time(0), error_code(0), z_order(0), display_changed_count(0),
+    mouse_action(0), mouse_down_button(0), panel_type(0), color(0), fill_in_background(0), draw_rect2_flag(0) {
     render_rect.left = 0;
     render_rect.top = 0;
     render_rect.right = 0;
@@ -531,15 +530,14 @@ TPanel::TPanel(char* name) :
 }
 
 TPanel::TPanel(void) :
-    previous_panel(0), previous_modal_panel(0), pnl_x(0), pnl_y(0), pnl_wid(0), pnl_hgt(0), panel_name(0),
-    render_area(0), position_mode(0), need_redraw(TPanel::RedrawImmediate), curr_child(0), parent_panel(0),
-    left_panel(0), top_panel(0), right_panel(0), bottom_panel(0), node(0), first_child_node(0), last_child_node(0),
-    tab_prev_panel(0), tab_next_panel(0), mouse_captured(0), active(1), visible(0), tab_stop(0), have_focus(0),
-    overlapping_children(1), handle_mouse_input(1), clip_rgn(0), left_border(0), top_border(0), right_border(0),
-    bottom_border(0), min_wid(0), max_wid(0), min_hgt(0), max_hgt(0), mouse_hold_interval(250), mouse_move_tolerance(0),
-    mouse_down_x(0), mouse_down_y(0), mouse_down_ctrl(0), mouse_down_shift(0), mouse_down_time(0), error_code(0),
-    z_order(0), display_changed_count(0), mouse_action(0), mouse_down_button(0), panel_type(0), color(0),
-    fill_in_background(0), draw_rect2_flag(0) {
+    previous_panel(0), previous_modal_panel(0), pnl_x(0), pnl_y(0), pnl_wid(0), pnl_hgt(0), panel_name(0), render_area(0),
+    position_mode(0), need_redraw(TPanel::RedrawImmediate), curr_child(0), parent_panel(0), left_panel(0), top_panel(0),
+    right_panel(0), bottom_panel(0), node(0), first_child_node(0), last_child_node(0), tab_prev_panel(0), tab_next_panel(0),
+    mouse_captured(0), active(1), visible(0), tab_stop(0), have_focus(0), overlapping_children(1), handle_mouse_input(1),
+    clip_rgn(0), left_border(0), top_border(0), right_border(0), bottom_border(0), min_wid(0), max_wid(0), min_hgt(0), max_hgt(0),
+    mouse_hold_interval(250), mouse_move_tolerance(0), mouse_down_x(0), mouse_down_y(0), mouse_down_ctrl(0), mouse_down_shift(0),
+    mouse_down_time(0), error_code(0), z_order(0), display_changed_count(0), mouse_action(0), mouse_down_button(0), panel_type(0),
+    color(0), fill_in_background(0), draw_rect2_flag(0) {
     render_rect.left = 0;
     render_rect.top = 0;
     render_rect.right = 0;
@@ -579,8 +577,7 @@ TPanel::~TPanel() {
 }
 
 long TPanel::setup(
-    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
-    unsigned char color_in
+    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, unsigned char color_in
 ) {
     render_area = render_area_in;
     parent_panel = parent_panel_in;
@@ -771,9 +768,9 @@ void TPanel::set_active(int active_in) {
 }
 
 void TPanel::set_positioning(
-    TPanel::PositionMode position_mode_in, long left_border_in, long top_border_in, long right_border_in,
-    long bottom_border_in, long min_wid_in, long max_wid_in, long min_hgt_in, long max_hgt_in, TPanel* left_panel_in,
-    TPanel* top_panel_in, TPanel* right_panel_in, TPanel* bottom_panel_in
+    TPanel::PositionMode position_mode_in, long left_border_in, long top_border_in, long right_border_in, long bottom_border_in,
+    long min_wid_in, long max_wid_in, long min_hgt_in, long max_hgt_in, TPanel* left_panel_in, TPanel* top_panel_in,
+    TPanel* right_panel_in, TPanel* bottom_panel_in
 ) {
     position_mode = position_mode_in;
     left_border = left_border_in;
@@ -801,9 +798,7 @@ void TPanel::set_positioning(
 }
 
 void TPanel::set_fixed_position(long left_border_in, long top_border_in, long wid_in, long hgt_in) {
-    set_positioning(
-        TPanel::PositionFixed, left_border_in, top_border_in, 0, 0, wid_in, wid_in, hgt_in, hgt_in, 0, 0, 0, 0
-    );
+    set_positioning(TPanel::PositionFixed, left_border_in, top_border_in, 0, 0, wid_in, wid_in, hgt_in, hgt_in, 0, 0, 0, 0);
 }
 
 void TPanel::set_redraw(TPanel::RedrawMode redraw_mode) {
@@ -836,11 +831,9 @@ void TPanel::set_overlapped_redraw(TPanel* redraw_panel, TPanel* calling_panel, 
             int panel_right = panel_rect.right;
             int panel_bottom = panel_rect.bottom;
 
-            if ((((panel_left < this_left || panel_left > this_right)
-                  && (panel_right < this_left || panel_right > this_right))
+            if ((((panel_left < this_left || panel_left > this_right) && (panel_right < this_left || panel_right > this_right))
                  && (panel_left >= this_left || panel_right <= this_right))
-                || (((panel_top < this_top || panel_top > this_bottom)
-                     && (panel_bottom < this_top || panel_bottom > this_bottom))
+                || (((panel_top < this_top || panel_top > this_bottom) && (panel_bottom < this_top || panel_bottom > this_bottom))
                     && (panel_top >= this_top || panel_bottom <= this_bottom))) {
                 if ((((this_left >= panel_left && this_left <= panel_right)
                       || (this_right >= panel_left && this_right <= panel_right))
@@ -1090,8 +1083,7 @@ long TPanel::handle_idle(void) {
     long result;
 
     if (active != 0 && mouse_action == 1) {
-        if ((int) (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 1533) - mouse_down_time)
-            >= mouse_hold_interval) {
+        if ((int) (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 1533) - mouse_down_time) >= mouse_hold_interval) {
             mouse_action = 2;
             if (mouse_down_button == 1) {
                 mouse_left_hold_action(mouse_down_x, mouse_down_y, mouse_down_ctrl, mouse_down_shift);
@@ -1254,11 +1246,11 @@ long TPanel::handle_paint() {
 
     if (this->need_redraw != 0) {
         for (PanelNode* node = this->first_child_node; node != 0; node = node->next_node) {
-            node->panel->set_redraw((TPanel::RedrawMode)this->need_redraw);
+            node->panel->set_redraw((TPanel::RedrawMode) this->need_redraw);
         }
 
         if (this->parent_panel != 0 && this->parent_panel->overlapping_children != 0) {
-            this->parent_panel->set_overlapped_redraw(this, this, (TPanel::RedrawMode)this->need_redraw);
+            this->parent_panel->set_overlapped_redraw(this, this, (TPanel::RedrawMode) this->need_redraw);
         }
         this->draw();
         this->need_redraw = 0;

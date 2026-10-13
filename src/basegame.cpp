@@ -242,9 +242,7 @@ int RGE_Base_Game::setup() {
     char s[256];
     OFSTRUCT of;
     _finddata_t file_info;
-    debug_srand(
-        "C:\\msdev\\work\\age1_x1\\basegame.cpp", 522, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522)
-    );
+    debug_srand("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522));
 
     temp_val = this->registry->RegGetInt(1, "Screen Size");
     switch (temp_val) {
@@ -312,8 +310,7 @@ int RGE_Base_Game::setup() {
             } else {
                 GlobalMemoryStatus(&ms);
                 if ((ms.dwTotalPageFile >= RGE_MB(20) && ms.dwTotalVirtual >= RGE_MB(10))
-                    || (ms.dwTotalPageFile >= RGE_MB(10) && ms.dwTotalVirtual >= RGE_MB(20))
-                    || ms.dwTotalVirtual >= RGE_MB(30)) {
+                    || (ms.dwTotalPageFile >= RGE_MB(10) && ms.dwTotalVirtual >= RGE_MB(20)) || ms.dwTotalVirtual >= RGE_MB(30)) {
                     this->set_interface_messages();
 
                     if (debugActions == 1)
@@ -953,8 +950,7 @@ int RGE_Base_Game::setup_cmd_options() {
     cmd_line[255] = 0;
     CharUpperA(cmd_line);
 
-    if ((strstr(cmd_line, "NOSTARTUP") != 0) || (strstr(cmd_line, "NO STARTUP") != 0)
-        || (strstr(cmd_line, "NO_STARTUP") != 0)) {
+    if ((strstr(cmd_line, "NOSTARTUP") != 0) || (strstr(cmd_line, "NO STARTUP") != 0) || (strstr(cmd_line, "NO_STARTUP") != 0)) {
         this->prog_info->skip_startup = 1;
     }
 
@@ -963,8 +959,7 @@ int RGE_Base_Game::setup_cmd_options() {
         this->prog_info->use_sys_mem = 1;
     }
 
-    if ((strstr(cmd_line, "MIDIMUSIC") != 0) || (strstr(cmd_line, "MIDI MUSIC") != 0)
-        || (strstr(cmd_line, "MIDI_MUSIC") != 0)) {
+    if ((strstr(cmd_line, "MIDIMUSIC") != 0) || (strstr(cmd_line, "MIDI MUSIC") != 0) || (strstr(cmd_line, "MIDI_MUSIC") != 0)) {
         this->prog_info->use_music = 1;
         this->prog_info->use_cd_audio = 0;
         this->prog_info->use_ima = 0;
@@ -978,8 +973,7 @@ int RGE_Base_Game::setup_cmd_options() {
 
     DDSys_CanColorFill = (strstr(cmd_line, "MFILL") == 0);
 
-    if ((strstr(cmd_line, "NOSOUND") != 0) || (strstr(cmd_line, "NO SOUND") != 0)
-        || (strstr(cmd_line, "NO_SOUND") != 0)) {
+    if ((strstr(cmd_line, "NOSOUND") != 0) || (strstr(cmd_line, "NO SOUND") != 0) || (strstr(cmd_line, "NO_SOUND") != 0)) {
         this->prog_info->use_sound = 0;
     }
 
@@ -1073,8 +1067,7 @@ int RGE_Base_Game::setup_cmd_options() {
         this->prog_info->use_wave_music = 1;
     }
 
-    if ((strstr(cmd_line, "IMAMUSIC") != 0) || (strstr(cmd_line, "IMA MUSIC") != 0)
-        || (strstr(cmd_line, "IMA_MUSIC") != 0)) {
+    if ((strstr(cmd_line, "IMAMUSIC") != 0) || (strstr(cmd_line, "IMA MUSIC") != 0) || (strstr(cmd_line, "IMA_MUSIC") != 0)) {
         this->prog_info->use_music = 1;
         this->prog_info->use_cd_audio = 0;
         this->prog_info->use_ima = 1;
@@ -1082,23 +1075,19 @@ int RGE_Base_Game::setup_cmd_options() {
         this->prog_info->use_wave_music = 0;
     }
 
-    if ((strstr(cmd_line, "FASTVIEW") != 0) || (strstr(cmd_line, "FAST VIEW") != 0)
-        || (strstr(cmd_line, "FAST_VIEW") != 0)) {
+    if ((strstr(cmd_line, "FASTVIEW") != 0) || (strstr(cmd_line, "FAST VIEW") != 0) || (strstr(cmd_line, "FAST_VIEW") != 0)) {
         this->prog_info->fast_view = 1;
     }
 
-    if ((strstr(cmd_line, "SLOWVIEW") != 0) || (strstr(cmd_line, "SLOW VIEW") != 0)
-        || (strstr(cmd_line, "SLOW_VIEW") != 0)) {
+    if ((strstr(cmd_line, "SLOWVIEW") != 0) || (strstr(cmd_line, "SLOW VIEW") != 0) || (strstr(cmd_line, "SLOW_VIEW") != 0)) {
         this->prog_info->fast_view = 0;
     }
 
-    if ((strstr(cmd_line, "ONEBUTTON") != 0) || (strstr(cmd_line, "ONE BUTTON") != 0)
-        || (strstr(cmd_line, "ONE_BUTTON") != 0)) {
+    if ((strstr(cmd_line, "ONEBUTTON") != 0) || (strstr(cmd_line, "ONE BUTTON") != 0) || (strstr(cmd_line, "ONE_BUTTON") != 0)) {
         this->prog_info->interface_style = 1;
     }
 
-    if ((strstr(cmd_line, "TWOBUTTON") != 0) || (strstr(cmd_line, "TWO BUTTON") != 0)
-        || (strstr(cmd_line, "TWO_BUTTON") != 0)) {
+    if ((strstr(cmd_line, "TWOBUTTON") != 0) || (strstr(cmd_line, "TWO BUTTON") != 0) || (strstr(cmd_line, "TWO_BUTTON") != 0)) {
         this->prog_info->interface_style = 2;
     }
 
@@ -1432,8 +1421,7 @@ int RGE_Base_Game::setup_cmd_options() {
         }
     }
 
-    if ((strstr(cmd_line, "CDAUDIO") != 0) || (strstr(cmd_line, "CD AUDIO") != 0)
-        || (strstr(cmd_line, "CD_AUDIO") != 0)) {
+    if ((strstr(cmd_line, "CDAUDIO") != 0) || (strstr(cmd_line, "CD AUDIO") != 0) || (strstr(cmd_line, "CD_AUDIO") != 0)) {
         this->prog_info->use_music = 1;
         this->prog_info->use_cd_audio = 1;
         this->prog_info->use_ima = 0;
@@ -1445,21 +1433,18 @@ int RGE_Base_Game::setup_cmd_options() {
         this->prog_info->full_screen = 0;
     }
 
-    if ((strstr(cmd_line, "FILEFIRST") != 0) || (strstr(cmd_line, "FILE FIRST") != 0)
-        || (strstr(cmd_line, "FILE_FIRST") != 0)) {
+    if ((strstr(cmd_line, "FILEFIRST") != 0) || (strstr(cmd_line, "FILE FIRST") != 0) || (strstr(cmd_line, "FILE_FIRST") != 0)) {
         shape_file_first = 1;
         sound_file_first = 1;
     }
 
-    if (((strstr(cmd_line, "LOGCOMM") != 0) || (strstr(cmd_line, "LOG COMM") != 0)
-         || (strstr(cmd_line, "LOG_COMM") != 0))
+    if (((strstr(cmd_line, "LOGCOMM") != 0) || (strstr(cmd_line, "LOG COMM") != 0) || (strstr(cmd_line, "LOG_COMM") != 0))
         && (this->log_comm = 1, L != 0)) {
         L->LogFile(1);
         L->LogTimestamp(1);
     }
 
-    if (((strstr(cmd_line, "LOGOUTPUT") != 0) || (strstr(cmd_line, "LOG OUTPUT") != 0)
-         || (strstr(cmd_line, "LOG_OUTPUT") != 0))
+    if (((strstr(cmd_line, "LOGOUTPUT") != 0) || (strstr(cmd_line, "LOG OUTPUT") != 0) || (strstr(cmd_line, "LOG_OUTPUT") != 0))
         && (log_output = 1, L != 0)) {
         L->LogOutput(1);
     }
@@ -1533,7 +1518,7 @@ int RGE_Base_Game::setup_class() {
     cls.lpszClassName = prog_info->prog_name;
     cls.hbrBackground = 0;
 
-    cls.hInstance = (HINSTANCE)prog_info->instance;
+    cls.hInstance = (HINSTANCE) prog_info->instance;
     cls.style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
     cls.lpfnWndProc = rge_base_game_wnd_proc;
     cls.cbWndExtra = 0;
@@ -1650,14 +1635,14 @@ int RGE_Base_Game::setup_graphics_system() {
 
 init_step:
     if (this->draw_system->Init(
-            this->prog_info->instance, this->prog_window, this->prog_palette, draw_type, draw_mode,
-            this->prog_info->main_wid, this->prog_info->main_hgt, use_sys_mem
+            this->prog_info->instance, this->prog_window, this->prog_palette, draw_type, draw_mode, this->prog_info->main_wid,
+            this->prog_info->main_hgt, use_sys_mem
         )
         == 0)
         goto init_fail;
 
     panel_system.release_palette(this->prog_palette);
-    this->prog_palette = (HPALETTE)panel_system.get_palette(this->prog_info->pal_file, 0xC544);
+    this->prog_palette = (HPALETTE) panel_system.get_palette(this->prog_info->pal_file, 0xC544);
 
     this->draw_area = this->draw_system->DrawArea;
     this->draw_area->Clear(0, 0);
@@ -1670,7 +1655,7 @@ init_fail:
 }
 
 int RGE_Base_Game::setup_palette() {
-    HPALETTE result = (HPALETTE)panel_system.get_palette(this->prog_info->pal_file, 0xC544);
+    HPALETTE result = (HPALETTE) panel_system.get_palette(this->prog_info->pal_file, 0xC544);
     this->prog_palette = result;
     return result != 0;
 }
@@ -1823,9 +1808,8 @@ int RGE_Base_Game::setup_music_system() {
 
             sprintf(music_path, "%s\\%s", this->work_dir, this->prog_info->sounds_dir);
 
-            TMusic_System* music_system = new TMusic_System(
-                music_type, this->prog_info->instance, this->prog_window, this->sound_system, music_path
-            );
+            TMusic_System* music_system =
+                new TMusic_System(music_type, this->prog_info->instance, this->prog_window, this->sound_system, music_path);
             this->music_system = music_system;
 
             if (music_system != 0 && music_type == 1 && this->prog_info->use_cd_audio == 0) {
@@ -1849,7 +1833,7 @@ int RGE_Base_Game::setup_shapes() {
     int i;
 
     this->shape_num = 3;
-    shape_array = (TShape**)calloc(3, sizeof(*shape_array));
+    shape_array = (TShape**) calloc(3, sizeof(*shape_array));
     this->shapes = shape_array;
     if (shape_array == 0)
         return 0;
@@ -1874,7 +1858,7 @@ int RGE_Base_Game::setup_sounds() {
     int i;
 
     this->sound_num = 3;
-    this->sounds = (TDigital**)calloc(3, sizeof(*this->sounds));
+    this->sounds = (TDigital**) calloc(3, sizeof(*this->sounds));
     if (this->sounds == 0)
         return 0;
 
@@ -1904,11 +1888,11 @@ int RGE_Base_Game::setup_fonts() {
     TEXTMETRICA tm;
 
     this->font_num = 12;
-    this->fonts = (RGE_Font*)calloc(this->font_num, sizeof(RGE_Font));
+    this->fonts = (RGE_Font*) calloc(this->font_num, sizeof(RGE_Font));
     if (this->fonts == 0)
         return 0;
 
-    HDC dc = (HDC)this->draw_area->GetDc("basegame::setup_fonts");
+    HDC dc = (HDC) this->draw_area->GetDc("basegame::setup_fonts");
     if (dc == 0)
         return 0;
 
@@ -2047,8 +2031,8 @@ done:
 void RGE_Base_Game::stop_music_system(void) {
     if (this->music_system != 0) {
         this->music_system->get_play_info(
-            &this->save_music_type, &this->save_music_track_from, &this->save_music_track_to,
-            &this->save_music_cur_track, this->save_music_file, &this->save_music_loop, &this->save_music_pos
+            &this->save_music_type, &this->save_music_track_from, &this->save_music_track_to, &this->save_music_cur_track,
+            this->save_music_file, &this->save_music_loop, &this->save_music_pos
         );
         this->music_system->stop_track();
     }
@@ -2068,8 +2052,7 @@ int RGE_Base_Game::restart_music_system() {
 
         if (track_from != 0 && this->save_music_track_to != 0) {
             music_system->play_tracks(
-                track_from, this->save_music_track_to, this->save_music_loop, this->save_music_cur_track,
-                this->save_music_pos
+                track_from, this->save_music_track_to, this->save_music_loop, this->save_music_cur_track, this->save_music_pos
             );
             return 1;
         }
@@ -2169,8 +2152,7 @@ int RGE_Base_Game::check_for_cd(int num_players) {
     if (GetDriveTypeA(path) != 5)
         return 0;
 
-    if (GetVolumeInformationA(path, vol_name, 256, &vol_ser_num, &max_comp_len, &file_sys_flags, file_sys_name, 256)
-        == 0)
+    if (GetVolumeInformationA(path, vol_name, 256, &vol_ser_num, &max_comp_len, &file_sys_flags, file_sys_name, 256) == 0)
         return 0;
 
     return stricmp(vol_name, this->prog_info->vol_name) == 0;
@@ -2367,7 +2349,7 @@ void RGE_Base_Game::get_mouse_info(
     WPARAM wparam, LPARAM lparam, tagPOINT& point, int& left_btn, int& right_btn, int& ctrl_key, int& shift_key
 ) {
     int x = lparam & 0xFFFF;
-    int y = (unsigned long)lparam >> 0x10;
+    int y = (unsigned long) lparam >> 0x10;
     point.x = x;
     point.y = y;
     if (60000 < x) {
@@ -2418,7 +2400,7 @@ void RGE_Base_Game::mouse_on() {
             return;
         }
         SetCursor(this->mouse_cursor);
-        SetClassLongA(this->prog_window, GCL_HCURSOR, (LONG)this->mouse_cursor);
+        SetClassLongA(this->prog_window, GCL_HCURSOR, (LONG) this->mouse_cursor);
         this->is_mouse_on = 1;
     }
 }
@@ -2455,7 +2437,7 @@ void RGE_Base_Game::set_windows_mouse(int val) {
     this->mouse_pointer->off();
     if (this->is_mouse_on != 0) {
         SetCursor(this->mouse_cursor);
-        SetClassLongA(this->prog_window, GCL_HCURSOR, (LONG)this->mouse_cursor);
+        SetClassLongA(this->prog_window, GCL_HCURSOR, (LONG) this->mouse_cursor);
     } else {
         SetCursor(NULL);
         SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
@@ -2479,7 +2461,7 @@ void RGE_Base_Game::set_mouse_cursor(HCURSOR val) {
     }
 
     SetCursor(this->mouse_cursor);
-    SetClassLongA(this->prog_window, GCL_HCURSOR, (LONG)this->mouse_cursor);
+    SetClassLongA(this->prog_window, GCL_HCURSOR, (LONG) this->mouse_cursor);
 }
 
 void RGE_Base_Game::set_mouse_facet(long facet) {
@@ -2709,9 +2691,9 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg, WPARAM wparam, LPAR
             if (this->prog_ready != 0) {
                 if (LOWORD(wparam) == 0) {
                     game_thread = GetWindowThreadProcessId(this->prog_window, 0);
-                    window_thread = GetWindowThreadProcessId((HWND)lparam, 0);
+                    window_thread = GetWindowThreadProcessId((HWND) lparam, 0);
                     if (window_thread == game_thread) {
-                        save_active_wnd = (HWND)lparam;
+                        save_active_wnd = (HWND) lparam;
                     }
                 }
 
@@ -2810,7 +2792,7 @@ int RGE_Base_Game::handle_idle() {
             delay = 500;
 
         unsigned long t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 3994);
-        if ((t - restore_palette_timer) >= (unsigned long)delay) {
+        if ((t - restore_palette_timer) >= (unsigned long) delay) {
             if (this->draw_system) {
                 this->draw_system->ModifyPalette(0, 256, this->draw_system->palette);
             }
@@ -2942,7 +2924,7 @@ int RGE_Base_Game::handle_user_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM
 }
 
 int RGE_Base_Game::handle_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-    return this->action_command((unsigned long)wparam, (unsigned long)lparam) != 0;
+    return this->action_command((unsigned long) wparam, (unsigned long) lparam) != 0;
 }
 
 int RGE_Base_Game::handle_music_done(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
@@ -3073,7 +3055,7 @@ paint_done:
             if (this->is_mouse_on != 0) {
                 if (this->custom_mouse == 0 || this->windows_mouse != 0) {
                     SetCursor(this->mouse_cursor);
-                    SetClassLongA(this->prog_window, GCL_HCURSOR, (LONG)this->mouse_cursor);
+                    SetClassLongA(this->prog_window, GCL_HCURSOR, (LONG) this->mouse_cursor);
                 } else {
                     this->mouse_pointer->on();
                     this->mouse_pointer->draw(1);
@@ -3158,7 +3140,7 @@ int RGE_Base_Game::handle_palette_changed(HWND wnd, UINT msg, WPARAM wparam, LPA
         this->draw_system->HandlePaletteChanged(wnd, msg, wparam, lparam);
     }
 
-    if ((void*)wparam != wnd) {
+    if ((void*) wparam != wnd) {
         TDrawSystem* ds = this->draw_system;
         if (ds->DrawType == 1 || ds->ScreenMode == 1 || ds == 0) {
             this->handle_query_new_palette(wnd, msg, wparam, lparam);
@@ -3180,7 +3162,7 @@ int RGE_Base_Game::handle_query_new_palette(HWND wnd, UINT msg, WPARAM wparam, L
 
     HDC dc = GetDC(wnd);
     if (panel_system.currentPanel() != 0) {
-        TEasy_Panel* panel = (TEasy_Panel*)panel_system.currentPanel();
+        TEasy_Panel* panel = (TEasy_Panel*) panel_system.currentPanel();
         if (panel->get_palette() != 0)
             SelectPalette(dc, panel->get_palette(), 0);
     } else {
@@ -3251,8 +3233,7 @@ void RGE_Base_Game::calc_timings() {
         this->timings[4].last_time = 0;
 
     if (this->timings[2].last_time > this->timings[6].last_time + this->timings[7].last_time)
-        this->timings[9].last_time =
-            this->timings[2].last_time - this->timings[6].last_time - this->timings[7].last_time;
+        this->timings[9].last_time = this->timings[2].last_time - this->timings[6].last_time - this->timings[7].last_time;
     else
         this->timings[9].last_time = 0;
 
@@ -3299,10 +3280,9 @@ void RGE_Base_Game::calc_timings() {
             fps_log,
             "%lu, %ld, %ld, %ld, %ld, %d, %d, %d, %d, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %d, %d, %d \n",
             this->world->world_time, start_mem_total, start_mem_high, cur_mem_total, cur_mem_high,
-            (*this->world->players)->objects->number_of_objects,
-            (*this->world->players)->sleeping_objects->number_of_objects, object_count, sleeping_object_count,
-            this->world_update_count, this->view_update_count, this->world_update_fps, this->view_update_fps,
-            this->world_update_count == 0 ? 0 : this->timings[6].last_time / this->world_update_count,
+            (*this->world->players)->objects->number_of_objects, (*this->world->players)->sleeping_objects->number_of_objects,
+            object_count, sleeping_object_count, this->world_update_count, this->view_update_count, this->world_update_fps,
+            this->view_update_fps, this->world_update_count == 0 ? 0 : this->timings[6].last_time / this->world_update_count,
             this->timings[6].last_max_time,
             this->world_update_count == 0 ? 0 : this->timings[7].last_time / this->world_update_count,
             this->timings[7].last_max_time,
@@ -3335,12 +3315,10 @@ void RGE_Base_Game::calc_timing_text() {
         divisor = 1;
 
     sprintf(
-        this->timing_text,
-        "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, draw=%lu, prog=%lu, ui=%lu, sfx=%lu, misc=%lu", this->fps,
-        this->timings[2].last_time / divisor, this->timings[6].last_time / divisor,
-        this->timings[7].last_time / divisor, this->timings[3].last_time / divisor,
-        this->timings[1].last_time / divisor, this->timings[10].last_time / divisor,
-        this->timings[13].last_time / divisor, this->timings[4].last_time / divisor,
+        this->timing_text, "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, draw=%lu, prog=%lu, ui=%lu, sfx=%lu, misc=%lu",
+        this->fps, this->timings[2].last_time / divisor, this->timings[6].last_time / divisor,
+        this->timings[7].last_time / divisor, this->timings[3].last_time / divisor, this->timings[1].last_time / divisor,
+        this->timings[10].last_time / divisor, this->timings[13].last_time / divisor, this->timings[4].last_time / divisor,
         this->timings[0].last_time / divisor
     );
 }
@@ -3360,7 +3338,7 @@ void RGE_Base_Game::show_ai(void) {
 
 void RGE_Base_Game::send_game_options() {
     if (this->comm_handler)
-        this->comm_handler->SetMyGameOptions((char*)&this->rge_game_options, 0xA8);
+        this->comm_handler->SetMyGameOptions((char*) &this->rge_game_options, 0xA8);
 }
 
 void RGE_Base_Game::receive_game_options(void) {
@@ -3368,7 +3346,7 @@ void RGE_Base_Game::receive_game_options(void) {
         unsigned long size = 0;
         void* options = this->comm_handler->GetMyGameOptions(&size);
         if (options != 0 && size == 0xA8)
-            this->set_game_options((RGE_Game_Options*)options);
+            this->set_game_options((RGE_Game_Options*) options);
     }
 }
 
@@ -3718,9 +3696,7 @@ long RGE_Base_Game::GetChecksum(long player) {
     return 0;
 }
 
-unsigned char RGE_Base_Game::GetWorldChecksums(
-    long& new_checksum, long& new_position_checksum, long& new_action_checksum
-) {
+unsigned char RGE_Base_Game::GetWorldChecksums(long& new_checksum, long& new_position_checksum, long& new_action_checksum) {
     long checksum1;
     long checksum2;
     long checksum3;
@@ -3843,8 +3819,7 @@ void RGE_Base_Game::set_screen_size(long wid, long hgt) {
 
             if (client_rect.right != wid || client_rect.bottom != hgt) {
                 SetWindowPos(
-                    this->prog_window, 0, win_rect.left, win_rect.top,
-                    wid + win_rect.right - win_rect.left - client_rect.right,
+                    this->prog_window, 0, win_rect.left, win_rect.top, wid + win_rect.right - win_rect.left - client_rect.right,
                     hgt + win_rect.bottom - win_rect.top - client_rect.bottom, 0
                 );
             }
@@ -4057,9 +4032,7 @@ void __cdecl debug_srand(char* source_name, int source_line, unsigned int seed) 
         else
             idx = 0;
         debug_random_index = idx;
-        sprintf(
-            debug_random_log[idx], "t%d,%s,l%d,s%u", rge_base_game->world->world_time, temp_name, source_line, seed
-        );
+        sprintf(debug_random_log[idx], "t%d,%s,l%d,s%u", rge_base_game->world->world_time, temp_name, source_line, seed);
     }
     srand(seed);
 }

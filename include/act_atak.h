@@ -13,14 +13,12 @@ class RGE_Action_Attack : public RGE_Action {
   public:
     RGE_Action_Attack(int infile, RGE_Action_Object* obj_in);
     RGE_Action_Attack(
-        RGE_Action_Object* obj_in, RGE_Static_Object* target_obj_in, RGE_Sprite* move_sprite_in,
-        RGE_Sprite* fight_sprite_in, RGE_Sprite* wait_sprite_in, float range_in, float min_range_in,
-        short missile_id_in, short fire_missile_at_frame_in
+        RGE_Action_Object* obj_in, RGE_Static_Object* target_obj_in, RGE_Sprite* move_sprite_in, RGE_Sprite* fight_sprite_in,
+        RGE_Sprite* wait_sprite_in, float range_in, float min_range_in, short missile_id_in, short fire_missile_at_frame_in
     );
     RGE_Action_Attack(
         RGE_Action_Object* obj_in, float x, float y, float z, RGE_Sprite* move_sprite_in, RGE_Sprite* fight_sprite_in,
-        RGE_Sprite* wait_sprite_in, float range_in, float min_range_in, short missile_id_in,
-        short fire_missile_at_frame_in
+        RGE_Sprite* wait_sprite_in, float range_in, float min_range_in, short missile_id_in, short fire_missile_at_frame_in
     );
     virtual ~RGE_Action_Attack();
 

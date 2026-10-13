@@ -63,16 +63,15 @@ class TTextPanel : public TPanel {
     virtual void set_text(char**, short);
     virtual void set_bevel_info(int, int, int, int, int, int, int);
     long setup(
-        TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char,
-        short, char*
+        TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char, short,
+        char*
     );
     long setup(
-        TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char,
-        short, long
+        TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char, short, long
     );
     long setup(
-        TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char,
-        short, char**, short
+        TDrawArea*, TPanel*, long, long, long, long, void*, long, long, char*, int, unsigned char, int, unsigned char, short,
+        char**, short
     );
     void set_font(void*, long, long);
     void set_alignment(Alignment, Alignment);

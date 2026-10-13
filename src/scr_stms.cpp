@@ -8,9 +8,8 @@
 
 #include <string.h>
 
-TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
-    char* name, char* message_in, char* info_file_in, long info_id_in
-) : TScreenPanel(name) {
+TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, char* message_in, char* info_file_in, long info_id_in) :
+    TScreenPanel(name) {
     char info_file[260];
     long info_id;
     TEasy_Panel* current_panel;
@@ -49,9 +48,8 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
     }
 }
 
-TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
-    char* name, long message_in, char* info_file_in, long info_id_in
-) : TScreenPanel(name) {
+TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, long message_in, char* info_file_in, long info_id_in) :
+    TScreenPanel(name) {
     char info_file[260];
     long info_id;
     TEasy_Panel* current_panel;

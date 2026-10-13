@@ -21,8 +21,8 @@ TPicturePanel::~TPicturePanel() {
 }
 
 long TPicturePanel::setup(
-    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
-    char* pic_name_in, long res_id_in, int size_from_pic_in, int keep_loaded_in
+    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, char* pic_name_in,
+    long res_id_in, int size_from_pic_in, int keep_loaded_in
 ) {
     short shape_wid, shape_hgt;
 

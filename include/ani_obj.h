@@ -6,9 +6,7 @@
 
 class RGE_Animated_Object : public RGE_Static_Object {
   public:
-    RGE_Animated_Object(
-        RGE_Master_Animated_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup
-    );
+    RGE_Animated_Object(RGE_Master_Animated_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
     RGE_Animated_Object(int infile, RGE_Game_World* gworld, int do_setup);
 
     virtual float getSpeed() const {

@@ -222,8 +222,7 @@ void RGE_Timeline::mock_update(float time) {
                             break;
                         case 4: {
                             int player_index = entry->player;
-                            RGE_Master_Static_Object* master =
-                                world->players[player_index]->master_objects[entry->obj_type];
+                            RGE_Master_Static_Object* master = world->players[player_index]->master_objects[entry->obj_type];
                             if (master != 0) {
                                 object = master->make_new_obj(world->players[player_index], entry->x, entry->y, 0);
                                 for (next_entry = time_list; next_entry != 0; next_entry = next_entry->next) {
@@ -257,8 +256,7 @@ void RGE_Timeline::mock_update(float time) {
                 switch (entry->command) {
                     case 1: {
                         int player_index = entry->player;
-                        RGE_Master_Static_Object* master =
-                            world->players[player_index]->master_objects[entry->obj_type];
+                        RGE_Master_Static_Object* master = world->players[player_index]->master_objects[entry->obj_type];
                         if (master != 0) {
                             object = master->make_new_obj(world->players[player_index], entry->x, entry->y, 0);
                             for (next_entry = time_list; next_entry != 0; next_entry = next_entry->next) {

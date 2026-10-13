@@ -52,8 +52,8 @@ class UnitAIModule {
     virtual void load(int infile);
     virtual RGE_Player* owner() const;
     virtual int order(
-        int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ,
-        float range, int immediate, int inFront, int priority
+        int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ, float range,
+        int immediate, int inFront, int priority
     );
     virtual int notify(int callerID, int recipientID, int mType, long p1, long p2, long p3);
     // VC5 reverses this adjacent overload pair in the vtable.
@@ -179,8 +179,8 @@ class UnitAIModule {
   protected:
     int addToOrderQueue(OrderEvent* oEvent, int inFront);
     int addToOrderQueue(
-        int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ,
-        float range, int inFront, int priority
+        int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ, float range,
+        int inFront, int priority
     );
     int addToNotifyQueue(NotifyEvent* nEvent);
     int addToNotifyQueue(int callerID, int recipientID, int mType, long p1, long p2, long p3);

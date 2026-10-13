@@ -49,31 +49,24 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen() : TScreenPanel("Cam
         this, &this->title, STRING_ID_CAMPAIGN_EDITOR_TITLE, 10, 10, 620, 50, RGE_FONT_COPPERPLATE_21_BOLD, 3, 0, 0
     );
     this->create_text(
-        this, &this->filename_title, STRING_ID_CAMPAIGN_FILENAME_LABEL, 20, 40, 260, 20,
-        RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+        this, &this->filename_title, STRING_ID_CAMPAIGN_FILENAME_LABEL, 20, 40, 260, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
     );
     this->create_drop_down(
-        this, &this->filename_drop, 380, 200, 20, 60, 0x17C, (this->ideal_height * 30) / this->pnl_hgt,
-        RGE_FONT_STANDARD
+        this, &this->filename_drop, 380, 200, 20, 60, 0x17C, (this->ideal_height * 30) / this->pnl_hgt, RGE_FONT_STANDARD
     );
 
     this->create_edit(
-        this->filename_drop, &this->filename, this->get_string(STRING_ID_DEFAULT_CAMPAIGN_NAME), 100,
-        TEditPanel::FormatFileNoExt, 0, 0, 360, 30, RGE_FONT_STANDARD, 1, 1
+        this->filename_drop, &this->filename, this->get_string(STRING_ID_DEFAULT_CAMPAIGN_NAME), 100, TEditPanel::FormatFileNoExt,
+        0, 0, 360, 30, RGE_FONT_STANDARD, 1, 1
     );
 
-    this->create_button(
-        this, &this->save_button, STRING_ID_BUTTON_SAVE, 0, 420, 60, 200, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-    );
-    this->create_button(
-        this, &this->add_button, STRING_ID_BUTTON_ADD, 0, 280, 260, 160, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-    );
+    this->create_button(this, &this->save_button, STRING_ID_BUTTON_SAVE, 0, 420, 60, 200, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
+    this->create_button(this, &this->add_button, STRING_ID_BUTTON_ADD, 0, 280, 260, 160, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
     this->create_button(
         this, &this->remove_button, STRING_ID_BUTTON_REMOVE, 0, 460, 260, 160, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
     );
     this->create_text(
-        this, &this->scenarios_title, STRING_ID_SCENARIOS_TITLE, 20, 100, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0,
-        0, 0
+        this, &this->scenarios_title, STRING_ID_SCENARIOS_TITLE, 20, 100, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
     );
     this->create_list(this, &this->scenarios, 20, 120, 600, 130, RGE_FONT_STANDARD);
     this->create_auto_scrollbar(&this->scenarios_bar, this->scenarios, 20);
@@ -84,9 +77,7 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen() : TScreenPanel("Cam
     this->create_list(this, &this->campaign_scenarios, 20, 300, 500, 130, RGE_FONT_STANDARD);
     this->create_auto_scrollbar(&this->campaign_scenarios_bar, this->campaign_scenarios, 20);
 
-    this->create_button(
-        this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 20, 445, 280, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-    );
+    this->create_button(this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 20, 445, 280, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
     this->create_button(
         this, &this->cancel_button, STRING_ID_BUTTON_CANCEL, 0, 340, 445, 280, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
     );
@@ -311,8 +302,8 @@ void TRIBE_Campaign_Editor_Screen::make_campaign() {
             addstring(&text, campaign_filename, ".cpx");
             count = this->campaign_scenarios->numberLines();
             if (count > 0) {
-                scenarios_text = (char**)calloc(count, 4);
-                scenarios_filenames = (char**)calloc(count, 4);
+                scenarios_text = (char**) calloc(count, 4);
+                scenarios_filenames = (char**) calloc(count, 4);
                 for (i = 0; i < count; ++i) {
                     getstring(&scenarios_text[i], this->campaign_scenarios->get_text(i));
                     getstring(&scenarios_filenames[i], this->campaign_scenarios->get_text(i));

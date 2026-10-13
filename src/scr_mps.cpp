@@ -61,9 +61,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     }
     draw_area = rge_base_game->draw_area;
 
-    if (!this->TEasy_Panel::setup(
-            draw_area, 0, setup_file, 0xC384 + (rge_base_game->multiplayerGame() != 0), 1, 0, 0, 0, 0, 1
-        )) {
+    if (!this->TEasy_Panel::setup(draw_area, 0, setup_file, 0xC384 + (rge_base_game->multiplayerGame() != 0), 1, 0, 0, 0, 0, 1)) {
         this->error_code = 1;
         return;
     }
@@ -72,14 +70,13 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     this->set_ideal_size(640, 480);
 
     if (!this->create_text(
-            this, &this->title, STRING_ID_SINGLE_PLAYER_GAME_TITLE - (rge_base_game->multiplayerGame() != 0), 20, 6,
-            600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
+            this, &this->title, STRING_ID_SINGLE_PLAYER_GAME_TITLE - (rge_base_game->multiplayerGame() != 0), 20, 6, 600, 30,
+            RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
         )) {
         return;
     }
     if (!this->create_text(
-            this, &this->playerTitle, STRING_ID_MP_PLAYER_NAME_LABEL, 26, 50, 160, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0,
-            1, 0
+            this, &this->playerTitle, STRING_ID_MP_PLAYER_NAME_LABEL, 26, 50, 160, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 1, 0
         )) {
         return;
     }
@@ -90,15 +87,13 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     }
     if (rge_base_game->singlePlayerGame() == 0 && !comm->IsHost()) {
         if (!this->create_text(
-                this, &this->settingsTitle, STRING_ID_MP_SETTINGS_LABEL, 420, 50, 210, 30, RGE_FONT_COPPERPLATE_12_BOLD,
-                0, 1, 0
+                this, &this->settingsTitle, STRING_ID_MP_SETTINGS_LABEL, 420, 50, 210, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 1, 0
             )) {
             return;
         }
     }
     if (!this->create_text(
-            this, &this->colorTitle, STRING_ID_MP_PLAYER_COLOR_LABEL, 240, 50, 100, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0,
-            1, 0
+            this, &this->colorTitle, STRING_ID_MP_PLAYER_COLOR_LABEL, 240, 50, 100, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 1, 0
         )) {
         return;
     }
@@ -154,9 +149,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         // This empty resource slot has no verified civilization name.
         this->playerCivDrop[i]->append_line(0x280A, 17);
 
-        if (!this->create_drop_down(
-                this, &this->scenarioPlayerDrop[i], 40, 100, 324, y - 1, 40, 24, RGE_FONT_STANDARD
-            )) {
+        if (!this->create_drop_down(this, &this->scenarioPlayerDrop[i], 40, 100, 324, y - 1, 40, 24, RGE_FONT_STANDARD)) {
             return;
         }
         this->scenarioPlayerDrop[i]->set_draw_style(TDropDownPanel::DrawStyleLeftButton);
@@ -172,8 +165,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         }
 
         if (!this->create_button(
-                this, &this->playerTeam[i], STRING_ID_MULTIPLAYER_STATUS_SEPARATOR, 0, 380, y, 30, 20,
-                RGE_FONT_STANDARD, 0, 1
+                this, &this->playerTeam[i], STRING_ID_MULTIPLAYER_STATUS_SEPARATOR, 0, 380, y, 30, 20, RGE_FONT_STANDARD, 0, 1
             )) {
             return;
         }
@@ -194,9 +186,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         if (!this->create_text(this, &this->playerCivText[i], "", 191, y + 2, 109, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
-        if (!this->create_text(
-                this, &this->scenarioPlayerText[i], "", 345, y + 2, 40, 22, RGE_FONT_STANDARD, 0, 0, 0
-            )) {
+        if (!this->create_text(this, &this->scenarioPlayerText[i], "", 345, y + 2, 40, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
         if (!this->create_text(
@@ -204,9 +194,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
             )) {
             return;
         }
-        if (!this->create_text(
-                this, &this->playerVersionText[i], "", 353, y + 3, 29, 22, RGE_FONT_ARIAL_8_NORMAL, 0, 0, 0
-            )) {
+        if (!this->create_text(this, &this->playerVersionText[i], "", 353, y + 3, 29, 22, RGE_FONT_ARIAL_8_NORMAL, 0, 0, 0)) {
             return;
         }
         this->playerCDText[i]->set_active(0);
@@ -214,8 +202,8 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
     if (rge_base_game->singlePlayerGame() != 0 || comm->IsHost()) {
         if (!this->create_button(
-                this, &this->gameSettingsButton, STRING_ID_MP_SETTINGS_LABEL, 0, 420, 50, 210, 30,
-                RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+                this, &this->gameSettingsButton, STRING_ID_MP_SETTINGS_LABEL, 0, 420, 50, 210, 30, RGE_FONT_COPPERPLATE_12_BOLD,
+                0, 0
             )) {
             return;
         }
@@ -234,8 +222,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
     if (rge_base_game->multiplayerGame() != 0) {
         if (!this->create_text(
-                this, &this->chatTitle, STRING_ID_MP_CHAT_LABEL, 10, 280, 100, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0,
-                1, 0
+                this, &this->chatTitle, STRING_ID_MP_CHAT_LABEL, 10, 280, 100, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 1, 0
             )) {
             return;
         }
@@ -246,8 +233,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
             return;
         }
         if (!this->create_edit(
-                this, &this->chatInput, "", 247, TEditPanel::FormatText, 10, 402, 400, 23, RGE_FONT_ARIAL_10_NORMAL_ALT,
-                1, 0
+                this, &this->chatInput, "", 247, TEditPanel::FormatText, 10, 402, 400, 23, RGE_FONT_ARIAL_10_NORMAL_ALT, 1, 0
             )) {
             return;
         }
@@ -275,17 +261,14 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
     this->i_am_ready = 0;
     if (rge_base_game->singlePlayerGame() != 0) {
-        if (!this->create_button(
-                this, &this->startButton, "", 0, 70, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-            )) {
+        if (!this->create_button(this, &this->startButton, "", 0, 70, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
             return;
         }
         this->startButton->set_text(0, STRING_ID_START_GAME);
         this->startButton->set_help_info(STRING_ID_HELP_MP_START, -1);
         this->set_curr_child(this->startButton);
         if (!this->create_button(
-                this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD,
-                0, 0
+                this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
             )) {
             return;
         }
@@ -295,23 +278,19 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
             return;
         }
         if (!this->create_text(
-                this, &this->ready_button_label, STRING_ID_MP_READY_LABEL, 45, 440, 150, 30,
-                RGE_FONT_COPPERPLATE_12_BOLD, 0, 1, 0
+                this, &this->ready_button_label, STRING_ID_MP_READY_LABEL, 45, 440, 150, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 1, 0
             )) {
             return;
         }
         this->ready_button->set_help_info(STRING_ID_HELP_MP_READY, -1);
-        if (!this->create_button(
-                this, &this->startButton, "", 0, 195, 440, 200, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-            )) {
+        if (!this->create_button(this, &this->startButton, "", 0, 195, 440, 200, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0)) {
             return;
         }
         this->startButton->set_text(0, STRING_ID_START_GAME);
         this->startButton->set_help_info(STRING_ID_HELP_MP_START, -1);
         this->startButton->set_disabled(1);
         if (!this->create_button(
-                this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 405, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD,
-                0, 0
+                this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 405, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
             )) {
             return;
         }
@@ -328,15 +307,14 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
             return;
         }
         if (!this->create_text(
-                this, &this->ready_button_label, STRING_ID_MP_READY_LABEL, 135, 440, 150, 30,
-                RGE_FONT_COPPERPLATE_12_BOLD, 0, 1, 0
+                this, &this->ready_button_label, STRING_ID_MP_READY_LABEL, 135, 440, 150, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 1,
+                0
             )) {
             return;
         }
         this->ready_button->set_help_info(STRING_ID_HELP_MP_READY, -1);
         if (!this->create_button(
-                this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD,
-                0, 0
+                this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
             )) {
             return;
         }
@@ -455,54 +433,51 @@ void TribeMPSetupScreen::init_vars() {
         rge_base_game->setSavedGame(0);
         rge_base_game->setScenarioGame(0);
         rge_base_game->setScenarioName("");
-        ((TRIBE_Game*)rge_base_game)->setMapSize((TRIBE_Game::MapSize)TRIBE_Game::Large);
-        ((TRIBE_Game*)rge_base_game)->setMapType((TRIBE_Game::MapType)TRIBE_Game::MostlyLand);
-        ((TRIBE_Game*)rge_base_game)
-            ->setVictoryType((TRIBE_Game::VictoryType)TRIBE_Game::VictoryDefault, 0);
-        ((TRIBE_Game*)rge_base_game)->setAnimals(1);
-        ((TRIBE_Game*)rge_base_game)->setPredators(1);
+        ((TRIBE_Game*) rge_base_game)->setMapSize((TRIBE_Game::MapSize) TRIBE_Game::Large);
+        ((TRIBE_Game*) rge_base_game)->setMapType((TRIBE_Game::MapType) TRIBE_Game::MostlyLand);
+        ((TRIBE_Game*) rge_base_game)->setVictoryType((TRIBE_Game::VictoryType) TRIBE_Game::VictoryDefault, 0);
+        ((TRIBE_Game*) rge_base_game)->setAnimals(1);
+        ((TRIBE_Game*) rge_base_game)->setPredators(1);
         rge_base_game->setNumberPlayers(8);
         rge_base_game->setFullVisibility(0);
         rge_base_game->setFogOfWar(1);
         rge_base_game->setAllowCheatCodes(0);
-        ((TRIBE_Game*)rge_base_game)->setRandomizePositions(0);
-        ((TRIBE_Game*)rge_base_game)->setLongCombat(0);
-        ((TRIBE_Game*)rge_base_game)->setAllowTrading(1);
-        ((TRIBE_Game*)rge_base_game)->setFullTechTree(0);
-        ((TRIBE_Game*)rge_base_game)
-            ->setResourceLevel((TRIBE_Game::ResourceLevel)TRIBE_Game::DefaultResources);
-        ((TRIBE_Game*)rge_base_game)->setStartingAge((TRIBE_Game::Age)TRIBE_Game::DefaultAge);
-        ((TRIBE_Game*)rge_base_game)->setStartingUnits(0);
+        ((TRIBE_Game*) rge_base_game)->setRandomizePositions(0);
+        ((TRIBE_Game*) rge_base_game)->setLongCombat(0);
+        ((TRIBE_Game*) rge_base_game)->setAllowTrading(1);
+        ((TRIBE_Game*) rge_base_game)->setFullTechTree(0);
+        ((TRIBE_Game*) rge_base_game)->setResourceLevel((TRIBE_Game::ResourceLevel) TRIBE_Game::DefaultResources);
+        ((TRIBE_Game*) rge_base_game)->setStartingAge((TRIBE_Game::Age) TRIBE_Game::DefaultAge);
+        ((TRIBE_Game*) rge_base_game)->setStartingUnits(0);
         rge_base_game->setDifficulty(rge_base_game->get_single_player_difficulty());
-        ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
-        ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
+        ((TRIBE_Game*) rge_base_game)->setDeathMatch(0);
+        ((TRIBE_Game*) rge_base_game)->setQuickStartGame(0);
         unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 579);
         debug_srand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 579, now);
 
         for (i = 0; i < 8; ++i) {
-            this->defaultColor[i] = (unsigned char)(i + 1);
-            ((TRIBE_Game*)rge_base_game)
+            this->defaultColor[i] = (unsigned char) (i + 1);
+            ((TRIBE_Game*) rge_base_game)
                 ->setCivilization(
-                    i,
-                    debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 584) % CIVILIZATION_COUNT + CIVILIZATION_FIRST
+                    i, debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 584) % CIVILIZATION_COUNT + CIVILIZATION_FIRST
                 );
-            ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(i, i);
-            ((TRIBE_Game*)rge_base_game)->setPlayerHasCD(i, 0);
-            ((TRIBE_Game*)rge_base_game)->setPlayerVersion(i, 0);
-            ((TRIBE_Game*)rge_base_game)->setPlayerColor(i, this->defaultColor[i]);
-            ((TRIBE_Game*)rge_base_game)->setPlayerTeam(i, 1);
-            ((TRIBE_Game*)rge_base_game)->setComputerName(i, 0);
+            ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(i, i);
+            ((TRIBE_Game*) rge_base_game)->setPlayerHasCD(i, 0);
+            ((TRIBE_Game*) rge_base_game)->setPlayerVersion(i, 0);
+            ((TRIBE_Game*) rge_base_game)->setPlayerColor(i, this->defaultColor[i]);
+            ((TRIBE_Game*) rge_base_game)->setPlayerTeam(i, 1);
+            ((TRIBE_Game*) rge_base_game)->setComputerName(i, 0);
         }
 
         if (comm->IsHost() != 0) {
-            ((TRIBE_Game*)rge_base_game)->setPlayerVersion(0, 1);
+            ((TRIBE_Game*) rge_base_game)->setPlayerVersion(0, 1);
             rge_base_game->send_game_options();
             this->resend_game_options = 0;
             return;
         }
     } else {
         if (rge_base_game->scenarioGame() == 0) {
-            ((TRIBE_Game*)rge_base_game)->setMapSize((TRIBE_Game::MapSize)TRIBE_Game::Large);
+            ((TRIBE_Game*) rge_base_game)->setMapSize((TRIBE_Game::MapSize) TRIBE_Game::Large);
             int random_map = debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 618) % 10;
             int map_type;
             if (random_map < 2) {
@@ -522,28 +497,26 @@ void TribeMPSetupScreen::init_vars() {
             } else {
                 map_type = (random_map == 8) ? TRIBE_Game::Isthmas : TRIBE_Game::AllWater;
             }
-            ((TRIBE_Game*)rge_base_game)->setMapType((TRIBE_Game::MapType)map_type);
+            ((TRIBE_Game*) rge_base_game)->setMapType((TRIBE_Game::MapType) map_type);
         }
-        ((TRIBE_Game*)rge_base_game)
-            ->setVictoryType((TRIBE_Game::VictoryType)TRIBE_Game::VictoryDefault, 0);
+        ((TRIBE_Game*) rge_base_game)->setVictoryType((TRIBE_Game::VictoryType) TRIBE_Game::VictoryDefault, 0);
         rge_base_game->setNumberPlayers(4);
         rge_base_game->setCampaignGame(0);
         rge_base_game->setSavedGame(0);
-        ((TRIBE_Game*)rge_base_game)->setAnimals(1);
-        ((TRIBE_Game*)rge_base_game)->setPredators(1);
+        ((TRIBE_Game*) rge_base_game)->setAnimals(1);
+        ((TRIBE_Game*) rge_base_game)->setPredators(1);
         rge_base_game->setFullVisibility(0);
         rge_base_game->setFogOfWar(1);
         rge_base_game->setAllowCheatCodes(1);
-        ((TRIBE_Game*)rge_base_game)->setRandomizePositions(0);
-        ((TRIBE_Game*)rge_base_game)->setLongCombat(0);
-        ((TRIBE_Game*)rge_base_game)->setAllowTrading(1);
-        ((TRIBE_Game*)rge_base_game)->setFullTechTree(0);
-        ((TRIBE_Game*)rge_base_game)
-            ->setResourceLevel((TRIBE_Game::ResourceLevel)TRIBE_Game::DefaultResources);
-        ((TRIBE_Game*)rge_base_game)->setStartingAge((TRIBE_Game::Age)TRIBE_Game::DefaultAge);
-        ((TRIBE_Game*)rge_base_game)->setStartingUnits(0);
+        ((TRIBE_Game*) rge_base_game)->setRandomizePositions(0);
+        ((TRIBE_Game*) rge_base_game)->setLongCombat(0);
+        ((TRIBE_Game*) rge_base_game)->setAllowTrading(1);
+        ((TRIBE_Game*) rge_base_game)->setFullTechTree(0);
+        ((TRIBE_Game*) rge_base_game)->setResourceLevel((TRIBE_Game::ResourceLevel) TRIBE_Game::DefaultResources);
+        ((TRIBE_Game*) rge_base_game)->setStartingAge((TRIBE_Game::Age) TRIBE_Game::DefaultAge);
+        ((TRIBE_Game*) rge_base_game)->setStartingUnits(0);
         rge_base_game->setDifficulty(rge_base_game->get_single_player_difficulty());
-        ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
+        ((TRIBE_Game*) rge_base_game)->setQuickStartGame(0);
     }
 }
 
@@ -756,7 +729,7 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
             for (int i = 0; i < 8; ++i) {
                 if (fromPanel == this->playerColor[i]) {
                     int color = this->playerColor[i]->get_id();
-                    ((TRIBE_Game*)rge_base_game)->setPlayerColor(i, color);
+                    ((TRIBE_Game*) rge_base_game)->setPlayerColor(i, color);
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
                         this->myPlayerColor = this->playerColor[i]->get_id();
                     }
@@ -801,8 +774,7 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
 
         if (fromPanel->panelName() != 0 && strcmp(fromPanel->panelName(), "Kick Dialog") == 0) {
             if (actionIn == 0) {
-                PLAYERHUMANITY humanity =
-                    (PLAYERHUMANITY)this->playerNameDrop[this->playerToKick - 1]->get_id();
+                PLAYERHUMANITY humanity = (PLAYERHUMANITY) this->playerNameDrop[this->playerToKick - 1]->get_id();
                 comm->Kick(this->playerToKick);
                 comm->SetPlayerHumanity(this->playerToKick, humanity);
                 long line = this->playerNameDrop[this->playerToKick - 1]->get_line(humanity);
@@ -822,14 +794,14 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
                         && comm->IsPlayerHuman(i + 1)) {
                         this->kickPlayer(i + 1);
                     } else {
-                        comm->SetPlayerHumanity(i + 1, (PLAYERHUMANITY)this->playerNameDrop[i]->get_id());
+                        comm->SetPlayerHumanity(i + 1, (PLAYERHUMANITY) this->playerNameDrop[i]->get_id());
                     }
                     return 1;
                 }
 
                 if (fromPanel == this->playerCivDrop[i]) {
                     int civilization = this->playerCivDrop[i]->get_id();
-                    ((TRIBE_Game*)rge_base_game)->setCivilization(i, civilization);
+                    ((TRIBE_Game*) rge_base_game)->setCivilization(i, civilization);
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
                         this->myCivilization = this->playerCivDrop[i]->get_id();
                     }
@@ -839,7 +811,7 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
                 if (fromPanel == this->scenarioPlayerDrop[i]) {
                     if (rge_base_game->multiplayerGame()) {
                         int scenario_player = this->scenarioPlayerDrop[i]->get_id();
-                        ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(i, scenario_player);
+                        ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(i, scenario_player);
                         if (!comm->IsHost()) {
                             this->myScenarioPlayer = this->scenarioPlayerDrop[i]->get_id();
                         }
@@ -847,13 +819,13 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
                     }
 
                     int scenario_player = this->scenarioPlayerDrop[0]->get_id();
-                    ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(0, scenario_player);
+                    ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(0, scenario_player);
                     int player = 1;
                     int position = 0;
                     do {
-                        if (position != ((TRIBE_Game*)rge_base_game)->scenarioPlayer(0)
+                        if (position != ((TRIBE_Game*) rge_base_game)->scenarioPlayer(0)
                             && this->scenarioInfo->Get_player_Active(position)) {
-                            ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player, position);
+                            ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(player, position);
                             ++player;
                             if (player >= rge_base_game->numberPlayers()) {
                                 break;
@@ -926,7 +898,7 @@ int TribeMPSetupScreen::startGame() {
             int hum = comm->GetPlayerHumanity(u4b);
             if (hum == ME_HUMAN || hum == ME_COMPUTER) {
                 long id = this->scenarioPlayerDrop[0]->get_id(i3);
-                ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(u12, id);
+                ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(u12, id);
                 i3++;
                 if (i3 >= this->scenarioPlayerDrop[0]->list_panel->numberLines()) {
                     i3 = 0;
@@ -950,10 +922,10 @@ int TribeMPSetupScreen::startGame() {
                 int hum = comm->GetPlayerHumanity(u4c);
                 if (hum == ME_HUMAN || hum == ME_COMPUTER) {
                     if (hum == ME_HUMAN) {
-                        int c = ((TRIBE_Game*)rge_base_game)->playerColor(u12);
+                        int c = ((TRIBE_Game*) rge_base_game)->playerColor(u12);
                         if (playerColorUsed[c - 1] == 0) {
                             i5++;
-                            c = ((TRIBE_Game*)rge_base_game)->playerColor(u12);
+                            c = ((TRIBE_Game*) rge_base_game)->playerColor(u12);
                             playerColorUsed[c - 1] = 1;
                         }
                     } else {
@@ -998,7 +970,7 @@ int TribeMPSetupScreen::startGame() {
         }
     }
 
-    if (rge_base_game->scenarioGame() && ((TRIBE_Game*)rge_base_game)->randomizePositions()) {
+    if (rge_base_game->scenarioGame() && ((TRIBE_Game*) rge_base_game)->randomizePositions()) {
         this->calcRandomPositions();
         if (rge_base_game->multiplayerGame()) {
             send_options = 1;
@@ -1021,11 +993,11 @@ int TribeMPSetupScreen::startGame() {
         int num = rge_base_game->numberPlayers();
         if (num > 0) {
             do {
-                int civ = ((TRIBE_Game*)rge_base_game)->civilization(i5);
+                int civ = ((TRIBE_Game*) rge_base_game)->civilization(i5);
                 if (civ >= MP_SETUP_SHARED_COLOR_OFFSET) {
                     L->Log("$$$ HOST RESET2 CIV+50");
-                    civ = ((TRIBE_Game*)rge_base_game)->civilization(i5);
-                    ((TRIBE_Game*)rge_base_game)->setCivilization(i5, civ - MP_SETUP_SHARED_COLOR_OFFSET);
+                    civ = ((TRIBE_Game*) rge_base_game)->civilization(i5);
+                    ((TRIBE_Game*) rge_base_game)->setCivilization(i5, civ - MP_SETUP_SHARED_COLOR_OFFSET);
                     send_options = 1;
                 }
                 int team = rge_base_game->playerTeam(i5);
@@ -1059,16 +1031,16 @@ int TribeMPSetupScreen::startGame() {
             int hum = comm->GetPlayerHumanity(u12);
             if (hum == ME_HUMAN || hum == ME_COMPUTER) {
                 int p = u12 - 1;
-                temp_color[cnt] = ((TRIBE_Game*)rge_base_game)->playerColor(p);
-                temp_civ[cnt] = ((TRIBE_Game*)rge_base_game)->civilization(p);
+                temp_color[cnt] = ((TRIBE_Game*) rge_base_game)->playerColor(p);
+                temp_civ[cnt] = ((TRIBE_Game*) rge_base_game)->civilization(p);
                 temp_team[cnt] = rge_base_game->playerTeam(p);
                 cnt++;
             }
         }
         if (cnt > 0) {
             for (int i = 0; i < 8; i++) {
-                ((TRIBE_Game*)rge_base_game)->setPlayerColor(i, temp_color[i]);
-                ((TRIBE_Game*)rge_base_game)->setCivilization(i, temp_civ[i]);
+                ((TRIBE_Game*) rge_base_game)->setPlayerColor(i, temp_color[i]);
+                ((TRIBE_Game*) rge_base_game)->setCivilization(i, temp_civ[i]);
                 rge_base_game->setPlayerTeam(i, temp_team[i]);
             }
             send_options = 1;
@@ -1087,7 +1059,7 @@ int TribeMPSetupScreen::startGame() {
         comm->SetWindowHandle(AppWnd);
     }
 
-    if (!((TRIBE_Game*)rge_base_game)->start_game(0)) {
+    if (!((TRIBE_Game*) rge_base_game)->start_game(0)) {
         this->popupOKDialog(STRING_ID_ERROR_START_GAME, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
@@ -1162,7 +1134,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
                     }
                 }
 
-                ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player, selected_position);
+                ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(player, selected_position);
                 position_used[selected_position + 1] = player;
             }
         }
@@ -1246,12 +1218,11 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
             L->Log("$$$ USER_COMMAND: COMM_SHARED_DATA_SENT (%d,%d)", wParam, lParam);
             if (comm->IsHost()) {
                 for (int i = 0; i < rge_base_game->numberPlayers(); ++i) {
-                    int civilization = ((TRIBE_Game*)rge_base_game)->civilization(i);
+                    int civilization = ((TRIBE_Game*) rge_base_game)->civilization(i);
                     if (civilization >= MP_SETUP_SHARED_COLOR_OFFSET) {
                         L->Log("$$$ HOST RESET CIV+50");
-                        civilization = ((TRIBE_Game*)rge_base_game)->civilization(i);
-                        ((TRIBE_Game*)rge_base_game)
-                            ->setCivilization(i, civilization - MP_SETUP_SHARED_COLOR_OFFSET);
+                        civilization = ((TRIBE_Game*) rge_base_game)->civilization(i);
+                        ((TRIBE_Game*) rge_base_game)->setCivilization(i, civilization - MP_SETUP_SHARED_COLOR_OFFSET);
                         this->resend_game_options = 1;
                     }
 
@@ -1298,22 +1269,16 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                         unsigned long checksum;
                         unsigned long user2;
 
-                        comm->GetClientReadiness(
-                            player, &ready, &user3, &user6, &user7, &user1, &user4, &checksum, &user2
-                        );
+                        comm->GetClientReadiness(player, &ready, &user3, &user6, &user7, &user1, &user4, &checksum, &user2);
 
-                        if (user3 != 0
-                            && user3
-                                   != (unsigned long)(
-                                       ((TRIBE_Game*)rge_base_game)->civilization(i)
-                                   )) {
-                            ((TRIBE_Game*)rge_base_game)->setCivilization(i, user3);
+                        if (user3 != 0 && user3 != (unsigned long) (((TRIBE_Game*) rge_base_game)->civilization(i))) {
+                            ((TRIBE_Game*) rge_base_game)->setCivilization(i, user3);
                             changed = 1;
                         }
                         if (user6 != 0) {
-                            int value = (int)user6 - 1;
-                            if (value != ((TRIBE_Game*)rge_base_game)->scenarioPlayer(i)) {
-                                ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(i, value);
+                            int value = (int) user6 - 1;
+                            if (value != ((TRIBE_Game*) rge_base_game)->scenarioPlayer(i)) {
+                                ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(i, value);
                                 changed = 1;
                             }
                         }
@@ -1328,15 +1293,11 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                                 changed = 1;
                             }
                         }
-                        if (user1 != 0
-                            && user1
-                                   != (unsigned long)(
-                                       ((TRIBE_Game*)rge_base_game)->playerColor(i)
-                                   )) {
-                            ((TRIBE_Game*)rge_base_game)->setPlayerColor(i, user1);
+                        if (user1 != 0 && user1 != (unsigned long) (((TRIBE_Game*) rge_base_game)->playerColor(i))) {
+                            ((TRIBE_Game*) rge_base_game)->setPlayerColor(i, user1);
                             changed = 1;
                         }
-                        if (user4 != 0 && user4 != (unsigned long)rge_base_game->playerTeam(i)) {
+                        if (user4 != 0 && user4 != (unsigned long) rge_base_game->playerTeam(i)) {
                             rge_base_game->setPlayerTeam(i, user4);
                             changed = 1;
                         }
@@ -1344,7 +1305,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                             *scenario_checksum = checksum;
                         }
                         if (user2 != 0) {
-                            rge_base_game->setPlayerVersion(i, (unsigned char)user2);
+                            rge_base_game->setPlayerVersion(i, (unsigned char) user2);
                             changed = 1;
                         }
                         continue;
@@ -1354,22 +1315,22 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                         continue;
                     }
 
-                    int civilization = debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 1750) % CIVILIZATION_COUNT
-                                       + CIVILIZATION_FIRST;
-                    if (((TRIBE_Game*)rge_base_game)->civilization(i) != civilization) {
-                        ((TRIBE_Game*)rge_base_game)->setCivilization(i, civilization);
+                    int civilization =
+                        debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 1750) % CIVILIZATION_COUNT + CIVILIZATION_FIRST;
+                    if (((TRIBE_Game*) rge_base_game)->civilization(i) != civilization) {
+                        ((TRIBE_Game*) rge_base_game)->setCivilization(i, civilization);
                         changed = 1;
                     }
-                    if (((TRIBE_Game*)rge_base_game)->scenarioPlayer(i) != i) {
-                        ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(i, i);
+                    if (((TRIBE_Game*) rge_base_game)->scenarioPlayer(i) != i) {
+                        ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(i, i);
                         changed = 1;
                     }
                     if (rge_base_game->playerHasCD(i) != 0) {
                         rge_base_game->setPlayerHasCD(i, 0);
                         changed = 1;
                     }
-                    if (((TRIBE_Game*)rge_base_game)->playerColor(i) != this->defaultColor[i]) {
-                        ((TRIBE_Game*)rge_base_game)->setPlayerColor(i, this->defaultColor[i]);
+                    if (((TRIBE_Game*) rge_base_game)->playerColor(i) != this->defaultColor[i]) {
+                        ((TRIBE_Game*) rge_base_game)->setPlayerColor(i, this->defaultColor[i]);
                         changed = 1;
                     }
                     if (rge_base_game->playerTeam(i) != 1) {
@@ -1398,12 +1359,11 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
             L->Log("$$$ USER_COMMAND: COMM_UPDATE_PARAMS (%d,%d)", wParam, lParam);
             rge_base_game->receive_game_options();
             for (int i = 0; i < rge_base_game->numberPlayers(); ++i) {
-                int civilization = ((TRIBE_Game*)rge_base_game)->civilization(i);
+                int civilization = ((TRIBE_Game*) rge_base_game)->civilization(i);
                 if (civilization >= MP_SETUP_SHARED_COLOR_OFFSET) {
                     L->Log("$$$ CIV2>50");
-                    civilization = ((TRIBE_Game*)rge_base_game)->civilization(i);
-                    ((TRIBE_Game*)rge_base_game)
-                        ->setCivilization(i, civilization - MP_SETUP_SHARED_COLOR_OFFSET);
+                    civilization = ((TRIBE_Game*) rge_base_game)->civilization(i);
+                    ((TRIBE_Game*) rge_base_game)->setCivilization(i, civilization - MP_SETUP_SHARED_COLOR_OFFSET);
                     if (i + 1 == comm->WhoAmI()) {
                         this->myCivilization = MP_SETUP_NO_CIVILIZATION_SELECTION;
                         L->Log("$$$ RESETTING MYCIV2");
@@ -1446,7 +1406,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
             L->Log("$$$ USER_COMMAND: COMM_LAUNCH_GAME (%d,%d)", wParam, lParam);
             chat->setWindowHandle(AppWnd);
             comm->SetWindowHandle(AppWnd);
-            ((TRIBE_Game*)rge_base_game)->start_game(0);
+            ((TRIBE_Game*) rge_base_game)->start_game(0);
             return 1;
 
         case COMM_CANCEL_GAME:
@@ -1530,13 +1490,12 @@ void TribeMPSetupScreen::fillPlayers() {
                     if (inner_players > 0) {
                         do {
                             if (i != j && comm->IsPlayerReady(j + 1)) {
-                                int other_color = ((TRIBE_Game*)rge_base_game)->playerColor(j);
-                                int player_color = ((TRIBE_Game*)rge_base_game)->playerColor(i);
+                                int other_color = ((TRIBE_Game*) rge_base_game)->playerColor(j);
+                                int player_color = ((TRIBE_Game*) rge_base_game)->playerColor(i);
                                 if (other_color == player_color) {
                                     L->Log("$$$ SETTING CIV/TEAM+50 (%d,%d)", i, j);
-                                    int civ = ((TRIBE_Game*)rge_base_game)->civilization(i);
-                                    ((TRIBE_Game*)rge_base_game)
-                                        ->setCivilization(j, civ + MP_SETUP_SHARED_COLOR_OFFSET);
+                                    int civ = ((TRIBE_Game*) rge_base_game)->civilization(i);
+                                    ((TRIBE_Game*) rge_base_game)->setCivilization(j, civ + MP_SETUP_SHARED_COLOR_OFFSET);
                                     int team = rge_base_game->playerTeam(i);
                                     rge_base_game->setPlayerTeam(j, team + MP_SETUP_SHARED_COLOR_OFFSET);
                                     color2 = 1;
@@ -1598,7 +1557,7 @@ void TribeMPSetupScreen::fillPlayers() {
             if (is_me == 1 && this->myPlayerColor != 0) {
                 color = this->myPlayerColor;
             } else {
-                color = ((TRIBE_Game*)rge_base_game)->playerColor(i);
+                color = ((TRIBE_Game*) rge_base_game)->playerColor(i);
             }
             this->playerColor[i]->set_state_by_id(color);
             int state = this->playerColor[i]->get_state();
@@ -1606,8 +1565,8 @@ void TribeMPSetupScreen::fillPlayers() {
             char* text2;
             unsigned long color1;
             unsigned long color2;
-            this->playerColor[i]->get_text((short)state, &text1, &text2);
-            this->playerColor[i]->get_text_color((short)state, &color1, &color2);
+            this->playerColor[i]->get_text((short) state, &text1, &text2);
+            this->playerColor[i]->get_text_color((short) state, &color1, &color2);
             this->playerColorText[i]->set_text(text1);
             this->playerColorText[i]->set_text_color(color1, color2);
             this->playerColor[i]->set_active(0);
@@ -1622,7 +1581,7 @@ void TribeMPSetupScreen::fillPlayers() {
             }
 
             if (is_me == 1 && this->myPlayerTeam != 0) {
-                this->playerTeam[i]->set_state((short)(this->myPlayerTeam - 1));
+                this->playerTeam[i]->set_state((short) (this->myPlayerTeam - 1));
             } else {
                 int team = rge_base_game->playerTeam(i);
                 if (team >= MP_SETUP_SHARED_COLOR_OFFSET) {
@@ -1632,14 +1591,13 @@ void TribeMPSetupScreen::fillPlayers() {
             }
 
             state = this->playerTeam[i]->get_state();
-            this->playerTeam[i]->get_text((short)state, &text1, &text2);
+            this->playerTeam[i]->get_text((short) state, &text1, &text2);
             this->playerTeamText[i]->set_text(text1);
             this->playerTeam[i]->set_active(0);
             this->playerTeamText[i]->set_active(0);
 
             if ((rge_base_game->multiplayerGame()
-                 && ((is_me && this->i_am_ready == 0)
-                     || (comm->IsHost() && humanity == ME_COMPUTER && this->i_am_ready == 0)))
+                 && ((is_me && this->i_am_ready == 0) || (comm->IsHost() && humanity == ME_COMPUTER && this->i_am_ready == 0)))
                 || (rge_base_game->singlePlayerGame() && (is_me || humanity == ME_COMPUTER))) {
                 this->playerTeam[i]->set_active(1);
                 this->playerTeam[i]->set_disabled(0);
@@ -1679,7 +1637,7 @@ void TribeMPSetupScreen::fillPlayers() {
                 if (is_me == 1 && this->myCivilization != MP_SETUP_NO_CIVILIZATION_SELECTION) {
                     this->playerCivDrop[i]->set_line(this->playerCivDrop[i]->get_line(this->myCivilization));
                 } else {
-                    int civ = ((TRIBE_Game*)rge_base_game)->civilization(i);
+                    int civ = ((TRIBE_Game*) rge_base_game)->civilization(i);
                     if (civ >= MP_SETUP_SHARED_COLOR_OFFSET) {
                         civ -= MP_SETUP_SHARED_COLOR_OFFSET;
                     }
@@ -1690,11 +1648,9 @@ void TribeMPSetupScreen::fillPlayers() {
 
             if (this->scenarioPlayerDrop[i]->mode != 2) {
                 if (is_me == 1 && this->myScenarioPlayer != -1) {
-                    this->scenarioPlayerDrop[i]->set_line(
-                        this->scenarioPlayerDrop[i]->get_line(this->myScenarioPlayer)
-                    );
+                    this->scenarioPlayerDrop[i]->set_line(this->scenarioPlayerDrop[i]->get_line(this->myScenarioPlayer));
                 } else {
-                    int scenario_player = ((TRIBE_Game*)rge_base_game)->scenarioPlayer(i);
+                    int scenario_player = ((TRIBE_Game*) rge_base_game)->scenarioPlayer(i);
                     this->scenarioPlayerDrop[i]->set_line(this->scenarioPlayerDrop[i]->get_line(scenario_player));
                 }
             }
@@ -1711,8 +1667,7 @@ void TribeMPSetupScreen::fillPlayers() {
             this->playerCivText[i]->set_active(0);
 
             if ((rge_base_game->multiplayerGame()
-                 && ((is_me && this->i_am_ready == 0)
-                     || (comm->IsHost() && humanity == ME_COMPUTER && this->i_am_ready == 0)))
+                 && ((is_me && this->i_am_ready == 0) || (comm->IsHost() && humanity == ME_COMPUTER && this->i_am_ready == 0)))
                 || (rge_base_game->singlePlayerGame() && (is_me || humanity == ME_COMPUTER))) {
                 this->playerCivDrop[i]->set_active(1);
             } else if (humanity == ME_HUMAN || humanity == ME_COMPUTER) {
@@ -1804,7 +1759,7 @@ void TribeMPSetupScreen::updateSummary() {
             }
 
             if (str1[0] != '.') {
-                this->scenarioInfo = (T_Scenario*)rge_base_game->get_scenario_info(str1, 0);
+                this->scenarioInfo = (T_Scenario*) rge_base_game->get_scenario_info(str1, 0);
             }
 
             if (this->scenarioInfo == 0) {
@@ -1824,8 +1779,7 @@ void TribeMPSetupScreen::updateSummary() {
                         ++this->scenarioPlayerCount;
                         sprintf(str2, "%d", player_index + 1);
                         if (rge_base_game->multiplayerGame()
-                            || (rge_base_game->singlePlayerGame()
-                                && this->scenarioInfo->Get_player_Type(player_index) == 1)) {
+                            || (rge_base_game->singlePlayerGame() && this->scenarioInfo->Get_player_Type(player_index) == 1)) {
                             ++this->numberAnyPlayers;
                             for (int append_index = 0; append_index < 8; ++append_index) {
                                 this->scenarioPlayerDrop[append_index]->append_line(str2, player_index);
@@ -1843,10 +1797,9 @@ void TribeMPSetupScreen::updateSummary() {
                         }
                     } while (this->scenarioInfo->Get_player_Active(player) == 0);
 
-                    this->defaultColor[color_index] = (unsigned char)(player + 1);
-                    ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(color_index, player);
-                    ((TRIBE_Game*)rge_base_game)
-                        ->setPlayerColor(color_index, this->defaultColor[color_index]);
+                    this->defaultColor[color_index] = (unsigned char) (player + 1);
+                    ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(color_index, player);
+                    ((TRIBE_Game*) rge_base_game)->setPlayerColor(color_index, this->defaultColor[color_index]);
                     rge_base_game->setPlayerTeam(color_index, 1);
                 }
             }
@@ -1861,9 +1814,9 @@ void TribeMPSetupScreen::updateSummary() {
             this->numberAnyPlayers = 8;
 
             for (int random_index = 0; random_index < 8; ++random_index) {
-                this->defaultColor[random_index] = (unsigned char)(random_index + 1);
-                ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(random_index, random_index);
-                ((TRIBE_Game*)rge_base_game)->setPlayerColor(random_index, this->defaultColor[random_index]);
+                this->defaultColor[random_index] = (unsigned char) (random_index + 1);
+                ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(random_index, random_index);
+                ((TRIBE_Game*) rge_base_game)->setPlayerColor(random_index, this->defaultColor[random_index]);
                 rge_base_game->setPlayerTeam(random_index, 1);
                 sprintf(str2, "%d", random_index + 1);
                 for (int random_append_index = 0; random_append_index < 8; ++random_append_index) {
@@ -1913,7 +1866,7 @@ void TribeMPSetupScreen::updateSummary() {
         this->scenarioName->set_text(str2);
         setting = 3;
     } else {
-        if (((TRIBE_Game*)rge_base_game)->deathMatch()) {
+        if (((TRIBE_Game*) rge_base_game)->deathMatch()) {
             this->get_string(STRING_ID_DEATH_MATCH, str1, 256);
         } else {
             this->get_string(STRING_ID_RANDOM_MAP, str1, 256);
@@ -1924,7 +1877,7 @@ void TribeMPSetupScreen::updateSummary() {
     }
 
     if (rge_base_game->randomGame()) {
-        switch (((TRIBE_Game*)rge_base_game)->mapSize()) {
+        switch (((TRIBE_Game*) rge_base_game)->mapSize()) {
             case TRIBE_Game::Tiny:
                 strcpy(str1, this->get_string(STRING_ID_MAP_SIZE_TINY));
                 break;
@@ -1949,7 +1902,7 @@ void TribeMPSetupScreen::updateSummary() {
         this->settingText[setting]->set_active(1);
         ++setting;
 
-        switch (((TRIBE_Game*)rge_base_game)->mapType()) {
+        switch (((TRIBE_Game*) rge_base_game)->mapType()) {
             case TRIBE_Game::AllWater:
                 strcpy(str1, this->get_string(STRING_ID_MAP_TYPE_ALL_WATER));
                 break;
@@ -1997,7 +1950,7 @@ void TribeMPSetupScreen::updateSummary() {
     this->settingText[setting]->set_active(1);
     ++setting;
 
-    switch (((TRIBE_Game*)rge_base_game)->victoryType()) {
+    switch (((TRIBE_Game*) rge_base_game)->victoryType()) {
         case TRIBE_Game::VictoryConquest:
             strcpy(str1, this->get_string(STRING_ID_VICTORY_CONQUEST));
             goto victory_plain;
@@ -2008,8 +1961,7 @@ void TribeMPSetupScreen::updateSummary() {
             strcpy(str1, this->get_string(STRING_ID_VICTORY_SCORE));
         victory_amount:
             sprintf(
-                str2, this->get_string(STRING_ID_VICTORY_AMOUNT_FORMAT), str1,
-                ((TRIBE_Game*)rge_base_game)->victoryAmount()
+                str2, this->get_string(STRING_ID_VICTORY_AMOUNT_FORMAT), str1, ((TRIBE_Game*) rge_base_game)->victoryAmount()
             );
             goto victory_done;
         default:
@@ -2030,7 +1982,7 @@ void TribeMPSetupScreen::updateSummary() {
     this->settingText[setting]->set_active(1);
     ++setting;
 
-    int age = ((TRIBE_Game*)rge_base_game)->startingAge();
+    int age = ((TRIBE_Game*) rge_base_game)->startingAge();
     if (age == TRIBE_Game::DefaultAge) {
         this->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
     } else if (age == TRIBE_Game::NomadAge) {
@@ -2043,7 +1995,7 @@ void TribeMPSetupScreen::updateSummary() {
     this->settingText[setting]->set_active(1);
     ++setting;
 
-    int resources = ((TRIBE_Game*)rge_base_game)->resourceLevel();
+    int resources = ((TRIBE_Game*) rge_base_game)->resourceLevel();
     if (resources == TRIBE_Game::DefaultResources) {
         this->get_string(STRING_ID_OPTION_DEFAULT, str1, 256);
     } else {
@@ -2062,7 +2014,7 @@ void TribeMPSetupScreen::updateSummary() {
     this->settingText[setting]->set_active(1);
     ++setting;
 
-    if (((TRIBE_Game*)rge_base_game)->randomizePositions()) {
+    if (((TRIBE_Game*) rge_base_game)->randomizePositions()) {
         this->get_string(STRING_ID_BUTTON_NO, str1, 256);
     } else {
         this->get_string(STRING_ID_BUTTON_YES, str1, 256);
@@ -2082,7 +2034,7 @@ void TribeMPSetupScreen::updateSummary() {
     this->settingText[setting]->set_active(1);
     ++setting;
 
-    if (((TRIBE_Game*)rge_base_game)->fullTechTree()) {
+    if (((TRIBE_Game*) rge_base_game)->fullTechTree()) {
         this->get_string(STRING_ID_BUTTON_YES, str1, 256);
     } else {
         this->get_string(STRING_ID_BUTTON_NO, str1, 256);
@@ -2105,9 +2057,7 @@ void TribeMPSetupScreen::updateSummary() {
     }
 
     if (rge_base_game->multiplayerGame()) {
-        this->get_string(
-            ((TRIBE_Game*)rge_base_game)->mpPathFinding() + STRING_ID_PATH_FINDING_OPTION_BASE, str1, 256
-        );
+        this->get_string(((TRIBE_Game*) rge_base_game)->mpPathFinding() + STRING_ID_PATH_FINDING_OPTION_BASE, str1, 256);
     } else {
         this->get_string(rge_base_game->pathFinding() + STRING_ID_PATH_FINDING_OPTION_BASE, str1, 256);
     }
@@ -2116,9 +2066,7 @@ void TribeMPSetupScreen::updateSummary() {
     this->settingText[setting]->set_active(1);
     ++setting;
 
-    sprintf(
-        str2, this->get_string(STRING_ID_POPULATION_LIMIT_FORMAT), ((TRIBE_Game*)rge_base_game)->popLimit()
-    );
+    sprintf(str2, this->get_string(STRING_ID_POPULATION_LIMIT_FORMAT), ((TRIBE_Game*) rge_base_game)->popLimit());
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
 
@@ -2145,7 +2093,7 @@ void TribeMPSetupScreen::kickPlayer(int p) {
 
 void TribeMPSetupScreen::handleKickedPlayer(int really_kicked) {
     this->cancelScreen(0);
-    TEasy_Panel* panel = (TEasy_Panel*)panel_system.currentPanel();
+    TEasy_Panel* panel = (TEasy_Panel*) panel_system.currentPanel();
     if (panel != 0) {
         panel->popupOKDialog(STRING_ID_GAME_CANCELED_NOTICE + (really_kicked != 0 ? -1 : 0), 0, TEASY_POPUP_WIDTH, 100);
     }
@@ -2217,10 +2165,10 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
             int scenario_player = 0;
             do {
                 if (this->scenarioInfo->Get_player_Active(scenario_player) != 0) {
-                    ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player_count, scenario_player);
+                    ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(player_count, scenario_player);
                     int civilization = this->scenarioInfo->Get_player_Civ(scenario_player);
-                    ((TRIBE_Game*)rge_base_game)->setCivilization(player_count, civilization);
-                    ((TRIBE_Game*)rge_base_game)->setPlayerColor(player_count, scenario_player + 1);
+                    ((TRIBE_Game*) rge_base_game)->setCivilization(player_count, civilization);
+                    ((TRIBE_Game*) rge_base_game)->setPlayerColor(player_count, scenario_player + 1);
 
                     if (this->scenarioInfo->Get_player_Type(scenario_player) == 1 && first_any_player == -1) {
                         first_any_player = scenario_player;
@@ -2238,30 +2186,30 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
             int player = 1;
             if (this->scenarioPlayerCount > 1) {
                 while (player < this->scenarioPlayerCount) {
-                    if (((TRIBE_Game*)rge_base_game)->scenarioPlayer(player) == first_any_player) {
-                        int scenario_player = ((TRIBE_Game*)rge_base_game)->scenarioPlayer(0);
-                        ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player, scenario_player);
-                        int civilization = ((TRIBE_Game*)rge_base_game)->civilization(0);
-                        ((TRIBE_Game*)rge_base_game)->setCivilization(player, civilization);
-                        int color = ((TRIBE_Game*)rge_base_game)->playerColor(0);
-                        ((TRIBE_Game*)rge_base_game)->setPlayerColor(player, color);
+                    if (((TRIBE_Game*) rge_base_game)->scenarioPlayer(player) == first_any_player) {
+                        int scenario_player = ((TRIBE_Game*) rge_base_game)->scenarioPlayer(0);
+                        ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(player, scenario_player);
+                        int civilization = ((TRIBE_Game*) rge_base_game)->civilization(0);
+                        ((TRIBE_Game*) rge_base_game)->setCivilization(player, civilization);
+                        int color = ((TRIBE_Game*) rge_base_game)->playerColor(0);
+                        ((TRIBE_Game*) rge_base_game)->setPlayerColor(player, color);
                         break;
                     }
                     ++player;
                 }
             }
 
-            ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(0, first_any_player);
-            ((TRIBE_Game*)rge_base_game)->setCivilization(0, first_any_civ);
-            ((TRIBE_Game*)rge_base_game)->setPlayerColor(0, first_any_color);
+            ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(0, first_any_player);
+            ((TRIBE_Game*) rge_base_game)->setCivilization(0, first_any_civ);
+            ((TRIBE_Game*) rge_base_game)->setPlayerColor(0, first_any_color);
         }
     } else {
         int player = 0;
         do {
             int civilization =
                 debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 2865) % CIVILIZATION_COUNT + CIVILIZATION_FIRST;
-            ((TRIBE_Game*)rge_base_game)->setCivilization(player, civilization);
-            ((TRIBE_Game*)rge_base_game)->setPlayerColor(player, player + 1);
+            ((TRIBE_Game*) rge_base_game)->setCivilization(player, civilization);
+            ((TRIBE_Game*) rge_base_game)->setPlayerColor(player, player + 1);
             player = player + 1;
         } while (player < 8);
     }
@@ -2315,8 +2263,8 @@ void TribeMPSetupScreen::fillPlayerColors() {
                 || (this->scenarioInfo->Get_player_Active(player) != 0
                     && (rge_base_game->singlePlayerGame() == 0 || this->scenarioInfo->Get_player_Type(player) == 1))) {
                 sprintf(str, "%d", player + 1);
-                buttons[0]->set_text((short)state, str);
-                buttons[0]->set_id((short)state, player + 1, 0);
+                buttons[0]->set_text((short) state, str);
+                buttons[0]->set_id((short) state, player + 1, 0);
 
                 switch (player) {
                     case 0:
@@ -2349,7 +2297,7 @@ void TribeMPSetupScreen::fillPlayerColors() {
             player++;
         } while (player < 8);
 
-        buttons[0]->set_state_info((short)state);
+        buttons[0]->set_state_info((short) state);
         buttons++;
     } while (--remaining != 0);
 }
@@ -2403,7 +2351,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
         this->scenarioName->set_text(str2);
         i = 3;
     } else {
-        if (((TRIBE_Game*)rge_base_game)->deathMatch()) {
+        if (((TRIBE_Game*) rge_base_game)->deathMatch()) {
             get_string(STRING_ID_DEATH_MATCH, str1, 256);
         } else {
             get_string(STRING_ID_RANDOM_MAP, str1, 256);
@@ -2414,7 +2362,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     }
 
     if (rge_base_game->randomGame()) {
-        switch (((TRIBE_Game*)rge_base_game)->mapSize()) {
+        switch (((TRIBE_Game*) rge_base_game)->mapSize()) {
             case TRIBE_Game::Tiny:
                 strcpy(str1, get_string(STRING_ID_MAP_SIZE_TINY));
                 break;
@@ -2439,7 +2387,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
         this->settingText[i]->set_active(1);
         i++;
 
-        switch (((TRIBE_Game*)rge_base_game)->mapType()) {
+        switch (((TRIBE_Game*) rge_base_game)->mapType()) {
             case TRIBE_Game::AllWater:
                 strcpy(str1, get_string(STRING_ID_MAP_TYPE_ALL_WATER));
                 break;
@@ -2475,7 +2423,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     }
     i++;
 
-    switch (((TRIBE_Game*)rge_base_game)->victoryType()) {
+    switch (((TRIBE_Game*) rge_base_game)->victoryType()) {
         case TRIBE_Game::VictoryConquest:
             strcpy(str1, get_string(STRING_ID_VICTORY_CONQUEST));
             goto victory_plain_wait;
@@ -2487,7 +2435,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
         victory_amount_wait:
             sprintf(
                 str2, get_string(STRING_ID_VICTORY_AMOUNT_FORMAT), str1,
-                ((TRIBE_Game*)rge_base_game)->victoryAmount()
+                ((TRIBE_Game*) rge_base_game)->victoryAmount()
             ); // "Victory: %s (%d)"
             goto victory_done_wait;
         default:
@@ -2508,7 +2456,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     this->settingText[i]->set_active(1);
     i++;
 
-    int age = ((TRIBE_Game*)rge_base_game)->startingAge();
+    int age = ((TRIBE_Game*) rge_base_game)->startingAge();
     if (age == TRIBE_Game::DefaultAge) {
         get_string(STRING_ID_OPTION_DEFAULT, str1, 256); // Default
     } else if (age == TRIBE_Game::NomadAge) {
@@ -2521,7 +2469,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     this->settingText[i]->set_active(1);
     i++;
 
-    int level = ((TRIBE_Game*)rge_base_game)->resourceLevel();
+    int level = ((TRIBE_Game*) rge_base_game)->resourceLevel();
     if (level == TRIBE_Game::DefaultResources) {
         get_string(STRING_ID_OPTION_DEFAULT, str1, 256); // Default
     } else {
@@ -2540,7 +2488,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     this->settingText[i]->set_active(1);
     i++;
 
-    if (((TRIBE_Game*)rge_base_game)->randomizePositions()) {
+    if (((TRIBE_Game*) rge_base_game)->randomizePositions()) {
         get_string(STRING_ID_BUTTON_NO, str1, 256);
     } else {
         get_string(STRING_ID_BUTTON_YES, str1, 256);
@@ -2560,7 +2508,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     this->settingText[i]->set_active(1);
     i++;
 
-    if (((TRIBE_Game*)rge_base_game)->fullTechTree()) {
+    if (((TRIBE_Game*) rge_base_game)->fullTechTree()) {
         get_string(STRING_ID_BUTTON_YES, str1, 256);
     } else {
         get_string(STRING_ID_BUTTON_NO, str1, 256);
@@ -2592,7 +2540,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     this->settingText[i]->set_active(1);
     i++;
 
-    sprintf(str2, get_string(STRING_ID_POPULATION_LIMIT_FORMAT), ((TRIBE_Game*)rge_base_game)->popLimit());
+    sprintf(str2, get_string(STRING_ID_POPULATION_LIMIT_FORMAT), ((TRIBE_Game*) rge_base_game)->popLimit());
     this->settingText[i]->set_text(str2); // "Population Limit: %d"
     this->settingText[i]->set_active(1);
 }
@@ -2639,8 +2587,8 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode_in) : TScreenPanel("Mu
     } else {
         this->set_ideal_size(640, 480);
         this->create_text(
-            this, &this->message, STRING_ID_STATUS_DISCONNECTING_MULTIPLAYER, 40, 40, 560, 400,
-            RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 1
+            this, &this->message, STRING_ID_STATUS_DISCONNECTING_MULTIPLAYER, 40, 40, 560, 400, RGE_FONT_COPPERPLATE_12_BOLD_ALT,
+            1, 1, 1
         );
     }
 }
@@ -2660,7 +2608,7 @@ void TRIBE_Screen_Disconnect::set_text(long message_in) {
 long TRIBE_Screen_Disconnect::action(TPanel* from_panel, long action_in, unsigned long val1, unsigned long val2) {
     if (from_panel != 0) {
         if (from_panel == this->cancel_button && action_in == 1) {
-            ((TRIBE_Game*)rge_base_game)->quit_game();
+            ((TRIBE_Game*) rge_base_game)->quit_game();
             panel_system.destroyPanel("Multiplayer Disconnect Screen");
             panel_system.destroyPanel("Status Screen");
             return 1;

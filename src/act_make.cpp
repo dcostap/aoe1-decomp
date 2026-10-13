@@ -57,8 +57,7 @@ unsigned char RGE_Action_Make::update() {
             }
         }
 
-        work = ((RGE_Master_Action_Object*) this->obj->master_obj)->work_rate
-               * this->obj->owner->world->world_time_delta_seconds;
+        work = ((RGE_Master_Action_Object*) this->obj->master_obj)->work_rate * this->obj->owner->world->world_time_delta_seconds;
         work *= this->task->work_val1;
         pre_attribute = this->obj->attribute_amount_held;
 

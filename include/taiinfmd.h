@@ -104,9 +104,8 @@ class TribeInformationAIModule : public InformationAIModule {
     int closestUnexploredTile(int uID, float cX, float cY, float* uX, float* uY);
     ObjectMemory* addObjectMemory(RGE_Static_Object* obj);
     ObjectMemory* addObjectMemory(
-        int id, short type, short group, unsigned char x, unsigned char y, unsigned char z, unsigned char owner,
-        short hp, int attempts, unsigned char kills, float damage, float rate, float weaponRange,
-        RGE_Static_Object* object
+        int id, short type, short group, unsigned char x, unsigned char y, unsigned char z, unsigned char owner, short hp,
+        int attempts, unsigned char kills, float damage, float rate, float weaponRange, RGE_Static_Object* object
     );
     int addImportantObject(RGE_Static_Object* oObj, int addedFromAlliedCP);
     int addImportantObject(int oID);
@@ -144,18 +143,11 @@ class TribeInformationAIModule : public InformationAIModule {
     void addObject(RGE_Static_Object* obj);
     void removeObject(int objID);
     ObjectMemory* objectToAttackWithPlay(
-        int ownerID, int* soldiers, int numSoldiers, int& playToRun, int* playUnits, int& numberPlayUnits,
-        int& playCommander
+        int ownerID, int* soldiers, int numSoldiers, int& playToRun, int* playUnits, int& numberPlayUnits, int& playCommander
     );
-    ObjectMemory* objectToAttack(
-        int ownerID, int ignoreSiegeTargets, int ignoreBoatTargets, int unitID, int& validAttack
-    );
-    ObjectMemory* objectToAttack(
-        int ownerID, int ignoreSiegeTargets, int ignoreBoatTargets, int unitID, int* validAttack
-    );
-    ObjectMemory* objectToAttackByGroup(
-        int ownerID, TacticalAIGroup* group, AttackState& attackState, unsigned long startTime
-    );
+    ObjectMemory* objectToAttack(int ownerID, int ignoreSiegeTargets, int ignoreBoatTargets, int unitID, int& validAttack);
+    ObjectMemory* objectToAttack(int ownerID, int ignoreSiegeTargets, int ignoreBoatTargets, int unitID, int* validAttack);
+    ObjectMemory* objectToAttackByGroup(int ownerID, TacticalAIGroup* group, AttackState& attackState, unsigned long startTime);
     ObjectMemory* objectToAttackByGroup2(int ownerID, int* soldiers, int numberSoldiers);
     int isBoatAccessible(RGE_Static_Object* unit, int target);
     int isLandAccessible(RGE_Static_Object* unit, int target);
@@ -167,9 +159,7 @@ class TribeInformationAIModule : public InformationAIModule {
         XYPoint& centerPoint, int num, int landTroops, int desiredDistance, int maximumDistanceVariation,
         RGE_Static_Object* testUnit, XYPoint& rPoint
     );
-    void setupInfluenceMap(
-        int placementType, int buildingType, XYPoint& centerPoint, XYPoint& minArea, XYPoint& maxArea
-    );
+    void setupInfluenceMap(int placementType, int buildingType, XYPoint& centerPoint, XYPoint& minArea, XYPoint& maxArea);
     int groupInfluenceDimension(int dim);
     ObjectMemory findObjectMemoryLimits(int ownerID, int unitID, int& numberNonSiegeTargets, int& numberNonBoatTargets);
     int isNextTo(XYPoint& one, XYPoint& two, int countDiagonal);
@@ -181,8 +171,7 @@ class TribeInformationAIModule : public InformationAIModule {
     void storeLot(int typeID, unsigned char x, unsigned char y, unsigned char status);
     void removeLot(int typeID, unsigned char x, unsigned char y, unsigned char newStatus);
     void setupWalls(
-        int x, int y, int minimumDistance, int maximumDistance, int pattern, int numberGates, int gateSize,
-        int townWalls
+        int x, int y, int minimumDistance, int maximumDistance, int pattern, int numberGates, int gateSize, int townWalls
     );
     int insideGate(int numGates, int x, int y);
     int storeAttackMemory(
@@ -190,9 +179,8 @@ class TribeInformationAIModule : public InformationAIModule {
         short kills, unsigned char success, unsigned long timeStamp, int play
     );
     int storeAttackMemory(
-        unsigned char type, unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2,
-        unsigned char attackingOwner, unsigned char targetOwner, short kills, unsigned char success,
-        unsigned long timeStamp, int play
+        unsigned char type, unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char attackingOwner,
+        unsigned char targetOwner, short kills, unsigned char success, unsigned long timeStamp, int play
     );
     int storeAttackMemory(
         unsigned char p1, unsigned char p2, unsigned char p3, unsigned char p4, unsigned char p5, unsigned char p6,

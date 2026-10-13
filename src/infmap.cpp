@@ -563,8 +563,7 @@ int InfluenceMap::connectionsIncluding(
                                     || (countDiagonalEdgesAsConnections == 1 && direction % 2 == 0)) {
                                     --rVal;
                                 }
-                            } else if (rowsMap[neighborY - this->yReferencePointValue]
-                                              [neighborX - this->xReferencePointValue]
+                            } else if (rowsMap[neighborY - this->yReferencePointValue][neighborX - this->xReferencePointValue]
                                        >= valueLevel) {
                                 rVal += 2;
                             }

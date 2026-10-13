@@ -237,8 +237,8 @@ class TRIBE_Screen_Game : public TScreenPanel {
     char* calc_text_msg(char* msg_str, Item_Avail* item, long button_action_id, long message_string_id);
     short calc_button_loc(unsigned char button_loc);
     void set_button(
-        TShape* buttons, short button, short pic_index, long id, long id2, long help_string_id, long help_page_id,
-        long hotkey, unsigned char* color_table, char* text2, char* text_msg, int make_disabled
+        TShape* buttons, short button, short pic_index, long id, long id2, long help_string_id, long help_page_id, long hotkey,
+        unsigned char* color_table, char* text2, char* text_msg, int make_disabled
     );
 
   public:

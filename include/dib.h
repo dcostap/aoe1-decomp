@@ -23,23 +23,22 @@ typedef char dib_trans_info_line_offset_check[(sizeof(TRANSINFO) == 0x18) ? 1 : 
 
 void __cdecl DibBlt(
     BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
-    BITMAPINFO256* SrcInfo, uchar* SrcBits, long SrcX, long SrcY, long SrcWid, long SrcHgt, int Clip, int Mirror,
-    int Flip
+    BITMAPINFO256* SrcInfo, uchar* SrcBits, long SrcX, long SrcY, long SrcWid, long SrcHgt, int Clip, int Mirror, int Flip
 );
 void __cdecl TransDibBlt(
     BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
-    BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY, long SrcWid, long SrcHgt,
-    int Clip, int Mirror, int Flip, int TransColor
+    BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY, long SrcWid, long SrcHgt, int Clip,
+    int Mirror, int Flip, int TransColor
 );
 int __cdecl ClipDibBlt(
-    BITMAPINFO256* DestInfo, RECT* ClipRect, LONG& DestX, LONG& DestY, LONG& DestWid, LONG& DestHgt, LONG& SrcX,
-    LONG& SrcY, LONG& SrcWid, LONG& SrcHgt, int Mirror, int Flip
+    BITMAPINFO256* DestInfo, RECT* ClipRect, LONG& DestX, LONG& DestY, LONG& DestWid, LONG& DestHgt, LONG& SrcX, LONG& SrcY,
+    LONG& SrcWid, LONG& SrcHgt, int Mirror, int Flip
 );
 void __cdecl GetDibDim(BITMAPINFO256* Info, long& TotWid, long& TotHgt, long& Orien);
 long __cdecl TileDibBlt(
-    BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
-    long BlockWid, long BlockHgt, BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY,
-    long SrcWid, long SrcHgt, int Trans, int Mirror, int Flip
+    BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt, long BlockWid,
+    long BlockHgt, BITMAPINFO256* SrcInfo, uchar* SrcBits, TRANSINFO* TransInfo, long SrcX, long SrcY, long SrcWid, long SrcHgt,
+    int Trans, int Mirror, int Flip
 );
 int __cdecl DibCheckTrans(BITMAPINFO256* DibInfo, TRANSINFO* TransInfo, unsigned char* DibBits);
 

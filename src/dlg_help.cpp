@@ -86,8 +86,8 @@ void THelpDialog::setup_help(
         char* help_topic = this->get_string(in_help_page_id);
         if (help_topic != 0 && *help_topic != '\0') {
             this->create_button(
-                this, &this->encyclopedia_button, STRING_ID_BUTTON_MORE_HELP, 0, 25,
-                line_height * rge_text_font->font_hgt + 20, 120, 25, RGE_FONT_STANDARD, 0, 0
+                this, &this->encyclopedia_button, STRING_ID_BUTTON_MORE_HELP, 0, 25, line_height * rge_text_font->font_hgt + 20,
+                120, 25, RGE_FONT_STANDARD, 0, 0
             );
         }
     }

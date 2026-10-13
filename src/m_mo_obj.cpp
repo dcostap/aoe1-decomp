@@ -95,8 +95,8 @@ int RGE_Master_Moving_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     master_type = RGE_MASTER_TYPE_MOVING;
 
     fscanf(
-        infile, "%hd %hd %f %hd %hd %hd %f %hd", &move_sprite_id, &run_sprite_id, &turn_speed, &temp_size_class,
-        &obj_trail_id, &temp_obj_trail_options, &obj_trail_spacing, &temp_move_algorithem
+        infile, "%hd %hd %f %hd %hd %hd %f %hd", &move_sprite_id, &run_sprite_id, &turn_speed, &temp_size_class, &obj_trail_id,
+        &temp_obj_trail_options, &obj_trail_spacing, &temp_move_algorithem
     );
 
     size_class = (unsigned char) temp_size_class;
@@ -142,7 +142,7 @@ RGE_Master_Static_Object* RGE_Master_Moving_Object::make_new_master() {
 void RGE_Master_Moving_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Animated_Object::copy_obj(source);
 
-    RGE_Master_Moving_Object* moving_source = (RGE_Master_Moving_Object*)source;
+    RGE_Master_Moving_Object* moving_source = (RGE_Master_Moving_Object*) source;
     move_sprite = moving_source->move_sprite;
     run_sprite = moving_source->run_sprite;
     turn_speed = moving_source->turn_speed;

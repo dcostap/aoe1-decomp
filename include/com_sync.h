@@ -36,22 +36,22 @@ class RGE_Communications_Synchronize {
     RGE_Communications_Synchronize(TCommunications_Handler* c);
     ~RGE_Communications_Synchronize();
     int Add(
-        unsigned int player, unsigned long worldtime, unsigned long worldturn, unsigned long worldrandom, long cs1,
-        long cs2, long cs3, long cs4, long cs5
+        unsigned int player, unsigned long worldtime, unsigned long worldturn, unsigned long worldrandom, long cs1, long cs2,
+        long cs3, long cs4, long cs5
     );
 
   protected:
     int ValidateChecksums(
-        unsigned int player, unsigned long worldtime, unsigned long worldturn, unsigned long worldrandom, long cs1,
-        long cs2, long cs3, long cs4, long cs5
+        unsigned int player, unsigned long worldtime, unsigned long worldturn, unsigned long worldrandom, long cs1, long cs2,
+        long cs3, long cs4, long cs5
     );
 
   public:
     unsigned long DoChecksum(unsigned long turn);
     void SetLastWorldRandom(unsigned long lwr);
     void LogChecksums(
-        unsigned int player, unsigned long worldtime, unsigned long worldturn, long cs1, long cs2, long cs3, long cs4,
-        long cs5, unsigned long random
+        unsigned int player, unsigned long worldtime, unsigned long worldturn, long cs1, long cs2, long cs3, long cs4, long cs5,
+        unsigned long random
     );
     void EnableSyncChecking(int Status);
     void SetStopOnFail(int Status);

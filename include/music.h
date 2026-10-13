@@ -47,9 +47,7 @@ class TMusic_System {
     void* midi_window;
     unsigned long last_check_time;
 
-    TMusic_System(
-        unsigned char music_type_in, void* instance_in, void* window_in, TSound_Driver* sound_system_in, char* path_in
-    );
+    TMusic_System(unsigned char music_type_in, void* instance_in, void* window_in, TSound_Driver* sound_system_in, char* path_in);
     ~TMusic_System();
     int open_device();
     void close_device();
@@ -93,8 +91,8 @@ class TMusic_System {
 
   public:
     int get_play_info(
-        unsigned char* music_type_in, int* track_from_in, int* track_to_in, int* cur_track_in, char* music_file_in,
-        int* loop_in, unsigned long* pos_in
+        unsigned char* music_type_in, int* track_from_in, int* track_to_in, int* cur_track_in, char* music_file_in, int* loop_in,
+        unsigned long* pos_in
     );
 };
 

@@ -26,14 +26,12 @@ TListDialog::~TListDialog() {
 }
 
 long TListDialog::setup(
-    TPanel* parent_panel_in, char* info_file_in, long info_id_in, long wid_in, long hgt_in, long title_x_in,
-    long title_y_in, long title_wid_in, long title_hgt_in, char* title_in, long list_x_in, long list_y_in,
-    long list_wid_in, long list_hgt_in, char** list_in, short list_num_lines_in, short list_id_in, long ok_btn_x_in,
-    long cancel_btn_x_in, long btn_y_in, long btn_wid_in, long btn_hgt_in
+    TPanel* parent_panel_in, char* info_file_in, long info_id_in, long wid_in, long hgt_in, long title_x_in, long title_y_in,
+    long title_wid_in, long title_hgt_in, char* title_in, long list_x_in, long list_y_in, long list_wid_in, long list_hgt_in,
+    char** list_in, short list_num_lines_in, short list_id_in, long ok_btn_x_in, long cancel_btn_x_in, long btn_y_in,
+    long btn_wid_in, long btn_hgt_in
 ) {
-    int result = TDialogPanel::setup(
-        parent_panel_in->renderArea(), parent_panel_in, wid_in, hgt_in, info_file_in, info_id_in, 1
-    );
+    int result = TDialogPanel::setup(parent_panel_in->renderArea(), parent_panel_in, wid_in, hgt_in, info_file_in, info_id_in, 1);
     if (result == 0) {
         return 0;
     }
@@ -88,17 +86,17 @@ long TListDialog::setup(
 }
 
 long TListDialog::setup(
-    TPanel* parent_panel_in, char* info_file_in, long info_id_in, long wid_in, long hgt_in, long title_x_in,
-    long title_y_in, long title_wid_in, long title_hgt_in, int title_string_id, long list_x_in, long list_y_in,
-    long list_wid_in, long list_hgt_in, char** list_in, short list_num_lines_in, short list_id_in, long ok_btn_x_in,
-    long cancel_btn_x_in, long btn_y_in, long btn_wid_in, long btn_hgt_in
+    TPanel* parent_panel_in, char* info_file_in, long info_id_in, long wid_in, long hgt_in, long title_x_in, long title_y_in,
+    long title_wid_in, long title_hgt_in, int title_string_id, long list_x_in, long list_y_in, long list_wid_in, long list_hgt_in,
+    char** list_in, short list_num_lines_in, short list_id_in, long ok_btn_x_in, long cancel_btn_x_in, long btn_y_in,
+    long btn_wid_in, long btn_hgt_in
 ) {
     char str[256];
     get_string(title_string_id, str, 256);
     return setup(
-        parent_panel_in, info_file_in, info_id_in, wid_in, hgt_in, title_x_in, title_y_in, title_wid_in, title_hgt_in,
-        str, list_x_in, list_y_in, list_wid_in, list_hgt_in, list_in, list_num_lines_in, list_id_in, ok_btn_x_in,
-        cancel_btn_x_in, btn_y_in, btn_wid_in, btn_hgt_in
+        parent_panel_in, info_file_in, info_id_in, wid_in, hgt_in, title_x_in, title_y_in, title_wid_in, title_hgt_in, str,
+        list_x_in, list_y_in, list_wid_in, list_hgt_in, list_in, list_num_lines_in, list_id_in, ok_btn_x_in, cancel_btn_x_in,
+        btn_y_in, btn_wid_in, btn_hgt_in
     );
 }
 

@@ -53,12 +53,7 @@ class TRIBE_Screen_Sed : public TScreenPanel {
         VictoryTypeTimeValue = 4,
         VictoryTypeCustomValue = 5
     };
-    enum PaintType {
-        PaintTypeNone = 0,
-        PaintTypeTerrainValue = 1,
-        PaintTypeElevationValue = 2,
-        PaintTypeObjectValue = 3
-    };
+    enum PaintType { PaintTypeNone = 0, PaintTypeTerrainValue = 1, PaintTypeElevationValue = 2, PaintTypeObjectValue = 3 };
     enum BrushSize {
         BrushSizeNone = 0,
         BrushSizeVerySmall = 1,
@@ -242,12 +237,10 @@ class TRIBE_Screen_Sed : public TScreenPanel {
     int create_text(TPanel* parent, TTextPanel** text_panel, long text_id);
     int create_text(TPanel* parent, TTextPanel** text_panel, char* text);
     int create_drop_down(TPanel* parent, TDropDownPanel** drop_panel);
-    int create_input(
-        TPanel* parent, TInputPanel** input_panel, char* value, short max_len, TInputPanel::FormatType format_type
-    );
+    int create_input(TPanel* parent, TInputPanel** input_panel, char* value, short max_len, TInputPanel::FormatType format_type);
     int create_edit(
-        TPanel* parent, TEditPanel** edit_panel, char* value, short max_len, TEditPanel::FormatType format_type,
-        int enable_ime, int turn_ime_on
+        TPanel* parent, TEditPanel** edit_panel, char* value, short max_len, TEditPanel::FormatType format_type, int enable_ime,
+        int turn_ime_on
     );
     int create_list(TPanel* parent, TListPanel** list_panel, TScrollBarPanel** scrollbar_panel);
     int create_radio_button(TPanel* parent, TButtonPanel** button);

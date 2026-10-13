@@ -65,9 +65,7 @@ class TMousePointer {
     ~TMousePointer();
     int Shutdown_Mouse();
     int Restore_Mouse(TDrawArea* render_area_in);
-    int setup(
-        int custom_draw_in, TDrawArea* render_area_in, char* cursor_file_name, int cursor_resId, int maxCursors_in
-    );
+    int setup(int custom_draw_in, TDrawArea* render_area_in, char* cursor_file_name, int cursor_resId, int maxCursors_in);
     void set_game_mode(int mode);
     void set_game_enable(int enable);
     int get_game_enable();

@@ -442,8 +442,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers, int numberGr
     for (i = 0; i < numberGroupMembers; i++) {
         RGE_Static_Object* object = world->object(groupMembers[i]);
         int type;
-        if (object == 0 || (type = world->playbook->convertUnitToIntType(object)) < 0
-            || type >= AIPlayGroup::MaxUnitTypes) {
+        if (object == 0 || (type = world->playbook->convertUnitToIntType(object)) < 0 || type >= AIPlayGroup::MaxUnitTypes) {
             minUnits = 0;
         } else {
             unitsByType[type][unitsByTypeCount[type]] = groupMembers[i];
@@ -494,8 +493,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers, int numberGr
 
                 for (groupNumber = 0; groupNumber < play->numberGroupsValue; groupNumber++) {
                     AIPlayGroup* group = play->group(groupNumber);
-                    if (group != 0
-                        && playStatus->numberOfTypeInGroup(groupNumber, overflowType) < group->maximum(overflowType)
+                    if (group != 0 && playStatus->numberOfTypeInGroup(groupNumber, overflowType) < group->maximum(overflowType)
                         && (smallestGroup == -1 || playStatus->numberInGroup(groupNumber) < smallestGroupSize)) {
                         smallestGroupSize = playStatus->numberInGroup(groupNumber);
                         smallestGroup = groupNumber;
@@ -516,10 +514,8 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers, int numberGr
             } else if (this->overflowValue == 2) {
                 for (groupNumber = 0; groupNumber < play->numberGroupsValue; groupNumber++) {
                     AIPlayGroup* group = play->group(groupNumber);
-                    if (group != 0
-                        && playStatus->numberOfTypeInGroup(groupNumber, overflowType) < group->maximum(overflowType)) {
-                        if (playStatus->addGrouping(id, (unsigned char) groupNumber, (unsigned char) overflowType)
-                            == 1) {
+                    if (group != 0 && playStatus->numberOfTypeInGroup(groupNumber, overflowType) < group->maximum(overflowType)) {
+                        if (playStatus->addGrouping(id, (unsigned char) groupNumber, (unsigned char) overflowType) == 1) {
                             maximumUnits = play->maximumNumberUnitsValue;
                             id = -1;
                             if (playStatus->numberInPlay() == maximumUnits) {
@@ -1027,9 +1023,7 @@ int AIPlayBook::loadPlays(char* filename) {
             } else if (strcmp(temp2, "RTrigger") == 0 && currentPlay != -1 && currentPhase != -1) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3, &temp7, &temp5);
                 AIPlayPhase* phase = this->plays[currentPlay].phase(currentPhase);
-                AIPlayPhaseTrigger trigger(
-                    temp6, temp3, temp7, (unsigned char) currentPhase, (unsigned char) temp4, temp5
-                );
+                AIPlayPhaseTrigger trigger(temp6, temp3, temp7, (unsigned char) currentPhase, (unsigned char) temp4, temp5);
                 phase->addTrigger(trigger);
             } else if (strcmp(temp2, "EndPlay") == 0 && currentPlay != -1) {
                 currentPhase = -1;

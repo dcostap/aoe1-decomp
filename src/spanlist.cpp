@@ -14,8 +14,8 @@ extern "C" int __cdecl close(int fd);
 extern "C" int __cdecl write(int fd, const void* buf, unsigned int count);
 
 TSpan_Node_List::TSpan_Node_List(int InitialSize, int GrowSize, int szitem) :
-    Free_Pool_Zone(-1), Free_Pool_Index(-1), Zone_Ptrs(0), Zone_Size_Ptrs(0), Used_Zones(0), Free_Head(0),
-    Total_Blocks(0), Free_Blocks(0), Max_Zones(8), Default_Grow_Size(GrowSize), Element_Size(szitem) {
+    Free_Pool_Zone(-1), Free_Pool_Index(-1), Zone_Ptrs(0), Zone_Size_Ptrs(0), Used_Zones(0), Free_Head(0), Total_Blocks(0),
+    Free_Blocks(0), Max_Zones(8), Default_Grow_Size(GrowSize), Element_Size(szitem) {
     ResetStats();
     SetNumZones(8);
     InitNewZone(InitialSize);

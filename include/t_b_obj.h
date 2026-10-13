@@ -19,9 +19,7 @@ class TRIBE_Building_Object : public TRIBE_Combat_Object {
     TRIBE_Building_Object(
         TRIBE_Master_Building_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int uID, int do_setup
     );
-    TRIBE_Building_Object(
-        TRIBE_Master_Building_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup
-    );
+    TRIBE_Building_Object(TRIBE_Master_Building_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
     TRIBE_Building_Object(int infile, RGE_Game_World* gworld, int do_setup);
 
     virtual ~TRIBE_Building_Object();

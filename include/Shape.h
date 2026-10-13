@@ -94,16 +94,14 @@ class TShape {
 
   private:
     byte shape_draw_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num);
-    byte shape_color_trans_unclipped(
-        TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num, byte* color_table
-    );
+    byte shape_color_trans_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num, byte* color_table);
     byte shape_shadow_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, byte* color_table);
     byte shape_draw_clipped(
         TDrawArea* drawarea, long shape_x0, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1
     );
     byte shape_color_trans_clipped(
-        TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num, long clip_x0, long clip_y0, long clip_x1,
-        long clip_y1, byte* color_table
+        TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num, long clip_x0, long clip_y0, long clip_x1, long clip_y1,
+        byte* color_table
     );
     byte shape_shadow_clipped(
         TDrawArea* drawarea, long shape_x0, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1,
@@ -115,16 +113,14 @@ class TShape {
 
   private:
     byte shape_mirror_unclipped(TDrawArea* drawarea, long shape_x1, long shape_y0);
-    byte shape_mirror_color_trans_unclipped(
-        TDrawArea* drawarea, long shape_x1, long shape_y0, long shape_num, byte* color_table
-    );
+    byte shape_mirror_color_trans_unclipped(TDrawArea* drawarea, long shape_x1, long shape_y0, long shape_num, byte* color_table);
     byte shape_mirror_shadow_unclipped(TDrawArea* drawarea, long shape_x1, long shape_y0, byte* color_table);
     byte shape_mirror_clipped(
         TDrawArea* drawarea, long shape_x1, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1
     );
     byte shape_mirror_color_trans_clipped(
-        TDrawArea* drawarea, long shape_x1, long shape_y0, long shape_num, long clip_x0, long clip_y0, long clip_x1,
-        long clip_y1, byte* color_table
+        TDrawArea* drawarea, long shape_x1, long shape_y0, long shape_num, long clip_x0, long clip_y0, long clip_x1, long clip_y1,
+        byte* color_table
     );
     byte shape_mirror_shadow_clipped(
         TDrawArea* drawarea, long shape_x1, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1,
@@ -137,8 +133,8 @@ class TShape {
   private:
     byte shape_dithered_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long dx, long dy);
     byte shape_dithered_clipped(
-        TDrawArea* drawarea, long shape_x0, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1,
-        long dx, long dy
+        TDrawArea* drawarea, long shape_x0, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1, long dx,
+        long dy
     );
 
   public:

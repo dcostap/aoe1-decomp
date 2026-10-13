@@ -2,8 +2,8 @@
 #include "../include/pnl_dlg.h"
 
 TDialogPanel::TDialogPanel(char* panel_name_in) :
-    TEasy_Panel(panel_name_in), dlg_wnd(0), save_parent_child(0), text_font_id(0xB), input_font_id(0xB),
-    button_font_id(0xB), button_sound_id(0) {
+    TEasy_Panel(panel_name_in), dlg_wnd(0), save_parent_child(0), text_font_id(0xB), input_font_id(0xB), button_font_id(0xB),
+    button_sound_id(0) {
 }
 
 int TDialogPanel::setup(
@@ -24,8 +24,8 @@ int TDialogPanel::setup(
     }
 
     if (TEasy_Panel::setup(
-            render_area_in, parent_in, info_file_name, resource_file_id, 0, width / 2 - wid_in / 2,
-            height / 2 - hgt_in / 2, wid_in, hgt_in, allow_shadow_area_in
+            render_area_in, parent_in, info_file_name, resource_file_id, 0, width / 2 - wid_in / 2, height / 2 - hgt_in / 2,
+            wid_in, hgt_in, allow_shadow_area_in
         )
         == 0) {
         this->error_code = 1;
@@ -44,8 +44,7 @@ int TDialogPanel::setup(
 }
 
 int TDialogPanel::setup(
-    TDrawArea* render_area_in, TPanel* parent_in, long wid_in, long hgt_in, unsigned char color_in,
-    int allow_shadow_area_in
+    TDrawArea* render_area_in, TPanel* parent_in, long wid_in, long hgt_in, unsigned char color_in, int allow_shadow_area_in
 ) {
     int width;
     int height;

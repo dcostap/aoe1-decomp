@@ -16,13 +16,13 @@ extern "C" __declspec(dllimport) int __stdcall CompareStringA(
 );
 
 TTextPanel::TTextPanel() :
-    list(0), num_lines(0), draw_lines(0), top_line(0), bot_line(0), cur_line(0), cur_col(0), font(0), font_wid(0),
-    font_hgt(0), vert_align(AlignCenter), horz_align(AlignCenter), word_wrap(0), text_style(ChiseledStyle),
-    text_color1(0xFFFFFF), text_color2(0), highlightTextColor1(0xFFFF), highlightTextColor2(0), scbar_panel(0),
-    auto_scbar(0), fixed_len(0), text_wid(0), text_hgt(0), back_pic(0), back_pic_wid(0), back_pic_hgt(0), fill_back(0),
-    back_color(0xFF), outline(0), outline_color(0), sorted(0), second_column_pos(0), full_width(0), scbar_width(0),
-    scbar_active(0), bevel_type(TEXT_PANEL_BEVEL_NONE), bevel_color1(0), bevel_color2(0), bevel_color3(0),
-    bevel_color4(0), bevel_color5(0), bevel_color6(0), clip_rgn2(0), border_size(0), spacer_size(0) {
+    list(0), num_lines(0), draw_lines(0), top_line(0), bot_line(0), cur_line(0), cur_col(0), font(0), font_wid(0), font_hgt(0),
+    vert_align(AlignCenter), horz_align(AlignCenter), word_wrap(0), text_style(ChiseledStyle), text_color1(0xFFFFFF),
+    text_color2(0), highlightTextColor1(0xFFFF), highlightTextColor2(0), scbar_panel(0), auto_scbar(0), fixed_len(0), text_wid(0),
+    text_hgt(0), back_pic(0), back_pic_wid(0), back_pic_hgt(0), fill_back(0), back_color(0xFF), outline(0), outline_color(0),
+    sorted(0), second_column_pos(0), full_width(0), scbar_width(0), scbar_active(0), bevel_type(TEXT_PANEL_BEVEL_NONE),
+    bevel_color1(0), bevel_color2(0), bevel_color3(0), bevel_color4(0), bevel_color5(0), bevel_color6(0), clip_rgn2(0),
+    border_size(0), spacer_size(0) {
     this->handle_mouse_input = 0;
     this->panel_type = 1;
 }
@@ -37,8 +37,8 @@ TTextPanel::~TTextPanel() {
 
 long TTextPanel::setup(
     TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, void* font_in,
-    long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in, unsigned char back_color_in,
-    int outline_in, unsigned char outline_color_in, short fixed_len_in, char* text_in
+    long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in, unsigned char back_color_in, int outline_in,
+    unsigned char outline_color_in, short fixed_len_in, char* text_in
 ) {
     TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, 0);
     fill_back = fill_back_in;
@@ -58,8 +58,8 @@ long TTextPanel::setup(
 
 long TTextPanel::setup(
     TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, void* font_in,
-    long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in, unsigned char back_color_in,
-    int outline_in, unsigned char outline_color_in, short fixed_len_in, long string_id_in
+    long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in, unsigned char back_color_in, int outline_in,
+    unsigned char outline_color_in, short fixed_len_in, long string_id_in
 ) {
     char str[0x1000];
 
@@ -82,8 +82,8 @@ long TTextPanel::setup(
 
 long TTextPanel::setup(
     TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, void* font_in,
-    long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in, unsigned char back_color_in,
-    int outline_in, unsigned char outline_color_in, short fixed_len_in, char** text_in, short num_lines_in
+    long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in, unsigned char back_color_in, int outline_in,
+    unsigned char outline_color_in, short fixed_len_in, char** text_in, short num_lines_in
 ) {
     TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, 0);
     this->fill_back = fill_back_in;
@@ -121,9 +121,7 @@ void TTextPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
             y = this->pnl_y;
         }
 
-        this->scbar_panel->set_fixed_position(
-            x + this->full_width - this->scbar_width, y, this->scbar_width, this->pnl_hgt
-        );
+        this->scbar_panel->set_fixed_position(x + this->full_width - this->scbar_width, y, this->scbar_width, this->pnl_hgt);
     }
 
     this->calc_draw_info(1);
@@ -839,8 +837,8 @@ void TTextPanel::draw_border() {
                 case TEXT_PANEL_BEVEL_TRIPLE:
                     this->render_area->DrawBevel3(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3,
-                        this->bevel_color2, this->bevel_color1
+                        this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3, this->bevel_color2,
+                        this->bevel_color1
                     );
                     break;
                 case TEXT_PANEL_BEVEL_SINGLE_REVERSED:
@@ -858,8 +856,8 @@ void TTextPanel::draw_border() {
                 case TEXT_PANEL_BEVEL_TRIPLE_REVERSED:
                     this->render_area->DrawBevel3(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
-                        this->bevel_color5, this->bevel_color6
+                        this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5,
+                        this->bevel_color6
                     );
                     break;
             }

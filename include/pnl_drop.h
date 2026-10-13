@@ -48,8 +48,8 @@ class TDropDownPanel : public TPanel {
     virtual void set_rect(long, long, long, long);
     virtual long handle_mouse_move(long, long, int, int);
     long setup(
-        TDrawArea*, TPanel*, void*, long, long, int, unsigned char, int, unsigned char, long, long, long, long, short,
-        short, long, long, char*, long, long, char**, short, long, char*, char*, char*, char*, long, long
+        TDrawArea*, TPanel*, void*, long, long, int, unsigned char, int, unsigned char, long, long, long, long, short, short,
+        long, long, char*, long, long, char**, short, long, char*, char*, char*, char*, long, long
     );
     void set_val_text_color(unsigned long, unsigned long);
     void set_draw_style(DrawStyle);

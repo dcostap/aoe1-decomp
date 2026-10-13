@@ -42,8 +42,7 @@ class RGE_Object_List {
         long id, float x, float y, unsigned char certain_state, unsigned char object_state, RGE_Static_Object* zone_obj
     );
     RGE_Static_Object* find_by_master_ids(
-        long id1, long id2, float x, float y, unsigned char certain_state, unsigned char object_state,
-        RGE_Static_Object* zone_obj
+        long id1, long id2, float x, float y, unsigned char certain_state, unsigned char object_state, RGE_Static_Object* zone_obj
     );
     RGE_Static_Object* find_by_type(
         unsigned char type, float x, float y, unsigned char certain_state, unsigned char object_state

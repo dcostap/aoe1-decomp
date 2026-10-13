@@ -213,8 +213,7 @@ int DiplomacyAIModule::isLiked(int playerID) const {
 }
 
 int DiplomacyAIModule::isChangeable(int playerID) const {
-    if (((playerID > 0) && (playerID < this->md->player->world->player_num))
-        && (this->changeableTable[playerID] == 1)) {
+    if (((playerID > 0) && (playerID < this->md->player->world->player_num)) && (this->changeableTable[playerID] == 1)) {
         return 1;
     }
     return 0;
@@ -226,9 +225,7 @@ void DiplomacyAIModule::setChangeable(int playerID, unsigned char v) {
     }
 }
 
-int DiplomacyAIModule::mostHated(
-    int tributeOn, int tributePlayer, int attackWinningPlayer, int attackWinningPlayerFactor
-) const {
+int DiplomacyAIModule::mostHated(int tributeOn, int tributePlayer, int attackWinningPlayer, int attackWinningPlayerFactor) const {
     int highest = -1;
     int highestValue = -1;
     for (int player_index = 1; player_index < this->md->player->world->player_num; ++player_index) {
@@ -236,8 +233,7 @@ int DiplomacyAIModule::mostHated(
         //! The engine refuses attacks on allies, so the AI then stays inactive with idle military.
         if (player_index != this->md->player->id && this->md->player->world->players[player_index]->game_status != 2
             && (tributeOn <= 0 || tributePlayer != player_index || !isAlly(player_index))) {
-            int victory_points =
-                this->md->player->world->players[player_index]->victory_conditions->get_victory_points();
+            int victory_points = this->md->player->world->players[player_index]->victory_conditions->get_victory_points();
             int stance_value = this->dislikeTable[player_index];
             //! @bug This gate has no check for attackWinningPlayer == 0.
             //! Value 0 means "ignore score", but the else branch subtracts the victory points.
@@ -304,8 +300,8 @@ int DiplomacyAIModule::isEnemy(int playerID) const {
 int DiplomacyAIModule::isNeutral(int playerID) const {
     RGE_Player* player;
 
-    if (((0 < playerID) && (player = this->md->player, playerID <= player->world->player_num))
-        && (playerID != player->id) && (player->relations[playerID] == RGE_RELATION_NEUTRAL)) {
+    if (((0 < playerID) && (player = this->md->player, playerID <= player->world->player_num)) && (playerID != player->id)
+        && (player->relations[playerID] == RGE_RELATION_NEUTRAL)) {
         return 1;
     }
     return 0;

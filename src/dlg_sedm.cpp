@@ -19,51 +19,47 @@ TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed* scenario_editor_i
     }
 
     if (this->setup(
-            scenario_editor_in->renderArea(), scenario_editor_in, 0x1CC, 0x190,
-            scenario_editor_in->get_popup_info_file(), scenario_editor_in->get_popup_info_id(), 1
+            scenario_editor_in->renderArea(), scenario_editor_in, 0x1CC, 0x190, scenario_editor_in->get_popup_info_file(),
+            scenario_editor_in->get_popup_info_id(), 1
         )
         == 0)
         return;
 
     if (this->create_button(
-            this, &this->buttons[0], STRING_ID_SCENARIO_MENU_QUIT_TO_MAIN_MENU, 0, 30, 20, 400, 40,
-            RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-        )
-        == 0)
-        return;
-    if (this->create_button(
-            this, &this->buttons[1], STRING_ID_SCENARIO_MENU_SAVE, 0, 30, 70, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0,
-            0
-        )
-        == 0)
-        return;
-    if (this->create_button(
-            this, &this->buttons[2], STRING_ID_SCENARIO_MENU_SAVE_AS, 0, 30, 120, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD,
+            this, &this->buttons[0], STRING_ID_SCENARIO_MENU_QUIT_TO_MAIN_MENU, 0, 30, 20, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD,
             0, 0
         )
         == 0)
         return;
     if (this->create_button(
-            this, &this->buttons[3], STRING_ID_SCENARIO_MENU_EDIT_SCENARIO, 0, 30, 170, 400, 40,
-            RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+            this, &this->buttons[1], STRING_ID_SCENARIO_MENU_SAVE, 0, 30, 70, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
         )
         == 0)
         return;
     if (this->create_button(
-            this, &this->buttons[4], STRING_ID_SCENARIO_MENU_CREATE_SCENARIO, 0, 30, 220, 400, 40,
-            RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+            this, &this->buttons[2], STRING_ID_SCENARIO_MENU_SAVE_AS, 0, 30, 120, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
         )
         == 0)
         return;
     if (this->create_button(
-            this, &this->buttons[5], STRING_ID_SCENARIO_MENU_TEST, 0, 30, 270, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0,
+            this, &this->buttons[3], STRING_ID_SCENARIO_MENU_EDIT_SCENARIO, 0, 30, 170, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0,
             0
         )
         == 0)
         return;
     if (this->create_button(
-            this, &this->buttons[6], STRING_ID_SCENARIO_MENU_CANCEL, 0, 30, 340, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD,
+            this, &this->buttons[4], STRING_ID_SCENARIO_MENU_CREATE_SCENARIO, 0, 30, 220, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD,
             0, 0
+        )
+        == 0)
+        return;
+    if (this->create_button(
+            this, &this->buttons[5], STRING_ID_SCENARIO_MENU_TEST, 0, 30, 270, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+        )
+        == 0)
+        return;
+    if (this->create_button(
+            this, &this->buttons[6], STRING_ID_SCENARIO_MENU_CANCEL, 0, 30, 340, 400, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
         )
         == 0)
         return;
@@ -88,9 +84,7 @@ TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu() {
     } while (count != 0);
 }
 
-long TRIBE_Dialog_Sed_Menu::action(
-    TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2
-) {
+long TRIBE_Dialog_Sed_Menu::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     TRIBE_Screen_Sed* sed = this->scenario_editor;
     if (action_in == 1) {
         if (from_panel == this->buttons[0]) {
@@ -133,7 +127,7 @@ long TRIBE_Dialog_Sed_Menu::action(
             panel_system.destroyPanel("Scenario Menu Dialog");
             char* scenario = sed->scenario_save_defaulted();
             if (scenario != 0) {
-                ((TRIBE_Game*)rge_base_game)->test_scenario(scenario);
+                ((TRIBE_Game*) rge_base_game)->test_scenario(scenario);
             } else {
                 panel_system.destroyPanel("Scenario Menu Dialog");
             }
@@ -156,7 +150,7 @@ long TRIBE_Dialog_Sed_Menu::action(
             }
             if (action_in == 0 || action_in == 1) {
                 panel_system.destroyPanel("Scenario Menu Dialog");
-                ((TRIBE_Game*)rge_base_game)->start_scenario_editor(0, 0);
+                ((TRIBE_Game*) rge_base_game)->start_scenario_editor(0, 0);
             }
             if (action_in == 2) {
                 panel_system.destroyPanel("Scenario Menu Dialog");

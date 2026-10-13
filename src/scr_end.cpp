@@ -35,8 +35,8 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
     }
 
     background->set_positioning(
-        TPanel::PositionCentered, 0, 0, 0, 0, pnl_wid * 640 / 640, pnl_wid * 640 / 640, pnl_hgt * 480 / 480,
-        pnl_hgt * 480 / 480, 0, 0, 0, 0
+        TPanel::PositionCentered, 0, 0, 0, 0, pnl_wid * 640 / 640, pnl_wid * 640 / 640, pnl_hgt * 480 / 480, pnl_hgt * 480 / 480,
+        0, 0, 0, 0
     );
 
     RGE_Font* font = rge_base_game->get_font(RGE_FONT_COPPERPLATE_21_BOLD);
@@ -46,8 +46,8 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
         return;
     }
     title->setup(
-        render_area, background, pnl_wid * 20 / 640, pnl_hgt * 20 / 480, pnl_wid * 600 / 640, pnl_hgt * 30 / 480,
-        font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, titleText
+        render_area, background, pnl_wid * 20 / 640, pnl_hgt * 20 / 480, pnl_wid * 600 / 640, pnl_hgt * 30 / 480, font->font,
+        font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, titleText
     );
 
     text = new TTextPanel;
@@ -57,10 +57,10 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
     }
     font = rge_base_game->get_font(RGE_FONT_STANDARD);
     text->setup(
-        render_area, background, pnl_wid * 20 / 640, pnl_hgt * 70 / 480, pnl_wid * 600 / 640, pnl_hgt * 340 / 480,
-        font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, (char*)0
+        render_area, background, pnl_wid * 20 / 640, pnl_hgt * 70 / 480, pnl_wid * 600 / 640, pnl_hgt * 340 / 480, font->font,
+        font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, (char*) 0
     );
-    text->set_text(textText, (short)textLineCount);
+    text->set_text(textText, (short) textLineCount);
     text->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
     text->scroll(6, 0, 1);
 

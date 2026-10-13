@@ -47,14 +47,12 @@ void RGE_Action_Bird::set_state(unsigned char new_state) {
     this->state = new_state;
     switch (new_state) {
         case 6:
-            this->timer =
-                (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 76) * 10) / 0x7FFF + 5);
+            this->timer = (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 76) * 10) / 0x7FFF + 5);
             sprite = this->task->work_sprite;
             break;
 
         case 4:
-            this->timer =
-                (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 68) * 10) / 0x7FFF + 5);
+            this->timer = (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 68) * 10) / 0x7FFF + 5);
             sprite = this->task->move_sprite;
             break;
 
@@ -106,8 +104,7 @@ unsigned char RGE_Action_Bird::update(void) {
             this->target_x =
                 (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 132) * map->map_width) / 0x7FFF);
             this->target_y =
-                (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 133) * map->map_height)
-                         / 0x7FFF);
+                (float) ((debug_rand((char*) "C:\\msdev\\work\\age1_x1\\act_bird.cpp", 133) * map->map_height) / 0x7FFF);
         }
             this->target_z = this->obj->world_z;
             move_to = new RGE_Action_Move_To(

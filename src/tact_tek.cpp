@@ -25,19 +25,16 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* obj_in, short 
 
 TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech() {
     if (this->state != 1) {
-        ((TRIBE_Player*)this->obj->owner)->tech_tree->cancel_research(this->tech_id, 0);
+        ((TRIBE_Player*) this->obj->owner)->tech_tree->cancel_research(this->tech_id, 0);
 
         if (rge_base_game->world->game_state == 0) {
             rge_base_game->notification(
-                GAME_NOTIFY_RESEARCH_STOPPED, ((TRIBE_Player*)this->obj->owner)->id, this->tech_id, 0, 0
+                GAME_NOTIFY_RESEARCH_STOPPED, ((TRIBE_Player*) this->obj->owner)->id, this->tech_id, 0, 0
             );
 
-            ((TRIBE_Player*)this->obj->owner)
-                ->cancelResearch((int) this->tech_id, this->obj->id, -1, this->unique_id);
+            ((TRIBE_Player*) this->obj->owner)->cancelResearch((int) this->tech_id, this->obj->id, -1, this->unique_id);
 
-            this->obj->notify(
-                this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_RESEARCH, 0, 0
-            );
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_RESEARCH, 0, 0);
         }
     }
 }
@@ -53,14 +50,13 @@ void TRIBE_Action_Make_Tech::first_in_stack(unsigned char first_time) {
         return;
     }
 
-    unsigned char result = ((TRIBE_Player*)this->obj->owner)
-                               ->tech_tree->start_research(this->tech_id, 1, (short*)&first_time);
+    unsigned char result = ((TRIBE_Player*) this->obj->owner)->tech_tree->start_research(this->tech_id, 1, (short*) &first_time);
     if (result == 1) {
         this->set_state(6);
         return;
     }
 
-    ((TRIBE_Player*)this->obj->owner)
+    ((TRIBE_Player*) this->obj->owner)
         ->cancelResearch((int) *(short*) &first_time, (int) this->tech_id, this->obj->id, this->unique_id);
 
     this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_RESEARCH, 0, 0);
@@ -89,20 +85,18 @@ unsigned char TRIBE_Action_Make_Tech::update() {
     if (rge_base_game->quick_build != 0) {
         work = 1000.0f;
     } else {
-        work = this->obj->owner->world->world_time_delta_seconds
-               * ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate;
+        work = this->obj->owner->world->world_time_delta_seconds * ((RGE_Master_Action_Object*) this->obj->master_obj)->work_rate;
     }
 
-    player_tech = ((TRIBE_Player*)this->obj->owner)->tech_tree;
+    player_tech = ((TRIBE_Player*) this->obj->owner)->tech_tree;
     if (player_tech->research(this->tech_id, work) == 0) {
         this->set_state(1);
         action_object = this->obj;
         rge_base_game->notification(
-            GAME_NOTIFY_RESEARCH_COMPLETED, ((TRIBE_Player*)action_object->owner)->id, this->tech_id,
+            GAME_NOTIFY_RESEARCH_COMPLETED, ((TRIBE_Player*) action_object->owner)->id, this->tech_id,
             (int) action_object->world_x, (int) action_object->world_y
         );
-        ((TRIBE_Player*)this->obj->owner)
-            ->registerResearch((int) this->tech_id, this->obj->id, this->unique_id);
+        ((TRIBE_Player*) this->obj->owner)->registerResearch((int) this->tech_id, this->obj->id, this->unique_id);
         this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_RESEARCH, 0, 0);
         return RGE_ACTION_UPDATE_REMOVE;
     }
@@ -117,14 +111,11 @@ success_initial:
 int TRIBE_Action_Make_Tech::stop() {
     this->set_state(1);
 
-    ((TRIBE_Player*)this->obj->owner)->tech_tree->cancel_research(this->tech_id, 1);
+    ((TRIBE_Player*) this->obj->owner)->tech_tree->cancel_research(this->tech_id, 1);
 
-    rge_base_game->notification(
-        GAME_NOTIFY_RESEARCH_STOPPED, ((TRIBE_Player*)this->obj->owner)->id, this->tech_id, 0, 0
-    );
+    rge_base_game->notification(GAME_NOTIFY_RESEARCH_STOPPED, ((TRIBE_Player*) this->obj->owner)->id, this->tech_id, 0, 0);
 
-    ((TRIBE_Player*)this->obj->owner)
-        ->cancelResearch((int) this->tech_id, this->obj->id, -1, this->unique_id);
+    ((TRIBE_Player*) this->obj->owner)->cancelResearch((int) this->tech_id, this->obj->id, -1, this->unique_id);
 
     this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_RESEARCH, 0, 0);
 
@@ -136,11 +127,11 @@ void TRIBE_Action_Make_Tech::get_info(short& id, short& progress, char* name, sh
     if (this->state == 1) {
         progress = 100;
     } else {
-        progress = ((TRIBE_Player*)this->obj->owner)->tech_tree->get_progress(this->tech_id);
+        progress = ((TRIBE_Player*) this->obj->owner)->tech_tree->get_progress(this->tech_id);
     }
 
     if (name != 0) {
-        strncpy(name, ((TRIBE_Player*)this->obj->owner)->tech_tree->get_name(this->tech_id), name_size);
+        strncpy(name, ((TRIBE_Player*) this->obj->owner)->tech_tree->get_name(this->tech_id), name_size);
         name[name_size - 1] = 0;
     }
 }

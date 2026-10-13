@@ -10,9 +10,9 @@ class TVerticalSliderPanel : public TScrollBarPanel {
     virtual ~TVerticalSliderPanel();
     TVerticalSliderPanel();
     long setup(
-        TDrawArea* renderAreaIn, TPanel* parentPanelIn, long xIn, long yIn, long widthIn, long heightIn,
-        char* backPictureIn, char* thumbPictureIn, long thumbHeightIn, long scaleIn, long one_step_in,
-        long page_step_in, int drawBoxIn, int spineWidthIn
+        TDrawArea* renderAreaIn, TPanel* parentPanelIn, long xIn, long yIn, long widthIn, long heightIn, char* backPictureIn,
+        char* thumbPictureIn, long thumbHeightIn, long scaleIn, long one_step_in, long page_step_in, int drawBoxIn,
+        int spineWidthIn
     );
     virtual void set_rect(long x_in, long y_in, long wid_in, long hgt_in);
     virtual void draw();
@@ -23,9 +23,9 @@ class THorizontalSliderPanel : public TVerticalSliderPanel {
     virtual ~THorizontalSliderPanel();
     THorizontalSliderPanel();
     long setup(
-        TDrawArea* renderAreaIn, TPanel* parentPanelIn, long xIn, long yIn, long widthIn, long heightIn,
-        char* backPictureIn, char* thumbPictureIn, long thumbWidthIn, long scaleIn, long one_step_in, long page_step_in,
-        int drawBoxIn, int spineWidthIn
+        TDrawArea* renderAreaIn, TPanel* parentPanelIn, long xIn, long yIn, long widthIn, long heightIn, char* backPictureIn,
+        char* thumbPictureIn, long thumbWidthIn, long scaleIn, long one_step_in, long page_step_in, int drawBoxIn,
+        int spineWidthIn
     );
     virtual void set_rect(long x_in, long y_in, long wid_in, long hgt_in);
     virtual void draw();

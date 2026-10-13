@@ -42,12 +42,11 @@ TribeJoinScreen::TribeJoinScreen() : TScreenPanel("Join Screen") {
     this->set_ideal_size(640, 480);
 
     if (this->create_text(
-            this, &this->title, STRING_ID_MULTIPLAYER_GAMES_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0,
-            0
+            this, &this->title, STRING_ID_MULTIPLAYER_GAMES_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
         )) {
         this->create_text(
-            this, &this->listTitle, STRING_ID_MULTIPLAYER_SELECT_GAME_TO_JOIN, 20, 65, 600, 20,
-            RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+            this, &this->listTitle, STRING_ID_MULTIPLAYER_SELECT_GAME_TO_JOIN, 20, 65, 600, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT,
+            0, 0, 0
         );
         if (this->create_list(this, &this->list, 20, 90, 600, 270, RGE_FONT_STANDARD)) {
             if (this->create_auto_scrollbar(&this->scrollbar, this->list, 20)) {
@@ -280,17 +279,16 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parentPanel) : TDialogPanel("Cr
     this->cancelButton = 0;
 
     if (this->setup(
-            parentPanel->renderArea(), parentPanel, 500, 230,
-            ((TEasy_Panel*)parentPanel)->get_popup_info_file(),
-            ((TEasy_Panel*)parentPanel)->get_popup_info_id(), 1
+            parentPanel->renderArea(), parentPanel, 500, 230, ((TEasy_Panel*) parentPanel)->get_popup_info_file(),
+            ((TEasy_Panel*) parentPanel)->get_popup_info_id(), 1
         )) {
         if (this->create_text(
-                this, &this->title, STRING_ID_MULTIPLAYER_CREATE_GAME_TITLE, 20, 20, 460, 30,
-                RGE_FONT_COPPERPLATE_21_BOLD, 1, 1, 0
+                this, &this->title, STRING_ID_MULTIPLAYER_CREATE_GAME_TITLE, 20, 20, 460, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 1,
+                0
             )) {
             if (this->create_text(
-                    this, &this->input_title, STRING_ID_MULTIPLAYER_GAME_NAME, 40, 85, 420, 20,
-                    RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 1, 0
+                    this, &this->input_title, STRING_ID_MULTIPLAYER_GAME_NAME, 40, 85, 420, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT,
+                    0, 1, 0
                 )) {
                 char str[256];
                 char* s = Regs->RegGetAscii(1, "Default Age Of Empires MP Gamename");
@@ -303,8 +301,7 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parentPanel) : TDialogPanel("Cr
                         this, inputGamename, str, 40, TEditPanel::FormatText, 40, 110, 420, 23, RGE_FONT_STANDARD, 1, 0
                     )) {
                     if (this->create_button(
-                            this, &this->okButton, STRING_ID_BUTTON_OK, 0, 60, 180, 180, 30,
-                            RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+                            this, &this->okButton, STRING_ID_BUTTON_OK, 0, 60, 180, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
                         )) {
                         if (this->create_button(
                                 this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 260, 180, 180, 30,
@@ -345,8 +342,7 @@ long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long
 
             rge_base_game->disable_input();
             Regs->RegSetAscii(
-                1, "Default Age Of Empires MP Gamename",
-                (unsigned char*)((void*)this->inputGamename->currentLine()),
+                1, "Default Age Of Empires MP Gamename", (unsigned char*) ((void*) this->inputGamename->currentLine()),
                 strlen(this->inputGamename->currentLine()) + 1
             );
             comm->SetGameTitle(this->inputGamename->currentLine());
@@ -358,9 +354,9 @@ long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long
 
             _GUID service_guid = comm->ServiceGUID;
             if (memcmp(&service_guid, &DPSPGUID_TCPIP, sizeof(_GUID)) == 0)
-                ((TRIBE_Game*)rge_base_game)->show_status_message(0x4C3, "scr3", 0xC385);
+                ((TRIBE_Game*) rge_base_game)->show_status_message(0x4C3, "scr3", 0xC385);
             else
-                ((TRIBE_Game*)rge_base_game)->show_status_message(0x4C2, "scr3", 0xC385);
+                ((TRIBE_Game*) rge_base_game)->show_status_message(0x4C2, "scr3", 0xC385);
             rge_base_game->draw_window();
             WinExec("data\\closedpw.exe", 0);
 
@@ -384,7 +380,7 @@ long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long
                 return 1;
             }
 
-            TEasy_Panel* parent = (TEasy_Panel*)this->parent_panel;
+            TEasy_Panel* parent = (TEasy_Panel*) this->parent_panel;
             panel_system.destroyPanel("Create Dialog");
             panel_system.setCurrentPanel("Join Screen", 0);
             panel_system.destroyPanel("Status Screen");

@@ -17,13 +17,7 @@ class TMessagePanel : public TPanel {
         ColoredChatMessage = 4,
         RightInfoMessage = 5
     };
-    enum MessageColor {
-        NormalColor = 0x32,
-        ErrorColor = 0x55,
-        DebugColor = 0x56,
-        RolloverColor = 0x70,
-        WhiteColor = 0xFF
-    };
+    enum MessageColor { NormalColor = 0x32, ErrorColor = 0x55, DebugColor = 0x56, RolloverColor = 0x70, WhiteColor = 0xFF };
     enum JustType { TopJust = 0, BottomJust = 1, LeftJust = 2, RightJust = 3, CenterJust = 4 };
 
     MessageType message_type;
@@ -77,8 +71,8 @@ class TMessagePanel : public TPanel {
         long font_wid_in, long font_hgt_in
     );
     void show_message2(
-        MessageType message_type_in, char* text_in, unsigned long color1, unsigned long color2, void* font_in,
-        long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in, TShape* Icon2_in, int Frame2_in
+        MessageType message_type_in, char* text_in, unsigned long color1, unsigned long color2, void* font_in, long font_wid_in,
+        long font_hgt_in, TShape* Icon1_in, int Frame1_in, TShape* Icon2_in, int Frame2_in
     );
     void remove_message();
 

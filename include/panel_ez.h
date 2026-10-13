@@ -91,12 +91,8 @@ class TEasy_Panel : public TPanel {
     virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long, long, long, int, int, int);
     virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long, long, long, long, int, int);
     virtual int create_text(TPanel*, TTextPanel**, int, long, long, long, long, long, int, int, int);
-    virtual int create_input(
-        TPanel*, TInputPanel**, char*, short, TInputPanel::FormatType, long, long, long, long, long
-    );
-    virtual int create_edit(
-        TPanel*, TEditPanel**, char*, short, TEditPanel::FormatType, long, long, long, long, long, int, int
-    );
+    virtual int create_input(TPanel*, TInputPanel**, char*, short, TInputPanel::FormatType, long, long, long, long, long);
+    virtual int create_edit(TPanel*, TEditPanel**, char*, short, TEditPanel::FormatType, long, long, long, long, long, int, int);
     virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long, long, long, long, long);
     virtual int create_list(TPanel*, TListPanel**, long, long, long, long, long);
     virtual int create_scrollbar(TPanel*, TScrollBarPanel**, TTextPanel*, long, long, long, long, long);
@@ -136,9 +132,7 @@ class TEasy_Panel : public TPanel {
     char* get_cursor();
     int get_use_bevels();
     int get_background_pos();
-    void get_bevel_colors(
-        unsigned char&, unsigned char&, unsigned char&, unsigned char&, unsigned char&, unsigned char&
-    );
+    void get_bevel_colors(unsigned char&, unsigned char&, unsigned char&, unsigned char&, unsigned char&, unsigned char&);
     void get_text_colors(unsigned long&, unsigned long&);
     void get_focus_colors(unsigned long&, unsigned long&);
     long get_shadow_amount();

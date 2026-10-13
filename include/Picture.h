@@ -26,8 +26,8 @@ class TPicture {
     long AlignedWidth();
     void Draw(TDrawArea* DrawArea, long DestX, long DestY, int Mirror, int Flip);
     long Tile(
-        TDrawArea* DrawArea, long DestX, long DestY, long DestWid, long DestHgt, long BlockWid, long BlockHgt,
-        long SrcX, long SrcY, long SrcWid, long SrcHgt
+        TDrawArea* DrawArea, long DestX, long DestY, long DestWid, long DestHgt, long BlockWid, long BlockHgt, long SrcX,
+        long SrcY, long SrcWid, long SrcHgt
     );
     unsigned char GetPixel(long x, long y, int Mirror, int Flip);
 };

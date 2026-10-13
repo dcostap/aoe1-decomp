@@ -16,9 +16,7 @@ extern "C" __declspec(dllimport) int __stdcall CompareStringA(
 RGE_Dialog_List::RGE_Dialog_List(char* name) : TListDialog(name) {
 }
 
-int RGE_Dialog_List::setup(
-    TScreenPanel* parent_screen, char* info_file_in, long info_id_in, int list_type_in, char* title_in
-) {
+int RGE_Dialog_List::setup(TScreenPanel* parent_screen, char* info_file_in, long info_id_in, int list_type_in, char* title_in) {
     this->list_type = list_type_in;
     this->list_info = 0;
     this->list_text = 0;
@@ -50,8 +48,8 @@ int RGE_Dialog_List::setup(
     }
 
     return this->TListDialog::setup(
-               parent_screen, info_file_in, info_id_in, 310, 400, 10, 10, 290, 25, title_in, 10, 45, 290, 305,
-               this->list_text, this->list_size, this->list_line, 10, 160, 360, 140, 30
+               parent_screen, info_file_in, info_id_in, 310, 400, 10, 10, 290, 25, title_in, 10, 45, 290, 305, this->list_text,
+               this->list_size, this->list_line, 10, 160, 360, 140, 30
            )
            != 0;
 }
@@ -100,8 +98,7 @@ int RGE_Dialog_List::create_object_list() {
         int object_index = 0;
         int count = end_i;
         do {
-            if (player->master_objects[object_index]
-                && player->master_objects[object_index]->hide_in_scenario_editor == 0)
+            if (player->master_objects[object_index] && player->master_objects[object_index]->hide_in_scenario_editor == 0)
                 this->list_size++;
             object_index++;
             count--;
@@ -123,13 +120,11 @@ int RGE_Dialog_List::create_object_list() {
     if (end_i > 0) {
         int object_index = 0;
         do {
-            if (player->master_objects[object_index]
-                && player->master_objects[object_index]->hide_in_scenario_editor == 0) {
+            if (player->master_objects[object_index] && player->master_objects[object_index]->hide_in_scenario_editor == 0) {
                 this->list_info[j].id = i;
                 if (player->master_objects[object_index]->string_id > 0) {
                     rge_base_game->get_string(
-                        RGE_STRING_TYPE_RESOURCE, player->master_objects[object_index]->string_id,
-                        this->list_info[j].text, 100
+                        RGE_STRING_TYPE_RESOURCE, player->master_objects[object_index]->string_id, this->list_info[j].text, 100
                     );
                 } else {
                     strcpy(this->list_info[j].text, player->master_objects[object_index]->name);

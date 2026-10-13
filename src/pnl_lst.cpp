@@ -403,14 +403,13 @@ void TListPanel::draw_highlight_bar() {
                     break;
                 case TEXT_PANEL_BEVEL_DOUBLE_REVERSED:
                     this->render_area->DrawBevel2(
-                        left, top, right, bottom, this->bevel_color6, this->bevel_color5, this->bevel_color2,
-                        this->bevel_color1
+                        left, top, right, bottom, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1
                     );
                     break;
                 case TEXT_PANEL_BEVEL_TRIPLE_REVERSED:
                     this->render_area->DrawBevel3(
-                        left, top, right, bottom, this->bevel_color6, this->bevel_color5, this->bevel_color4,
-                        this->bevel_color3, this->bevel_color2, this->bevel_color1
+                        left, top, right, bottom, this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3,
+                        this->bevel_color2, this->bevel_color1
                     );
                     break;
                 case TEXT_PANEL_BEVEL_SINGLE:
@@ -418,14 +417,13 @@ void TListPanel::draw_highlight_bar() {
                     break;
                 case TEXT_PANEL_BEVEL_DOUBLE:
                     this->render_area->DrawBevel2(
-                        left, top, right, bottom, this->bevel_color1, this->bevel_color2, this->bevel_color5,
-                        this->bevel_color6
+                        left, top, right, bottom, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6
                     );
                     break;
                 case TEXT_PANEL_BEVEL_TRIPLE:
                     this->render_area->DrawBevel3(
-                        left, top, right, bottom, this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                        this->bevel_color4, this->bevel_color5, this->bevel_color6
+                        left, top, right, bottom, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                        this->bevel_color5, this->bevel_color6
                     );
                     break;
             }

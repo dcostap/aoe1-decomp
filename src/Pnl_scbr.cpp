@@ -1,13 +1,11 @@
 #include "../include/Pnl_scbr.h"
 
-
 TScrollBarPanel::TScrollBarPanel() :
-    TPanel(), list_panel(0), list_len(0), one_step(0), page_step(0), list_num(0), button_pics(0), back_frame(0),
-    up_frame(0), down_frame(0), tab_frame(0), arrowSize(0), tabSize(0), tab_y(0), tab_min_y(0), tab_max_y(0),
-    tab_mouse_y(0), tab_x(0), tab_min_x(0), tab_max_x(0), tab_mouse_x(0), item_down(0), item_is_down(0), item_x(0),
-    item_y(0), item_mode(0), item_last_time(0), item_hold_interval(100), item_down_interval(250),
-    orientationValue(Vertical), bevel_type(1), bevel_color1(0), bevel_color2(0), bevel_color3(0), bevel_color4(0),
-    bevel_color5(0), bevel_color6(0) {
+    TPanel(), list_panel(0), list_len(0), one_step(0), page_step(0), list_num(0), button_pics(0), back_frame(0), up_frame(0),
+    down_frame(0), tab_frame(0), arrowSize(0), tabSize(0), tab_y(0), tab_min_y(0), tab_max_y(0), tab_mouse_y(0), tab_x(0),
+    tab_min_x(0), tab_max_x(0), tab_mouse_x(0), item_down(0), item_is_down(0), item_x(0), item_y(0), item_mode(0),
+    item_last_time(0), item_hold_interval(100), item_down_interval(250), orientationValue(Vertical), bevel_type(1),
+    bevel_color1(0), bevel_color2(0), bevel_color3(0), bevel_color4(0), bevel_color5(0), bevel_color6(0) {
     this->panel_type = 5;
     this->mouse_move_tolerance = 0;
     SetRect(&this->up_rect, 0, 0, 0, 0);
@@ -21,9 +19,9 @@ TScrollBarPanel::~TScrollBarPanel() {
 }
 
 long TScrollBarPanel::setup(
-    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
-    char* back_pic_in, char* up_pic_in, char* down_pic_in, char* tab_pic_in, long arrowSizeIn, long tabSizeIn,
-    TPanel* list_panel_in, long list_len_in, TScrollBarPanel::Orientation orientation
+    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, char* back_pic_in,
+    char* up_pic_in, char* down_pic_in, char* tab_pic_in, long arrowSizeIn, long tabSizeIn, TPanel* list_panel_in,
+    long list_len_in, TScrollBarPanel::Orientation orientation
 ) {
     long result;
 
@@ -136,8 +134,8 @@ void TScrollBarPanel::set_tab_pos(long list_num_in) {
 
     if (this->orientationValue == Horizontal) {
         if (this->list_len > 0) {
-            this->tab_x = ((this->tabSize / 2 + this->tab_max_x - this->tab_min_x) * list_num_in) / this->list_len
-                          + this->tab_min_x;
+            this->tab_x =
+                ((this->tabSize / 2 + this->tab_max_x - this->tab_min_x) * list_num_in) / this->list_len + this->tab_min_x;
         }
 
         if (this->tab_x < this->tab_min_x) {
@@ -150,8 +148,8 @@ void TScrollBarPanel::set_tab_pos(long list_num_in) {
             if (list_num_in == this->list_len - 1) {
                 this->tab_y = this->tab_max_y;
             } else {
-                this->tab_y = ((this->tabSize / 2 + this->tab_max_y - this->tab_min_y) * list_num_in) / this->list_len
-                              + this->tab_min_y;
+                this->tab_y =
+                    ((this->tabSize / 2 + this->tab_max_y - this->tab_min_y) * list_num_in) / this->list_len + this->tab_min_y;
             }
         }
 
@@ -627,8 +625,7 @@ void TScrollBarPanel::draw_button_pic(int frame, int down, tagRECT* rect) {
         x = (short) ((rect->right - rect->left + 1) / 2) - (short) ((x_min + (1 - y_max)) / 2);
         x -= (short) y_max;
         x += (short) rect->left;
-        y = (short) ((rect->bottom - rect->top + 1) / 2) - (short) ((y_min - x_max + 1) / 2) - (short) x_max
-            + (short) rect->top;
+        y = (short) ((rect->bottom - rect->top + 1) / 2) - (short) ((y_min - x_max + 1) / 2) - (short) x_max + (short) rect->top;
 
         if (down != 0) {
             ++x;

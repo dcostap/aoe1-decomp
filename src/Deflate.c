@@ -888,8 +888,7 @@ static void huff_down_heap(int* heap, int* freq, int size, int k) {
     v = heap[k];
     j = k * 2;
     while (j <= size) {
-        if (j < size
-            && (freq[heap[j + 1]] < freq[heap[j]] || (freq[heap[j + 1]] == freq[heap[j]] && heap[j + 1] > heap[j])))
+        if (j < size && (freq[heap[j + 1]] < freq[heap[j]] || (freq[heap[j + 1]] == freq[heap[j]] && heap[j + 1] > heap[j])))
             j++;
         if (freq[v] < freq[heap[j]] || (freq[heap[j]] == freq[v] && heap[j] < v))
             break;
@@ -1236,8 +1235,7 @@ static void find_match(unsigned int pos) {
             match_length = 0x102;
             return;
         }
-        length = (((unsigned char*) scan - (unsigned char*) start) & ~1)
-                 + (*(unsigned char*) match == *(unsigned char*) scan);
+        length = (((unsigned char*) scan - (unsigned char*) start) & ~1) + (*(unsigned char*) match == *(unsigned char*) scan);
         if (length > match_length) {
             last = *(unsigned short*) (window + pos + length - 1);
             end = window + length - 1;

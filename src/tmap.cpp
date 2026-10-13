@@ -231,9 +231,7 @@ unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long brush_size, unsig
     return 1;
 }
 
-unsigned char TRIBE_Map::do_terrain_brush_stroke(
-    long x1, long y1, long x2, long y2, long brush_size, unsigned char terrain_id
-) {
+unsigned char TRIBE_Map::do_terrain_brush_stroke(long x1, long y1, long x2, long y2, long brush_size, unsigned char terrain_id) {
     RGE_Map::do_terrain_brush_stroke(x1, y1, x2, y2, brush_size, terrain_id);
 
     if (x1 < x2) {
@@ -322,8 +320,7 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1][x1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1
-                && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
+            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1 && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
                 return node->node;
             node = node->next;
         }
@@ -331,8 +328,7 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1 + 1][x1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1
-                && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
+            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1 && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
                 return node->node;
             node = node->next;
         }
@@ -340,8 +336,7 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1][x1 + 1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1
-                && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
+            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1 && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
                 return node->node;
             node = node->next;
         }
@@ -349,8 +344,7 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long x, long y) {
 
     if (RGE_Object_Node* node = this->map_row_offset[y1 + 1][x1 + 1].objects.list) {
         while (node) {
-            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1
-                && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
+            if (node->node->master_obj->id >= MASTER_OBJECT_CLIFFS_1 && node->node->master_obj->id <= MASTER_OBJECT_CLIFFS_10)
                 return node->node;
             node = node->next;
         }
@@ -418,7 +412,7 @@ RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y, TRIBE_Cliff_Info in
         if (new_cliff != 0)
             new_cliff->facet = (unsigned char) facet;
 
-        ((TRIBE_World*)this->game_world)->check_destructables(0, (short) id, world_x, world_y, 1);
+        ((TRIBE_World*) this->game_world)->check_destructables(0, (short) id, world_x, world_y, 1);
     } else {
         new_cliff = 0;
     }

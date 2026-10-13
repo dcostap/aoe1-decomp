@@ -61,9 +61,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel) : TDialo
             this, &this->title, STRING_ID_GAME_SETTINGS_TITLE, 103, 10, 395, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 1, 0
         ))
         return;
-    if (!this->create_text(
-            this, &this->speedTitle[0], STRING_ID_GAME_SPEED_TITLE, 20, 50, 110, 30, RGE_FONT_STANDARD, 0, 1, 0
-        ))
+    if (!this->create_text(this, &this->speedTitle[0], STRING_ID_GAME_SPEED_TITLE, 20, 50, 110, 30, RGE_FONT_STANDARD, 0, 1, 0))
         return;
 
     for (i = 0; i < 3; ++i) {
@@ -107,17 +105,11 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel) : TDialo
         this->speedButton[0]->set_radio_button();
     }
 
-    if (!this->create_text(
-            this, this->musicTitle, STRING_ID_MUSIC_VOLUME_TITLE, 165, 45, 110, 40, RGE_FONT_STANDARD, 0, 1, 1
-        ))
+    if (!this->create_text(this, this->musicTitle, STRING_ID_MUSIC_VOLUME_TITLE, 165, 45, 110, 40, RGE_FONT_STANDARD, 0, 1, 1))
         return;
-    if (!this->create_text(
-            this, &this->musicTitle[1], STRING_ID_AUDIO_VOLUME_HIGH, 190, 85, 110, 20, RGE_FONT_STANDARD, 0, 1, 0
-        ))
+    if (!this->create_text(this, &this->musicTitle[1], STRING_ID_AUDIO_VOLUME_HIGH, 190, 85, 110, 20, RGE_FONT_STANDARD, 0, 1, 0))
         return;
-    if (!this->create_text(
-            this, &this->musicTitle[2], STRING_ID_AUDIO_VOLUME_OFF, 190, 165, 110, 20, RGE_FONT_STANDARD, 0, 1, 0
-        ))
+    if (!this->create_text(this, &this->musicTitle[2], STRING_ID_AUDIO_VOLUME_OFF, 190, 165, 110, 20, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->musicSlider, 100, 10, 20, 170, 85, 20, 100))
         return;
@@ -130,17 +122,11 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel) : TDialo
     this->musicSlider->set_tab_pos(this->musicVolume);
     this->newMusicVolume = this->musicVolume;
 
-    if (!this->create_text(
-            this, this->soundTitle, STRING_ID_SOUND_VOLUME_TITLE, 305, 45, 110, 40, RGE_FONT_STANDARD, 0, 1, 1
-        ))
+    if (!this->create_text(this, this->soundTitle, STRING_ID_SOUND_VOLUME_TITLE, 305, 45, 110, 40, RGE_FONT_STANDARD, 0, 1, 1))
         return;
-    if (!this->create_text(
-            this, &this->soundTitle[1], STRING_ID_AUDIO_VOLUME_HIGH, 330, 85, 110, 20, RGE_FONT_STANDARD, 0, 1, 0
-        ))
+    if (!this->create_text(this, &this->soundTitle[1], STRING_ID_AUDIO_VOLUME_HIGH, 330, 85, 110, 20, RGE_FONT_STANDARD, 0, 1, 0))
         return;
-    if (!this->create_text(
-            this, &this->soundTitle[2], STRING_ID_AUDIO_VOLUME_OFF, 330, 165, 110, 20, RGE_FONT_STANDARD, 0, 1, 0
-        ))
+    if (!this->create_text(this, &this->soundTitle[2], STRING_ID_AUDIO_VOLUME_OFF, 330, 165, 110, 20, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->soundSlider, 100, 10, 20, 310, 85, 20, 100))
         return;
@@ -171,9 +157,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel) : TDialo
     this->scrollSpeed = rge_base_game->prog_info->mouse_scroll_interval;
     this->scrollSpeedSlider->set_tab_pos(this->scrollSpeed - 10);
 
-    if (!this->create_text(
-            this, this->sizeTitle, STRING_ID_SCREEN_SIZE_TITLE, 20, 190, 200, 30, RGE_FONT_STANDARD, 0, 1, 0
-        ))
+    if (!this->create_text(this, this->sizeTitle, STRING_ID_SCREEN_SIZE_TITLE, 20, 190, 200, 30, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     for (i = 0; i < 3; ++i) {
         switch (i) {
@@ -223,8 +207,8 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel) : TDialo
     for (i = 0; i < 2; ++i) {
         if (i == 0) {
             if (!this->create_text(
-                    this, &this->mouseTitle[i + 1], STRING_ID_MOUSE_INTERFACE_TWO_BUTTONS, 205, 225, 120, 30,
-                    RGE_FONT_STANDARD, 0, 1, 0
+                    this, &this->mouseTitle[i + 1], STRING_ID_MOUSE_INTERFACE_TWO_BUTTONS, 205, 225, 120, 30, RGE_FONT_STANDARD,
+                    0, 1, 0
                 ))
                 return;
         } else {
@@ -251,14 +235,13 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel) : TDialo
     for (i = 0; i < 2; ++i) {
         if (i == 0) {
             if (!this->create_text(
-                    this, &this->rolloverTitle[i + 1], STRING_ID_ROLLOVER_HELP_ON, 365, 225, 120, 30, RGE_FONT_STANDARD,
-                    0, 1, 0
+                    this, &this->rolloverTitle[i + 1], STRING_ID_ROLLOVER_HELP_ON, 365, 225, 120, 30, RGE_FONT_STANDARD, 0, 1, 0
                 ))
                 return;
         } else {
             if (!this->create_text(
-                    this, &this->rolloverTitle[i + 1], STRING_ID_ROLLOVER_HELP_OFF, 365, i * 35 + 225, 120, 30,
-                    RGE_FONT_STANDARD, 0, 1, 0
+                    this, &this->rolloverTitle[i + 1], STRING_ID_ROLLOVER_HELP_OFF, 365, i * 35 + 225, 120, 30, RGE_FONT_STANDARD,
+                    0, 1, 0
                 ))
                 return;
         }
@@ -481,13 +464,11 @@ long TribeConfigDialog::action(TPanel* fromPanel, long actionIn, unsigned long a
                     if (allow_user_commands != 0 && new_speed != 0.0f && new_speed != this->gameSpeed) {
                         if (rge_base_game->multiplayerGame() != 0) {
                             char msg[256];
-                            sprintf(
-                                msg, this->get_string(STRING_ID_GAME_SPEED_CHANGED), comm->GetPlayerName(comm->WhoAmI())
-                            );
+                            sprintf(msg, this->get_string(STRING_ID_GAME_SPEED_CHANGED), comm->GetPlayerName(comm->WhoAmI()));
                             comm->SendChatMsgAll(msg);
                         }
 
-                        ((TRIBE_Command*)rge_base_game->world->commands)->command_game_speed(new_speed);
+                        ((TRIBE_Command*) rge_base_game->world->commands)->command_game_speed(new_speed);
                         if (rge_base_game->singlePlayerGame() != 0)
                             rge_base_game->set_game_speed(new_speed);
                     }

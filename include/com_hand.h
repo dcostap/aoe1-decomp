@@ -347,8 +347,7 @@ class TCommunications_Handler {
 
   protected:
     int AddCommand(
-        unsigned long ExecuteOnTurn, void* command, unsigned long nBytes, int PFrom, unsigned char Sequence,
-        int ControlCommand
+        unsigned long ExecuteOnTurn, void* command, unsigned long nBytes, int PFrom, unsigned char Sequence, int ControlCommand
     );
 
   public:
@@ -373,8 +372,7 @@ class TCommunications_Handler {
   protected:
     long SendPlayerName();
     void LogRXMsg(
-        unsigned int Serialno, unsigned int fromPlayer, unsigned long ExecuteOnTurn, unsigned char Command,
-        unsigned char Sequence
+        unsigned int Serialno, unsigned int fromPlayer, unsigned long ExecuteOnTurn, unsigned char Command, unsigned char Sequence
     );
 
   public:
@@ -393,9 +391,8 @@ class TCommunications_Handler {
 
   protected:
     int EvaluatePlayerMessage(
-        unsigned long len, unsigned int fromPlayer, unsigned long ExecuteOnTurn, unsigned char Command,
-        unsigned char Sequence, char* Content, unsigned int ContentSize, unsigned long dcoFromID,
-        unsigned long dcoReceiveID
+        unsigned long len, unsigned int fromPlayer, unsigned long ExecuteOnTurn, unsigned char Command, unsigned char Sequence,
+        char* Content, unsigned int ContentSize, unsigned long dcoFromID, unsigned long dcoReceiveID
     );
     void SetPlayerStopTurn(unsigned int player, unsigned long Turn);
 
@@ -498,12 +495,10 @@ class TCommunications_Handler {
     void SetServiceGUID(_GUID inGuid);
     void SetSessionGUID(_GUID inGuid);
     void UpdatePlayer(unsigned int PlayerNo, int Notify);
-    int SetMyReadiness(
-        int Ready, ulong User1, ulong User2, ulong User3, ulong User4, ulong User5, ulong User6, ulong User7
-    );
+    int SetMyReadiness(int Ready, ulong User1, ulong User2, ulong User3, ulong User4, ulong User5, ulong User6, ulong User7);
     int GetClientReadiness(
-        unsigned int PlayerNo, int* Ready, unsigned long* User1, unsigned long* User2, unsigned long* User3,
-        unsigned long* User4, unsigned long* User5, unsigned long* User6, unsigned long* User7
+        unsigned int PlayerNo, int* Ready, unsigned long* User1, unsigned long* User2, unsigned long* User3, unsigned long* User4,
+        unsigned long* User5, unsigned long* User6, unsigned long* User7
     );
     int AllPlayersReady();
 

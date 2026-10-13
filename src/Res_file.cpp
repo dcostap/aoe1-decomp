@@ -48,9 +48,7 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
 
         mapped_file_data = (unsigned char*) MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, 0);
         if (mapped_file_data == 0) {
-            MessageBoxA(
-                0, "Error: Open_Mapped_ResFile, Could not map file to addr.", "RESOURCE ERROR", MB_ICONEXCLAMATION
-            );
+            MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file to addr.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
         CloseHandle(mapping);

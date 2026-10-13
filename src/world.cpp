@@ -58,9 +58,9 @@ void __cdecl debug_srand(char*, int, unsigned int);
 unsigned long __cdecl debug_timeGetTime(char*, int);
 
 RGE_Game_World::RGE_Game_World() :
-    objectsValue(0), numberObjectsValue(0), maxNumberObjectsValue(10000), negativeObjectsValue(0),
-    numberNegativeObjectsValue(0), maxNumberNegativeObjectsValue(1000), maximumComputerPlayerUpdateTime(2),
-    availableComputerPlayerUpdateTime(2), currentUpdateComputerPlayer(-1), difficultyLevelValue(-1) {
+    objectsValue(0), numberObjectsValue(0), maxNumberObjectsValue(10000), negativeObjectsValue(0), numberNegativeObjectsValue(0),
+    maxNumberNegativeObjectsValue(1000), maximumComputerPlayerUpdateTime(2), availableComputerPlayerUpdateTime(2),
+    currentUpdateComputerPlayer(-1), difficultyLevelValue(-1) {
     world_update_counter = 0;
     objectsValue = new RGE_Static_Object*[maxNumberObjectsValue];
     negativeObjectsValue = new RGE_Static_Object*[maxNumberNegativeObjectsValue];
@@ -459,9 +459,7 @@ void RGE_Game_World::data_load_map(
     m->load_terrain_obj_types(terr_obj_file);
 }
 
-void RGE_Game_World::data_load_random_map(
-    char* rmm_map_file, char* rmm_land_file, char* rmm_terr_file, char* rmm_obj_file
-) {
+void RGE_Game_World::data_load_random_map(char* rmm_map_file, char* rmm_land_file, char* rmm_terr_file, char* rmm_obj_file) {
     this->map->load_random_map(rmm_map_file, rmm_land_file, rmm_terr_file, rmm_obj_file);
 }
 
@@ -487,9 +485,9 @@ unsigned char RGE_Game_World::data_load_world(FILE* infile) {
     char rmm_map_file[23];
 
     fscanf(
-        infile, world_data_format, terrain_table_file, color_file, sound_file, border_file, overlay_file, terrain_file,
-        map_file, sprite_file, player_file, obj_file, effects_file, terr_obj_file, rmm_map_file, rmm_land_file,
-        rmm_terr_file, rmm_object_file, &tile_height, &elev_height, &tile_width
+        infile, world_data_format, terrain_table_file, color_file, sound_file, border_file, overlay_file, terrain_file, map_file,
+        sprite_file, player_file, obj_file, effects_file, terr_obj_file, rmm_map_file, rmm_land_file, rmm_terr_file,
+        rmm_object_file, &tile_height, &elev_height, &tile_width
     );
 
     this->data_load_terrain_tables(terrain_table_file);
@@ -500,8 +498,7 @@ unsigned char RGE_Game_World::data_load_world(FILE* infile) {
     this->data_load_objects(obj_file);
     this->data_load_effects(effects_file);
     this->data_load_map(
-        border_file, overlay_file, terrain_file, map_file, tile_height, elev_height, tile_width, this->sounds,
-        terr_obj_file
+        border_file, overlay_file, terrain_file, map_file, tile_height, elev_height, tile_width, this->sounds, terr_obj_file
     );
     this->data_load_random_map(rmm_map_file, rmm_land_file, rmm_terr_file, rmm_object_file);
     return 1;
@@ -1392,8 +1389,7 @@ unsigned char RGE_Game_World::check_game_state(void) {
                 if (candidate <= 0 || candidate_state == 0) {
                     candidate = i;
                     candidate_state = 1;
-                } else if (this->players[i]->allied_victory == 0
-                           || this->players[candidate]->relation(i) != RGE_RELATION_ALLY
+                } else if (this->players[i]->allied_victory == 0 || this->players[candidate]->relation(i) != RGE_RELATION_ALLY
                            || this->players[i]->relation(candidate) != RGE_RELATION_ALLY) {
                     candidate_state = -1;
                 }
@@ -1618,7 +1614,7 @@ byte RGE_Game_World::save_scenario(char* filename) {
                     rge_write(fd, &o->node->object_state, 1);
                     if (o->node->master_obj->master_type > RGE_MASTER_TYPE_MOVING
                         && o->node->master_obj->master_type < TRIBE_MASTER_TYPE_TREE) {
-                        obj_angle = ((RGE_Moving_Object*)o->node)->angle;
+                        obj_angle = ((RGE_Moving_Object*) o->node)->angle;
                     } else {
                         obj_angle = (float) o->node->facet;
                     }
@@ -1638,7 +1634,7 @@ byte RGE_Game_World::save_scenario(char* filename) {
                     rge_write(fd, &o->node->object_state, 1);
                     if (o->node->master_obj->master_type > RGE_MASTER_TYPE_MOVING
                         && o->node->master_obj->master_type < TRIBE_MASTER_TYPE_TREE) {
-                        obj_angle = ((RGE_Moving_Object*)o->node)->angle;
+                        obj_angle = ((RGE_Moving_Object*) o->node)->angle;
                     } else {
                         obj_angle = (float) o->node->facet;
                     }
@@ -2064,9 +2060,7 @@ void RGE_Game_World::load_scenario2(int infile, RGE_Player_Info& info) {
                     if (mapped >= 0 && this->players[mapped] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[mapped]->make_scenario_obj(
-                            world_z, world_y, world_x, master_id, obj_state, obj_angle
-                        );
+                        this->players[mapped]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     j++;
@@ -2195,9 +2189,7 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info& info) {
                     if (pid >= 0 && this->players[pid] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[pid]->make_scenario_obj(
-                            world_z, world_y, world_x, master_id, obj_state, obj_angle
-                        );
+                        this->players[pid]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     j++;
@@ -2332,9 +2324,7 @@ void RGE_Game_World::load_scenario4(int infile, RGE_Player_Info& info) {
                     if (player_id >= 0 && this->players[player_id] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[player_id]->make_scenario_obj(
-                            world_x, world_y, world_z, master_id, obj_state, obj_angle
-                        );
+                        this->players[player_id]->make_scenario_obj(world_x, world_y, world_z, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
@@ -2455,9 +2445,7 @@ void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info& info) {
                     if (player_id >= 0 && this->players[player_id] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[player_id]->make_scenario_obj(
-                            world_x, world_y, world_z, master_id, obj_state, obj_angle
-                        );
+                        this->players[player_id]->make_scenario_obj(world_x, world_y, world_z, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
@@ -2565,9 +2553,7 @@ void RGE_Game_World::load_scenario6(int infile, RGE_Player_Info& info) {
                 if (player_id >= 0 && this->players[player_id] != 0) {
                     this->scenario_object_flag = 1;
                     this->scenario_object_id = obj_id;
-                    this->players[player_id]->make_scenario_obj(
-                        world_z, world_y, world_x, obj_angle, player_type, object_value
-                    );
+                    this->players[player_id]->make_scenario_obj(world_z, world_y, world_x, obj_angle, player_type, object_value);
                     this->scenario_object_flag = 0;
                 }
             }
@@ -2588,8 +2574,8 @@ void RGE_Game_World::load_scenario6(int infile, RGE_Player_Info& info) {
         if (this->players[index] && player_id_hash[index] > -1) {
             int k = index - 1;
             this->players[player_id_hash[index]]->loadAIInformation(
-                this->scenario->Get_BuildList(k, 1), this->scenario->Get_CityPlan(k, 1),
-                this->scenario->Get_player_AI(k, 1), this->scenario->GetPlayerPosture(k), -1
+                this->scenario->Get_BuildList(k, 1), this->scenario->Get_CityPlan(k, 1), this->scenario->Get_player_AI(k, 1),
+                this->scenario->GetPlayerPosture(k), -1
             );
         }
 }
@@ -2686,9 +2672,7 @@ void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info& info) {
                     if (player_id >= 0 && this->players[player_id] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[player_id]->make_scenario_obj(
-                            world_x, world_y, world_z, master_id, obj_state, obj_angle
-                        );
+                        this->players[player_id]->make_scenario_obj(world_x, world_y, world_z, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
@@ -2814,9 +2798,7 @@ void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info& info) {
                     if (*map >= 0 && this->players[*map] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[*map]->make_scenario_obj(
-                            world_z, world_y, world_x, master_id, obj_state, obj_angle
-                        );
+                        this->players[*map]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
@@ -2923,8 +2905,7 @@ int RGE_Game_World::objectGroupOnTile(int ownerID, int groupID, int x, int y, in
                             if (object == 0) {
                                 break;
                             }
-                            if ((ownerID == -1 || object->owner->id == ownerID)
-                                && object->master_obj->object_group == groupID) {
+                            if ((ownerID == -1 || object->owner->id == ownerID) && object->master_obj->object_group == groupID) {
                                 return object->id;
                             }
                             node = node->next;
@@ -3294,10 +3275,7 @@ void RGE_Game_World::update_mutual_allies() {
 
     for (i = 0; i < player_num; i++) {
         fprintf(DVlogf, s_player, i);
-        fprintf(
-            DVlogf, s_masks, players[i]->mutualExploredMask, players[i]->mutualVisibleMask,
-            players[i]->nonMutualVisibleMask
-        );
+        fprintf(DVlogf, s_masks, players[i]->mutualExploredMask, players[i]->mutualVisibleMask, players[i]->nonMutualVisibleMask);
         fprintf(DVlogf, s_player_flags, players[i]->allied_LOS_Enable, players[i]->allied_victory);
         fprintf(DVlogf, s_diplomacy);
         for (j = 0; j < 9; j++) {

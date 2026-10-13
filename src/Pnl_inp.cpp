@@ -6,9 +6,8 @@ static char pnl_inp_draw[] = "pnl_inp::draw";
 extern void operator delete(void*);
 
 TInputPanel::TInputPanel() :
-    TTextPanel(), caret_color(0), caret_interval(GetCaretBlinkTime()), caret_last_time(0), draw_caret(1),
-    overLengthSound(0), input_buffer(0), input_buffer1(0), input_buffer2(0), input_len(0), max_len(0), insert_mode(1),
-    input_pos(0) {
+    TTextPanel(), caret_color(0), caret_interval(GetCaretBlinkTime()), caret_last_time(0), draw_caret(1), overLengthSound(0),
+    input_buffer(0), input_buffer1(0), input_buffer2(0), input_len(0), max_len(0), insert_mode(1), input_pos(0) {
     this->handle_mouse_input = 1;
     this->bevel_type = 1;
     this->panel_type = 7;
@@ -30,9 +29,9 @@ TInputPanel::~TInputPanel() {
 
 long TInputPanel::setup(
     TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, void* font_in,
-    long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in, unsigned char back_color_in,
-    int outline_in, unsigned char outline_color_in, unsigned char caret_color_in, short max_len_in,
-    TDigital* overLengthSoundIn, char* text_in, FormatType format_type_in
+    long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in, unsigned char back_color_in, int outline_in,
+    unsigned char outline_color_in, unsigned char caret_color_in, short max_len_in, TDigital* overLengthSoundIn, char* text_in,
+    FormatType format_type_in
 ) {
     long setup_max = (format_type_in == FormatMultiLine) ? 0 : max_len_in;
     if (TTextPanel::setup(
@@ -140,8 +139,8 @@ long TInputPanel::char_action(long key, short count) {
                     if (this->format_type == FormatFile && _mbschr((const unsigned char*) this->input_buffer, key) == 0)
                         break;
                 }
-                if (key == '.' || key == '\\' || key == ':' || key == '/' || key == '"' || key == '*' || key == '?'
-                    || key == '>' || key == '<' || key == '|') {
+                if (key == '.' || key == '\\' || key == ':' || key == '/' || key == '"' || key == '*' || key == '?' || key == '>'
+                    || key == '<' || key == '|') {
                     if (this->overLengthSound != 0)
                         this->overLengthSound->play();
                     else
@@ -150,8 +149,8 @@ long TInputPanel::char_action(long key, short count) {
                 }
                 break;
             case FormatPath:
-                if ((key == ':' && this->input_len != 1) || key == '/' || key == '"' || key == '*' || key == '?'
-                    || key == '>' || key == '<' || key == '|') {
+                if ((key == ':' && this->input_len != 1) || key == '/' || key == '"' || key == '*' || key == '?' || key == '>'
+                    || key == '<' || key == '|') {
                     if (this->overLengthSound != 0)
                         this->overLengthSound->play();
                     else
@@ -598,9 +597,7 @@ int TInputPanel::paste() {
     dst_tail = (char*) _mbsninc((const unsigned char*) dst_tail, (int) this->input_pos);
     _mbsncpy((unsigned char*) dst_tail, (const unsigned char*) new_str, len);
     dst_tail = (char*) _mbsninc((const unsigned char*) dst_tail, len);
-    _mbsncpy(
-        (unsigned char*) dst_tail, (const unsigned char*) old_tail, ((int) this->input_len - (int) this->input_pos) + 1
-    );
+    _mbsncpy((unsigned char*) dst_tail, (const unsigned char*) old_tail, ((int) this->input_len - (int) this->input_pos) + 1);
     this->input_len += (short) len;
     this->input_pos += (short) len;
     this->reformat();

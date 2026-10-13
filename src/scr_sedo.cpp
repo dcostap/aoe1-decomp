@@ -28,11 +28,11 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel("Scenario Editor O
     deleteButton = 0;
 
     tabList[0] = panel_system.currentPanel();
-    strcpy(info_file, ((TEasy_Panel*)tabList[0])->get_info_file());
+    strcpy(info_file, ((TEasy_Panel*) tabList[0])->get_info_file());
 
     TDrawArea* draw_area = rge_base_game->draw_area;
 
-    if (!setup(draw_area, info_file, ((TEasy_Panel*)tabList[0])->get_info_id(), 1)) {
+    if (!setup(draw_area, info_file, ((TEasy_Panel*) tabList[0])->get_info_id(), 1)) {
         error_code = 1;
         return;
     }
@@ -40,9 +40,7 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel("Scenario Editor O
     setup_shadow_area(0);
     set_ideal_size(640, 480);
 
-    if (!create_text(
-            this, &title, STRING_ID_SCENARIO_OPEN_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
-        ))
+    if (!create_text(this, &title, STRING_ID_SCENARIO_OPEN_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0))
         return;
 
     if (!create_list(this, &list, 20, 70, 600, 340, RGE_FONT_STANDARD))
@@ -54,14 +52,10 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel("Scenario Editor O
     if (!create_button(this, &okButton, STRING_ID_BUTTON_OK, 0, 30, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
         return;
 
-    if (!create_button(
-            this, &deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-        ))
+    if (!create_button(this, &deleteButton, STRING_ID_BUTTON_DELETE, 0, 230, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
         return;
 
-    if (!create_button(
-            this, &cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-        ))
+    if (!create_button(this, &cancelButton, STRING_ID_BUTTON_CANCEL, 0, 430, 440, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
         return;
 
     TButtonPanel* cancel = cancelButton;
@@ -194,7 +188,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
 
                     if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                         sprintf(fileName, "%s.scn", list->currentLine());
-                        ((TRIBE_Game*)rge_base_game)->start_scenario_editor(fileName, 0);
+                        ((TRIBE_Game*) rge_base_game)->start_scenario_editor(fileName, 0);
                         return 1;
                     } else {
                         prog_info = rge_base_game->prog_info;
@@ -203,7 +197,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
                         sprintf(fileName, "%s%s.scx", scenario_dir, line);
                         if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                             sprintf(fileName, "%s.scx", list->currentLine());
-                            ((TRIBE_Game*)rge_base_game)->start_scenario_editor(fileName, 0);
+                            ((TRIBE_Game*) rge_base_game)->start_scenario_editor(fileName, 0);
                             return 1;
                         } else {
                             popupOKDialog(STRING_ID_ERROR_CANNOT_LOAD_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);

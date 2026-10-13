@@ -54,8 +54,8 @@ RGE_Diamond_Map::~RGE_Diamond_Map() {
 }
 
 long RGE_Diamond_Map::setup(
-    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
-    unsigned char color_in, int all_visible_in, TDrawArea* save_area_in
+    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, unsigned char color_in,
+    int all_visible_in, TDrawArea* save_area_in
 ) {
     this->save_area = save_area_in;
     this->own_save_area = 0;
@@ -664,8 +664,7 @@ void RGE_Diamond_Map::draw_objects() {
 
             for (node = player->objects->list; node != 0; node = node->next) {
                 object = node->node;
-                if (object != 0 && (object->selected & 1) == 0
-                    && (object->owner != this->player || object->underAttack() == 0)) {
+                if (object != 0 && (object->selected & 1) == 0 && (object->owner != this->player || object->underAttack() == 0)) {
                     this->draw_visible_object(object, color1, color2);
                 }
             }
@@ -736,7 +735,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* game_obj, unsigned 
         return;
 
     if (game_obj->type == 0x19) {
-        RGE_Doppleganger_Object* doppleganger = (RGE_Doppleganger_Object*)game_obj;
+        RGE_Doppleganger_Object* doppleganger = (RGE_Doppleganger_Object*) game_obj;
 
         if (visible == 0x0F)
             return;
@@ -809,9 +808,7 @@ void RGE_Diamond_Map::draw_object(short col, short row, unsigned char color, sho
     }
 }
 
-void RGE_Diamond_Map::draw_clipped_horz_line(
-    short x, short y, short len, unsigned char color, RGE_Map_Image_Line* image_line
-) {
+void RGE_Diamond_Map::draw_clipped_horz_line(short x, short y, short len, unsigned char color, RGE_Map_Image_Line* image_line) {
     short start_x = image_line->start_x;
     int line_start = this->pnl_x + (int) start_x;
 

@@ -184,8 +184,8 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     fscanf(
         input, "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f", &in_id, &infile, &armor_num, &weapon_num,
         &defense_terrain_bonus, &weapon_range, &area_effect_range, &speed_of_attack, &missile_id, &base_hit_chance,
-        &temp_break_off_combat, &temp_fire_missile_at_frame, &weapon_offset_x, &weapon_offset_y, &weapon_offset_z,
-        &sounds, &minimum_weapon_range
+        &temp_break_off_combat, &temp_fire_missile_at_frame, &weapon_offset_x, &weapon_offset_y, &weapon_offset_z, &sounds,
+        &minimum_weapon_range
     );
 
     armor_count_value = &armor_num;

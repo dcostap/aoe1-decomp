@@ -22,8 +22,8 @@ class TRIBE_Panel_Button : public TButtonPanel {
 
   public:
     TRIBE_Panel_Button(
-        TDrawArea* render_area_in, TPanel* parent_panel_in, TDigital* sound_in, void* font_in, long font_wid_in,
-        long font_hgt_in, TShape* border_pic_in
+        TDrawArea* render_area_in, TPanel* parent_panel_in, TDigital* sound_in, void* font_in, long font_wid_in, long font_hgt_in,
+        TShape* border_pic_in
     );
     virtual void draw();
     void set_text_msg(char* text_msg_in);

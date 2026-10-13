@@ -37,7 +37,7 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj_in, short id
 //! Building death deletes this action through delete_list(), with no stop() call.
 //! ~TRIBE_Action_Make_Tech cancels its research. This one leaves the item stuck.
 TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {
-    TRIBE_Player* player = (TRIBE_Player*)this->obj->owner;
+    TRIBE_Player* player = (TRIBE_Player*) this->obj->owner;
     player->logMessage(
         "WT: %ld: MkObjDestructor: obj_id=%d, obj->id=%d, unique_id=%d", player->world->world_time, (int) this->obj_id,
         (int) this->obj->id, this->unique_id
@@ -57,31 +57,30 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar first_time) {
         return;
 
     if (this->obj_id < 0) {
-        ((TRIBE_Player*)this->obj->owner)
+        ((TRIBE_Player*) this->obj->owner)
             ->logMessage(
                 "Canceling Train #1a:  obj_id=%d, obj->id=%d, uniqueID=%d.", (int) this->obj_id, (int) this->obj->id,
                 this->unique_id
             );
     } else {
-        if (((TRIBE_Player*)this->obj->owner)->master_objects[this->obj_id] == 0) {
-            ((TRIBE_Player*)this->obj->owner)
+        if (((TRIBE_Player*) this->obj->owner)->master_objects[this->obj_id] == 0) {
+            ((TRIBE_Player*) this->obj->owner)
                 ->logMessage(
-                    "Canceling Train #1b:  obj_id=%d, obj->id=%d, uniqueID=%d.", (int) this->obj_id,
-                    (int) this->obj->id, this->unique_id
+                    "Canceling Train #1b:  obj_id=%d, obj->id=%d, uniqueID=%d.", (int) this->obj_id, (int) this->obj->id,
+                    this->unique_id
                 );
         } else {
             if (!this->pre_paid) {
-                if (((TRIBE_Player*)this->obj->owner)->pay_obj_cost(this->obj_id, 1.0f, 0) == 0) {
-                    ((TRIBE_Player*)this->obj->owner)
+                if (((TRIBE_Player*) this->obj->owner)->pay_obj_cost(this->obj_id, 1.0f, 0) == 0) {
+                    ((TRIBE_Player*) this->obj->owner)
                         ->logMessage(
-                            "Canceling Train #1c:  obj_id=%d, obj->id=%d, uniqueID=%d.", (int) this->obj_id,
-                            (int) this->obj->id, this->unique_id
+                            "Canceling Train #1c:  obj_id=%d, obj->id=%d, uniqueID=%d.", (int) this->obj_id, (int) this->obj->id,
+                            this->unique_id
                         );
-                    ((TRIBE_Player*)this->obj->owner)
-                        ->cancelTrain(0, (int) this->obj_id, (int) this->obj->id, this->unique_id);
+                    ((TRIBE_Player*) this->obj->owner)->cancelTrain(0, (int) this->obj_id, (int) this->obj->id, this->unique_id);
                     this->obj->notify(
-                        (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED,
-                        (long) UNIT_AI_ACTION_TRAIN, (long) 0, (long) 0
+                        (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long) UNIT_AI_ACTION_TRAIN,
+                        (long) 0, (long) 0
                     );
                     this->set_state(1);
                     return;
@@ -92,8 +91,7 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar first_time) {
         }
     }
 
-    ((TRIBE_Player*)this->obj->owner)
-        ->cancelTrain(0, (int) this->obj_id, (int) this->obj->id, this->unique_id);
+    ((TRIBE_Player*) this->obj->owner)->cancelTrain(0, (int) this->obj_id, (int) this->obj->id, this->unique_id);
 }
 
 void TRIBE_Action_Make_Obj::set_state(uchar new_state) {
@@ -109,45 +107,40 @@ unsigned char TRIBE_Action_Make_Obj::update() {
             if (rge_base_game->quick_build != 0) {
                 this->work_done = 1000.0f;
             } else {
-                RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->obj->master_obj;
-                this->work_done =
-                    master->work_rate * this->obj->owner->world->world_time_delta_seconds + this->work_done;
+                RGE_Master_Action_Object* master = (RGE_Master_Action_Object*) this->obj->master_obj;
+                this->work_done = master->work_rate * this->obj->owner->world->world_time_delta_seconds + this->work_done;
             }
             RGE_Action_Object* needed_obj = this->obj;
-            TRIBE_Player* needed_player = (TRIBE_Player*)needed_obj->owner;
-            int needed = ((TRIBE_Master_Combat_Object*)needed_player->master_objects[this->obj_id])
-                             ->build_pts_required;
+            TRIBE_Player* needed_player = (TRIBE_Player*) needed_obj->owner;
+            int needed = ((TRIBE_Master_Combat_Object*) needed_player->master_objects[this->obj_id])->build_pts_required;
             if ((float) needed <= this->work_done) {
                 this->set_state(1);
                 RGE_Static_Object* newObject;
                 if (!this->place_obj(&newObject)) {
-                    ((TRIBE_Player*)this->obj->owner)->reimburse_obj_cost(this->obj_id);
+                    ((TRIBE_Player*) this->obj->owner)->reimburse_obj_cost(this->obj_id);
                     rge_base_game->notification(
-                        GAME_NOTIFY_NO_ROOM_FOR_UNIT, ((TRIBE_Player*)this->obj->owner)->id, this->obj_id, 0,
-                        0
+                        GAME_NOTIFY_NO_ROOM_FOR_UNIT, ((TRIBE_Player*) this->obj->owner)->id, this->obj_id, 0, 0
                     );
-                    ((TRIBE_Player*)this->obj->owner)
+                    ((TRIBE_Player*) this->obj->owner)
                         ->logMessage(
-                            "Canceling Train #2:  obj_id=%d, obj->id=%d", (int) this->obj_id, (int) this->obj->id,
-                            this->unique_id
+                            "Canceling Train #2:  obj_id=%d, obj->id=%d", (int) this->obj_id, (int) this->obj->id, this->unique_id
                         );
-                    ((TRIBE_Player*)this->obj->owner)
-                        ->cancelTrain(0, (int) this->obj_id, (int) this->obj->id, this->unique_id);
+                    ((TRIBE_Player*) this->obj->owner)->cancelTrain(0, (int) this->obj_id, (int) this->obj->id, this->unique_id);
                     this->obj->notify(
-                        (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED,
-                        (long) UNIT_AI_ACTION_TRAIN, (long) 0, (long) 0
+                        (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long) UNIT_AI_ACTION_TRAIN,
+                        (long) 0, (long) 0
                     );
                     return RGE_ACTION_UPDATE_REMOVE;
                 } else {
                     rge_base_game->notification(
-                        GAME_NOTIFY_UNIT_TRAINED, ((TRIBE_Player*)this->obj->owner)->id, (int) this->obj_id,
+                        GAME_NOTIFY_UNIT_TRAINED, ((TRIBE_Player*) this->obj->owner)->id, (int) this->obj_id,
                         (long) this->obj->world_x, (long) this->obj->world_y
                     );
-                    ((TRIBE_Player*)this->obj->owner)
+                    ((TRIBE_Player*) this->obj->owner)
                         ->registerTrain((int) this->obj_id, (int) this->obj->id, this->unique_id, (int) newObject->id);
                     this->obj->notify(
-                        (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED,
-                        (long) UNIT_AI_ACTION_TRAIN, (long) 0, (long) 0
+                        (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, (long) UNIT_AI_ACTION_TRAIN,
+                        (long) 0, (long) 0
                     );
                     return RGE_ACTION_UPDATE_REMOVE;
                 }
@@ -189,27 +182,23 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** rObj) {
             switch (dir) {
                 case 0:
                     this->target_y = this->obj->world_y + radius_y;
-                    this->target_x =
-                        this->obj->world_x
-                        + ((float) debug_rand(s_tact_mob_cpp, 199) * radius_2x * g_make_obj_random_scale - radius_x);
+                    this->target_x = this->obj->world_x
+                                     + ((float) debug_rand(s_tact_mob_cpp, 199) * radius_2x * g_make_obj_random_scale - radius_x);
                     break;
                 case 1:
                     this->target_x = this->obj->world_x - radius_x;
-                    this->target_y =
-                        this->obj->world_y
-                        + ((float) debug_rand(s_tact_mob_cpp, 203) * radius_2y * g_make_obj_random_scale - radius_y);
+                    this->target_y = this->obj->world_y
+                                     + ((float) debug_rand(s_tact_mob_cpp, 203) * radius_2y * g_make_obj_random_scale - radius_y);
                     break;
                 case 2:
                     this->target_x = this->obj->world_x + radius_x;
-                    this->target_y =
-                        this->obj->world_y
-                        + ((float) debug_rand(s_tact_mob_cpp, 207) * radius_2y * g_make_obj_random_scale - radius_y);
+                    this->target_y = this->obj->world_y
+                                     + ((float) debug_rand(s_tact_mob_cpp, 207) * radius_2y * g_make_obj_random_scale - radius_y);
                     break;
                 case 3:
                     this->target_y = this->obj->world_y - radius_y;
-                    this->target_x =
-                        this->obj->world_x
-                        + ((float) debug_rand(s_tact_mob_cpp, 211) * radius_2x * g_make_obj_random_scale - radius_x);
+                    this->target_x = this->obj->world_x
+                                     + ((float) debug_rand(s_tact_mob_cpp, 211) * radius_2x * g_make_obj_random_scale - radius_x);
                     break;
             }
             if (proto->check_placement(this->obj->owner, this->target_x, this->target_y, 0, 1, 1, 1, 0, 0, 1)) {
@@ -233,25 +222,21 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** rObj) {
 // The original reloads obj->owner for each later call instead
 // of carrying one player alias across calls.
 int TRIBE_Action_Make_Obj::stop() {
-    ((TRIBE_Player*)this->obj->owner)
+    ((TRIBE_Player*) this->obj->owner)
         ->logMessage(
-            "Stopping Train #8:  obj_id=%d, obj->id=%d, unique_id=%d", (int) this->obj_id, (int) this->obj->id,
-            this->unique_id
+            "Stopping Train #8:  obj_id=%d, obj->id=%d, unique_id=%d", (int) this->obj_id, (int) this->obj->id, this->unique_id
         );
 
     if (this->state != 1) {
         this->set_state(1);
         if (!this->pre_paid) {
-            ((TRIBE_Player*)this->obj->owner)->reimburse_obj_cost(this->obj_id);
+            ((TRIBE_Player*) this->obj->owner)->reimburse_obj_cost(this->obj_id);
         }
     }
 
-    rge_base_game->notification(
-        GAME_NOTIFY_TRAINING_STOPPED, ((TRIBE_Player*)this->obj->owner)->id, (int) this->obj_id, 0, 0
-    );
+    rge_base_game->notification(GAME_NOTIFY_TRAINING_STOPPED, ((TRIBE_Player*) this->obj->owner)->id, (int) this->obj_id, 0, 0);
     this->obj->notify(
-        (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long) UNIT_AI_ACTION_TRAIN, (long) 0,
-        (long) 0
+        (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long) UNIT_AI_ACTION_TRAIN, (long) 0, (long) 0
     );
 
     return 1;
@@ -264,8 +249,7 @@ void TRIBE_Action_Make_Obj::get_info(short& id, short& progress, char* name, sho
     if (this->state == 1) {
         progress = 100;
     } else {
-        short divisor = ((TRIBE_Master_Combat_Object*)this->obj->owner->master_objects[this->obj_id])
-                            ->build_pts_required;
+        short divisor = ((TRIBE_Master_Combat_Object*) this->obj->owner->master_objects[this->obj_id])->build_pts_required;
         int pc = (int) ((this->work_done * g_make_obj_progress_percent) / (float) divisor);
         progress = (short) pc;
     }

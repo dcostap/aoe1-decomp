@@ -14,8 +14,7 @@ extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern "C" long __cdecl _ftol();
 
 void __cdecl RGE_translate_palette(
-    tagPALETTEENTRY* palette1, tagPALETTEENTRY* palette2, tagPALETTEENTRY color, long amount, int ignore_color1,
-    int ignore_color2
+    tagPALETTEENTRY* palette1, tagPALETTEENTRY* palette2, tagPALETTEENTRY color, long amount, int ignore_color1, int ignore_color2
 ) {
     long index1;
     long intense[3];
@@ -45,8 +44,8 @@ void __cdecl RGE_translate_palette(
 
             palette2[index1].peRed =
                 palette1[index1].peRed + ((color.peRed * intensity / 255 - palette1[index1].peRed) * amount / 100);
-            palette2[index1].peGreen = palette1[index1].peGreen
-                                       + ((color.peGreen * intensity / 255 - palette1[index1].peGreen) * amount / 100);
+            palette2[index1].peGreen =
+                palette1[index1].peGreen + ((color.peGreen * intensity / 255 - palette1[index1].peGreen) * amount / 100);
             palette2[index1].peBlue =
                 palette1[index1].peBlue + ((color.peBlue * intensity / 255 - palette1[index1].peBlue) * amount / 100);
             palette2[index1].peFlags = palette1[index1].peFlags;
@@ -195,9 +194,7 @@ RGE_Color_Table::RGE_Color_Table(char* filename) {
     }
 }
 
-RGE_Color_Table::RGE_Color_Table(
-    TDrawArea* surface, long amount, tagPALETTEENTRY* in_color, tagPALETTEENTRY* palette1
-) {
+RGE_Color_Table::RGE_Color_Table(TDrawArea* surface, long amount, tagPALETTEENTRY* in_color, tagPALETTEENTRY* palette1) {
     long temp_color;
     tagPALETTEENTRY palette[256];
     tagPALETTEENTRY temp_palette[256];
@@ -247,8 +244,8 @@ RGE_Color_Table::RGE_Color_Table(
             int red_difference = red - palette[i].peRed;
             int green_difference = green - palette[i].peGreen;
             int blue_difference = blue - palette[i].peBlue;
-            int distance = red_difference * red_difference + green_difference * green_difference
-                           + blue_difference * blue_difference;
+            int distance =
+                red_difference * red_difference + green_difference * green_difference + blue_difference * blue_difference;
             if (distance < best_distance) {
                 best_distance = distance;
                 temp_color = i;

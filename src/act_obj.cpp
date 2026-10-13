@@ -21,8 +21,7 @@ RGE_Action_Object::RGE_Action_Object(
     }
 }
 
-RGE_Action_Object::RGE_Action_Object(int infile, RGE_Game_World* gworld, int do_setup) :
-    RGE_Moving_Object(infile, gworld, 0) {
+RGE_Action_Object::RGE_Action_Object(int infile, RGE_Game_World* gworld, int do_setup) : RGE_Moving_Object(infile, gworld, 0) {
     this->lastActionValue = -1;
     this->lastActionStateValue = -1;
     if (do_setup != 0) {
@@ -45,9 +44,7 @@ void RGE_Action_Object::recycle_out_of_game() {
     RGE_Static_Object::recycle_out_of_game();
 }
 
-void RGE_Action_Object::recycle_in_to_game(
-    RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z
-) {
+void RGE_Action_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z) {
     RGE_Moving_Object::recycle_in_to_game(tobj, obj_owner, x, y, z);
     this->waiting = 0;
 }
@@ -159,16 +156,16 @@ void RGE_Action_Object::work2(RGE_Static_Object* obj, float x, float y, float z,
     int current_action;
 
     if (obj != this) {
-        task = ((RGE_Master_Action_Object*)this->master_obj)->tasks->get_target_task(this, obj, x, y, z);
-        if (task == 0 && ((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
+        task = ((RGE_Master_Action_Object*) this->master_obj)->tasks->get_target_task(this, obj, x, y, z);
+        if (task == 0 && ((RGE_Master_Action_Object*) this->master_obj)->task_by_group != 0) {
             i = 0;
             for (; i < this->owner->master_object_num; i++) {
                 other = this->owner->master_objects[i];
                 if (other != 0 && other->object_group == this->master_obj->object_group
                     && other->master_type == this->master_obj->master_type
-                    && ((RGE_Master_Action_Object*)other)->task_by_group
-                           == ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
-                    task = ((RGE_Master_Action_Object*)other)->tasks->get_target_task(this, obj, x, y, z);
+                    && ((RGE_Master_Action_Object*) other)->task_by_group
+                           == ((RGE_Master_Action_Object*) this->master_obj)->task_by_group) {
+                    task = ((RGE_Master_Action_Object*) other)->tasks->get_target_task(this, obj, x, y, z);
                     if (task != 0) {
                         this->transform(other);
                         break;
@@ -293,21 +290,20 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Objec
     RGE_Task* task;
 
     if (obj != this) {
-        if (((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
-            task = ((RGE_Master_Action_Object*)this->master_obj)->tasks->get_target_task(this, obj, x, y, z);
+        if (((RGE_Master_Action_Object*) this->master_obj)->task_by_group != 0) {
+            task = ((RGE_Master_Action_Object*) this->master_obj)->tasks->get_target_task(this, obj, x, y, z);
             if (task != 0) {
                 return this->master_obj;
             }
 
-            if (((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
+            if (((RGE_Master_Action_Object*) this->master_obj)->task_by_group != 0) {
                 for (i = 0; i < this->owner->master_object_num; i++) {
                     master_obj = this->owner->master_objects[i];
                     if (master_obj != 0 && master_obj->object_group == this->master_obj->object_group
                         && master_obj->master_type == this->master_obj->master_type
-                        && ((RGE_Master_Action_Object*)master_obj)->task_by_group
-                               == ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
-                        task = ((RGE_Master_Action_Object*)master_obj)
-                                   ->tasks->get_target_task(this, obj, x, y, z);
+                        && ((RGE_Master_Action_Object*) master_obj)->task_by_group
+                               == ((RGE_Master_Action_Object*) this->master_obj)->task_by_group) {
+                        task = ((RGE_Master_Action_Object*) master_obj)->tasks->get_target_task(this, obj, x, y, z);
                         if (task != 0) {
                             return master_obj;
                         }
@@ -323,7 +319,7 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Objec
 void RGE_Action_Object::set_task(short task_id) {
     RGE_Task* task;
     RGE_Action* action;
-    RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->master_obj;
+    RGE_Master_Action_Object* master = (RGE_Master_Action_Object*) this->master_obj;
 
     task = master->get_task(task_id);
     if (task != 0) {
@@ -337,7 +333,7 @@ void RGE_Action_Object::set_task(short task_id) {
 void RGE_Action_Object::setTaskByTaskID(int t) {
     RGE_Task* task;
     RGE_Action* action;
-    RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->master_obj;
+    RGE_Master_Action_Object* master = (RGE_Master_Action_Object*) this->master_obj;
 
     task = master->getTaskByTaskID(t);
     if (task != 0) {
@@ -406,9 +402,8 @@ unsigned char RGE_Action_Object::update() {
         }
     } else {
         if (this->actions->list == 0) {
-            if (state == RGE_OBJECT_STATE_ACTIVE
-                && ((RGE_Master_Action_Object*)this->master_obj)->default_task != -1) {
-                this->set_task(((RGE_Master_Action_Object*)this->master_obj)->default_task);
+            if (state == RGE_OBJECT_STATE_ACTIVE && ((RGE_Master_Action_Object*) this->master_obj)->default_task != -1) {
+                this->set_task(((RGE_Master_Action_Object*) this->master_obj)->default_task);
                 return result;
             }
         } else {
@@ -434,7 +429,7 @@ void RGE_Action_Object::change_ownership(RGE_Player* new_owner) {
 }
 
 void RGE_Action_Object::copy_obj(RGE_Master_Static_Object* source) {
-    this->actions->copy_obj((RGE_Master_Action_Object*)source);
+    this->actions->copy_obj((RGE_Master_Action_Object*) source);
     RGE_Moving_Object::copy_obj(source);
 }
 
@@ -458,9 +453,9 @@ RGE_Static_Object* RGE_Action_Object::get_target_obj(void) {
 }
 
 RGE_Task* RGE_Action_Object::getTask(RGE_Static_Object* target, float targetX, float targetY, float targetZ) {
-    RGE_Task* task = ((RGE_Master_Action_Object*)this->master_obj)
-                         ->tasks->get_target_task(this, target, targetX, targetY, targetZ);
-    if (task == 0 && ((RGE_Master_Action_Object*)this->master_obj)->task_by_group != 0) {
+    RGE_Task* task =
+        ((RGE_Master_Action_Object*) this->master_obj)->tasks->get_target_task(this, target, targetX, targetY, targetZ);
+    if (task == 0 && ((RGE_Master_Action_Object*) this->master_obj)->task_by_group != 0) {
         int i = 0;
         if (this->owner->master_object_num > 0) {
             RGE_Master_Static_Object* obj;
@@ -468,11 +463,9 @@ RGE_Task* RGE_Action_Object::getTask(RGE_Static_Object* target, float targetX, f
                 obj = this->owner->master_objects[i];
                 if (obj != 0 && obj->object_group == this->master_obj->object_group
                     && obj->master_type == this->master_obj->master_type
-                    && ((RGE_Master_Action_Object*)obj)->task_by_group
-                           == ((RGE_Master_Action_Object*)this->master_obj)->task_by_group) {
-                    task = ((RGE_Master_Action_Object*)obj)->tasks->get_target_task(
-                        this, target, targetX, targetY, targetZ
-                    );
+                    && ((RGE_Master_Action_Object*) obj)->task_by_group
+                           == ((RGE_Master_Action_Object*) this->master_obj)->task_by_group) {
+                    task = ((RGE_Master_Action_Object*) obj)->tasks->get_target_task(this, target, targetX, targetY, targetZ);
                     if (task != 0) {
                         goto found;
                     }

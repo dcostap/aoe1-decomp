@@ -10,11 +10,11 @@ static char s_pnl_btn_draw[] = "pnl_btn::draw";
 static char s_pnl_btn_draw2[] = "pnl_btn::draw2";
 
 TButtonPanel::TButtonPanel() :
-    buttonTypeValue(Normal), drawTypeValue(DrawClear), notifyTypeValue(NotifyAction), sound(0), auto_pic_pos(1),
-    pic_x(0), pic_y(0), all_hot(1), draw_reverse(0), text_x(-1), text_y(-1), font(0), font_wid(0), font_hgt(0),
-    num_states(1), cur_state(0), is_down(0), radio_buttons(0), num_radio_buttons(0), button_down_time(0), hotkey(0),
-    hotkey_shift(0), bevel_type(1), bevel_color1(0), bevel_color2(0), bevel_color3(0), bevel_color4(0), bevel_color5(0),
-    bevel_color6(0), key_down(0), disabled(0), sound_number(-1) {
+    buttonTypeValue(Normal), drawTypeValue(DrawClear), notifyTypeValue(NotifyAction), sound(0), auto_pic_pos(1), pic_x(0),
+    pic_y(0), all_hot(1), draw_reverse(0), text_x(-1), text_y(-1), font(0), font_wid(0), font_hgt(0), num_states(1), cur_state(0),
+    is_down(0), radio_buttons(0), num_radio_buttons(0), button_down_time(0), hotkey(0), hotkey_shift(0), bevel_type(1),
+    bevel_color1(0), bevel_color2(0), bevel_color3(0), bevel_color4(0), bevel_color5(0), bevel_color6(0), key_down(0),
+    disabled(0), sound_number(-1) {
     // The compiler emits the derived vptr as part of normal construction.
     ((TPanel*) this)->panel_type = 3;
 
@@ -553,14 +553,14 @@ void TButtonPanel::draw() {
                         break;
                     case 3:
                         render_area->DrawBevel2(
-                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2,
-                            bevel_color5, bevel_color6
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2, bevel_color5,
+                            bevel_color6
                         );
                         break;
                     case 4:
                         render_area->DrawBevel3(
-                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2,
-                            bevel_color3, bevel_color4, bevel_color5, bevel_color6
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2, bevel_color3,
+                            bevel_color4, bevel_color5, bevel_color6
                         );
                         break;
                 }
@@ -576,14 +576,14 @@ void TButtonPanel::draw() {
                         break;
                     case 3:
                         render_area->DrawBevel21(
-                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5,
-                            bevel_color2, bevel_color1
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5, bevel_color2,
+                            bevel_color1
                         );
                         break;
                     case 4:
                         render_area->DrawBevel32(
-                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5,
-                            bevel_color4, bevel_color3, bevel_color2, bevel_color1
+                            pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5, bevel_color4,
+                            bevel_color3, bevel_color2, bevel_color1
                         );
                         break;
                 }
@@ -662,9 +662,7 @@ long TButtonPanel::mouse_left_move_action(long x, long y, int ctrl_key, int shif
 }
 
 // 00473310_mouse_left_up_action.cpp
-extern "C" __declspec(dllimport) long __stdcall SendMessageA(
-    void* hwnd, unsigned int msg, unsigned int wparam, long lparam
-);
+extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 
 long TButtonPanel::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     release_mouse();
@@ -883,9 +881,7 @@ int TButtonPanel::hit_button(long x, long y) {
 // 004739B0_do_action.cpp
 // Pnl_btn.cpp
 
-extern "C" __declspec(dllimport) long __stdcall SendMessageA(
-    void* hwnd, unsigned int msg, unsigned int wparam, long lparam
-);
+extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* hwnd, unsigned int msg, unsigned int wparam, long lparam);
 
 void TButtonPanel::do_action(void) {
     if (this->buttonTypeValue == TButtonPanel::State) {

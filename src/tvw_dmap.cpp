@@ -13,7 +13,7 @@ TRIBE_Diamond_Map_View::~TRIBE_Diamond_Map_View() {
 void TRIBE_Diamond_Map_View::set_redraw(TPanel::RedrawMode redraw_mode) {
     RGE_Diamond_Map::set_redraw(redraw_mode);
     if (redraw_mode != TPanel::RedrawNone && this->visible != 0 && this->active != 0) {
-        ((TRIBE_Screen_Game*)this->parent_panel)->set_map_buttons_redraw(redraw_mode);
+        ((TRIBE_Screen_Game*) this->parent_panel)->set_map_buttons_redraw(redraw_mode);
     }
 }
 
@@ -26,9 +26,7 @@ void TRIBE_Diamond_Map_View::draw_objects() {
     RGE_Diamond_Map::draw_objects();
 }
 
-void TRIBE_Diamond_Map_View::draw_object(
-    short col, short row, unsigned char color, short size, RGE_Static_Object* game_obj
-) {
+void TRIBE_Diamond_Map_View::draw_object(short col, short row, unsigned char color, short size, RGE_Static_Object* game_obj) {
     if (this->draw_objects_mode == 4) {
         if (this->flash_on) {
             color = 0x57 - 1;

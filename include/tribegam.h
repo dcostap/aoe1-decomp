@@ -118,13 +118,7 @@ class TRIBE_Game : public RGE_Base_Game {
         Hilly = 7,
         Isthmas = 8
     };
-    enum VictoryType {
-        VictoryDefault = 0,
-        VictoryConquest = 1,
-        VictoryTime = 7,
-        VictoryScore = 8,
-        VictoryStandard = 9
-    };
+    enum VictoryType { VictoryDefault = 0, VictoryConquest = 1, VictoryTime = 7, VictoryScore = 8, VictoryStandard = 9 };
     enum ResourceLevel { DefaultResources = 0, LowResources = 1, MediumResources = 2, HighResources = 3 };
     enum Age { DefaultAge = 0, NomadAge = 1, StoneAge = 2, ToolAge = 3, BronzeAge = 4, IronAge = 5 };
 

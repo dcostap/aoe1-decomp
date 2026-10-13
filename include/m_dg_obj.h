@@ -16,9 +16,7 @@ class RGE_Master_Doppleganger_Object : public RGE_Master_Animated_Object {
     RGE_Master_Doppleganger_Object(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup);
 
     virtual ~RGE_Master_Doppleganger_Object();
-    virtual RGE_Static_Object* make_new_obj(
-        RGE_Player* owner, float x, float y, float z, RGE_Static_Object* obj_to_dopple
-    );
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z, RGE_Static_Object* obj_to_dopple);
     virtual RGE_Master_Static_Object* make_new_master();
     virtual void copy_obj(RGE_Master_Static_Object* source);
     virtual void save(int outfile);

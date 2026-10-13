@@ -91,8 +91,7 @@ void RGE_Campaign::create_file() {
             if (this->campaign_header.scenario_num > 0) {
                 do {
                     sprintf(
-                        tempname, "%s%s", rge_base_game->prog_info->scenario_dir,
-                        this->scenario_offsets[current_offset].file_name
+                        tempname, "%s%s", rge_base_game->prog_info->scenario_dir, this->scenario_offsets[current_offset].file_name
                     );
                     int scenario_file = _open(tempname, _O_BINARY);
                     if (scenario_file > -1) {

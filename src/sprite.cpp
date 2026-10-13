@@ -21,8 +21,7 @@ extern void __cdecl write_draw_log2(char* text);
 extern int do_draw_log;
 extern int safe_draw_log;
 
-static const char sprite_format[] =
-    " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %hd %hd";
+static const char sprite_format[] = " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %hd %hd";
 static const char picture_format[] = " %hd %hd %hd %hd";
 static const char sound_format[] = "%hd %hd %hd";
 
@@ -151,10 +150,10 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short in_id, RGE_Sound** sounds) {
     int sound_index;
 
     int result = fscanf(
-        infile, sprite_format, this->name, this->pict_name, &this->resource_id, &this->frame_num, facet_count,
-        &temp_draw_level, &temp_transparent_picking_flag, &temp_animated, &this->color_table, &sound_id,
-        &temp_directional, &temp_randomize_on_start, &temp_loop_once, &sound_frame, &this->box_x1, &this->box_y1,
-        &this->box_x2, &this->box_y2, &this->base_speed, &this->duration, &this->pause_between_loops, draw_count,
+        infile, sprite_format, this->name, this->pict_name, &this->resource_id, &this->frame_num, facet_count, &temp_draw_level,
+        &temp_transparent_picking_flag, &temp_animated, &this->color_table, &sound_id, &temp_directional,
+        &temp_randomize_on_start, &temp_loop_once, &sound_frame, &this->box_x1, &this->box_y1, &this->box_x2, &this->box_y2,
+        &this->base_speed, &this->duration, &this->pause_between_loops, draw_count,
         &temp_color_flag, // the final count reuses in_id's parameter home.
         // Keep this alias so a partial scan keeps the shipped value.
         &in_id
@@ -416,8 +415,7 @@ unsigned char RGE_Sprite::get_facetindex(long facet, long frame, long& facetinde
         return (unsigned char) facet;
     }
 
-    if (this->mirror_flag != 0
-        && (facet > (long) (unsigned int) this->mirror_flag || facet < ((int) this->facet_num >> 2))) {
+    if (this->mirror_flag != 0 && (facet > (long) (unsigned int) this->mirror_flag || facet < ((int) this->facet_num >> 2))) {
         int i = (int) this->facet_num >> 1;
         if (facet > i) {
             i = i - facet;
@@ -440,8 +438,7 @@ unsigned char RGE_Sprite::get_facetindex(long facet, long frame, long& facetinde
 }
 
 void RGE_Sprite::do_draw(
-    long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area,
-    unsigned char min_draw_level
+    long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char min_draw_level
 ) {
     char s[256];
     long facetindex;
@@ -573,13 +570,13 @@ unsigned char RGE_Sprite::draw(
                     int child_facet = (sprite->facet_num * facet) / (int) this->facet_num;
                     if (sprite->draw_level <= 0xa) {
                         sprite->do_draw(
-                            child_facet, frame, (long) entry->offset_x + sx, (long) entry->offset_y + sy,
-                            loop_color_table, loop_draw_area, min_draw_level
+                            child_facet, frame, (long) entry->offset_x + sx, (long) entry->offset_y + sy, loop_color_table,
+                            loop_draw_area, min_draw_level
                         );
                     } else {
                         sprite->do_draw(
-                            child_facet, frame, (long) entry->offset_x + x, (long) entry->offset_y + y,
-                            loop_color_table, loop_draw_area, min_draw_level
+                            child_facet, frame, (long) entry->offset_x + x, (long) entry->offset_y + y, loop_color_table,
+                            loop_draw_area, min_draw_level
                         );
                     }
                 }
@@ -617,8 +614,8 @@ unsigned char RGE_Sprite::normal_draw(
                     && ((this->draw_list[index].facet < 0) || (this->draw_list[index].facet == local_facet))) {
                     sprite->do_draw(
                         (sprite->facet_num * local_facet) / (int) this->facet_num, frame,
-                        (long) this->draw_list[index].offset_x + x, (long) this->draw_list[index].offset_y + y,
-                        player_color, draw_area, 0
+                        (long) this->draw_list[index].offset_x + x, (long) this->draw_list[index].offset_y + y, player_color,
+                        draw_area, 0
                     );
                 }
                 count = count + 1;
@@ -653,8 +650,8 @@ unsigned char RGE_Sprite::shadow_draw(
                     && ((this->draw_list[facet].facet < 0) || (this->draw_list[facet].facet == local_facet))) {
                     sprite->do_draw(
                         (sprite->facet_num * local_facet) / (int) this->facet_num, frame,
-                        (long) this->draw_list[facet].offset_x + x, (long) this->draw_list[facet].offset_y + y,
-                        player_color, draw_area, 0
+                        (long) this->draw_list[facet].offset_x + x, (long) this->draw_list[facet].offset_y + y, player_color,
+                        draw_area, 0
                     );
                 }
                 facet++;
@@ -716,8 +713,8 @@ int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y
             for (int i = 0; i < this->draw_list_num; ++i) {
                 if (this->transparent_picking_flag > 0) {
                     this->draw_list[i].sprite->get_frame_min_max(
-                        min_x, min_y, max_x, max_y, (this->draw_list[i].sprite->facet_num * facet) / this->facet_num,
-                        frame, this->draw_list[i].offset_x, this->draw_list[i].offset_y
+                        min_x, min_y, max_x, max_y, (this->draw_list[i].sprite->facet_num * facet) / this->facet_num, frame,
+                        this->draw_list[i].offset_x, this->draw_list[i].offset_y
                     );
                 }
             }

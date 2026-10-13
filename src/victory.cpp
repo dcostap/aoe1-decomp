@@ -476,9 +476,8 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* node) {
     RGE_Object_Node* object_node = player->objects->list;
     while (object_node != 0) {
         RGE_Static_Object* obj = object_node->node;
-        if (obj->master_obj->copy_id == node->obj_type && obj->object_state == RGE_OBJECT_STATE_ACTIVE
-            && obj->world_x >= node->x0 && obj->world_x <= node->x1 && obj->world_y >= node->y0
-            && obj->world_y <= node->y1) {
+        if (obj->master_obj->copy_id == node->obj_type && obj->object_state == RGE_OBJECT_STATE_ACTIVE && obj->world_x >= node->x0
+            && obj->world_x <= node->x1 && obj->world_y >= node->y0 && obj->world_y <= node->y1) {
             count++;
         }
         object_node = object_node->next;
@@ -498,9 +497,9 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* node) {
                         object_node = p->objects->list;
                         while (object_node != 0) {
                             RGE_Static_Object* obj = object_node->node;
-                            if (obj->master_obj->copy_id == node->obj_type
-                                && obj->object_state == RGE_OBJECT_STATE_ACTIVE && obj->world_x >= node->x0
-                                && obj->world_x <= node->x1 && obj->world_y >= node->y0 && obj->world_y <= node->y1) {
+                            if (obj->master_obj->copy_id == node->obj_type && obj->object_state == RGE_OBJECT_STATE_ACTIVE
+                                && obj->world_x >= node->x0 && obj->world_x <= node->x1 && obj->world_y >= node->y0
+                                && obj->world_y <= node->y1) {
                                 count++;
                             }
                             object_node = object_node->next;
@@ -642,8 +641,7 @@ void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* node) {
         return;
     }
 
-    if (node->this_obj->object_state >= RGE_OBJECT_STATE_DYING
-        || node->target_obj->object_state >= RGE_OBJECT_STATE_DYING) {
+    if (node->this_obj->object_state >= RGE_OBJECT_STATE_DYING || node->target_obj->object_state >= RGE_OBJECT_STATE_DYING) {
         node->this_obj = 0;
         node->target_obj = 0;
         if (node->state == 0) {
@@ -725,8 +723,8 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* node) {
                 return;
             RGE_Player** pp = players + i;
             while (i >= 0) {
-                if ((this->player->relations[i] == RGE_RELATION_ALLY
-                     && (*pp)->relations[this->player->id] == RGE_RELATION_ALLY && (*pp)->allied_victory != 0)
+                if ((this->player->relations[i] == RGE_RELATION_ALLY && (*pp)->relations[this->player->id] == RGE_RELATION_ALLY
+                     && (*pp)->allied_victory != 0)
                     || i == this->player->id) {
                     float explored = (*pp)->visible->percentExplored();
                     if (explored * 100.0f >= (float) node->count) {
@@ -792,9 +790,7 @@ RGE_Victory_Entry* RGE_Victory_Conditions::add(unsigned char v_group, unsigned c
     return entry;
 }
 
-unsigned char RGE_Victory_Conditions::add_capture(
-    unsigned char v_group, RGE_Static_Object* obj, unsigned char alliance
-) {
+unsigned char RGE_Victory_Conditions::add_capture(unsigned char v_group, RGE_Static_Object* obj, unsigned char alliance) {
     RGE_Victory_Entry* entry = this->add(v_group, alliance);
     if (entry) {
         entry->command = 0;
@@ -805,9 +801,7 @@ unsigned char RGE_Victory_Conditions::add_capture(
     return 0;
 }
 
-unsigned char RGE_Victory_Conditions::add_create(
-    unsigned char v_group, long obj_type, long number, unsigned char alliance
-) {
+unsigned char RGE_Victory_Conditions::add_create(unsigned char v_group, long obj_type, long number, unsigned char alliance) {
     RGE_Victory_Entry* entry = this->add(v_group, alliance);
     if (entry) {
         entry->command = 1;
@@ -879,9 +873,7 @@ unsigned char RGE_Victory_Conditions::add_destroy(unsigned char v_group, RGE_Pla
     return 0;
 }
 
-unsigned char RGE_Victory_Conditions::add_bring(
-    unsigned char v_group, RGE_Static_Object* obj, RGE_Static_Object* target
-) {
+unsigned char RGE_Victory_Conditions::add_bring(unsigned char v_group, RGE_Static_Object* obj, RGE_Static_Object* target) {
     RGE_Victory_Entry* entry = this->add(v_group, 0);
     if (entry) {
         entry->command = 5;
@@ -909,9 +901,7 @@ unsigned char RGE_Victory_Conditions::add_bring(
     return 0;
 }
 
-unsigned char RGE_Victory_Conditions::add_attributes(
-    unsigned char v_group, long attribute, long count, unsigned char alliance
-) {
+unsigned char RGE_Victory_Conditions::add_attributes(unsigned char v_group, long attribute, long count, unsigned char alliance) {
     RGE_Victory_Entry* entry = this->add(v_group, alliance);
     if (entry) {
         entry->command = 6;
@@ -1022,8 +1012,8 @@ char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* node) {
             break;
         case 3:
             sprintf(
-                temp, "Destroy %d %s of player %d", node->number,
-                node->target_player->master_objects[node->obj_type]->name, node->target_player->id
+                temp, "Destroy %d %s of player %d", node->number, node->target_player->master_objects[node->obj_type]->name,
+                node->target_player->id
             );
             break;
         case 9:

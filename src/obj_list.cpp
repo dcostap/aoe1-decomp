@@ -170,9 +170,7 @@ void RGE_Object_List::draw(TDrawArea* render_area, short x, short y, unsigned ch
     } while (node);
 }
 
-void RGE_Object_List::shadow_draw(
-    TDrawArea* render_area, short x, short y, unsigned char flag, unsigned char fog_flag
-) {
+void RGE_Object_List::shadow_draw(TDrawArea* render_area, short x, short y, unsigned char flag, unsigned char fog_flag) {
     RGE_Object_Node* node = this->list;
 
     if (fog_flag) {
@@ -418,8 +416,7 @@ RGE_Static_Object* RGE_Object_List::find_by_master_id(
 }
 
 RGE_Static_Object* RGE_Object_List::find_by_master_ids(
-    long id1, long id2, float x, float y, unsigned char certain_state, unsigned char object_state,
-    RGE_Static_Object* zone_obj
+    long id1, long id2, float x, float y, unsigned char certain_state, unsigned char object_state, RGE_Static_Object* zone_obj
 ) {
     int zone;
     RGE_Object_Node* node;

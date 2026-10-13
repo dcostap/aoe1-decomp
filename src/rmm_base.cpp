@@ -13,9 +13,7 @@ extern int __cdecl debug_rand(char* file, int line);
 extern "C" double sqrt(double value);
 #pragma intrinsic(sqrt)
 
-RGE_Random_Map_Module::RGE_Random_Map_Module(
-    RGE_Map* in_map, RGE_Random_Map_Module* parent_module, uchar resources_needed
-) {
+RGE_Random_Map_Module::RGE_Random_Map_Module(RGE_Map* in_map, RGE_Random_Map_Module* parent_module, uchar resources_needed) {
     this->parent = parent_module;
     this->map = in_map;
 
@@ -42,9 +40,7 @@ RGE_Random_Map_Module::RGE_Random_Map_Module(
         }
     } else {
         this->parent->add_module(this);
-        this->parent->share_resources(
-            &this->search_map, &this->search_map_rows, &this->stack_array, &this->stack_offsets
-        );
+        this->parent->share_resources(&this->search_map, &this->search_map_rows, &this->stack_array, &this->stack_offsets);
     }
 }
 
@@ -112,10 +108,7 @@ uchar RGE_Random_Map_Module::generate() {
         if (current->module->generate() == 0)
             return 0;
 
-        L->Log(
-            "RGE_RANDOM_MAP_MODULE::module completed with ret:",
-            debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 143)
-        );
+        L->Log("RGE_RANDOM_MAP_MODULE::module completed with ret:", debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 143));
         current = current->next;
     }
 
@@ -411,9 +404,7 @@ uchar RGE_Random_Map_Module::find_path(long x, long y, long& end_x, long& end_y,
     return result;
 }
 
-uchar RGE_Random_Map_Module::find_path(
-    Map_Stack& path_stack, long x, long y, long& end_x, long& end_y, float* terrain
-) {
+uchar RGE_Random_Map_Module::find_path(Map_Stack& path_stack, long x, long y, long& end_x, long& end_y, float* terrain) {
     long max_x = this->map_width - 1;
     long max_y = this->map_height - 1;
     float path_cost = 0.0f;

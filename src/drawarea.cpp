@@ -14,12 +14,12 @@ extern int FullPalSets;
 extern int AniPalSets;
 struct TRANSINFO;
 extern void __cdecl TransDibBlt(
-    BITMAPINFO256*, unsigned char*, RECT*, long, long, long, long, BITMAPINFO256*, unsigned char*, TRANSINFO*, long,
-    long, long, long, int, int, int, int
+    BITMAPINFO256*, unsigned char*, RECT*, long, long, long, long, BITMAPINFO256*, unsigned char*, TRANSINFO*, long, long, long,
+    long, int, int, int, int
 );
 extern void __cdecl DibBlt(
-    BITMAPINFO256*, unsigned char*, RECT*, long, long, long, long, BITMAPINFO256*, unsigned char*, long, long, long,
-    long, int, int, int
+    BITMAPINFO256*, unsigned char*, RECT*, long, long, long, long, BITMAPINFO256*, unsigned char*, long, long, long, long, int,
+    int, int
 );
 extern "C" int __cdecl _open(const char*, int, ...);
 extern "C" int __cdecl write(int, void*, int);
@@ -434,8 +434,8 @@ unsigned char TDrawSystem::CheckSurfaces() {
 
             hr = this->DirDraw->GetDisplayMode(&ddsd);
             if (hr == 0
-                && (ddsd.dwWidth != (unsigned long) this->ScreenWidth
-                    || ddsd.dwHeight != (unsigned long) this->ScreenHeight || ddsd.ddpfPixelFormat.dwRGBBitCount != 8))
+                && (ddsd.dwWidth != (unsigned long) this->ScreenWidth || ddsd.dwHeight != (unsigned long) this->ScreenHeight
+                    || ddsd.ddpfPixelFormat.dwRGBBitCount != 8))
                 return 1;
 
             hr = this->PrimarySurface->Restore();
@@ -1577,13 +1577,13 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y, RECT* src_r
 
         if (this->UseTrans != 0 && allow_trans != 0) {
             TransDibBlt(
-                dest_area->BitmapInfo, dest_area->Bits, &dest_area->ClipRect, dest_x, dest_y, width, height,
-                this->BitmapInfo, this->Bits, 0, src_x, src_y, width, height, 1, 0, 0, this->TransColor
+                dest_area->BitmapInfo, dest_area->Bits, &dest_area->ClipRect, dest_x, dest_y, width, height, this->BitmapInfo,
+                this->Bits, 0, src_x, src_y, width, height, 1, 0, 0, this->TransColor
             );
         } else {
             DibBlt(
-                dest_area->BitmapInfo, dest_area->Bits, &dest_area->ClipRect, dest_x, dest_y, width, height,
-                this->BitmapInfo, this->Bits, src_x, src_y, width, height, 1, 0, 0
+                dest_area->BitmapInfo, dest_area->Bits, &dest_area->ClipRect, dest_x, dest_y, width, height, this->BitmapInfo,
+                this->Bits, src_x, src_y, width, height, 1, 0, 0
             );
         }
         err = 0;
@@ -1607,10 +1607,7 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y, RECT* src_r
 
     ++src_rect2.right;
     ++src_rect2.bottom;
-    SetRect(
-        &dest_rect2, dest_x, dest_y, dest_x + src_rect2.right - src_rect2.left,
-        dest_y + src_rect2.bottom - src_rect2.top
-    );
+    SetRect(&dest_rect2, dest_x, dest_y, dest_x + src_rect2.right - src_rect2.left, dest_y + src_rect2.bottom - src_rect2.top);
 
     if (src_rect2.left < 0) {
         long amount = -src_rect2.left;
@@ -1934,8 +1931,7 @@ void TDrawArea::FillRect(long x1, long y1, long x2, long y2, unsigned char color
             y2 = temp;
         }
 
-        if (x1 > this->ClipRect.right || x2 < this->ClipRect.left || y1 > this->ClipRect.bottom
-            || y2 < this->ClipRect.top)
+        if (x1 > this->ClipRect.right || x2 < this->ClipRect.left || y1 > this->ClipRect.bottom || y2 < this->ClipRect.top)
             return;
 
         if (x1 < this->ClipRect.left)
@@ -2032,8 +2028,8 @@ void TDrawArea::DrawBevel2(
 }
 
 void TDrawArea::DrawBevel3(
-    long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4,
-    unsigned char c5, unsigned char c6
+    long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5,
+    unsigned char c6
 ) {
     if (x1 > x2) {
         long temp = x1;
@@ -2101,8 +2097,8 @@ void TDrawArea::DrawBevel21(
 }
 
 void TDrawArea::DrawBevel32(
-    long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4,
-    unsigned char c5, unsigned char c6
+    long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5,
+    unsigned char c6
 ) {
     if (x1 > x2) {
         long temp = x1;

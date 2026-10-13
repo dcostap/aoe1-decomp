@@ -63,14 +63,14 @@ void TRIBE_Action_Build::set_state(unsigned char new_state) {
         case 3:
             if (this->obj->owner->computerPlayer() == 1) {
                 this->obj->notify(
-                    (int) this->obj->id, (int) this->obj->id, (int) UNIT_AI_NOTIFY_ACTION_COMPLETED,
-                    (long) UNIT_AI_ACTION_BUILD, 0L, 0L
+                    (int) this->obj->id, (int) this->obj->id, (int) UNIT_AI_NOTIFY_ACTION_COMPLETED, (long) UNIT_AI_ACTION_BUILD,
+                    0L, 0L
                 );
                 this->set_state(1);
             } else {
                 this->obj->notify(
-                    (int) this->obj->id, (int) this->obj->id, (int) UNIT_AI_NOTIFY_REQUEST_TASK,
-                    (long) UNIT_AI_ACTION_BUILD, 0L, 0L
+                    (int) this->obj->id, (int) this->obj->id, (int) UNIT_AI_NOTIFY_REQUEST_TASK, (long) UNIT_AI_ACTION_BUILD, 0L,
+                    0L
                 );
             }
             this->obj->new_sprite(this->obj->master_obj->sprite);
@@ -86,9 +86,8 @@ void TRIBE_Action_Build::set_state(unsigned char new_state) {
             return;
 
         case 0x0B:
-            move_to = new RGE_Action_Move_To(
-                this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite
-            );
+            move_to =
+                new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite);
             if (move_to == 0) {
                 this->set_state(0x0D);
                 return;
@@ -103,8 +102,7 @@ void TRIBE_Action_Build::set_state(unsigned char new_state) {
                 this->target_y = this->target_obj->world_y;
                 this->target_z = this->target_obj->world_z;
             }
-            move_to =
-                new RGE_Action_Move_To(this->obj, this->target_obj, this->task->work_range, this->task->move_sprite);
+            move_to = new RGE_Action_Move_To(this->obj, this->target_obj, this->task->work_range, this->task->move_sprite);
             if (move_to == 0) {
                 this->set_state(0x0D);
                 return;
@@ -158,9 +156,8 @@ unsigned char TRIBE_Action_Build::update() {
         if (this->target_obj->hp < (float) (int) this->target_obj->master_obj->hp) {
             this->obj->removeAllFromPathingGroup();
             this->obj->owner->processAIOrder(
-                this->obj->owner->id, this->obj->id, UNIT_AI_ORDER_REPAIR, this->target_obj->id,
-                this->target_obj->owner->id, this->target_obj->world_x, this->target_obj->world_y,
-                this->target_obj->world_z, 1.0f, 1, 0, 100
+                this->obj->owner->id, this->obj->id, UNIT_AI_ORDER_REPAIR, this->target_obj->id, this->target_obj->owner->id,
+                this->target_obj->world_x, this->target_obj->world_y, this->target_obj->world_z, 1.0f, 1, 0, 100
             );
             return RGE_ACTION_UPDATE_CONTINUE;
         }
@@ -240,8 +237,7 @@ unsigned char TRIBE_Action_Build::update() {
 
         case 0x0D:
             this->obj->notify(
-                (int) this->obj->id, (int) this->obj->id, (int) UNIT_AI_NOTIFY_ACTION_FAILED,
-                (long) UNIT_AI_ACTION_BUILD, 0L, 0L
+                (int) this->obj->id, (int) this->obj->id, (int) UNIT_AI_NOTIFY_ACTION_FAILED, (long) UNIT_AI_ACTION_BUILD, 0L, 0L
             );
             this->set_state(2);
             return RGE_ACTION_UPDATE_FAILED;

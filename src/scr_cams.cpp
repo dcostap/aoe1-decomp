@@ -43,29 +43,21 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection() : TScreenPane
                         )) {
                         if (create_auto_scrollbar(&scenarioScrollbar, scenarioList, 20)) {
                             if (create_text(
-                                    this, &scenarioTitle, STRING_ID_SCENARIO_LIST_TITLE, scenarioListX - 5,
-                                    scenarioListY - 20, 200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+                                    this, &scenarioTitle, STRING_ID_SCENARIO_LIST_TITLE, scenarioListX - 5, scenarioListY - 20,
+                                    200, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
                                 )) {
                                 scenarioList->sorted = 0;
                                 if (create_text(
                                         this, &difficultyTitle, STRING_ID_DIFFICULTY_LABEL, 15, 370, 200, 20,
                                         RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
                                     )) {
-                                    if (create_drop_down(
-                                            this, &difficultyDrop, 130, 100, 20, 390, 130, 24, RGE_FONT_STANDARD
-                                        )) {
+                                    if (create_drop_down(this, &difficultyDrop, 130, 100, 20, 390, 130, 24, RGE_FONT_STANDARD)) {
                                         difficultyDrop->empty_list();
-                                        difficultyDrop->append_line(
-                                            STRING_ID_DIFFICULTY_EASIEST, RGE_DIFFICULTY_EASIEST
-                                        );
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASIEST, RGE_DIFFICULTY_EASIEST);
                                         difficultyDrop->append_line(STRING_ID_DIFFICULTY_EASY, RGE_DIFFICULTY_EASY);
-                                        difficultyDrop->append_line(
-                                            STRING_ID_DIFFICULTY_MODERATE, RGE_DIFFICULTY_MODERATE
-                                        );
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_MODERATE, RGE_DIFFICULTY_MODERATE);
                                         difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARD, RGE_DIFFICULTY_HARD);
-                                        difficultyDrop->append_line(
-                                            STRING_ID_DIFFICULTY_HARDEST, RGE_DIFFICULTY_HARDEST
-                                        );
+                                        difficultyDrop->append_line(STRING_ID_DIFFICULTY_HARDEST, RGE_DIFFICULTY_HARDEST);
                                         difficultyDrop->set_line(difficultyDrop->get_line(rge_base_game->difficulty()));
                                         if (create_button(
                                                 this, &okButton, STRING_ID_BUTTON_OK, 0, 70, 440, 240, 30,
@@ -79,8 +71,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection() : TScreenPane
                                                 cancel->hotkey = VK_ESCAPE;
                                                 cancel->hotkey_shift = 0;
                                                 if (create_button(
-                                                        this, &close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1,
-                                                        -1, 0
+                                                        this, &close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0
                                                     )) {
                                                     close_button->set_active(1);
                                                     close_button->set_positioning(
@@ -259,23 +250,23 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     rge_base_game->setScenarioGame(1);
     rge_base_game->setCampaignGame(1);
     rge_base_game->setSavedGame(0);
-    ((TRIBE_Game*)rge_base_game)->setVictoryType(TRIBE_Game::VictoryDefault, 0);
+    ((TRIBE_Game*) rge_base_game)->setVictoryType(TRIBE_Game::VictoryDefault, 0);
     rge_base_game->setDifficulty(this->difficultyDrop->get_id());
     rge_base_game->set_single_player_difficulty(this->difficultyDrop->get_id());
-    ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
-    ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
-    ((TRIBE_Game*)rge_base_game)->setAnimals(1);
-    ((TRIBE_Game*)rge_base_game)->setPredators(1);
+    ((TRIBE_Game*) rge_base_game)->setDeathMatch(0);
+    ((TRIBE_Game*) rge_base_game)->setQuickStartGame(0);
+    ((TRIBE_Game*) rge_base_game)->setAnimals(1);
+    ((TRIBE_Game*) rge_base_game)->setPredators(1);
     rge_base_game->setFullVisibility(0);
     rge_base_game->setFogOfWar(1);
     rge_base_game->setAllowCheatCodes(1);
-    ((TRIBE_Game*)rge_base_game)->setRandomizePositions(0);
-    ((TRIBE_Game*)rge_base_game)->setLongCombat(0);
-    ((TRIBE_Game*)rge_base_game)->setAllowTrading(1);
-    ((TRIBE_Game*)rge_base_game)->setFullTechTree(0);
-    ((TRIBE_Game*)rge_base_game)->setResourceLevel(TRIBE_Game::DefaultResources);
-    ((TRIBE_Game*)rge_base_game)->setStartingAge(TRIBE_Game::DefaultAge);
-    ((TRIBE_Game*)rge_base_game)->setStartingUnits(0);
+    ((TRIBE_Game*) rge_base_game)->setRandomizePositions(0);
+    ((TRIBE_Game*) rge_base_game)->setLongCombat(0);
+    ((TRIBE_Game*) rge_base_game)->setAllowTrading(1);
+    ((TRIBE_Game*) rge_base_game)->setFullTechTree(0);
+    ((TRIBE_Game*) rge_base_game)->setResourceLevel(TRIBE_Game::DefaultResources);
+    ((TRIBE_Game*) rge_base_game)->setStartingAge(TRIBE_Game::DefaultAge);
+    ((TRIBE_Game*) rge_base_game)->setStartingUnits(0);
 
     int first_human = -1;
     int first_color = 0;
@@ -288,9 +279,9 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     player_count = 0;
     for (int i = 0; i < 9; ++i) {
         if (scen->Get_player_Active(i)) {
-            ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player_count, i);
+            ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(player_count, i);
             int color = i + 1;
-            ((TRIBE_Game*)rge_base_game)->setPlayerColor(player_count, color);
+            ((TRIBE_Game*) rge_base_game)->setPlayerColor(player_count, color);
             rge_base_game->setPlayerTeam(player_count, 1);
             ++player_count;
             if (first_human == -1 && scen->Get_player_Type(i) == 1) {
@@ -309,16 +300,14 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     if (first_human != -1) {
         int j;
         for (j = 1; j < player_count; ++j) {
-            if (((TRIBE_Game*)rge_base_game)->scenarioPlayer(j) == first_human) {
-                ((TRIBE_Game*)rge_base_game)
-                    ->setScenarioPlayer(j, ((TRIBE_Game*)rge_base_game)->scenarioPlayer(0));
-                ((TRIBE_Game*)rge_base_game)
-                    ->setPlayerColor(j, ((TRIBE_Game*)rge_base_game)->playerColor(0));
+            if (((TRIBE_Game*) rge_base_game)->scenarioPlayer(j) == first_human) {
+                ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(j, ((TRIBE_Game*) rge_base_game)->scenarioPlayer(0));
+                ((TRIBE_Game*) rge_base_game)->setPlayerColor(j, ((TRIBE_Game*) rge_base_game)->playerColor(0));
                 break;
             }
         }
-        ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(0, first_human);
-        ((TRIBE_Game*)rge_base_game)->setPlayerColor(0, first_color);
+        ((TRIBE_Game*) rge_base_game)->setScenarioPlayer(0, first_human);
+        ((TRIBE_Game*) rge_base_game)->setPlayerColor(0, first_color);
     }
 
     comm->SetPlayerHumanity(1, ME_HUMAN);
@@ -329,7 +318,7 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
         comm->SetPlayerHumanity(q + 1, ME_ABSENT);
     }
 
-    if (!((TRIBE_Game*)rge_base_game)->start_game(0)) {
+    if (!((TRIBE_Game*) rge_base_game)->start_game(0)) {
         this->popupOKDialog(STRING_ID_ERROR_START_GAME, 0, TEASY_POPUP_WIDTH, 100);
     }
 }

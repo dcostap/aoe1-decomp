@@ -293,12 +293,12 @@ class RGE_Player {
     virtual void setDiplomaticStance(int playerNum, int rType);
     virtual void loadAIInformation(char* bL, char* cP, char* rS, int mood, int mapType);
     virtual void sendUnitAIOrder(
-        int issuer, int recipient, int orderType, int target, int targetOwner, float targetX, float targetY,
-        float targetZ, float range, int immediate, int inFront, int priority
+        int issuer, int recipient, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ,
+        float range, int immediate, int inFront, int priority
     );
     virtual void processAIOrder(
-        int issuer, int recipient, int orderType, int target, int targetOwner, float targetX, float targetY,
-        float targetZ, float range, int immediate, int inFront, int priority
+        int issuer, int recipient, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ,
+        float range, int immediate, int inFront, int priority
     );
     virtual void kickAI(int) {
     }
@@ -361,12 +361,12 @@ class RGE_Player {
     virtual void new_victory();
 
     RGE_Player(
-        RGE_Game_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name,
-        unsigned char m_player_id, unsigned char flag
+        RGE_Game_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name, unsigned char m_player_id,
+        unsigned char flag
     );
     RGE_Player(
-        RGE_Game_World*, RGE_Master_Player*, unsigned char, char*, unsigned char, unsigned char, unsigned char, char*,
-        char*, char*
+        RGE_Game_World*, RGE_Master_Player*, unsigned char, char*, unsigned char, unsigned char, unsigned char, char*, char*,
+        char*
     );
     RGE_Player(int infile, RGE_Game_World* gworld, unsigned char this_id);
 

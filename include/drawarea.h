@@ -15,9 +15,7 @@ class RGE_Color_Table;
 #undef WIN32_LEAN_AND_MEAN
 
 extern "C" __declspec(dllimport) int __stdcall GetClientRect(void*, RECT*);
-extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
-    void*, unsigned int, unsigned int, PALETTEENTRY*
-);
+extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(void*, unsigned int, unsigned int, PALETTEENTRY*);
 extern "C" __declspec(dllimport) void* __stdcall SelectObject(void*, void*);
 extern "C" __declspec(dllimport) int __stdcall DeleteObject(void*);
 extern "C" __declspec(dllimport) int __stdcall DeleteDC(void*);
@@ -115,8 +113,8 @@ class TSpan_List_Manager {
     int ValidateSpan(int Line);
     int DecodeLine(unsigned char* LineBuf, int Line, unsigned char fillC, int MaxX);
     void take_snapshot(
-        char* filespec, int& index_no, TDrawArea* render_area, int scolor, TSpan_List_Manager** SpanArray,
-        int* colorArray, int ArraySize
+        char* filespec, int& index_no, TDrawArea* render_area, int scolor, TSpan_List_Manager** SpanArray, int* colorArray,
+        int ArraySize
     );
 };
 
@@ -197,16 +195,12 @@ class TDrawArea {
     void DrawVertLine(long x, long y, long len, unsigned char color);
     void FillRect(long x1, long y1, long x2, long y2, unsigned char color);
     void DrawBevel(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2);
-    void DrawBevel2(
-        long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4
-    );
+    void DrawBevel2(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
     void DrawBevel3(
         long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4,
         unsigned char c5, unsigned char c6
     );
-    void DrawBevel21(
-        long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4
-    );
+    void DrawBevel21(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
     void DrawBevel32(
         long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4,
         unsigned char c5, unsigned char c6
@@ -266,8 +260,8 @@ class TDrawSystem {
     void CheckAvailModes(int full_screen);
     int IsModeAvail(long wid_in, long hgt_in, int color_bits);
     int Init(
-        void* inst_in, void* wnd_in, void* pal_in, unsigned char type_in, unsigned char mode_in, long wid_in,
-        long hgt_in, unsigned long flags_in
+        void* inst_in, void* wnd_in, void* pal_in, unsigned char type_in, unsigned char mode_in, long wid_in, long hgt_in,
+        unsigned long flags_in
     );
     int SetDisplaySize(long wid_in, long hgt_in, int color_bits);
     void ClearPrimarySurface();

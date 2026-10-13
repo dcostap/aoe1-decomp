@@ -79,9 +79,7 @@ class TRIBE_Main_View : public RGE_Main_View {
 
   protected:
     int draw_wall_outline(long col, long row, TRIBE_Master_Building_Object* master_bldg, long facet);
-    void place_line_of_walls(
-        TRIBE_Player* player, TRIBE_Master_Building_Object* master_obj, int x1, int y1, int x2, int y2
-    );
+    void place_line_of_walls(TRIBE_Player* player, TRIBE_Master_Building_Object* master_obj, int x1, int y1, int x2, int y2);
 };
 
 typedef char vw_main_tribe_main_view_size_check[(sizeof(TRIBE_Main_View) == 0x380) ? 1 : -1];

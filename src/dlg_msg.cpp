@@ -35,9 +35,7 @@ long TMessageDialog::setup(
     button[1] = 0;
     button[2] = 0;
 
-    if (!TDialogPanel::setup(
-            parent_panel_in->renderArea(), parent_panel_in, wid_in, hgt_in, info_file_in, info_id_in, 1
-        ))
+    if (!TDialogPanel::setup(parent_panel_in->renderArea(), parent_panel_in, wid_in, hgt_in, info_file_in, info_id_in, 1))
         return 0;
 
     dlg_type = dlg_type_in;
@@ -70,8 +68,7 @@ long TMessageDialog::setup(
     button_x = space;
     for (index = 0; index < button_num; ++index) {
         if (!create_button(
-                this, &button[index], s_empty_string, s_empty_string, button_x, y, btn_wid_in, btn_hgt_in,
-                RGE_FONT_STANDARD, 0, 0
+                this, &button[index], s_empty_string, s_empty_string, button_x, y, btn_wid_in, btn_hgt_in, RGE_FONT_STANDARD, 0, 0
             ))
             return 0;
         button_x += space + btn_wid_in;
@@ -108,7 +105,7 @@ long TMessageDialog::setup(
             break;
     }
 
-    set_tab_order((TPanel**)button, (short)button_num);
+    set_tab_order((TPanel**) button, (short) button_num);
     set_curr_child(button[0]);
     return 1;
 }

@@ -15,9 +15,7 @@ class RGE_Active_Sprite {
     virtual void set_offset(long x, long y);
     virtual void save(int outfile);
     virtual void update(float time, float speed);
-    virtual void draw(
-        short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area
-    );
+    virtual void draw(short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area);
     virtual void normal_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area);
     virtual void shadow_draw(
         short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag
@@ -59,9 +57,7 @@ class RGE_Active_Animated_Sprite : public RGE_Active_Sprite {
 
     virtual void save(int outfile);
     virtual void update(float time, float speed);
-    virtual void draw(
-        short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area
-    );
+    virtual void draw(short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area);
     virtual void normal_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area);
     virtual void shadow_draw(
         short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag
@@ -89,9 +85,7 @@ class RGE_Active_Sprite_List {
     virtual ~RGE_Active_Sprite_List();
     virtual short frame(RGE_Sprite* sprite);
     virtual void update(float time, float speed);
-    virtual void draw(
-        short facet, short x, short y, short sx, short sy, RGE_Color_Table* player_color, TDrawArea* draw_area
-    );
+    virtual void draw(short facet, short x, short y, short sx, short sy, RGE_Color_Table* player_color, TDrawArea* draw_area);
     virtual void normal_draw(short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area);
     virtual void shadow_draw(
         short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag

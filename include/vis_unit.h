@@ -42,9 +42,7 @@ class Visible_Unit_Manager {
         int Object_Id, int player_id, int Xpos, int Ypos, int Category, unsigned long PriorUnifiedMap,
         unsigned long NewUnifiedMap, VISIBLE_UNIT_REC** ObjectPtrs
     );
-    int GetVisibleUnits(
-        int Xpos, int Ypos, int LOS, int player, int* DesiredTypes, int DesiredCount, int* PlayerListMap
-    );
+    int GetVisibleUnits(int Xpos, int Ypos, int LOS, int player, int* DesiredTypes, int DesiredCount, int* PlayerListMap);
 };
 
 typedef char aoe1_visible_unit_manager_size_check[(sizeof(Visible_Unit_Manager) == 0x24) ? 1 : -1];

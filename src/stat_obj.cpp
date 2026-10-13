@@ -122,9 +122,7 @@ RGE_Static_Object::~RGE_Static_Object() {
     }
 }
 
-void RGE_Static_Object::recycle_in_to_game(
-    RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z
-) {
+void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z) {
     this->old_sprite = 0;
     this->unitAIValue = 0;
     this->underAttackValue = 0;
@@ -473,7 +471,7 @@ void RGE_Static_Object::draw(TDrawArea* render_area, short x, short y, RGE_Color
     SDI_Object_ID = this->id;
 
     if (this->type == 0x19) {
-        RGE_Doppleganger_Object* dopple = (RGE_Doppleganger_Object*)this;
+        RGE_Doppleganger_Object* dopple = (RGE_Doppleganger_Object*) this;
 
         if ((dopple->CantSeeBits & (1 << this->owner->world->curr_player)) != 0) {
             SDI_Object_ID = -1;
@@ -506,8 +504,7 @@ void RGE_Static_Object::draw(TDrawArea* render_area, short x, short y, RGE_Color
 void RGE_Static_Object::shadow_draw(TDrawArea* render_area, short x, short y, unsigned char flag) {
     if (this->tile != 0 && this->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
         this->sprite_list->shadow_draw(
-            this->facet, this->shadow_x_offset + x, this->shadow_y_offset + y, this->owner->color_table, render_area,
-            flag
+            this->facet, this->shadow_x_offset + x, this->shadow_y_offset + y, this->owner->color_table, render_area, flag
         );
     }
 }
@@ -623,9 +620,7 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* render_area, short x, sh
             x1 = x + min_x - 1 + this->screen_x_offset;
             y1 = y + min_y - 1 + this->screen_y_offset;
             y0 = y + max_y + 1 + this->screen_y_offset;
-            SDI_List->AddGDINode(
-                4, y0, x1, y1, x + max_x + this->screen_x_offset + 1, y0, 0, 0, 0, 0, 10, 0xff, SDI_Object_ID
-            );
+            SDI_List->AddGDINode(4, y0, x1, y1, x + max_x + this->screen_x_offset + 1, y0, 0, 0, 0, 0, 10, 0xff, SDI_Object_ID);
 
             if (this->object_state <= RGE_OBJECT_STATE_ACTIVE) {
                 int health = (int) this->hp;
@@ -1659,8 +1654,7 @@ void RGE_Static_Object::new_sprite(RGE_Sprite* nsprite) {
     if (nsprite == 0) {
         nsprite = this->master_obj->sprite;
     }
-    if (this->sprite != nsprite
-        && (this->sprite != this->master_obj->death_sprite || this->master_obj->death_sprite == 0)) {
+    if (this->sprite != nsprite && (this->sprite != this->master_obj->death_sprite || this->master_obj->death_sprite == 0)) {
         this->old_sprite = this->sprite;
         this->sprite_list->remove_sprite(this->sprite);
         this->sprite = nsprite;
@@ -1886,10 +1880,9 @@ void RGE_Static_Object::remove_visible_resource() {
                         player = this->owner->world->players[player_index];
                         player->VR_List->Remove_Resource(this->id, this->master_obj->resource_group);
                     }
-                    if (this->master_obj->create_doppleganger_on_death == 1 && (ExploredVal & 1) == 0
-                        && player_index > 0) {
+                    if (this->master_obj->create_doppleganger_on_death == 1 && (ExploredVal & 1) == 0 && player_index > 0) {
                         player = this->owner->world->players[player_index];
-                        ((RGE_Master_Doppleganger_Object*)player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
+                        ((RGE_Master_Doppleganger_Object*) player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
                             ->make_new_obj(player, this->world_x, this->world_y, this->world_z, this);
                     }
                 }
@@ -1907,8 +1900,7 @@ void RGE_Static_Object::remove_visible_resource() {
 typedef unsigned long ulong;
 
 void RGE_Static_Object::create_doppleganger_when_dying() {
-    if (this->id >= 0 && this->owner != 0 && this->master_obj != 0
-        && this->master_obj->create_doppleganger_on_death == 2) {
+    if (this->id >= 0 && this->owner != 0 && this->master_obj != 0 && this->master_obj->create_doppleganger_on_death == 2) {
         ulong ExploredVal = unified_map_offsets[(int) this->world_y][(int) this->world_x];
         ulong explored = ExploredVal >> 16;
         ExploredVal &= 0xFFFF;
@@ -1917,7 +1909,7 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
             do {
                 if ((explored & 1) == 1 && (ExploredVal & 1) == 0 && i > 0) {
                     RGE_Player* player = this->owner->world->players[i];
-                    ((RGE_Master_Doppleganger_Object*)player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
+                    ((RGE_Master_Doppleganger_Object*) player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
                         ->make_new_obj(player, this->world_x, this->world_y, this->world_z, this);
                 }
                 i++;
@@ -1944,23 +1936,22 @@ void RGE_Static_Object::set_object_state(unsigned char new_object_state) {
             this->remove_visible_resource();
         }
 
-        if (new_object_state >= RGE_OBJECT_STATE_DYING && this->object_state == RGE_OBJECT_STATE_ACTIVE
-            && this->tile != 0) {
+        if (new_object_state >= RGE_OBJECT_STATE_DYING && this->object_state == RGE_OBJECT_STATE_ACTIVE && this->tile != 0) {
             this->unexplore_terrain(this->owner, 0, -1);
             if (this->master_obj->los > 0.0) {
                 this->explore_terrain(this->owner, 1, -1);
             }
         }
 
-        if (this->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL
-            && new_object_state == RGE_OBJECT_STATE_PENDING_REMOVAL && this->tile != 0 && this->master_obj->los > 0.0) {
+        if (this->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL && new_object_state == RGE_OBJECT_STATE_PENDING_REMOVAL
+            && this->tile != 0 && this->master_obj->los > 0.0) {
             this->unexplore_terrain(this->owner, 1, -1);
         }
 
         this->object_state = new_object_state;
 
-        if (new_object_state == RGE_OBJECT_STATE_DYING && this->groupCommanderValue == this->id
-            && this->unitAIValue != 0 && this->groupMembers.number() > 1) {
+        if (new_object_state == RGE_OBJECT_STATE_DYING && this->groupCommanderValue == this->id && this->unitAIValue != 0
+            && this->groupMembers.number() > 1) {
             int i = 0;
             int newCommander = -1;
             if (this->groupMembers.number() > 0) {
@@ -2129,14 +2120,11 @@ int RGE_Static_Object::explore_terrain(RGE_Player* whos, unsigned char explore_t
             RGE_Visible_Map* visible = whos->visible;
             long current = (whos->id == whos->world->curr_player);
             if (explore_type == 0) {
-                return visible->explore_terrain(
-                    (long) this->world_x, (long) this->world_y, Override_LOS, 0, current, this->id
-                );
+                return visible->explore_terrain((long) this->world_x, (long) this->world_y, Override_LOS, 0, current, this->id);
             } else {
                 if (this->master_obj->radius_x > 0.0 && this->master_obj->radius_y > 0.0) {
                     return visible->explore_terrain_sq(
-                        (long) (this->world_x - this->master_obj->radius_x),
-                        (long) (this->world_y - this->master_obj->radius_y),
+                        (long) (this->world_x - this->master_obj->radius_x), (long) (this->world_y - this->master_obj->radius_y),
                         (long) (this->world_x + this->master_obj->radius_x - 0.01f),
                         (long) (this->world_y + this->master_obj->radius_y - 0.01f), current, this->id
                     );
@@ -2156,14 +2144,11 @@ void RGE_Static_Object::unexplore_terrain(RGE_Player* whos, unsigned char explor
             RGE_Visible_Map* visible = whos->visible;
             long current = (whos->id == whos->world->curr_player);
             if (explore_type == 0) {
-                visible->unexplore_terrain(
-                    (long) this->world_x, (long) this->world_y, Override_LOS, 0, current, this->id
-                );
+                visible->unexplore_terrain((long) this->world_x, (long) this->world_y, Override_LOS, 0, current, this->id);
             } else {
                 if (this->master_obj->radius_x > 0.0 && this->master_obj->radius_y > 0.0) {
                     visible->unexplore_terrain_sq(
-                        (long) (this->world_x - this->master_obj->radius_x),
-                        (long) (this->world_y - this->master_obj->radius_y),
+                        (long) (this->world_x - this->master_obj->radius_x), (long) (this->world_y - this->master_obj->radius_y),
                         (long) (this->world_x + this->master_obj->radius_x - 0.01f),
                         (long) (this->world_y + this->master_obj->radius_y - 0.01f), current, this->id
                     );
@@ -2357,9 +2342,7 @@ float RGE_Static_Object::distance_to_position(float x, float y, float z) {
     return sqrt(dX * dX + dY * dY);
 }
 
-unsigned char RGE_Static_Object::hit_test(
-    short draw_x, short draw_y, short mouse_x, short mouse_y, short check_radius
-) {
+unsigned char RGE_Static_Object::hit_test(short draw_x, short draw_y, short mouse_x, short mouse_y, short check_radius) {
     if (this->sprite != 0 && this->sprite_list != 0) {
         short frame = this->sprite_list->frame(this->sprite);
         short scr_x = mouse_x - this->screen_x_offset - draw_x;
@@ -2489,8 +2472,8 @@ unsigned char RGE_Static_Object::drop_held_objects(int dropZone) {
 
 // the x and y outputs are float references in the shipped symbol.
 unsigned char RGE_Static_Object::find_drop_location(
-    int dropZone, float& x, float& y, RGE_Master_Static_Object* m_obj, RGE_Static_Object* obj, float drop_x,
-    float drop_y, float radius_x, float radius_y
+    int dropZone, float& x, float& y, RGE_Master_Static_Object* m_obj, RGE_Static_Object* obj, float drop_x, float drop_y,
+    float radius_x, float radius_y
 ) {
     radius_x = radius_x + m_obj->radius_x;
     radius_y = radius_y + m_obj->radius_y;
@@ -2535,8 +2518,7 @@ unsigned char RGE_Static_Object::find_drop_location(
                         goto retry_attempt;
                     }
                     // success returns from inside the retry loop.
-                    if (m_obj->check_placement(this->owner, x, y, 0, 1, 1, 1, 0, 1, 1) == 0
-                        && obj->passableTile(x, y, 0) == 1) {
+                    if (m_obj->check_placement(this->owner, x, y, 0, 1, 1, 1, 0, 1, 1) == 0 && obj->passableTile(x, y, 0) == 1) {
                         return 1;
                     }
                 }
@@ -2570,7 +2552,7 @@ RGE_Check_List::~RGE_Check_List() {
 }
 
 void RGE_Check_List::add_node(RGE_Static_Object* obj, float dx, float dy, unsigned char flag1) {
-    RGE_Check_Node* node = (RGE_Check_Node*)calloc(1, sizeof(RGE_Check_Node));
+    RGE_Check_Node* node = (RGE_Check_Node*) calloc(1, sizeof(RGE_Check_Node));
     node->next = this->list;
     node->node = obj;
     node->dx = dx;
@@ -2996,9 +2978,7 @@ unsigned char RGE_Static_Object::lookupZone(XYPoint p) {
 
     if (zoneMapIndex == -1) {
         RGE_Game_World* world = owner->world;
-        zoneMap = world->map->map_zones->get_zone_map(
-            world->terrains[master_obj->terrain], world->terrain_size, zoneMapIndex
-        );
+        zoneMap = world->map->map_zones->get_zone_map(world->terrains[master_obj->terrain], world->terrain_size, zoneMapIndex);
     } else {
         RGE_Game_World* world = owner->world;
         zoneMap = world->map->map_zones->get_zone_map(zoneMapIndex);
@@ -3040,9 +3020,7 @@ unsigned char RGE_Static_Object::currentZone() {
 
     if (zoneMapIndex == -1) {
         RGE_Game_World* world = owner->world;
-        zoneMap = world->map->map_zones->get_zone_map(
-            world->terrains[master_obj->terrain], world->terrain_size, zoneMapIndex
-        );
+        zoneMap = world->map->map_zones->get_zone_map(world->terrains[master_obj->terrain], world->terrain_size, zoneMapIndex);
     } else {
         RGE_Game_World* world = owner->world;
         zoneMap = world->map->map_zones->get_zone_map(zoneMapIndex);

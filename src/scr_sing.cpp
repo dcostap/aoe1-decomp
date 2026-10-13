@@ -28,9 +28,7 @@ TribeSPMenuScreen::TribeSPMenuScreen() : TScreenPanel("Single Player Menu") {
 
     set_ideal_size(640, 480);
 
-    if (create_text(
-            this, &title, STRING_ID_MENU_SINGLE_PLAYER_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
-        )) {
+    if (create_text(this, &title, STRING_ID_MENU_SINGLE_PLAYER_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0)) {
         for (int id = 0x76, i = 0; id < 0x1A2; id += 0x32, i++) {
             if (!create_button(this, &button[i], "", 0, 170, id, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
                 return;
@@ -86,8 +84,8 @@ long TribeSPMenuScreen::action(TPanel* fromPanel, long actionIn, unsigned long a
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(0);
-            ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
-            ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
+            ((TRIBE_Game*) rge_base_game)->setDeathMatch(0);
+            ((TRIBE_Game*) rge_base_game)->setQuickStartGame(0);
             rge_base_game->disable_input();
             new TribeMPSetupScreen;
             panel_system.setCurrentPanel("MP Setup Screen", 0);
@@ -99,8 +97,8 @@ long TribeSPMenuScreen::action(TPanel* fromPanel, long actionIn, unsigned long a
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(0);
-            ((TRIBE_Game*)rge_base_game)->setDeathMatch(1);
-            ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
+            ((TRIBE_Game*) rge_base_game)->setDeathMatch(1);
+            ((TRIBE_Game*) rge_base_game)->setQuickStartGame(0);
             rge_base_game->disable_input();
             new TribeMPSetupScreen;
             panel_system.setCurrentPanel("MP Setup Screen", 0);
@@ -112,8 +110,8 @@ long TribeSPMenuScreen::action(TPanel* fromPanel, long actionIn, unsigned long a
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(1);
-            ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
-            ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
+            ((TRIBE_Game*) rge_base_game)->setDeathMatch(0);
+            ((TRIBE_Game*) rge_base_game)->setQuickStartGame(0);
             rge_base_game->disable_input();
             new TribeSelectScenarioScreen;
             panel_system.setCurrentPanel("Select Scenario Screen", 0);

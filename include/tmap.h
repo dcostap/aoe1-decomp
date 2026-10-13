@@ -42,16 +42,14 @@ class TRIBE_Map : public RGE_Map {
   public:
     TRIBE_Map(int infile, RGE_Sound** sound, unsigned char setup);
     TRIBE_Map(
-        char* border_tbl, char* overlay_tbl, char* terrain_tbl, char* map_tbl, short TileWid, short TileHgt,
-        short ElevHgt, RGE_Sound** sound
+        char* border_tbl, char* overlay_tbl, char* terrain_tbl, char* map_tbl, short TileWid, short TileHgt, short ElevHgt,
+        RGE_Sound** sound
     );
     virtual ~TRIBE_Map();
     virtual void data_load_random_map(int infile);
     virtual void load_random_map(char* rmm_map_file, char* rmm_land_file, char* rmm_terr_file, char* rmm_obj_file);
     virtual unsigned char do_terrain_brush(long x, long y, long brush_size, unsigned char terrain_id);
-    virtual unsigned char do_terrain_brush_stroke(
-        long x1, long y1, long x2, long y2, long brush_size, unsigned char terrain_id
-    );
+    virtual unsigned char do_terrain_brush_stroke(long x1, long y1, long x2, long y2, long brush_size, unsigned char terrain_id);
     virtual unsigned char do_elevation_brush_stroke(
         long x1, long y1, long x2, long y2, long brush_size, unsigned char elevation_height
     );
@@ -82,9 +80,7 @@ class TRIBE_Map : public RGE_Map {
     void clean_borders(long x1, long y1, long x2, long y2, unsigned char terrain_id);
     unsigned char do_terrain_brush_check(long x, long y);
     void tribe_clean_elevation(long x1, long y1, long x2, long y2);
-    void tribe_clean_terrain(
-        long x1, long y1, long x2, long y2, unsigned char check_terrain, unsigned char replacement_terrain
-    );
+    void tribe_clean_terrain(long x1, long y1, long x2, long y2, unsigned char check_terrain, unsigned char replacement_terrain);
 };
 
 typedef char tribe_cliff_info_size_check[(sizeof(TRIBE_Cliff_Info) == 0x10) ? 1 : -1];

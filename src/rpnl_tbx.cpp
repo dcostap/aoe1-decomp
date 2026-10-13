@@ -31,8 +31,8 @@ static char text_command[] = "Cmd";
 static char text_command_label[] = "<Cmd>";
 
 RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
-    TDrawArea* draw_area_in, TPanel* parent_in, long x, long y, long wid, long hgt, void* font, long font_wid,
-    long font_hgt, TDigital* sound, TScreenPanel* screen_panel_in, RGE_View* view_in, RGE_Diamond_Map* map_in
+    TDrawArea* draw_area_in, TPanel* parent_in, long x, long y, long wid, long hgt, void* font, long font_wid, long font_hgt,
+    TDigital* sound, TScreenPanel* screen_panel_in, RGE_View* view_in, RGE_Diamond_Map* map_in
 ) : TPanel() {
     this->screen_panel = screen_panel_in;
     this->view = view_in;
@@ -77,8 +77,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                     this->error_code = 1;
                 } else {
                     this->move_mode_button->setup(
-                        this->render_area, this, 104, 0, 50, 30, TButtonPanel::DrawText, sound,
-                        TButtonPanel::NotifyAction, 0
+                        this->render_area, this, 104, 0, 50, 30, TButtonPanel::DrawText, sound, TButtonPanel::NotifyAction, 0
                     );
                     this->move_mode_button->set_text_info(text_move, font, font_wid, font_hgt, -1, -1);
                     this->move_mode_button->set_text(1, text_move_label);
@@ -88,8 +87,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                         this->error_code = 1;
                     } else {
                         this->delete_mode_button->setup(
-                            this->render_area, this, 156, 0, 50, 30, TButtonPanel::DrawText, sound,
-                            TButtonPanel::NotifyAction, 0
+                            this->render_area, this, 156, 0, 50, 30, TButtonPanel::DrawText, sound, TButtonPanel::NotifyAction, 0
                         );
                         this->delete_mode_button->set_text_info(text_delete, font, font_wid, font_hgt, -1, -1);
                         this->delete_mode_button->set_text(1, text_delete_label);
@@ -114,16 +112,13 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                                     this->render_area, this, 260, 0, 50, 30, TButtonPanel::DrawText, sound,
                                     TButtonPanel::NotifyAction, 0
                                 );
-                                this->elevation_mode_button->set_text_info(
-                                    text_elevation, font, font_wid, font_hgt, -1, -1
-                                );
+                                this->elevation_mode_button->set_text_info(text_elevation, font, font_wid, font_hgt, -1, -1);
                                 this->elevation_mode_button->set_text(1, text_elevation_label);
                                 this->elevation_mode_button->set_active(0);
 
-                                TButtonPanel* mode_buttons[6] = {
-                                    this->game_mode_button,   this->object_mode_button,  this->move_mode_button,
-                                    this->delete_mode_button, this->terrain_mode_button, this->elevation_mode_button
-                                };
+                                TButtonPanel* mode_buttons[6] = { this->game_mode_button,    this->object_mode_button,
+                                                                  this->move_mode_button,    this->delete_mode_button,
+                                                                  this->terrain_mode_button, this->elevation_mode_button };
                                 this->game_mode_button->set_radio_info(mode_buttons, 6);
                                 this->object_mode_button->set_radio_info(mode_buttons, 6);
                                 this->move_mode_button->set_radio_info(mode_buttons, 6);
@@ -164,9 +159,7 @@ RGE_Panel_Tool_Box::~RGE_Panel_Tool_Box() {
     delete this->command_button;
 }
 
-long RGE_Panel_Tool_Box::action(
-    TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2
-) {
+long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     if (from_panel != 0) {
         if ((from_panel == this->game_mode_button) && (action_in == 1)) {
             rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
@@ -176,7 +169,7 @@ long RGE_Panel_Tool_Box::action(
         if ((from_panel == this->object_mode_button) && (action_in == 1)) {
             this->dialog = new RGE_Dialog_List("Object List Dialog");
             if (this->dialog != 0) {
-                if (((RGE_Dialog_List*)this->dialog)
+                if (((RGE_Dialog_List*) this->dialog)
                         ->setup(
                             this->screen_panel, this->screen_panel->get_popup_info_file(),
                             this->screen_panel->get_popup_info_id(), 1, this->get_string(STRING_ID_SELECT_OBJECT_TITLE)
@@ -215,7 +208,7 @@ long RGE_Panel_Tool_Box::action(
 
                 if (strcmp(this->dialog->panelName(), "Object List Dialog") == 0) {
                     if (action_in == 1) {
-                        rge_base_game->master_obj_id = ((RGE_Dialog_List*)this->dialog)->get_list_id();
+                        rge_base_game->master_obj_id = ((RGE_Dialog_List*) this->dialog)->get_list_id();
                         rge_base_game->delete_dialog(&this->dialog);
                         rge_base_game->set_game_mode(RGE_GAME_MODE_PLACE_OBJECT, 0);
                         rge_base_game->get_player()->unselect_object();
@@ -228,7 +221,7 @@ long RGE_Panel_Tool_Box::action(
                     }
                 } else if (strcmp(this->dialog->panelName(), "Terrain List Dialog") == 0) {
                     if (action_in == 1) {
-                        rge_base_game->terrain_id = ((RGE_Dialog_List*)this->dialog)->get_list_id();
+                        rge_base_game->terrain_id = ((RGE_Dialog_List*) this->dialog)->get_list_id();
                         rge_base_game->delete_dialog(&this->dialog);
                         rge_base_game->set_game_mode(RGE_GAME_MODE_TERRAIN, 0);
                         return 1;

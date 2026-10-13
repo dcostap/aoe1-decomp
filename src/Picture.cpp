@@ -66,8 +66,7 @@ TPicture::TPicture(int infile, int UseTrans) {
                     (unsigned char*) this->Dib + ((BITMAPINFO256*) this->Dib)->bmiHeader.biSize + 12;
                 DibCheckTrans((BITMAPINFO256*) this->Dib, trans_info, transparency_bits);
             } else {
-                unsigned char* transparency_bits = (unsigned char*) this->Dib
-                                                   + ((BITMAPINFO256*) this->Dib)->bmiHeader.biSize
+                unsigned char* transparency_bits = (unsigned char*) this->Dib + ((BITMAPINFO256*) this->Dib)->bmiHeader.biSize
                                                    + ((BITMAPINFO256*) this->Dib)->bmiHeader.biClrUsed * 4;
                 DibCheckTrans((BITMAPINFO256*) this->Dib, trans_info, transparency_bits);
             }
@@ -239,20 +238,20 @@ long TPicture::AlignedWidth() {
 void TPicture::Draw(TDrawArea* DrawArea, long DestX, long DestY, int Mirror, int Flip) {
     if (this->TransInfo != 0) {
         TransDibBlt(
-            DrawArea->BitmapInfo, DrawArea->Bits, &DrawArea->ClipRect, DestX, DestY, this->Width, this->Height,
-            this->BitmapInfo, this->Bits, this->TransInfo, 0, 0, this->Width, this->Height, 1, Mirror, Flip, 0
+            DrawArea->BitmapInfo, DrawArea->Bits, &DrawArea->ClipRect, DestX, DestY, this->Width, this->Height, this->BitmapInfo,
+            this->Bits, this->TransInfo, 0, 0, this->Width, this->Height, 1, Mirror, Flip, 0
         );
     } else {
         DibBlt(
-            DrawArea->BitmapInfo, DrawArea->Bits, &DrawArea->ClipRect, DestX, DestY, this->Width, this->Height,
-            this->BitmapInfo, this->Bits, 0, 0, this->Width, this->Height, 1, Mirror, Flip
+            DrawArea->BitmapInfo, DrawArea->Bits, &DrawArea->ClipRect, DestX, DestY, this->Width, this->Height, this->BitmapInfo,
+            this->Bits, 0, 0, this->Width, this->Height, 1, Mirror, Flip
         );
     }
 }
 
 long TPicture::Tile(
-    TDrawArea* DrawArea, long DestX, long DestY, long DestWid, long DestHgt, long BlockWid, long BlockHgt, long SrcX,
-    long SrcY, long SrcWid, long SrcHgt
+    TDrawArea* DrawArea, long DestX, long DestY, long DestWid, long DestHgt, long BlockWid, long BlockHgt, long SrcX, long SrcY,
+    long SrcWid, long SrcHgt
 ) {
     return TileDibBlt(
         DrawArea->BitmapInfo, DrawArea->Bits, &DrawArea->ClipRect, DestX, DestY, DestWid, DestHgt, BlockWid, BlockHgt,

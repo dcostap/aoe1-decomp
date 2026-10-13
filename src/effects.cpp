@@ -69,8 +69,7 @@ RGE_Effects::RGE_Effects(char* effect_file) {
             for (index = 0; index < count; index++) {
                 short command_index = 0;
                 fscanf(fp, "%d", &this_effect_num);
-                if (fscanf(fp, "%s %hd", effects[this_effect_num].name, &effects[this_effect_num].effect_list_num)
-                    == -1)
+                if (fscanf(fp, "%s %hd", effects[this_effect_num].name, &effects[this_effect_num].effect_list_num) == -1)
                     break;
                 effects[this_effect_num].id = (short) this_effect_num;
                 if (effects[this_effect_num].effect_list_num > 0) {
@@ -80,8 +79,8 @@ RGE_Effects::RGE_Effects(char* effect_file) {
                         while (effects[this_effect_num].effect_list_num > command_index) {
                             RGE_Effect_Command* command = &effects[this_effect_num].effect_list[command_index];
                             if (fscanf(
-                                    fp, "%hd %hd %hd %hd %f", &effect_command, &command->change_num1,
-                                    &command->change_num2, &command->change_num3, &command->change_amount
+                                    fp, "%hd %hd %hd %hd %f", &effect_command, &command->change_num1, &command->change_num2,
+                                    &command->change_num3, &command->change_amount
                                 )
                                 == -1)
                                 break;
@@ -164,9 +163,7 @@ void RGE_Effects::do_effect(short current_effect, RGE_Player* player) {
                     case 4: {
                         short operation = command->change_num3;
                         float amount = command->change_amount;
-                        player->modify_tobj_delta(
-                            command->change_num1, command->change_num2, amount, (unsigned char) operation
-                        );
+                        player->modify_tobj_delta(command->change_num1, command->change_num2, amount, (unsigned char) operation);
                         break;
                     }
                     case 5: {
@@ -180,9 +177,7 @@ void RGE_Effects::do_effect(short current_effect, RGE_Player* player) {
                     case 0: {
                         short operation = command->change_num3;
                         float amount = command->change_amount;
-                        player->modify_tobj(
-                            command->change_num1, command->change_num2, amount, (unsigned char) operation
-                        );
+                        player->modify_tobj(command->change_num1, command->change_num2, amount, (unsigned char) operation);
                         break;
                     }
                     case 1: {

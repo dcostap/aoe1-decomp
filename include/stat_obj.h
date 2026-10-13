@@ -481,8 +481,8 @@ class RGE_Static_Object {
     RGE_Static_Object* get_object_pointer(long obj_id);
     unsigned char drop_held_objects(int dropZone);
     unsigned char find_drop_location(
-        int dropZone, float& x, float& y, RGE_Master_Static_Object* m_obj, RGE_Static_Object* obj, float drop_x,
-        float drop_y, float radius_x, float radius_y
+        int dropZone, float& x, float& y, RGE_Master_Static_Object* m_obj, RGE_Static_Object* obj, float drop_x, float drop_y,
+        float radius_x, float radius_y
     );
 };
 

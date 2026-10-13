@@ -79,8 +79,8 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(
     if (bi->typeID() == MASTER_OBJECT_STORAGE_PIT1 || bi->typeID() == MASTER_OBJECT_GRANARY
         || bi->typeID() == MASTER_OBJECT_WATCH_TOWER || bi->typeID() == MASTER_OBJECT_SENTRY_TOWER
         || bi->typeID() == MASTER_OBJECT_GUARD_TOWER || bi->typeID() == MASTER_OBJECT_WALL_SMALL
-        || bi->typeID() == MASTER_OBJECT_WALL_MED || bi->typeID() == MASTER_OBJECT_WALL_LARGE
-        || useInfluencePlacement == 1 || this->numberConstructionLotsValue == 0) {
+        || bi->typeID() == MASTER_OBJECT_WALL_MED || bi->typeID() == MASTER_OBJECT_WALL_LARGE || useInfluencePlacement == 1
+        || this->numberConstructionLotsValue == 0) {
         return this->md->informationAI.influencePlaceStructure(
             bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState, startTime
         );
@@ -146,9 +146,8 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(
     }
 
     if (minBuildAttempts >= 2 || minBuildAttempts == -1) {
-        ConstructionItem* result = this->md->informationAI.influencePlaceStructure(
-            bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState, startTime
-        );
+        ConstructionItem* result =
+            this->md->informationAI.influencePlaceStructure(bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState, startTime);
         if (result != 0) {
             return result;
         }

@@ -224,8 +224,7 @@ unsigned char RGE_Flic_Player::draw(TDrawArea* drawarea_in, long flic_x, long fl
 
     this->drawarea_width = this->drawarea->AlignedWidth() * this->drawarea->Orien;
     if (this->drawarea->Orien < 1) {
-        this->window_buffer =
-            this->drawarea->Bits + this->x1 + ((this->y1 - this->drawarea->Height) + 1) * this->drawarea_width;
+        this->window_buffer = this->drawarea->Bits + this->x1 + ((this->y1 - this->drawarea->Height) + 1) * this->drawarea_width;
     } else {
         this->window_buffer = this->drawarea->Bits + this->x1 + this->drawarea_width * this->y1;
     }

@@ -165,8 +165,7 @@ void PathingSystem::incrementObstruction(int x, int y) {
     unsigned char val = obstructionValue[x][y >> 2];
     unsigned char field = (val >> ObstructionValueShift[y & 3]) & 3;
     if (field < 3) {
-        obstructionValue[x][y >> 2] =
-            (ObstructionValueMask[y & 3] & val) | ((field + 1) << ObstructionValueShift[y & 3]);
+        obstructionValue[x][y >> 2] = (ObstructionValueMask[y & 3] & val) | ((field + 1) << ObstructionValueShift[y & 3]);
     }
 }
 
@@ -209,9 +208,9 @@ static __inline int estimateDistanceOrdered(int ax, int ay, int bx, int by) {
 
 #pragma optimize("y", off)
 int PathingSystem::findTilePath(
-    int startX, int startY, int goalX, int goalY, RGE_Moving_Object* unit, float actionRange, int cTargetID,
-    int copyPathWhenDone, float* pathLength, int checkPathingIterations, int checkTerrainFirstTime, int checkCollisions,
-    int stepSize, int unobstructiblePlayerID, int unobstructibleGroupID
+    int startX, int startY, int goalX, int goalY, RGE_Moving_Object* unit, float actionRange, int cTargetID, int copyPathWhenDone,
+    float* pathLength, int checkPathingIterations, int checkTerrainFirstTime, int checkCollisions, int stepSize,
+    int unobstructiblePlayerID, int unobstructibleGroupID
 ) {
     int dist;
     int currentEstimate;
@@ -736,13 +735,11 @@ int PathingSystem::findTilePath(
                                 float* terrainTable = this->currentTerrainTable;
                                 // The original loads cost even for a terrain exception.
                                 float terrainValue = terrainTable[terrain];
-                                if (terrain != this->currentTerrainException1
-                                    && terrain != this->currentTerrainException2
+                                if (terrain != this->currentTerrainException1 && terrain != this->currentTerrainException2
                                     && terrainValue <= g_path_zero_terrain_value) {
                                     tmp = tile->border_type & 0x0f;
                                     if (tmp == 0
-                                        || terrainTable[map->border_types[tmp].underlay_terrain]
-                                               <= g_path_zero_terrain_value) {
+                                        || terrainTable[map->border_types[tmp].underlay_terrain] <= g_path_zero_terrain_value) {
                                         terrainStatus = 0xfe;
                                         break;
                                     }
@@ -798,12 +795,10 @@ int PathingSystem::findTilePath(
                         while (col < right) {
                             row = top;
                             while (row < bottom) {
-                                if (((this->obstructionValue[col][row >> 2] >> (ObstructionValueShift[row & 3] & 0x1f))
-                                     & 3)
+                                if (((this->obstructionValue[col][row >> 2] >> (ObstructionValueShift[row & 3] & 0x1f)) & 3)
                                     != 0) {
-                                    if (this->currentTargetID == -1 || col < this->minTarget.x
-                                        || this->maxTarget.x < col || row < this->minTarget.y
-                                        || this->maxTarget.y < row) {
+                                    if (this->currentTargetID == -1 || col < this->minTarget.x || this->maxTarget.x < col
+                                        || row < this->minTarget.y || this->maxTarget.y < row) {
                                         goto obstruction_found;
                                     }
                                     foundBlockingOwnGroup = 1;
@@ -842,8 +837,7 @@ int PathingSystem::findTilePath(
                     while (col <= MaxY && col < this->ySizeValue && found == 0) {
                         objectCountOnTile = 0;
                         hitId = this->worldValue->objectGroupOnTile(
-                            this->currentUnobstructiblePlayerID, this->currentUnobstructibleGroupID, row, col,
-                            objectCountOnTile
+                            this->currentUnobstructiblePlayerID, this->currentUnobstructibleGroupID, row, col, objectCountOnTile
                         );
                         if (hitId == -1) {
                             if (objectCountOnTile > 0)
@@ -1047,14 +1041,14 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
     float xRadius = obj->master_obj->radius_x;
     float yRadius = obj->master_obj->radius_y;
 
-    int minX = (int) newX * 4
-               - (int) (((currentXOffset - g_path_bounds_offset) - xRadius) * g_path_coordinate_scale_negative) - 400;
-    int minY = (int) newY * 4
-               - (int) (((currentYOffset - g_path_bounds_offset) - yRadius) * g_path_coordinate_scale_negative) - 400;
-    int maxX = (int) newX * 4
-               - (int) ((xRadius + currentXOffset - g_path_bounds_offset) * g_path_coordinate_scale_negative) - 400;
-    int maxY = (int) newY * 4
-               - (int) ((yRadius + currentYOffset - g_path_bounds_offset) * g_path_coordinate_scale_negative) - 400;
+    int minX =
+        (int) newX * 4 - (int) (((currentXOffset - g_path_bounds_offset) - xRadius) * g_path_coordinate_scale_negative) - 400;
+    int minY =
+        (int) newY * 4 - (int) (((currentYOffset - g_path_bounds_offset) - yRadius) * g_path_coordinate_scale_negative) - 400;
+    int maxX =
+        (int) newX * 4 - (int) ((xRadius + currentXOffset - g_path_bounds_offset) * g_path_coordinate_scale_negative) - 400;
+    int maxY =
+        (int) newY * 4 - (int) ((yRadius + currentYOffset - g_path_bounds_offset) * g_path_coordinate_scale_negative) - 400;
 
     if (minX < 0) {
         ++minX;
@@ -1110,8 +1104,7 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
 
     if (height >= 0) {
         if (height < 0x18
-            && (minX > this->maxTarget.x || minY > this->maxTarget.y || maxX < this->minTarget.x
-                || maxY < this->minTarget.y)) {
+            && (minX > this->maxTarget.x || minY > this->maxTarget.y || maxX < this->minTarget.x || maxY < this->minTarget.y)) {
             int maskIndex = (minY & 3) + height * 4;
             unsigned long maskA = ObstructionMasks[maskIndex * 2];
             unsigned long maskB = ObstructionMasks[maskIndex * 2 + 1];
@@ -1128,8 +1121,7 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
                     } while (column < maxX);
                 } else {
                     do {
-                        if ((*(unsigned long*) obstruction & maskA) != 0
-                            || (*(unsigned long*) (obstruction + 4) & maskB) != 0) {
+                        if ((*(unsigned long*) obstruction & maskA) != 0 || (*(unsigned long*) (obstruction + 4) & maskB) != 0) {
                             goto obstruction_found;
                         }
                         ++column;
@@ -1144,12 +1136,10 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int 
                     int row = minY;
                     if (row < maxY) {
                         do {
-                            if (((this->obstructionValue[column][row >> 2] >> (ObstructionValueShift[row & 3] & 0x1f))
-                                 & 3)
+                            if (((this->obstructionValue[column][row >> 2] >> (ObstructionValueShift[row & 3] & 0x1f)) & 3)
                                 != 0) {
-                                if (this->currentTargetID == -1 || column < this->minTarget.x
-                                    || this->maxTarget.x < column || row < this->minTarget.y
-                                    || this->maxTarget.y < row) {
+                                if (this->currentTargetID == -1 || column < this->minTarget.x || this->maxTarget.x < column
+                                    || row < this->minTarget.y || this->maxTarget.y < row) {
                                     goto obstruction_found;
                                 }
                                 foundTargetObstruction = 1;
@@ -1198,8 +1188,7 @@ long PathingSystem::checksum(void) {
 
 void PathingSystem::printState(RGE_Moving_Object* unit) {
     unit->logDebug(
-        "    There are %d open paths and %d traversed paths.", this->numberOpenPathsValue,
-        this->numberTraversedPathsValue
+        "    There are %d open paths and %d traversed paths.", this->numberOpenPathsValue, this->numberTraversedPathsValue
     );
     unit->logDebug("    The open paths:");
 
@@ -1304,8 +1293,7 @@ int PathingSystem::copyPath(int stepSize) {
                 for (int tileY = tWY1; tileY <= tWY2; ++tileY) {
                     int objectCountOnTile = 0;
                     int id = this->worldValue->objectGroupOnTile(
-                        this->currentUnobstructiblePlayerID, this->currentUnobstructibleGroupID, tileX, tileY,
-                        objectCountOnTile
+                        this->currentUnobstructiblePlayerID, this->currentUnobstructibleGroupID, tileX, tileY, objectCountOnTile
                     );
                     if (id != -1)
                         this->currentUnobstructibles.add(id);

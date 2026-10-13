@@ -23,14 +23,12 @@ typedef unsigned char uchar;
 extern int startLoggingAI;
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
-    void* pW, int playerID, char* playerName, TRIBE_Player* aiP, char* buildListName, char* cityPlanName,
-    char* ruleSetName
+    void* pW, int playerID, char* playerName, TRIBE_Player* aiP, char* buildListName, char* cityPlanName, char* ruleSetName
 ) :
-    MainDecisionAIModule(pW, playerID, aiP), buildAI(pW, playerID), constructionAI(pW, playerID),
-    diplomacyAI(pW, playerID), emotionalAI(pW, playerID), informationAI(pW, playerID),
-    resourceAI(pW, playerID, 4, 500, 0, 1000), strategyAI(pW, playerID), tacticalAI(pW, playerID),
-    tradeAI(pW, playerID), aiPlayer((TRIBE_Player*) aiP), firstUpdate(1), veryFirstUpdate(1), updateDelay(playerID),
-    lastDiplomacyUpdateTime(0), lastTacticalUpdateTime(0), lastTributeChatTime(0), tributeChatTimeout(0),
+    MainDecisionAIModule(pW, playerID, aiP), buildAI(pW, playerID), constructionAI(pW, playerID), diplomacyAI(pW, playerID),
+    emotionalAI(pW, playerID), informationAI(pW, playerID), resourceAI(pW, playerID, 4, 500, 0, 1000), strategyAI(pW, playerID),
+    tacticalAI(pW, playerID), tradeAI(pW, playerID), aiPlayer((TRIBE_Player*) aiP), firstUpdate(1), veryFirstUpdate(1),
+    updateDelay(playerID), lastDiplomacyUpdateTime(0), lastTacticalUpdateTime(0), lastTributeChatTime(0), tributeChatTimeout(0),
     waitingOnTribute(0), tributeExpirationTimeout(0), tributeAddressed(0), tributeAmount(0), decidedInitialDiplomacy(0),
     requiredDiplomacyTributeAmount(0) {
     this->setPlayer(playerID, playerName);
@@ -87,8 +85,8 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(int playerID, char* playerName, TRIBE_Player* aiP, int infile) :
     MainDecisionAIModule(playerID, aiP, infile), buildAI(playerID, infile), constructionAI(playerID, infile),
-    diplomacyAI(playerID, infile), emotionalAI(playerID, infile), informationAI(playerID, infile),
-    resourceAI(playerID, infile), strategyAI(playerID, infile), tacticalAI(playerID, infile), tradeAI(playerID, infile),
+    diplomacyAI(playerID, infile), emotionalAI(playerID, infile), informationAI(playerID, infile), resourceAI(playerID, infile),
+    strategyAI(playerID, infile), tacticalAI(playerID, infile), tradeAI(playerID, infile),
     //! @bug Load forces these flags to 0 ("init done"), but save() never stores them.
     //! A save before the first AI update therefore skips the one-time init after load.
     //! No dynamic build items, no learn-file path, and no AI start-resource bonus then.
@@ -178,8 +176,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
         this->informationAI.initialize();
         this->setTributeChat();
 
-        if (tactical->strategicNumber(SNTributeSuccessOutcome) == 1
-            && tactical->strategicNumber(SNTributeChatFrequency) == 0) {
+        if (tactical->strategicNumber(SNTributeSuccessOutcome) == 1 && tactical->strategicNumber(SNTributeChatFrequency) == 0) {
             this->waitingOnTribute = 1;
             this->tributeAmount = 0;
         }
@@ -232,16 +229,14 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                 } else {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
-                        tactical->strategicNumber(SNTributePlayer), 0, tempString,
-                        tactical->strategicNumber(SNTributeAmount)
+                        tactical->strategicNumber(SNTributePlayer), 0, tempString, tactical->strategicNumber(SNTributeAmount)
                     );
                 }
             } else if (tactical->strategicNumber(SNTributeSuccessOutcome) == 1) {
                 if (this->tributeAmount > 0) {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
-                        tactical->strategicNumber(SNTributePlayer), 0, tempString,
-                        tactical->strategicNumber(SNTributeAmount)
+                        tactical->strategicNumber(SNTributePlayer), 0, tempString, tactical->strategicNumber(SNTributeAmount)
                     );
                 } else {
                     rge_base_game->get_string(STRING_ID_AI_TRIBUTE_ALLIANCE_MORE_GOLD, tempString, 256);
@@ -297,7 +292,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
     //! Each neutral computer allies with all computers and declares each human enemy.
     if (this->decidedInitialDiplomacy == 0 && this->player->world->world_time > 10000) {
         this->decidedInitialDiplomacy = 1;
-        TRIBE_World* world = (TRIBE_World*)this->player->world;
+        TRIBE_World* world = (TRIBE_World*) this->player->world;
         int numberComputerPlayers = 0;
         int numberHumanPlayers = 0;
         int numberNeutralCPs = 0;
@@ -340,7 +335,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                 numberSwayable = 0;
             if (numberSwayable > numberNeutralCPs)
                 numberSwayable = numberNeutralCPs;
-            if (((TRIBE_Game*)rge_base_game)->deathMatch() == 1)
+            if (((TRIBE_Game*) rge_base_game)->deathMatch() == 1)
                 numberSwayable = 0;
 
             if (numberSwayable <= numberNeutralCPs && numberNeutralCPs > 0) {
@@ -535,9 +530,9 @@ int TribeMainDecisionAIModule::isMoveable(int o) {
 
     short group = obj->master_obj->object_group;
     if (group == OBJECT_GROUP_BUILDING || group == OBJECT_GROUP_WALL || group == OBJECT_GROUP_FLAG || group == 0x1F
-        || group == OBJECT_GROUP_FISH || group == 0x21 || group == OBJECT_GROUP_FORAGE
-        || group == OBJECT_GROUP_STONE_SOURCE || group == OBJECT_GROUP_GOLD_SOURCE || group == OBJECT_GROUP_TREE_STUMP
-        || group == OBJECT_GROUP_TERRAIN || group == OBJECT_GROUP_TREE)
+        || group == OBJECT_GROUP_FISH || group == 0x21 || group == OBJECT_GROUP_FORAGE || group == OBJECT_GROUP_STONE_SOURCE
+        || group == OBJECT_GROUP_GOLD_SOURCE || group == OBJECT_GROUP_TREE_STUMP || group == OBJECT_GROUP_TERRAIN
+        || group == OBJECT_GROUP_TREE)
         return 0;
 
     return 1;
@@ -550,8 +545,8 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
             this->buildAI.addItem(object, 0);
             if (object->master_obj->id == MASTER_OBJECT_TOWN_CENTER1) {
                 this->constructionAI.setReferencePoint(
-                    this->player->world->map->map_width, this->player->world->map->map_height, object->world_x,
-                    object->world_y, object->world_z
+                    this->player->world->map->map_width, this->player->world->map->map_height, object->world_x, object->world_y,
+                    object->world_z
                 );
             }
         }
@@ -673,19 +668,16 @@ int TribeMainDecisionAIModule::processAICommand(int caller, int mType, int p1, i
                     this->diplomacyAI.setRelation(p1, 0);
                     if (rge_base_game->difficulty() == RGE_DIFFICULTY_EASIEST) {
                         if (this->player->world->players[p1]->computerPlayer() == 0) {
-                            ((TRIBE_Command*)this->player->world->commands)
-                                ->command_allied_victory(this->player->id, 1);
+                            ((TRIBE_Command*) this->player->world->commands)->command_allied_victory(this->player->id, 1);
                             this->diplomacyAI.setChangeable(p1, 0);
                             return 1;
                         } else {
-                            ((TRIBE_Command*)this->player->world->commands)
-                                ->command_allied_victory(this->player->id, 0);
+                            ((TRIBE_Command*) this->player->world->commands)->command_allied_victory(this->player->id, 0);
                             this->diplomacyAI.setChangeable(p1, 0);
                             return 1;
                         }
                     } else {
-                        ((TRIBE_Command*)this->player->world->commands)
-                            ->command_allied_victory(this->player->id, 1);
+                        ((TRIBE_Command*) this->player->world->commands)->command_allied_victory(this->player->id, 1);
                         this->diplomacyAI.setChangeable(p1, 0);
                         return 1;
                     }

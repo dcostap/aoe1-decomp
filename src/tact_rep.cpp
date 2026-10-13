@@ -19,17 +19,15 @@
 #include "../include/task.h"
 
 // The constructor keeps the period base initialization and conditional setup.
-TRIBE_Action_Repair::TRIBE_Action_Repair(int infile, RGE_Action_Object* obj_in, int do_setup) :
-    RGE_Action(infile, obj_in, 0) {
+TRIBE_Action_Repair::TRIBE_Action_Repair(int infile, RGE_Action_Object* obj_in, int do_setup) : RGE_Action(infile, obj_in, 0) {
     this->action_type = TRIBE_ACTION_TYPE_REPAIR;
     if (do_setup != 0) {
         this->setup(infile, obj_in);
     }
 }
 
-TRIBE_Action_Repair::TRIBE_Action_Repair(
-    RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in
-) : RGE_Action(obj_in, 1) {
+TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in) :
+    RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = TRIBE_ACTION_TYPE_REPAIR;
     this->save_target_command_flag = 0;
@@ -85,9 +83,8 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
             break;
 
         case 11: {
-            RGE_Action_Move_To* action = new RGE_Action_Move_To(
-                this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite
-            );
+            RGE_Action_Move_To* action =
+                new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite);
             if (action == 0) {
                 this->set_state(0x0d);
                 return;
@@ -153,9 +150,7 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
         case 1:
             this->set_target_obj(0);
             if (this->subActionValue == 0) {
-                this->obj->notify(
-                    this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_REPAIR, 0, 0
-                );
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_REPAIR, 0, 0);
             }
             break;
 
@@ -273,12 +268,8 @@ unsigned char TRIBE_Action_Repair::update() {
                 return RGE_ACTION_UPDATE_CONTINUE;
             }
             if (result == 2) {
-                this->obj->notify(
-                    this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_REPAIR, 0, 0
-                );
-                rge_base_game->notification(
-                    GAME_NOTIFY_CANNOT_REPAIR, this->obj->owner->id, this->target_obj->id, 0, 0
-                );
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_REPAIR, 0, 0);
+                rge_base_game->notification(GAME_NOTIFY_CANNOT_REPAIR, this->obj->owner->id, this->target_obj->id, 0, 0);
                 this->set_state(2);
                 return RGE_ACTION_UPDATE_CONTINUE;
             }

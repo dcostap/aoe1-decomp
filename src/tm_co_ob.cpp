@@ -14,9 +14,8 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(TRIBE_Master_Combat_Objec
     }
 }
 
-TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup
-) : RGE_Master_Combat_Object(infile, sprites, sounds, 0) {
+TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) :
+    RGE_Master_Combat_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
         setup(infile, sprites, sounds);
     }

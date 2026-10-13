@@ -47,8 +47,7 @@ class TribeMainDecisionAIModule : public MainDecisionAIModule {
     int tributeGiven[9];
 
     TribeMainDecisionAIModule(
-        void* pW, int playerID, char* playerName, TRIBE_Player* aiP, char* buildListName, char* cityPlanName,
-        char* ruleSetName
+        void* pW, int playerID, char* playerName, TRIBE_Player* aiP, char* buildListName, char* cityPlanName, char* ruleSetName
     );
     TribeMainDecisionAIModule(int playerID, char* playerName, TRIBE_Player* aiP, int infile);
     virtual ~TribeMainDecisionAIModule();

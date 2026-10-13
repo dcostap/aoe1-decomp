@@ -7,9 +7,7 @@ RGE_Diamond_Map_View::RGE_Diamond_Map_View() : RGE_Diamond_Map() {
     this->mouse_move_tolerance = 0;
 }
 
-long RGE_Diamond_Map_View::handle_mouse_down(
-    unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key
-) {
+long RGE_Diamond_Map_View::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     short col;
     short row;
     RGE_Tile* tile;
@@ -60,8 +58,7 @@ long RGE_Diamond_Map_View::mouse_left_move_action(long x, long y, int ctrl_key, 
 long RGE_Diamond_Map_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
 
-    if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor
-        || mode == ProgModeGameOver) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
         if (this->scrolling) {
             this->end_scroll_view();
             return 1;
@@ -123,8 +120,7 @@ long RGE_Diamond_Map_View::mouse_right_down_action(long x, long y, int ctrl_key,
 
 long RGE_Diamond_Map_View::mouse_right_move_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
-    if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor
-        || mode == ProgModeGameOver) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
         if (rge_base_game->get_paused()) {
             if (this->scrolling) {
                 this->end_scroll_view();
@@ -144,8 +140,7 @@ long RGE_Diamond_Map_View::mouse_right_move_action(long x, long y, int ctrl_key,
 long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int ctrl_key, int shift_key) {
     RGE_Tile* tile;
     int mode = rge_base_game->prog_mode;
-    if (mode != ProgModeGame && mode != ProgModeGameTempPaused && mode != ProgModeScenarioEditor
-        && mode != ProgModeGameOver) {
+    if (mode != ProgModeGame && mode != ProgModeGameTempPaused && mode != ProgModeScenarioEditor && mode != ProgModeGameOver) {
         return 0;
     }
 

@@ -28,21 +28,20 @@ void AIModuleID::setID(int i, char* n) {
 }
 
 AIModuleMessage::AIModuleMessage() :
-    id(0), priority(0), sender("Sender", 0), recipient("Recipient", 0), data1(0), data2(0), data3(0),
-    callbackMessage(0), timeStamp(0), next(0), prev(0) {
+    id(0), priority(0), sender("Sender", 0), recipient("Recipient", 0), data1(0), data2(0), data3(0), callbackMessage(0),
+    timeStamp(0), next(0), prev(0) {
     strcpy(text, "");
 }
 
 AIModuleMessage::AIModuleMessage(int s, int r, int i, int p, long d1, long d2, long d3, AIModuleMessage* c, int t) :
-    id(i), priority(p), sender("", s), recipient("", r), data1(d1), data2(d2), data3(d3), callbackMessage(c),
-    timeStamp(t) {
+    id(i), priority(p), sender("", s), recipient("", r), data1(d1), data2(d2), data3(d3), callbackMessage(c), timeStamp(t) {
     strcpy(this->text, "");
 }
 
 AIModuleMessage::AIModuleMessage(AIModuleMessage* m) :
-    id(m->id), priority(m->priority), sender(m->sender.name, m->sender.id),
-    recipient(m->recipient.name, m->recipient.id), data1(m->data1), data2(m->data2), data3(m->data3),
-    callbackMessage(m->callbackMessage), timeStamp(m->timeStamp), next(0), prev(0) {
+    id(m->id), priority(m->priority), sender(m->sender.name, m->sender.id), recipient(m->recipient.name, m->recipient.id),
+    data1(m->data1), data2(m->data2), data3(m->data3), callbackMessage(m->callbackMessage), timeStamp(m->timeStamp), next(0),
+    prev(0) {
     this->setText(m->text);
 }
 
@@ -68,8 +67,8 @@ void AIModuleMessage::setRecipient(int i, char* n) {
 }
 
 AIModule::AIModule() :
-    idValue("", -1), playerNumberValue(-1), runningValue(0), pausedValue(0), logHistoryValue(0),
-    logCommonHistoryValue(0), historyLogFile(0), intelligenceLevelValue(5), priorityValue(50), processFrameValue(0) {
+    idValue("", -1), playerNumberValue(-1), runningValue(0), pausedValue(0), logHistoryValue(0), logCommonHistoryValue(0),
+    historyLogFile(0), intelligenceLevelValue(5), priorityValue(50), processFrameValue(0) {
     strcpy(this->playerNameValue, "Unknown");
 }
 

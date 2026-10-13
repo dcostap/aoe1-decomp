@@ -217,9 +217,7 @@ void RGE_Active_Sprite_List::draw(
     }
 }
 
-void RGE_Active_Sprite_List::normal_draw(
-    short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area
-) {
+void RGE_Active_Sprite_List::normal_draw(short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area) {
     RGE_Active_Sprite_Node* node = this->list;
 
     while (node) {

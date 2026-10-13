@@ -74,9 +74,7 @@ int __cdecl DSReloadSoundBuffer(LPDIRECTSOUNDBUFFER pDSB, int lpName, void* cbWa
     return result;
 }
 
-int __cdecl DSGetWaveResource(
-    void* hModule, const char* lpName, void* ppWaveHeader, void* ppbWaveData, void* pcbWaveSize
-) {
+int __cdecl DSGetWaveResource(void* hModule, const char* lpName, void* ppWaveHeader, void* ppbWaveData, void* pcbWaveSize) {
     void* resource;
 
     resource = FindResourceA((HMODULE) hModule, lpName, DS_WAVE_RESOURCE_TYPE);
@@ -109,8 +107,7 @@ SNDOBJ* __cdecl SndObjCreate(LPDIRECTSOUND pDS, const char* lpName, int iConcurr
         if (iConcurrent < i) {
             iConcurrent = i;
         }
-        obj =
-            (SNDOBJ*) LocalAlloc(LMEM_ZEROINIT, offsetof(SNDOBJ, Buffers) + iConcurrent * sizeof(LPDIRECTSOUNDBUFFER));
+        obj = (SNDOBJ*) LocalAlloc(LMEM_ZEROINIT, offsetof(SNDOBJ, Buffers) + iConcurrent * sizeof(LPDIRECTSOUNDBUFFER));
         if (obj != 0) {
             obj->iAlloc = iConcurrent;
             obj->pbWaveData = pbData;
@@ -152,8 +149,7 @@ void __cdecl SndObjDestroy(void* pSO) {
                     *(LPDIRECTSOUNDBUFFER*) ((char*) pSO + offsetof(SNDOBJ, Buffers) + i * sizeof(LPDIRECTSOUNDBUFFER));
                 if (buffer != 0) {
                     IDirectSoundBuffer_Release(buffer);
-                    *(LPDIRECTSOUNDBUFFER*) ((char*) pSO + offsetof(SNDOBJ, Buffers)
-                                             + i * sizeof(LPDIRECTSOUNDBUFFER)) = 0;
+                    *(LPDIRECTSOUNDBUFFER*) ((char*) pSO + offsetof(SNDOBJ, Buffers) + i * sizeof(LPDIRECTSOUNDBUFFER)) = 0;
                 }
                 ++i;
             } while (i < *(int*) ((char*) pSO + 8));
@@ -492,9 +488,7 @@ int __cdecl WaveCloseReadFile(HMMIO* phmmio, HGLOBAL* ppwfxSrc) {
     return 0;
 }
 
-int __cdecl WaveCreateFile(
-    char* pszFileName, HMMIO* phmmioOut, WAVEFORMATEX* pwfxDest, MMCKINFO* pckOut, MMCKINFO* pckOutRIFF
-) {
+int __cdecl WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, WAVEFORMATEX* pwfxDest, MMCKINFO* pckOut, MMCKINFO* pckOutRIFF) {
     int err;
     DWORD dwFactChunk;
     MMCKINFO ckOut1;
@@ -569,8 +563,7 @@ MMRESULT __cdecl WaveStartDataWrite(void* phmmioOut, MMCKINFO* pckOut, MMIOINFO*
 }
 
 int __cdecl WaveWriteFile(
-    HMMIO hmmioOut, unsigned int cbWrite, unsigned char* pbSrc, MMCKINFO* pckOut, unsigned int* pdwWritten,
-    MMIOINFO* pmmioinfoOut
+    HMMIO hmmioOut, unsigned int cbWrite, unsigned char* pbSrc, MMCKINFO* pckOut, unsigned int* pdwWritten, MMIOINFO* pmmioinfoOut
 ) {
     MMRESULT result = 0;
     unsigned int i;
@@ -593,9 +586,7 @@ int __cdecl WaveWriteFile(
     return result;
 }
 
-int __cdecl WaveCloseWriteFile(
-    HMMIO* phmmioOut, MMCKINFO* pckOut, MMCKINFO* pckOutRIFF, MMIOINFO* pmmioinfoOut, DWORD cSamples
-) {
+int __cdecl WaveCloseWriteFile(HMMIO* phmmioOut, MMCKINFO* pckOut, MMCKINFO* pckOutRIFF, MMIOINFO* pmmioinfoOut, DWORD cSamples) {
     int result;
 
     if (*phmmioOut == 0) {
@@ -613,8 +604,7 @@ int __cdecl WaveCloseWriteFile(
                 result = mmioDescend(*phmmioOut, (LPMMCKINFO) pckOutRIFF, 0, 0);
                 if (result == 0) {
                     pckOut->ckid = mmioFOURCC('f', 'a', 'c', 't');
-                    if ((result = mmioDescend(*phmmioOut, (LPMMCKINFO) pckOut, (LPMMCKINFO) pckOutRIFF, MMIO_FINDCHUNK))
-                        == 0) {
+                    if ((result = mmioDescend(*phmmioOut, (LPMMCKINFO) pckOut, (LPMMCKINFO) pckOutRIFF, MMIO_FINDCHUNK)) == 0) {
                         mmioWrite(*phmmioOut, (const char*) &cSamples, sizeof(DWORD));
                         mmioAscend(*phmmioOut, (LPMMCKINFO) pckOut, result);
                         result = mmioAscend(*phmmioOut, (LPMMCKINFO) pckOutRIFF, 0);
@@ -698,9 +688,7 @@ fail:
     return 0;
 }
 
-int __cdecl WaveLoadFile(
-    char* pszFileName, DWORD* cbSize, DWORD* pcSamples, void** ppwfxInfo, unsigned char** ppbData
-) {
+int __cdecl WaveLoadFile(char* pszFileName, DWORD* cbSize, DWORD* pcSamples, void** ppwfxInfo, unsigned char** ppbData) {
     HMMIO hmmio;
     MMCKINFO ckInRiff;
     MMCKINFO ckIn;
@@ -846,8 +834,7 @@ int __cdecl ds_stream_file(char* szName, int bLoop, long Volume) {
     dsbd.dwFlags = DSBCAPS_CTRLDEFAULT;
     dsbd.dwBufferBytes = ds_buffer_size;
     dsbd.lpwfxFormat = (void*) _wiWave;
-    result =
-        IDirectSound_CreateSoundBuffer((LPDIRECTSOUND) _lpDS, &dsbd, (LPLPDIRECTSOUNDBUFFER) &_lpDSBStreamBuffer, 0);
+    result = IDirectSound_CreateSoundBuffer((LPDIRECTSOUND) _lpDS, &dsbd, (LPLPDIRECTSOUNDBUFFER) &_lpDSBStreamBuffer, 0);
     if (result != 0) {
         return 0;
     }
@@ -856,8 +843,7 @@ int __cdecl ds_stream_file(char* szName, int bLoop, long Volume) {
     ds_stream_at_end = 0;
     ds_silence_chunks = 0;
     result = IDirectSoundBuffer_Lock(
-        (LPDIRECTSOUNDBUFFER) _lpDSBStreamBuffer, 0, ds_buffer_size, (void**) &lpWrite1, &dwLen1, (void**) &lpWrite2,
-        &dwLen2, 0
+        (LPDIRECTSOUNDBUFFER) _lpDSBStreamBuffer, 0, ds_buffer_size, (void**) &lpWrite1, &dwLen1, (void**) &lpWrite2, &dwLen2, 0
     );
     if (result != 0) {
         return 0;

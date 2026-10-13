@@ -13,9 +13,8 @@ static char s_tpnl_inv_draw[] = "tpnl_inv::draw";
 
 // No current canonical owner header declares this C helper.
 
-TRIBE_Panel_Inven::TRIBE_Panel_Inven(
-    TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in, TRIBE_Player* player_in
-) : TPanel() {
+TRIBE_Panel_Inven::TRIBE_Panel_Inven(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in, TRIBE_Player* player_in) :
+    TPanel() {
     this->font = font_in;
     this->save_attr_num = 0;
     this->save_attr = 0;
@@ -116,8 +115,7 @@ long TRIBE_Panel_Inven::handle_idle() {
     this->TPanel::handle_idle();
 
     int mode = rge_base_game->prog_mode;
-    if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor
-        || mode == ProgModeGameOver) {
+    if (mode == ProgModeGame || mode == ProgModeGameTempPaused || mode == ProgModeScenarioEditor || mode == ProgModeGameOver) {
         unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 173);
         if (now - this->idle_time >= (unsigned long) this->idle_interval) {
             color_log(0xBA, 0xBA, 5);
@@ -180,26 +178,22 @@ unsigned char TRIBE_Panel_Inven::get_help_info(char*& string, long& page, long x
 
     if (x < this->pnl_x + 0x37) {
         sprintf(
-            string, this->get_string(STRING_ID_HELP_INVENTORY_WOOD_FORMAT),
-            (int) this->player->attributes[RGE_RESOURCE_WOOD]
+            string, this->get_string(STRING_ID_HELP_INVENTORY_WOOD_FORMAT), (int) this->player->attributes[RGE_RESOURCE_WOOD]
         );
         page = -1;
     } else if (x < this->pnl_x + 0x6E) {
         sprintf(
-            string, this->get_string(STRING_ID_HELP_INVENTORY_FOOD_FORMAT),
-            (int) this->player->attributes[RGE_RESOURCE_FOOD]
+            string, this->get_string(STRING_ID_HELP_INVENTORY_FOOD_FORMAT), (int) this->player->attributes[RGE_RESOURCE_FOOD]
         );
         page = -1;
     } else if (x < this->pnl_x + 0xA5) {
         sprintf(
-            string, this->get_string(STRING_ID_HELP_INVENTORY_GOLD_FORMAT),
-            (int) this->player->attributes[RGE_RESOURCE_GOLD]
+            string, this->get_string(STRING_ID_HELP_INVENTORY_GOLD_FORMAT), (int) this->player->attributes[RGE_RESOURCE_GOLD]
         );
         page = -1;
     } else {
         sprintf(
-            string, this->get_string(STRING_ID_HELP_INVENTORY_STONE_FORMAT),
-            (int) this->player->attributes[RGE_RESOURCE_STONE]
+            string, this->get_string(STRING_ID_HELP_INVENTORY_STONE_FORMAT), (int) this->player->attributes[RGE_RESOURCE_STONE]
         );
         page = -1;
     }

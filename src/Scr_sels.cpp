@@ -17,7 +17,6 @@
 #include <string.h>
 #include <stdio.h>
 
-
 static const char s_fmt_range[] = "%d - %d";
 static const char s_fmt_num[] = "%d";
 
@@ -35,9 +34,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel("Select Sc
 
     draw_area = rge_base_game->draw_area;
 
-    if (!this->TEasy_Panel::setup(
-            draw_area, 0, setup_file, (rge_base_game->multiplayerGame() != 0) + 0xC384, 1, 0, 0, 0, 0, 1
-        )) {
+    if (!this->TEasy_Panel::setup(draw_area, 0, setup_file, (rge_base_game->multiplayerGame() != 0) + 0xC384, 1, 0, 0, 0, 0, 1)) {
         this->error_code = 1;
         return;
     }
@@ -46,8 +43,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel("Select Sc
     this->set_ideal_size(640, 480);
 
     if (this->create_text(
-            this, &this->title, STRING_ID_SCENARIO_SELECTION_TITLE, 20, 10, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0,
-            0
+            this, &this->title, STRING_ID_SCENARIO_SELECTION_TITLE, 20, 10, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
         )) {
         this->scenarioListX = 20;
         this->scenarioListY = 70;
@@ -55,17 +51,15 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel("Select Sc
         this->scenarioListHeight = 263;
 
         if (this->create_list(this, &this->scenarioList, 20, 70, 600, 263, RGE_FONT_STANDARD)) {
-            this->scenarioList->set_second_column_pos(
-                ((this->scenarioListWidth - 60) * this->pnl_wid) / this->ideal_width
-            );
+            this->scenarioList->set_second_column_pos(((this->scenarioListWidth - 60) * this->pnl_wid) / this->ideal_width);
             this->scenarioList->set_text(STRING_ID_SCENARIO_LIST_LOADING);
 
             if (this->create_auto_scrollbar(&this->scenarioScrollbar, this->scenarioList, 20)) {
                 this->scenarioScrollbar->set_help_info(-1, -1);
 
                 if (this->create_text(
-                        this, &this->scenarioTitle, STRING_ID_SCENARIO_LIST_TITLE, this->scenarioListX,
-                        this->scenarioListY - 20, 300, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
+                        this, &this->scenarioTitle, STRING_ID_SCENARIO_LIST_TITLE, this->scenarioListX, this->scenarioListY - 20,
+                        300, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
                     )) {
                     if (this->create_text(
                             this, &this->scenarioPlayersTitle, STRING_ID_SCENARIO_PLAYERS_TITLE,
@@ -84,8 +78,8 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel("Select Sc
                                 this->missionTextY - 20, 400, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
                             )) {
                             if (this->create_text(
-                                    this, &this->missionText, "", this->missionTextX, this->missionTextY,
-                                    this->missionTextWidth, this->missionTextHeight, RGE_FONT_STANDARD, 0, 0, 1
+                                    this, &this->missionText, "", this->missionTextX, this->missionTextY, this->missionTextWidth,
+                                    this->missionTextHeight, RGE_FONT_STANDARD, 0, 0, 1
                                 )) {
                                 this->missionText->set_bevel_info(
                                     3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
@@ -102,8 +96,8 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel("Select Sc
                                         this->okButton->set_help_info(STRING_ID_HELP_OK, -1);
 
                                         if (this->create_button(
-                                                this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240,
-                                                30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+                                                this, &this->cancelButton, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30,
+                                                RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
                                             )) {
                                             this->cancelButton->set_help_info(STRING_ID_HELP_CANCEL, -1);
                                             TButtonPanel* cancel = this->cancelButton;
@@ -111,8 +105,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel("Select Sc
                                             cancel->hotkey_shift = 0;
 
                                             if (this->create_button(
-                                                    this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0,
-                                                    -1, -1, 0
+                                                    this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0
                                                 )) {
                                                 this->close_button->set_active(1);
                                                 this->close_button->set_positioning(
@@ -255,7 +248,7 @@ void TribeSelectScenarioScreen::fillScenarios() {
         return;
     do {
         long id = this->scenarioList->get_id(i);
-        TRIBE_Scenario_Header* hdr = (TRIBE_Scenario_Header*)scenario_info_file->get_scenario_info(id);
+        TRIBE_Scenario_Header* hdr = (TRIBE_Scenario_Header*) scenario_info_file->get_scenario_info(id);
         if (hdr != 0) {
             this->scenarioMission[i] = (char*) calloc(4096, sizeof(char));
             if (this->scenarioMission[i] != 0 && hdr->description != 0) {
@@ -305,7 +298,7 @@ void TribeSelectScenarioScreen::getSettings() {
 void TribeSelectScenarioScreen::sendSettings(void) {
     rge_base_game->setScenarioGame(1);
     rge_base_game->setScenarioName(this->scenarioList->get_text());
-    ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
+    ((TRIBE_Game*) rge_base_game)->setDeathMatch(0);
 }
 
 void TribeSelectScenarioScreen::activatePanels() {

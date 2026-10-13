@@ -21,9 +21,7 @@ struct RGE_Armor_Weapon_Info;
 // comes from the canonical RGE_Combat_Object owner.
 class TRIBE_Combat_Object : public RGE_Combat_Object {
   public:
-    TRIBE_Combat_Object(
-        TRIBE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup
-    );
+    TRIBE_Combat_Object(TRIBE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
     TRIBE_Combat_Object(int infile, RGE_Game_World* gworld, int do_setup);
     virtual ~TRIBE_Combat_Object();
 
@@ -48,8 +46,8 @@ class TRIBE_Combat_Object : public RGE_Combat_Object {
     void do_repair(RGE_Static_Object* obj);
     int can_debark();
     virtual int higher_check_for_cliff(
-        RGE_Static_Object* target, int XTileInt, int YTileInt, float StartX, float StartY, float DestX, float DestY,
-        RGE_Map* Map, RGE_Static_Object* LastCliffObject, float& AngleToTarget, int& HigherCalc
+        RGE_Static_Object* target, int XTileInt, int YTileInt, float StartX, float StartY, float DestX, float DestY, RGE_Map* Map,
+        RGE_Static_Object* LastCliffObject, float& AngleToTarget, int& HigherCalc
     );
     virtual int higher_than_target(RGE_Static_Object* target);
     virtual int hunt(int targetID, int unconditional);
@@ -72,9 +70,7 @@ class TRIBE_Combat_Object : public RGE_Combat_Object {
     virtual int setup(TRIBE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     virtual int setup(int infile, RGE_Game_World* gworld);
     virtual void change_ownership(RGE_Player* new_owner);
-    virtual unsigned char area_attack(
-        float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignore_object
-    );
+    virtual unsigned char area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignore_object);
     virtual int canRepair();
 
   public:

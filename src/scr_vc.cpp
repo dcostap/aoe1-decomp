@@ -60,17 +60,12 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
         );
     }
 
+    create_button(this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 200, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0);
     create_button(
-        this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 200, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-    );
-    create_button(
-        this, &this->text_buttons[0], STRING_ID_MISSION_HISTORY, 0, 325, 316, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1,
-        0
+        this, &this->text_buttons[0], STRING_ID_MISSION_HISTORY, 0, 325, 316, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0
     );
     TButtonPanel** text_button_1 = &this->text_buttons[1];
-    create_button(
-        this, text_button_1, STRING_ID_MISSION_INSTRUCTIONS, 0, 325, 348, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0
-    );
+    create_button(this, text_button_1, STRING_ID_MISSION_INSTRUCTIONS, 0, 325, 348, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0);
     create_button(
         this, &this->text_buttons[2], STRING_ID_MISSION_HINTS, 0, 325, 380, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, -1, 0
     );
@@ -217,7 +212,7 @@ long TRIBE_Mission_Screen::action(TPanel* fromPanel, long actionIn, unsigned lon
                     rge_base_game->set_paused(0, 0);
                 }
             } else {
-                ((TRIBE_Game*)rge_base_game)->create_game_screen();
+                ((TRIBE_Game*) rge_base_game)->create_game_screen();
             }
 
             panel_system.destroyPanel("Mission Dialog");

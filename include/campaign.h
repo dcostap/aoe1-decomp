@@ -27,9 +27,7 @@ class RGE_Campaign {
     char filename[255];
 
     RGE_Campaign(char* in_filename);
-    RGE_Campaign(
-        char* campaign_filename, char* campaign_name, long scenario_num, char** scenarios, char** scenarios_name
-    );
+    RGE_Campaign(char* campaign_filename, char* campaign_name, long scenario_num, char** scenarios, char** scenarios_name);
     ~RGE_Campaign();
     void create_file();
     int open_scenario(long scenario);

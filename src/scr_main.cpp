@@ -42,10 +42,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel("Main Menu") {
     long button_width = 178;
     clear_button = this->button;
     for (; button_width < 428; button_width += 50, ++clear_button) {
-        if (this->create_button(
-                this, clear_button, "", 0, 170, button_width, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-            )
-            == 0) {
+        if (this->create_button(this, clear_button, "", 0, 170, button_width, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0) == 0) {
             return;
         }
     }
@@ -75,8 +72,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel("Main Menu") {
             this->circle_p_pic = new TPicturePanel;
             if (this->circle_p_pic != 0) {
                 this->circle_p_pic->setup(
-                    this->render_area, this, rect.right - this->pnl_x + 3, rect.top + 1, 15, 14, "circlep2", 0xC4E6, 0,
-                    1
+                    this->render_area, this, rect.right - this->pnl_x + 3, rect.top + 1, 15, 14, "circlep2", 0xC4E6, 0, 1
                 );
 
                 TTextPanel** copy2 = &this->ms_copy_text2;
@@ -93,8 +89,8 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel("Main Menu") {
                             (*copy1)->xPosition() + diff, (*copy1)->yPosition(), (*copy1)->width(), (*copy1)->height()
                         );
                         this->circle_p_pic->set_fixed_position(
-                            this->circle_p_pic->xPosition() + diff, this->circle_p_pic->yPosition(),
-                            this->circle_p_pic->width(), this->circle_p_pic->height()
+                            this->circle_p_pic->xPosition() + diff, this->circle_p_pic->yPosition(), this->circle_p_pic->width(),
+                            this->circle_p_pic->height()
                         );
                         (*copy2)->set_fixed_position(
                             (*copy2)->xPosition() + diff, (*copy2)->yPosition(), (*copy2)->width(), (*copy2)->height()
@@ -110,8 +106,8 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel("Main Menu") {
         strcat(temp_str, this->get_string(STRING_ID_COPYRIGHT_SUFFIX));
 
         this->create_text(
-            this, &this->ms_copy_text1, temp_str, 5, panel_height + 18, this->pnl_wid - 10, 18,
-            RGE_FONT_ARIAL_10_NORMAL_ALT, 1, 0, 0
+            this, &this->ms_copy_text1, temp_str, 5, panel_height + 18, this->pnl_wid - 10, 18, RGE_FONT_ARIAL_10_NORMAL_ALT, 1,
+            0, 0
         );
     }
 
@@ -161,7 +157,7 @@ long TRIBE_Screen_Main_Menu::key_down_action(long key, short count, int alt_key,
         switch (key) {
             case 'L': {
                 if (rge_base_game->gameDeveloperMode() != 0) {
-                    if (((TRIBE_Game*)rge_base_game)->load_db_files() == 0) {
+                    if (((TRIBE_Game*) rge_base_game)->load_db_files() == 0) {
                         TEasy_Panel::popupOKDialog(STRING_ID_ERROR_LOAD_GAME_DATA, 0, TEASY_POPUP_WIDTH, 100);
                     }
                 }
@@ -271,8 +267,7 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error() : TScreenPanel("Main Error Sc
         this, &this->cancel_button, STRING_ID_BUTTON_OK, 0, 200, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
     );
 
-    if (this->create_button(this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0)
-        != 0) {
+    if (this->create_button(this, &this->close_button, STRING_ID_BUTTON_CLOSE, 0, 0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0) != 0) {
         this->close_button->set_active(1);
         this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
     }

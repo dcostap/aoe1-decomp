@@ -107,8 +107,7 @@ TRIBE_Tech::TRIBE_Tech(char* filename) {
                     }
                     fscanf(
                         file, "%hd %hd %d %d %d", &this->tech_tree[j].string_id, &this->tech_tree[j].string_id2,
-                        &this->tech_tree[j].help_string_id, &this->tech_tree[j].help_page_id,
-                        &this->tech_tree[j].hotkey_id
+                        &this->tech_tree[j].help_string_id, &this->tech_tree[j].help_page_id, &this->tech_tree[j].hotkey_id
                     );
                 }
             }
@@ -285,8 +284,7 @@ unsigned char TRIBE_Player_Tech::do_tech(short tech_id) {
 unsigned char TRIBE_Player_Tech::research(short tech_id, float amount) {
     if (this->tech_player_tree[tech_id].state == 2) {
         this->tech_player_tree[tech_id].research_done += amount;
-        if (!(this->tech_player_tree[tech_id].research_done
-              < (float) (int) this->base_tech->tech_tree[tech_id].research)) {
+        if (!(this->tech_player_tree[tech_id].research_done < (float) (int) this->base_tech->tech_tree[tech_id].research)) {
             do_tech(tech_id);
             return 0;
         }

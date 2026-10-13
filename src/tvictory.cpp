@@ -23,7 +23,7 @@ void TRIBE_Victory_Conditions::handle_condition(RGE_Victory_Entry* node) {
 }
 
 void TRIBE_Victory_Conditions::handle_tech(RGE_Victory_Entry* node) {
-    TRIBE_Player* player = (TRIBE_Player*)this->player;
+    TRIBE_Player* player = (TRIBE_Player*) this->player;
     if ((player != 0) && (node->state == 0)) {
         if (player->tech_tree->get_tech_state(node->count) == 3) {
             node->state = 2;

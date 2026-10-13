@@ -45,8 +45,7 @@ class TRIBE_Master_Combat_Object : public RGE_Master_Combat_Object {
     virtual RGE_Task_List* create_task_list();
 };
 
-typedef char
-    tm_co_ob_build_pts_required_offset[(offsetof(TRIBE_Master_Combat_Object, build_pts_required) == 0x15A) ? 1 : -1];
+typedef char tm_co_ob_build_pts_required_offset[(offsetof(TRIBE_Master_Combat_Object, build_pts_required) == 0x15A) ? 1 : -1];
 typedef char tm_co_ob_tribe_size[(sizeof(TRIBE_Master_Combat_Object) == 0x164) ? 1 : -1];
 
 #endif // AOE1_TM_CO_OB_H

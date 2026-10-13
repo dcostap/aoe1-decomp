@@ -554,18 +554,10 @@ void T_Scenario::SaveAttributesIntoPlayers() {
     int other;
     if (player < this->world->player_num) {
         do {
-            this->world->players[player]->new_attribute_num(
-                RGE_RESOURCE_FOOD, (float) this->Get_player_Food(player - 1)
-            );
-            this->world->players[player]->new_attribute_num(
-                RGE_RESOURCE_STONE, (float) this->Get_player_Stone(player - 1)
-            );
-            this->world->players[player]->new_attribute_num(
-                RGE_RESOURCE_GOLD, (float) this->Get_player_Gold(player - 1)
-            );
-            this->world->players[player]->new_attribute_num(
-                RGE_RESOURCE_WOOD, (float) this->Get_player_Wood(player - 1)
-            );
+            this->world->players[player]->new_attribute_num(RGE_RESOURCE_FOOD, (float) this->Get_player_Food(player - 1));
+            this->world->players[player]->new_attribute_num(RGE_RESOURCE_STONE, (float) this->Get_player_Stone(player - 1));
+            this->world->players[player]->new_attribute_num(RGE_RESOURCE_GOLD, (float) this->Get_player_Gold(player - 1));
+            this->world->players[player]->new_attribute_num(RGE_RESOURCE_WOOD, (float) this->Get_player_Wood(player - 1));
 
             other = 1;
             if (other < this->world->player_num) {
@@ -601,8 +593,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
         if (this->victory_all_flag != 0) {
             world = this->world;
             for (int player = one; player < (int) world->player_num; ++player) {
-                TRIBE_Victory_Conditions* conditions =
-                    (TRIBE_Victory_Conditions*)world->players[player]->victory_conditions;
+                TRIBE_Victory_Conditions* conditions = (TRIBE_Victory_Conditions*) world->players[player]->victory_conditions;
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -625,8 +616,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
         if (this->victory_all_flag == 0) {
             world = this->world;
             for (int player = one; player < (int) world->player_num; ++player) {
-                TRIBE_Victory_Conditions* conditions =
-                    (TRIBE_Victory_Conditions*)world->players[player]->victory_conditions;
+                TRIBE_Victory_Conditions* conditions = (TRIBE_Victory_Conditions*) world->players[player]->victory_conditions;
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -655,8 +645,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
 
     SaveAttributes = 0x72;
     do {
-        TRIBE_Victory_Conditions* conditions =
-            (TRIBE_Victory_Conditions*)this->world->players[j + 1]->victory_conditions;
+        TRIBE_Victory_Conditions* conditions = (TRIBE_Victory_Conditions*) this->world->players[j + 1]->victory_conditions;
         int i = 0;
         do {
             SP_Victory_Info* condition = &this->sp_victory[j][i];
@@ -688,8 +677,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
                 } else if (type == 3) {
                     if (this->get_object_pointer(condition->dest_obj_ID) != 0) {
                         conditions->add_bring(
-                            1, this->get_object_pointer(condition->obj_ID),
-                            this->get_object_pointer(condition->dest_obj_ID)
+                            1, this->get_object_pointer(condition->obj_ID), this->get_object_pointer(condition->dest_obj_ID)
                         );
                     } else {
                         conditions->add_bring(
@@ -700,8 +688,8 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
                 } else if (type == 2) {
                     if (condition->x2 > g_scenario_victory_zero_coordinate) {
                         conditions->add_create(
-                            1, condition->ObjType, condition->Amount, this->sp_victory[j][i].x1, condition->y1,
-                            condition->x2, condition->y2, 0
+                            1, condition->ObjType, condition->Amount, this->sp_victory[j][i].x1, condition->y1, condition->x2,
+                            condition->y2, 0
                         );
                     } else {
                         conditions->add_create(1, condition->ObjType, condition->Amount, 0);
@@ -760,7 +748,7 @@ void T_Scenario::WriteDisabledTechnologiesToMainSystem() {
     // The shipped loop reads the low byte of each typed field.
     int* disabled = &this->DisabledTechnology[0][1];
     do {
-        TRIBE_Player* player = (TRIBE_Player*)world->players[player_index];
+        TRIBE_Player* player = (TRIBE_Player*) world->players[player_index];
 
         if (this->ScenarioOptions[0] != 0) {
             world->effects->do_effect(100, player);

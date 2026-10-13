@@ -26,9 +26,8 @@ TRIBE_Action_Convert::TRIBE_Action_Convert(int infile, RGE_Action_Object* obj_in
     rge_read(infile, &this->requiredRange, 4);
 }
 
-TRIBE_Action_Convert::TRIBE_Action_Convert(
-    RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in
-) : RGE_Action(obj_in, 1), requiredRange(1.0f) {
+TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in) :
+    RGE_Action(obj_in, 1), requiredRange(1.0f) {
     this->task = task_in;
     this->action_type = TRIBE_ACTION_TYPE_CONVERT;
     RGE_Action::set_target_obj(target_obj_in);
@@ -67,9 +66,9 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             this->was_same_owner = 0;
         }
         short target_id = target->master_obj->id;
-        if (target_id == MASTER_OBJECT_TOWN_CENTER1 || object_group == OBJECT_GROUP_WALL
-            || target_id == MASTER_OBJECT_ARTIFACT1 || target_id == MASTER_OBJECT_ARTIFACT_RUINS1
-            || target_id == MASTER_OBJECT_ARTIFACT_RUINS2 || target_id == MASTER_OBJECT_WONDER) {
+        if (target_id == MASTER_OBJECT_TOWN_CENTER1 || object_group == OBJECT_GROUP_WALL || target_id == MASTER_OBJECT_ARTIFACT1
+            || target_id == MASTER_OBJECT_ARTIFACT_RUINS1 || target_id == MASTER_OBJECT_ARTIFACT_RUINS2
+            || target_id == MASTER_OBJECT_WONDER) {
             if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
@@ -94,34 +93,28 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
         if (object_group == OBJECT_GROUP_BUILDING) {
             this->requiredRange = 1.0f;
         } else {
-            this->requiredRange = ((RGE_Master_Combat_Object*)object->master_obj)->weapon_range;
+            this->requiredRange = ((RGE_Master_Combat_Object*) object->master_obj)->weapon_range;
         }
         if (object_group == OBJECT_GROUP_FLAG) {
             this->set_state(0x0d);
             return;
         }
-        if (object_group == OBJECT_GROUP_PRIEST
-            && object->owner->attributes[PLAYER_ATTRIBUTE_PRIEST_CONVERSION] <= 0.0f) {
+        if (object_group == OBJECT_GROUP_PRIEST && object->owner->attributes[PLAYER_ATTRIBUTE_PRIEST_CONVERSION] <= 0.0f) {
             if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notification(
-                GAME_NOTIFY_CONVERSION_PRIEST_NEEDS_MONOTHEISM, (int) this->obj->owner->id, 0, 0, 0
-            );
+            rge_base_game->notification(GAME_NOTIFY_CONVERSION_PRIEST_NEEDS_MONOTHEISM, (int) this->obj->owner->id, 0, 0, 0);
             return;
         }
-        if (object_group == OBJECT_GROUP_BUILDING
-            && object->owner->attributes[PLAYER_ATTRIBUTE_BUILDING_CONVERSION] <= 0.0f) {
+        if (object_group == OBJECT_GROUP_BUILDING && object->owner->attributes[PLAYER_ATTRIBUTE_BUILDING_CONVERSION] <= 0.0f) {
             if (object->owner->computerPlayer() == 1) {
                 this->set_state(0x0b);
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notification(
-                GAME_NOTIFY_CONVERSION_BUILDING_NEEDS_MONOTHEISM, (int) this->obj->owner->id, 0, 0, 0
-            );
+            rge_base_game->notification(GAME_NOTIFY_CONVERSION_BUILDING_NEEDS_MONOTHEISM, (int) this->obj->owner->id, 0, 0, 0);
             return;
         }
     }
@@ -143,8 +136,7 @@ void TRIBE_Action_Convert::set_state(uchar new_state) {
     switch (new_state) {
         case 3:
             this->obj->notify(
-                (int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK,
-                (long)UNIT_AI_ACTION_CONVERT, 0L, 0L
+                (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, (long) UNIT_AI_ACTION_CONVERT, 0L, 0L
             );
             goto master_sprite;
 
@@ -242,8 +234,7 @@ uchar TRIBE_Action_Convert::update() {
         }
         this->set_state(1);
         this->obj->notify(
-            (int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID,
-            (long)UNIT_AI_ACTION_CONVERT, 0L, 0L
+            (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, (long) UNIT_AI_ACTION_CONVERT, 0L, 0L
         );
         return RGE_ACTION_UPDATE_TARGET_INVALID;
     }
@@ -301,9 +292,8 @@ uchar TRIBE_Action_Convert::update() {
                 return RGE_ACTION_UPDATE_CONTINUE;
             }
             this->target_obj->notify(
-                (int)this->obj->id, (int)this->target_obj->id, UNIT_AI_NOTIFY_ATTACKED,
-                (long)this->obj->id, (long)this->target_obj->hp,
-                (long)this->target_obj->master_obj->hp
+                (int) this->obj->id, (int) this->target_obj->id, UNIT_AI_NOTIFY_ATTACKED, (long) this->obj->id,
+                (long) this->target_obj->hp, (long) this->target_obj->master_obj->hp
             );
             this->timer = this->timer - this->obj->owner->world->world_time_delta_seconds;
             if (this->timer <= 0.0f) {
@@ -323,16 +313,14 @@ uchar TRIBE_Action_Convert::update() {
                 } else {
                     short type = this->target_obj->master_obj->object_group;
                     if (type == OBJECT_GROUP_FISHING_BOAT || type == OBJECT_GROUP_TRADE_BOAT
-                        || type == OBJECT_GROUP_TRANSPORT_BOAT || type == OBJECT_GROUP_WAR_BOAT
-                        || type == OBJECT_GROUP_PRIEST) {
+                        || type == OBJECT_GROUP_TRANSPORT_BOAT || type == OBJECT_GROUP_WAR_BOAT || type == OBJECT_GROUP_PRIEST) {
                         chance = chance + chance;
                     } else if (type == OBJECT_GROUP_CHARIOT || type == OBJECT_GROUP_CHARIOT_ARCHER) {
                         chance = chance * g_conversion_special_group_factor;
                     }
                 }
                 // Direct field ownership preserves the original x87 order.
-                if (chance <= this->task->work_val1
-                                  * ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate) {
+                if (chance <= this->task->work_val1 * ((RGE_Master_Action_Object*) this->obj->master_obj)->work_rate) {
                     rge_base_game->notification(
                         GAME_NOTIFY_CONVERSION_SUCCEEDED, this->obj->owner->id, this->target_obj->owner->id, 0, 0
                     );
@@ -352,8 +340,7 @@ uchar TRIBE_Action_Convert::update() {
 
         case 13:
             this->obj->notify(
-                (int)this->obj->id, (int)this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED,
-                (long)UNIT_AI_ACTION_CONVERT, 0L, 0L
+                (int) this->obj->id, (int) this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, (long) UNIT_AI_ACTION_CONVERT, 0L, 0L
             );
             this->set_state(2);
             return RGE_ACTION_UPDATE_FAILED;

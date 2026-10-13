@@ -135,9 +135,7 @@ unsigned char RGE_Action_Transport::update(void) {
 
         case 0x0D:
             // Typed casts select the virtual notify overload here.
-            this->obj->notify(
-                this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_TRANSPORT, 0, 0
-            );
+            this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_TRANSPORT, 0, 0);
             this->set_state(2);
             return RGE_ACTION_UPDATE_FAILED;
 

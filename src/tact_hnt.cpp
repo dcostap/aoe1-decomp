@@ -119,8 +119,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
         case 15: {
             this->timer = 0.0f;
             RGE_Action_Move_To* action = new RGE_Action_Move_To(
-                this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range,
-                this->get_move_sprite()
+                this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range, this->get_move_sprite()
             );
             if (action == 0) {
                 this->set_state(0x0D);
@@ -161,11 +160,10 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
             // These three reads prove the combat-master fields at +0x124, +0x12A,
             // and +0x138.
             RGE_Action_Attack* action = new RGE_Action_Attack(
-                this->obj, this->target_obj, this->get_move_sprite(), this->task->work_sprite, 0,
-                this->task->work_range,
-                ((RGE_Master_Combat_Object*)this->obj->master_obj)->minimum_weapon_range,
-                ((RGE_Master_Combat_Object*)this->obj->master_obj)->missile_id,
-                ((RGE_Master_Combat_Object*)this->obj->master_obj)->fire_missile_at_frame
+                this->obj, this->target_obj, this->get_move_sprite(), this->task->work_sprite, 0, this->task->work_range,
+                ((RGE_Master_Combat_Object*) this->obj->master_obj)->minimum_weapon_range,
+                ((RGE_Master_Combat_Object*) this->obj->master_obj)->missile_id,
+                ((RGE_Master_Combat_Object*) this->obj->master_obj)->fire_missile_at_frame
             );
             if (action == 0) {
                 this->set_state(0x0D);
@@ -197,21 +195,19 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
         case 8:
             if (this->obj->attribute_amount_held > g_hunt_empty_amount) {
                 if (this->target_obj2 == 0) {
-                    if (((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site != -1) {
+                    if (((RGE_Master_Action_Object*) this->obj->master_obj)->drop_site != -1) {
                         this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
-                            ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
-                            ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
-                            this->obj->world_x, this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE,
-                            (RGE_Static_Object*) this->obj
+                            ((RGE_Master_Action_Object*) this->obj->master_obj)->drop_site,
+                            ((RGE_Master_Action_Object*) this->obj->master_obj)->backup_drop_site, this->obj->world_x,
+                            this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE, (RGE_Static_Object*) this->obj
                         ));
                     } else {
                         this->set_target_obj2(0);
                     }
                 }
                 if (this->target_obj2 != 0) {
-                    RGE_Action_Move_To* action = new RGE_Action_Move_To(
-                        this->obj, this->target_obj2, this->task->work_range, this->get_move_sprite()
-                    );
+                    RGE_Action_Move_To* action =
+                        new RGE_Action_Move_To(this->obj, this->target_obj2, this->task->work_range, this->get_move_sprite());
                     if (action == 0) {
                         this->set_state(0x0D);
                         return;
@@ -271,8 +267,7 @@ unsigned char TRIBE_Action_Hunt::update() {
                 if (this->timer > 0.0) {
                     this->timer = -10.0f;
                     this->obj->notify(
-                        this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HUNT,
-                        this->targetType, 0
+                        this->obj->id, this->obj->id, UNIT_AI_NOTIFY_REQUEST_TASK, UNIT_AI_ACTION_HUNT, this->targetType, 0
                     );
                     return RGE_ACTION_UPDATE_CONTINUE;
                 }
@@ -415,8 +410,7 @@ unsigned char TRIBE_Action_Hunt::update() {
             this->target_obj->set_attribute_amount(-give_amount, 1, 1);
             this->obj->set_attribute_amount(adjusted_amount, 1, 0);
 
-            if (this->obj->attribute_amount_held<max_hold&& this->target_obj->attribute_amount_held>
-                    g_hunt_empty_amount) {
+            if (this->obj->attribute_amount_held<max_hold&& this->target_obj->attribute_amount_held> g_hunt_empty_amount) {
                 return RGE_ACTION_UPDATE_CONTINUE;
             }
             this->set_state(8);
@@ -462,9 +456,7 @@ unsigned char TRIBE_Action_Hunt::update() {
                             attribute = this->obj->attribute_type_held;
                         }
                         this->obj->owner->add_attribute_num(attribute, this->obj->attribute_amount_held, 0);
-                        this->obj->owner->trackUnitGather(
-                            this->obj->id, attribute, (int) this->obj->attribute_amount_held
-                        );
+                        this->obj->owner->trackUnitGather(this->obj->id, attribute, (int) this->obj->attribute_amount_held);
                         this->obj->set_attribute(-1, 0.0f);
 
                         if (this->target_obj != 0) {
@@ -535,7 +527,7 @@ int TRIBE_Action_Hunt::stop(void) {
 
 int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0 && obj_in->owner == this->obj->owner) {
-        RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->obj->master_obj;
+        RGE_Master_Action_Object* master = (RGE_Master_Action_Object*) this->obj->master_obj;
         short id = obj_in->master_obj->id;
         if ((id == master->drop_site || id == master->backup_drop_site)
             && this->obj->attribute_amount_held > g_hunt_empty_amount) {
@@ -562,7 +554,7 @@ int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, floa
 int TRIBE_Action_Hunt::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in->owner == this->obj->owner) {
-            RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->obj->master_obj;
+            RGE_Master_Action_Object* master = (RGE_Master_Action_Object*) this->obj->master_obj;
             short obj_id = obj_in->master_obj->id;
             if ((obj_id == master->drop_site || obj_id == master->backup_drop_site)
                 && this->obj->attribute_amount_held > g_hunt_empty_amount) {

@@ -13,9 +13,8 @@ RGE_Master_Missile_Object::RGE_Master_Missile_Object(RGE_Master_Missile_Object* 
     }
 }
 
-RGE_Master_Missile_Object::RGE_Master_Missile_Object(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup
-) : RGE_Master_Combat_Object(infile, sprites, sounds, 0) {
+RGE_Master_Missile_Object::RGE_Master_Missile_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) :
+    RGE_Master_Combat_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
         setup(infile, sprites, sounds);
     }

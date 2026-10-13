@@ -181,9 +181,8 @@ void TSound_Driver::set_volume(long in_vol, int permanent) {
     delta = (unsigned long) (this->mixer_volume_control.Bounds.lMaximum - this->mixer_volume_control.Bounds.lMinimum);
     scaled = (unsigned long) ((delta * (in_vol + 10000)) / 10000);
     this->mixer_volume_value.dwValue = scaled;
-    this->dsrval = mixerSetControlDetails(
-        (HMIXEROBJ) this->mixer_handle, &this->mixer_volume_details, MIXER_SETCONTROLDETAILSF_VALUE
-    );
+    this->dsrval =
+        mixerSetControlDetails((HMIXEROBJ) this->mixer_handle, &this->mixer_volume_details, MIXER_SETCONTROLDETAILSF_VALUE);
 }
 
 int TSound_Driver::stream_file(char* file_name, int loop, long volume) {
@@ -283,9 +282,7 @@ int TSound_Driver::open_mixer() {
                 this->mixer_line_controls.cbmxctrl = sizeof(this->mixer_volume_control);
                 this->mixer_line_controls.pamxctrl = &this->mixer_volume_control;
 
-                if (mixerGetLineControlsA(
-                        this->mixer_handle, &this->mixer_line_controls, MIXER_GETLINECONTROLSF_ONEBYTYPE
-                    )
+                if (mixerGetLineControlsA(this->mixer_handle, &this->mixer_line_controls, MIXER_GETLINECONTROLSF_ONEBYTYPE)
                     == 0) {
                     memset(&this->mixer_volume_details, 0, sizeof(this->mixer_volume_details));
                     memset(&this->mixer_volume_value, 0, sizeof(this->mixer_volume_value));
@@ -295,9 +292,7 @@ int TSound_Driver::open_mixer() {
                     this->mixer_volume_details.cbDetails = sizeof(this->mixer_volume_value);
                     this->mixer_volume_details.paDetails = &this->mixer_volume_value;
 
-                    if (mixerGetControlDetailsA(
-                            this->mixer_handle, &this->mixer_volume_details, MIXER_GETCONTROLDETAILSF_VALUE
-                        )
+                    if (mixerGetControlDetailsA(this->mixer_handle, &this->mixer_volume_details, MIXER_GETCONTROLDETAILSF_VALUE)
                         == 0) {
                         this->mixer_open = 1;
                         this->start_volume = (int) (((unsigned long) this->mixer_volume_value.dwValue * 10000)

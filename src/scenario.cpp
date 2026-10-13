@@ -640,8 +640,7 @@ char* RGE_Scenario::Get_player_AI(int which_player, int WithExtension) {
     }
 
     if (WithExtension == 1) {
-        if (strcmp(this->BuildList[which_player], none_str) != 0
-            && strcmp(this->BuildList[which_player], random_str) != 0) {
+        if (strcmp(this->BuildList[which_player], none_str) != 0 && strcmp(this->BuildList[which_player], random_str) != 0) {
             sprintf(this->TempText3, "%s%s.per", rge_base_game->prog_info->ai_dir, this->AiRules[which_player]);
             return this->TempText3;
         }

@@ -71,9 +71,8 @@ void TRIBE_Action_Heal::set_state(unsigned char new_state) {
             return;
 
         case 11: {
-            RGE_Action_Move_To* move_to = new RGE_Action_Move_To(
-                this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite
-            );
+            RGE_Action_Move_To* move_to =
+                new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite);
             if (move_to == 0) {
                 this->set_state(0x0D);
                 return;
@@ -87,8 +86,7 @@ void TRIBE_Action_Heal::set_state(unsigned char new_state) {
             this->target_x = this->target_obj->world_x;
             this->target_y = this->target_obj->world_y;
             this->target_z = this->target_obj->world_z;
-            RGE_Action_Move_To* move_to =
-                new RGE_Action_Move_To(this->obj, this->target_obj, 0.4f, this->task->move_sprite);
+            RGE_Action_Move_To* move_to = new RGE_Action_Move_To(this->obj, this->target_obj, 0.4f, this->task->move_sprite);
             if (move_to == 0) {
                 this->set_state(0x0D);
                 return;
@@ -217,9 +215,7 @@ unsigned char TRIBE_Action_Heal::update() {
                 return RGE_ACTION_UPDATE_CONTINUE;
             }
             if (result == 2) {
-                this->obj->notify(
-                    this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_HEAL, 0, 0
-                );
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_HEAL, 0, 0);
                 this->set_state(2);
                 return RGE_ACTION_UPDATE_CONTINUE;
             }

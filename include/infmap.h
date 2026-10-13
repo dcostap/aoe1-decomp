@@ -31,9 +31,7 @@ class InfluenceMap {
         const XYPoint& min, const XYPoint& max, int valueLevel, int countOrthogonalEdgesAsConnections,
         int countDiagonalEdgesAsConnections, int countDiagonalConnections
     );
-    int coverageIncluding(
-        const XYPoint& min, const XYPoint& max, unsigned char valueLevel, unsigned char newValueLevel
-    );
+    int coverageIncluding(const XYPoint& min, const XYPoint& max, unsigned char valueLevel, unsigned char newValueLevel);
     int connectionsIncluding(
         const XYPoint& min, const XYPoint& max, unsigned char valueLevel, unsigned char newValueLevel,
         int countOrthogonalEdgesAsConnections, int countDiagonalEdgesAsConnections, int countDiagonalConnections

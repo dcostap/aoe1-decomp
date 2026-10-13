@@ -4,8 +4,7 @@
 
 static char s_tpnl_txl_draw[] = "tpnl_txl::draw";
 
-TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in) :
-    TPanel() {
+TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in) : TPanel() {
     this->font = font_in;
     this->text_type = 0;
     this->text[0] = 0;

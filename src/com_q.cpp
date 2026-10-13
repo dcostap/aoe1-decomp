@@ -157,8 +157,8 @@ void RGE_Communications_Queue::FlushForPlayer(unsigned int p) {
         MsgQueue* entry = &Queue[i];
         if (from == p && entry->Size > 0) {
             L->Log(
-                "Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d CtrlCmd=%d", i, entry->SeqNo, entry->ExecTurn,
-                from, entry->Size, entry->ControlCommand, entry->Code
+                "Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d CtrlCmd=%d", i, entry->SeqNo, entry->ExecTurn, from,
+                entry->Size, entry->ControlCommand, entry->Code
             );
 
             entry = &Queue[i];
@@ -214,7 +214,7 @@ int RGE_Communications_Queue::AddItem(
     MsgQueue* slot = this->Queue + i;
     this->HighQueueDepth = high_depth;
 
-    char* message = (char*)(operator new(nBytes + 1));
+    char* message = (char*) (operator new(nBytes + 1));
     slot->msgptr = message;
 
     if (message != 0) {

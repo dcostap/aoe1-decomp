@@ -55,8 +55,9 @@ void PointMaker::CreateMasks() {
 
     char ptr2[16] = { 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0 };
     char ptr3[25] = { 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
-    char ptr4[36] = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 2, 2, 1, 0,
-                      0, 1, 2, 2, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
+    char ptr4[36] = {
+        0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 2, 2, 1, 0, 0, 1, 2, 2, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0
+    };
     char ptr5[49] = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 2, 2, 2, 1, 0, 0, 1, 2,
                       3, 2, 1, 0, 0, 1, 2, 2, 2, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -279,8 +280,7 @@ int PointMaker::CreateShape(int xt, int yt) {
 }
 
 void PointMaker::Branch(int which) {
-    if (CurrentNumberOfBranchLevels > 1
-        && debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 278) % 100 < ChanceOfNextNode * 10
+    if (CurrentNumberOfBranchLevels > 1 && debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 278) % 100 < ChanceOfNextNode * 10
         && ProbabilityTiles < MinimumNumTiles * 2) {
         CurrentNumberOfBranchLevels--;
         for (int i = 0; i < NumSplitsPerBranch; i++) {

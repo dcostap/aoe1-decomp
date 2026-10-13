@@ -618,8 +618,8 @@ void TEditPanel::draw() {
                 case 4:
                     this->render_area->DrawBevel3(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3,
-                        this->bevel_color2, this->bevel_color1
+                        this->bevel_color6, this->bevel_color5, this->bevel_color4, this->bevel_color3, this->bevel_color2,
+                        this->bevel_color1
                     );
                     break;
                 case 5:
@@ -637,8 +637,8 @@ void TEditPanel::draw() {
                 case 7:
                     this->render_area->DrawBevel3(
                         this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
-                        this->bevel_color5, this->bevel_color6
+                        this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5,
+                        this->bevel_color6
                     );
                     break;
             }

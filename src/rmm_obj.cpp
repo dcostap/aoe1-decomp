@@ -82,9 +82,7 @@ void RGE_RMM_Object_Generator::generate_objects(RGE_Object_Info_Line& info_line)
         for (int i = 0; i < this->info.land_num; i++) {
             RGE_Land_Point_Info_Line& land = this->info.lands[i];
             if (land.id == info_line.land_id) {
-                this->place_land_objects(
-                    info_line, land.x, land.y, info_line.land_inner_radius, info_line.land_outer_radius, i
-                );
+                this->place_land_objects(info_line, land.x, land.y, info_line.land_inner_radius, info_line.land_outer_radius, i);
             }
         }
     } else if (info_line.land_id == -1) {
@@ -97,9 +95,7 @@ void RGE_RMM_Object_Generator::generate_objects(RGE_Object_Info_Line& info_line)
 // tables, and the source's clipped rectangular scan.
 extern int __cdecl debug_rand(char* file, int line);
 
-void RGE_RMM_Object_Generator::make_placement_stack(
-    Map_Stack& stack, long x, long y, long inner_radius, long outer_radius
-) {
+void RGE_RMM_Object_Generator::make_placement_stack(Map_Stack& stack, long x, long y, long inner_radius, long outer_radius) {
     long y1;
     long y0;
     long x1;
@@ -426,8 +422,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
     RGE_Player* player = this->world->players[player_id];
     RGE_Master_Static_Object* master = player->master_objects[object->obj_id];
     if (master != 0) {
-        RGE_Zone_Map* map_zone =
-            this->map->map_zones->get_zone_map(this->world->terrains[master->terrain], 0x20, zone_index);
+        RGE_Zone_Map* map_zone = this->map->map_zones->get_zone_map(this->world->terrains[master->terrain], 0x20, zone_index);
         land_zone = map_zone->get_zone_info(map_x, map_y);
 
         long count = object->number_of_groups;
@@ -471,9 +466,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
     }
 }
 
-void RGE_RMM_Object_Generator::place_group(
-    RGE_Object_Info_Line& info_line, long map_x, long map_y, RGE_Player* player
-) {
+void RGE_RMM_Object_Generator::place_group(RGE_Object_Info_Line& info_line, long map_x, long map_y, RGE_Player* player) {
     long x;
     long col;
     float cost;
@@ -495,8 +488,7 @@ void RGE_RMM_Object_Generator::place_group(
         count = 1;
 
     while (pop_stack(obj_stack, col, x, cost) && count > 0) {
-        if (info_line.terrain < 0
-            || ((this->map_row_offset[x][col].terrain_type & 0x1f) == (unsigned int) info_line.terrain)) {
+        if (info_line.terrain < 0 || ((this->map_row_offset[x][col].terrain_type & 0x1f) == (unsigned int) info_line.terrain)) {
             fx = (float) col;
             fy = (float) x;
             RGE_Master_Static_Object* master = player->master_objects[info_line.obj_id];
@@ -517,9 +509,7 @@ void RGE_RMM_Object_Generator::place_group(
     self->deinit_stack(obj_stack);
 }
 
-void RGE_RMM_Object_Generator::place_cluster(
-    RGE_Object_Info_Line& info_line, long map_x, long map_y, RGE_Player* player
-) {
+void RGE_RMM_Object_Generator::place_cluster(RGE_Object_Info_Line& info_line, long map_x, long map_y, RGE_Player* player) {
     long x;
     long y;
     float cost;

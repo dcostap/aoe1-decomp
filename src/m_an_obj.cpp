@@ -11,9 +11,8 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object(RGE_Master_Animated_Objec
     }
 }
 
-RGE_Master_Animated_Object::RGE_Master_Animated_Object(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup
-) : RGE_Master_Static_Object(infile, sprites, sounds, 0) {
+RGE_Master_Animated_Object::RGE_Master_Animated_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) :
+    RGE_Master_Static_Object(infile, sprites, sounds, 0) {
     if (do_setup) {
         setup(infile, sprites, sounds);
     }
@@ -69,7 +68,7 @@ RGE_Master_Static_Object* RGE_Master_Animated_Object::make_new_master() {
 
 void RGE_Master_Animated_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Static_Object::copy_obj(source);
-    speed = ((RGE_Master_Animated_Object*)source)->speed;
+    speed = ((RGE_Master_Animated_Object*) source)->speed;
 }
 
 void RGE_Master_Animated_Object::modify(float amount, unsigned char flag) {

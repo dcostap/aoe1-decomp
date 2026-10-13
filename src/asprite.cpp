@@ -45,9 +45,7 @@ void RGE_Active_Sprite::save(int outfile) {
 void RGE_Active_Sprite::update(float time, float speed) {
 }
 
-void RGE_Active_Sprite::draw(
-    short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area
-) {
+void RGE_Active_Sprite::draw(short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area) {
     this->sprite->draw(
         (long) facet, 0, x + this->offset_x, y + this->offset_y, sx + this->offset_x, sy + this->offset_y, player_color,
         draw_area, 0
@@ -150,8 +148,7 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* new_sprite) :
     animate_flag = 1;
 }
 
-RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int infile, RGE_Sprite** sprites) :
-    RGE_Active_Sprite(infile, sprites) {
+RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int infile, RGE_Sprite** sprites) : RGE_Active_Sprite(infile, sprites) {
     this->type = 2;
     rge_read(infile, &this->frame, 2);
     rge_read(infile, &this->animate_interval, 4);
@@ -244,9 +241,7 @@ void RGE_Active_Animated_Sprite::draw(
     }
 }
 
-void RGE_Active_Animated_Sprite::normal_draw(
-    short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area
-) {
+void RGE_Active_Animated_Sprite::normal_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area) {
     this->sprite->normal_draw((long) facet, (long) this->frame, x, y, player_color, draw_area);
     if (this->frame_changed != 0) {
         this->sprite->play_sound(this->last_frame, this->frame, facet);
@@ -303,9 +298,7 @@ short RGE_Active_Animated_Sprite::get_facetindex(short facet) {
     return (short) facet_index;
 }
 
-unsigned char RGE_Active_Animated_Sprite::get_frame(
-    short& min_x, short& min_y, short& max_x, short& max_y, long facet
-) {
+unsigned char RGE_Active_Animated_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y, long facet) {
     return (unsigned char) this->sprite->get_frame(min_x, min_y, max_x, max_y, facet, this->frame);
 }
 

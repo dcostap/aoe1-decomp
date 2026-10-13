@@ -34,8 +34,7 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
         return;
     }
     if (!this->create_text(
-            this, &this->name_text, STRING_ID_PLAYER_NAME_LABEL, 60, 80, 140, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0,
-            0, 0
+            this, &this->name_text, STRING_ID_PLAYER_NAME_LABEL, 60, 80, 140, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 0, 0
         )) {
         return;
     }
@@ -49,16 +48,14 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
     this->name_scrollbar->set_help_info(STRING_ID_HELP_PLAYER_NAME_LIST, -1);
 
     if (!this->create_button(
-            this, &this->new_button, STRING_ID_BUTTON_NEW_PLAYER, 0, 400, 100, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0,
-            0
+            this, &this->new_button, STRING_ID_BUTTON_NEW_PLAYER, 0, 400, 100, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
         )) {
         return;
     }
     this->new_button->set_help_info(STRING_ID_HELP_ADD_PLAYER_NAME, -1);
 
     if (!this->create_button(
-            this, &this->remove_button, STRING_ID_BUTTON_REMOVE_PLAYER, 0, 400, 140, 180, 30,
-            RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
+            this, &this->remove_button, STRING_ID_BUTTON_REMOVE_PLAYER, 0, 400, 140, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
         )) {
         return;
     }
@@ -72,8 +69,7 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
     this->ok_button->set_help_info(STRING_ID_HELP_OK, -1);
 
     if (!this->create_button(
-            this, &this->cancel_button, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0,
-            0
+            this, &this->cancel_button, STRING_ID_BUTTON_CANCEL, 0, 330, 440, 240, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
         )) {
         return;
     }
@@ -185,9 +181,7 @@ long TRIBE_Screen_Name::handle_idle() {
     return TPanel::handle_idle();
 }
 
-long TRIBE_Screen_Name::action(
-    TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2
-) {
+long TRIBE_Screen_Name::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     long line;
     char str[256];
 
@@ -285,21 +279,17 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_panel_in) : TDialogPan
         ))
         return;
     if (!this->create_text(
-            this, &this->name_text, STRING_ID_NEW_PLAYER_NAME_LABEL, 40, 85, 420, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT,
-            0, 1, 0
+            this, &this->name_text, STRING_ID_NEW_PLAYER_NAME_LABEL, 40, 85, 420, 20, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 0, 1, 0
         ))
         return;
-    if (!this->create_edit(
-            this, &this->name_input, "", 0x0f, TEditPanel::FormatText, 40, 110, 420, 23, RGE_FONT_STANDARD, 1, 1
-        ))
+    if (!this->create_edit(this, &this->name_input, "", 0x0f, TEditPanel::FormatText, 40, 110, 420, 23, RGE_FONT_STANDARD, 1, 1))
         return;
     if (!this->create_button(
             this, &this->ok_button, STRING_ID_BUTTON_OK, 0, 60, 180, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
         ))
         return;
     if (!this->create_button(
-            this, &this->cancel_button, STRING_ID_BUTTON_CANCEL, 0, 260, 180, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0,
-            0
+            this, &this->cancel_button, STRING_ID_BUTTON_CANCEL, 0, 260, 180, 180, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
         ))
         return;
 
@@ -322,9 +312,7 @@ TRIBE_Dialog_Name::~TRIBE_Dialog_Name() {
     this->delete_panel((TPanel**) &this->cancel_button);
 }
 
-long TRIBE_Dialog_Name::action(
-    TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2
-) {
+long TRIBE_Dialog_Name::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     if (from_panel != 0) {
         if ((from_panel == this->ok_button && action_in == 1) || (from_panel == this->name_input && action_in == 0)) {
             if (this->name_input->get_text()[0] == 0) {
@@ -340,8 +328,7 @@ long TRIBE_Dialog_Name::action(
             return 1;
         }
 
-        if ((from_panel == this->cancel_button && action_in == 1)
-            || (from_panel == this->name_input && action_in == 1)) {
+        if ((from_panel == this->cancel_button && action_in == 1) || (from_panel == this->name_input && action_in == 1)) {
             if (panel_system.panel("Name Selection Screen") != 0) {
                 panel_system.setCurrentPanel("Name Selection Screen", 0);
             } else {

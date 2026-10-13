@@ -21,9 +21,9 @@ UnitAIModule::UnitAIModule(RGE_Static_Object* o, int iQS) :
     currentActionValue(-1), currentTargetValue(-1), currentTargetTypeValue(-1), currentTargetXValue(-1.0f),
     currentTargetYValue(-1.0f), currentTargetZValue(-1.0f), desiredTargetDistanceValue(2.0f), defendTargetValue(-1),
     lastOrderValue(-1), lastActionValue(-1), lastTargetValue(-1), lastTargetTypeValue(-1), attackingUnitsValue(10),
-    waypointQueueSizeValue(0), lastUpdateTimeValue(0), idleTimerValue(0), idleTimeoutValue(3000),
-    secondaryTimerValue(0), lookAroundTimerValue(0), lookAroundTimeoutValue(1000), defenseBufferValue(1.0f),
-    importantObjects(0), numberImportantObjects(0), playStatus(0), stopAfterTargetKilledValue(0) {
+    waypointQueueSizeValue(0), lastUpdateTimeValue(0), idleTimerValue(0), idleTimeoutValue(3000), secondaryTimerValue(0),
+    lookAroundTimerValue(0), lookAroundTimeoutValue(1000), defenseBufferValue(1.0f), importantObjects(0),
+    numberImportantObjects(0), playStatus(0), stopAfterTargetKilledValue(0) {
 
     if (o != 0) {
         objectCategoryValue = o->master_obj->object_group;
@@ -438,8 +438,7 @@ int UnitAIModule::update(unsigned long uTime) {
                 this->idleTimerValue = this->idleTimeoutValue;
             }
         } else {
-            if (this->objectValue->object_state == RGE_OBJECT_STATE_ACTIVE
-                && target->object_state > RGE_OBJECT_STATE_ACTIVE
+            if (this->objectValue->object_state == RGE_OBJECT_STATE_ACTIVE && target->object_state > RGE_OBJECT_STATE_ACTIVE
                 && this->actionRequiresLiveTarget(this->currentActionValue) == 1) {
                 this->stopAfterTargetKilledValue = 0;
                 if (this->currentActionValue == UNIT_AI_ACTION_ATTACK) {
@@ -485,8 +484,7 @@ int UnitAIModule::update(unsigned long uTime) {
 
             if (this->objectValue->owner->computerPlayer() == 1 && this->currentOrderPriorityValue != -1
                 && this->currentOrderPriorityValue < 100) {
-                int priority =
-                    (int) (g_unit_ai_distance_priority_scale / this->objectValue->distance_to_object(target));
+                int priority = (int) (g_unit_ai_distance_priority_scale / this->objectValue->distance_to_object(target));
                 if (priority > 99) {
                     priority = 99;
                 }
@@ -776,8 +774,8 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                         ++groupingIndex;
                     } while (groupingIndex < 50);
 
-                    if (trigger->value2() <= (this->playStatus->originalHitPoints(trigger->value1()) - currentHitPoints)
-                                                 * 100 / this->playStatus->originalHitPoints(trigger->value1())) {
+                    if (trigger->value2() <= (this->playStatus->originalHitPoints(trigger->value1()) - currentHitPoints) * 100
+                                                 / this->playStatus->originalHitPoints(trigger->value1())) {
                         triggerSatisfied = 1;
                     }
                     break;
@@ -837,9 +835,9 @@ void UnitAIModule::updateGroup(unsigned long uTime) {
                     break;
 
                 case AIPlayPhaseTrigger::TimeTrigger:
-                    if (trigger->value1() < (int) (this->objectValue->owner->world->world_time
-                                                   - this->playStatus->lastPhaseChangeTimeValue)
-                                                / 1000) {
+                    if (trigger->value1()
+                        < (int) (this->objectValue->owner->world->world_time - this->playStatus->lastPhaseChangeTimeValue)
+                              / 1000) {
                         triggerSatisfied = 1;
                     }
                     break;
@@ -906,19 +904,15 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
                 if (this->objectValue->groupMembers.numberValue > 0) {
                     do {
                         RGE_Static_Object* member = this->lookupObject(this->objectValue->groupMembers[a]);
-                        if (member != 0 && member->unitAI() != 0
-                            && this->playStatus->group(member->id) == command->group()
+                        if (member != 0 && member->unitAI() != 0 && this->playStatus->group(member->id) == command->group()
                             && (pickup != 1 || member->unitAI()->currentAction() == -1)) {
                             switch (command->type()) {
                                 case AIPlayPhaseCommand::MoveCommand: {
                                     int distance = (int) member->distance_to_position(
-                                        (float) command->value1() + target->world_x,
-                                        (float) command->value2() + target->world_y,
+                                        (float) command->value1() + target->world_x, (float) command->value2() + target->world_y,
                                         (float) command->value3() + target->world_z
                                     );
-                                    if (distance > play->gatherTolerance(
-                                            command->group(), this->playStatus->currentPhaseValue
-                                        )) {
+                                    if (distance > play->gatherTolerance(command->group(), this->playStatus->currentPhaseValue)) {
                                         member->unitAI()->order(
                                             this->objectValue->id, UNIT_AI_ORDER_MOVE, -1, -1,
                                             (float) command->value1() + target->world_x,
@@ -931,8 +925,8 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
 
                                 case AIPlayPhaseCommand::AttackCommand:
                                     member->unitAI()->order(
-                                        this->objectValue->id, UNIT_AI_ORDER_ATTACK, target->id, target->owner->id,
-                                        -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100
+                                        this->objectValue->id, UNIT_AI_ORDER_ATTACK, target->id, target->owner->id, -1.0f, -1.0f,
+                                        -1.0f, 1.0f, 1, 0, 100
                                     );
                                     break;
 
@@ -940,8 +934,8 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
                                 case AIPlayPhaseCommand::AttackSavedTargetCommand: {
                                     int targetID = this->playStatus->savedAttackerValue;
                                     member->unitAI()->order(
-                                        this->objectValue->id, UNIT_AI_ORDER_ATTACK, targetID, -1, -1.0f, -1.0f, -1.0f,
-                                        1.0f, 1, 0, 100
+                                        this->objectValue->id, UNIT_AI_ORDER_ATTACK, targetID, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1,
+                                        0, 100
                                     );
                                     break;
                                 }
@@ -959,8 +953,7 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
                                     int targetID = -1;
                                     int groupingIndex = 0;
                                     do {
-                                        AIPlayStatus::GroupingStruct* grouping =
-                                            &this->playStatus->groupings[groupingIndex];
+                                        AIPlayStatus::GroupingStruct* grouping = &this->playStatus->groupings[groupingIndex];
                                         if (grouping->groupID == command->value1()) {
                                             RGE_Static_Object* healTarget = this->lookupObject(grouping->id);
                                             if (healTarget != 0) {
@@ -976,8 +969,8 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
 
                                     if (targetID != -1) {
                                         member->unitAI()->order(
-                                            this->objectValue->id, UNIT_AI_ORDER_HEAL, targetID, -1, -1.0f, -1.0f,
-                                            -1.0f, 1.0f, 1, 0, 100
+                                            this->objectValue->id, UNIT_AI_ORDER_HEAL, targetID, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1,
+                                            0, 100
                                         );
                                     }
                                     break;
@@ -986,8 +979,7 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
                                 case AIPlayPhaseCommand::WaitCommand:
                                     member->unitAI()->order(
                                         this->objectValue->id, UNIT_AI_ORDER_WAIT, -1, -1,
-                                        (float) command->value1() + target->world_x,
-                                        (float) command->value2() + target->world_y,
+                                        (float) command->value1() + target->world_x, (float) command->value2() + target->world_y,
                                         (float) command->value3() + target->world_z, 1.0f, 1, 0, 100
                                     );
                                     break;
@@ -1011,9 +1003,7 @@ int UnitAIModule::order(
 ) {
     if (this->objectValue->object_state <= RGE_OBJECT_STATE_ACTIVE) {
         if (immediate == 0) {
-            this->addToOrderQueue(
-                issuer, orderType, target, targetOwner, targetX, targetY, targetZ, range, inFront, priority
-            );
+            this->addToOrderQueue(issuer, orderType, target, targetOwner, targetX, targetY, targetZ, range, inFront, priority);
             return 1;
         }
 
@@ -1139,8 +1129,8 @@ void UnitAIModule::search() {
         if (obj != 0) {
             if (obj->unitAI() != 0) {
                 numberVisibleObjects = VisibleUnitManager->GetVisibleUnits(
-                    (int) obj->world_x, (int) obj->world_y, (int) obj->master_obj->los, obj->owner->id,
-                    this->importantObjects, this->numberImportantObjects, this->objectValue->owner->unitDiplomacy
+                    (int) obj->world_x, (int) obj->world_y, (int) obj->master_obj->los, obj->owner->id, this->importantObjects,
+                    this->numberImportantObjects, this->objectValue->owner->unitDiplomacy
                 );
                 return;
             }
@@ -1154,15 +1144,14 @@ void UnitAIModule::search() {
         range += range;
 
     numberVisibleObjects = VisibleUnitManager->GetVisibleUnits(
-        (int) obj->world_x, (int) obj->world_y, range, obj->owner->id, this->importantObjects,
-        this->numberImportantObjects, obj->owner->unitDiplomacy
+        (int) obj->world_x, (int) obj->world_y, range, obj->owner->id, this->importantObjects, this->numberImportantObjects,
+        obj->owner->unitDiplomacy
     );
 }
 
 int UnitAIModule::importantWhenDead(int objectType) {
-    if (objectType == OBJECT_GROUP_FORAGE || objectType == OBJECT_GROUP_HUNTED_ANIMAL
-        || objectType == OBJECT_GROUP_PREDATOR || objectType == OBJECT_GROUP_TREE
-        || objectType == OBJECT_GROUP_STONE_SOURCE || objectType == OBJECT_GROUP_GOLD_SOURCE)
+    if (objectType == OBJECT_GROUP_FORAGE || objectType == OBJECT_GROUP_HUNTED_ANIMAL || objectType == OBJECT_GROUP_PREDATOR
+        || objectType == OBJECT_GROUP_TREE || objectType == OBJECT_GROUP_STONE_SOURCE || objectType == OBJECT_GROUP_GOLD_SOURCE)
         return 1;
     return 0;
 }
@@ -1207,8 +1196,8 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck, float* 
     this->search();
     difficulty = this->objectValue->owner->world->difficultyLevel();
 
-    if (((rge_base_game->scenarioGame() == 1) && (rge_base_game->singlePlayerGame() == 1)
-         && (difficulty >= RGE_DIFFICULTY_EASY) && (this->objectValue->owner->id != 1))
+    if (((rge_base_game->scenarioGame() == 1) && (rge_base_game->singlePlayerGame() == 1) && (difficulty >= RGE_DIFFICULTY_EASY)
+         && (this->objectValue->owner->id != 1))
         || ((rge_base_game->singlePlayerGame() == 1) && (difficulty >= RGE_DIFFICULTY_EASY)
             && (this->objectValue->owner->type == 3)
             && ((this->objectValue->owner->strategicNumber(SNEasierReactionPercentage) != 100)
@@ -1222,8 +1211,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck, float* 
         } else {
             maxReactDistance = difficulty == RGE_DIFFICULTY_EASY ? 75 : 50;
         }
-        modifier =
-            (int) ((float) maxReactDistance * this->objectValue->master_obj->los * g_unit_ai_reaction_distance_scale);
+        modifier = (int) ((float) maxReactDistance * this->objectValue->master_obj->los * g_unit_ai_reaction_distance_scale);
         if (modifier < 1) {
             modifier = 1;
         }
@@ -1269,8 +1257,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck, float* 
                     && this->canAttackUnit(target) != 0
                     && (i != 3 || this->canAttackUnitAtNeutrality(target->master_obj->object_group) != 0)) {
                     float distance = this->objectValue->distance_to_object(target);
-                    if (this->objectValue->minimumWeaponRange() <= distance
-                        && modifier >= VisibleUnitList[i][j].distance) {
+                    if (this->objectValue->minimumWeaponRange() <= distance && modifier >= VisibleUnitList[i][j].distance) {
                         if (target->id != this->currentTargetValue) {
                             ++currentTargetIsWall;
                         }
@@ -1307,9 +1294,8 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck, float* 
                     goto skipCurrentTarget;
                 }
                 if (this->objectValue->inAttackRange(target) != 1
-                    && this->objectValue->canPath(
-                           this->currentTargetValue, this->objectValue->weaponRange(), 0, 0, -1, -1
-                       ) != 1) {
+                    && this->objectValue->canPath(this->currentTargetValue, this->objectValue->weaponRange(), 0, 0, -1, -1)
+                           != 1) {
                     goto skipCurrentTarget;
                 }
             }
@@ -1321,9 +1307,8 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck, float* 
                 }
                 numberNonCurrentTargets = this->currentTargetValue;
                 numberMovingTargets = target->damageCapability() * g_unit_ai_damage_capability_scale;
-                baseDamage = target->master_obj->calc_base_damage_ability(
-                    (RGE_Master_Combat_Object*) this->objectValue->master_obj
-                );
+                baseDamage =
+                    target->master_obj->calc_base_damage_ability((RGE_Master_Combat_Object*) this->objectValue->master_obj);
                 numberMovingTargets = (float) baseDamage * g_unit_ai_distance_priority_scale + numberMovingTargets;
                 float hitPoints = target->hp;
                 if (hitPoints > g_unit_ai_zero_float) {
@@ -1335,8 +1320,7 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck, float* 
                         numberMovingTargets /= distance;
                     }
                 } else if (distance != g_unit_ai_zero_float) {
-                    numberMovingTargets /=
-                        (float) numberDamagingUnits * distance * g_unit_ai_multi_attacker_distance_scale;
+                    numberMovingTargets /= (float) numberDamagingUnits * distance * g_unit_ai_multi_attacker_distance_scale;
                 }
                 if (target->master_obj->object_group != OBJECT_GROUP_BUILDING) {
                     ++numberDamagingUnits;
@@ -1382,8 +1366,7 @@ skipCurrentTarget:
                     && this->canAttackUnit(target) != 0
                     && (i != 3 || this->canAttackUnitAtNeutrality(target->master_obj->object_group) != 0)) {
                     float distance = this->objectValue->distance_to_object(target);
-                    if (this->objectValue->minimumWeaponRange() <= distance
-                        && modifier >= VisibleUnitList[i][j].distance
+                    if (this->objectValue->minimumWeaponRange() <= distance && modifier >= VisibleUnitList[i][j].distance
                         && (quickCheck != 1 || this->objectValue->inAttackRange(target) != 0)) {
                         if (quickCheck == 0 && this->objectValue->inAttackRange(target) == 0
                             && this->objectValue->canPath(
@@ -1446,8 +1429,7 @@ int UnitAIModule::mostDangerousEnemy(float* threatSlot) {
             if (obj) {
                 float f = objectValue->calculateDamage(
                     ((RGE_Master_Combat_Object*) obj->master_obj)->weapon_num,
-                    ((RGE_Master_Combat_Object*) obj->master_obj)->weapon, objectValue->calc_attack_modifier(obj),
-                    obj->owner, obj
+                    ((RGE_Master_Combat_Object*) obj->master_obj)->weapon, objectValue->calc_attack_modifier(obj), obj->owner, obj
                 );
                 if (best == -1 || f > largestThreat) {
                     largestThreat = f;
@@ -1521,9 +1503,7 @@ int UnitAIModule::closestAttacker(float* threatSlot) {
 
 // The source scans the canonical visible-unit result arrays.
 
-int UnitAIModule::closestObject(
-    int objectGroup, int desiredRelation, int objectState, int objectType, int* threatSlot
-) {
+int UnitAIModule::closestObject(int objectGroup, int desiredRelation, int objectState, int objectType, int* threatSlot) {
     int objectsOfPlayer[9];
     this->search();
 
@@ -1541,8 +1521,7 @@ int UnitAIModule::closestObject(
             do {
                 objectsOfPlayer[VisibleUnitList[category][i].player] = 1;
                 if (this->objectValue->id != VisibleUnitList[category][i].object_id) {
-                    RGE_Static_Object* object =
-                        this->objectValue->owner->world->object(VisibleUnitList[category][i].object_id);
+                    RGE_Static_Object* object = this->objectValue->owner->world->object(VisibleUnitList[category][i].object_id);
                     if (object != 0 && object->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
                         if ((desiredRelation != 0 || category == UNIT_DIPLOMACY_ALLY || category == UNIT_DIPLOMACY_SELF)
                             && (desiredRelation != 2 || category == UNIT_DIPLOMACY_ENEMY)
@@ -1551,8 +1530,7 @@ int UnitAIModule::closestObject(
                             && (objectGroup == -1 || object->master_obj->object_group == objectGroup)
                             && (objectType == -1 || object->master_obj->id == objectType)
                             && (objectState == RGE_OBJECT_STATE_ANY || object->object_state == objectState)) {
-                            if (closestObjectID == -1
-                                || (float) VisibleUnitList[category][i].distance < closestDistance) {
+                            if (closestObjectID == -1 || (float) VisibleUnitList[category][i].distance < closestDistance) {
                                 closestObjectID = VisibleUnitList[category][i].object_id;
                                 closestDistance = (float) VisibleUnitList[category][i].distance;
                             }
@@ -1586,8 +1564,8 @@ int UnitAIModule::closestResourceObject(int resourceType, int* dSlot) {
     VISIBLE_RESOURCE_REC* resource;
     while (excludeCount < 100) {
         resource = this->objectValue->owner->VR_List->Get_Closest_Resource(
-            (int) this->objectValue->world_x, (int) this->objectValue->world_y, this->objectValue->currentZone(),
-            resourceType, excludeList, excludeCount
+            (int) this->objectValue->world_x, (int) this->objectValue->world_y, this->objectValue->currentZone(), resourceType,
+            excludeList, excludeCount
         );
         if (resource == 0) {
             return -1;
@@ -1673,10 +1651,9 @@ int UnitAIModule::closestUndiscoveredTile(int* tX, int* tY, int checkWaypointQue
                         if ((checkWaypointQueue == 0) || (this->inWaypointQueue(x, y) == 0)) {
                             distance = (x - currX) * (x - currX) + (y - currY) * (y - currY);
                             if (this->currentTargetXValue != -1.0f) {
-                                distance =
-                                    (x - (int) this->currentTargetXValue) * (x - (int) this->currentTargetXValue)
-                                    + distance
-                                    + (y - (int) this->currentTargetYValue) * (y - (int) this->currentTargetYValue);
+                                distance = (x - (int) this->currentTargetXValue) * (x - (int) this->currentTargetXValue)
+                                           + distance
+                                           + (y - (int) this->currentTargetYValue) * (y - (int) this->currentTargetYValue);
                             }
                             if ((bestDistance == -1) || (bestDistance + randSelect > distance)) {
                                 bestDistance = distance;
@@ -1756,8 +1733,7 @@ int UnitAIModule::canAttackUnitAtNeutrality(int uID) {
 int UnitAIModule::stopObject(int checkOrderAndAction) {
     if (actionFile != 0) {
         fprintf(
-            actionFile, "t%ld, U#%d sO, cOAA=%d.\n", objectValue->owner->world->world_time, objectValue->id,
-            checkOrderAndAction
+            actionFile, "t%ld, U#%d sO, cOAA=%d.\n", objectValue->owner->world->world_time, objectValue->id, checkOrderAndAction
         );
     }
 
@@ -1821,9 +1797,7 @@ int UnitAIModule::huntObject(int targetID, int unconditional) {
             } else {
                 object_id = -1;
             }
-            fprintf(
-                actionFile, "#%d call stopObject %s %d\n", object_id, "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xC48
-            );
+            fprintf(actionFile, "#%d call stopObject %s %d\n", object_id, "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xC48);
         }
 
         this->stopObject(1);
@@ -1876,9 +1850,7 @@ int UnitAIModule::healObject(int targetID, int unconditional) {
                 this->setCurrentTarget(targetID, -1, 0, 0, 0);
                 return 1;
             }
-            this->setCurrentTarget(
-                targetID, target->master_obj->object_group, target->world_x, target->world_y, target->world_z
-            );
+            this->setCurrentTarget(targetID, target->master_obj->object_group, target->world_x, target->world_y, target->world_z);
             return 1;
         }
     }
@@ -1919,9 +1891,7 @@ int UnitAIModule::repairObject(int targetID, int unconditional) {
                 this->setCurrentTarget(targetID, -1, 0, 0, 0);
                 return 1;
             }
-            this->setCurrentTarget(
-                targetID, target->master_obj->object_group, target->world_x, target->world_y, target->world_z
-            );
+            this->setCurrentTarget(targetID, target->master_obj->object_group, target->world_x, target->world_y, target->world_z);
             return 1;
         }
     }
@@ -2018,8 +1988,7 @@ int UnitAIModule::unload(int unconditional, float x, float y) {
                 return 1;
             }
             this->setCurrentTarget(
-                this->objectValue->id, target->master_obj->object_group, target->world_x, target->world_y,
-                target->world_z
+                this->objectValue->id, target->master_obj->object_group, target->world_x, target->world_y, target->world_z
             );
             return 1;
         }
@@ -2116,8 +2085,7 @@ int UnitAIModule::evasiveMoveTo(float targetX, float targetY, float targetZ, int
                 targetX = 0.0f;
             } else {
                 if (targetX >= (float) this->objectValue->owner->world->map->map_width) {
-                    targetX =
-                        (float) this->objectValue->owner->world->map->map_width - g_unit_ai_map_boundary_adjustment;
+                    targetX = (float) this->objectValue->owner->world->map->map_width - g_unit_ai_map_boundary_adjustment;
                 }
             }
 
@@ -2125,8 +2093,7 @@ int UnitAIModule::evasiveMoveTo(float targetX, float targetY, float targetZ, int
                 targetY = 0.0f;
             } else {
                 if (targetY >= (float) this->objectValue->owner->world->map->map_height) {
-                    targetY =
-                        (float) this->objectValue->owner->world->map->map_height - g_unit_ai_map_boundary_adjustment;
+                    targetY = (float) this->objectValue->owner->world->map->map_height - g_unit_ai_map_boundary_adjustment;
                 }
             }
             ++i;
@@ -2141,9 +2108,7 @@ int UnitAIModule::evasiveMoveTo(float targetX, float targetY, float targetZ, int
     return 0;
 }
 
-int UnitAIModule::intelligentEvasiveMoveTo(
-    float targetX, float targetY, float targetZ, int goCloser, int unconditional
-) {
+int UnitAIModule::intelligentEvasiveMoveTo(float targetX, float targetY, float targetZ, int goCloser, int unconditional) {
     if (unconditional == 0 && this->currentActionValue != -1) {
         return 0;
     }
@@ -2224,8 +2189,8 @@ int UnitAIModule::intelligentEvasiveMoveTo(
     }
 
     if (this->objectValue->moveTo(
-            (float) point.x - g_unit_ai_half_coordinate_adjustment,
-            (float) point.y - g_unit_ai_half_coordinate_adjustment, targetZ, 0.5f, unconditional
+            (float) point.x - g_unit_ai_half_coordinate_adjustment, (float) point.y - g_unit_ai_half_coordinate_adjustment,
+            targetZ, 0.5f, unconditional
         )
         == 1) {
         this->setCurrentAction(UNIT_AI_ACTION_MOVE);
@@ -2265,8 +2230,7 @@ int UnitAIModule::runAwayFromAttackers(int unconditional) {
 
     return this->evasiveMoveTo(
         (float) (-((xDiff / distanceDiff) * evasiveMoveDistance)) + this->objectValue->world_x,
-        (float) (-((yDiff / distanceDiff) * evasiveMoveDistance)) + this->objectValue->world_y,
-        this->objectValue->world_z, 1
+        (float) (-((yDiff / distanceDiff) * evasiveMoveDistance)) + this->objectValue->world_y, this->objectValue->world_z, 1
     );
 }
 
@@ -2422,8 +2386,7 @@ int UnitAIModule::isAllyOwner(int oID) {
     if (owner->id == oID) {
         return 1;
     }
-    if (owner->relations[oID] == RGE_RELATION_ALLY
-        && owner->world->players[oID]->relations[owner->id] == RGE_RELATION_ALLY) {
+    if (owner->relations[oID] == RGE_RELATION_ALLY && owner->world->players[oID]->relations[owner->id] == RGE_RELATION_ALLY) {
         return 1;
     }
     return 0;
@@ -2557,9 +2520,8 @@ void UnitAIModule::askForHelp(int unitToAttack) {
                                                         UnitAIModule* targetAI = object->unitAI();
                                                         targetAI->order(
                                                             object->owner->id, UNIT_AI_ORDER_ATTACK, unitToAttack,
-                                                            callerObject->owner->id, callerObject->world_x,
-                                                            callerObject->world_y, callerObject->world_y,
-                                                            object->weaponRange(), 1, 0, 0x32
+                                                            callerObject->owner->id, callerObject->world_x, callerObject->world_y,
+                                                            callerObject->world_y, object->weaponRange(), 1, 0, 0x32
                                                         );
                                                     }
                                                 }
@@ -2798,17 +2760,13 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
             this->notifyCommander(nEvent);
 
             if (nEvent->p2 < 1) {
-                this->objectValue->owner->notify(
-                    this->objectValue->id, this->objectValue->id, 0x209, nEvent->caller, 0, 0
-                );
+                this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x209, nEvent->caller, 0, 0);
                 this->purgeNotifyQueue(uTime);
                 return 4;
             }
 
             if (this->attackingUnitsValue.numberValue == 0 || this->objectValue->owner->computerPlayer() == 1) {
-                this->objectValue->owner->notify(
-                    this->objectValue->id, this->objectValue->id, 0x201, nEvent->caller, 0, 0
-                );
+                this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x201, nEvent->caller, 0, 0);
             }
 
             {
@@ -2895,9 +2853,7 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                             return 3;
                         }
                         if (this->objectValue->inAttackRange(attacker) != 1
-                            && this->objectValue->canPath(
-                                   nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1
-                               ) != 1) {
+                            && this->objectValue->canPath(nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
                             this->runAwayFromAttackers(1);
                             return 3;
                         }
@@ -2924,9 +2880,7 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     //! Each flip rebuilds the attack action, and the unit never closes distance. One priest cannot trip it.
                     if (this->canAttackUnit(attacker) == 1 && ownDamage == g_unit_ai_zero_float) {
                         if (this->objectValue->inAttackRange(attacker) != 1
-                            && this->objectValue->canPath(
-                                   nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1
-                               ) != 1) {
+                            && this->objectValue->canPath(nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
                             goto compare_attacker;
                         }
                         this->attackObject(nEvent->caller, 1);
@@ -2951,8 +2905,7 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                         return 2;
                     }
                     if (this->objectValue->inAttackRange(attacker) != 1
-                        && this->objectValue->canPath(nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1)
-                               != 1) {
+                        && this->objectValue->canPath(nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
                         return 2;
                     }
                     this->attackObject(nEvent->caller, 1);
@@ -2961,8 +2914,7 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
 
                 if (this->canAttackUnit(attacker) == 1) {
                     if (this->objectValue->inAttackRange(attacker) != 1
-                        && this->objectValue->canPath(nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1)
-                               != 1) {
+                        && this->objectValue->canPath(nEvent->caller, this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
                         goto no_target_fallback;
                     }
                     if (this->attackObject(nEvent->caller, 1) != 1) {
@@ -2988,8 +2940,7 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     return 2;
                 }
 
-                if (this->currentOrderValue == UNIT_AI_ORDER_STAND_GROUND
-                    || this->objectValue->owner->computerPlayer() == 0) {
+                if (this->currentOrderValue == UNIT_AI_ORDER_STAND_GROUND || this->objectValue->owner->computerPlayer() == 0) {
                     this->removeCurrentTarget();
                     if (actionFile != 0) {
                         int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3069,8 +3020,7 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     return 2;
                 }
 
-                if (this->currentOrderValue == UNIT_AI_ORDER_STAND_GROUND
-                    || this->objectValue->owner->computerPlayer() == 0) {
+                if (this->currentOrderValue == UNIT_AI_ORDER_STAND_GROUND || this->objectValue->owner->computerPlayer() == 0) {
                     this->removeCurrentTarget();
                     if (actionFile != 0) {
                         int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3152,8 +3102,7 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     return 2;
                 }
 
-                if (this->currentOrderValue == UNIT_AI_ORDER_STAND_GROUND
-                    || this->objectValue->owner->computerPlayer() == 0) {
+                if (this->currentOrderValue == UNIT_AI_ORDER_STAND_GROUND || this->objectValue->owner->computerPlayer() == 0) {
                     this->removeCurrentTarget();
                     if (actionFile != 0) {
                         int id = this->objectValue != 0 ? this->objectValue->id : -1;
@@ -3240,8 +3189,7 @@ int UnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     float lastTargetXValue = this->currentTargetXValue;
                     float lastTargetYValue = this->currentTargetYValue;
                     int newTarget = this->bestUnitToAttack(1, 0, 0);
-                    if (newTarget != -1 && newTarget != this->currentTargetValue
-                        && this->attackObject(newTarget, 1) == 1) {
+                    if (newTarget != -1 && newTarget != this->currentTargetValue && this->attackObject(newTarget, 1) == 1) {
                         this->currentOrderValue = -1;
                         return 3;
                     }
@@ -3484,10 +3432,8 @@ void UnitAIModule::processGroupNotify(NotifyEvent* nEvent) {
     AIPlay* play;
     AIPlayPhase* phase;
 
-    if (this->playStatus != 0
-        && (play = this->objectValue->owner->world->playbook->play(this->playStatus->playNumberValue)) != 0
-        && (phase = play->phase(this->playStatus->currentPhaseValue)) != 0
-        && nEvent->mType == UNIT_AI_NOTIFY_ATTACKED) {
+    if (this->playStatus != 0 && (play = this->objectValue->owner->world->playbook->play(this->playStatus->playNumberValue)) != 0
+        && (phase = play->phase(this->playStatus->currentPhaseValue)) != 0 && nEvent->mType == UNIT_AI_NOTIFY_ATTACKED) {
         //! @bug The damage caller becomes the group's saved attacker with no owner or alliance check.
         //! Friendly splash damage makes the caller an ally, then AttackSavedTargetCommand orders it.
         //! The attack action aborts on self or ally targets, and the group re-issues the order forever.
@@ -3557,16 +3503,16 @@ int UnitAIModule::processMisc() {
                             if (candidate->master_obj->id == MASTER_OBJECT_WONDER) {
                                 this->order(
                                     this->objectValue->id, UNIT_AI_ORDER_ATTACK, candidateID, candidate->owner->id,
-                                    candidate->world_x, candidate->world_y, candidate->world_z,
-                                    this->objectValue->weaponRange(), 1, 0, this->currentOrderPriorityValue
+                                    candidate->world_x, candidate->world_y, candidate->world_z, this->objectValue->weaponRange(),
+                                    1, 0, this->currentOrderPriorityValue
                                 );
                             }
                         } else if (oldTarget == 0 || oldTarget->master_obj->object_group == OBJECT_GROUP_BUILDING
                                    || oldTarget->master_obj->object_group == OBJECT_GROUP_WALL) {
                             this->order(
                                 this->objectValue->id, UNIT_AI_ORDER_ATTACK, candidateID, candidate->owner->id,
-                                candidate->world_x, candidate->world_y, candidate->world_z,
-                                this->objectValue->weaponRange(), 1, 0, this->currentOrderPriorityValue
+                                candidate->world_x, candidate->world_y, candidate->world_z, this->objectValue->weaponRange(), 1,
+                                0, this->currentOrderPriorityValue
                             );
                             return 9;
                         }
@@ -3639,8 +3585,7 @@ int UnitAIModule::processMisc() {
                 if (distance > this->desiredTargetDistanceValue - (-1.0f)) {
                     if (this->defendTargetValue != invalidValue) {
                         if (this->objectValue->canPath(
-                                this->defendTargetValue, this->desiredTargetDistanceValue, 0, 0, invalidValue,
-                                invalidValue
+                                this->defendTargetValue, this->desiredTargetDistanceValue, 0, 0, invalidValue, invalidValue
                             )
                             == 1) {
                             this->moveTo(this->defendTargetValue, this->desiredTargetDistanceValue, 1);
@@ -3780,8 +3725,8 @@ int UnitAIModule::processRetryableOrder() {
 
 int UnitAIModule::addToOrderQueue(OrderEvent* oEvent, int inFront) {
     return this->addToOrderQueue(
-        oEvent->issuer, oEvent->orderType, oEvent->target, oEvent->targetOwner, oEvent->targetX, oEvent->targetY,
-        oEvent->targetZ, oEvent->range, inFront, oEvent->priority
+        oEvent->issuer, oEvent->orderType, oEvent->target, oEvent->targetOwner, oEvent->targetX, oEvent->targetY, oEvent->targetZ,
+        oEvent->range, inFront, oEvent->priority
     );
 }
 
@@ -3790,8 +3735,8 @@ int UnitAIModule::addToOrderQueue(OrderEvent* oEvent, int inFront) {
 // The protected overload owns the binary queue insertion sequence.
 
 int UnitAIModule::addToOrderQueue(
-    int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ, float range,
-    int inFront, int priority
+    int issuer, int orderType, int target, int targetOwner, float targetX, float targetY, float targetZ, float range, int inFront,
+    int priority
 ) {
     if (this->orderQueueMaxSizeValue == this->orderQueueSizeValue) {
         OrderEvent* newQueue = (OrderEvent*) operator new(this->orderQueueMaxSizeValue * 0x48);
@@ -3931,8 +3876,7 @@ void UnitAIModule::purgeNotifyQueue(unsigned long uTime) {
             NotifyEvent* event = &this->notifyQueueValue[i];
             if (event->mType == UNIT_AI_NOTIFY_ACTION_COMPLETED) {
                 int action = event->p1;
-                if (action != UNIT_AI_ACTION_MOVE || this->currentActionValue == action
-                    || this->currentActionValue == 0x268) {
+                if (action != UNIT_AI_ACTION_MOVE || this->currentActionValue == action || this->currentActionValue == 0x268) {
                     if (this->currentOrderValue == -1 && this->currentActionValue == action) {
                         this->removeCurrentTarget();
                         FILE* f = actionFile;
@@ -3943,9 +3887,7 @@ void UnitAIModule::purgeNotifyQueue(unsigned long uTime) {
                             } else {
                                 id = -1;
                             }
-                            fprintf(
-                                f, "#%d call stopObject %s %d\n", id, "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x170E
-                            );
+                            fprintf(f, "#%d call stopObject %s %d\n", id, "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x170E);
                         }
                         this->stopObject(1);
                         break;

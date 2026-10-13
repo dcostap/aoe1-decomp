@@ -41,7 +41,7 @@ RGE_Lobby::~RGE_Lobby() {
 
 void RGE_Lobby::ClearLobbyInfo(void) {
     if (this->glpdplConnection != 0) {
-        delete[] (char*)((void*)this->glpdplConnection);
+        delete[] (char*) ((void*) this->glpdplConnection);
         this->glpdplConnection = 0;
     }
     if (this->glpDPL2 != 0) {
@@ -55,13 +55,11 @@ void RGE_Lobby::ClearLobbyInfo(void) {
 }
 
 int RGE_Lobby::IsLobbyLaunched(void) {
-    L->Log("LOBBY GAME LAUNCH STATUS = %d", (unsigned int)this->lobby_game);
-    return (unsigned int)this->lobby_game;
+    L->Log("LOBBY GAME LAUNCH STATUS = %d", (unsigned int) this->lobby_game);
+    return (unsigned int) this->lobby_game;
 }
 
-int __stdcall EnumPlayersCallbackLobby(
-    DPID pidID, DWORD dwPlayerType, DPNAME* lpName, DWORD dwFlags, LPVOID lpContext
-) {
+int __stdcall EnumPlayersCallbackLobby(DPID pidID, DWORD dwPlayerType, DPNAME* lpName, DWORD dwFlags, LPVOID lpContext) {
     L->Log("ENUMPLAYER: DPID = %ld", pidID);
     L->Log("ENUMPLAYER: NAME = %s", lpName->lpszShortNameA);
     L->Log("+++ Enumeration not done");
@@ -85,15 +83,15 @@ unsigned char RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3*& direct_play) {
         return 0;
     }
 
-    this->glpDPL->QueryInterface(IID_IDirectPlayLobby2A, (void**)&this->glpDPL2);
+    this->glpDPL->QueryInterface(IID_IDirectPlayLobby2A, (void**) &this->glpDPL2);
     if (this->glpDPL2 == 0) {
         return 0;
     }
 
     this->glpDPL2->GetConnectionSettings(0, 0, &dwSize);
     char* connectionBuffer = new char[dwSize + 1];
-    this->glpdplConnection = (DPLCONNECTION*)((void*)connectionBuffer);
-    result = this->glpDPL2->GetConnectionSettings(0, (void*)this->glpdplConnection, &dwSize);
+    this->glpdplConnection = (DPLCONNECTION*) ((void*) connectionBuffer);
+    result = this->glpDPL2->GetConnectionSettings(0, (void*) this->glpdplConnection, &dwSize);
     if (result < 0) {
         this->lobby_game = 0;
         return 0;
@@ -119,7 +117,7 @@ unsigned char RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3*& direct_play) {
     }
 
     L->Log("Pre QI");
-    result = this->glpDP->QueryInterface(IID_IDirectPlay3A, (void**)&direct_play);
+    result = this->glpDP->QueryInterface(IID_IDirectPlay3A, (void**) &direct_play);
     this->Err->ShowReturn(result, "Lobby QI");
     if (result < 0) {
         L->Log("Queryinterface failed.");
@@ -128,7 +126,7 @@ unsigned char RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3*& direct_play) {
 
     L->Log("Calling enumeration of players.");
     // The game callback is non-const, unlike the SDK callback typedef.
-    direct_play->EnumPlayers(0, (LPDPENUMPLAYERSCALLBACK2)EnumPlayersCallbackLobby, this, 0);
+    direct_play->EnumPlayers(0, (LPDPENUMPLAYERSCALLBACK2) EnumPlayersCallbackLobby, this, 0);
     L->Log("Post ENUMP");
     this->lobby_game = 1;
     return 1;
@@ -203,7 +201,7 @@ long RGE_Lobby::ReceiveZoneMessages(void) {
     LobbySystemMessage message;
     memcpy(&message, Data, sizeof(message));
     unsigned long dwMessageType = message.type;
-    int msgType = (int)dwMessageType - 1;
+    int msgType = (int) dwMessageType - 1;
 
     switch (msgType) {
         case 3:
@@ -236,7 +234,7 @@ long RGE_Lobby::SendZoneMessage(char* Data, unsigned long dwSize, _GUID guid) {
     L->Log("Sending %d bytes to the Zone (Total message size = %d)", dwSize, total);
 
     char* message = new char[total];
-    ZoneMessageHeader* header = (ZoneMessageHeader*)message;
+    ZoneMessageHeader* header = (ZoneMessageHeader*) message;
     header->type = 5;
     header->flags = 0;
     header->nullGuid = GUID_NULL;

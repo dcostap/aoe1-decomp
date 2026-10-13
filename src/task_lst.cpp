@@ -177,8 +177,7 @@ int RGE_Task_List::is_attack_task(RGE_Task* task) {
 int RGE_Task_List::check_task(RGE_Task* task, RGE_Action_Object* obj, RGE_Static_Object* target_obj) {
     // Reject a missing held attribute or a non-positive amount.
     if (task->holding_attr == 1) {
-        if (target_obj->attribute_type_held == -1
-            || target_obj->attribute_amount_held <= g_task_nonpositive_amount_threshold)
+        if (target_obj->attribute_type_held == -1 || target_obj->attribute_amount_held <= g_task_nonpositive_amount_threshold)
             return 0;
     }
 

@@ -33,7 +33,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(
     }
 
     if (sprite_in == 0) {
-        RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->obj->master_obj;
+        RGE_Master_Action_Object* master = (RGE_Master_Action_Object*) this->obj->master_obj;
         if (master->move_sprite == 0) {
             sprite = master->sprite;
         } else {
@@ -63,7 +63,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(
     }
 
     if (sprite_in == 0) {
-        RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->obj->master_obj;
+        RGE_Master_Action_Object* master = (RGE_Master_Action_Object*) this->obj->master_obj;
         if (master->move_sprite == 0) {
             sprite = master->sprite;
         } else {
@@ -137,9 +137,7 @@ unsigned char RGE_Action_Move_To::update() {
             if (this->target_obj != 0 && this->obj->inRange(this->target_obj, this->range) != 0) {
                 this->set_state(1);
                 if (this->subActionValue == 0) {
-                    this->obj->notify(
-                        this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_MOVE, 0, 0
-                    );
+                    this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_MOVE, 0, 0);
                 }
                 this->obj->setWaitingToMove(0);
                 this->obj->pathingGroupMembers.zeroNumber();
@@ -168,9 +166,7 @@ unsigned char RGE_Action_Move_To::update() {
 
             if (this->target_obj != 0) {
                 this->obj->setTargetID(this->target_obj->id);
-                this->obj->setTargetRadius(
-                    this->target_obj->master_obj->radius_x, this->target_obj->master_obj->radius_y
-                );
+                this->obj->setTargetRadius(this->target_obj->master_obj->radius_x, this->target_obj->master_obj->radius_y);
             } else {
                 this->obj->setTargetID(-1);
                 this->obj->setTargetRadius(0.0f, 0.0f);
@@ -206,9 +202,7 @@ unsigned char RGE_Action_Move_To::update() {
                     }
                 }
                 if (this->subActionValue == 0) {
-                    this->obj->notify(
-                        this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_MOVE, 0, 0
-                    );
+                    this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_COMPLETED, UNIT_AI_ACTION_MOVE, 0, 0);
                 }
                 this->set_state(1);
                 return RGE_ACTION_UPDATE_COMPLETED;
@@ -221,9 +215,7 @@ unsigned char RGE_Action_Move_To::update() {
         case 13:
         state_done:
             if (this->subActionValue == 0) {
-                this->obj->notify(
-                    this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_MOVE, 0, 0
-                );
+                this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_ACTION_FAILED, UNIT_AI_ACTION_MOVE, 0, 0);
             }
             return RGE_ACTION_UPDATE_FAILED;
 
@@ -241,9 +233,7 @@ target_lost:
     if (this->subActionValue == 1) {
         return RGE_ACTION_UPDATE_TARGET_LOST;
     }
-    this->obj->notify(
-        this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_MOVE, this->targetID, 0
-    );
+    this->obj->notify(this->obj->id, this->obj->id, UNIT_AI_NOTIFY_TARGET_INVALID, UNIT_AI_ACTION_MOVE, this->targetID, 0);
     return RGE_ACTION_UPDATE_TARGET_INVALID;
 }
 

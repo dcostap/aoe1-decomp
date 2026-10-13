@@ -236,8 +236,7 @@ void TRIBE_RMM_Database_Controller::add_terrain_module() {
     for (int i = 0; i < this->terrain_info.terrain_num; ++i) {
         if (this->terrain_info.terrain[i].terrain_type != 6) {
             if (tile_ratio > g_rmm_terrain_tile_ratio_threshold)
-                this->terrain_info.terrain[i].clumps =
-                    (long) ((float) this->terrain_info.terrain[i].clumps * tile_ratio);
+                this->terrain_info.terrain[i].clumps = (long) ((float) this->terrain_info.terrain[i].clumps * tile_ratio);
         }
     }
 
@@ -267,8 +266,7 @@ void TRIBE_RMM_Database_Controller::add_terrain_module() {
             if (this->terrain_info.terrain[i].terrain_type == 6)
                 this->terrain_info.terrain[i].avoid_hot_spots = 0;
             else {
-                if (this->terrain_info.terrain[i].terrain_type == 10
-                    || this->terrain_info.terrain[i].terrain_type == 13)
+                if (this->terrain_info.terrain[i].terrain_type == 10 || this->terrain_info.terrain[i].terrain_type == 13)
                     this->terrain_info.terrain[i].avoid_hot_spots = 2;
             }
         }
@@ -335,14 +333,10 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
             this->land_info.land[index + this->land_info.land_num].land_size =
                 (long) ((double) (this->map_width + this->map_height) * g_rmm_object_perimeter_factor);
             this->land_info.land[index + this->land_info.land_num].clumpiness_factor = 10;
-            this->land_info.land[index + this->land_info.land_num].wall_1_avoidance_line =
-                this->land_info.wall_1_avoidance_line;
-            this->land_info.land[index + this->land_info.land_num].wall_2_avoidance_line =
-                this->land_info.wall_2_avoidance_line;
-            this->land_info.land[index + this->land_info.land_num].wall_3_avoidance_line =
-                this->land_info.wall_3_avoidance_line;
-            this->land_info.land[index + this->land_info.land_num].wall_4_avoidance_line =
-                this->land_info.wall_4_avoidance_line;
+            this->land_info.land[index + this->land_info.land_num].wall_1_avoidance_line = this->land_info.wall_1_avoidance_line;
+            this->land_info.land[index + this->land_info.land_num].wall_2_avoidance_line = this->land_info.wall_2_avoidance_line;
+            this->land_info.land[index + this->land_info.land_num].wall_3_avoidance_line = this->land_info.wall_3_avoidance_line;
+            this->land_info.land[index + this->land_info.land_num].wall_4_avoidance_line = this->land_info.wall_4_avoidance_line;
             this->land_info.land[index + this->land_info.land_num].wall_fade = this->land_info.wall_fade;
 
             long index1 = 0;
@@ -429,8 +423,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
 void TRIBE_RMM_Database_Controller::add_elevation_module() {
     this->RGE_RMM_Database_Controller::add_elevation_module();
     int random = debug_rand(s_rmm_tdbc_path, 579);
-    float scale =
-        (g_rmm_elevation_random_base - (float) random * g_rmm_elevation_random_offset) * g_rmm_elevation_random_scale;
+    float scale = (g_rmm_elevation_random_base - (float) random * g_rmm_elevation_random_offset) * g_rmm_elevation_random_scale;
     if (this->map_type == TRIBE_Game::Hilly)
         scale *= g_rmm_elevation_map_type_factor;
     for (int i = 0; i < this->elevation_info.elevation_num; ++i)

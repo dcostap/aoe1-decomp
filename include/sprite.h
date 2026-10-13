@@ -72,16 +72,13 @@ class RGE_Sprite {
     void play_sound(short frame1, short frame2, short facet);
     unsigned char get_facetindex(long facet, long frame, long& facetindex);
     void do_draw(
-        long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area,
-        unsigned char min_draw_level
+        long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char min_draw_level
     );
     unsigned char draw(
         long facet, long frame, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area,
         unsigned char min_draw_level
     );
-    unsigned char normal_draw(
-        long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area
-    );
+    unsigned char normal_draw(long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area);
     unsigned char shadow_draw(
         long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag
     );

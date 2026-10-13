@@ -13,9 +13,7 @@ class TScreenPanel : public TEasy_Panel {
     virtual ~TScreenPanel();
 
     long setup(TDrawArea* render_area_in, char* info_file_name, long resource_file_id, int allow_shadow_area_in);
-    long setup(
-        TDrawArea* render_area_in, char* palette_file, long pal_res_id, unsigned char color_in, int allow_shadow_area_in
-    );
+    long setup(TDrawArea* render_area_in, char* palette_file, long pal_res_id, unsigned char color_in, int allow_shadow_area_in);
     virtual void draw();
     virtual long handle_paint();
     virtual void set_focus(int have_focus_in);

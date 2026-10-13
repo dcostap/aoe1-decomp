@@ -18,8 +18,8 @@
 
 // spnl_obj.cpp lines 48-52.
 TRIBE_Scenario_Editor_Panel_Object::TRIBE_Scenario_Editor_Panel_Object(
-    TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in, long font_wid_in, long font_hgt_in,
-    TShape* unit_pics_in, TShape** bldg_pics_in, TRIBE_Player* player_in
+    TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in, long font_wid_in, long font_hgt_in, TShape* unit_pics_in,
+    TShape** bldg_pics_in, TRIBE_Player* player_in
 ) :
     TRIBE_Panel_Object(
         render_area_in, parent_panel_in, font_in, font_wid_in, font_hgt_in, unit_pics_in, bldg_pics_in, player_in
@@ -87,7 +87,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             TShape* shape;
             if (master_game_obj->unit_level == 2) {
                 shape = bldg_pics[master_culture_id];
-                button_pict += ((TRIBE_Master_Building_Object*)master_game_obj)->building_facet;
+                button_pict += ((TRIBE_Master_Building_Object*) master_game_obj)->building_facet;
             } else {
                 shape = unit_pics;
             }
@@ -152,7 +152,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
         unsigned char unit_level = master->unit_level;
 
         if (unit_level == 3) {
-            short amount = ((RGE_Master_Combat_Object*)master)->orig_weapon;
+            short amount = ((RGE_Master_Combat_Object*) master)->orig_weapon;
             draw_item(0, 7, ValueTypeBonus, amount, amount);
             item_index = 1;
         } else {
@@ -204,17 +204,16 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
 
                 if (unit_level == 2) {
                     draw_item(
-                        0, 7, ValueTypeBonus, ((RGE_Master_Combat_Object*)master)->orig_weapon,
-                        ((RGE_Master_Combat_Object*)master)->orig_weapon
+                        0, 7, ValueTypeBonus, ((RGE_Master_Combat_Object*) master)->orig_weapon,
+                        ((RGE_Master_Combat_Object*) master)->orig_weapon
                     );
                     draw_item(
-                        1, 8, ValueTypeBonus, ((RGE_Master_Combat_Object*)master_game_obj)->orig_armor,
-                        ((RGE_Master_Combat_Object*)master_game_obj)->orig_armor
+                        1, 8, ValueTypeBonus, ((RGE_Master_Combat_Object*) master_game_obj)->orig_armor,
+                        ((RGE_Master_Combat_Object*) master_game_obj)->orig_armor
                     );
                     draw_item(
-                        2, 6, ValueTypeBonus,
-                        (int)(((RGE_Master_Combat_Object*)master_game_obj)->weapon_range),
-                        (int)(((RGE_Master_Combat_Object*)master_game_obj)->weapon_range)
+                        2, 6, ValueTypeBonus, (int) (((RGE_Master_Combat_Object*) master_game_obj)->weapon_range),
+                        (int) (((RGE_Master_Combat_Object*) master_game_obj)->weapon_range)
                     );
                     draw_finish();
                     return;
@@ -224,13 +223,13 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             }
 
             if (master->unit_level == 3 || master->unit_level == 4) {
-                short amount = ((RGE_Master_Combat_Object*)master)->orig_weapon;
+                short amount = ((RGE_Master_Combat_Object*) master)->orig_weapon;
                 draw_item(0, 7, ValueTypeBonus, amount, amount);
                 item_index = 1;
             }
         }
 
-        RGE_Master_Combat_Object* combat = (RGE_Master_Combat_Object*)master_game_obj;
+        RGE_Master_Combat_Object* combat = (RGE_Master_Combat_Object*) master_game_obj;
         short armor_value = combat->orig_armor;
         if (master_game_obj->unit_level == 4 || master_game_obj->unit_level == 6) {
             draw_item(item_index, 8, ValueTypeBonus, armor_value, armor_value);
@@ -245,8 +244,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
         }
 
         if (master_game_obj->unit_level == 4 || master_game_obj->unit_level == 6) {
-            short speed_value =
-                (short)(((RGE_Master_Combat_Object*)master_game_obj)->orig_weapon_range);
+            short speed_value = (short) (((RGE_Master_Combat_Object*) master_game_obj)->orig_weapon_range);
             draw_item(item_index, 6, ValueTypeBonus, speed_value, pierce_value);
         }
     }
@@ -321,7 +319,7 @@ long TRIBE_Scenario_Editor_Panel_Object::get_pierce_armor() {
     if (master->master_type != TRIBE_MASTER_TYPE_COMBAT)
         return 0;
 
-    RGE_Master_Combat_Object* combat = (RGE_Master_Combat_Object*)master;
+    RGE_Master_Combat_Object* combat = (RGE_Master_Combat_Object*) master;
     int armor_count = combat->armor_num;
     long result = 0;
     if (armor_count > 0) {

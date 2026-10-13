@@ -11,8 +11,8 @@ unsigned long __cdecl debug_timeGetTime(char*, int);
 TMessagePanel::TMessagePanel(void* font_in, long font_wid_in, long font_hgt_in) :
     TPanel(), message_type(InfoMessage), showing_message(0), start_time(0), show_message_interval(8000), font(font_in),
     font_wid(font_wid_in), font_hgt(font_hgt_in), font_color(0), back_color(0), horz_just(LeftJust), vert_just(TopJust),
-    word_wrap(0), image_clip_region(0), ImageBuffer(0), ImageTextActive(0), Icon1(0), Icon2(0), IconFrame1(0),
-    IconFrame2(0), LastIBWidth(-1), LastIBHeight(-1) {
+    word_wrap(0), image_clip_region(0), ImageBuffer(0), ImageTextActive(0), Icon1(0), Icon2(0), IconFrame1(0), IconFrame2(0),
+    LastIBWidth(-1), LastIBHeight(-1) {
     this->text[0] = 0;
     this->handle_mouse_input = 0;
     this->set_active(0);
@@ -81,8 +81,8 @@ void TMessagePanel::set_justification(
 }
 
 void TMessagePanel::show_message(
-    TMessagePanel::MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn,
-    void* font_in, long font_wid_in, long font_hgt_in
+    TMessagePanel::MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn, void* font_in,
+    long font_wid_in, long font_hgt_in
 ) {
     if (this->showing_message && this->message_type == message_type_in && strncmp(text_in, this->text, 0x1ff) == 0) {
         if (font_in == 0) {
@@ -123,8 +123,8 @@ void TMessagePanel::show_message(
 }
 
 void TMessagePanel::show_message2(
-    TMessagePanel::MessageType message_type_in, char* text_in, unsigned long color1, unsigned long color2,
-    void* font_in, long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in, TShape* Icon2_in, int Frame2_in
+    TMessagePanel::MessageType message_type_in, char* text_in, unsigned long color1, unsigned long color2, void* font_in,
+    long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in, TShape* Icon2_in, int Frame2_in
 ) {
     if (this->showing_message && this->message_type == message_type_in && strncmp(text_in, this->text, 0x1ff) == 0) {
         if (font_in == 0 || font_in == this->font) {
@@ -209,9 +209,7 @@ void TMessagePanel::draw(void) {
         }
 
         this->ImageBuffer->SetTrans(1, 1);
-        this->ImageBuffer->Copy(
-            this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top, &this->UsedImageRect, 1
-        );
+        this->ImageBuffer->Copy(this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top, &this->UsedImageRect, 1);
         this->ImageBuffer->SetTrans(0, 1);
         goto finish;
     }
@@ -229,11 +227,9 @@ void TMessagePanel::draw(void) {
 
     if (this->index_color != 0) {
         GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &paletteColor);
-        font_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8)
-                   | paletteColor.peRed;
+        font_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8) | paletteColor.peRed;
         GetPaletteEntries(rge_base_game->draw_system->Pal, this->back_color, 1, &paletteColor);
-        back_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8)
-                   | paletteColor.peRed;
+        back_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8) | paletteColor.peRed;
     } else {
         font_rgb = this->font_color1;
         back_rgb = this->font_color2;
@@ -365,11 +361,9 @@ int TMessagePanel::render_to_image_buffer() {
 
     if (this->index_color != 0) {
         GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &paletteColor);
-        font_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8)
-                   | paletteColor.peRed;
+        font_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8) | paletteColor.peRed;
         GetPaletteEntries(rge_base_game->draw_system->Pal, this->back_color, 1, &paletteColor);
-        back_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8)
-                   | paletteColor.peRed;
+        back_rgb = ((unsigned long) paletteColor.peBlue << 16) | ((unsigned long) paletteColor.peGreen << 8) | paletteColor.peRed;
     } else {
         font_rgb = this->font_color1;
         back_rgb = this->font_color2;

@@ -26,9 +26,8 @@ unsigned long CCDAudio::Open(void* Wnd) {
         Close();
     }
     mciOpenParms.lpstrDeviceType = MAKEINTRESOURCEA(MCI_DEVTYPE_CD_AUDIO);
-    result = mciSendCommandA(
-        0, MCI_OPEN, MCI_OPEN_TYPE_ID | MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE | MCI_WAIT, (DWORD) &mciOpenParms
-    );
+    result =
+        mciSendCommandA(0, MCI_OPEN, MCI_OPEN_TYPE_ID | MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE | MCI_WAIT, (DWORD) &mciOpenParms);
     if (result == 0) {
         this->m_bOpened = 1;
         this->m_nDeviceID = mciOpenParms.wDeviceID;
@@ -135,8 +134,7 @@ unsigned long CCDAudio::GetTrackLength(unsigned char nTrack, unsigned char& nMin
     track_local = nTrack & 0xFF;
     mciStatusParms.dwItem = MCI_STATUS_LENGTH;
     mciStatusParms.dwTrack = track_local;
-    result =
-        mciSendCommandA(this->m_nDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_WAIT | MCI_TRACK, (DWORD) &mciStatusParms);
+    result = mciSendCommandA(this->m_nDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_WAIT | MCI_TRACK, (DWORD) &mciStatusParms);
     item = (unsigned short) mciStatusParms.dwReturn;
     nMinutes = (unsigned char) item;
     nSeconds = (unsigned char) (item >> 8);

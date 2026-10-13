@@ -165,9 +165,7 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
     this->validate();
 }
 
-int RGE_Doppleganger_Object::setup(
-    RGE_Master_Doppleganger_Object* tobj, RGE_Player* obj_owner, float x, float y, float z
-) {
+int RGE_Doppleganger_Object::setup(RGE_Master_Doppleganger_Object* tobj, RGE_Player* obj_owner, float x, float y, float z) {
     this->RGE_Animated_Object::setup(tobj, obj_owner, x, y, z);
     this->type = 0x19;
     int y_i = (int) y;
@@ -236,9 +234,7 @@ unsigned char RGE_Doppleganger_Object::update() {
     if (map_value != this->LastMapValue) {
         if ((this->owner->mutualVisibleMask & map_value) != 0 && this->object_state < RGE_OBJECT_STATE_DYING) {
             if (DDlogf != 0) {
-                fprintf(
-                    DDlogf, "DIE DOP (@%d) id=%d own=%d\n", this->owner->world->world_time, this->id, this->owner->id
-                );
+                fprintf(DDlogf, "DIE DOP (@%d) id=%d own=%d\n", this->owner->world->world_time, this->id, this->owner->id);
             }
             this->destroy_obj();
         }
@@ -430,8 +426,8 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
                                 RGE_Player* player = this->owner->world->players[player_id];
                                 ((RGE_Master_Doppleganger_Object*) player->master_objects[MASTER_OBJECT_DOPPLEGANGER])
                                     ->make_new_obj(
-                                        player, this->Objects[i]->world_x, this->Objects[i]->world_y,
-                                        this->Objects[i]->world_z, this->Objects[i]
+                                        player, this->Objects[i]->world_x, this->Objects[i]->world_y, this->Objects[i]->world_z,
+                                        this->Objects[i]
                                     );
                             }
                         }
@@ -458,9 +454,7 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
 
 void RGE_Doppleganger_Creator::expand_allocations(int grow_size) {
     if (DDlogf != 0) {
-        fprintf(
-            DDlogf, "RESIZE (@%d) p=%d  grow=%d\n", this->owner->world->world_time, (int) this->owner->id, grow_size
-        );
+        fprintf(DDlogf, "RESIZE (@%d) p=%d  grow=%d\n", this->owner->world->world_time, (int) this->owner->id, grow_size);
     }
 
     this->allocated_size += grow_size;

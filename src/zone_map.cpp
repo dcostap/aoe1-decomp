@@ -265,8 +265,7 @@ int RGE_Zone_Map::withinRange(uchar startZone, XYPoint goal, float range) {
             int x_squared = x_distance * x_distance;
             int y_distance = goal.y - min_y;
             do {
-                if (sqrtf((float) (x_squared + y_distance * y_distance)) <= range
-                    && this->zone_map_rows[y][x] == startZone)
+                if (sqrtf((float) (x_squared + y_distance * y_distance)) <= range && this->zone_map_rows[y][x] == startZone)
                     return 1;
                 ++y;
                 --y_distance;

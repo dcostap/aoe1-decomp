@@ -442,9 +442,9 @@ class RGE_Master_Static_Object {
     virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
     virtual unsigned char check_placement(
-        RGE_Player* player, float col, float row, int* obstructionObject, unsigned char check_vis,
-        unsigned char check_flat, unsigned char check_overlay, unsigned char construction_radius_flag,
-        unsigned char can_be_built_on_flag, unsigned char check_objects
+        RGE_Player* player, float col, float row, int* obstructionObject, unsigned char check_vis, unsigned char check_flat,
+        unsigned char check_overlay, unsigned char construction_radius_flag, unsigned char can_be_built_on_flag,
+        unsigned char check_objects
     );
     virtual unsigned char alignment(float& col, float& row, RGE_Game_World* world, unsigned char center_flag);
     virtual long calc_base_damage_ability(RGE_Master_Combat_Object* attacker);
@@ -469,8 +469,8 @@ class RGE_Master_Static_Object {
   public:
     void make_available(unsigned char on_off_flag);
     unsigned char alignment_box(
-        RGE_Game_World* world, float col, float row, short& x1, short& y1, short& x2, short& y2, short& x3, short& y3,
-        short& x4, short& y4
+        RGE_Game_World* world, float col, float row, short& x1, short& y1, short& x2, short& y2, short& x3, short& y3, short& x4,
+        short& y4
     );
     long get_help_message();
     long get_help_page();

@@ -130,9 +130,7 @@ void RGE_Master_Player::create_master_object_space(short count) {
     }
 }
 
-void RGE_Master_Player::load_object(
-    FILE* infile, unsigned char obj_type, RGE_Sprite** sprites, RGE_Sound** sounds, short index
-) {
+void RGE_Master_Player::load_object(FILE* infile, unsigned char obj_type, RGE_Sprite** sprites, RGE_Sound** sounds, short index) {
     RGE_Master_Static_Object* obj;
     switch (obj_type) {
         case 10:

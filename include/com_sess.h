@@ -39,8 +39,8 @@ class TCommunications_Sessions {
     GUID* GetSessionGUID(int id);
     int IncSessionCount();
     int AddSession(
-        GUID Instance, GUID Application, unsigned long MaxPlayers, unsigned long CurrentPlayers, char* Name,
-        char* Password, unsigned long User1, unsigned long User2, unsigned long User3, unsigned long User4
+        GUID Instance, GUID Application, unsigned long MaxPlayers, unsigned long CurrentPlayers, char* Name, char* Password,
+        unsigned long User1, unsigned long User2, unsigned long User3, unsigned long User4
     );
     int Refresh();
     int IsEqualGuid(GUID* lpguid1, GUID* lpguid2);

@@ -13,9 +13,8 @@ union IntFloat {
 
 ConstructionAIModule::ConstructionAIModule(void* pW, int playerID) :
     AIModule("ConAI", 0x3EA, playerID, pW), numberConstructionLotsValue(0), constructionLots(),
-    numberRandomConstructionLotsValue(0), randomConstructionLots(), xReferencePointValue(-1.0f),
-    yReferencePointValue(-1.0f), zReferencePointValue(-1.0f), mapXSizeValue(-1), mapYSizeValue(-1),
-    lastPlacementReturnCodeValue(PlacementOk) {
+    numberRandomConstructionLotsValue(0), randomConstructionLots(), xReferencePointValue(-1.0f), yReferencePointValue(-1.0f),
+    zReferencePointValue(-1.0f), mapXSizeValue(-1), mapYSizeValue(-1), lastPlacementReturnCodeValue(PlacementOk) {
     this->constructionLots.next = &this->constructionLots;
     this->constructionLots.prev = &this->constructionLots;
     this->randomConstructionLots.next = &this->randomConstructionLots;
@@ -27,9 +26,8 @@ ConstructionAIModule::ConstructionAIModule(void* pW, int playerID) :
 // Typed wire locals preserve the original serialized read order and raw bits.
 ConstructionAIModule::ConstructionAIModule(int playerID, int infile) :
     AIModule("ConAI", 0x3ea, playerID, 0), numberConstructionLotsValue(0), constructionLots(),
-    numberRandomConstructionLotsValue(0), randomConstructionLots(), xReferencePointValue(-1.0f),
-    yReferencePointValue(-1.0f), zReferencePointValue(-1.0f), mapXSizeValue(-1), mapYSizeValue(-1),
-    lastPlacementReturnCodeValue(PlacementOk) {
+    numberRandomConstructionLotsValue(0), randomConstructionLots(), xReferencePointValue(-1.0f), yReferencePointValue(-1.0f),
+    zReferencePointValue(-1.0f), mapXSizeValue(-1), mapYSizeValue(-1), lastPlacementReturnCodeValue(PlacementOk) {
     char name[257];
     IntFloat x;
     int i;
@@ -186,8 +184,7 @@ int ConstructionAIModule::save(int outfile) {
     }
 
     rge_write(outfile, (void*) &this->numberRandomConstructionLotsValue, 4);
-    for (item = this->randomConstructionLots.next; item != &this->randomConstructionLots && item != 0;
-         item = item->next) {
+    for (item = this->randomConstructionLots.next; item != &this->randomConstructionLots && item != 0; item = item->next) {
         strcpy(tempString, item->name());
         tempInt = strlen(tempString);
         rge_write(outfile, &tempInt, 4);
@@ -222,9 +219,7 @@ int ConstructionAIModule::save(int outfile) {
     return 1;
 }
 
-int ConstructionAIModule::loadConstructionPlan(
-    char* pName, int mXSize, int mYSize, float xRef, float yRef, float zRef
-) {
+int ConstructionAIModule::loadConstructionPlan(char* pName, int mXSize, int mYSize, float xRef, float yRef, float zRef) {
     char commentTemp1;
     char commentTemp2;
     float unused_y;

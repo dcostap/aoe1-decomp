@@ -18,8 +18,7 @@ extern "C" int __cdecl Inf32Decode(
 );
 extern "C" int __cdecl deflate_buf_size();
 extern "C" int __cdecl deflate_init(
-    void* state, int level, int method, int window_bits, void* buffer, int size,
-    int(__cdecl* callback)(unsigned char*, int)
+    void* state, int level, int method, int window_bits, void* buffer, int size, int(__cdecl* callback)(unsigned char*, int)
 );
 extern "C" int __cdecl deflate_data(void* state, void* source, int size, int flush);
 extern "C" void __cdecl deflate_deinit(void* state);

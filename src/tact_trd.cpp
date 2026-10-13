@@ -88,9 +88,8 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
             return;
 
         case 11: {
-            RGE_Action_Move_To* move_to = new RGE_Action_Move_To(
-                this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->get_move_sprite()
-            );
+            RGE_Action_Move_To* move_to =
+                new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->get_move_sprite());
             if (move_to == 0) {
                 this->set_state(0x0D);
                 return;
@@ -141,14 +140,12 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state) {
         case 8:
             if (this->obj->attribute_amount_held > g_trade_positive_amount_threshold) {
                 if (this->target_obj2 == 0
-                    || this->target_obj2->master_obj->id
-                           != ((RGE_Master_Action_Object*) this->obj->master_obj)->drop_site) {
+                    || this->target_obj2->master_obj->id != ((RGE_Master_Action_Object*) this->obj->master_obj)->drop_site) {
                     short drop_site = ((RGE_Master_Action_Object*) this->obj->master_obj)->drop_site;
                     if (drop_site != -1) {
                         this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
-                            drop_site, ((RGE_Master_Action_Object*) this->obj->master_obj)->backup_drop_site,
-                            this->obj->world_x, this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE,
-                            (RGE_Static_Object*) this->obj
+                            drop_site, ((RGE_Master_Action_Object*) this->obj->master_obj)->backup_drop_site, this->obj->world_x,
+                            this->obj->world_y, 1, RGE_OBJECT_STATE_ACTIVE, (RGE_Static_Object*) this->obj
                         ));
                     } else {
                         this->set_target_obj2(0);
@@ -307,8 +304,7 @@ unsigned char TRIBE_Action_Trade::update() {
                 return RGE_ACTION_UPDATE_CONTINUE;
             }
 
-            if (this->obj->attribute_type_held != RGE_RESOURCE_FOOD
-                && this->obj->attribute_type_held != RGE_RESOURCE_STONE
+            if (this->obj->attribute_type_held != RGE_RESOURCE_FOOD && this->obj->attribute_type_held != RGE_RESOURCE_STONE
                 && this->obj->attribute_type_held != RGE_RESOURCE_WOOD) {
                 this->obj->attribute_type_held = RGE_RESOURCE_WOOD;
             }

@@ -28,15 +28,11 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu() : TScreenPanel(s_Scenario_Editor_
 
     set_ideal_size(640, 480);
 
-    if (!create_text(
-            this, &title, STRING_ID_SCENARIO_EDITOR_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0
-        ))
+    if (!create_text(this, &title, STRING_ID_SCENARIO_EDITOR_TITLE, 20, 20, 600, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 0, 0))
         return;
 
     for (int i = 0; i < 4; i++) {
-        if (!create_button(
-                this, &button[i], s_empty_string, 0, 170, 170 + i * 50, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
-            ))
+        if (!create_button(this, &button[i], s_empty_string, 0, 170, 170 + i * 50, 300, 40, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0))
             return;
     }
 
@@ -55,15 +51,15 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu() : TScreenPanel(s_Scenario_Editor_
     cancel->hotkey = VK_ESCAPE;
     cancel->hotkey_shift = 0;
 
-    set_tab_order((TPanel**)button, 4);
+    set_tab_order((TPanel**) button, 4);
     set_curr_child(button[0]);
 }
 
 TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu() {
-    delete_panel((TPanel**)&title);
+    delete_panel((TPanel**) &title);
     for (int i = 0; i < 4; i++)
-        delete_panel((TPanel**)&button[i]);
-    delete_panel((TPanel**)&close_button);
+        delete_panel((TPanel**) &button[i]);
+    delete_panel((TPanel**) &close_button);
 }
 
 long TRIBE_Screen_Sed_Menu::handle_idle() {
@@ -75,7 +71,7 @@ long TRIBE_Screen_Sed_Menu::handle_idle() {
 long TRIBE_Screen_Sed_Menu::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     if (fromPanel != 0 && actionIn == 1) {
         if (fromPanel == button[0]) {
-            ((TRIBE_Game*)rge_base_game)->start_scenario_editor(0, 0);
+            ((TRIBE_Game*) rge_base_game)->start_scenario_editor(0, 0);
             return 1;
         }
 

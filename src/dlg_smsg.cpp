@@ -55,8 +55,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel) : TDia
             return;
 
         if (!create_text(
-                this, &title, STRING_ID_SEND_MESSAGE_TITLE, 5, 10, this->pnl_wid - 40, 30, RGE_FONT_COPPERPLATE_21_BOLD,
-                1, 1, 0
+                this, &title, STRING_ID_SEND_MESSAGE_TITLE, 5, 10, this->pnl_wid - 40, 30, RGE_FONT_COPPERPLATE_21_BOLD, 1, 1, 0
             ))
             return;
 
@@ -93,9 +92,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel) : TDia
                 if (!create_text(this, &playerName[row], comm->GetPlayerName(humanity), 50, y, 190, 30, font, 0, 1, 0))
                     return;
 
-                rge_base_game->get_string2(
-                    RGE_STRING_TYPE_CIVILIZATION, world->players[id]->master_player_id, 0, temp_str, 100
-                );
+                rge_base_game->get_string2(RGE_STRING_TYPE_CIVILIZATION, world->players[id]->master_player_id, 0, temp_str, 100);
                 if (!create_text(this, &playerCivilization[row], temp_str, 260, y, 120, 30, RGE_FONT_STANDARD, 0, 1, 0))
                     return;
 
@@ -119,8 +116,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel) : TDia
         } while (humanity < 9);
 
         if (!create_text(
-                this, &chatTitle, STRING_ID_SEND_MESSAGE_CHAT, 10, 315, 120, 30, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1,
-                0
+                this, &chatTitle, STRING_ID_SEND_MESSAGE_CHAT, 10, 315, 120, 30, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 0
             ))
             return;
         if (!create_edit(this, &chatInput, "", 65, TEditPanel::FormatText, 130, 315, 380, 23, RGE_FONT_STANDARD, 1, 0))
@@ -136,24 +132,17 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel) : TDia
         if (!create_radio_button(this, &radioButton[3], 275, 385, 30, 30, 0, 0))
             return;
 
-        if (!create_text(
-                this, &radioTitle[0], STRING_ID_SEND_MESSAGE_ALLIES, 75, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0
-            ))
+        if (!create_text(this, &radioTitle[0], STRING_ID_SEND_MESSAGE_ALLIES, 75, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0))
             return;
         radioTitle[0]->set_help_info(-1, -1);
-        if (!create_text(
-                this, &radioTitle[1], STRING_ID_SEND_MESSAGE_ENEMIES, 305, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0
-            ))
+        if (!create_text(this, &radioTitle[1], STRING_ID_SEND_MESSAGE_ENEMIES, 305, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0))
             return;
         radioTitle[1]->set_help_info(-1, -1);
-        if (!create_text(
-                this, &radioTitle[2], STRING_ID_SEND_MESSAGE_EVERYONE, 75, 385, 200, 30, RGE_FONT_STANDARD, 0, 1, 0
-            ))
+        if (!create_text(this, &radioTitle[2], STRING_ID_SEND_MESSAGE_EVERYONE, 75, 385, 200, 30, RGE_FONT_STANDARD, 0, 1, 0))
             return;
         radioTitle[2]->set_help_info(-1, -1);
         if (!create_text(
-                this, &radioTitle[3], STRING_ID_SEND_MESSAGE_SELECT_PLAYER, 305, 385, 200, 30, RGE_FONT_STANDARD, 0, 1,
-                0
+                this, &radioTitle[3], STRING_ID_SEND_MESSAGE_SELECT_PLAYER, 305, 385, 200, 30, RGE_FONT_STANDARD, 0, 1, 0
             ))
             return;
         radioTitle[3]->set_help_info(-1, -1);
@@ -167,8 +156,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel) : TDia
         radioButton[3]->set_help_info(STRING_ID_HELP_CHAT_RECIPIENTS, -1);
 
         if (!create_button(
-                this, &okButton, STRING_ID_BUTTON_RETURN_TO_GAME, 0, 100, 425, 300, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0,
-                0
+                this, &okButton, STRING_ID_BUTTON_RETURN_TO_GAME, 0, 100, 425, 300, 30, RGE_FONT_COPPERPLATE_12_BOLD, 0, 0
             ))
             return;
         okButton->set_help_info(STRING_ID_HELP_OK, -1);
@@ -207,7 +195,7 @@ long TribeSendMessageDialog::action(TPanel* fromPanel, long actionIn, unsigned l
     if (fromPanel != 0) {
         if (fromPanel == this->chatInput) {
             if (actionIn == 0) {
-                TRIBE_Screen_Game* screen = (TRIBE_Screen_Game*)this->parent_panel;
+                TRIBE_Screen_Game* screen = (TRIBE_Screen_Game*) this->parent_panel;
 
                 if (this->chatInput->currentLine() == 0 || *this->chatInput->currentLine() == 0)
                     save_msg[0] = 0;
@@ -239,7 +227,7 @@ long TribeSendMessageDialog::action(TPanel* fromPanel, long actionIn, unsigned l
                 }
 
                 this->checkButtons();
-                TRIBE_Screen_Game* screen = (TRIBE_Screen_Game*)this->parent_panel;
+                TRIBE_Screen_Game* screen = (TRIBE_Screen_Game*) this->parent_panel;
 
                 if (this->chatInput->currentLine() == 0 || *this->chatInput->currentLine() == 0)
                     save_msg[0] = 0;
@@ -273,9 +261,8 @@ long TribeSendMessageDialog::action(TPanel* fromPanel, long actionIn, unsigned l
                 return 1;
             }
 
-            if (fromPanel == this->checkButton[0] || fromPanel == this->checkButton[1]
-                || fromPanel == this->checkButton[2] || fromPanel == this->checkButton[3]
-                || fromPanel == this->checkButton[4] || fromPanel == this->checkButton[5]
+            if (fromPanel == this->checkButton[0] || fromPanel == this->checkButton[1] || fromPanel == this->checkButton[2]
+                || fromPanel == this->checkButton[3] || fromPanel == this->checkButton[4] || fromPanel == this->checkButton[5]
                 || fromPanel == this->checkButton[6] || fromPanel == this->checkButton[7]) {
                 this->radioButton[0]->set_state(0);
                 this->radioButton[1]->set_state(0);
@@ -361,8 +348,7 @@ void TribeSendMessageDialog::draw() {
                 if (world->players[id]->color_table != 0) {
                     ASMSet_Color_Xform((world->players[id]->color_table->id + 1) * 16);
                     this->backgroundPics->shape_draw(
-                        this->render_area, this->pnl_x + 50, this->pnl_y + y + 40, 0, 1,
-                        world->players[id]->color_table->table
+                        this->render_area, this->pnl_x + 50, this->pnl_y + y + 40, 0, 1, world->players[id]->color_table->table
                     );
                 }
                 y += 30;
@@ -377,8 +363,8 @@ void TribeSendMessageDialog::draw() {
 TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parentPanel, Mode m) :
     TDialogPanel("Send Quick Message Dialog"), modeValue(m) {
     if (!this->setup(
-            parentPanel->renderArea(), parentPanel, 540, 35, parentPanel->get_popup_info_file(),
-            parentPanel->get_popup_info_id(), 1
+            parentPanel->renderArea(), parentPanel, 540, 35, parentPanel->get_popup_info_file(), parentPanel->get_popup_info_id(),
+            1
         )) {
         return;
     }
@@ -388,15 +374,11 @@ TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parentPan
         title_id = STRING_ID_SEND_MESSAGE_CHAT;
     else
         title_id = STRING_ID_QUICK_MESSAGE_COMMENT;
-    if (!this->create_text(
-            this, &this->chatTitle, title_id, 5, 5, 120, 25, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 0
-        )) {
+    if (!this->create_text(this, &this->chatTitle, title_id, 5, 5, 120, 25, RGE_FONT_COPPERPLATE_12_BOLD_ALT, 1, 1, 0)) {
         return;
     }
 
-    if (!this->create_edit(
-            this, &this->chatInput, "", 65, TEditPanel::FormatText, 130, 5, 405, 25, RGE_FONT_STANDARD, 1, 0
-        )) {
+    if (!this->create_edit(this, &this->chatInput, "", 65, TEditPanel::FormatText, 130, 5, 405, 25, RGE_FONT_STANDARD, 1, 0)) {
         return;
     }
 
@@ -415,7 +397,7 @@ long TribeSendQuickMessageDialog::action(TPanel* fromPanel, long actionIn, unsig
         if (actionIn == 0) {
             char* line = this->chatInput->currentLine();
             if (line != 0 && *this->chatInput->currentLine() != 0) {
-                TRIBE_Screen_Game* screen = (TRIBE_Screen_Game*)this->parent_panel;
+                TRIBE_Screen_Game* screen = (TRIBE_Screen_Game*) this->parent_panel;
                 strcpy(save_msg, this->chatInput->currentLine());
 
                 panel_system.setCurrentPanel("Game Screen", 0);
@@ -452,9 +434,7 @@ base_action:
     return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-long TribeSendQuickMessageDialog::handle_mouse_down(
-    unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key
-) {
+long TribeSendQuickMessageDialog::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     if (this->is_inside(x, y) == 0) {
         this->action(this->chatInput, 1, 0, 0);
         return 1;

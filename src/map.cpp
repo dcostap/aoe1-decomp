@@ -205,8 +205,7 @@ void RGE_Map::data_load_random_map(int infile) {
 }
 
 void RGE_Map::load_random_map(char* rmm_map_file, char* rmm_land_file, char* rmm_terr_file, char* rmm_obj_file) {
-    RGE_RMM_Database_Controller* ctrl =
-        new RGE_RMM_Database_Controller(rmm_land_file, rmm_terr_file, rmm_obj_file, rmm_map_file);
+    RGE_RMM_Database_Controller* ctrl = new RGE_RMM_Database_Controller(rmm_land_file, rmm_terr_file, rmm_obj_file, rmm_map_file);
     this->random_map = ctrl;
 }
 
@@ -424,8 +423,7 @@ void RGE_Map::set_map_screen_pos(int x1, int y1, int x2, int y2) {
         RGE_Tile* tile = this->map_row_offset[y1] + x1;
         for (int col = x1; col <= x2; ++tile, ++col) {
             tile->screen_xpos = (short) (y1 + col) * this->tile_half_width;
-            tile->screen_ypos =
-                (short) (y1 - col) * this->tile_half_height - (short) (tile->height) * this->elev_height;
+            tile->screen_ypos = (short) (y1 - col) * this->tile_half_height - (short) (tile->height) * this->elev_height;
 
             switch (tile->tile_type) {
                 case 2:
@@ -780,18 +778,18 @@ void RGE_Map::clean_elevation(long x1, long y1, long x2, long y2, unsigned char 
 
                 bool fix = false;
                 if (north_west) {
-                    if ((north_east && !north) || (east && !north_east) || (south_west && !west)
-                        || (south && !south_west) || ((south_east && !south) && !east))
+                    if ((north_east && !north) || (east && !north_east) || (south_west && !west) || (south && !south_west)
+                        || ((south_east && !south) && !east))
                         fix = 1;
                 }
                 if (north_east && !fix) {
-                    if ((south_east && !east) || (south && !south_east) || (north_west && !north)
-                        || (west && !north_west) || (south_west && !west && !south))
+                    if ((south_east && !east) || (south && !south_east) || (north_west && !north) || (west && !north_west)
+                        || (south_west && !west && !south))
                         fix = 1;
                 }
                 if (south_east && !fix) {
-                    if ((south_west && !south) || (west && !south_west) || (north_east && !east)
-                        || (north && !north_east) || (north_west && !north && !west))
+                    if ((south_west && !south) || (west && !south_west) || (north_east && !east) || (north && !north_east)
+                        || (north_west && !north && !west))
                         fix = 1;
                 }
                 if (south_west && !fix) {
@@ -900,15 +898,13 @@ void RGE_Map::clean_terrain(long x1, long y1, long x2, long y2, unsigned char re
                             if (row > 0) {
                                 if (col > 0 && (tile[offset_nw].terrain_type & 0x1f) == replacement_terrain)
                                     north_west = 1;
-                                if (col < this->map_width - 1
-                                    && (tile[offset_ne].terrain_type & 0x1f) == replacement_terrain)
+                                if (col < this->map_width - 1 && (tile[offset_ne].terrain_type & 0x1f) == replacement_terrain)
                                     north_east = 1;
                             }
                             if (row < this->map_height - 1) {
                                 if (col > 0 && (tile[offset_sw].terrain_type & 0x1f) == replacement_terrain)
                                     south_west = 1;
-                                if (col < this->map_width - 1
-                                    && (tile[offset_se].terrain_type & 0x1f) == replacement_terrain)
+                                if (col < this->map_width - 1 && (tile[offset_se].terrain_type & 0x1f) == replacement_terrain)
                                     south_east = 1;
                             }
                         }
@@ -990,9 +986,7 @@ unsigned char RGE_Map::do_terrain_brush(long x, long y, long brush_size, unsigne
     return 1;
 }
 
-unsigned char RGE_Map::do_terrain_brush_stroke(
-    long x1, long y1, long x2, long y2, long brush_size, unsigned char terrain_id
-) {
+unsigned char RGE_Map::do_terrain_brush_stroke(long x1, long y1, long x2, long y2, long brush_size, unsigned char terrain_id) {
     brush_size >>= 1;
     if (x1 < 0)
         x1 = 0;
@@ -1159,14 +1153,10 @@ unsigned char RGE_Map::do_cliff_brush_stroke(
     return 1;
 }
 
-void RGE_Map::map_generate(
-    RGE_Player* owner, RGE_Game_World* gworld, RGE_Player_Info* player_info, unsigned char* zone_terrain
-) {
+void RGE_Map::map_generate(RGE_Player* owner, RGE_Game_World* gworld, RGE_Player_Info* player_info, unsigned char* zone_terrain) {
 }
 
-void RGE_Map::map_generate2(
-    RGE_Game_World* gworld, long new_width, long new_height, unsigned char type, long player_num
-) {
+void RGE_Map::map_generate2(RGE_Game_World* gworld, long new_width, long new_height, unsigned char type, long player_num) {
     unsigned char old_state = this->game_world->game_state;
     this->game_world->game_state = 3;
 
@@ -1408,10 +1398,10 @@ void RGE_Map::load_terrain_types(char* terrain_table, RGE_Sound** sounds) {
                 short id;
                 short shape_index = 0;
                 if (fscanf(
-                        infile, "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %hd %hd", &id,
-                        name, pict_name, &resource_id, &random, &med_color, &hi_color, &low_color, &sound_id,
-                        &is_animated, &animation_frames, &interval, &pause_between_loops, &terrain_to_draw, &row, &col,
-                        &lt_cliff_color, &rt_cliff_color, &impassable_terrain, &passable_terrain, &border_num
+                        infile, "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %hd %hd", &id, name,
+                        pict_name, &resource_id, &random, &med_color, &hi_color, &low_color, &sound_id, &is_animated,
+                        &animation_frames, &interval, &pause_between_loops, &terrain_to_draw, &row, &col, &lt_cliff_color,
+                        &rt_cliff_color, &impassable_terrain, &passable_terrain, &border_num
                     ) != -1
                     && id < 32 && id >= 0) {
                     RGE_Tile_Set* terrain = &this->terrain_types[id];
@@ -1528,9 +1518,8 @@ void RGE_Map::load_border_types(char* border_table, RGE_Sound** sounds) {
 
                 if (fscanf(
                         file, "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd", &border_id, name, pict_name,
-                        &resource_id, &border_num, &map_med_color, &map_hi_color, &map_low_color, &sound_id,
-                        &is_animated, &animation_frames, &interval, &pause_between_loops, &tile_flag, &underlay_terrain,
-                        &border_style
+                        &resource_id, &border_num, &map_med_color, &map_hi_color, &map_low_color, &sound_id, &is_animated,
+                        &animation_frames, &interval, &pause_between_loops, &tile_flag, &underlay_terrain, &border_style
                     )
                     != EOF) {
                     if (border_id < 16 && border_id >= 0) {
@@ -1652,8 +1641,8 @@ void RGE_Map::delete_all_objects_on_tile(int x, int y) {
 }
 
 void RGE_Map::create_terrain_object(
-    RGE_Player* obj_owner, RGE_Game_World* gworld, short row, short col, short old_terrain, int delete_obj,
-    int no_delete_start, int no_delete_end
+    RGE_Player* obj_owner, RGE_Game_World* gworld, short row, short col, short old_terrain, int delete_obj, int no_delete_start,
+    int no_delete_end
 ) {
     float x = 0.0f;
     float y = 0.0f;
@@ -1708,11 +1697,9 @@ void RGE_Map::create_terrain_object(
                     do {
                         if (obj_flag == 0) {
                             x = (float) (int) col
-                                - (float) debug_rand((char*) "C:\\msdev\\work\\age1_x1\\map.cpp", 2067)
-                                      * -3.051851e-05f;
+                                - (float) debug_rand((char*) "C:\\msdev\\work\\age1_x1\\map.cpp", 2067) * -3.051851e-05f;
                             y = (float) (int) row
-                                - (float) debug_rand((char*) "C:\\msdev\\work\\age1_x1\\map.cpp", 2068)
-                                      * -3.051851e-05f;
+                                - (float) debug_rand((char*) "C:\\msdev\\work\\age1_x1\\map.cpp", 2068) * -3.051851e-05f;
                         } else if (obj_flag == 1) {
                             x = (float) (int) col + 0.5f;
                             y = (float) (int) row + 0.5f;
@@ -1740,8 +1727,7 @@ void RGE_Map::create_terrain_object(
 }
 
 int RGE_Map::clear_terrain_object(
-    RGE_Game_World* gworld, short row, short col, short old_terrain, int delete_obj, int no_delete_start,
-    int no_delete_end
+    RGE_Game_World* gworld, short row, short col, short old_terrain, int delete_obj, int no_delete_start, int no_delete_end
 ) {
     short object_type = -1;
     RGE_Object_Node* list;
@@ -1825,11 +1811,9 @@ void RGE_Map::place_terrain_object(
                                 y = (float) (int) row + 0.5f;
                             } else {
                                 x = (float) (int) col
-                                    - (float) debug_rand((char*) "C:\\msdev\\work\\age1_x1\\map.cpp", 2196)
-                                          * -3.051851e-05f;
+                                    - (float) debug_rand((char*) "C:\\msdev\\work\\age1_x1\\map.cpp", 2196) * -3.051851e-05f;
                                 y = (float) (int) row
-                                    - (float) debug_rand((char*) "C:\\msdev\\work\\age1_x1\\map.cpp", 2197)
-                                          * -3.051851e-05f;
+                                    - (float) debug_rand((char*) "C:\\msdev\\work\\age1_x1\\map.cpp", 2197) * -3.051851e-05f;
                             }
 
                             int place_it;
@@ -2036,9 +2020,7 @@ unsigned char RGE_Map::get_border(short mapcol, short maprow) {
     return border_type;
 }
 
-void RGE_Map::set_terrain_passablity(
-    short mapcol1, short maprow1, short mapcol2, short maprow2, unsigned char passabilty
-) {
+void RGE_Map::set_terrain_passablity(short mapcol1, short maprow1, short mapcol2, short maprow2, unsigned char passabilty) {
     short temp;
 
     if (maprow1 > maprow2) {
@@ -2243,7 +2225,7 @@ void RGE_Map::set_terrain(
             do {
                 short col = mapcol1;
                 if (col <= mapcol2) {
-                    unsigned char* tile_data = (unsigned char*)(this->map_row_offset[maprow] + col) + 5;
+                    unsigned char* tile_data = (unsigned char*) (this->map_row_offset[maprow] + col) + 5;
                     do {
                         if (0 < this->terrain_types[terrain_id].tiles[tile_data[-1]].count) {
                             unsigned char old_terrain = *tile_data;
@@ -2254,9 +2236,7 @@ void RGE_Map::set_terrain(
                             }
 
                             if (obj_owner != 0) {
-                                this->create_terrain_object(
-                                    obj_owner, gworld, maprow, col, old_terrain_id, delete_obj, -1, -1
-                                );
+                                this->create_terrain_object(obj_owner, gworld, maprow, col, old_terrain_id, delete_obj, -1, -1);
                             }
                         }
                         ++col;

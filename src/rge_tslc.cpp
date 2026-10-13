@@ -120,8 +120,7 @@ char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int duration) {
     }
 
     sprintf(
-        TBuff, "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)", lowTSLC, minimum, average, original_count, maximum,
-        highTSLC
+        TBuff, "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)", lowTSLC, minimum, average, original_count, maximum, highTSLC
     );
     return TBuff;
 }

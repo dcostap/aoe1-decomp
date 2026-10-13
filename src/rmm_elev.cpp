@@ -359,8 +359,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Li
 
             if (this->search_map_rows[y][x] == 0
                 && this->check_start_elevation(
-                       x, y, (uchar) info_line.base_terrain_type, (uchar) info_line.base_elevation,
-                       (uchar) info_line.spacing
+                       x, y, (uchar) info_line.base_terrain_type, (uchar) info_line.base_elevation, (uchar) info_line.spacing
                    ) != 0) {
                 this->remove_area_from_lists(x, y, area);
 
@@ -409,23 +408,19 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Li
                             tile->height = (uchar) info_line.elevation;
 
                             if (x > 0 && tile[-1].height == info_line.base_elevation) {
-                                long clump_size =
-                                    (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 381) * 100) / 0x7fff;
+                                long clump_size = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 381) * 100) / 0x7fff;
                                 this->push_stack(*stack_ptr, x - 1, y, 0.0f, (float) clump_size + chance);
                             }
                             if (x < max_x && tile[1].height == info_line.base_elevation) {
-                                long clump_size =
-                                    (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 383) * 100) / 0x7fff;
+                                long clump_size = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 383) * 100) / 0x7fff;
                                 this->push_stack(*stack_ptr, x + 1, y, 0.0f, (float) clump_size + chance);
                             }
                             if (y > 0 && tile[-this->map_width].height == info_line.base_elevation) {
-                                long clump_size =
-                                    (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 385) * 100) / 0x7fff;
+                                long clump_size = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 385) * 100) / 0x7fff;
                                 this->push_stack(*stack_ptr, x, y - 1, 0.0f, (float) clump_size + chance);
                             }
                             if (y < max_y && tile[this->map_width].height == info_line.base_elevation) {
-                                long clump_size =
-                                    (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 387) * 100) / 0x7fff;
+                                long clump_size = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 387) * 100) / 0x7fff;
                                 this->push_stack(*stack_ptr, x, y + 1, 0.0f, (float) clump_size + chance);
                             }
                             ++chance_count;

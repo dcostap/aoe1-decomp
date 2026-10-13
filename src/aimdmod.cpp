@@ -186,9 +186,7 @@ RGE_Static_Object* MainDecisionAIModule::object(
     return 0;
 }
 
-RGE_Static_Object* MainDecisionAIModule::object(
-    int gameID, int typeID, int groupID, int action1, int action2, int objectState
-) {
+RGE_Static_Object* MainDecisionAIModule::object(int gameID, int typeID, int groupID, int action1, int action2, int objectState) {
     for (int i = 0; i < this->objects.number(); ++i) {
         RGE_Static_Object* object = this->player->world->object(this->objects[i]);
         if (object == 0) {

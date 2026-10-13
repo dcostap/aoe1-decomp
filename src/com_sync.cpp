@@ -61,8 +61,8 @@ RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
 }
 
 int RGE_Communications_Synchronize::Add(
-    unsigned int player, unsigned long worldtime, unsigned long worldturn, unsigned long worldrandom, long cs1,
-    long cs2, long cs3, long cs4, long cs5
+    unsigned int player, unsigned long worldtime, unsigned long worldturn, unsigned long worldrandom, long cs1, long cs2,
+    long cs3, long cs4, long cs5
 ) {
     if (!this->DoChecksums) {
         return 0;
@@ -88,8 +88,8 @@ int RGE_Communications_Synchronize::Add(
 }
 
 int RGE_Communications_Synchronize::ValidateChecksums(
-    unsigned int player, unsigned long worldtime, unsigned long worldturn, unsigned long worldrandom, long cs1,
-    long cs2, long cs3, long cs4, long cs5
+    unsigned int player, unsigned long worldtime, unsigned long worldturn, unsigned long worldrandom, long cs1, long cs2,
+    long cs3, long cs4, long cs5
 ) {
     int bad = 0;
 
@@ -173,9 +173,7 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(unsigned long turn) {
     unsigned long unifiedChecksum = unified_visible_map_checksum;
     long pathChecksum = pathSystem.checksum();
 
-    this->Add(
-        this->Comm->WhoAmI(), worldTime, turn, this->LastWorldRandom, unifiedChecksum, cs2, cs3, cs4, pathChecksum
-    );
+    this->Add(this->Comm->WhoAmI(), worldTime, turn, this->LastWorldRandom, unifiedChecksum, cs2, cs3, cs4, pathChecksum);
 
     this->Comm->SendChecksumMessage(worldTime, this->LastWorldRandom, unifiedChecksum, cs2, cs3, cs4, pathChecksum);
 
@@ -189,15 +187,15 @@ void RGE_Communications_Synchronize::SetLastWorldRandom(unsigned long lwr) {
 }
 
 void RGE_Communications_Synchronize::LogChecksums(
-    unsigned int player, unsigned long worldtime, unsigned long worldturn, long cs1, long cs2, long cs3, long cs4,
-    long cs5, unsigned long random
+    unsigned int player, unsigned long worldtime, unsigned long worldturn, long cs1, long cs2, long cs3, long cs4, long cs5,
+    unsigned long random
 ) {
     char TBuff[513];
     FILE* file = fopen("C:\\aoesync.txt", "wt");
 
     sprintf(
-        TBuff, "Adding:  P#%d  WTime=%d  Turn=%d Cs1=%d  Cs2=%d  Cs3=%d  Cs4=%d  Cs5=%d  Rand=%d", player, worldtime,
-        worldturn, cs1, cs2, cs3, cs4, cs5, random
+        TBuff, "Adding:  P#%d  WTime=%d  Turn=%d Cs1=%d  Cs2=%d  Cs3=%d  Cs4=%d  Cs5=%d  Rand=%d", player, worldtime, worldturn,
+        cs1, cs2, cs3, cs4, cs5, random
     );
     L->Log(TBuff);
     if (file != 0) {
@@ -217,8 +215,8 @@ void RGE_Communications_Synchronize::LogChecksums(
     do {
         CHECKSUMARRAY& entry = this->Check[index];
         sprintf(
-            TBuff, " %.2d: %.8d %.8d %.6d %.8d %.8d %.8d %.8d %.8d ", entry.PlayerNo, entry.WTime, entry.WTurn,
-            entry.Random, entry.cs1, entry.cs2, entry.cs3, entry.cs4, entry.cs5
+            TBuff, " %.2d: %.8d %.8d %.6d %.8d %.8d %.8d %.8d %.8d ", entry.PlayerNo, entry.WTime, entry.WTurn, entry.Random,
+            entry.cs1, entry.cs2, entry.cs3, entry.cs4, entry.cs5
         );
         L->Log(TBuff);
         if (file != 0) {
@@ -227,10 +225,7 @@ void RGE_Communications_Synchronize::LogChecksums(
         }
 
         if (entry.WTurn == worldturn && entry.WTime != worldtime) {
-            sprintf(
-                TBuff, "=====>  WORLD TIME IS OUT OF SYNC  (%d should be %d at turn %d)", worldtime, entry.WTime,
-                worldturn
-            );
+            sprintf(TBuff, "=====>  WORLD TIME IS OUT OF SYNC  (%d should be %d at turn %d)", worldtime, entry.WTime, worldturn);
             L->Log(TBuff);
             if (file != 0) {
                 fputs(TBuff, file);
@@ -403,8 +398,8 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(unsigned int pnum, unsigne
     for (i = 1; i <= 0x36; i++) {
         CHECKSUMARRAY& entry = this->Check[i];
         if (entry.PlayerNo != pnum && entry.WTurn == worldturn) {
-            if (entry.WTime == myWorldTime && entry.cs1 == mycs1 && entry.cs2 == mycs2 && entry.cs3 == mycs3
-                && entry.cs4 == mycs4 && entry.cs5 == mycs5 && entry.Random == myRandom) {
+            if (entry.WTime == myWorldTime && entry.cs1 == mycs1 && entry.cs2 == mycs2 && entry.cs3 == mycs3 && entry.cs4 == mycs4
+                && entry.cs5 == mycs5 && entry.Random == myRandom) {
                 NumSame++;
                 L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d", i, myWorldTime, mycs1, mycs2, mycs3, mycs4, mycs5);
             } else {

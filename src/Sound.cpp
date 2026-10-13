@@ -22,10 +22,7 @@ RGE_Sound::RGE_Sound(_iobuf* infile, short in_id) {
     if (this->sound_num > 0) {
         this->sounds = (RGE_Sound_Info*) calloc(this->sound_num, 36);
         for (int index = 0; index < this->sound_num; index++) {
-            fscanf(
-                infile, "%d %s %hd", &this->sounds[index].resource_id, this->sounds[index].name,
-                &this->sounds[index].percent
-            );
+            fscanf(infile, "%d %s %hd", &this->sounds[index].resource_id, this->sounds[index].name, &this->sounds[index].percent);
             strcat(this->sounds[index].name, ".wav");
             this->sounds[index].digital_sound = 0;
         }

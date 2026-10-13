@@ -15,9 +15,7 @@ class TribeConstructionAIModule : public ConstructionAIModule {
 
     void setMainDecisionAI(TribeMainDecisionAIModule* m);
     int canPlace(BuildItem* bi);
-    ConstructionItem* placeStructure(
-        BuildItem* bi, int builder, PlacementState& placementState, unsigned long startTime
-    );
+    ConstructionItem* placeStructure(BuildItem* bi, int builder, PlacementState& placementState, unsigned long startTime);
     ConstructionItem* placeDock(BuildItem* bi);
     void setBuilt(RGE_Static_Object* bo, int v);
 

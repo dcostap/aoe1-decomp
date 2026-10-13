@@ -114,16 +114,15 @@ class RGE_Moving_Object : public RGE_Animated_Object {
         int unobstructibleGroupID
     );
     virtual int canPath(
-        int targetID, float aRange, float* pathDistance, int aiCheck, int unobstructiblePlayerID,
-        int unobstructibleGroupID
+        int targetID, float aRange, float* pathDistance, int aiCheck, int unobstructiblePlayerID, int unobstructibleGroupID
     );
     virtual int canBidirectionPath(
         int targetID, int targetID2, float aRange, float* pathDistance, int aiCheck, int unobstructiblePlayerID,
         int unobstructibleGroupID
     );
     virtual int canPathWithObstructions(
-        int targetID, float aRange, float* pathDistance, int aiCheck, int unobstructiblePlayerID,
-        int unobstructibleGroupID, ManagedArray<int>& obstructions
+        int targetID, float aRange, float* pathDistance, int aiCheck, int unobstructiblePlayerID, int unobstructibleGroupID,
+        ManagedArray<int>& obstructions
     );
     virtual int canPathWithAdditionalPassability(
         XYZPoint p, float aRange, int targetID, float* pathDistance, int eTerrain1, int eTerrain2, int aiCheck,

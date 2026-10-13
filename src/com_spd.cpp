@@ -78,9 +78,7 @@ void RGE_Communications_Speed::SetActualLatency(unsigned int PlayerNo, unsigned 
     }
 }
 
-void RGE_Communications_Speed::SetFutureSpeedChange(
-    unsigned int BuffCount, unsigned int BuffGran, unsigned long ExecTurn
-) {
+void RGE_Communications_Speed::SetFutureSpeedChange(unsigned int BuffCount, unsigned int BuffGran, unsigned long ExecTurn) {
     if (this->NextLatencyChangeTurn)
         return;
     this->FutureBufferFrames = BuffCount;
@@ -161,12 +159,10 @@ unsigned int RGE_Communications_Speed::BufferTimeToUse(unsigned long current_tur
 
     this->RealTimePassed = this->TurnTSLC->Get();
     if (this->Comm->AllPlayersAcknowledged() != 0) {
-        this->AllAcknowledgedBuffersRemaining =
-            this->AllAcknowledgedBuffersRemaining + this->TotalBufferFramesRemaining;
+        this->AllAcknowledgedBuffersRemaining = this->AllAcknowledgedBuffersRemaining + this->TotalBufferFramesRemaining;
     }
 
-    this->BufferTimePassed =
-        (this->CurrentBufferFrames - this->TotalBufferFramesRemaining) * this->CurrentBufferGranularity;
+    this->BufferTimePassed = (this->CurrentBufferFrames - this->TotalBufferFramesRemaining) * this->CurrentBufferGranularity;
     if (this->OverheadFactor + this->RealTimePassed < this->BufferTimePassed) {
         if (current_turn > 6) {
             this->DroppedFrames = this->DroppedFrames + 1;
@@ -212,7 +208,7 @@ unsigned char RGE_Communications_Speed::GetHighLatencyCenti() {
     if (high_latency >= 0xFF) {
         high_latency = 0xFF;
     }
-    return (unsigned char)high_latency;
+    return (unsigned char) high_latency;
 }
 
 unsigned long RGE_Communications_Speed::GetPlayerLatency(unsigned int PlayerNo) {
@@ -242,8 +238,8 @@ char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr() {
     frames = this->GetRecommendedBufferFrames();
     granularity = this->GetRecommendedBufferGranularity();
     sprintf(
-        buf, "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d", frames, granularity,
-        1000 / (int)granularity, granularity * frames
+        buf, "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d", frames, granularity, 1000 / (int) granularity,
+        granularity * frames
     );
     return buf;
 }
@@ -327,9 +323,7 @@ unsigned int RGE_Communications_Speed::GetRecommendedBufferGranularity() {
     return granularity;
 }
 
-int RGE_Communications_Speed::AnalyzeGameSpeed(
-    unsigned int* NewGranularity, unsigned int* NewBufferFrames, int ChangeAlso
-) {
+int RGE_Communications_Speed::AnalyzeGameSpeed(unsigned int* NewGranularity, unsigned int* NewBufferFrames, int ChangeAlso) {
     unsigned long SyncTurn;
     unsigned int AvgFramesMsec;
     unsigned int HighLatencyMsec;

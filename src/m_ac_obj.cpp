@@ -104,8 +104,8 @@ int RGE_Master_Action_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     master_type = RGE_MASTER_TYPE_ACTION;
 
     fscanf(
-        infile, "%f %f %hd %hd %hd %hd %hd %hd", &search_radius, &work_rate, &drop_site, &backup_drop_site,
-        &temp_task_by_group, &temp_command_sound, &temp_move_sound, &temp_run_pattern
+        infile, "%f %f %hd %hd %hd %hd %hd %hd", &search_radius, &work_rate, &drop_site, &backup_drop_site, &temp_task_by_group,
+        &temp_command_sound, &temp_move_sound, &temp_run_pattern
     );
 
     task_by_group = (unsigned char) temp_task_by_group;
@@ -193,7 +193,7 @@ RGE_Task* RGE_Master_Action_Object::getTaskByTaskID(int t) const {
 void RGE_Master_Action_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Moving_Object::copy_obj(source);
 
-    RGE_Master_Action_Object* action_source = (RGE_Master_Action_Object*)source;
+    RGE_Master_Action_Object* action_source = (RGE_Master_Action_Object*) source;
     default_task = action_source->default_task;
     search_radius = action_source->search_radius;
     work_rate = action_source->work_rate;

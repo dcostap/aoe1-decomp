@@ -346,16 +346,14 @@ int TMousePointer::update_mouse_position() {
     this->mouse_x = point.x;
     this->mouse_y = point.y;
     if (this->GameMode != 0 && this->GameEnabled != 0 && this->mouse_x >= this->game_window.left
-        && this->mouse_x < this->game_window.right && point.y >= this->game_window.top
-        && point.y < this->game_window.bottom) {
+        && this->mouse_x < this->game_window.right && point.y >= this->game_window.top && point.y < this->game_window.bottom) {
         this->next_facet = this->game_facet;
         in_game = 1;
     } else {
         this->next_facet = this->facet;
         in_game = 0;
     }
-    if (this->save_area_valid != 0 && point.x == this->save_x && point.y == this->save_y
-        && this->next_facet == this->last_facet)
+    if (this->save_area_valid != 0 && point.x == this->save_x && point.y == this->save_y && this->next_facet == this->last_facet)
         return 0;
     this->save_x = point.x;
     this->save_y = point.y;
@@ -424,9 +422,8 @@ void TMousePointer::draw(int dMode) {
         if (this->update_mouse_position() != 0 || dMode != 0) {
             this->LastDrawTime = t;
             if (this->save_area_valid != 0 && this->restoreSurface != this->PrimarySurface) {
-                long err = this->restoreSurface->Blt(
-                    &this->restore_rect, this->save_area->DrawSurface, &this->save_rect, DDBLT_WAIT, 0
-                );
+                long err =
+                    this->restoreSurface->Blt(&this->restore_rect, this->save_area->DrawSurface, &this->save_rect, DDBLT_WAIT, 0);
                 if (err != 0) {
                     this->LastddError = err;
                     return;
@@ -468,8 +465,8 @@ void TMousePointer::draw(int dMode) {
                         int f = this->next_facet;
                         Shape_Info* si = this->Cursor_Shape->shape_info;
                         this->Cursor_Shape->shape_draw(
-                            this->render_area, si[f].Hotspot_X + this->mouse_rect.left,
-                            si[f].Hotspot_Y + this->mouse_rect.top, f, 0, 0
+                            this->render_area, si[f].Hotspot_X + this->mouse_rect.left, si[f].Hotspot_Y + this->mouse_rect.top, f,
+                            0, 0
                         );
                         this->render_area->Unlock("mouseptr::draw");
                     }
@@ -650,9 +647,8 @@ void TMousePointer::Poll() {
                 }
                 if (this->MouseOnScreen != 0) {
                     RECT* ptVar1 = &this->mouse_rect;
-                    long err = this->save_area->DrawSurface->Blt(
-                        &this->new_save_rect, this->PrimarySurface, ptVar1, DDBLT_WAIT, 0
-                    );
+                    long err =
+                        this->save_area->DrawSurface->Blt(&this->new_save_rect, this->PrimarySurface, ptVar1, DDBLT_WAIT, 0);
                     if (err != 0) {
                         this->LastddError = err;
                         this->LastddError = this->GetDDBltError(err);
@@ -665,8 +661,8 @@ void TMousePointer::Poll() {
                     if (this->Mouse_Mode == 0) {
                         this->cursors[this->next_facet]->SetTrans(1, 0);
                         err = this->PrimarySurface->BltFast(
-                            ptVar1->left, this->mouse_rect.top, this->cursors[this->next_facet]->DrawSurface,
-                            &this->cursor_rect, DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT
+                            ptVar1->left, this->mouse_rect.top, this->cursors[this->next_facet]->DrawSurface, &this->cursor_rect,
+                            DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT
                         );
                         if (err != 0) {
                             this->LastddError = err;

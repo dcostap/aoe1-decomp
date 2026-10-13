@@ -120,13 +120,13 @@ class DClipInfo_List {
     void ReclaimAllNodes();
     void SetCaptureLevel(int minLevel, int maxLevel);
     DClipInfo_Node* AddGDINode(
-        int GDI_Type, int SortLine, int X1, int Y1, int X2, int Y2, int X3, int Y3, int X4, int Y4, int DrawLevel,
-        int DrawColor, int Object_ID
+        int GDI_Type, int SortLine, int X1, int Y1, int X2, int Y2, int X3, int Y3, int X4, int Y4, int DrawLevel, int DrawColor,
+        int Object_ID
     );
     DClipInfo_Node* GetNode();
     void AddDrawNode(
-        void* ShapeBase, Shape_Info* theShape, int SortLine, int Xpos, int Ypos, int DrawFlags,
-        unsigned char* ColorTable, int XformMask, int DrawLevel, int Object_ID
+        void* ShapeBase, Shape_Info* theShape, int SortLine, int Xpos, int Ypos, int DrawFlags, unsigned char* ColorTable,
+        int XformMask, int DrawLevel, int Object_ID
     );
     DClipInfo_Node* LocateIDbyDrawLevel(int SearchID, int StartLevel, int EndLevel, int NodeType);
     void FreeNode(DClipInfo_Node* theNode);
@@ -311,23 +311,20 @@ class RGE_View : public TPanel {
     void ProcessQueuedBlit(int WaitIfBusy);
     void draw_paint_brush();
     int draw_tile(
-        RGE_Tile* tile, unsigned char terrain_type, short x, short y, short map_col, short map_row,
-        unsigned char visible, int norm_draw, int fog_draw
+        RGE_Tile* tile, unsigned char terrain_type, short x, short y, short map_col, short map_row, unsigned char visible,
+        int norm_draw, int fog_draw
     );
     int Pick_Tile(long x, long y, int* Tile_X, int* Tile_Y);
     void get_tile_bounding_coords(int Tile_X, int Tile_Y, int& bx1, int& by1, int& bx2, int& by2);
     int pick_objects(int Xpos, int Ypos, int min_level, int max_level, int range, int max_confidence, int ignoreNeg);
     int pick_multi_objects(
-        int Xpos1, int Ypos1, int Xpos2, int Ypos2, int min_level, int max_level, int player,
-        unsigned char select_level, int ignoreNeg
+        int Xpos1, int Ypos1, int Xpos2, int Ypos2, int min_level, int max_level, int player, unsigned char select_level,
+        int ignoreNeg
     );
-    int pick_touched_object(
-        DClipInfo_List* obj_list, int Xpos, int Ypos, int min_level, int max_level, int& touched_object_id
-    );
+    int pick_touched_object(DClipInfo_List* obj_list, int Xpos, int Ypos, int min_level, int max_level, int& touched_object_id);
     int sprite_check(unsigned char* Shape_Base, Shape_Info* Shape, int check_x, int check_y);
     void draw_terrain_shape(
-        int x, int y, TShape* shape, int index, unsigned char visible, unsigned char draw_attribute, int draw_normal,
-        int draw_fog
+        int x, int y, TShape* shape, int index, unsigned char visible, unsigned char draw_attribute, int draw_normal, int draw_fog
     );
     void draw_terrain_obstruction_map(int x, int y, TShape* shape, int index, int TileX, int TileY);
     void calc_draw_vars();

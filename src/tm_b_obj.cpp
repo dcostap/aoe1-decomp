@@ -14,15 +14,14 @@
 #include <stdio.h>
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(TRIBE_Master_Building_Object* other_object, int do_setup) :
-    TRIBE_Master_Combat_Object((TRIBE_Master_Combat_Object*)other_object, 0) {
+    TRIBE_Master_Combat_Object((TRIBE_Master_Combat_Object*) other_object, 0) {
     if (do_setup != 0) {
         setup(other_object);
     }
 }
 
-TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup
-) : TRIBE_Master_Combat_Object(infile, sprites, sounds, 0) {
+TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) :
+    TRIBE_Master_Combat_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
         this->setup(infile, sprites, sounds);
     }
@@ -98,13 +97,12 @@ int TRIBE_Master_Building_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_
     this->master_type = TRIBE_MASTER_TYPE_BUILDING;
 
     fscanf(
-        infile, "%hd %hd %hd %hd %hd %hd %hd %hd %hd", &sprite_id, &connect_flag, &this->building_facet,
-        &build_and_go_away, &this->on_build_make_obj, &this->on_build_make_tile, &this->on_build_make_overlay,
-        &this->on_build_make_tech, &sound_id
+        infile, "%hd %hd %hd %hd %hd %hd %hd %hd %hd", &sprite_id, &connect_flag, &this->building_facet, &build_and_go_away,
+        &this->on_build_make_obj, &this->on_build_make_tile, &this->on_build_make_overlay, &this->on_build_make_tech, &sound_id
     );
 
-    this->building_connect_flag = (unsigned char)connect_flag;
-    this->build_and_go_away = (unsigned char)build_and_go_away;
+    this->building_connect_flag = (unsigned char) connect_flag;
+    this->build_and_go_away = (unsigned char) build_and_go_away;
 
     if (sprite_id > -1) {
         selected_sprite = sprites[sprite_id];
@@ -129,7 +127,7 @@ void TRIBE_Master_Building_Object::copy_obj(RGE_Master_Static_Object* source) {
     TRIBE_Master_Combat_Object::copy_obj(source);
 
     // This virtual copy path receives a building-master source.
-    TRIBE_Master_Building_Object* building_source = (TRIBE_Master_Building_Object*)source;
+    TRIBE_Master_Building_Object* building_source = (TRIBE_Master_Building_Object*) source;
     this->construction_sprite = building_source->construction_sprite;
     this->construction_sound = building_source->construction_sound;
     this->building_connect_flag = building_source->building_connect_flag;
@@ -146,7 +144,7 @@ void TRIBE_Master_Building_Object::modify(float amount, unsigned char flag) {
         TRIBE_Master_Combat_Object::modify(amount, flag);
         return;
     }
-    this->building_facet = (short)amount;
+    this->building_facet = (short) amount;
 }
 
 void TRIBE_Master_Building_Object::modify_delta(float amount, unsigned char flag) {
@@ -154,7 +152,7 @@ void TRIBE_Master_Building_Object::modify_delta(float amount, unsigned char flag
         TRIBE_Master_Combat_Object::modify_delta(amount, flag);
         return;
     }
-    this->building_facet += (short)amount;
+    this->building_facet += (short) amount;
 }
 
 void TRIBE_Master_Building_Object::modify_percent(float amount, unsigned char flag) {
@@ -244,8 +242,6 @@ void TRIBE_Master_Building_Object::draw(
     }
 }
 
-unsigned char TRIBE_Master_Building_Object::alignment(
-    float& col, float& row, RGE_Game_World* world, unsigned char center_flag
-) {
+unsigned char TRIBE_Master_Building_Object::alignment(float& col, float& row, RGE_Game_World* world, unsigned char center_flag) {
     return RGE_Master_Static_Object::alignment(col, row, world, 1);
 }

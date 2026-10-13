@@ -56,8 +56,7 @@ int RGE_Main_View::do_auto_scroll() {
     unsigned long now;
     unsigned long elapsed;
 
-    if ((rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME
-         || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+    if ((rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
          || rge_base_game->prog_mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR
          || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_OVER)
         && rge_base_game->get_paused() == 0 && rge_base_game->prog_info->auto_scroll != 0
@@ -104,22 +103,14 @@ int RGE_Main_View::do_auto_scroll() {
                 if (scroll_dist2 > g_main_view_zero_scroll_distance) {
                     float scroll_dist = scroll_dist2 + scroll_dist2;
                     if (vert_scroll == -1)
-                        this->player->set_view_loc(
-                            this->player->view_x - scroll_dist2, this->player->view_y - scroll_dist2
-                        );
+                        this->player->set_view_loc(this->player->view_x - scroll_dist2, this->player->view_y - scroll_dist2);
                     else if (vert_scroll == 1)
-                        this->player->set_view_loc(
-                            this->player->view_x + scroll_dist2, this->player->view_y + scroll_dist2
-                        );
+                        this->player->set_view_loc(this->player->view_x + scroll_dist2, this->player->view_y + scroll_dist2);
 
                     if (horz_scroll == -1)
-                        this->player->set_view_loc(
-                            this->player->view_x + scroll_dist, this->player->view_y - scroll_dist
-                        );
+                        this->player->set_view_loc(this->player->view_x + scroll_dist, this->player->view_y - scroll_dist);
                     else if (horz_scroll == 1)
-                        this->player->set_view_loc(
-                            this->player->view_x - scroll_dist, this->player->view_y + scroll_dist
-                        );
+                        this->player->set_view_loc(this->player->view_x - scroll_dist, this->player->view_y + scroll_dist);
 
                     this->set_redraw(TPanel::RedrawNormal);
                     if (this->map_view != 0)
@@ -149,8 +140,7 @@ int RGE_Main_View::handle_keys() {
     unsigned long elapsed;
 
     if (rge_base_game->get_paused() == 0
-        && (rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME
-            || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
+        && (rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
             || rge_base_game->prog_mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR
             || rge_base_game->prog_mode == RGE_PROGRAM_MODE_GAME_OVER)
         && GetForegroundWindow() == this->TPanel::render_area->Wnd && this->have_focus != 0) {
@@ -163,30 +153,22 @@ int RGE_Main_View::handle_keys() {
         if (rge_base_game->game_mode == RGE_GAME_MODE_MOVE && this->player != 0 && this->player->selected_obj != 0) {
             RGE_Static_Object* obj = this->player->selected_obj;
             if (pbKeyState[VK_UP] > 1) {
-                obj->teleport(
-                    obj->world_x + info->key_scroll_object_move, obj->world_y - info->key_scroll_object_move, 0
-                );
+                obj->teleport(obj->world_x + info->key_scroll_object_move, obj->world_y - info->key_scroll_object_move, 0);
                 changed = 1;
             }
             if (pbKeyState[VK_DOWN] > 1) {
                 RGE_Static_Object* obj2 = this->player->selected_obj;
-                obj2->teleport(
-                    obj->world_x - info->key_scroll_object_move, obj->world_y + info->key_scroll_object_move, 0
-                );
+                obj2->teleport(obj->world_x - info->key_scroll_object_move, obj->world_y + info->key_scroll_object_move, 0);
                 changed = 1;
             }
             if (pbKeyState[VK_LEFT] > 1) {
                 RGE_Static_Object* obj2 = this->player->selected_obj;
-                obj2->teleport(
-                    obj->world_x - info->key_scroll_object_move, obj->world_y - info->key_scroll_object_move, 0
-                );
+                obj2->teleport(obj->world_x - info->key_scroll_object_move, obj->world_y - info->key_scroll_object_move, 0);
                 changed = 1;
             }
             if (pbKeyState[VK_RIGHT] > 1) {
                 RGE_Static_Object* obj2 = this->player->selected_obj;
-                obj2->teleport(
-                    obj->world_x + info->key_scroll_object_move, obj->world_y + info->key_scroll_object_move, 0
-                );
+                obj2->teleport(obj->world_x + info->key_scroll_object_move, obj->world_y + info->key_scroll_object_move, 0);
                 changed = 1;
             }
         } else if (this->player != 0) {
@@ -222,22 +204,14 @@ int RGE_Main_View::handle_keys() {
                 if (scroll_dist2 > g_main_view_zero_scroll_distance) {
                     float scroll_dist = scroll_dist2 + scroll_dist2;
                     if (horz_scroll == -1) {
-                        this->player->set_view_loc(
-                            this->player->view_x - scroll_dist2, this->player->view_y - scroll_dist2
-                        );
+                        this->player->set_view_loc(this->player->view_x - scroll_dist2, this->player->view_y - scroll_dist2);
                     } else if (horz_scroll == 1) {
-                        this->player->set_view_loc(
-                            this->player->view_x + scroll_dist2, this->player->view_y + scroll_dist2
-                        );
+                        this->player->set_view_loc(this->player->view_x + scroll_dist2, this->player->view_y + scroll_dist2);
                     }
                     if (vert_scroll == -1) {
-                        this->player->set_view_loc(
-                            this->player->view_x + scroll_dist, this->player->view_y - scroll_dist
-                        );
+                        this->player->set_view_loc(this->player->view_x + scroll_dist, this->player->view_y - scroll_dist);
                     } else if (vert_scroll == 1) {
-                        this->player->set_view_loc(
-                            this->player->view_x - scroll_dist, this->player->view_y + scroll_dist
-                        );
+                        this->player->set_view_loc(this->player->view_x - scroll_dist, this->player->view_y + scroll_dist);
                     }
                     this->last_key_scroll_time = now;
                     changed = 1;
@@ -274,8 +248,8 @@ long RGE_Main_View::handle_mouse_up(unsigned char mouse_button_in, long x, long 
 long RGE_Main_View::mouse_move_action(long x, long y, int ctrl_key, int shift_key) {
     RGE_Base_Game* game = rge_base_game;
     int mode = game->prog_mode;
-    if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
-        || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
+    if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR
+        || mode == RGE_PROGRAM_MODE_GAME_OVER) {
         mode = game->game_mode;
         if (mode == RGE_GAME_MODE_PLACE_OBJECT)
             goto call_redraw;
@@ -303,8 +277,8 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
 
     if (rge_base_game->get_paused() == 0) {
         int mode = rge_base_game->prog_mode;
-        if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
-            || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
+        if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR
+            || mode == RGE_PROGRAM_MODE_GAME_OVER) {
             mode = rge_base_game->game_mode;
             color_log(0x4C, 0xBA, 1);
 
@@ -338,9 +312,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
                         } else if (object_id != -1 && this->world->players[0]->master_objects[object_id] != 0) {
                             RGE_Master_Static_Object* master = this->world->players[0]->master_objects[object_id];
                             master->alignment(pick_info.x, pick_info.y, this->world, 0);
-                            this->world->players[0]->command_place_object(
-                                (short) object_id, pick_info.x, pick_info.y, 0.0f
-                            );
+                            this->world->players[0]->command_place_object((short) object_id, pick_info.x, pick_info.y, 0.0f);
                         }
                     }
                     break;
@@ -416,8 +388,8 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shi
 
 long RGE_Main_View::mouse_left_move_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
-    if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
-        || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
+    if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR
+        || mode == RGE_PROGRAM_MODE_GAME_OVER) {
         if (rge_base_game->get_paused()) {
             if (this->scroll_action)
                 this->end_scroll_view();
@@ -452,8 +424,8 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
     RGE_Pick_Info pick_info;
     int mode = rge_base_game->prog_mode;
 
-    if (mode != RGE_PROGRAM_MODE_GAME && mode != RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
-        && mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR && mode != RGE_PROGRAM_MODE_GAME_OVER)
+    if (mode != RGE_PROGRAM_MODE_GAME && mode != RGE_PROGRAM_MODE_GAME_TEMP_PAUSED && mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR
+        && mode != RGE_PROGRAM_MODE_GAME_OVER)
         return 0;
 
     color_log(0x4C, 0x16, 1);
@@ -463,9 +435,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
 
         if (rge_base_game->game_mode == TRIBE_GAME_MODE_PLACE_CONNECTED) {
             int placement_mode = (ctrl_key == 0 && shift_key == 0) ? 1 : 0;
-            this->command_place_multi_object(
-                this->sel_col1, this->sel_row1, this->sel_col2, this->sel_row2, placement_mode
-            );
+            this->command_place_multi_object(this->sel_col1, this->sel_row1, this->sel_col2, this->sel_row2, placement_mode);
         }
 
         if (rge_base_game->game_mode == TRIBE_GAME_MODE_UNIT_PLACE) {
@@ -493,8 +463,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
 
     mode = rge_base_game->game_mode;
 
-    if ((ctrl_key != 0 || shift_key != 0) && mode != TRIBE_GAME_MODE_PLACE_BUILDING
-        && mode != TRIBE_GAME_MODE_PLACE_CONNECTED) {
+    if ((ctrl_key != 0 || shift_key != 0) && mode != TRIBE_GAME_MODE_PLACE_BUILDING && mode != TRIBE_GAME_MODE_PLACE_CONNECTED) {
         if (this->pick1(0x29, 2, x, y, &pick_info, 0, 0) == 0x34) {
             RGE_Static_Object* object = pick_info.object;
             if ((object->selected & 1) != 0) {
@@ -560,8 +529,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
 
                 unsigned char status = this->pick1(0x2A, 1, x, y, &pick_info, exclude, 1);
                 if (status == 0x34) {
-                    if (x == this->mouse_last_x && y == this->mouse_last_y
-                        && pick_info.object != this->player->selected_obj) {
+                    if (x == this->mouse_last_x && y == this->mouse_last_y && pick_info.object != this->player->selected_obj) {
                         this->player->unselect_object();
                         this->set_redraw(TPanel::RedrawNormal);
                     }
@@ -634,8 +602,8 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
                                     this->player->command_add_waypoint(pick_info.x, pick_info.y, 1.0f);
                                     this->reset_display_object_selection(2);
                                     this->add_overlay_sprite(
-                                        rge_base_game->shapes[1], 0, this->map_scr_x_offset + x,
-                                        this->map_scr_y_offset + y, 0, 0x0F, 0, 1, 0xFA
+                                        rge_base_game->shapes[1], 0, this->map_scr_x_offset + x, this->map_scr_y_offset + y, 0,
+                                        0x0F, 0, 1, 0xFA
                                     );
                                     this->set_redraw(TPanel::RedrawNormal);
                                 }
@@ -699,7 +667,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
         case TRIBE_GAME_MODE_SELECT_OBJECT:
             if (this->pick1(0x29, 1, x, y, &pick_info, this->player->selected_obj, 1) == 0x34) {
                 if (this->curr_child != 0) {
-                    this->curr_child->action(this, 0x10, (unsigned long)pick_info.object, 0);
+                    this->curr_child->action(this, 0x10, (unsigned long) pick_info.object, 0);
                     this->player->select_one_object(pick_info.object, 1);
                     this->set_redraw(TPanel::RedrawNormal);
                 }
@@ -720,8 +688,8 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift
 long RGE_Main_View::mouse_right_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (!rge_base_game->get_paused()) {
         int mode = rge_base_game->prog_mode;
-        if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
-            || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
+        if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR
+            || mode == RGE_PROGRAM_MODE_GAME_OVER) {
             color_log(0x4C, 0x24, 1);
             if (rge_base_game->game_mode != TRIBE_GAME_MODE_PAINT_CLIFFS) {
                 this->capture_mouse();
@@ -742,8 +710,8 @@ long RGE_Main_View::mouse_right_down_action(long x, long y, int ctrl_key, int sh
 
 long RGE_Main_View::mouse_right_move_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
-    if (mode != RGE_PROGRAM_MODE_GAME && mode != RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
-        && mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR && mode != RGE_PROGRAM_MODE_GAME_OVER)
+    if (mode != RGE_PROGRAM_MODE_GAME && mode != RGE_PROGRAM_MODE_GAME_TEMP_PAUSED && mode != RGE_PROGRAM_MODE_SCENARIO_EDITOR
+        && mode != RGE_PROGRAM_MODE_GAME_OVER)
         return 0;
 
     int paused = rge_base_game->get_paused();
@@ -774,8 +742,8 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int shif
     RGE_Pick_Info pick_info;
     int mode = rge_base_game->prog_mode;
 
-    if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED
-        || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR || mode == RGE_PROGRAM_MODE_GAME_OVER) {
+    if (mode == RGE_PROGRAM_MODE_GAME || mode == RGE_PROGRAM_MODE_GAME_TEMP_PAUSED || mode == RGE_PROGRAM_MODE_SCENARIO_EDITOR
+        || mode == RGE_PROGRAM_MODE_GAME_OVER) {
         color_log(0x4C, 0x32, 1);
 
         if (this->scroll_action != 0) {
@@ -924,9 +892,7 @@ int RGE_Main_View::command_place_object(long x, long y, int reset_mode) {
                 );
                 if (check == 0) {
                     if (rge_base_game->game_mode == RGE_GAME_MODE_PLACE_OBJECT) {
-                        if (rge_base_game->get_player()->command_place_object(
-                                (short) object_id, pick_info.x, pick_info.y, 0.0f
-                            )
+                        if (rge_base_game->get_player()->command_place_object((short) object_id, pick_info.x, pick_info.y, 0.0f)
                             != 0) {
                             if (reset_mode != 0)
                                 rge_base_game->set_game_mode(RGE_GAME_MODE_NORMAL, 0);
@@ -937,9 +903,7 @@ int RGE_Main_View::command_place_object(long x, long y, int reset_mode) {
                             object = this->movable_object;
                             object->teleport(pick_info.x, pick_info.y, 0.0f);
                         } else {
-                            object = rge_base_game->get_player()->make_new_object(
-                                object_id, pick_info.x, pick_info.y, 0.0f, 1
-                            );
+                            object = rge_base_game->get_player()->make_new_object(object_id, pick_info.x, pick_info.y, 0.0f, 1);
                         }
                         if (object != 0) {
                             unsigned char draw_level;
@@ -993,8 +957,8 @@ int RGE_Main_View::command_make_do(long x, long y, int work_on_tile, short actio
                     if (result != 0) {
                         this->reset_display_object_selection(2);
                         this->add_overlay_sprite(
-                            rge_base_game->shapes[2], 0, this->map_scr_x_offset + x, this->map_scr_y_offset + y, 0,
-                            0x0F, 0, 2, 0x5A
+                            rge_base_game->shapes[2], 0, this->map_scr_x_offset + x, this->map_scr_y_offset + y, 0, 0x0F, 0, 2,
+                            0x5A
                         );
                         this->set_redraw(TPanel::RedrawNormal);
                     }
@@ -1180,7 +1144,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
     if (selected_count > 0) {
         do {
             target_count = 0;
-            master_obj = (RGE_Master_Action_Object*)selected_objects[j]->master_obj;
+            master_obj = (RGE_Master_Action_Object*) selected_objects[j]->master_obj;
             if (picked_count > 0) {
                 info = Picked_Objects;
                 do {
@@ -1188,9 +1152,8 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                     if (picked >= 0) {
                         RGE_Static_Object* object = this->world->objectsValue[picked];
                         if (object != 0 && object->object_state < RGE_OBJECT_STATE_PENDING_REMOVAL) {
-                            RGE_Task* action = master_obj->tasks->get_target_task(
-                                (RGE_Action_Object*)selected_objects[j], object, 0, 0, 0
-                            );
+                            RGE_Task* action =
+                                master_obj->tasks->get_target_task((RGE_Action_Object*) selected_objects[j], object, 0, 0, 0);
                             if (action != 0) {
                                 if (action_type != -1 && action->action_type != action_type)
                                     action = 0;
@@ -1205,19 +1168,18 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attackin
                                 int k = 0;
                                 while (k < this->player->master_object_num) {
                                     RGE_Master_Action_Object* object2 =
-                                        (RGE_Master_Action_Object*)this->player->master_objects[k];
+                                        (RGE_Master_Action_Object*) this->player->master_objects[k];
                                     if (object2 != 0 && object2->object_group == master_obj->object_group
                                         && object2->master_type == master_obj->master_type
                                         && object2->task_by_group == master_obj->task_by_group) {
                                         RGE_Task* action2 = object2->tasks->get_target_task(
-                                            (RGE_Action_Object*)selected_objects[j], object, 0, 0, 0
+                                            (RGE_Action_Object*) selected_objects[j], object, 0, 0, 0
                                         );
                                         if (action2 != 0) {
                                             if (action_type != -1 && action2->action_type != action_type)
                                                 action2 = 0;
                                             if (action2 != 0) {
-                                                valid_target_count[target_count] +=
-                                                    this->pick_weight(object, info->confidence);
+                                                valid_target_count[target_count] += this->pick_weight(object, info->confidence);
                                                 if (object2->tasks->is_attack_task(action2))
                                                     attacking[target_count] = 1;
                                                 goto next_target;
@@ -1311,8 +1273,7 @@ int RGE_Main_View::command_make_work(long x, long y) {
                 if (result != 0) {
                     this->reset_display_object_selection(2);
                     this->add_overlay_sprite(
-                        rge_base_game->shapes[2], 0, this->map_scr_x_offset + x, this->map_scr_y_offset + y, 0, 0x0F, 0,
-                        2, 0x5A
+                        rge_base_game->shapes[2], 0, this->map_scr_x_offset + x, this->map_scr_y_offset + y, 0, 0x0F, 0, 2, 0x5A
                     );
                 }
                 this->set_redraw(TPanel::RedrawNormal);

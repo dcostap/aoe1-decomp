@@ -117,8 +117,8 @@ void Visible_Unit_Manager::Build_Distance_Table() {
 }
 
 void Visible_Unit_Manager::Update_Unit_Info(
-    int Object_Id, int player_id, int Xpos, int Ypos, int Category, unsigned long PriorUnifiedMap,
-    unsigned long NewUnifiedMap, VISIBLE_UNIT_REC** ObjectPtrs
+    int Object_Id, int player_id, int Xpos, int Ypos, int Category, unsigned long PriorUnifiedMap, unsigned long NewUnifiedMap,
+    VISIBLE_UNIT_REC** ObjectPtrs
 ) {
     unsigned long ChangedMask = (NewUnifiedMap ^ PriorUnifiedMap) & 0xffff;
 
@@ -497,12 +497,10 @@ VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(
                 int distance;
                 if (xd > yd) {
                     distance =
-                        (xd - (int) (g_visible_resource_diagonal_adjustment - yd * g_visible_resource_diagonal_factor))
-                        - yd;
+                        (xd - (int) (g_visible_resource_diagonal_adjustment - yd * g_visible_resource_diagonal_factor)) - yd;
                 } else {
                     distance =
-                        (yd - (int) (g_visible_resource_diagonal_adjustment - xd * g_visible_resource_diagonal_factor))
-                        - xd;
+                        (yd - (int) (g_visible_resource_diagonal_adjustment - xd * g_visible_resource_diagonal_factor)) - xd;
                 }
 
                 if (distance < bestdist) {

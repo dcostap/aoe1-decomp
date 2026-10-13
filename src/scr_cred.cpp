@@ -17,8 +17,8 @@ extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
 
 void RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*, tagPALETTEENTRY, long, int, int);
 void RGE_fade_palette_start(
-    TDrawArea* surface_in, tagPALETTEENTRY color_in, float fade_time_in, unsigned char direction_in,
-    tagPALETTEENTRY* new_palette, int ignore_color1_in, int ignore_color2_in
+    TDrawArea* surface_in, tagPALETTEENTRY color_in, float fade_time_in, unsigned char direction_in, tagPALETTEENTRY* new_palette,
+    int ignore_color1_in, int ignore_color2_in
 );
 int RGE_fade_palette_step();
 
@@ -62,8 +62,8 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen() : TScreenPanel("Credits Screen") {
     }
 
     TScrollTextPanel* scroll_panel = new TScrollTextPanel(
-        this, this->render_area, (this->pnl_wid / 2) - 250, (this->pnl_hgt / 2) - 150, 500, 300, 30, font->font,
-        font->font_wid, font->font_hgt, file_buf
+        this, this->render_area, (this->pnl_wid / 2) - 250, (this->pnl_hgt / 2) - 150, 500, 300, 30, font->font, font->font_wid,
+        font->font_hgt, file_buf
     );
     this->text_panel = scroll_panel;
 
@@ -108,9 +108,7 @@ TRIBE_Credits_Screen::~TRIBE_Credits_Screen() {
     }
 }
 
-long TRIBE_Credits_Screen::handle_mouse_down(
-    unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key
-) {
+long TRIBE_Credits_Screen::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     this->close_screen();
     return 1;
 }
@@ -235,9 +233,7 @@ long TRIBE_Credits_Screen::key_down_action(long key, short count, int alt_key, i
     return 0;
 }
 
-long TRIBE_Credits_Screen::action(
-    TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2
-) {
+long TRIBE_Credits_Screen::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     long action_result;
 
     if (from_panel != 0 && from_panel == this->text_panel && (action_in == 1)) {
@@ -271,9 +267,7 @@ TScrollTextPanel::TScrollTextPanel(
     this->done = 0;
 
     char* no_text = 0;
-    if (this->setup(
-            render_area_in, parent_in, x, y, wid, hgt, font_in, font_wid_in, font_hgt_in, 0, 0, 0, 0, 0, 0, no_text
-        )
+    if (this->setup(render_area_in, parent_in, x, y, wid, hgt, font_in, font_wid_in, font_hgt_in, 0, 0, 0, 0, 0, 0, no_text)
         != 0) {
         this->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignCenter);
         this->set_word_wrap(1);
@@ -337,9 +331,7 @@ void TScrollTextPanel::draw() {
     }
 }
 
-void TScrollTextPanel::draw_scrolled_line(
-    void* dc, short draw_row, short text_line, unsigned long color1, unsigned long color2
-) {
+void TScrollTextPanel::draw_scrolled_line(void* dc, short draw_row, short text_line, unsigned long color1, unsigned long color2) {
     char* text;
     short text_len;
     char* temp_text2;
@@ -439,8 +431,8 @@ void TScrollTextPanel::draw_scrolled_line(
 }
 
 void RGE_fade_palette_start(
-    TDrawArea* surface_in, tagPALETTEENTRY color_in, float fade_time_in, unsigned char direction_in,
-    tagPALETTEENTRY* new_palette, int ignore_color1_in, int ignore_color2_in
+    TDrawArea* surface_in, tagPALETTEENTRY color_in, float fade_time_in, unsigned char direction_in, tagPALETTEENTRY* new_palette,
+    int ignore_color1_in, int ignore_color2_in
 ) {
     palette_fade_surface = surface_in;
     palette_fade_color = color_in;

@@ -101,8 +101,8 @@ RGE_Player::RGE_Player(int infile, RGE_Game_World* gworld, unsigned char this_id
 }
 
 RGE_Player::RGE_Player(
-    RGE_Game_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name,
-    unsigned char m_player_id, unsigned char flag
+    RGE_Game_World* gworld, RGE_Master_Player* prototype, unsigned char this_id, char* new_name, unsigned char m_player_id,
+    unsigned char flag
 ) : computerPlayerValue(0), pathingAttemptCapValue(5), pathingDelayCapValue(10), tile_list(400), diam_tile_list(400) {
     this->pathingAttemptCapValue = pathingCapValue;
     this->master_player_id = m_player_id;
@@ -290,8 +290,7 @@ int RGE_Player::isAlly(int playerNum) {
     if (playerNum == this->id) {
         return 1;
     }
-    if ((((0 < playerNum) && (playerNum < this->world->player_num))
-         && (this->relations[playerNum] == RGE_RELATION_ALLY))) {
+    if ((((0 < playerNum) && (playerNum < this->world->player_num)) && (this->relations[playerNum] == RGE_RELATION_ALLY))) {
         return 1;
     }
     return 0;
@@ -328,8 +327,7 @@ void RGE_Player::sendUnitAIOrder(
     float range, int immediate, int inFront, int priority
 ) {
     this->world->commands->command_ai_order(
-        issuer, issuer, recipient, orderType, target, targetOwner, targetX, targetY, targetZ, range, immediate, inFront,
-        priority
+        issuer, issuer, recipient, orderType, target, targetOwner, targetX, targetY, targetZ, range, immediate, inFront, priority
     );
 }
 
@@ -388,9 +386,7 @@ void RGE_Player::sendPlayCommand(int recipient, int target, int playID) {
 
     this->command_destroy_group(recipient);
     if (this->world->playbook->play(playID) == 0) {
-        this->sendUnitAIOrder(
-            (int) this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100
-        );
+        this->sendUnitAIOrder((int) this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
         return;
     }
 
@@ -418,9 +414,7 @@ void RGE_Player::sendPlayCommand(int recipient, int* groupUnits, int groupCount,
     this->command_destroy_group(recipient);
     AIPlay* play = this->world->playbook->play(playID);
     if (play == 0) {
-        this->sendUnitAIOrder(
-            (int) this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100
-        );
+        this->sendUnitAIOrder((int) this->id, recipient, UNIT_AI_ORDER_STOP_PLAY, -1, -1, -1.0f, -1.0f, -1.0f, -1.0f, 1, 0, 100);
         return;
     }
     if (groupCount != 0) {
@@ -544,8 +538,7 @@ void RGE_Player::scenario_load(int infile, long* player_id_hash, float version) 
         if (rge_base_game->prog_mode != ProgModeScenarioEditor) {
             for (int player = 1; player < 9; player++) {
                 if (rge_base_game->playerID(player) == this->id
-                    && (comm->GetPlayerHumanity(player) == ME_HUMAN
-                        || comm->GetPlayerHumanity(player) == ME_COMPUTER)) {
+                    && (comm->GetPlayerHumanity(player) == ME_HUMAN || comm->GetPlayerHumanity(player) == ME_COMPUTER)) {
                     if (rge_base_game->playerTeam(player - 1) > 1) {
                         has_team = 1;
                     }
@@ -749,9 +742,7 @@ void RGE_Player::load(int infile) {
     }
 }
 
-void RGE_Player::load_master_object(
-    int infile, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds
-) {
+void RGE_Player::load_master_object(int infile, short index, unsigned char type, RGE_Sprite** sprites, RGE_Sound** sounds) {
     RGE_Master_Static_Object* object;
 
     switch (type) {
@@ -1042,8 +1033,7 @@ void RGE_Player::win_game_now() {
         if (i != this->id) {
             if (this->allied_victory) {
                 if (!this->relation(i)) {
-                    if (!this->world->players[i]->relation((long) this->id)
-                        && this->world->players[i]->allied_victory) {
+                    if (!this->world->players[i]->relation((long) this->id) && this->world->players[i]->allied_victory) {
                         this->world->players[i]->victory_if_game_on();
                         continue;
                     }
@@ -1108,8 +1098,7 @@ unsigned char RGE_Player::check_victory(void) {
             if (found)
                 return this->game_status;
             for (int i = 1; i < this->world->player_num; i++) {
-                if (this->relations[i] == RGE_RELATION_ALLY
-                    && this->world->players[i]->check_victory_conditions() == 0) {
+                if (this->relations[i] == RGE_RELATION_ALLY && this->world->players[i]->check_victory_conditions() == 0) {
                     found = 1;
                     break;
                 }

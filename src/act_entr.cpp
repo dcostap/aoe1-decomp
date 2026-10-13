@@ -43,7 +43,7 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in,
     }
 
     if (target_obj_in->actionState() == 11) {
-        RGE_Action_Object* target_action = (RGE_Action_Object*)target_obj_in;
+        RGE_Action_Object* target_action = (RGE_Action_Object*) target_obj_in;
         action = target_action->actions->get_action();
         if (action->target2ID == 0) {
             goto line_path;
@@ -51,7 +51,7 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in,
     }
 
     if (target_obj_in->actionState() == 11) {
-        RGE_Action_Object* target_action = (RGE_Action_Object*)target_obj_in;
+        RGE_Action_Object* target_action = (RGE_Action_Object*) target_obj_in;
         action = target_action->actions->get_action();
         this->target_x = action->targetX();
         action = target_action->actions->get_action();
@@ -93,8 +93,7 @@ void RGE_Action_Enter::set_state(unsigned char new_state) {
     switch (new_state) {
         case 4:
             move_to = new RGE_Action_Move_To(
-                this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range,
-                this->task->move_sprite
+                this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range, this->task->move_sprite
             );
             if (move_to == 0) {
                 this->set_state(0x0D);
@@ -203,12 +202,10 @@ unsigned char RGE_Action_Enter::update() {
                     } else {
                         this->target_x = this->target_obj->world_x;
                         this->target_y = this->target_obj->world_y;
-                        this->target_obj->moveTo(
-                            this->obj->world_x, this->obj->world_y, this->target_obj->world_z, 0.5f, 1
-                        );
+                        this->target_obj->moveTo(this->obj->world_x, this->obj->world_y, this->target_obj->world_z, 0.5f, 1);
                     }
                 } else if (this->target_obj->actionState() == 11) {
-                    RGE_Action_Object* target_action = (RGE_Action_Object*)this->target_obj;
+                    RGE_Action_Object* target_action = (RGE_Action_Object*) this->target_obj;
                     RGE_Action* action = target_action->actions->get_action();
                     this->target_x = action->targetX();
                     action = target_action->actions->get_action();
