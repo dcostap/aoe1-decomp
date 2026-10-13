@@ -14,7 +14,8 @@ from pathlib import Path
 import pefile
 from audit_linked_references import check_initial_storage, classify, decode
 from audit_global_initializers import read_storage
-from common import REPO_ROOT, load_functions
+from common import REPO_ROOT, function_entries_by_va, load_functions
+from linked_data_pairs import pair_references
 from linked_inputs import digest, verify_build
 from linker_map import parse_symbols, unique_addresses
 from reference_identity import original_identities
@@ -173,6 +174,22 @@ def semantic_windows(original, rebuilt, symbols, entries):
     return code, data
 
 
+def linked_pairing(build, report, map_rows, original, rebuilt):
+    """Pair references through exact registry functions and their build objects."""
+    paths = {Path(s['object']).name.lower(): build / Path(s['object']).name
+             for s in report['sources'] if s.get('compiled')}
+    sizes = {r['va'].upper(): int(r['size_bytes']) for r in load_functions()}
+    entries = function_entries_by_va()
+    exact = [(int(va, 16), e['symbol'], sizes[va]) for va, e in sorted(entries.items())
+             if e.get('status') == 'matching' and e.get('symbol') and va in sizes]
+    claims = {}
+    for va, e in entries.items():
+        if e.get('symbol'):
+            claims.setdefault(e['symbol'], set()).add(int(va, 16))
+    function_vas = {name: next(iter(vas)) for name, vas in claims.items() if len(vas) == 1}
+    return pair_references(original, rebuilt, map_rows, paths, exact, function_vas)
+
+
 def write_csv(path, rows):
     fields = list(dict.fromkeys(key for row in rows for key in row))
     with path.open('w', newline='', encoding='utf-8') as stream:
@@ -202,16 +219,18 @@ def main():
     if digest(original_path) != config['original_sha256']:
         raise ValueError('Original EXE hash differs')
     if not args.structural_only:
-        verify_build(build)
+        verify_build(build, objects=True)
     original, rebuilt = pefile.PE(str(original_path)), pefile.PE(str(rebuilt_path))
     a, b = original_path.read_bytes(), rebuilt_path.read_bytes()
     ranges = list(raw_ranges(a, b, original, rebuilt))
     structures = [structure(pe) for pe in (original, rebuilt)]
-    code, data = [], []
+    code, data, pairing = [], [], None
     owners_path = REPO_ROOT / 'config/linked_reference_owners.json'
     if not args.structural_only:
-        symbols = unique_addresses(parse_symbols((build / 'empiresx.map').read_text(errors='replace')))
+        map_rows = parse_symbols((build / 'empiresx.map').read_text(errors='replace'))
+        symbols = unique_addresses(map_rows)
         code, data = semantic_windows(original, rebuilt, symbols, json.loads(owners_path.read_text())['owners'])
+        pairing = linked_pairing(build, report, map_rows, original, rebuilt)
     counts = Counter()
     for row in ranges:
         counts[row['result']] += row['size']
@@ -224,10 +243,17 @@ def main():
                    function_windows=dict(Counter(r['result'] for r in code)),
                    normalized_windows=dict(Counter(r.get('normalized_result', 'unknown') for r in code)),
                    reviewed_storage=dict(Counter(r['result'] for r in data)),
+                   linked_pairing=None if pairing is None else dict(
+                       seeds=pairing['seeds'],
+                       checks=dict(Counter(f"{r['kind']}:{r['result']}" for r in pairing['checks'])),
+                       pairs=dict(Counter(f"{r['kind']}:{r['result']}" for r in pairing['pairs'])),
+                       items=dict(Counter(r['result'] for r in pairing['items']))),
                    scope='Complete positional file coverage. Partial reviewed storage checks. Code windows are not function equivalence.',
                    limits=['No complete semantic byte ownership.', 'No inferred jump tables, padding, or constants.',
                            'Code normalization covers only aligned supported reference fields, not rebuilt boundary proof.',
-                           'Raw file coverage excludes virtual zero-fill. Storage checks can include virtual zero-fill.'])
+                           'Raw file coverage excludes virtual zero-fill. Storage checks can include virtual zero-fill.',
+                           'Linked pairing starts only from exact registry functions. Unreached items stay unchecked.',
+                           'Paired item extents come from object symbols. A tail_unproved item may end before our padding.'])
     if not args.structural_only:
         summary.update(map_sha256=digest(build / 'empiresx.map'), owners_sha256=digest(owners_path),
                        registry_sha256=report['registry_sha256'],
@@ -238,6 +264,10 @@ def main():
     write_csv(output / 'ranges.csv', ranges)
     write_csv(output / 'functions.csv', code)
     write_csv(output / 'data.csv', data)
+    if pairing is not None:
+        write_csv(output / 'linked_checks.csv', pairing['checks'])
+        write_csv(output / 'linked_pairs.csv', pairing['pairs'])
+        write_csv(output / 'linked_items.csv', pairing['items'])
     # Raw ranges have structural labels, not proved semantic owners.
     write_csv(output / 'unknown_ranges.csv', [r for r in ranges if r['result'] != 'equal'])
     (output / 'report.md').write_text(
@@ -249,6 +279,10 @@ def main():
         + f"Function windows: {json.dumps(summary['function_windows'])}.\n\n"
         + f"Supported normalized windows: {json.dumps(summary['normalized_windows'])}.\n\n"
         + f"Reviewed storage checks: {json.dumps(summary['reviewed_storage'])}.\n"
+        + ('' if pairing is None else '\n## Linked pairing\n\n' + ''.join(
+            f"{label}: {json.dumps(summary['linked_pairing'][key])}.\n\n"
+            for label, key in (('Exact seeds', 'seeds'), ('Reference checks', 'checks'),
+                               ('Pairs', 'pairs'), ('Paired items', 'items')))).rstrip('\n') + '\n'
         + '\n## Limits\n\n' + '\n'.join('- ' + text for text in summary['limits']) + '\n', encoding='utf-8')
     print(json.dumps(summary, indent=2))
     return 0
