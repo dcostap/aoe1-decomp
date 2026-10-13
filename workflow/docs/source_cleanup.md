@@ -20,7 +20,15 @@ Restore meaning where evidence supports it. Do not make uncertain code look more
 This wave must preserve generated machine code and program data, not merely observed behavior.
 Preserve relocations and call targets. Debug names and line records can change.
 The final comparison baseline is the pre-cleanup build, including its existing differences from the original executable.
-Do not accept new generated-code differences as harmless drift.
+Do not accept new generated-code differences as harmless drift during this wave.
+
+Outside this wave, a semantically neutral source change can alter code in functions not claimed `matching`. Examples
+are a new include or a macro with the same value. VC5 register allocation reacts to unrelated declarations; see
+`workflow/vc5_lessons.md`. Accept such a change only when:
+
+- every `matching` function stays byte-identical, proved by a fresh function audit of the affected modules;
+- the source change preserves values, types, widths, and evaluation order;
+- each changed non-exact function is inspected and the difference recorded in its function note.
 
 The original executable remains the behavior oracle.
 PDB records, original resources, existing declarations, and reviewed notes supply supporting evidence.

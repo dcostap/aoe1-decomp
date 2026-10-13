@@ -14,6 +14,7 @@
 #include "../include/obj_list.h"
 #include "../include/path.h"
 #include "../include/stat_obj.h"
+#include "../include/tech.h"
 #include "../include/unit_ai_module.h"
 #include "../include/visible.h"
 #include "../include/world.h"
@@ -9672,19 +9673,19 @@ void TribeTacticalAIModule::checkForCoopTributeGift() {
 void TribeTacticalAIModule::checkForASAPAgeResearch() {
     if (this->inAge(1) != 0 && this->sn[0xB5] == 1 && this->md->buildAI.readyToResearch(2, 1) != 0
         && this->md->resourceAI.resource(RGE_RESOURCE_FOOD) >= 500) {
-        BuildItem* item = this->md->buildAI.buildItem(0x65, BUILD_CATEGORY_RESEARCH, BUILD_CATEGORY_BLOCKING_RESEARCH);
+        BuildItem* item = this->md->buildAI.buildItem(TECH_TOOL_AGE, BUILD_CATEGORY_RESEARCH, BUILD_CATEGORY_BLOCKING_RESEARCH);
         if (item != 0)
             this->taskResearch(item);
     } else if (this->inAge(2) != 0 && this->sn[0xB6] == 1 && this->md->buildAI.readyToResearch(3, 1) != 0
                && this->md->resourceAI.resource(RGE_RESOURCE_FOOD) >= 800) {
-        BuildItem* item = this->md->buildAI.buildItem(0x66, BUILD_CATEGORY_RESEARCH, BUILD_CATEGORY_BLOCKING_RESEARCH);
+        BuildItem* item = this->md->buildAI.buildItem(TECH_BRONZE_AGE, BUILD_CATEGORY_RESEARCH, BUILD_CATEGORY_BLOCKING_RESEARCH);
         if (item != 0)
             this->taskResearch(item);
     }
 
     if (this->inAge(3) != 0 && this->sn[0xB7] == 1 && this->md->buildAI.readyToResearch(4, 1) != 0
         && this->md->resourceAI.resource(RGE_RESOURCE_FOOD) >= 900 && this->md->resourceAI.resource(RGE_RESOURCE_GOLD) >= 700) {
-        BuildItem* item = this->md->buildAI.buildItem(0x67, BUILD_CATEGORY_RESEARCH, BUILD_CATEGORY_BLOCKING_RESEARCH);
+        BuildItem* item = this->md->buildAI.buildItem(TECH_IRON_AGE, BUILD_CATEGORY_RESEARCH, BUILD_CATEGORY_BLOCKING_RESEARCH);
         if (item != 0)
             this->taskResearch(item);
     }

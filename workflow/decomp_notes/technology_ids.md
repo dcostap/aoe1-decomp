@@ -7,6 +7,12 @@ This change adds `TECH_*` macros to `include/tech.h` and uses them where code pa
 A technology ID is the index into `TRIBE_Tech::tech_tree`. AI build lists use the same IDs on `R` lines.
 `src/taibldmd.cpp` now includes `tech.h`. No layouts, signatures, locals, or registry entries changed.
 
+A 2026-10-13 follow-up names the age research IDs in `TribeTacticalAIModule::checkForASAPAgeResearch`, so
+`src/taitacmd.cpp` also includes `tech.h`. Every include position changes register colors in both `idleCivilian`
+functions, which are not exact. All 211 exact claims in `aibldmod` and `taitacmd` still match. A macro-only
+`tech_ids.h` was rejected because its nested include changed `tplayer` and `tribegam`. See the `004F7E80` and
+`004F81A0` notes.
+
 ## Name source
 
 Each name is the record name stored in the game data.

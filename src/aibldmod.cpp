@@ -404,7 +404,7 @@ int BuildAIModule::insertItem(
     char name[64];
     float xSize;
     float ySize;
-    if (buildCategory != 6) {
+    if (buildCategory != BUILD_CATEGORY_GATHERER_PERCENTAGE) {
         RGE_Master_Static_Object* master = player->master_objects[typeID];
         if (master != 0) {
             strncpy(name, master->name, 63);
