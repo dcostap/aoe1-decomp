@@ -121,3 +121,32 @@ Scripts and the mapping are under `build/logstrings/`.
 All 184 exact claims still match (`build/validation/logstrings/functions/report.json`). Removing the unused statics
 returned `004F7E80` to its pre-`tech.h` code. In `004F81A0` the same two-register swap moved from `+0x56` to `+0x1E2`.
 See both function notes.
+
+## Source cleanup, 2026-10-13
+
+The log strings are now inline literals, and `s_file` is the inline path literal, as in `Command.cpp`. The original
+has one pooled copy of each distinct text. For example, all ten "Checking on Unit #%d:" pushes address `005881F0`.
+VC5 pools inline literals as `??_C@` COMDATs and so reproduces that layout. The static arrays did not: they gave each
+use its own copy.
+
+The cleanup also removed redundant local typedefs and CRT, `operator new`/`delete`, `__ftol` and `debug_*` prototypes;
+`basegame.h` now supplies the `debug_*` declarations. It rewrote cursor loops over `unitsValue`, `gatherers` and
+`sn` as indexed loops, changed `x = x + 1` to `x++`, and named literals with existing constants:
+`TACTICAL_GROUP_TYPE_ARTIFACT`, `OBJECT_GROUP_SIEGE_WEAPON`, `MASTER_OBJECT_FARM`, the eight gatherer-percentage SNs
+clamped by `setStrategicNumber`, and `SNSaveScenarioInformation`. Each rewrite was compiled and kept only when no
+`matching` function changed.
+
+Some forms had to stay:
+
+- `TacticalAIGroup::unit` (`004EB2D0`) keeps its `units` cursor and `goto too_far`. The original walks `ecx` and
+  indexes the return from `ebx`, and its two `-1` exits have separate epilogues. Every indexed form tried changed it.
+- Indexed loops in the two `TribeTacticalAIModule` constructors, removal of the repeated file-scope
+  `operator new`/`delete` prototypes, and the first `firstIdleUnit`/`allUnitsIdle` attempts each perturbed
+  `taskTrain` (`matching`), although the rewritten functions were themselves byte-identical. `taskTrain` swapped
+  two stack slots (`[esp+0x10]` and `[esp+0x18]`). Dropping a local or a prototype elsewhere in the module is enough
+  to trigger it. Those forms were left as they were.
+
+All 184 exact claims still match (`build/validation/cleanup/functions/report.json`). The only other function that
+changed is `taskActiveSoldiers` (`004F21F0`, `accepted_logic`), through the `basegame.h` include; see its note.
+The gotos (157) and the raw `sn[0x..]` indices remain. The indices have no `.per` names, see
+[strategic numbers](strategic_numbers.md).
