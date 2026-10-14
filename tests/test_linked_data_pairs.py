@@ -4,7 +4,7 @@ import struct
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from linked_data_pairs import pair_references, value_extent
+from linked_data_pairs import LONG_RUN, align_function, pair_references, value_extent
 
 BASE = 0x400000
 
@@ -95,6 +95,79 @@ def test_switch_table_after_function_is_compared(tmp_path):
 def test_switch_table_with_swapped_cases_fails(tmp_path):
     # The code bytes match, but the original sends each case to the other block.
     assert switch_run(tmp_path, [8, 7]) == [('internal_label', 'pass'), ('switch_table', 'fail')]
+
+
+def aligned_switch_run(tmp_path, original_entries):
+    """The switch function of switch_run, compared as a non-exact function."""
+    body = b'\xff\x24\x85\0\0\0\0\xc3\xc3'
+    symbols = [(b'_f', 0, 1, 0x20, 2), (b'$Ltab', 9, 1, 0, 6), (b'$La', 7, 1, 0, 6), (b'$Lb', 8, 1, 0, 6)]
+    coff(tmp_path / 'a.obj', body + bytes(8), b'\0\0\0\0', [(3, 1, 6), (9, 2, 6), (13, 3, 6)], symbols)
+
+    def text(entries):
+        code = b'\xff\x24\x85' + (BASE + 0x1009).to_bytes(4, 'little') + b'\xc3\xc3'
+        return code + b''.join((BASE + 0x1000 + e).to_bytes(4, 'little') for e in entries)
+    rebuilt = pe(0x1000, text([7, 8]), 0x2000, b'\0\0\0\0')
+    original = pe(0x1000, text(original_entries), 0x2000, b'\0\0\0\0')
+    rows = [dict(symbol='_f', address=BASE + 0x1000, owner='a.obj')]
+    result = pair_references(original, rebuilt, rows, {'a.obj': tmp_path / 'a.obj'}, [],
+                             {'_f': BASE + 0x1000}, [(BASE + 0x1000, '_f', 9, 'accepted_drift')])
+    return [(c['seed'], c['kind'], c['result']) for c in result['checks']]
+
+
+def test_aligned_switch_table_passes_with_same_targets(tmp_path):
+    assert aligned_switch_run(tmp_path, [7, 8]) == [('aligned', 'switch_table', 'pass')]
+
+
+def test_aligned_switch_table_with_other_labels_but_same_partition(tmp_path):
+    # Blocks of a non-exact function may move, so differing labels alone are not a failure.
+    assert aligned_switch_run(tmp_path, [8, 7]) == [('aligned', 'switch_table', 'partition_pass')]
+
+
+def test_aligned_switch_table_with_merged_cases_fails(tmp_path):
+    # Both original cases share one block; the rebuilt cases do not.
+    assert aligned_switch_run(tmp_path, [7, 7]) == [('aligned', 'switch_table', 'fail')]
+
+
+def pushes(count, address):
+    return b''.join(b'\x68' + (address + 4 * i).to_bytes(4, 'little') for i in range(count)) + b'\xc3'
+
+
+def test_alignment_pairs_fields_in_long_runs_after_an_insertion():
+    original = pushes(LONG_RUN, BASE + 0x2010)
+    rebuilt = b'\x90' + pushes(LONG_RUN, BASE + 0x2000)
+    fields = [2 + 5 * i for i in range(LONG_RUN)]
+    none = lambda kind, value: None
+    mapping, labels, count, changed = align_function(original, BASE + 0x1000, rebuilt, BASE + 0x1000, fields,
+                                                     none, none)
+    assert count == LONG_RUN + 2 and changed == []
+    assert mapping[1] == (BASE + 0x1000, 5) and mapping[1 + 5 * (LONG_RUN - 1)] == (BASE + 0x1000 + 5 * 7, 5)
+    assert 0 not in labels
+
+
+def test_alignment_needs_an_anchor_for_short_runs():
+    original, rebuilt = pushes(2, BASE + 0x2010), b'\x90' + pushes(2, BASE + 0x2000)
+    none = lambda kind, value: None
+    mapping, labels, _, _ = align_function(original, BASE + 0x1000, rebuilt, BASE + 0x1000, [2, 7], none, none)
+    assert mapping == {} and labels[1] == (BASE + 0x1000, 5)
+
+    def identify(kind, value):
+        return ('data', value & ~0xff | 0x10) if kind == 'memory' else None
+    mapping, _, _, _ = align_function(original, BASE + 0x1000, rebuilt, BASE + 0x1000, [2, 7], identify, identify)
+    assert mapping[1] == (BASE + 0x1000, 5)
+
+
+def calls(at, targets):
+    return b''.join(b'\xe8' + ((t - (at + 5 * i + 5)) & 0xffffffff).to_bytes(4, 'little')
+                    for i, t in enumerate(targets)) + b'\xc3'
+
+
+def test_alignment_reports_a_changed_callee_between_anchors():
+    at = BASE + 0x1000
+    identify = lambda kind, value: ('function', value) if kind == 'target' else None
+    original = calls(at, [0x500000, 0x510000, 0x520000])
+    rebuilt = calls(at, [0x500000, 0x530000, 0x520000])
+    _, _, _, changed = align_function(original, at, rebuilt, at, [], identify, identify)
+    assert changed == [(5, ('function', 0x530000), ('function', 0x510000))]
 
 
 def test_value_extent_uses_names_and_strings_not_guesses():

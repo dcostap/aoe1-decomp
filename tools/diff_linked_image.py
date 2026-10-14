@@ -182,12 +182,14 @@ def linked_pairing(build, report, map_rows, original, rebuilt):
     entries = function_entries_by_va()
     exact = [(int(va, 16), e['symbol'], sizes[va]) for va, e in sorted(entries.items())
              if e.get('status') == 'matching' and e.get('symbol') and va in sizes]
+    aligned = [(int(va, 16), e['symbol'], sizes[va], e['status']) for va, e in sorted(entries.items())
+               if e.get('status') != 'matching' and e.get('symbol') and va in sizes]
     claims = {}
     for va, e in entries.items():
         if e.get('symbol'):
             claims.setdefault(e['symbol'], set()).add(int(va, 16))
     function_vas = {name: next(iter(vas)) for name, vas in claims.items() if len(vas) == 1}
-    return pair_references(original, rebuilt, map_rows, paths, exact, function_vas)
+    return pair_references(original, rebuilt, map_rows, paths, exact, function_vas, aligned)
 
 
 def write_csv(path, rows):
@@ -245,14 +247,18 @@ def main():
                    reviewed_storage=dict(Counter(r['result'] for r in data)),
                    linked_pairing=None if pairing is None else dict(
                        seeds=pairing['seeds'],
-                       checks=dict(Counter(f"{r['kind']}:{r['result']}" for r in pairing['checks'])),
-                       pairs=dict(Counter(f"{r['kind']}:{r['result']}" for r in pairing['pairs'])),
-                       items=dict(Counter(r['result'] for r in pairing['items']))),
+                       checks=dict(Counter(f"{r['seed']}:{r['kind']}:{r['result']}" for r in pairing['checks'])),
+                       pairs=dict(Counter(f"{r['seed']}:{r['kind']}:{r['result']}" for r in pairing['pairs'])),
+                       items=dict(Counter(f"{r['seed']}:{r['result']}" for r in pairing['items'])),
+                       aligned_instructions=sum(r['aligned_instructions'] for r in pairing['alignment']),
+                       rebuilt_instructions_of_aligned_functions=sum(
+                           r['rebuilt_instructions'] for r in pairing['alignment'])),
                    scope='Complete positional file coverage. Partial reviewed storage checks. Code windows are not function equivalence.',
                    limits=['No complete semantic byte ownership.', 'No inferred jump tables, padding, or constants.',
                            'Code normalization covers only aligned supported reference fields, not rebuilt boundary proof.',
                            'Raw file coverage excludes virtual zero-fill. Storage checks can include virtual zero-fill.',
-                           'Linked pairing starts only from exact registry functions. Unreached items stay unchecked.',
+                           'Linked pairing starts from registry functions. Exact seeds pair every field; aligned seeds pair fields only '
+                           'inside identical aligned instructions. Unreached items stay unchecked.',
                            'Paired item extents come from object symbols. A tail_unproved item may end before our padding.'])
     if not args.structural_only:
         summary.update(map_sha256=digest(build / 'empiresx.map'), owners_sha256=digest(owners_path),
@@ -268,6 +274,7 @@ def main():
         write_csv(output / 'linked_checks.csv', pairing['checks'])
         write_csv(output / 'linked_pairs.csv', pairing['pairs'])
         write_csv(output / 'linked_items.csv', pairing['items'])
+        write_csv(output / 'linked_alignment.csv', pairing['alignment'])
     # Raw ranges have structural labels, not proved semantic owners.
     write_csv(output / 'unknown_ranges.csv', [r for r in ranges if r['result'] != 'equal'])
     (output / 'report.md').write_text(

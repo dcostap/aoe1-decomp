@@ -28,7 +28,8 @@ This mode checks the EXE hash but makes no symbol or storage claims.
 - `functions.csv` compares original-size windows at independently paired function symbols.
 - `data.csv` compares reviewed storage bytes and explicit pointer fields through the existing storage audit.
 - `unknown_ranges.csv` lists changed positional ranges without semantic attribution.
-- `linked_checks.csv` lists relocated fields of exact functions that have an independent expectation.
+- `linked_checks.csv` lists relocated fields that have an independent expectation.
+- `linked_alignment.csv` lists each non-exact function with its aligned instruction and field counts.
 - `linked_pairs.csv` lists every rebuilt target paired with original addresses.
 - `linked_items.csv` compares the contents of paired data items.
 - `report.md` gives the short result and limits.
@@ -70,8 +71,34 @@ in turn, so pointer tables and virtual tables are checked through the same evide
 - `zero_fill`: uninitialized storage; only the pairing is checked;
 - `conflict`: the item has no single original address.
 
-Items that no exact function reaches stay unchecked. A `different` item in an exact function is a real defect in the
-rebuilt program: the same instructions read different data.
+Items that no checked function reaches stay unchecked. A `different` item in an exact function is a real defect in
+the rebuilt program: the same instructions read different data.
+
+## Non-exact functions
+
+`accepted_drift`, `accepted_logic`, and `nonmatching` functions are checked after the exact ones, and their rows
+have seed `aligned`. Their code differs, so a field offset says nothing by itself. The tool decodes both functions
+and aligns their instructions. The rebuilt code ends at the next function symbol or at the first table that its
+code addresses. Branch targets, absolute address operands, and four-byte immediates are masked. A masked operand
+keeps an identity when one is proved: a registry function, an import, or a data address that an exact function
+paired. A relocated field pairs only inside an aligned instruction whose other bytes are equal, and only in an
+anchored run: a run with a proved identity or at least eight instructions. Short runs of common shapes, such as x87
+sequences, align with unrelated code after blocks move, so they pair nothing.
+
+Additional checks for aligned rows:
+
+- `function` and `import` fields use the same expectations as in exact functions.
+- `callee`: one call replaced by another of the same shape, between anchored runs, with both callees known. It
+  is reported as `fail`.
+- `switch_table`: blocks may move, so labels prove little. The table is proved by its partition instead. Case
+  values that share a target in one image must share a target in the other. When a byte table selects the entry,
+  each case value goes through its own image's byte table first. `pass` means the labels also agree.
+  `partition_pass` means the labels disagree or are unmapped, but the partition is equal. `fail` means the
+  partition or plain bytes differ.
+
+An aligned `different` item is a lead, not a verdict. The alignment can pair the wrong instruction, as in a switch
+whose case blocks are laid out in another order. Check the code that reads the item before changing the source.
+The aligned instructions cover about 61% of the rebuilt instructions of those functions. The rest stay unchecked.
 
 Offsets and sizes use decimal bytes. Ranges exclude their end offset.
 Hex previews show at most 16 bytes per range and file.
@@ -130,3 +157,11 @@ The findings are recorded in [linked data findings](../decomp_notes/linked_data_
 After the fixes, `build/fixdata-final/20261013T175927175018Z` passes all 270 switch tables and every reference
 check. Its paired items are 2,210 equal, 257 zero-fill, and 2 tail-unproved, with no different or conflicting
 items. 148 splits remain.
+
+## Non-exact functions, 2026-10-14
+
+The tested build is `build/aligned-final/20261014T212933617493Z`. All exact checks still pass. For the 413
+non-exact functions, 77,752 of 127,838 rebuilt instructions align. 5,717 function fields and 187 import fields pass,
+and no callee check fails. Of 88 switch tables, 41 pass, 45 pass by partition, and 2 fail. Both failures are
+reviewed equivalents. Paired aligned items: 436 equal, 39 zero-fill, 2 tail-unproved, and 7 different. All 7 are
+reviewed alignment false positives. The findings are in [linked data findings](../decomp_notes/linked_data_findings.md).
