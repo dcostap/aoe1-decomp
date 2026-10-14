@@ -162,13 +162,13 @@ long TEasy_Panel::setup(
             "%s %s %d   "
             "%s %s %d   "
             "%s %d   "
-            "%s %d   "
+            "%s %d    "
             "%s %d %d %d %d %d %d   "
             "%s %d %d %d   "
             "%s %d %d %d   "
             "%s %d %d %d   "
-            "%s %d %d %d   "
-            "%s %d %d %d   "
+            "%s %d %d %d  "
+            "%s %d %d %d  "
             "%s %d %d %d",
             temp_label, background_pic_file_name_a1, background_pic_file_name_a2, &back_pic_id_a1, &back_pic_id_a2, temp_label,
             background_pic_file_name_b1, background_pic_file_name_b2, &back_pic_id_b1, &back_pic_id_b2, temp_label,

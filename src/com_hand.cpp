@@ -324,7 +324,7 @@ TCommunications_Handler::~TCommunications_Handler() {
     do {
         if (this->Resend[slot].Serial != 0) {
             L->Log(
-                "NO MSG Slot#%d  Ser#%d  Len=%d  DEST=%d,%d,%d,%d,%d,%d,%d,%d", slot, this->Resend[slot].Serial,
+                "NO MSG Slot#%d  Ser#%d  Len=%d  DEST=%d,%d,%d,%d,%d,%d,%d,%d ", slot, this->Resend[slot].Serial,
                 this->Resend[slot].Length, this->Resend[slot].DestMap[1], this->Resend[slot].DestMap[2],
                 this->Resend[slot].DestMap[3], this->Resend[slot].DestMap[4], this->Resend[slot].DestMap[5],
                 this->Resend[slot].DestMap[6], this->Resend[slot].DestMap[7], this->Resend[slot].DestMap[8]
@@ -1073,7 +1073,11 @@ int TCommunications_Handler::PreprocessMessages(
                 L->Log("Communications versions for HOST and player %d match (%d)", player, local_version);
             } else {
                 this->NotifyWindowParam(COMM_PLAYER_SERVICE_ERROR, player);
-                sprintf(this->TBuff, "Player %d has a different Communications Version", player);
+                sprintf(
+                    this->TBuff,
+                    "Player %d has a different Communications Version than you.\n This game will fail synchronization or lock up if started.\n Please notify that player also. ",
+                    player
+                );
                 L->Log(this->TBuff);
             }
 
@@ -1251,7 +1255,10 @@ int TCommunications_Handler::PreprocessMessages(
 
         unsigned int NextSerialNumber = this->PlayerHighSerialNumber[player] + 1;
         if (*serial < NextSerialNumber) {
-            sprintf(this->TBuff, "GTD: RX Past Ser#%d rx. Expected %d from P#%d", *serial, NextSerialNumber, player);
+            sprintf(
+                this->TBuff, "GTD: RX Past Ser#%d rx. Expected %d from P#%d (acknowledged and discarded)", *serial,
+                NextSerialNumber, player
+            );
             L->Log(this->TBuff);
             L->Log("  >TX R ACK #%d %d (%d)", player, *serial, 8);
             this->TXAcknowledgeMessage(*serial, player);
@@ -1351,7 +1358,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(
         case 'C': {
             MSGFORMAT_CHAT* chat = (MSGFORMAT_CHAT*) Content;
             L->Log(
-                "CHAT-RX from P#%d(%d) RXID=%d Chat content='%s' TextSize=%d TotalSize=%d Pregame=%d", fromPlayer, dcoFromID,
+                "CHAT-RX from P#%d(%d) RXID=%d Chat content='%s'  MsgSize=%d TotalSize=%d pregame=%d", fromPlayer, dcoFromID,
                 dcoReceiveID, chat->ChatMsg, chat->TextSize, ContentSize, chat->Pregame
             );
             if ((chat->DestPlayers[this->Me] == 'Y') || (this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW)) {
@@ -2935,9 +2942,10 @@ sent:
             strcpy(GTDString, "!GTD");
         }
         L->Log(
-            "COMM: Ser#%d %s TX To=%d Len=%d+%d HDR> Seq=%d", txMsg->Serialno, GTDString, To, Length, HeaderLength,
-            txMsg->Sequence, txMsg->ExecuteOnTurn, txMsg->Command, txMsg->Command, (int) ((char) OutCommBuff[HeaderLength]),
-            (int) ((char) OutCommBuff[HeaderLength]), OutgoingCount, hr, debug_timeGetTime(com_hand_source_path, 4395)
+            "COMM: Ser#%d %s TX To=%d Len=%d+%d HDR> Seq=%d ExecOn=%d Cmd=%d '%c' Content[0]=%d '%c' ODests=%d hr=%d  timeGetTime=%d",
+            txMsg->Serialno, GTDString, To, Length, HeaderLength, txMsg->Sequence, txMsg->ExecuteOnTurn, txMsg->Command,
+            txMsg->Command, (int) ((char) OutCommBuff[HeaderLength]), (int) ((char) OutCommBuff[HeaderLength]), OutgoingCount, hr,
+            debug_timeGetTime(com_hand_source_path, 4395)
         );
     }
 

@@ -6613,13 +6613,15 @@ int TribeTacticalAIModule::taskResearch(BuildItem* researchItem) {
     );
     if (object == 0 || object->unitAI() == 0) {
         this->logCommonHistory(
-            "Could not find a building to research type %d with unique ID %d.", researchItem->typeID(), researchItem->uniqueID()
+            "Could not find a building to research type %d (UniqueID=%d) at, returning FALSE.", researchItem->typeID(),
+            researchItem->uniqueID()
         );
         return 0;
     }
 
     this->logCommonHistory(
-        "Researching ID #%d (UniqueID=%d) from building #%d.", researchItem->typeID(), researchItem->uniqueID(), object->id
+        "Researching ID #%d (UniqueID=%d) from building with gameID=%d.", researchItem->typeID(), researchItem->uniqueID(),
+        object->id
     );
     researchItem->setInProgress(1);
     researchItem->setBuilt(0);

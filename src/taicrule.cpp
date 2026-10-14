@@ -31,7 +31,7 @@ int CombatRuleSystem::loadRules(char* rName) {
         sscanf(temp, "%c%c", &commentTemp1, &commentTemp2);
         if (commentTemp1 == '/' && commentTemp2 == '/')
             continue;
-        sscanf(temp, "%d %d %d", &rating, &unitIndex, &targetUnitType);
+        sscanf(temp, "%d %d %d ", &rating, &unitIndex, &targetUnitType);
         if (rating < 0 || rating >= 50)
             continue;
         ratingValue[unitIndex + rating * 50] = (char) targetUnitType;

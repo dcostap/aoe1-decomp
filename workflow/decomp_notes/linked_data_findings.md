@@ -71,3 +71,56 @@ About 70 strings were guessed or abbreviated. They now match the original text:
 - 2 `tail_unproved` `$T` constants: the compared value agrees, but the item size is not proved.
 
 These do not change what an exact function reads. They matter for a matching image layout.
+
+# Non-exact functions, 2026-10-14
+
+The linked pairing now also aligns the 413 `accepted_drift`, `accepted_logic`, and `nonmatching` functions; see
+[linked image comparison](../docs/linked_image_diff.md). It ran first on `build/fixdata-final/20261013T175927175018Z`.
+After the fixes below, `build/aligned-final/20261014T212933617493Z` was checked.
+
+## Defects fixed
+
+- `PointMaker::AddingCircle` (`0044BF90`) added `x - 1.0` and `y - 1.0` before the bounds test. The original
+  subtracts the constant −1.0, so it adds 1. The byte audit masks the constant's address, so it could not see this.
+  The source now uses `+ 1.0f`, for which VC5 emits the same `fsub` of a −1.0 temporary.
+- Log, debug, and scanf text that was shortened or reworded:
+  - `com_hand`: `CommOut` (`0042B270`) logged only 6 of its 14 pushed values.
+  - `com_hand`: `EvaluatePlayerMessage` (`004282C0`) chat text.
+  - `com_hand`: `PreprocessMessages` (`00427600`) past-serial text, and the communications-version warning.
+  - `com_hand`: the destructor's (`004261E0`) slot dump. It ends with a space.
+  - `taitacmd`: `taskResearch` (`004FB710`), both messages.
+  - `visible`: `dump_vismap_log` (`0053D200`) printed its last value as `wt=` with no newline; the original prints
+    `s=%d\n`.
+  - `taicrule`: `loadRules` (`004D6910`): its `sscanf` format ends with a space.
+  - `panel_ez`: `TEasy_Panel::setup` keeps the original spacing in its long `sscanf` format.
+
+  The pushed arguments were already right. Whitespace in a `scanf` format matches any run of whitespace, so the
+  last two change the data only.
+
+## Reviewed, no defect
+
+- `Visible_Unit_Manager::Build_Distance_Table` (`0053B730`) was the one exact data conflict on `NormalLOS`. The
+  original ends its loop with `cmp ecx, NormalLOS+0x40; jle`. Our `distance < 17` gave `NormalLOS+0x44; jl`. Both
+  loop 17 times. The source now says `distance <= 16`, which emits the original compare. This removes one
+  differing byte, and the function stays `accepted_drift`.
+- Alignment false positives among `different` items:
+  - `handle_user_command` in `scr_mps`: four `USER_COMMAND` strings;
+  - `TCommunications_Handler::UpdatePlayer` (`0042DF90`): `HUMAN`/`COMPUTER` and `CYBORG`/`Not Defined`.
+
+  In both, the per-case strings were extracted from each image's jump table and they agree. The case blocks are
+  only laid out in another order. The same applies to `g_static_object_bounds_min_adjustment` in `check_placement`:
+  both images use 3.0 and −3.0.
+- Earlier noise, absent after the anchor rules were added: `doTrivialMove` signs, `$T` −100 in `dlg_dip`, and
+  `tact_mob`/`Res_file` strings. Each rebuilt string exists in the original.
+- Callee reports in `ConstructionAIModule::save`, `~TCommunications_Handler`, `TileDibBlt`, and
+  `setupInfluenceMap` came from register-swap drift or unrolled loops. `TButtonPanel::draw` caches `TextOutA` in
+  `ebp`. After review and the flanking rule, no callee check fails.
+- Two switch tables still fail the partition check, and both are equivalent:
+  - `UnitAIModule::processOrder` (`00417B50`): the original has two identical case bodies, and we share one.
+  - `TRIBE_RMM_Database_Controller::add_object_module` (`00487FA0`), second switch: the original gives case 0x66
+    its own entry, and VC5 tail-merges our copy into the same `map_width / 6` code.
+
+## Limits
+
+About 39% of the rebuilt instructions of these functions do not align, and their fields stay unchecked. An aligned
+pairing is weaker evidence than an exact one. Each `different` item above was confirmed in the code that reads it.

@@ -55,7 +55,7 @@ register shape.
 | `0044BB60` | accepted drift | The post-ring probability tail has a local register-allocation drift. |
 | `0044BCD0` | accepted drift | The saturation tail keeps the byte pointer and byte value in other registers. |
 | `0044BD80` | scratch | The current check has broad control-flow drift and one extra jump. |
-| `0044BF90` | accepted drift | Five x87 bytes differ. A volatile width local matches, but PDB evidence rejects it. |
+| `0044BF90` | accepted drift | Five x87 bytes differ. A volatile width local matches, but PDB evidence rejects it. The linked check on 2026-10-14 found the coordinate offset sign reversed; see the function note. |
 | `0044C510` | accepted drift | The inner placement-cell address calculation uses another register schedule. |
 
 The accepted rows retain their proven calls, predicates, writable addresses,

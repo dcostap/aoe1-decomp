@@ -84,7 +84,7 @@ void Visible_Unit_Manager::Build_Distance_Table() {
         table[i] = 0xff;
     }
 
-    for (int distance = 0; distance < 17; distance++) {
+    for (int distance = 0; distance <= 16; distance++) {
         LOSTBL* entry = NormalLOS[distance];
         int row = entry->y;
         while (row != 999) {

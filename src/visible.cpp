@@ -977,7 +977,7 @@ void __cdecl dump_vismap_log() {
         }
 
         fprintf(
-            f, " wt = %d, plyr = %d, id = %d, x1=%d, y1=%d, x2=%d, y2=%d, wt=%d", VCALL_LOG[idx].world_time,
+            f, " wt = %d, plyr = %d, id = %d, x1=%d, y1=%d, x2=%d, y2=%d, s=%d\n", VCALL_LOG[idx].world_time,
             VCALL_LOG[idx].player_id, VCALL_LOG[idx].object_id, VCALL_LOG[idx].x1, VCALL_LOG[idx].y1, VCALL_LOG[idx].x2,
             VCALL_LOG[idx].y2, VCALL_LOG[idx].supress
         );
