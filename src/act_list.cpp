@@ -267,17 +267,13 @@ void RGE_Action_List::add_action_at_end(RGE_Action* action) {
         while (current != 0) {
             if (current->next == 0) {
                 current->next = node;
-                action->first_in_stack(1);
-                return;
+                break;
             }
             current = current->next;
         }
-
-        action->first_in_stack(1);
-        return;
+    } else {
+        this->list = node;
     }
-
-    this->list = node;
     action->first_in_stack(1);
 }
 

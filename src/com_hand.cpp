@@ -3698,23 +3698,20 @@ typedef unsigned long ulong;
 char* TCommunications_Handler::GetCommInfo(unsigned char LineNum) {
     static char Lin[8][256];
     char* buffer = Lin[0];
-    char* p = buffer;
     char tmp[255];
     --LineNum;
 
     if (this->Multiplayer == 0) {
-        do {
-            strcpy(p, ">");
-            p += 0x100;
-        } while (p < Lin[7]);
+        for (int i = 0; i < 7; i++) {
+            strcpy(Lin[i], ">");
+        }
         sprintf(buffer, "SinglePlayer> T#%d ", this->current_turn);
         return buffer + ((unsigned int) LineNum << 8);
     }
 
-    do {
-        strcpy(p, " ");
-        p += 0x100;
-    } while (p < Lin[7]);
+    for (int i = 0; i < 7; i++) {
+        strcpy(Lin[i], " ");
+    }
     strcpy(tmp, "");
     if (this->MeHost != 0) {
         strcpy(tmp, "Host");
