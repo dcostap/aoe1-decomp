@@ -7,6 +7,20 @@
 #include "../include/world.h"
 #include "../include/obj_list.h"
 
+// VC5 declaration-phase padding; see workflow/vc5_lessons.md.
+struct vc5_phase_0;
+struct vc5_phase_1;
+struct vc5_phase_2;
+struct vc5_phase_3;
+struct vc5_phase_4;
+struct vc5_phase_5;
+struct vc5_phase_6;
+struct vc5_phase_7;
+struct vc5_phase_8;
+struct vc5_phase_9;
+struct vc5_phase_10;
+struct vc5_phase_11;
+
 extern "C" void* calloc(unsigned int count, unsigned int size);
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern void __cdecl getstring(char** destination, char* source);

@@ -5,6 +5,23 @@
 #include <string.h>
 #include <ctype.h>
 
+// VC5 declaration-phase padding; see workflow/vc5_lessons.md.
+struct vc5_phase_0;
+struct vc5_phase_1;
+struct vc5_phase_2;
+struct vc5_phase_3;
+struct vc5_phase_4;
+struct vc5_phase_5;
+struct vc5_phase_6;
+struct vc5_phase_7;
+struct vc5_phase_8;
+struct vc5_phase_9;
+struct vc5_phase_10;
+struct vc5_phase_11;
+struct vc5_phase_12;
+struct vc5_phase_13;
+struct vc5_phase_14;
+
 DString::DString() {
     this->stringValue = 0;
     this->lengthValue = 0;

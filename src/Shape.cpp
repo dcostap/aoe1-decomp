@@ -7,6 +7,27 @@
 #include <string.h>
 #include <memory.h>
 
+// VC5 declaration-phase padding; see workflow/vc5_lessons.md.
+struct vc5_phase_0;
+struct vc5_phase_1;
+struct vc5_phase_2;
+struct vc5_phase_3;
+struct vc5_phase_4;
+struct vc5_phase_5;
+struct vc5_phase_6;
+struct vc5_phase_7;
+struct vc5_phase_8;
+struct vc5_phase_9;
+struct vc5_phase_10;
+struct vc5_phase_11;
+struct vc5_phase_12;
+struct vc5_phase_13;
+struct vc5_phase_14;
+struct vc5_phase_15;
+struct vc5_phase_16;
+struct vc5_phase_17;
+struct vc5_phase_18;
+
 #pragma function(memcpy)
 #pragma function(memset)
 

@@ -17,6 +17,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+// VC5 declaration-phase padding; see workflow/vc5_lessons.md.
+struct vc5_phase_0;
+struct vc5_phase_1;
+struct vc5_phase_2;
+
 extern void __cdecl color_log(unsigned char, unsigned char, int);
 extern unsigned long __cdecl debug_timeGetTime(char*, int);
 extern void __cdecl write_draw_log2(char*);

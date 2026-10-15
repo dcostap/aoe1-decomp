@@ -63,6 +63,27 @@ An unusual source form can stay only when one of these applies:
 Preserve original bugs, narrow widths, overlap, aliasing, evaluation order, and
 fault order when the executable proves them.
 
+### Declaration-phase padding
+
+VC5 breaks some code-generation ties, such as operand load order, SIB order,
+and register choice, using the number of identifiers declared earlier in the
+translation unit. The original headers are lost, so that count cannot be
+recovered from evidence. A module may restore the count with phase padding.
+This is the only allowed form of dummy declaration:
+
+- write it only in a natural `src/*.c` or `src/*.cpp` owner, never in a header;
+- use only unused incomplete struct declarations named `vc5_phase_<n>`, at file
+  scope, as one block before the first function that needs it, under the
+  comment `// VC5 declaration-phase padding; see workflow/vc5_lessons.md.`;
+- choose the smallest count that works;
+- prove it with a fresh audit of the whole translation unit: no exact function
+  may lose exactness, and every other changed row must be reported;
+- record the count, the audit path, and the functions it fixes in each fixed
+  function's note.
+
+Try natural source first. Phase padding does not justify any other
+compiler-steering form.
+
 Write casts in C style, `(T)expr`, as period source did. Do not introduce
 `static_cast`, `reinterpret_cast`, or `const_cast`. Where both forms are valid,
 VC5 emits identical code for them.

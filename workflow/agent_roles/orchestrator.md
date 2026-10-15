@@ -335,7 +335,8 @@ State that recovery is complete and no further matching work is required without
 The registry records the current reviewed result.
 
 Reject wrappers, fake ABI, raw addresses, dummy declarations, fake volatility,
-and other compiler-steering forms.
+and other compiler-steering forms. Declaration-phase padding that follows the
+AGENTS.md rules is the one allowed exception.
 
 Only the orchestrator can approve accepted drift or start semantic review.
 Workers leave unresolved functions in `scratch`.

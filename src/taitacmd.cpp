@@ -24,6 +24,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+// VC5 declaration-phase padding; see workflow/vc5_lessons.md.
+struct vc5_phase_0;
+struct vc5_phase_1;
+struct vc5_phase_2;
+struct vc5_phase_3;
+struct vc5_phase_4;
+struct vc5_phase_5;
+struct vc5_phase_6;
+struct vc5_phase_7;
+struct vc5_phase_8;
+struct vc5_phase_9;
+struct vc5_phase_10;
+struct vc5_phase_11;
+struct vc5_phase_12;
+struct vc5_phase_13;
+
 TacticalAIGroup::TacticalAIGroup() :
     idValue(-1), inUseValue(0), typeValue(-1), subTypeValue(-1), numberUnitsValue(0), desiredNumberUnitsValue(0),
     commanderValue(-1), originalHitPointsValue(-1), originalUnitNumberValue(-1), actionValue(0), targetValue(-1),

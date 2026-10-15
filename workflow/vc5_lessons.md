@@ -264,6 +264,17 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - A typedef naming an already-used template specialization (`typedef ManagedArray<int> ManagedIntArray;`) in a shared
   header changed `view` and `vw_main` and broke six exact claims. Renaming template and parameter names did not.
   Evidence: [ZTRIBE.NCB names](decomp_notes/ztribe_ncb.md).
+- VC5 breaks some ties using a running count of identifiers declared earlier in the translation unit. These ties
+  include commutative operand load order, SIB base and index order, and some register choices.
+  Each struct, extern, function, or typedef name counts once. An enum counts its tag and each constant.
+  A prototype counts each parameter, whether or not it is named. Blank lines, comments, and macros count nothing.
+  Renaming locals or moving the function within the file has no effect.
+  The exact window is often periodic: `count_map_tiles` (`00488E60`) is exact at 4–11 extra declarations mod 16.
+  Others show a threshold, exact only from some count upward.
+  In a 60-function sweep, 17 one- to four-byte mismatches became exact at some count.
+  This explains why the unused-declaration and empty-header effects above break or restore exact functions.
+  Use declaration-phase padding under the AGENTS.md rules, and only after natural source fails.
+  Evidence: [declaration-phase padding](decomp_notes/declaration_phase.md).
 - Check complete non-debug object sections and relocations, not only exact-function claims, when naming shared values.
   Evidence: [object lifecycle state cleanup](decomp_notes/object_lifecycle_states.md).
 - Audit every header consumer. Unchanged target bytes do not prove unchanged call order or field reads elsewhere.

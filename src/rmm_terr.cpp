@@ -5,6 +5,12 @@
 #include <math.h>
 #include <string.h>
 
+// VC5 declaration-phase padding; see workflow/vc5_lessons.md.
+struct vc5_phase_0;
+struct vc5_phase_1;
+struct vc5_phase_2;
+struct vc5_phase_3;
+
 extern "C" double __cdecl sqrt(double value);
 #pragma intrinsic(sqrt)
 

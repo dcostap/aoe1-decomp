@@ -190,6 +190,7 @@ into `--jobs`. Do not invent local limits.
 
 Retain supported natural source for integration. Archive other tested states before removing them from compiler-facing source.
 Remove unsupported aliases, fake helpers, dummy declarations, fake volatility, raw offsets, and metric-only source tricks.
+The only allowed dummy declarations are declaration-phase padding under the AGENTS.md rules.
 
 Put ad hoc experiments and translation-unit audit output in your private
 directory. Leave repository-managed caches, target notebooks, and standard

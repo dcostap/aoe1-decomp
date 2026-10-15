@@ -30,6 +30,13 @@
 #include <string.h>
 #include <memory.h>
 
+// VC5 declaration-phase padding; see workflow/vc5_lessons.md.
+struct vc5_phase_0;
+struct vc5_phase_1;
+struct vc5_phase_2;
+struct vc5_phase_3;
+struct vc5_phase_4;
+
 extern int pathingCapValue;
 void rge_read(int file, void* buffer, int size);
 void rge_write(int file, void* buffer, int size);

@@ -20,7 +20,7 @@
     "0053F3D0": {"status": "matching", "symbol": "?mouse_right_up_action@RGE_Main_View@@UAEJJJHH@Z"},
     "0053F660": {"status": "matching", "symbol": "?start_scroll_view@RGE_Main_View@@UAEHEJJHH@Z"},
     "0053F6B0": {"status": "matching", "symbol": "?handle_scroll_view@RGE_Main_View@@UAEHJJ@Z"},
-    "0053F6F0": {"status": "accepted_drift", "symbol": "?draw@RGE_Main_View@@UAEXXZ"},
+    "0053F6F0": {"status": "matching", "symbol": "?draw@RGE_Main_View@@UAEXXZ"},
     "0053F800": {"status": "matching", "symbol": "?draw_multi_object_outline@RGE_Main_View@@UAEXXZ"},
     "0053F810": {"status": "matching", "symbol": "?command_place_object@RGE_Main_View@@UAEHJJH@Z"},
     "0053FA10": {"status": "matching", "symbol": "?command_make_do@RGE_Main_View@@UAEHJJHF@Z"},

@@ -17,6 +17,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// VC5 declaration-phase padding; see workflow/vc5_lessons.md.
+struct vc5_phase_0;
+struct vc5_phase_1;
+
 extern int __cdecl debug_rand(char* file, int line);
 
 static char s_rmm_dbct_path[] = "C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp";
