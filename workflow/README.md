@@ -82,7 +82,7 @@ These files are kept as they were written. Older ones use earlier status names:
 
 ## The long version: how it actually went down
 
-NOTE: this is ugly AI slop analysis I added just for fun. I will rewrite this myself sometime in the near future.
+> [!warning] This is an ugly & verbose AI slop analysis I added just for fun. I will rewrite this myself sometime in the near future.
 
 This is the story behind the ~9,000 commits. I rebuilt it from the git history of
 three attempts, the old Copilot CLI sessions, about 14,000 Pi sessions (almost all of
@@ -432,6 +432,8 @@ links, and plays.
 
 ### The replay harness: proving it plays the same
 
+> [!warning] This is an ugly & verbose AI slop analysis I added just for fun. I will rewrite this myself sometime in the near future.
+
 Byte matching proves single functions. It doesn't prove the game. A function can
 match and still be fed a wrong constant by its caller, and the 217 accepted-logic
 functions were only proven by review. I wanted something stronger: record a real
@@ -441,8 +443,7 @@ on, and it's the reason I can say the rebuilt game plays like the original.
 
 **Step 1: menus.** The harness injects Frida hooks into both executables. It reads the
 game's own drawing surface at the moment the game paints, instead of taking
-screenshots. The first version did take screenshots, of my whole desktop ("u literally
-capturing my desktop"). Each game runs on a hidden private Windows desktop with its
+screenshots. Each game runs on a hidden private Windows desktop with its
 own registry copy and its network blocked, so many tests can run without taking over
 my screen. 41 menu cases cover clicks, dropdowns, drags, scrollbars, and text
 editing, and each compares pixels, palettes, control state, and RNG. They found real
@@ -467,9 +468,8 @@ at slightly different moments, which changes when the simulation steps and in wh
 order random numbers are drawn. Even a diagnostic hook could shift the timing. The
 first fix was to suppress uncontrolled timer and paint messages and to run tests one at
 a time, because parallel runs drifted. On September 21 I tried to replay at maximum
-CPU speed ("we literally have the full code, we can make this work"), but taking out
-`Sleep()` made the virtual clock run ahead of the inputs, and each patch needed
-another ("wot, that seems too patchy").
+CPU speed, but taking out `Sleep()` made the virtual clock run ahead of the inputs, 
+and each patch needed another.
 
 **The fix: record the whole boundary.** The breakthrough on September 22 was to stop
 recording only keys and clicks. The recorder now captures everything the game asks
